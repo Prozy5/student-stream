@@ -1,87 +1,104 @@
 * {
+box-sizing: border-box;
 margin: 0;
 padding: 0;
-box-sizing: border-box;
 font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
 min-height: 100vh;
-background: radial-gradient(circle at top, #1b2b5a, #050b1a);
-color: #ffffff;
+background: #05070f;
+color: white;
+overflow-x: hidden;
+}
+
+/* Background glow */
+.bg-glow {
+position: fixed;
+width: 600px;
+height: 600px;
+background: radial-gradient(circle, #6b7cff44, transparent 70%);
+top: -150px;
+right: -150px;
+filter: blur(120px);
+z-index: 0;
 }
 
 .container {
+position: relative;
+z-index: 1;
 max-width: 1200px;
 margin: auto;
-padding: 80px 40px;
+padding: 100px 40px;
 display: flex;
-align-items: center;
 justify-content: space-between;
-gap: 60px;
+align-items: center;
+gap: 80px;
 }
 
+/* LEFT SIDE */
+
 .left {
-max-width: 520px;
+max-width: 480px;
 }
 
 .left h1 {
-font-size: 3rem;
+font-size: 48px;
 line-height: 1.1;
 margin-bottom: 20px;
 }
 
 .left p {
-color: #b8c2e0;
-font-size: 1.1rem;
-margin-bottom: 30px;
+color: #b8c0ff;
+margin-bottom: 32px;
+font-size: 17px;
 }
 
 .waitlist-form {
 display: flex;
 flex-direction: column;
-gap: 12px;
+gap: 14px;
 }
 
-.row {
-display: flex;
-gap: 12px;
+.waitlist-form input {
+padding: 14px 16px;
+border-radius: 10px;
+border: none;
+background: #0f1325;
+color: white;
+outline: none;
+font-size: 15px;
 }
 
-input {
-flex: 1;
+.waitlist-form input::placeholder {
+color: #7d86c9;
+}
+
+.waitlist-form button {
+margin-top: 6px;
 padding: 14px;
 border-radius: 10px;
 border: none;
-outline: none;
-font-size: 1rem;
-}
-
-button {
-margin-top: 10px;
-padding: 14px;
-border-radius: 12px;
-border: none;
-font-size: 1rem;
-font-weight: 600;
 cursor: pointer;
-background: linear-gradient(135deg, #6d7cff, #8f6bff);
+font-weight: 600;
+font-size: 15px;
 color: white;
-transition: transform 0.15s ease, box-shadow 0.15s ease;
+background: linear-gradient(135deg, #6b7cff, #8f5bff);
+box-shadow: 0 0 25px #6b7cff66;
+transition: transform 0.2s ease;
 }
 
-button:hover {
+.waitlist-form button:hover {
 transform: translateY(-2px);
-box-shadow: 0 10px 25px rgba(140, 120, 255, 0.35);
 }
 
-.trust {
-margin-top: 12px;
-font-size: 0.9rem;
-color: #9aa5cc;
+.note {
+margin-top: 10px;
+font-size: 13px;
+color: #7d86c9;
 }
 
-/* RIGHT SIDE FLOATING CARDS */
+/* RIGHT SIDE – FLOATING CARDS */
 
 .right {
 position: relative;
@@ -91,42 +108,28 @@ height: 420px;
 
 .card {
 position: absolute;
-padding: 16px 22px;
+padding: 14px 18px;
 border-radius: 14px;
-background: rgba(255,255,255,0.08);
+background: rgba(25, 30, 60, 0.75);
 backdrop-filter: blur(10px);
-border: 1px solid rgba(255,255,255,0.15);
-font-weight: 600;
+border: 1px solid rgba(130, 150, 255, 0.2);
+box-shadow: 0 0 25px rgba(110, 120, 255, 0.25);
 animation: float 6s ease-in-out infinite;
+font-size: 15px;
+white-space: nowrap;
 }
 
-.streamer {
-top: 40px;
-left: 40px;
-animation-delay: 0s;
-}
+/* Card positions */
 
-.founder {
-top: 60px;
-right: 40px;
-animation-delay: 1s;
-}
-
-.brand {
-bottom: 80px;
-left: 80px;
-animation-delay: 2s;
-}
-
-.creator {
-bottom: 40px;
-right: 80px;
-animation-delay: 3s;
-}
+.card1 { top: 30px; left: 40px; animation-delay: 0s; }
+.card2 { top: 120px; right: 0; animation-delay: 1s; }
+.card3 { bottom: 140px; left: 0; animation-delay: 2s; }
+.card4 { bottom: 40px; right: 60px; animation-delay: 3s; }
+.card5 { top: 200px; left: 140px; animation-delay: 4s; }
 
 @keyframes float {
 0% { transform: translateY(0px); }
-50% { transform: translateY(-18px); }
+50% { transform: translateY(-14px); }
 100% { transform: translateY(0px); }
 }
 
@@ -138,11 +141,11 @@ flex-direction: column;
 text-align: center;
 }
 
-.row {
-flex-direction: column;
-}
-
 .right {
 margin-top: 60px;
+}
+
+.left {
+max-width: 100%;
 }
 }
