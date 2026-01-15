@@ -131,6 +131,7 @@ A new platform to get noticed, collaborate, and build real projects.
 
 </form>
 
+<!-- Success message -->
 <div class="success-message" id="successMessage">
 🎉 You’re in! We’ll email you early access soon.
 </div>
@@ -172,7 +173,7 @@ Music × Animation
 const form = document.querySelector(".waitlist-form");
 const successMessage = document.getElementById("successMessage");
 
-form.addEventListener("submit", async function(e) {
+form.addEventListener("submit", async (e) => {
 e.preventDefault();
 
 const formData = new FormData(form);
