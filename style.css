@@ -149,3 +149,69 @@ animation: float 6s ease-in-out infinite;
 0%, 100% { transform: translateY(0px); }
 50% { transform: translateY(-16px); }
 }
+@media (max-width: 768px) {
+
+/* Stack hero content */
+.hero {
+padding: 60px 20px 40px;
+}
+
+.hero-content {
+text-align: center;
+}
+
+/* Center form */
+.waitlist-form {
+display: flex;
+flex-direction: column;
+gap: 12px;
+align-items: stretch;
+}
+
+.waitlist-form input,
+.waitlist-form button {
+width: 100%;
+}
+
+/* Floating cards become horizontal showcase */
+.floating-cards {
+position: relative;
+width: 100%;
+height: auto;
+margin-top: 40px;
+
+display: flex;
+gap: 12px;
+overflow-x: auto;
+padding-bottom: 20px;
+
+right: auto;
+top: auto;
+transform: none;
+}
+
+.float-card {
+position: relative;
+min-width: 210px;
+flex-shrink: 0;
+animation: floatMobile 5s ease-in-out infinite;
+}
+
+/* Softer glow on mobile */
+.float-card {
+box-shadow:
+0 0 12px rgba(120, 140, 255, 0.25),
+0 0 24px rgba(80, 110, 255, 0.18);
+}
+
+@keyframes floatMobile {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-8px); }
+}
+
+/* Hide big background glow if needed for performance */
+.hero::after {
+opacity: 0.6;
+filter: blur(60px);
+}
+}
