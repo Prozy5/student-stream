@@ -110,3 +110,42 @@ text-align: center;
 margin-top: 60px;
 }
 }
+.floating-cards {
+position: absolute;
+right: 8%;
+top: 50%;
+transform: translateY(-50%);
+width: 320px;
+height: 300px;
+}
+
+.float-card {
+position: absolute;
+padding: 14px 22px;
+border-radius: 14px;
+font-weight: 600;
+color: #eaf1ff;
+
+background: rgba(120, 150, 255, 0.12);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(130, 160, 255, 0.35);
+
+box-shadow:
+0 0 18px rgba(120, 140, 255, 0.35),
+0 0 35px rgba(80, 110, 255, 0.25);
+
+animation: float 6s ease-in-out infinite;
+}
+
+/* Individual positions */
+
+.float-card:nth-child(1) { top: 0; left: 40px; animation-delay: 0s; }
+.float-card:nth-child(2) { top: 70px; left: 160px; animation-delay: 1s; }
+.float-card:nth-child(3) { top: 140px; left: 20px; animation-delay: 2s; }
+.float-card:nth-child(4) { top: 210px; left: 140px; animation-delay: 3s; }
+.float-card:nth-child(5) { top: 260px; left: 60px; animation-delay: 4s; }
+
+@keyframes float {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-16px); }
+}
