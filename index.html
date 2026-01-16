@@ -3,11 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <title>StudentStream – Where small creators get seen first</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="container">
+<!-- NAVBAR -->
+<nav class="top-nav">
+<div class="logo">StudentStream</div>
+<div class="nav-links">
+<a href="roadmap.html">Roadmap</a>
+<a href="#waitlist" class="nav-btn">Join Waitlist</a>
+</div>
+</nav>
+
+<!-- HERO -->
+<div class="container" id="waitlist">
 <div class="left">
 <h1>Where small creators get seen first.</h1>
 <p>
@@ -20,20 +31,14 @@ grow faster, connect with real audiences, and turn ideas into income.
 <input type="text" name="first_name" placeholder="First name" required>
 <input type="text" name="last_name" placeholder="Last name" required>
 </div>
+
 <input type="email" name="email" placeholder="Email address" required>
+
 <button type="submit">Join the waitlist</button>
 <small>Early access • No spam • Limited spots</small>
 </form>
 </div>
-<div style="margin-top:12px;">
-<a href="devforum.html" style="
-color:#60a5fa;
-text-decoration:none;
-font-weight:500;
-">
-🚀 Join the Dev Forum (early access)
-</a>
-</div>
+
 <div class="right">
 <div class="card c1">🎮 Streamers<br><span>Grow your audience</span></div>
 <div class="card c2">🎵 Musicians<br><span>Promote your music</span></div>
@@ -42,6 +47,31 @@ font-weight:500;
 <div class="card c5">📈 Monetize<br><span>Turn views into income</span></div>
 </div>
 </div>
+
+<!-- ROADMAP PREVIEW -->
+<section class="roadmap-preview">
+<h2>Building StudentStream in public</h2>
+<p>See what we’re working on and what’s coming next.</p>
+
+<div class="roadmap-cards">
+<div class="r-card">
+<h4>Now</h4>
+<span>Creator profiles, discovery, onboarding</span>
+</div>
+
+<div class="r-card">
+<h4>Next</h4>
+<span>Marketplace, collaborations, matching</span>
+</div>
+
+<div class="r-card">
+<h4>Later</h4>
+<span>Monetization, brands, mobile app</span>
+</div>
+</div>
+
+<a class="roadmap-link" href="roadmap.html">View full roadmap →</a>
+</section>
 
 </body>
 </html>
