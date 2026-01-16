@@ -2,221 +2,218 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>StudentStream Early Access Hub</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+<title>StudentStream – Early Access Hub</title>
 
 <style>
 body {
-  background: linear-gradient(120deg,#0a0f2c,#0b1a4a,#1a0f3d);
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #1c2452, #0b1024);
   color: white;
-  min-height: 100vh;
 }
-
-.hub-container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 60px 24px;
-}
-
-.hub-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-}
-
-.hub-header h1 {
-  font-size: 32px;
-}
-
-.badge {
-  background: linear-gradient(90deg,#6a7cff,#8b5cf6);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.section {
-  margin-bottom: 50px;
-}
-
-.section h2 {
-  margin-bottom: 12px;
-}
-
-.card-box {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 20px;
-  backdrop-filter: blur(10px);
-}
-
-.update {
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  font-size: 15px;
-}
-
-.update:last-child {
-  border-bottom: none;
-}
-
-.idea {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.vote-btn {
-  background: #6a7cff;
-  border: none;
-  color: white;
-  border-radius: 8px;
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
-.vote-count {
-  margin-left: 10px;
-  color: #9aaeff;
-}
-
-.market-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  gap: 16px;
-}
-
-.market-card {
-  background: rgba(255,255,255,0.05);
-  padding: 16px;
-  border-radius: 14px;
-}
-
-.footer-note {
-  text-align: center;
-  color: #9aa4c7;
-  font-size: 14px;
-  margin-top: 40px;
-}
+.hidden{display:none}
+.container{max-width:900px;margin:auto;padding:24px}
+.card{background:rgba(255,255,255,0.08);border-radius:18px;padding:20px;margin-bottom:20px;backdrop-filter:blur(12px)}
+button{border:none;padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,#6a7cff,#8f6bff);color:#fff;font-weight:600;cursor:pointer}
+input,select{width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:10px}
+.badge{background:#6a7cff;padding:6px 12px;border-radius:10px;font-weight:bold;display:inline-block}
+.owner{background:gold;color:black}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.chat-box{max-height:200px;overflow-y:auto;margin-bottom:10px;font-size:14px}
+.chat-msg{margin-bottom:6px}
+.progress{background:#222;border-radius:8px;overflow:hidden}
+.bar{background:#6a7cff;height:10px}
+.small{opacity:.7;font-size:13px}
 </style>
 </head>
 <body>
 
-<div class="hub-container">
+<div id="accessScreen" class="container hidden">
+  <div class="card">
+    <h2>🔐 Early Access Verification</h2>
+    <p>Enter the email you used for the waitlist</p>
+    <input type="email" id="emailInput" placeholder="you@example.com">
+    <select id="roleInput">
+      <option value="">Select role</option>
+      <option>Streamer</option>
+      <option>Creator</option>
+      <option>Musician</option>
+      <option>Designer</option>
+      <option>Brand</option>
+    </select>
+    <button onclick="verifyAccess()">Access Hub</button>
+  </div>
+</div>
 
-  <div class="hub-header">
-    <div>
-      <h1 id="welcome-title">Welcome 👋</h1>
-      <p id="role-text" style="color:#9aa4c7;"></p>
-    </div>
-    <div class="badge">Early Access Member</div>
+<div id="hub" class="container hidden">
+
+  <div class="card">
+    <h1>Welcome, <span id="userEmail"></span> 👋</h1>
+    <span class="badge">Early Access</span>
+    <span id="ownerBadge" class="badge owner hidden">OWNER</span>
+    <p>Role: <b id="userRole"></b></p>
   </div>
 
-  <!-- DEV UPDATES -->
-  <div class="section">
+  <div class="card">
     <h2>🚧 Dev Updates</h2>
-    <div class="card-box">
-      <div class="update">✅ Waitlist system launched</div>
-      <div class="update">🎨 Marketplace UI in design</div>
-      <div class="update">🧠 Creator profiles in development</div>
-      <div class="update">💬 Collaboration tools planned</div>
+    <ul id="updatesList"></ul>
+    <div id="adminUpdate" class="hidden">
+      <input id="newUpdate" placeholder="Post new update">
+      <button onclick="addUpdate()">Post</button>
     </div>
   </div>
 
-  <!-- IDEAS + VOTING -->
-  <div class="section">
-    <h2>💡 Vote on new features</h2>
-    <div class="card-box" id="ideas-box">
-
-      <div class="idea">
-        <span>Creator discovery feed</span>
-        <div>
-          <button class="vote-btn" onclick="vote('idea1')">Vote</button>
-          <span class="vote-count" id="idea1-count">0</span>
-        </div>
-      </div>
-
-      <div class="idea">
-        <span>Brand sponsorship marketplace</span>
-        <div>
-          <button class="vote-btn" onclick="vote('idea2')">Vote</button>
-          <span class="vote-count" id="idea2-count">0</span>
-        </div>
-      </div>
-
-      <div class="idea">
-        <span>Collaboration matching system</span>
-        <div>
-          <button class="vote-btn" onclick="vote('idea3')">Vote</button>
-          <span class="vote-count" id="idea3-count">0</span>
-        </div>
-      </div>
-
-    </div>
+  <div class="card">
+    <h2>💡 Vote on features</h2>
+    <div>Discovery Feed <button onclick="vote('feed')">Vote</button> <span id="vote_feed">0</span></div><br>
+    <div>Brand Marketplace <button onclick="vote('brand')">Vote</button> <span id="vote_brand">0</span></div><br>
+    <div>Collab Matching <button onclick="vote('collab')">Vote</button> <span id="vote_collab">0</span></div>
   </div>
 
-  <!-- MARKETPLACE PREVIEW -->
-  <div class="section">
-    <h2>🛒 Creator Marketplace Preview</h2>
-    <div class="market-grid">
-
-      <div class="market-card">🎮 Streamers looking for editors</div>
-      <div class="market-card">🎵 Musicians promoting new tracks</div>
-      <div class="market-card">🧢 Brands hiring student creators</div>
-      <div class="market-card">🎨 Designers offering services</div>
-
-    </div>
+  <div class="card">
+    <h2>🗺 Roadmap</h2>
+    <p>Profiles</p><div class="progress"><div class="bar" style="width:60%"></div></div>
+    <p>Marketplace</p><div class="progress"><div class="bar" style="width:35%"></div></div>
+    <p>Payments</p><div class="progress"><div class="bar" style="width:10%"></div></div>
   </div>
 
-  <div class="footer-note">
-    You’re early. You’re shaping StudentStream.
+  <div class="card">
+    <h2>🛒 Marketplace Preview</h2>
+    <ul>
+      <li>🎮 Streamers hiring editors</li>
+      <li>🎵 Musicians promoting tracks</li>
+      <li>🎨 Designers offering services</li>
+      <li>🏷 Brands hiring creators</li>
+    </ul>
   </div>
+
+  <div class="card">
+    <h2>💬 Community Chat</h2>
+    <div class="chat-box" id="chatBox"></div>
+    <input id="chatInput" placeholder="Type message">
+    <button onclick="sendChat()">Send</button>
+    <button onclick="clearChat()" id="clearChatBtn" class="hidden">Clear Chat</button>
+  </div>
+
+  <div class="card hidden" id="adminPanel">
+    <h2>🛠 Owner Controls</h2>
+    <button onclick="resetVotes()">Reset Votes</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <p class="small">You're shaping StudentStream.</p>
 
 </div>
 
 <script>
-// Access protection
-const params = new URLSearchParams(window.location.search);
-if (params.get("access") !== "early") {
-  window.location.href = "index.html";
+const OWNER_EMAIL = "youremail@example.com"; // CHANGE THIS
+
+const accessScreen=document.getElementById("accessScreen");
+const hub=document.getElementById("hub");
+
+function init(){
+  const email=localStorage.getItem("ss_email");
+  const role=localStorage.getItem("ss_role");
+  if(!email){accessScreen.classList.remove("hidden");return;}
+  loadHub(email,role);
 }
 
-// Name + role
-const firstName = params.get("first_name");
-const role = params.get("role");
-
-if (firstName) {
-  document.getElementById("welcome-title").textContent =
-    `Welcome, ${decodeURIComponent(firstName)} 👋`;
+function verifyAccess(){
+  const email=document.getElementById("emailInput").value.trim();
+  const role=document.getElementById("roleInput").value||"Member";
+  if(!email){alert("Enter email");return;}
+  localStorage.setItem("ss_email",email);
+  localStorage.setItem("ss_role",role);
+  loadHub(email,role);
 }
 
-if (role) {
-  document.getElementById("role-text").textContent =
-    `Role: ${decodeURIComponent(role)}`;
+function loadHub(email,role){
+  accessScreen.classList.add("hidden");
+  hub.classList.remove("hidden");
+  document.getElementById("userEmail").innerText=email;
+  document.getElementById("userRole").innerText=role;
+
+  if(email===OWNER_EMAIL){
+    document.getElementById("ownerBadge").classList.remove("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    document.getElementById("adminUpdate").classList.remove("hidden");
+    document.getElementById("clearChatBtn").classList.remove("hidden");
+  }
+  loadVotes();
+  loadUpdates();
+  loadChat();
 }
 
-// Voting system (local)
-function vote(id) {
-  let count = localStorage.getItem(id) || 0;
-  count++;
-  localStorage.setItem(id, count);
-  document.getElementById(id + "-count").textContent = count;
-}
+function logout(){localStorage.clear();location.reload();}
 
-function loadVotes() {
-  ["idea1","idea2","idea3"].forEach(id => {
-    const count = localStorage.getItem(id) || 0;
-    document.getElementById(id + "-count").textContent = count;
+/* Votes */
+function vote(f){
+  if(localStorage.getItem("v_"+f)) return alert("Already voted");
+  let c=parseInt(localStorage.getItem("vote_"+f)||0)+1;
+  localStorage.setItem("vote_"+f,c);
+  localStorage.setItem("v_"+f,1);
+  loadVotes();
+}
+function loadVotes(){
+  ["feed","brand","collab"].forEach(f=>{
+    document.getElementById("vote_"+f).innerText=localStorage.getItem("vote_"+f)||0;
   });
 }
+function resetVotes(){
+  ["feed","brand","collab"].forEach(f=>{
+    localStorage.removeItem("vote_"+f);
+    localStorage.removeItem("v_"+f);
+  });
+  loadVotes();
+}
 
-loadVotes();
+/* Updates */
+function loadUpdates(){
+  let data=JSON.parse(localStorage.getItem("updates")||"[]");
+  const ul=document.getElementById("updatesList");
+  ul.innerHTML="";
+  data.forEach(u=>{let li=document.createElement("li");li.textContent=u;ul.appendChild(li);});
+}
+function addUpdate(){
+  let txt=document.getElementById("newUpdate").value;
+  if(!txt)return;
+  let data=JSON.parse(localStorage.getItem("updates")||"[]");
+  data.unshift(txt);
+  localStorage.setItem("updates",JSON.stringify(data));
+  document.getElementById("newUpdate").value="";
+  loadUpdates();
+}
+
+/* Chat */
+function loadChat(){
+  let data=JSON.parse(localStorage.getItem("chat")||"[]");
+  const box=document.getElementById("chatBox");
+  box.innerHTML="";
+  data.forEach(m=>{
+    let d=document.createElement("div");
+    d.className="chat-msg";
+    d.textContent=m;
+    box.appendChild(d);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+function sendChat(){
+  let msg=document.getElementById("chatInput").value;
+  if(!msg)return;
+  let data=JSON.parse(localStorage.getItem("chat")||"[]");
+  let email=localStorage.getItem("ss_email");
+  data.push(email+": "+msg);
+  localStorage.setItem("chat",JSON.stringify(data));
+  document.getElementById("chatInput").value="";
+  loadChat();
+}
+function clearChat(){
+  localStorage.removeItem("chat");
+  loadChat();
+}
+
+init();
 </script>
 
 </body>
