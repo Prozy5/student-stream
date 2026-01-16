@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StudentStream Early Access Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+
+<style>
+body {
+  background: linear-gradient(120deg,#0a0f2c,#0b1a4a,#1a0f3d);
+  color: white;
+  min-height: 100vh;
+}
+
+.hub-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 60px 24px;
+}
+
+.hub-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.hub-header h1 {
+  font-size: 32px;
+}
+
+.badge {
+  background: linear-gradient(90deg,#6a7cff,#8b5cf6);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.section {
+  margin-bottom: 50px;
+}
+
+.section h2 {
+  margin-bottom: 12px;
+}
+
+.card-box {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.update {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 15px;
+}
+
+.update:last-child {
+  border-bottom: none;
+}
+
+.idea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.vote-btn {
+  background: #6a7cff;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.vote-count {
+  margin-left: 10px;
+  color: #9aaeff;
+}
+
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 16px;
+}
+
+.market-card {
+  background: rgba(255,255,255,0.05);
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.footer-note {
+  text-align: center;
+  color: #9aa4c7;
+  font-size: 14px;
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<div class="hub-container">
+
+  <div class="hub-header">
+    <div>
+      <h1 id="welcome-title">Welcome 👋</h1>
+      <p id="role-text" style="color:#9aa4c7;"></p>
+    </div>
+    <div class="badge">Early Access Member</div>
+  </div>
+
+  <!-- DEV UPDATES -->
+  <div class="section">
+    <h2>🚧 Dev Updates</h2>
+    <div class="card-box">
+      <div class="update">✅ Waitlist system launched</div>
+      <div class="update">🎨 Marketplace UI in design</div>
+      <div class="update">🧠 Creator profiles in development</div>
+      <div class="update">💬 Collaboration tools planned</div>
+    </div>
+  </div>
+
+  <!-- IDEAS + VOTING -->
+  <div class="section">
+    <h2>💡 Vote on new features</h2>
+    <div class="card-box" id="ideas-box">
+
+      <div class="idea">
+        <span>Creator discovery feed</span>
+        <div>
+          <button class="vote-btn" onclick="vote('idea1')">Vote</button>
+          <span class="vote-count" id="idea1-count">0</span>
+        </div>
+      </div>
+
+      <div class="idea">
+        <span>Brand sponsorship marketplace</span>
+        <div>
+          <button class="vote-btn" onclick="vote('idea2')">Vote</button>
+          <span class="vote-count" id="idea2-count">0</span>
+        </div>
+      </div>
+
+      <div class="idea">
+        <span>Collaboration matching system</span>
+        <div>
+          <button class="vote-btn" onclick="vote('idea3')">Vote</button>
+          <span class="vote-count" id="idea3-count">0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MARKETPLACE PREVIEW -->
+  <div class="section">
+    <h2>🛒 Creator Marketplace Preview</h2>
+    <div class="market-grid">
+
+      <div class="market-card">🎮 Streamers looking for editors</div>
+      <div class="market-card">🎵 Musicians promoting new tracks</div>
+      <div class="market-card">🧢 Brands hiring student creators</div>
+      <div class="market-card">🎨 Designers offering services</div>
+
+    </div>
+  </div>
+
+  <div class="footer-note">
+    You’re early. You’re shaping StudentStream.
+  </div>
+
+</div>
+
+<script>
+// Access protection
+const params = new URLSearchParams(window.location.search);
+if (params.get("access") !== "early") {
+  window.location.href = "index.html";
+}
+
+// Name + role
+const firstName = params.get("first_name");
+const role = params.get("role");
+
+if (firstName) {
+  document.getElementById("welcome-title").textContent =
+    `Welcome, ${decodeURIComponent(firstName)} 👋`;
+}
+
+if (role) {
+  document.getElementById("role-text").textContent =
+    `Role: ${decodeURIComponent(role)}`;
+}
+
+// Voting system (local)
+function vote(id) {
+  let count = localStorage.getItem(id) || 0;
+  count++;
+  localStorage.setItem(id, count);
+  document.getElementById(id + "-count").textContent = count;
+}
+
+function loadVotes() {
+  ["idea1","idea2","idea3"].forEach(id => {
+    const count = localStorage.getItem(id) || 0;
+    document.getElementById(id + "-count").textContent = count;
+  });
+}
+
+loadVotes();
+</script>
+
+</body>
+</html>
