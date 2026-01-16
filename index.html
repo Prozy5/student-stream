@@ -26,13 +26,10 @@ StudentStream helps streamers, musicians, student creators, and starter brands
 grow faster, connect with real audiences, and turn ideas into income.
 </p>
 
-<form class="waitlist" action="https://formspree.io/f/xojqgpan" method="POST">
-
-<!-- Auto redirect -->
-<input type="hidden" name="_redirect" value="welcome.html?access=early&first_name={{first_name}}">
+<form class="waitlist" id="waitlistForm">
 
 <div class="row">
-<input type="text" name="first_name" placeholder="First name" required>
+<input type="text" name="first_name" id="first_name" placeholder="First name" required>
 <input type="text" name="last_name" placeholder="Last name" required>
 </div>
 
@@ -40,6 +37,7 @@ grow faster, connect with real audiences, and turn ideas into income.
 
 <button type="submit">Join the waitlist</button>
 <small>Early access • No spam • Limited spots</small>
+
 </form>
 </div>
 
@@ -89,8 +87,33 @@ and full mobile apps.
 </div>
 </section>
 
+<script>
+const form = document.getElementById("waitlistForm");
+
+form.addEventListener("submit", async function(e) {
+e.preventDefault();
+
+const firstName = document.getElementById("first_name").value;
+const formData = new FormData(form);
+
+try {
+await fetch("https://formspree.io/f/xojqgpan", {
+method: "POST",
+body: formData,
+headers: {
+"Accept": "application/json"
+}
+});
+
+window.location.href = `welcome.html?access=early&first_name=${encodeURIComponent(firstName)}`;
+
+} catch (err) {
+alert("Something went wrong. Please try again.");
+}
+});
+</script>
+
 </body>
 </html>
-
 
 
