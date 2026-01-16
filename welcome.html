@@ -2,35 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Welcome to StudentStream</title>
+<title>StudentStream Early Access</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 
 <style>
-.welcome-container {
+.welcome-page {
 min-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-padding: 40px;
+padding: 80px 24px;
+max-width: 1100px;
+margin: auto;
+color: white;
 }
 
-.welcome-box {
-max-width: 520px;
-background: rgba(255,255,255,0.06);
-border: 1px solid rgba(255,255,255,0.08);
-backdrop-filter: blur(12px);
-padding: 40px;
-border-radius: 20px;
-box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+.hero h1 {
+font-size: 48px;
+margin-bottom: 10px;
 }
 
-.welcome-box h1 { font-size: 32px; margin-bottom: 16px; }
-.welcome-box p { color: #cfd6ff; line-height: 1.6; margin-bottom: 28px; }
+.hero p {
+color: #cfd6ff;
+max-width: 600px;
+margin-bottom: 30px;
+}
 
-.welcome-box a {
+.hero .actions a {
 display: inline-block;
+margin-right: 12px;
 padding: 12px 22px;
 border-radius: 12px;
 background: linear-gradient(90deg,#6a7cff,#8b5cf6);
@@ -38,19 +36,150 @@ color: white;
 text-decoration: none;
 font-weight: 600;
 }
+
+.section {
+margin-top: 80px;
+}
+
+.section h2 {
+margin-bottom: 20px;
+}
+
+.cards {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 20px;
+}
+
+.card-box {
+background: rgba(255,255,255,0.06);
+border: 1px solid rgba(255,255,255,0.08);
+backdrop-filter: blur(10px);
+border-radius: 16px;
+padding: 20px;
+}
+
+.progress-bar {
+height: 10px;
+background: rgba(255,255,255,0.1);
+border-radius: 10px;
+overflow: hidden;
+margin-top: 6px;
+margin-bottom: 16px;
+}
+
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg,#6a7cff,#8b5cf6);
+}
+
+.update {
+margin-bottom: 16px;
+padding-bottom: 12px;
+border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.update span {
+color: #9aa4ff;
+font-size: 14px;
+}
+
+.email-box input {
+width: 100%;
+padding: 12px;
+border-radius: 10px;
+border: none;
+margin-bottom: 12px;
+}
+
+.email-box button {
+width: 100%;
+padding: 12px;
+border-radius: 10px;
+border: none;
+background: linear-gradient(90deg,#6a7cff,#8b5cf6);
+color: white;
+font-weight: 600;
+cursor: pointer;
+}
 </style>
 </head>
 <body>
 
-<div class="welcome-container">
-<div class="welcome-box">
+<div class="welcome-page">
+
+<section class="hero">
 <h1 id="welcome-title">Welcome to StudentStream 👋</h1>
 <p>
-You're officially early. You'll get feature previews, updates, and early access invites.
+You're early. You're part of the group shaping how creators get discovered and paid.
 </p>
 
+<div class="actions">
 <a href="roadmap.html">View roadmap</a>
+<a href="#">Join early community</a>
 </div>
+</section>
+
+<section class="section">
+<h2>Early access perks</h2>
+<div class="cards">
+<div class="card-box">🚀 Feature previews</div>
+<div class="card-box">🗳 Vote on new features</div>
+<div class="card-box">🧪 Beta testing access</div>
+<div class="card-box">🧠 Direct feedback to builders</div>
+<div class="card-box">🏷 Early supporter badge</div>
+</div>
+</section>
+
+<section class="section">
+<h2>Launch progress</h2>
+<div class="card-box">
+Profiles
+<div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+
+Discovery
+<div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+
+Marketplace
+<div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+
+Mobile app
+<div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
+</div>
+</section>
+
+<section class="section">
+<h2>Dev updates</h2>
+<div class="card-box">
+<div class="update">
+<strong>Creator profile system started</strong><br>
+<span>2 days ago</span>
+</div>
+
+<div class="update">
+<strong>Discovery algorithm prototype designed</strong><br>
+<span>5 days ago</span>
+</div>
+
+<div class="update">
+<strong>Welcome hub launched</strong><br>
+<span>Today</span>
+</div>
+</div>
+</section>
+
+<section class="section">
+<h2>Get updates by email</h2>
+<div class="card-box email-box">
+
+<form action="https://formspree.io/f/xojqgpan" method="POST">
+<input type="email" name="email" placeholder="Your email address" required>
+<button type="submit">Notify me of new features</button>
+</form>
+
+</div>
+</section>
+
 </div>
 
 <script>
