@@ -1,210 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>StudentStream Roadmap</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+ --bg: #0b1020;
+ --card: rgba(255,255,255,0.06);
+ --text: #eaf0ff;
+ --muted: #9aa4c7;
+ --accent: #6ea8ff;
+}
+
 * { box-sizing: border-box; }
 
 body {
-margin: 0;
-font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-background: radial-gradient(circle at top, #0b1220, #020617);
-color: #e5e7eb;
+ margin: 0;
+ font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+ background: radial-gradient(circle at top, #16204a, #070b18);
+ color: var(--text);
 }
 
 .container {
-max-width: 1100px;
-margin: auto;
-padding: 60px 20px;
+ max-width: 1100px;
+ margin: 0 auto;
+ padding: 80px 24px;
 }
 
 h1 {
-text-align: center;
-font-size: 2.4rem;
-margin-bottom: 10px;
+ font-size: 42px;
+ margin-bottom: 10px;
 }
 
 .subtitle {
-text-align: center;
-color: #9ca3af;
-margin-bottom: 50px;
-font-size: 1.05rem;
+ color: var(--muted);
+ margin-bottom: 60px;
+ font-size: 18px;
 }
 
 .grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 24px;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+ gap: 24px;
 }
 
-.card {
-background: rgba(255,255,255,0.04);
-border: 1px solid rgba(255,255,255,0.08);
-border-radius: 16px;
-padding: 22px;
+.column {
+ background: var(--card);
+ border-radius: 18px;
+ padding: 24px;
+ backdrop-filter: blur(10px);
+ border: 1px solid rgba(255,255,255,0.08);
 }
 
-.card h2 {
-color: #60a5fa;
-margin-top: 0;
-margin-bottom: 18px;
+.column h2 {
+ margin-top: 0;
+ font-size: 22px;
 }
 
-.feature {
-margin-bottom: 16px;
+.phase {
+ color: var(--accent);
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ margin-bottom: 6px;
 }
 
-.feature-title {
-font-weight: 600;
-margin-bottom: 4px;
+.item {
+ background: rgba(255,255,255,0.05);
+ border-radius: 12px;
+ padding: 14px;
+ margin-top: 12px;
 }
 
-.feature-desc {
-color: #9ca3af;
-font-size: 0.95rem;
-line-height: 1.4;
+.item strong {
+ display: block;
+ margin-bottom: 4px;
 }
 
-.tag {
-display: inline-block;
-margin-top: 6px;
-font-size: 0.7rem;
-padding: 3px 9px;
-border-radius: 999px;
-background: rgba(96,165,250,0.15);
-color: #93c5fd;
+.item span {
+ color: var(--muted);
+ font-size: 14px;
 }
 
 .back {
-text-align: center;
-margin-top: 50px;
-}
-
-.back a {
-color: #60a5fa;
-text-decoration: none;
-font-weight: 500;
+ display: inline-block;
+ margin-top: 50px;
+ color: var(--accent);
+ text-decoration: none;
+ font-weight: 500;
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>🚀 StudentStream Roadmap</h1>
-<p class="subtitle">
-Our plan to help student creators grow faster, collaborate easier, and earn real money.
-</p>
 
-<div class="grid">
+ <h1> StudentStream Roadmap</h1>
+ <p class="subtitle">
+ What we're building to help small creators grow faster, collaborate easier, and earn sooner.
+ </p>
 
-<!-- NOW -->
-<div class="card">
-<h2>Now</h2>
+ <div class="grid">
 
-<div class="feature">
-<div class="feature-title">Waitlist & onboarding</div>
-<div class="feature-desc">
-Collect early creators and guide them through setting up their profile and skills.
-</div>
-<span class="tag">Active</span>
-</div>
+ <div class="column">
+ <div class="phase">Now</div>
+ <h2>Building the foundation</h2>
 
-<div class="feature">
-<div class="feature-title">Creator profiles</div>
-<div class="feature-desc">
-A single page to show your content, skills, links, and experience to brands and collaborators.
-</div>
-</div>
+ <div class="item">
+ <strong>Creator Profiles</strong>
+ <span>Public pages to showcase content, links, and skills.</span>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Discovery system</div>
-<div class="feature-desc">
-Help smaller creators get noticed without needing thousands of followers.
-</div>
-</div>
+ <div class="item">
+ <strong>Discovery Engine</strong>
+ <span>Smart system to surface new and underrated creators.</span>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Updates & dev forum</div>
-<div class="feature-desc">
-Follow platform progress, suggest features, and help shape StudentStream.
-</div>
-</div>
-</div>
+ <div class="item">
+ <strong>Waitlist & Onboarding</strong>
+ <span>Early access system for founders and builders.</span>
+ </div>
 
-<!-- NEXT -->
-<div class="card">
-<h2>Next</h2>
+ <div class="item">
+ <strong>Updates Hub</strong>
+ <span>Transparent progress and feature announcements.</span>
+ </div>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Creator marketplace</div>
-<div class="feature-desc">
-Post services, browse opportunities, and get hired directly.
-</div>
-</div>
+ <div class="column">
+ <div class="phase">Next</div>
+ <h2>Unlocking collaboration</h2>
 
-<div class="feature">
-<div class="feature-title">Collaboration tools</div>
-<div class="feature-desc">
-Build teams, manage projects, and communicate inside the platform.
-</div>
-</div>
+ <div class="item">
+ <strong>Creator Marketplace</strong>
+ <span>Find collaborators, editors, designers, and stream partners.</span>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Project matching</div>
-<div class="feature-desc">
-Smart recommendations based on your skills and interests.
-</div>
-</div>
+ <div class="item">
+ <strong>Project Matching</strong>
+ <span>Auto-match creators based on goals and content.</span>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Creator verification</div>
-<div class="feature-desc">
-Prove legitimacy and stand out to brands.
-</div>
-</div>
-</div>
+ <div class="item">
+ <strong>Verification</strong>
+ <span>Trust system to highlight real, active creators.</span>
+ </div>
+ </div>
 
-<!-- LATER -->
-<div class="card">
-<h2>Later</h2>
+ <div class="column">
+ <div class="phase">Later</div>
+ <h2>Monetization & scale</h2>
 
-<div class="feature">
-<div class="feature-title">Monetization tools</div>
-<div class="feature-desc">
-Tips, subscriptions, payments, and brand deals in one place.
-</div>
-</div>
+ <div class="item">
+ <strong>Brand Deals</strong>
+ <span>Connect creators with student-friendly sponsors.</span>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Brand partnerships</div>
-<div class="feature-desc">
-Direct connections with companies actively looking for student creators.
-</div>
-</div>
+ <div class="item">
+ <strong>Payouts & Monetization</strong>
+ <span>Built-in tools to earn directly from your audience.</span>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Analytics dashboard</div>
-<div class="feature-desc">
-Track growth, engagement, and earnings.
-</div>
-</div>
+ <div class="item">
+ <strong>Mobile App</strong>
+ <span>Full experience on iOS & Android.</span>
+ </div>
+ </div>
 
-<div class="feature">
-<div class="feature-title">Mobile app</div>
-<div class="feature-desc">
-Full StudentStream experience on iOS & Android.
-</div>
-</div>
-</div>
+ </div>
 
-</div>
+ <a class="back" href="index.html">← Back to waitlist</a>
 
-<div class="back">
-<a href="index.html">← Back to waitlist</a>
-</div>
 </div>
 
 </body>
