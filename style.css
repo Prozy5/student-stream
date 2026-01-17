@@ -1,263 +1,289 @@
+/* =====================
+   GLOBAL
+===================== */
+
 * {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-min-height: 100vh;
-color: white;
-background: linear-gradient(120deg, #0a0f2c, #0b1a4a, #1a0f3d);
-background-size: 400% 400%;
-animation: gradientWave 18s ease infinite;
-overflow-x: hidden;
+  min-height: 100vh;
+  color: white;
+  background: linear-gradient(120deg, #0a0f2c, #0b1a4a, #1a0f3d);
+  background-size: 400% 400%;
+  animation: gradientWave 18s ease infinite;
+  overflow-x: hidden;
+  padding-bottom: 80px; /* space for mobile nav */
 }
 
 @keyframes gradientWave {
-0% { background-position: 0% 50%; }
-50% { background-position: 100% 50%; }
-100% { background-position: 0% 50%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 body::before {
-content: "";
-position: fixed;
-inset: -30%;
-background:
-radial-gradient(circle at 20% 30%, rgba(99,102,241,0.25), transparent 40%),
-radial-gradient(circle at 80% 70%, rgba(236,72,153,0.18), transparent 40%);
-animation: floatGlow 20s ease-in-out infinite;
-z-index: -1;
+  content: "";
+  position: fixed;
+  inset: -30%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(99,102,241,0.25), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(236,72,153,0.18), transparent 40%);
+  animation: floatGlow 20s ease-in-out infinite;
+  z-index: -1;
 }
 
 @keyframes floatGlow {
-0%, 100% { transform: translateY(0); }
-50% { transform: translateY(-40px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-40px); }
 }
 
-/* NAV */
+/* =====================
+   TAP ANIMATIONS
+===================== */
+
+button, a, .card, .r-card, .nav-item {
+  transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:active, a:active, .card:active, .r-card:active, .nav-item:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+/* =====================
+   NAV
+===================== */
 
 .top-nav {
-display: flex;
-justify-content: space-between;
-padding: 24px 40px;
-align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 24px 40px;
+  align-items: center;
 }
 
 .logo {
-font-weight: 700;
-font-size: 20px;
+  font-weight: 700;
+  font-size: 20px;
 }
 
 .nav-links {
-display: flex;
-gap: 20px;
-align-items: center;
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
 .roadmap-btn {
-color: #9bb3ff;
-text-decoration: none;
-font-weight: 500;
+  color: #9bb3ff;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .nav-btn {
-background: #6a7cff;
-padding: 10px 16px;
-border-radius: 10px;
-color: white;
-text-decoration: none;
-font-weight: 600;
+  background: #6a7cff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
 }
 
-/* HERO */
+/* =====================
+   HERO
+===================== */
 
 .hero {
-min-height: 100vh;
-display: flex;
-align-items: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
 .container {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 80px;
-width: 100%;
-gap: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px;
+  width: 100%;
+  gap: 60px;
 }
 
 .left {
-max-width: 520px;
+  max-width: 520px;
 }
 
 .left h1 {
-font-size: 48px;
-margin-bottom: 20px;
+  font-size: 48px;
+  margin-bottom: 20px;
 }
 
 .left p {
-color: #cfd8ff;
-line-height: 1.6;
-margin-bottom: 30px;
+  color: #cfd8ff;
+  line-height: 1.6;
+  margin-bottom: 30px;
 }
 
 .waitlist input {
-width: 100%;
-padding: 14px;
-border-radius: 10px;
-border: none;
-margin-bottom: 12px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 12px;
 }
 
 .row {
-display: flex;
-gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .waitlist button {
-width: 100%;
-padding: 14px;
-border: none;
-border-radius: 12px;
-background: linear-gradient(90deg, #6a7cff, #8b5cf6);
-color: white;
-font-size: 16px;
-cursor: pointer;
-margin-top: 10px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #6a7cff, #8b5cf6);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
 .waitlist small {
-display: block;
-margin-top: 10px;
-color: #b9c2ff;
+  display: block;
+  margin-top: 10px;
+  color: #b9c2ff;
 }
 
-/* FLOATING CARDS */
+/* =====================
+   FLOATING CARDS
+===================== */
 
 .right {
-position: relative;
-width: 420px;
-height: 420px;
+  position: relative;
+  width: 420px;
+  height: 420px;
 }
 
 .card {
-position: absolute;
-background: rgba(255,255,255,0.12);
-backdrop-filter: blur(10px);
-padding: 16px 22px;
-border-radius: 14px;
-box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-animation: float 6s ease-in-out infinite;
-font-size: 15px;
+  position: absolute;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  padding: 16px 22px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  animation: float 6s ease-in-out infinite;
+  font-size: 15px;
 }
 
 .card span {
-font-size: 13px;
-color: #d6ddff;
+  font-size: 13px;
+  color: #d6ddff;
 }
 
-.c1 { top: 20px; left: 40px; animation-delay: 0s; }
-.c2 { top: 100px; right: 0; animation-delay: 1s; }
-.c3 { top: 200px; left: 0; animation-delay: 2s; }
-.c4 { bottom: 80px; right: 40px; animation-delay: 3s; }
-.c5 { bottom: 0; left: 120px; animation-delay: 4s; }
+.c1 { top: 20px; left: 40px; }
+.c2 { top: 100px; right: 0; }
+.c3 { top: 200px; left: 0; }
+.c4 { bottom: 80px; right: 40px; }
+.c5 { bottom: 0; left: 120px; }
 
 @keyframes float {
-0%, 100% { transform: translateY(0); }
-50% { transform: translateY(-14px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
 }
 
-/* ROADMAP PREVIEW */
+/* =====================
+   ROADMAP
+===================== */
 
 .roadmap-preview {
-padding: 100px 20px;
-background: radial-gradient(circle at top, rgba(110,168,255,0.18), transparent 65%);
+  padding: 100px 20px;
+  background: radial-gradient(circle at top, rgba(110,168,255,0.18), transparent 65%);
 }
 
 .roadmap-inner {
-max-width: 1100px;
-margin: auto;
-text-align: center;
+  max-width: 1100px;
+  margin: auto;
+  text-align: center;
 }
 
 .roadmap-preview h2 {
-font-size: 34px;
-margin-bottom: 12px;
+  font-size: 34px;
+  margin-bottom: 12px;
 }
 
 .roadmap-preview p {
-color: #aeb8ff;
-margin-bottom: 50px;
+  color: #aeb8ff;
+  margin-bottom: 50px;
 }
 
 .roadmap-cards {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-gap: 26px;
-margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 26px;
+  margin-bottom: 40px;
 }
 
 .r-card {
-background: rgba(255,255,255,0.08);
-border: 1px solid rgba(255,255,255,0.12);
-border-radius: 20px;
-padding: 28px;
-text-align: left;
-box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-transition: 0.3s ease;
-}
-
-.r-card:hover {
-transform: translateY(-8px);
-box-shadow: 0 30px 60px rgba(110,168,255,0.25);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 28px;
+  text-align: left;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
 }
 
 .r-card h4 {
-color: #6ea8ff;
-margin-bottom: 10px;
-text-transform: uppercase;
-letter-spacing: 1px;
+  color: #6ea8ff;
+  margin-bottom: 10px;
 }
 
 .r-card span {
-color: #e3e7ff;
-line-height: 1.6;
+  color: #e3e7ff;
+  line-height: 1.6;
 }
 
-.roadmap-link {
-color: #6ea8ff;
-text-decoration: none;
-font-weight: 600;
+/* =====================
+   MOBILE NAV BAR
+===================== */
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: rgba(10,15,44,0.85);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  justify-content: space-around;
+  align-items: center;
+  z-index: 999;
 }
 
-column;
+.mobile-nav a {
+  color: #9bb3ff;
+  text-decoration: none;
+  font-size: 12px;
+  text-align: center;
 }
+
+.mobile-nav a span {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 2px;
 }
-/* =========================
-   MOBILE RESPONSIVE FIXES
-   ========================= */
+
+/* =====================
+   MOBILE FIXES
+===================== */
 
 @media (max-width: 900px) {
 
-  /* NAV */
   .top-nav {
     padding: 16px 20px;
-  }
-
-  .nav-links {
-    gap: 12px;
-  }
-
-  .logo {
-    font-size: 18px;
-  }
-
-  /* HERO SECTION */
-  .hero {
-    min-height: auto;
-    padding-top: 40px;
   }
 
   .container {
@@ -267,104 +293,36 @@ column;
     text-align: center;
   }
 
-  .left {
-    max-width: 100%;
-  }
-
   .left h1 {
     font-size: 32px;
-  }
-
-  .left p {
-    font-size: 15px;
   }
 
   .row {
     flex-direction: column;
   }
 
-  .waitlist input,
-  .waitlist button {
-    font-size: 16px;
-  }
-
-  /* FLOATING CARDS SECTION */
   .right {
     width: 100%;
     height: 320px;
-    margin-top: 20px;
     transform: scale(0.85);
   }
 
-  .card {
-    font-size: 13px;
-    padding: 12px 16px;
+  .mobile-nav {
+    display: flex;
   }
 
-  /* ROADMAP */
-  .roadmap-preview {
-    padding: 60px 16px;
-  }
-
-  .roadmap-preview h2 {
-    font-size: 26px;
-  }
-
-  .roadmap-preview p {
-    font-size: 14px;
-  }
-
-  .r-card {
-    padding: 22px;
+  button {
+    min-height: 44px;
   }
 }
 
-/* EXTRA SMALL PHONES */
 @media (max-width: 480px) {
 
   .left h1 {
     font-size: 26px;
   }
 
-  .card {
-    font-size: 12px;
-  }
-
   .right {
     height: 280px;
   }
-
-}
-@media (max-width: 900px) {
-
-  /* CENTER HUB CONTENT */
-  .dashboard,
-  .hub-container,
-  .main-content {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 0 14px;
-  }
-
-  /* CARDS FULL WIDTH */
-  .card-box,
-  .panel,
-  .section-card,
-  .feature-card {
-    width: 100%;
-  }
-
-@media (max-width: 900px) {
-
-  .card-box,
-  .panel,
-  .section-card {
-    border-radius: 18px;
-  }
-
-  button {
-    min-height: 44px; /* Apple tap standard */
-  }
-
 }
