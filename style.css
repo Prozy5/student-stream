@@ -16,7 +16,7 @@ body {
   background-size: 400% 400%;
   animation: gradientWave 18s ease infinite;
   overflow-x: hidden;
-  padding-bottom: 80px; /* space for mobile nav */
+  padding-bottom: 80px;
 }
 
 @keyframes gradientWave {
@@ -157,7 +157,7 @@ button:active, a:active, .card:active, .r-card:active, .nav-item:active {
 }
 
 /* =====================
-   FLOATING CARDS
+   FLOATING CARDS (DESKTOP)
 ===================== */
 
 .right {
@@ -175,11 +175,16 @@ button:active, a:active, .card:active, .r-card:active, .nav-item:active {
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
   animation: float 6s ease-in-out infinite;
   font-size: 15px;
+  will-change: transform;
 }
 
 .card span {
   font-size: 13px;
   color: #d6ddff;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
 }
 
 .c1 { top: 20px; left: 40px; }
@@ -282,9 +287,7 @@ button:active, a:active, .card:active, .r-card:active, .nav-item:active {
 
 @media (max-width: 900px) {
 
-  .top-nav {
-    padding: 16px 20px;
-  }
+  .top-nav { padding: 16px 20px; }
 
   .container {
     flex-direction: column;
@@ -293,41 +296,13 @@ button:active, a:active, .card:active, .r-card:active, .nav-item:active {
     text-align: center;
   }
 
-  .left h1 {
-    font-size: 32px;
-  }
+  .left h1 { font-size: 32px; }
 
-  .row {
-    flex-direction: column;
-  }
+  .row { flex-direction: column; }
 
-  .right {
-    width: 100%;
-    height: 320px;
-    transform: scale(0.85);
-  }
+  .mobile-nav { display: flex; }
 
-  .mobile-nav {
-    display: flex;
-  }
-
-  button {
-    min-height: 44px;
-  }
-}
-
-@media (max-width: 480px) {
-
-  .left h1 {
-    font-size: 26px;
-  }
-
-  .right {
-    height: 280px;
-  }
-}
-/* FIX FLOATING CARDS ON MOBILE */
-@media (max-width: 900px) {
+  button { min-height: 44px; }
 
   .right {
     width: 100%;
@@ -346,17 +321,110 @@ button:active, a:active, .card:active, .r-card:active, .nav-item:active {
     animation: floatSoft 4s ease-in-out infinite;
   }
 
-  /* Remove desktop positions */
-  .c1,.c2,.c3,.c4,.c5{
-    top:auto;
-    left:auto;
-    right:auto;
-    bottom:auto;
+  .c1,.c2,.c3,.c4,.c5 {
+    top:auto; left:auto; right:auto; bottom:auto;
   }
 }
 
-/* softer mobile animation */
+@media (max-width: 480px) {
+  .left h1 { font-size: 26px; }
+}
+
 @keyframes floatSoft {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+}
+
+/* =====================
+   USER ROLE BADGES
+===================== */
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-left: 6px;
+  vertical-align: middle;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.badge-owner { background: linear-gradient(90deg,#facc15,#f97316); color:#1a0f00; }
+.badge-admin { background: linear-gradient(90deg,#ef4444,#dc2626); color:white; }
+.badge-dev   { background: linear-gradient(90deg,#22d3ee,#6366f1); color:#08121f; }
+.badge-mod   { background: linear-gradient(90deg,#22c55e,#16a34a); color:#04140a; }
+
+/* =====================
+   ADMIN / DASHBOARD
+===================== */
+
+.admin-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 60px 20px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.admin-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.admin-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+  transition: transform 0.2s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-6px);
+}
+
+.admin-card h3 {
+  color: #9bb3ff;
+  margin-bottom: 8px;
+}
+
+.admin-card p {
+  color: #cfd8ff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admin-btn {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#6a7cff,#8b5cf6);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .admin-header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
 }
