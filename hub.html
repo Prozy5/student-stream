@@ -107,114 +107,269 @@ input,select{width:100%;padding:10px;border-radius:10px;border:none;margin-botto
 </div>
 
 <script>
-const OWNER_EMAIL = "deondrechambers284@gmail.com"; // CHANGE THIS
+/* ======================
+   CONFIG
+====================== */
+const OWNER_EMAIL = "deondrechambers284@gmail.com";
 
-const accessScreen=document.getElementById("accessScreen");
-const hub=document.getElementById("hub");
+/* ======================
+   HELPERS
+====================== */
+const $ = id => document.getElementById(id);
+const get = key => JSON.parse(localStorage.getItem(key));
+const set = (key,val) => localStorage.setItem(key,JSON.stringify(val));
 
+function today(){
+  return new Date().toLocaleDateString();
+}
+
+/* ======================
+   INIT
+====================== */
 function init(){
-  const email=localStorage.getItem("ss_email");
-  const role=localStorage.getItem("ss_role");
-  if(!email){accessScreen.classList.remove("hidden");return;}
-  loadHub(email,role);
+  const email = localStorage.getItem("ss_email");
+  const role = localStorage.getItem("ss_role");
+
+  if(!email){
+    $("accessScreen").classList.remove("hidden");
+    return;
+  }
+
+  loadHub(email, role);
 }
 
 function verifyAccess(){
-  const email=document.getElementById("emailInput").value.trim();
-  const role=document.getElementById("roleInput").value||"Member";
-  if(!email){alert("Enter email");return;}
-  localStorage.setItem("ss_email",email);
-  localStorage.setItem("ss_role",role);
-  loadHub(email,role);
+  const email = $("emailInput").value.trim();
+  const role = $("roleInput").value || "Member";
+
+  if(!email){ alert("Enter email"); return; }
+
+  localStorage.setItem("ss_email", email);
+  localStorage.setItem("ss_role", role);
+
+  if(!get("profiles")) set("profiles", {});
+  if(!get("votes")) set("votes", {});
+  if(!get("updates")) set("updates", []);
+  if(!get("chat")) set("chat", []);
+  if(!get("features")) set("features", []);
+
+  loadHub(email, role);
 }
 
-function loadHub(email,role){
-  accessScreen.classList.add("hidden");
-  hub.classList.remove("hidden");
-  document.getElementById("userEmail").innerText=email;
-  document.getElementById("userRole").innerText=role;
+function loadHub(email, role){
+  $("accessScreen").classList.add("hidden");
+  $("hub").classList.remove("hidden");
 
-  if(email===OWNER_EMAIL){
-    document.getElementById("ownerBadge").classList.remove("hidden");
-    document.getElementById("adminPanel").classList.remove("hidden");
-    document.getElementById("adminUpdate").classList.remove("hidden");
-    document.getElementById("clearChatBtn").classList.remove("hidden");
+  $("userEmail").innerText = email;
+  $("userRole").innerText = role;
+
+  if(email === OWNER_EMAIL){
+    $("ownerBadge").classList.remove("hidden");
+    $("adminPanel").classList.remove("hidden");
+    $("adminUpdate").classList.remove("hidden");
+    $("clearChatBtn").classList.remove("hidden");
+    renderOwnerStats();
   }
+
+  renderStatus();
   loadVotes();
   loadUpdates();
   loadChat();
+  loadProfile();
+  loadFeatureBoard();
 }
 
-function logout(){localStorage.clear();location.reload();}
+/* ======================
+   STATUS SYSTEM
+====================== */
+function renderStatus(){
+  let score = 0;
+  if(get("votes")) score += Object.keys(get("votes")).length;
+  if(get("chat")?.length) score += 2;
 
-/* Votes */
-function vote(f){
-  if(localStorage.getItem("v_"+f)) return alert("Already voted");
-  let c=parseInt(localStorage.getItem("vote_"+f)||0)+1;
-  localStorage.setItem("vote_"+f,c);
-  localStorage.setItem("v_"+f,1);
+  let status = "Explorer";
+  if(score >= 3) status = "Builder";
+  if(score >= 6) status = "Pioneer";
+
+  const badge = document.createElement("div");
+  badge.className = "badge";
+  badge.innerText = status;
+  $("userRole").append(" · ", status);
+}
+
+/* ======================
+   LOGOUT
+====================== */
+function logout(){
+  localStorage.clear();
+  location.reload();
+}
+
+/* ======================
+   VOTING
+====================== */
+function vote(feature){
+  let votes = get("votes") || {};
+
+  if(votes[feature]){
+    alert("Already voted");
+    return;
+  }
+
+  let counts = get("voteCounts") || {};
+  counts[feature] = (counts[feature] || 0) + 1;
+
+  votes[feature] = true;
+
+  set("votes", votes);
+  set("voteCounts", counts);
+
   loadVotes();
 }
+
 function loadVotes(){
+  const counts = get("voteCounts") || {};
   ["feed","brand","collab"].forEach(f=>{
-    document.getElementById("vote_"+f).innerText=localStorage.getItem("vote_"+f)||0;
+    const el = $("vote_"+f);
+    if(el) el.innerText = counts[f] || 0;
   });
 }
+
 function resetVotes(){
-  ["feed","brand","collab"].forEach(f=>{
-    localStorage.removeItem("vote_"+f);
-    localStorage.removeItem("v_"+f);
-  });
+  set("votes", {});
+  set("voteCounts", {});
   loadVotes();
 }
 
-/* Updates */
-function loadUpdates(){
-  let data=JSON.parse(localStorage.getItem("updates")||"[]");
-  const ul=document.getElementById("updatesList");
-  ul.innerHTML="";
-  data.forEach(u=>{let li=document.createElement("li");li.textContent=u;ul.appendChild(li);});
-}
+/* ======================
+   DEV UPDATES
+====================== */
 function addUpdate(){
-  let txt=document.getElementById("newUpdate").value;
-  if(!txt)return;
-  let data=JSON.parse(localStorage.getItem("updates")||"[]");
-  data.unshift(txt);
-  localStorage.setItem("updates",JSON.stringify(data));
-  document.getElementById("newUpdate").value="";
+  const txt = $("newUpdate").value.trim();
+  if(!txt) return;
+
+  let updates = get("updates") || [];
+  updates.unshift(`[${today()}] ${txt}`);
+  set("updates", updates);
+
+  $("newUpdate").value = "";
   loadUpdates();
 }
 
-/* Chat */
+function loadUpdates(){
+  const ul = $("updatesList");
+  if(!ul) return;
+
+  ul.innerHTML = "";
+  (get("updates") || []).forEach(u=>{
+    const li = document.createElement("li");
+    li.textContent = u;
+    ul.appendChild(li);
+  });
+}
+
+/* ======================
+   CHAT
+====================== */
+function sendChat(){
+  const msg = $("chatInput").value.trim();
+  if(!msg) return;
+
+  const email = localStorage.getItem("ss_email");
+  let chat = get("chat") || [];
+
+  chat.push(`${email}: ${msg}`);
+  set("chat", chat);
+
+  $("chatInput").value = "";
+  loadChat();
+}
+
 function loadChat(){
-  let data=JSON.parse(localStorage.getItem("chat")||"[]");
-  const box=document.getElementById("chatBox");
-  box.innerHTML="";
-  data.forEach(m=>{
-    let d=document.createElement("div");
-    d.className="chat-msg";
-    d.textContent=m;
+  const box = $("chatBox");
+  if(!box) return;
+
+  box.innerHTML = "";
+  (get("chat") || []).forEach(m=>{
+    const d = document.createElement("div");
+    d.className = "chat-msg";
+    d.textContent = m;
     box.appendChild(d);
   });
-  box.scrollTop=box.scrollHeight;
+  box.scrollTop = box.scrollHeight;
 }
-function sendChat(){
-  let msg=document.getElementById("chatInput").value;
-  if(!msg)return;
-  let data=JSON.parse(localStorage.getItem("chat")||"[]");
-  let email=localStorage.getItem("ss_email");
-  data.push(email+": "+msg);
-  localStorage.setItem("chat",JSON.stringify(data));
-  document.getElementById("chatInput").value="";
-  loadChat();
-}
+
 function clearChat(){
-  localStorage.removeItem("chat");
+  set("chat", []);
   loadChat();
 }
 
+/* ======================
+   PROFILES
+====================== */
+function saveProfile(name,bio,skills,link){
+  const email = localStorage.getItem("ss_email");
+  let profiles = get("profiles") || {};
+
+  profiles[email] = {name,bio,skills,link};
+  set("profiles", profiles);
+
+  alert("Profile saved!");
+}
+
+function loadProfile(){
+  const email = localStorage.getItem("ss_email");
+  const profiles = get("profiles") || {};
+
+  if(profiles[email]){
+    console.log("Profile loaded:", profiles[email]);
+  }
+}
+
+/* ======================
+   FEATURE REQUEST BOARD
+====================== */
+function addFeature(title){
+  if(!title) return;
+
+  let board = get("features") || [];
+  board.push({title, votes:0});
+  set("features", board);
+  loadFeatureBoard();
+}
+
+function voteFeature(i){
+  let board = get("features") || [];
+  board[i].votes++;
+  set("features", board);
+  loadFeatureBoard();
+}
+
+function loadFeatureBoard(){
+  const list = $("featureBoard");
+  if(!list) return;
+
+  list.innerHTML = "";
+  (get("features") || []).forEach((f,i)=>{
+    const div = document.createElement("div");
+    div.innerHTML = `${f.title} — ${f.votes} <button onclick="voteFeature(${i})">Vote</button>`;
+    list.appendChild(div);
+  });
+}
+
+/* ======================
+   OWNER ANALYTICS
+====================== */
+function renderOwnerStats(){
+  const users = Object.keys(get("profiles")||{}).length;
+  const chats = (get("chat")||[]).length;
+  const votes = Object.keys(get("votes")||{}).length;
+
+  console.log("Owner stats:", {users,chats,votes});
+}
+
+/* ======================
+   START
+====================== */
 init();
 </script>
-
-</body>
-</html>
