@@ -428,3 +428,180 @@ button:active, a:active, .card:active, .r-card:active, .nav-item:active {
     text-align: center;
   }
 }
+/* ============ RESET ============ */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #1b255a, #0b1022 70%);
+  color: #eaeaff;
+  overflow-x: hidden;
+}
+
+/* ============ CONTAINER ============ */
+.container, .dashboard, .page {
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  padding: 16px;
+}
+
+/* ============ CARDS ============ */
+.card, .panel, .box {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card:active {
+  transform: scale(0.97);
+}
+
+/* ============ HEADERS ============ */
+h1,h2,h3 {
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+p {
+  opacity: .85;
+  margin: 0;
+}
+
+/* ============ BUTTONS ============ */
+button, .btn {
+  background: linear-gradient(135deg,#6c7cff,#8b5cff);
+  border: none;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .12s ease, filter .12s ease;
+}
+
+button:active {
+  transform: scale(.95);
+  filter: brightness(1.1);
+}
+
+/* ============ INPUTS ============ */
+input, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,.08);
+  color: white;
+  outline: none;
+}
+
+/* ============ BADGES ============ */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.badge-owner { background: gold; color: black; }
+.badge-admin { background: #ff4d4d; }
+.badge-dev { background: #4da6ff; }
+.badge-mod { background: #2ecc71; }
+.badge-early { background: #7c7cff; }
+
+/* ============ ROLE ROW ============ */
+.role-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* ============ ROADMAP BARS ============ */
+.progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg,#7c7cff,#9f7cff);
+}
+
+/* ============ MOBILE NAV BAR ============ */
+.mobile-nav {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 24px);
+  max-width: 460px;
+  background: rgba(20,25,60,.85);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  z-index: 999;
+}
+
+.mobile-nav a {
+  color: #cfd3ff;
+  text-decoration: none;
+  font-size: 12px;
+  text-align: center;
+}
+
+.mobile-nav a.active {
+  color: white;
+}
+
+/* ============ SWIPE ANIMATION ============ */
+.swipe-card {
+  transition: transform .25s ease, opacity .25s ease;
+}
+
+.swipe-left {
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.swipe-right {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+/* ============ CHAT ============ */
+.chat-box {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* ============ OWNER PANEL ============ */
+.owner-panel button {
+  margin-right: 8px;
+}
+
+/* ============ DESKTOP SAFETY ============ */
+@media(min-width: 768px) {
+  .container {
+    max-width: 900px;
+  }
+}
