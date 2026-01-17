@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messages</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{margin:0;font-family:system-ui;background:#0a0f2c;color:white}
+.chat{max-width:600px;margin:auto;padding:20px}
+.messages{height:60vh;overflow-y:auto;border:1px solid #333;padding:10px;border-radius:10px}
+.msg{margin:6px 0;padding:8px 12px;background:#1c245a;border-radius:12px;width:fit-content}
+.input{display:flex;margin-top:10px}
+input{flex:1;padding:10px;border-radius:8px;border:none}
+button{margin-left:8px;padding:10px 14px;border-radius:8px;border:none;background:#6a7cff;color:white}
+</style>
+</head>
+<body>
+
+<div class="chat">
+<h2>Messages</h2>
+<div class="messages" id="messages"></div>
+
+<div class="input">
+<input id="text" placeholder="Type message...">
+<button onclick="send()">Send</button>
+</div>
+</div>
+
+<script>
+const supabase = supabase.createClient("YOUR_URL","YOUR_PUBLIC_KEY")
+
+async function loadMessages(){
+  const { data } = await supabase.from("messages").select("*").order("created_at")
+  render(data)
+}
+
+function render(msgs){
+  const box=document.getElementById("messages")
+  box.innerHTML=""
+  msgs.forEach(m=>{
+    const d=document.createElement("div")
+    d.className="msg"
+    d.textContent=m.content
+    box.appendChild(d)
+  })
+}
+
+async function send(){
+  const text=document.getElementById("text").value
+  if(!text) return
+
+  await supabase.from("messages").insert({
+    content:text
+  })
+
+  document.getElementById("text").value=""
+}
+
+supabase
+.channel('public:messages')
+.on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
+  loadMessages()
+})
+.subscribe()
+
+loadMessages()
+</script>
+
+</body>
+</html>
