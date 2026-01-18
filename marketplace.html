@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Marketplace</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{margin:0;font-family:sans-serif;background:#0b1028;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;padding:15px}
+.card{background:#151c44;padding:10px;border-radius:10px}
+img{width:100%;border-radius:8px}
+.price{color:#6a7cff;font-weight:bold}
+</style>
+</head>
+<body>
+
+<h2 style="padding:15px">StudentStream Marketplace</h2>
+<div class="grid" id="listings"></div>
+
+<script>
+const supabase = supabase.createClient("YOUR_URL","YOUR_KEY");
+
+async function load(){
+  const {data} = await supabase
+    .from("marketplace_listings")
+    .select("*")
+    .eq("status","active")
+    .order("created_at",{ascending:false});
+
+  const box = document.getElementById("listings");
+  data.forEach(l=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      ${l.image_url?`<img src="${l.image_url}">`:''}
+      <h4>${l.title}</h4>
+      <div>${l.category}</div>
+      <div class="price">$${l.price}</div>
+    `;
+    box.appendChild(div);
+  });
+}
+load();
+</script>
+
+</body>
+</html>
