@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StudentStream DevForum – Thread</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+
+body{
+background:#0b1028;
+color:#fff;
+min-height:100vh;
+}
+
+.header{
+padding:16px;
+border-bottom:1px solid #222;
+font-weight:700;
+font-size:18px;
+background:#0f153a;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:16px;
+}
+
+.post,.reply{
+background:#12184a;
+border-radius:12px;
+padding:14px;
+margin-bottom:12px;
+box-shadow:0 10px 20px rgba(0,0,0,.3);
+}
+
+.post-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:8px;
+}
+
+.user{
+font-weight:600;
+}
+
+.badge{
+padding:2px 6px;
+border-radius:6px;
+font-size:11px;
+margin-left:6px;
+}
+
+.staff{background:#ffd36a;color:#000}
+.admin{background:#ff6a6a}
+.owner{background:#6affc9;color:#000}
+
+.time{
+font-size:12px;
+color:#aaa;
+}
+
+.content{
+margin:10px 0;
+line-height:1.5;
+color:#e5e9ff;
+}
+
+.actions{
+display:flex;
+gap:12px;
+font-size:13px;
+color:#9bb3ff;
+}
+
+.actions span{
+cursor:pointer;
+}
+
+.reply-box{
+margin-top:20px;
+background:#0f153a;
+padding:12px;
+border-radius:12px;
+}
+
+textarea{
+width:100%;
+min-height:90px;
+border-radius:8px;
+border:none;
+padding:10px;
+resize:none;
+background:#1a2060;
+color:white;
+}
+
+button{
+margin-top:10px;
+padding:10px 16px;
+border:none;
+border-radius:8px;
+background:#6a7cff;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+@media(max-width:600px){
+.container{padding:10px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">StudentStream DevForum</div>
+
+<div class="container">
+
+<!-- MAIN THREAD POST -->
+<div class="post">
+  <div class="post-header">
+    <div class="user">
+      Deondre
+      <span class="badge owner">OWNER</span>
+    </div>
+    <div class="time">2 hours ago</div>
+  </div>
+
+  <div class="content">
+    Welcome to the official StudentStream DevForum 🚀  
+    This is where we’ll post updates, take feedback, and build the platform together.
+  </div>
+
+  <div class="actions">
+    <span>👍 Like</span>
+    <span>💬 Reply</span>
+  </div>
+</div>
+
+<!-- REPLIES -->
+<div class="reply">
+  <div class="post-header">
+    <div class="user">
+      ModAlex
+      <span class="badge staff">STAFF</span>
+    </div>
+    <div class="time">1 hour ago</div>
+  </div>
+
+  <div class="content">
+    This forum layout already looks clean. Can’t wait for launch day 🔥
+  </div>
+</div>
+
+<div class="reply">
+  <div class="post-header">
+    <div class="user">
+      User123
+    </div>
+    <div class="time">30 min ago</div>
+  </div>
+
+  <div class="content">
+    StudentStream is about to be huge fr.
+  </div>
+</div>
+
+<!-- REPLY BOX -->
+<div class="reply-box">
+  <h3 style="margin-bottom:8px;">Write a reply</h3>
+  <textarea placeholder="Type your reply..."></textarea>
+  <button>Post Reply</button>
+</div>
+
+</div>
+
+</body>
+</html>
