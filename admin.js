@@ -5,7 +5,7 @@ const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentAdmin = null;
 let ownerUnlocked = false;
-const OWNER_PASSWORD = "ChangeThis123!";
+const OWNER_PASSWORD = "SS-OWN-8fK3!zP2$Qm9L";
 
 async function init() {
   const { data } = await supabase.auth.getUser();
