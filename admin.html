@@ -1,72 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>StudentStream Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="admin.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>StudentStream Admin</title>
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
-<div class="admin-app">
+<div class="sidebar">
+  <button onclick="showSection('dashboard')">Dashboard</button>
+  <button onclick="showSection('users')">Users</button>
+  <button onclick="showSection('listings')">Listings</button>
+  <button onclick="showSection('reports')">Reports</button>
+  <button onclick="showSection('messages')">Messages</button>
+  <button onclick="showSection('staff')">Staff</button>
+  <button onclick="showSection('owner')">Owner 🔒</button>
+  <button onclick="logout()">Logout</button>
+</div>
 
-  <aside class="sidebar">
-    <h2>StudentStream</h2>
+<div class="content">
 
-    <nav>
-      <button onclick="showSection('dashboard')">Dashboard</button>
-      <button onclick="showSection('users')">Users</button>
-      <button onclick="showSection('marketplace')">Marketplace</button>
-      <button onclick="showSection('messages')">Messages</button>
-      <button onclick="showSection('reports')">Reports</button>
-      <button onclick="showSection('staff')">Staff</button>
+  <section id="dashboard">
+    <h2>Dashboard</h2>
+    Users: <span id="usersCount"></span><br>
+    Listings: <span id="listingsCount"></span><br>
+    Messages: <span id="messagesCount"></span>
+  </section>
 
-      <button id="ownerBtn" class="owner-btn" onclick="openOwnerPanel()">Owner Panel 🔒</button>
-    </nav>
+  <section id="users" class="hidden">
+    <h2>Users</h2>
+    <table id="usersTable"></table>
+  </section>
 
-    <button class="logout" onclick="logout()">Logout</button>
-  </aside>
+  <section id="listings" class="hidden">
+    <h2>Listings</h2>
+    <table id="listingsTable"></table>
+  </section>
 
-  <main class="content">
+  <section id="reports" class="hidden">
+    <h2>Reports</h2>
+    <table id="reportsTable"></table>
+  </section>
 
-    <section id="dashboard" class="section active">
-      <h1>Dashboard</h1>
-      <div class="cards">
-        <div class="card">Users <span id="userCount">–</span></div>
-        <div class="card">Listings <span id="listingCount">–</span></div>
-        <div class="card">Messages <span id="msgCount">–</span></div>
-      </div>
-    </section>
+  <section id="messages" class="hidden">
+    <h2>Messages</h2>
+    <table id="messagesTable"></table>
+  </section>
 
-    <section id="users" class="section"><h1>Users</h1></section>
-    <section id="marketplace" class="section"><h1>Marketplace</h1></section>
-    <section id="messages" class="section"><h1>Messages</h1></section>
-    <section id="reports" class="section"><h1>Reports</h1></section>
-    <section id="staff" class="section"><h1>Staff</h1></section>
+  <section id="staff" class="hidden">
+    <h2>Staff Applications</h2>
+    <table id="staffTable"></table>
+  </section>
 
-    <section id="owner" class="section owner-panel">
-      <h1>Owner Panel 👑</h1>
-      <p>Danger zone. Full control.</p>
+  <section id="owner" class="hidden">
+    <h2>Owner Panel</h2>
+    <input id="ownerPass" type="password" placeholder="Owner password">
+    <button onclick="unlockOwner()">Unlock</button>
 
-      <button onclick="makeAdmin()">Make user admin</button>
-      <button onclick="deleteUser()">Delete user</button>
-      <button onclick="shutdown()">Maintenance Mode</button>
-    </section>
+    <div id="ownerContent" class="hidden">
+      <button onclick="loadPlatformSettings()">Platform Settings</button>
+      <button onclick="loadAdminLogs()">Admin Logs</button>
+      <button onclick="loadAdmins()">Admin Users</button>
 
-  </main>
+      <pre id="ownerOutput"></pre>
+    </div>
+  </section>
 
 </div>
 
-<!-- Owner password modal -->
-<div id="ownerModal" class="modal">
-  <div class="modal-box">
-    <h3>Owner Access</h3>
-    <input type="password" id="ownerPassword" placeholder="Owner password">
-    <button onclick="verifyOwner()">Unlock</button>
-  </div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="admin.js"></script>
 </body>
 </html>
