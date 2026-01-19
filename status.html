@@ -1,141 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>StudentStream Status</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui, sans-serif;
-  background:#0b1028;
-  color:white;
-  padding:20px;
+:root {
+  --bg: #0b1020;
+  --card: #121a33;
+  --text: #e6ecff;
+  --muted: #9aa4c7;
+  --good: #22c55e;
+  --bad: #ef4444;
+  --warn: #facc15;
 }
 
-.container{
-  max-width:700px;
-  margin:auto;
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(160deg,#0b1020,#05080f);
+  color: var(--text);
 }
 
-h1{
-  text-align:center;
-  margin-bottom:10px;
+header {
+  padding: 24px;
+  text-align: center;
 }
 
-.overall{
-  padding:15px;
-  border-radius:10px;
-  text-align:center;
-  margin-bottom:25px;
-  font-weight:600;
+header h1 {
+  margin: 0;
+  font-size: 26px;
 }
 
-.operational{background:#0f3;}
-.degraded{background:#ffb300;}
-.down{background:#ff4d4d;}
-
-.service{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#121844;
-  padding:14px;
-  border-radius:10px;
-  margin-bottom:10px;
+header p {
+  color: var(--muted);
+  margin-top: 6px;
 }
 
-.badge{
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:12px;
-  text-transform:uppercase;
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
 }
 
-.badge.operational{background:#00c853;}
-.badge.degraded{background:#ffab00;}
-.badge.down{background:#d50000;}
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.3);
+}
 
-.footer{
-  text-align:center;
-  margin-top:30px;
-  font-size:12px;
-  color:#aaa;
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  gap: 14px;
+}
+
+.service {
+  background: #0f1630;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.operational { color: var(--good); }
+.degraded { color: var(--warn); }
+.down { color: var(--bad); }
+
+.incident {
+  border-left: 4px solid var(--warn);
+  padding-left: 12px;
+  margin-bottom: 12px;
+}
+
+.incident small {
+  color: var(--muted);
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media(max-width:600px){
+  header h1 { font-size: 22px; }
 }
 </style>
 </head>
 <body>
 
+<header>
+  <h1>StudentStream System Status</h1>
+  <p>Live service availability & platform health</p>
+</header>
+
 <div class="container">
-  <h1>StudentStream Status</h1>
-  <div id="overall" class="overall">Loading...</div>
 
-  <div id="services"></div>
-
-  <div class="footer">
-    Cloud infrastructure powered by StudentStream • Updated live
+  <div class="card">
+    <h2>Services</h2>
+    <div class="services" id="services"></div>
   </div>
+
+  <div class="card">
+    <h2>Incidents</h2>
+    <div id="incidents"></div>
+  </div>
+
 </div>
 
+<footer>
+  Powered by StudentStream Cloud Infrastructure
+</footer>
+
 <script>
-const supabase = supabase.createClient(
-  "YOUR_PROJECT_URL",
-  "YOUR_ANON_KEY"
-);
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-async function loadStatus(){
-  const {data,error} = await supabase
-    .from("system_status")
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const servicesDiv = document.getElementById("services");
+const incidentsDiv = document.getElementById("incidents");
+
+function statusClass(status){
+  if(status === "operational") return "operational";
+  if(status === "degraded") return "degraded";
+  return "down";
+}
+
+async function loadServices(){
+  const { data } = await supabase.from("services").select("*").order("id");
+  servicesDiv.innerHTML = "";
+  data.forEach(s=>{
+    const el = document.createElement("div");
+    el.className = "service";
+    el.innerHTML = `
+      <span>${s.name}</span>
+      <span class="status ${statusClass(s.status)}">${s.status}</span>
+    `;
+    servicesDiv.appendChild(el);
+  });
+}
+
+async function loadIncidents(){
+  const { data } = await supabase
+    .from("incidents")
     .select("*")
-    .order("service_name");
+    .order("created_at",{ascending:false})
+    .limit(10);
 
-  if(error){
-    document.getElementById("overall").innerText="Status unavailable";
+  incidentsDiv.innerHTML = "";
+
+  if(!data.length){
+    incidentsDiv.innerHTML = "<p style='color:var(--muted)'>No incidents reported.</p>";
     return;
   }
 
-  render(data);
-}
-
-function render(services){
-  const box = document.getElementById("services");
-  box.innerHTML = "";
-
-  let overall = "operational";
-
-  services.forEach(s=>{
-    if(s.status==="down") overall="down";
-    if(s.status==="degraded" && overall!=="down") overall="degraded";
-
-    const div = document.createElement("div");
-    div.className="service";
-
-    div.innerHTML = `
-      <div>${s.service_name}</div>
-      <div class="badge ${s.status}">${s.status}</div>
+  data.forEach(i=>{
+    const el = document.createElement("div");
+    el.className = "incident";
+    el.innerHTML = `
+      <strong>${i.title || "Incident"}</strong><br>
+      ${i.description || ""}
+      <br><small>${new Date(i.created_at).toLocaleString()}</small>
     `;
-
-    box.appendChild(div);
+    incidentsDiv.appendChild(el);
   });
-
-  const overallBox=document.getElementById("overall");
-  overallBox.className="overall "+overall;
-
-  overallBox.innerText=
-    overall==="operational" ? "All systems operational" :
-    overall==="degraded" ? "Some systems degraded" :
-    "Major outage";
 }
 
-// Realtime updates
-supabase.channel("status")
-  .on("postgres_changes",{event:"*",schema:"public",table:"system_status"},loadStatus)
-  .subscribe();
+function setupRealtime(){
+  supabase.channel("status-updates")
+    .on("postgres_changes",{event:"*",schema:"public",table:"services"},loadServices)
+    .on("postgres_changes",{event:"*",schema:"public",table:"incidents"},loadIncidents)
+    .subscribe();
+}
 
-loadStatus();
+loadServices();
+loadIncidents();
+setupRealtime();
 </script>
 
 </body>
