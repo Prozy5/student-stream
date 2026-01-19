@@ -1,81 +1,79 @@
-const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
-const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY";
+const supabase = supabase.createClient(
+  "YOUR_SUPABASE_URL",
+  "YOUR_SUPABASE_ANON_KEY"
+);
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentUser = null;
+let isOwner = false;
 
-async function checkAdmin() {
+async function init() {
   const { data: { user } } = await supabase.auth.getUser();
-
   if (!user) {
+    alert("Login required");
     location.href = "/login.html";
     return;
   }
 
-  const { data } = await supabase
+  currentUser = user.id;
+
+  const { data: profile } = await supabase
     .from("profiles")
-    .select("is_admin, is_owner")
+    .select("*")
     .eq("id", user.id)
     .single();
 
-  if (!data || (!data.is_admin && !data.is_owner)) {
-    alert("Access denied");
+  if (!profile.is_admin) {
+    alert("Not authorized");
     location.href = "/";
     return;
   }
 
-  document.getElementById("status").innerText = "Logged in as admin";
-  loadUsers();
-}
-
-async function loadUsers() {
-  const { data, error } = await supabase
-    .from("admin_users")
-    .select("*");
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  const tbody = document.querySelector("#usersTable tbody");
-  tbody.innerHTML = "";
-
-  data.forEach(user => {
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${user.username}</td>
-      <td><input type="checkbox" ${user.is_owner ? "checked" : ""} disabled></td>
-      <td><input type="checkbox" ${user.is_admin ? "checked" : ""} data-role="is_admin"></td>
-      <td><input type="checkbox" ${user.is_staff ? "checked" : ""} data-role="is_staff"></td>
-      <td><input type="checkbox" ${user.is_verified ? "checked" : ""} data-role="is_verified"></td>
-      <td><button onclick="saveUser('${user.id}', this)">Save</button></td>
-    `;
-
-    tbody.appendChild(row);
-  });
-}
-
-async function saveUser(userId, btn) {
-  const row = btn.parentElement.parentElement;
-  const inputs = row.querySelectorAll("input");
-
-  const payload = {};
-
-  inputs.forEach(i => {
-    if (i.dataset.role) payload[i.dataset.role] = i.checked;
-  });
-
-  const { error } = await supabase
-    .from("profiles")
-    .update(payload)
-    .eq("id", userId);
-
-  if (error) {
-    alert(error.message);
+  if (!profile.is_owner) {
+    document.getElementById("ownerBtn").style.display = "none";
   } else {
-    alert("Updated!");
+    isOwner = true;
+  }
+
+  loadStats();
+}
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function openOwnerPanel() {
+  document.getElementById("ownerModal").style.display = "flex";
+}
+
+async function verifyOwner() {
+  const pw = document.getElementById("ownerPassword").value;
+
+  const { data, error } = await supabase.rpc("verify_owner_password", {
+    pw
+  });
+
+  if (data === true) {
+    document.getElementById("ownerModal").style.display = "none";
+    showSection("owner");
+  } else {
+    alert("Wrong password");
   }
 }
 
-checkAdmin();
+async function loadStats() {
+  const users = await supabase.from("profiles").select("*", { count: "exact", head: true });
+  const listings = await supabase.from("marketplace_listings").select("*", { count: "exact", head: true });
+  const msgs = await supabase.from("messages").select("*", { count: "exact", head: true });
+
+  document.getElementById("userCount").innerText = users.count;
+  document.getElementById("listingCount").innerText = listings.count;
+  document.getElementById("msgCount").innerText = msgs.count;
+}
+
+function logout() {
+  supabase.auth.signOut();
+  location.href = "/";
+}
+
+init();
