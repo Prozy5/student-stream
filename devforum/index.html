@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>StudentStream DevForum</title>
@@ -8,159 +8,170 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui, sans-serif;
-  background:#0b1020;
-  color:#fff;
-}
-
-header{
-  padding:16px;
-  background:#111736;
-  font-size:20px;
-  font-weight:600;
-  text-align:center;
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:16px;
-}
+body{margin:0;font-family:system-ui;background:#0b1020;color:#fff}
+header{padding:14px;background:#111736;font-weight:700}
+.container{max-width:900px;margin:auto;padding:14px}
 
 .thread{
-  background:#141c3a;
-  padding:14px;
+  background:#141b3a;
+  padding:12px;
   border-radius:10px;
   margin-bottom:12px;
   cursor:pointer;
-  transition:.2s;
 }
 
-.thread:hover{
-  background:#1a2450;
+.thread:hover{background:#1a2260}
+
+.meta{font-size:12px;color:#aaa}
+
+.badge{
+  padding:2px 6px;
+  border-radius:6px;
+  font-size:10px;
+  margin-left:6px;
 }
 
-.thread h3{
-  margin:0 0 6px;
-  font-size:16px;
+.staff{background:#ffd36a;color:#000}
+.owner{background:#ff5cff;color:#000}
+
+.new-box{
+  background:#141b3a;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:16px;
 }
 
-.thread p{
-  margin:0 0 8px;
-  font-size:14px;
-  color:#cbd2ff;
+input,textarea,select{
+  width:100%;
+  margin-top:6px;
+  padding:8px;
+  border-radius:8px;
+  border:none;
 }
 
-.meta{
-  font-size:12px;
-  color:#8f9bff;
-  display:flex;
-  justify-content:space-between;
-}
-
-.new-btn{
-  position:fixed;
-  bottom:20px;
-  right:20px;
+button{
+  margin-top:8px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
   background:#6a7cff;
   color:#fff;
-  border:none;
-  border-radius:50px;
-  padding:14px 18px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-.empty{
-  text-align:center;
-  margin-top:60px;
-  color:#777;
+  width:100%;
 }
 </style>
 </head>
-
 <body>
 
 <header>StudentStream DevForum</header>
 
 <div class="container">
-  <div id="threads"></div>
-  <div id="empty" class="empty" style="display:none;">No threads yet.</div>
+
+<div class="new-box">
+  <h3>New Thread</h3>
+  <input id="title" placeholder="Thread title">
+  <select id="category">
+    <option>General</option>
+    <option>Development</option>
+    <option>Ideas</option>
+    <option>Bug Reports</option>
+    <option>Announcements</option>
+  </select>
+  <textarea id="content" placeholder="Write something..."></textarea>
+  <button onclick="createThread()">Post</button>
 </div>
 
-<button class="new-btn" onclick="location.href='new.html'">+ New Thread</button>
+<div id="threads"></div>
+
+</div>
 
 <script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
-
+const SUPABASE_URL = "YOUR_PROJECT_URL";
+const SUPABASE_KEY = "YOUR_ANON_KEY";
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const threadsBox = document.getElementById("threads");
-const emptyBox = document.getElementById("empty");
+let me = null;
+let profiles = {};
+
+init();
+
+async function init(){
+  const {data:{user}} = await supabase.auth.getUser();
+  me = user?.id || null;
+
+  await loadProfiles();
+  await loadThreads();
+  subscribeThreads();
+}
+
+async function loadProfiles(){
+  const {data} = await supabase.from("profiles").select("*");
+  data.forEach(p=>profiles[p.id]=p);
+}
 
 async function loadThreads(){
-  const { data, error } = await supabase
+  const {data} = await supabase
     .from("threads")
     .select("*")
-    .order("created_at", { ascending:false });
-
-  if(error){
-    console.error(error);
-    return;
-  }
+    .order("created_at",{ascending:false});
 
   renderThreads(data);
 }
 
 function renderThreads(list){
-  threadsBox.innerHTML = "";
+  const box=document.getElementById("threads");
+  box.innerHTML="";
 
-  if(list.length === 0){
-    emptyBox.style.display="block";
-    return;
-  }
+  list.forEach(t=>{
+    const user = profiles[t.user_id] || {};
+    let badge = "";
+    if(user.is_owner) badge = `<span class="badge owner">OWNER</span>`;
+    else if(user.is_staff) badge = `<span class="badge staff">STAFF</span>`;
 
-  emptyBox.style.display="none";
-
-  list.forEach(t => addThread(t,false));
+    box.innerHTML += `
+      <div class="thread" onclick="openThread('${t.id}')">
+        <b>${t.title}</b>
+        <div class="meta">
+          ${t.category} • ${user.username||short(t.user_id)} ${badge}
+        </div>
+      </div>
+    `;
+  });
 }
 
-function addThread(t, prepend=true){
-  const div = document.createElement("div");
-  div.className="thread";
-  div.onclick=()=>location.href=`thread.html?id=${t.id}`;
+async function createThread(){
+  const t=title.value.trim();
+  const c=content.value.trim();
+  const cat=category.value;
 
-  div.innerHTML=`
-    <h3>${escapeHTML(t.title)}</h3>
-    <p>${escapeHTML(t.content).slice(0,120)}...</p>
-    <div class="meta">
-      <span>${t.category || "General"}</span>
-      <span>${new Date(t.created_at).toLocaleDateString()}</span>
-    </div>
-  `;
+  if(!t||!c) return alert("Fill everything");
 
-  if(prepend) threadsBox.prepend(div);
-  else threadsBox.appendChild(div);
+  await supabase.from("threads").insert({
+    title:t,
+    content:c,
+    category:cat,
+    user_id:me
+  });
+
+  title.value="";
+  content.value="";
 }
 
-function escapeHTML(str){
-  return str.replace(/[&<>"']/g, m => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[m]));
+function openThread(id){
+  location.href=`thread.html?id=${id}`;
 }
 
-loadThreads();
+function subscribeThreads(){
+  supabase.channel("threads")
+    .on("postgres_changes",{event:"INSERT",table:"threads"},()=>{
+      loadThreads();
+    })
+    .subscribe();
+}
 
-supabase
-.channel("forum-threads")
-.on("postgres_changes",
-  { event:"INSERT", schema:"public", table:"threads" },
-  payload => addThread(payload.new)
-)
-.subscribe();
+function short(id){
+  if(!id) return "Guest";
+  return id.slice(0,6);
+}
 </script>
 
 </body>
