@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Staff Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+  background:#0b102a;
+  color:white;
+  font-family:system-ui;
+  padding:30px;
+}
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  background:linear-gradient(90deg,#facc15,#f97316);
+  color:black;
+  border-radius:20px;
+  font-weight:800;
+}
+button{
+  margin-top:20px;
+  padding:10px 14px;
+}
+</style>
+</head>
+<body>
+
+<h1>StudentStream Staff Panel</h1>
+<div class="badge">FOUNDER</div>
+
+<p>Welcome. You now control the ecosystem 😈</p>
+
+<button onclick="logout()">Logout</button>
+
+<script>
+if(localStorage.getItem("staff_auth") !== "true"){
+  window.location.href = "staff.html";
+}
+
+function logout(){
+  localStorage.removeItem("staff_auth");
+  window.location.href = "staff.html";
+}
+</script>
+
+</body>
+</html>
