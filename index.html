@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StudentStream — Launching April 4</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(120deg,#0a0f2c,#0b1a4a,#1a0f3d);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+}
+.container{
+  max-width:520px;
+  width:100%;
+}
+.logo{
+  font-size:28px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.tagline{
+  color:#cfd8ff;
+  margin-bottom:30px;
+}
+.countdown{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin-bottom:30px;
+}
+.time-box{
+  background:rgba(255,255,255,0.1);
+  padding:12px 16px;
+  border-radius:12px;
+  min-width:70px;
+}
+.time-box h2{margin:0;font-size:22px}
+.time-box span{font-size:11px;color:#aeb8ff}
+
+form{
+  background:rgba(255,255,255,0.08);
+  padding:20px;
+  border-radius:16px;
+  backdrop-filter:blur(10px);
+}
+input,select,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+  font-size:15px;
+}
+input,select{background:#fff}
+button{
+  background:linear-gradient(90deg,#6a7cff,#8b5cf6);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+small{display:block;margin-top:10px;color:#aeb8ff}
+
+.footer{
+  margin-top:25px;
+  font-size:13px;
+  color:#9bb3ff;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="logo">StudentStream</div>
+  <div class="tagline">A creator platform for the next generation. Launching soon.</div>
+
+  <div class="countdown" id="countdown">
+    <div class="time-box"><h2 id="days">0</h2><span>DAYS</span></div>
+    <div class="time-box"><h2 id="hours">0</h2><span>HOURS</span></div>
+    <div class="time-box"><h2 id="mins">0</h2><span>MINS</span></div>
+    <div class="time-box"><h2 id="secs">0</h2><span>SECS</span></div>
+  </div>
+
+  <form id="waitlistForm">
+    <input id="firstName" placeholder="First name" required>
+    <input id="lastName" placeholder="Last name" required>
+    <input id="email" type="email" placeholder="Email address" required>
+
+    <select id="role" required>
+      <option value="">I am a...</option>
+      <option>Streamer</option>
+      <option>Musician</option>
+      <option>Student Creator</option>
+      <option>Brand Owner</option>
+      <option>Developer / Builder</option>
+    </select>
+
+    <button type="submit">Join the Waitlist</button>
+    <small>Early access • No spam • Limited spots</small>
+  </form>
+
+  <div class="footer">© StudentStream</div>
+
+</div>
+
+<script>
+// Countdown
+const launchDate = new Date("April 4, 2026 00:00:00").getTime();
+
+setInterval(()=>{
+  const now = new Date().getTime();
+  const diff = launchDate - now;
+
+  if(diff <= 0) return;
+
+  document.getElementById("days").innerText = Math.floor(diff/(1000*60*60*24));
+  document.getElementById("hours").innerText = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  document.getElementById("mins").innerText = Math.floor((diff%(1000*60*60))/(1000*60));
+  document.getElementById("secs").innerText = Math.floor((diff%(1000*60))/1000);
+},1000);
+
+// Formspree submit
+document.getElementById("waitlistForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+
+  const data = {
+    first_name: firstName.value,
+    last_name: lastName.value,
+    email: email.value,
+    role: role.value
+  };
+
+  const res = await fetch("https://formspree.io/f/xojqgpan",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  });
+
+  if(res.ok){
+    alert("You're on the waitlist 🚀");
+    e.target.reset();
+  } else {
+    alert("Something went wrong. Try again.");
+  }
+});
+</script>
+
+</body>
+</html>
