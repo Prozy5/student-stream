@@ -1,70 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
+l<!DOCTYPE html>
+<html>
 <head>
 <meta charset="UTF-8">
-<title>StudentStream DevForum</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="style.css">
+<title>DevForum | StudentStream</title>
+<link rel="stylesheet" href="forum.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <header class="topbar">
-  <div class="logo">💬 StudentStream DevForum</div>
-  <div class="search">
-    <input placeholder="Search threads...">
-  </div>
-  <button id="newThreadBtn">+ New Thread</button>
+  <div class="logo">💬 DevForum</div>
+  <input id="search" placeholder="Search threads...">
+  <a href="new.html" class="btn">+ New Thread</a>
 </header>
 
-<div class="container">
+<div class="layout">
 
-  <!-- Categories -->
-  <aside class="categories">
-    <h4>Categories</h4>
-    <ul>
-      <li class="active">🔥 All</li>
-      <li>🚀 Announcements</li>
-      <li>💻 Development</li>
-      <li>🐞 Bugs</li>
-      <li>💡 Ideas</li>
-      <li>🎨 Design</li>
-    </ul>
-  </aside>
+<aside class="sidebar">
+  <h3>Categories</h3>
+  <div class="cat active">🔥 All</div>
+  <div class="cat">💻 Development</div>
+  <div class="cat">🐞 Bugs</div>
+  <div class="cat">💡 Ideas</div>
+  <div class="cat">📢 Announcements</div>
+</aside>
 
-  <!-- Threads -->
-  <main class="threads">
-
-    <div class="threads-header">
-      <span>Threads</span>
-      <select>
-        <option>Latest</option>
-        <option>Top</option>
-      </select>
-    </div>
-
-    <div id="threadList"></div>
-
-  </main>
-
-</div>
-
-<!-- Modal -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h3>Create Thread</h3>
-    <input id="titleInput" placeholder="Title">
-    <textarea id="bodyInput" placeholder="Write your post..."></textarea>
-    <select id="categoryInput">
-      <option>Development</option>
-      <option>Bugs</option>
-      <option>Ideas</option>
-      <option>Design</option>
+<main>
+  <div class="toolbar">
+    <span>Threads</span>
+    <select id="sort">
+      <option value="new">Latest</option>
+      <option value="top">Top</option>
     </select>
-    <button onclick="createThread()">Post</button>
   </div>
+
+  <div id="threads"></div>
+</main>
+
 </div>
 
-<script src="app.js"></script>
+<script src="forum.js"></script>
 </body>
 </html>
