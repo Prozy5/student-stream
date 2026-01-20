@@ -2,131 +2,215 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>StudentStream – Where small creators get seen first</title>
+<title>StudentStream – Launching April 4</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="style.css" />
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #0b1c3a, #020617);
+  color: white;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  align-items: center;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 22px;
+}
+
+.hero {
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 900px;
+  width: 100%;
+}
+
+h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #a3b3ff;
+  margin-bottom: 30px;
+}
+
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.time-box {
+  background: rgba(255,255,255,0.08);
+  padding: 15px 20px;
+  border-radius: 12px;
+  min-width: 80px;
+}
+
+.time-box span {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 12px;
+}
+
+button {
+  background: linear-gradient(135deg, #4f7cff, #7b4dff);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.success {
+  color: #6dff9c;
+  margin-top: 10px;
+  display: none;
+}
+
+small {
+  opacity: 0.7;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  opacity: 0.5;
+}
+</style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="top-nav">
+<nav>
   <div class="logo">StudentStream</div>
-  <div class="nav-links">
-    <a href="roadmap.html" class="roadmap-btn">Product roadmap →</a>
-    <a href="#waitlist" class="nav-btn">Join waitlist</a>
-  </div>
 </nav>
 
-<!-- HERO / WAITLIST -->
-<section class="hero" id="waitlist">
+<section class="hero">
   <div class="container">
 
-    <div class="left">
-      <h1>Where small creators get seen first.</h1>
-      <p>
-        StudentStream helps streamers, musicians, student creators, and starter brands
-        grow faster, connect with real audiences, and turn ideas into income.
-      </p>
+    <h1>Where small creators get seen first.</h1>
+    <p class="subtitle">
+      Streaming. Music. Student creators. Brands.  
+      Built for the next generation.
+    </p>
 
-      <form class="waitlist" id="waitlistForm">
+    <h3>Launching April 4, 2026 🚀</h3>
 
-        <div class="row">
-          <input type="text" name="first_name" id="firstName" placeholder="First name" required>
-          <input type="text" name="last_name" id="lastName" placeholder="Last name" required>
-        </div>
-
-        <input type="email" name="email" id="emailField" placeholder="Email address" required>
-
-        <select name="role" id="roleSelect" required
-          style="width:100%;padding:14px;border-radius:10px;border:none;margin-bottom:12px;">
-          <option value="">I am a...</option>
-          <option value="Streamer">🎮 Streamer</option>
-          <option value="Musician">🎵 Musician</option>
-          <option value="Student Creator">🧑‍🎓 Student Creator</option>
-          <option value="Brand Owner">🧢 Brand Owner</option>
-          <option value="Developer / Builder">🛠 Developer / Builder</option>
-        </select>
-
-        <button type="submit">Join the waitlist</button>
-        <small>Early access • No spam • Limited spots</small>
-
-      </form>
+    <div class="countdown" id="countdown">
+      <div class="time-box"><span id="days">0</span><div>Days</div></div>
+      <div class="time-box"><span id="hours">0</span><div>Hours</div></div>
+      <div class="time-box"><span id="minutes">0</span><div>Min</div></div>
+      <div class="time-box"><span id="seconds">0</span><div>Sec</div></div>
     </div>
 
-    <div class="right">
-      <div class="card c1">🎮 Streamers<br><span>Grow your audience</span></div>
-      <div class="card c2">🎵 Musicians<br><span>Promote your music</span></div>
-      <div class="card c3">🧑‍🎓 Student creators<br><span>Build your brand</span></div>
-      <div class="card c4">🧢 Starter brands<br><span>Find customers</span></div>
-      <div class="card c5">💰 Monetize<br><span>Turn views into income</span></div>
-    </div>
+    <form id="waitlistForm">
+      <div class="row">
+        <input type="text" id="firstName" placeholder="First name" required>
+        <input type="text" id="lastName" placeholder="Last name" required>
+      </div>
+
+      <input type="email" id="emailField" placeholder="Email address" required>
+
+      <select id="roleSelect" required>
+        <option value="">I am a...</option>
+        <option value="Streamer">🎮 Streamer</option>
+        <option value="Musician">🎵 Musician</option>
+        <option value="Student Creator">🧑‍🎓 Student Creator</option>
+        <option value="Brand Owner">🧢 Brand Owner</option>
+        <option value="Developer">🛠 Developer / Builder</option>
+      </select>
+
+      <button type="submit">Join the waitlist</button>
+      <small>No spam. Early access only.</small>
+
+      <div class="success" id="successMsg">✅ You're on the list!</div>
+    </form>
 
   </div>
 </section>
 
-<!-- ROADMAP PREVIEW -->
-<section class="roadmap-preview">
-  <div class="roadmap-inner">
-    <h2>Building StudentStream in public</h2>
-    <p>We’re launching step-by-step with creators and builders.</p>
+<footer>
+  © 2026 StudentStream
+</footer>
 
-    <div class="roadmap-cards">
-      <div class="r-card">
-        <h4>Now</h4>
-        <span>
-          Creator profiles, discovery pages, waitlist onboarding,
-          early community access, and feedback system.
-        </span>
-      </div>
-
-      <div class="r-card">
-        <h4>Next</h4>
-        <span>
-          Creator matching, collaboration tools, project boards,
-          and first monetization features.
-        </span>
-      </div>
-
-      <div class="r-card">
-        <h4>Later</h4>
-        <span>
-          Brand partnerships, payouts, creator analytics,
-          and full mobile apps.
-        </span>
-      </div>
-    </div>
-
-    <a class="roadmap-link" href="roadmap.html">View full roadmap →</a>
-  </div>
-</section>
-
-<!-- FORM HANDLER -->
 <script>
+/* COUNTDOWN */
+const launchDate = new Date("April 4, 2026 00:00:00").getTime();
+
+setInterval(() => {
+  const now = new Date().getTime();
+  const diff = launchDate - now;
+
+  if (diff <= 0) return;
+
+  document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+  document.getElementById("hours").innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  document.getElementById("minutes").innerText = Math.floor((diff / (1000 * 60)) % 60);
+  document.getElementById("seconds").innerText = Math.floor((diff / 1000) % 60);
+}, 1000);
+
+/* FORM SUBMIT */
 document.getElementById("waitlistForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const firstName = document.getElementById("firstName").value;
-  const lastName = document.getElementById("lastName").value;
-  const email = document.getElementById("emailField").value;
-  const role = document.getElementById("roleSelect").value;
+  const data = {
+    first_name: firstName.value,
+    last_name: lastName.value,
+    email: emailField.value,
+    role: roleSelect.value
+  };
 
-  // Send to Formspree
-  await fetch("https://formspree.io/f/xojqgpan", {
+  const res = await fetch("https://formspree.io/f/xojqgpan", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      role: role
-    })
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(data)
   });
 
-  // Redirect to Early Access Hub
-  const redirectURL =
-    `hub.html?access=early&first_name=${encodeURIComponent(firstName)}&role=${encodeURIComponent(role)}`;
-
-  window.location.href = redirectURL;
+  if (res.ok) {
+    document.getElementById("successMsg").style.display = "block";
+    document.getElementById("waitlistForm").reset();
+  } else {
+    alert("Something went wrong. Try again.");
+  }
 });
 </script>
 
