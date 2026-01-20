@@ -3,27 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <title>StudentStream DevForum</title>
-<link rel="stylesheet" href="devforum.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <header class="topbar">
-  <h1>💬 DevForum</h1>
-  <span>StudentStream</span>
+  <div class="logo">💬 StudentStream DevForum</div>
+  <div class="search">
+    <input placeholder="Search threads...">
+  </div>
+  <button id="newThreadBtn">+ New Thread</button>
 </header>
 
-<main class="container">
+<div class="container">
 
-  <section class="post-box">
-    <textarea id="postContent" placeholder="Share something with developers..."></textarea>
-    <button onclick="createPost()">Post</button>
-  </section>
+  <!-- Categories -->
+  <aside class="categories">
+    <h4>Categories</h4>
+    <ul>
+      <li class="active">🔥 All</li>
+      <li>🚀 Announcements</li>
+      <li>💻 Development</li>
+      <li>🐞 Bugs</li>
+      <li>💡 Ideas</li>
+      <li>🎨 Design</li>
+    </ul>
+  </aside>
 
-  <section id="posts" class="posts"></section>
+  <!-- Threads -->
+  <main class="threads">
 
-</main>
+    <div class="threads-header">
+      <span>Threads</span>
+      <select>
+        <option>Latest</option>
+        <option>Top</option>
+      </select>
+    </div>
 
-<script src="devforum.js"></script>
+    <div id="threadList"></div>
+
+  </main>
+
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3>Create Thread</h3>
+    <input id="titleInput" placeholder="Title">
+    <textarea id="bodyInput" placeholder="Write your post..."></textarea>
+    <select id="categoryInput">
+      <option>Development</option>
+      <option>Bugs</option>
+      <option>Ideas</option>
+      <option>Design</option>
+    </select>
+    <button onclick="createThread()">Post</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
