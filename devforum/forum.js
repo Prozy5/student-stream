@@ -1,35 +1,57 @@
-const supabase = supabase.createClient("URL","KEY");
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "YOUR_REAL_ANON_KEY"; // the long JWT one
+
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const threadsDiv = document.getElementById("threads");
+const form = document.getElementById("newThreadForm");
 
-async function loadThreads(){
-  const {data} = await supabase
+async function loadThreads() {
+  const { data, error } = await supabase
     .from("forum_posts")
-    .select("id,title,created_at,profiles(username,role)")
-    .order("created_at",{ascending:false});
+    .select("*")
+    .order("created_at", { ascending: false });
 
-  threadsDiv.innerHTML="";
+  threadsDiv.innerHTML = "";
 
-  data.forEach(t=>{
-    const role = t.profiles?.role || "user";
-    threadsDiv.innerHTML += `
-      <div class="thread-card" onclick="openThread('${t.id}')">
-        <div>
-          <b>${t.title}</b>
-          <div class="meta">${t.profiles?.username || "anon"} 
-          <span class="badge ${role}">${role}</span></div>
-        </div>
-        <div class="meta">${new Date(t.created_at).toLocaleDateString()}</div>
-      </div>
+  if (error) {
+    threadsDiv.textContent = "Failed to load threads";
+    console.log(error);
+    return;
+  }
+
+  data.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "thread";
+    div.innerHTML = `
+      <h3>${post.title}</h3>
+      <p>${post.content}</p>
+      <small>${new Date(post.created_at).toLocaleString()}</small>
     `;
+    threadsDiv.appendChild(div);
   });
 }
 
-function openThread(id){
-  location.href = `thread.html?id=${id}`;
-}
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-supabase.channel("forum")
-.on("postgres_changes",{event:"INSERT",schema:"public",table:"forum_posts"},loadThreads)
-.subscribe();
+  const title = document.getElementById("title").value;
+  const content = document.getElementById("content").value;
+
+  const { error } = await supabase
+    .from("forum_posts")
+    .insert([{ title, content }]);
+
+  if (error) {
+    alert("Failed to post");
+    console.log(error);
+  } else {
+    form.reset();
+    loadThreads();
+  }
+});
 
 loadThreads();
+</script>
