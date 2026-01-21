@@ -8,184 +8,211 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body {
- margin:0;
- font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
- background: radial-gradient(circle at top, #0f172a, #020617);
- color: #e5e7eb;
+:root {
+--bg1:#070b1a;
+--bg2:#0c1b3a;
+--card:#0f2450;
+--border:#1b3b7a;
+--ok:#16c784;
+--deg:#facc15;
+--down:#ef4444;
 }
 
-header {
- padding: 24px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- border-bottom: 1px solid #1e293b;
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,Roboto;
+background:radial-gradient(circle at top,var(--bg2),var(--bg1));
+color:#eaf1ff;
 }
 
-h1 { margin:0; font-size:22px; }
-
-.badge {
- padding:6px 12px;
- border-radius:999px;
- font-size:13px;
- font-weight:600;
+.container{
+max-width:1000px;
+margin:auto;
+padding:30px 20px 80px;
 }
 
-.ok { background:#16a34a; }
-.warn { background:#f59e0b; }
-.down { background:#dc2626; }
-
-main {
- max-width:900px;
- margin:40px auto;
- padding:0 20px;
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
 }
 
-.section {
- margin-bottom:40px;
+h1{margin:0;font-size:28px}
+
+.badge{
+padding:6px 14px;
+border-radius:999px;
+font-size:13px;
+font-weight:600;
 }
 
-.card {
- background:#020617;
- border:1px solid #1e293b;
- border-radius:12px;
- padding:16px;
- margin-bottom:12px;
- display:flex;
- justify-content:space-between;
- align-items:center;
+.ok{background:var(--ok);color:#003b26}
+.deg{background:var(--deg);color:#3b2f00}
+.down{background:var(--down);color:#3b0000}
+
+.section{margin-top:35px}
+.section h2{margin-bottom:12px}
+
+.card{
+background:linear-gradient(180deg,#0f2450,#0a1633);
+border:1px solid var(--border);
+border-radius:14px;
+padding:16px 18px;
+margin-bottom:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+animation:fade .3s ease;
 }
 
-small { color:#94a3b8; }
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1}}
 
-.loading {
- text-align:center;
- padding:60px;
- color:#94a3b8;
+.name{font-weight:600}
+.time{font-size:12px;color:#9fb4ff}
+
+.pulse{
+animation:pulse 2s infinite;
 }
+@keyframes pulse{
+0%{box-shadow:0 0 0 0 rgba(22,199,132,.6)}
+70%{box-shadow:0 0 0 12px rgba(22,199,132,0)}
+100%{box-shadow:0 0 0 0 rgba(22,199,132,0)}
+}
+
+.incident{background:#2a0f16;border-color:#7a1b2d}
+
+footer{
+margin-top:50px;
+text-align:center;
+font-size:13px;
+color:#7f94c9;
+}
+
+.loading{text-align:center;color:#9fb4ff;margin-top:20px}
 </style>
 </head>
 <body>
 
+<div class="container">
+
 <header>
- <h1>StudentStream System Status</h1>
- <div id="globalStatus" class="badge ok">Loading</div>
+<h1>StudentStream Status</h1>
+<span id="overall" class="badge ok pulse">Operational</span>
 </header>
 
-<main>
-
 <div class="section">
- <h2>Components</h2>
- <div id="components" class="loading">Loading components…</div>
+<h2>Components</h2>
+<div id="components" class="loading">Loading…</div>
 </div>
 
 <div class="section">
- <h2>Incidents</h2>
- <div id="incidents" class="loading">No incidents reported</div>
+<h2>Incidents</h2>
+<div id="incidents" class="loading">Loading…</div>
 </div>
 
-</main>
+<footer>
+Live status • Powered by Supabase Realtime • StudentStream © 2026
+</footer>
+
+</div>
 
 <script>
-console.log("Status page loaded");
-
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
 
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-console.log("Supabase connected");
-
-const componentsDiv = document.getElementById("components");
-const incidentsDiv = document.getElementById("incidents");
-const globalBadge = document.getElementById("globalStatus");
-
-function badgeClass(status){
- if(status === "operational") return "ok";
- if(status === "degraded") return "warn";
- return "down";
-}
-
-function computeGlobal(components){
- if(components.some(c => c.status === "down")) return "down";
- if(components.some(c => c.status === "degraded")) return "degraded";
- return "operational";
-}
-
-function renderComponents(data){
- componentsDiv.innerHTML = "";
- data.forEach(c => {
- const el = document.createElement("div");
- el.className = "card";
- el.innerHTML = `
- <div>
- <strong>${c.name}</strong><br>
- <small>Updated ${new Date(c.created_at).toLocaleString()}</small>
- </div>
- <span class="badge ${badgeClass(c.status)}">${c.status}</span>
- `;
- componentsDiv.appendChild(el);
- });
-
- const global = computeGlobal(data);
- globalBadge.textContent = global;
- globalBadge.className = "badge " + badgeClass(global);
+function badgeClass(s){
+if(s==="operational") return "ok";
+if(s==="degraded") return "deg";
+return "down";
 }
 
 async function loadComponents(){
- const { data, error } = await db
- .from("status_components")
- .select("*")
- .order("id");
+const { data } = await supabase
+.from("status_components")
+.select("*")
+.order("created_at",{ascending:false});
 
- if(error){
- console.error(error);
- componentsDiv.innerHTML = "Failed to load components";
- return;
- }
+const map = {};
+data.forEach(r=>{
+if(!map[r.name]) map[r.name]=r;
+});
 
- renderComponents(data);
+const list = Object.values(map);
+const el = document.getElementById("components");
+el.innerHTML="";
+
+let overall="operational";
+
+list.forEach(c=>{
+if(c.status==="outage") overall="outage";
+else if(c.status==="degraded" && overall==="operational") overall="degraded";
+
+const card=document.createElement("div");
+card.className="card";
+card.innerHTML=`
+<div>
+<div class="name">${c.name}</div>
+<div class="time">${new Date(c.created_at).toLocaleString()}</div>
+</div>
+<span class="badge ${badgeClass(c.status)}">${c.status}</span>
+`;
+el.appendChild(card);
+});
+
+const badge=document.getElementById("overall");
+badge.className="badge pulse "+badgeClass(overall);
+badge.textContent=overall.charAt(0).toUpperCase()+overall.slice(1);
 }
 
 async function loadIncidents(){
- const { data } = await db
- .from("status_incidents")
- .select("*")
- .order("created_at", { ascending:false })
- .limit(5);
+const el=document.getElementById("incidents");
 
- if(!data || data.length === 0){
- incidentsDiv.innerHTML = "<small>No active incidents</small>";
- return;
- }
+const { data, error } = await supabase
+.from("status_incidents")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(5);
 
- incidentsDiv.innerHTML = "";
- data.forEach(i=>{
- const el = document.createElement("div");
- el.className="card";
- el.innerHTML = `
- <div>
- <strong>${i.title}</strong><br>
- <small>${i.description}</small>
- </div>
- <small>${new Date(i.created_at).toLocaleString()}</small>
- `;
- incidentsDiv.appendChild(el);
- });
+if(error || !data.length){
+el.textContent="No active incidents 🎉";
+return;
 }
 
-function subscribeRealtime(){
- db.channel("status-live")
- .on("postgres_changes", { event:"*", schema:"public", table:"status_components" }, () => loadComponents())
- .on("postgres_changes", { event:"*", schema:"public", table:"status_incidents" }, () => loadIncidents())
- .subscribe();
+el.innerHTML="";
+data.forEach(i=>{
+const card=document.createElement("div");
+card.className="card incident";
+card.innerHTML=`
+<div>
+<div class="name">${i.title}</div>
+<div class="time">${i.description||""}</div>
+</div>
+<span class="badge down">${i.status}</span>
+`;
+el.appendChild(card);
+});
 }
 
-loadComponents();
-loadIncidents();
-subscribeRealtime();
+async function refresh(){
+await loadComponents();
+await loadIncidents();
+}
+
+refresh();
+
+/* Realtime subscriptions */
+
+supabase.channel("status-live")
+.on("postgres_changes",{event:"*",schema:"public",table:"status_components"},refresh)
+.on("postgres_changes",{event:"*",schema:"public",table:"status_incidents"},refresh)
+.subscribe();
+
+/* Backup refresh every 60s */
+setInterval(refresh,60000);
 </script>
 
 </body>
