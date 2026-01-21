@@ -1,81 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>StudentStream DevForum</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+  <title>StudentStream DevForum</title>
+  <link rel="stylesheet" href="forum.css">
 </head>
 <body>
 
 <header class="topbar">
-  <h1>StudentStream DevForum</h1>
-  <div class="top-actions">
-    <button id="newThreadBtn">+ New Thread</button>
-  </div>
+  <div class="logo">StudentStream DevForum</div>
+  <button class="new-thread">+ New Thread</button>
 </header>
 
-<div class="layout">
+<div class="forum-layout">
 
-  <!-- Categories -->
-  <aside class="sidebar">
+  <aside class="categories">
     <h3>Categories</h3>
     <ul>
-      <li class="active">All</li>
-      <li>📣 Announcements</li>
-      <li>🐞 Bugs</li>
-      <li>💡 Features</li>
-      <li>⚙ API</li>
-      <li>🧪 Experiments</li>
-      <li>🗂 Archived</li>
+      <li class="active">Announcements</li>
+      <li>Development</li>
+      <li>Bug Reports</li>
+      <li>Ideas</li>
+      <li>Off Topic</li>
     </ul>
   </aside>
 
-  <!-- Main Feed -->
-  <main class="feed">
+  <main class="threads">
 
-    <div id="emptyState" class="empty">
-      <h2>No threads yet</h2>
-      <p>Be the first to start a discussion.</p>
-      <button onclick="openModal()">Create Thread</button>
+    <div class="thread-row pinned">
+      <div class="title">
+        📌 Welcome to StudentStream DevForum
+        <span class="badge owner">FOUNDER</span>
+      </div>
+      <div class="meta">12 replies • Last: 5m ago</div>
     </div>
 
-    <div id="threads"></div>
+    <div class="thread-row">
+      <div class="title">
+        Supabase realtime issues
+        <span class="badge mod">MOD</span>
+      </div>
+      <div class="meta">3 replies • Last: 1h ago</div>
+    </div>
 
   </main>
 
-  <!-- Dev Tools -->
-  <aside class="devtools">
-    <h3>Dev Tools</h3>
-    <button>🚨 Reports</button>
-    <button>🔒 Lock Thread</button>
-    <button>🧷 Pin Thread</button>
-    <button>👤 Ban User</button>
-    <button>🧹 Delete Post</button>
-    <button>📜 Mod Logs</button>
-  </aside>
-
 </div>
 
-<!-- New Thread Modal -->
-<div class="modal" id="threadModal">
-  <div class="modal-content">
-    <h2>New Thread</h2>
-    <input id="titleInput" placeholder="Thread title">
-    <select id="categoryInput">
-      <option>Bug</option>
-      <option>Feature</option>
-      <option>Announcement</option>
-      <option>API</option>
-    </select>
-    <textarea id="contentInput" placeholder="Thread content..."></textarea>
-    <div class="modal-actions">
-      <button onclick="closeModal()">Cancel</button>
-      <button onclick="createThread()">Post</button>
-    </div>
-  </div>
-</div>
-
-<script src="app.js"></script>
 </body>
 </html>
