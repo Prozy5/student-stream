@@ -1,16 +1,128 @@
 <!DOCTYPE html>
 <html>
-<body>
-<pre id="out">Start</pre>
+<head>
+<meta charset="utf-8">
+<title>StudentStream Status</title>
 
-<script>
-document.getElementById("out").textContent += "\nJS is working";
-</script>
+<style>
+body {
+  font-family: system-ui, Arial;
+  background: #0b1020;
+  color: #eaf0ff;
+  margin: 0;
+  padding: 30px;
+}
+
+h1 { margin-bottom: 10px; }
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.card {
+  background: #131a3a;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #1f2a60;
+}
+
+.ok { color: #3cff9a; }
+.warn { color: #ffd166; }
+.down { color: #ff6b6b; }
+
+#debugBox {
+  margin-top: 30px;
+  background: #050816;
+  padding: 15px;
+  border-radius: 10px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  max-height: 250px;
+  overflow: auto;
+  font-size: 13px;
+  border: 1px solid #222;
+}
+</style>
+</head>
+<body>
+
+<h1>StudentStream Status</h1>
+<p>Live system status</p>
+
+<div id="components" class="status-grid">
+  Loading system components…
+</div>
+
+<h3>Debug</h3>
+<div id="debugBox">Starting…</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
-document.getElementById("out").textContent += "\nSupabase loaded: " + !!window.supabase;
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
+
+const debug = document.getElementById("debugBox");
+const componentsDiv = document.getElementById("components");
+
+function log(msg) {
+  debug.textContent += "\n" + msg;
+  debug.scrollTop = debug.scrollHeight;
+}
+
+window.onerror = function(msg, src, line, col, err) {
+  log("JS ERROR: " + msg);
+};
+
+async function loadStatus() {
+  log("JS is working ✅");
+  log("Supabase loaded: " + (typeof supabase !== "undefined"));
+
+  log("Creating client…");
+
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  log("Client created ✅");
+  log("Querying status_components…");
+
+  const { data, error } = await client
+    .from("status_components")
+    .select("*")
+    .order("order_index");
+
+  if (error) {
+    log("ERROR:");
+    log(JSON.stringify(error, null, 2));
+    componentsDiv.textContent = "Failed to load components.";
+    return;
+  }
+
+  log("Loaded " + data.length + " components ✅");
+
+  componentsDiv.innerHTML = "";
+
+  data.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    let statusClass = "ok";
+    if (c.status === "degraded") statusClass = "warn";
+    if (c.status === "down") statusClass = "down";
+
+    div.innerHTML = `
+      <strong>${c.name}</strong><br>
+      <small>${c.description || ""}</small><br><br>
+      Status: <span class="${statusClass}">${c.status}</span>
+    `;
+
+    componentsDiv.appendChild(div);
+  });
+}
+
+loadStatus();
 </script>
 
 </body>
