@@ -1,44 +1,118 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>DevForum | StudentStream</title>
-<link rel="stylesheet" href="forum.css">
+<meta charset="utf-8">
+<title>StudentStream DevForum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{margin:0;background:#0b0d14;color:#e5e7eb;font-family:system-ui}
+header{padding:16px;font-size:20px;font-weight:700;background:#111827}
+.container{display:flex}
+.sidebar{width:230px;background:#0f172a;padding:15px}
+.category{padding:10px;border-radius:6px;cursor:pointer}
+.category:hover{background:#1f2933}
+.main{flex:1;padding:20px}
+.thread{padding:14px;border-bottom:1px solid #1f2933;cursor:pointer}
+.badge{font-size:10px;padding:3px 6px;border-radius:5px;margin-left:6px}
+.owner{background:#facc15;color:black}
+.admin{background:#ef4444}
+.mod{background:#3b82f6}
+button{background:#4f46e5;color:white;border:none;padding:8px 12px;border-radius:6px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+</style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="logo">💬 DevForum</div>
-  <input id="search" placeholder="Search threads...">
-  <a href="new.html" class="btn">+ New Thread</a>
-</header>
+<header>🚀 StudentStream DevForum</header>
 
-<div class="layout">
+<div class="container">
+  <div class="sidebar" id="categories"></div>
 
-<aside class="sidebar">
-  <h3>Categories</h3>
-  <div class="cat active">🔥 All</div>
-  <div class="cat">💻 Development</div>
-  <div class="cat">🐞 Bugs</div>
-  <div class="cat">💡 Ideas</div>
-  <div class="cat">📢 Announcements</div>
-</aside>
-
-<main>
-  <div class="toolbar">
-    <span>Threads</span>
-    <select id="sort">
-      <option value="new">Latest</option>
-      <option value="top">Top</option>
-    </select>
+  <div class="main">
+    <div class="topbar">
+      <h3 id="catTitle">Select category</h3>
+      <button onclick="newThread()">+ New Thread</button>
+    </div>
+    <div id="threads"></div>
   </div>
-
-  <div id="threads"></div>
-</main>
-
 </div>
 
-<script src="forum.js"></script>
+<script>
+const supabase = supabase.createClient("YOUR_URL","YOUR_KEY")
+
+let user, profile, currentCategory
+
+async function init(){
+  const res = await supabase.auth.getUser()
+  if(!res.data.user){ location.href="/auth.html"; return }
+  user = res.data.user
+
+  profile = (await supabase.from("profiles").select("*").eq("id",user.id).single()).data
+
+  loadCategories()
+}
+
+async function loadCategories(){
+  const {data} = await supabase.from("forum_categories").select("*")
+  const box = document.getElementById("categories")
+  box.innerHTML=""
+  data.forEach(c=>{
+    const div=document.createElement("div")
+    div.className="category"
+    div.innerText=c.name
+    div.onclick=()=>openCategory(c)
+    box.appendChild(div)
+  })
+}
+
+async function openCategory(cat){
+  currentCategory=cat
+  catTitle.innerText=cat.name
+  loadThreads()
+}
+
+async function loadThreads(){
+  const {data}=await supabase.from("forum_threads")
+    .select("*,profiles(username,role)")
+    .eq("category_id",currentCategory.id)
+    .order("created_at",{ascending:false})
+
+  const box=document.getElementById("threads")
+  box.innerHTML=""
+
+  data.forEach(t=>{
+    const div=document.createElement("div")
+    div.className="thread"
+
+    let badge=""
+    if(t.profiles.role==="owner") badge=`<span class="badge owner">FOUNDER</span>`
+    if(t.profiles.role==="admin") badge=`<span class="badge admin">ADMIN</span>`
+    if(t.profiles.role==="mod") badge=`<span class="badge mod">MOD</span>`
+
+    div.innerHTML=`<b>${t.title}</b> — ${t.profiles.username} ${badge}`
+    div.onclick=()=>location.href=`thread.html?id=${t.id}`
+    box.appendChild(div)
+  })
+}
+
+async function newThread(){
+  const title=prompt("Thread title")
+  if(!title||!currentCategory)return
+
+  await supabase.from("forum_threads").insert({
+    title,
+    category_id:currentCategory.id,
+    user_id:user.id
+  })
+
+  loadThreads()
+}
+
+init()
+</script>
+
 </body>
 </html>
