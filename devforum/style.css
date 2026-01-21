@@ -1,0 +1,145 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #0b0d12;
+  color: #fff;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #121622;
+  border-bottom: 1px solid #222;
+}
+
+.topbar button {
+  background: #6c5cff;
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  height: calc(100vh - 70px);
+}
+
+.sidebar, .devtools {
+  background: #0f1320;
+  padding: 16px;
+  border-right: 1px solid #1c1f2e;
+}
+
+.devtools {
+  border-right: none;
+  border-left: 1px solid #1c1f2e;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sidebar li:hover, .sidebar .active {
+  background: #1c2040;
+}
+
+.feed {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.thread-card {
+  background: #14182a;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  border: 1px solid #222;
+}
+
+.thread-card h3 {
+  margin: 0 0 6px 0;
+}
+
+.meta {
+  font-size: 12px;
+  opacity: .7;
+}
+
+.badge {
+  background: #6c5cff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.empty {
+  text-align: center;
+  margin-top: 80px;
+  opacity: .7;
+}
+
+.empty button {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #6c5cff;
+  color: white;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #161b2e;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+  background: #0f1320;
+  border: 1px solid #333;
+  color: white;
+  border-radius: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media(max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar, .devtools {
+    display: none;
+  }
+}
