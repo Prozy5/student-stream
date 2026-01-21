@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SS:I — StudentStream Investigations</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>SS:I — StudentStream Investigations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- LOADER -->
-<div id="loader">
-  <div class="loader-box">
-    <img src="logo.png" id="loader-logo">
-    <div class="spinner"></div>
-    <p id="loader-text">Initializing SS:I Secure Systems…</p>
-  </div>
-</div>
-
-<!-- LOGIN MODAL -->
-<div id="authModal" class="modal hidden">
-  <div class="modal-box">
-    <h2>SS:I Secure Access</h2>
-    <input id="username" placeholder="Agent Name">
-    <input id="password" type="password" placeholder="Access Key">
-    <button onclick="login()">Login / Register</button>
-    <p onclick="closeAuth()" class="link">Continue as Guest</p>
-  </div>
+<!-- INTRO -->
+<div id="intro">
+  <img src="ssi-logo.png" class="intro-logo" alt="SS:I Logo">
+  <p class="loading-text">Initializing Secure Systems...</p>
 </div>
 
 <!-- MAIN SITE -->
 <div id="site" class="hidden">
 
 <header>
-  <img src="logo.png" class="main-logo">
+  <img src="ssi-logo.png" class="logo">
   <h1>StudentStream Investigations</h1>
-  <p class="tagline">Documenting the unexplained. Researching the ignored.</p>
+  <p class="tagline">Federal Student Intelligence Division</p>
+  <button id="loginBtn">Agent Login</button>
 </header>
 
-<section>
-  <h2>Mission</h2>
+<section class="panel">
+  <h2>Mission Briefing</h2>
   <p>
-  SS:I is the investigation division of StudentStream focused on uncovering strange events,
-  unexplained stories, digital mysteries, and real-world anomalies through documentation,
-  research, and media.
+    SS:I is a classified investigative division of StudentStream tasked with
+    documenting unexplained digital events, underground internet activity,
+    and real-world anomalies through research and media intelligence.
   </p>
 </section>
 
-<section>
+<section class="panel">
   <h2>Case Files</h2>
-  <div class="case">Case 001 — Coming Soon</div>
-  <div class="case locked">Case 002 — Locked</div>
-  <div class="case locked">Case 003 — Locked</div>
+  <ul class="cases">
+    <li>Case 001 — Pending Release</li>
+    <li>Case 002 — Classified</li>
+    <li>Case 003 — Classified</li>
+  </ul>
 </section>
 
-<section>
-  <h2>Video Reports</h2>
-  <p>No reports published yet.</p>
+<section class="panel">
+  <h2>Video Intelligence</h2>
+  <p>No public intelligence available.</p>
 </section>
 
 <footer>
-  <p id="agentStatus"></p>
-  <p>© 2026 StudentStream Investigations</p>
+  © 2026 StudentStream Investigations • Secure Network
 </footer>
 
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Agent Access</h3>
+    <input placeholder="Agent ID">
+    <input placeholder="Passcode" type="password">
+    <button onclick="closeLogin()">Access</button>
+    <button class="ghost" onclick="closeLogin()">Cancel</button>
+  </div>
 </div>
 
 <script src="app.js"></script>
