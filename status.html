@@ -1,140 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>StudentStream Status</title>
-<style>
-body {
-  font-family: system-ui, Arial;
-  background: #0f172a;
-  color: #e5e7eb;
-  margin: 0;
-  padding: 40px;
-}
-.card {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.component {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #334155;
-}
-.status-ok { color: #22c55e; }
-.status-issue { color: #f97316; }
-.status-down { color: #ef4444; }
-small { color: #94a3b8; }
-</style>
-</head>
 <body>
-
-<h1>StudentStream Status</h1>
-<p id="overall">Loading system status...</p>
-
-<div class="card">
-  <h2>System Components</h2>
-  <div id="components">Loading...</div>
-</div>
-
-<div class="card">
-  <h2>Incidents</h2>
-  <div id="incidents">Loading...</div>
-</div>
+<h1>Supabase Load Test</h1>
+<div id="out">Testing...</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-function statusClass(s) {
-  if (s === "operational") return "status-ok";
-  if (s === "degraded") return "status-issue";
-  return "status-down";
-}
-
-async function loadComponents() {
-  const { data, error } = await supabase
-    .from("status_components")
-    .select("*")
-    .order("order_index");
-
-  if (error) {
-    document.getElementById("components").innerText = error.message;
-    return false;
-  }
-
-  if (!data || data.length === 0) {
-    document.getElementById("components").innerText = "No components found.";
-    return true;
-  }
-
-  let html = "";
-  let allOk = true;
-
-  data.forEach(c => {
-    if (c.status !== "operational") allOk = false;
-    html += `
-      <div class="component">
-        <div>
-          <strong>${c.name}</strong><br>
-          <small>${c.description}</small>
-        </div>
-        <div class="${statusClass(c.status)}">${c.status}</div>
-      </div>
-    `;
-  });
-
-  document.getElementById("components").innerHTML = html;
-  document.getElementById("overall").innerText =
-    allOk ? "All systems operational ✅" : "Some systems experiencing issues ⚠️";
-
-  return true;
-}
-
-async function loadIncidents() {
-  const { data, error } = await supabase
-    .from("status_incidents")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    document.getElementById("incidents").innerText = error.message;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    document.getElementById("incidents").innerText = "No active incidents 🎉";
-    return;
-  }
-
-  let html = "";
-  data.forEach(i => {
-    html += `
-      <div class="component">
-        <div>
-          <strong>${i.title}</strong><br>
-          <small>${i.status}</small>
-        </div>
-      </div>
-    `;
-  });
-
-  document.getElementById("incidents").innerHTML = html;
-}
-
-async function init() {
-  await loadComponents();
-  await loadIncidents();
-}
-
-init();
+setTimeout(() => {
+  document.getElementById("out").innerText =
+    window.supabase ? "Supabase loaded OK ✅" : "Supabase BLOCKED ❌";
+}, 1000);
 </script>
-
 </body>
 </html>
