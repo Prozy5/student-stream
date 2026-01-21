@@ -1,67 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SS:I — StudentStream Investigations</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>SS:I — StudentStream Investigations</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- INTRO -->
 <div id="intro">
-  <img src="ssi-logo.png" class="intro-logo" alt="SS:I Logo">
-  <p class="loading-text">Initializing Secure Systems...</p>
+  <img src="ssi-logo.png.jpg" class="intro-logo">
+  <div class="scanline"></div>
+  <p>SECURE SYSTEM BOOTING...</p>
 </div>
 
-<!-- MAIN SITE -->
-<div id="site" class="hidden">
+<!-- MAIN -->
+<div id="app" class="hidden">
 
 <header>
-  <img src="ssi-logo.png" class="logo">
-  <h1>StudentStream Investigations</h1>
-  <p class="tagline">Federal Student Intelligence Division</p>
-  <button id="loginBtn">Agent Login</button>
+  <img src="ssi-logo.png.jpg" class="logo">
+  <h1>STUDENTSTREAM INVESTIGATIONS</h1>
+  <span>Federal Student Intelligence Division</span>
 </header>
 
-<section class="panel">
-  <h2>Mission Briefing</h2>
-  <p>
-    SS:I is a classified investigative division of StudentStream tasked with
-    documenting unexplained digital events, underground internet activity,
-    and real-world anomalies through research and media intelligence.
-  </p>
+<section class="card">
+<h2>MISSION DIRECTIVE</h2>
+<p>
+SS:I operates as a digital intelligence and investigation division documenting
+unexplained internet activity, underground networks, and real-world anomalies.
+</p>
 </section>
 
-<section class="panel">
-  <h2>Case Files</h2>
-  <ul class="cases">
-    <li>Case 001 — Pending Release</li>
-    <li>Case 002 — Classified</li>
-    <li>Case 003 — Classified</li>
-  </ul>
+<section class="card">
+<h2>CASE DATABASE</h2>
+<div class="cases">
+<div>CASE-001 <span>PENDING</span></div>
+<div>CASE-002 <span>CLASSIFIED</span></div>
+<div>CASE-003 <span>CLASSIFIED</span></div>
+</div>
 </section>
 
-<section class="panel">
-  <h2>Video Intelligence</h2>
-  <p>No public intelligence available.</p>
+<section class="card">
+<h2>INTELLIGENCE MEDIA</h2>
+<p>No public files available.</p>
 </section>
+
+<button id="loginBtn">AGENT LOGIN</button>
 
 <footer>
-  © 2026 StudentStream Investigations • Secure Network
+© 2026 SS:I • Secure Network
 </footer>
 
 </div>
 
-<!-- LOGIN MODAL -->
+<!-- LOGIN -->
 <div id="loginModal" class="modal hidden">
-  <div class="modal-box">
-    <h3>Agent Access</h3>
-    <input placeholder="Agent ID">
-    <input placeholder="Passcode" type="password">
-    <button onclick="closeLogin()">Access</button>
-    <button class="ghost" onclick="closeLogin()">Cancel</button>
-  </div>
+<div class="modal-box">
+<h3>Agent Authentication</h3>
+<input placeholder="Agent ID">
+<input type="password" placeholder="Passcode">
+<button onclick="closeLogin()">ACCESS</button>
+<button class="ghost" onclick="closeLogin()">CANCEL</button>
+</div>
 </div>
 
 <script src="app.js"></script>
