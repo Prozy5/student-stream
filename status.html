@@ -1,16 +1,61 @@
 <!DOCTYPE html>
 <html>
+<head>
+<title>Status Debug</title>
+<style>
+body{font-family:monospace;background:#0b1028;color:#00ff9c;padding:20px}
+pre{white-space:pre-wrap}
+</style>
+</head>
 <body>
-<pre id="out">Start</pre>
 
-<script>
-document.getElementById("out").textContent += "\nJS is working";
-</script>
+<h2>StudentStream Supabase Debug</h2>
+<pre id="debug">Starting...</pre>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
 <script>
-document.getElementById("out").textContent += "\nSupabase loaded: " + !!window.supabase;
+const debug = document.getElementById("debug");
+
+function log(msg){
+  debug.textContent += "\n" + msg;
+}
+
+window.onerror = function(msg, url, line, col, err){
+  log("JS ERROR:");
+  log(msg);
+  if(err) log(err.stack);
+};
+
+log("JS loaded");
+
+try {
+
+log("Checking supabaseJs: " + typeof supabaseJs);
+
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
+
+log("Creating client...");
+
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+log("Client created");
+
+log("Running query...");
+
+supabase
+  .from("status_components")
+  .select("*")
+  .then(res=>{
+    log("Query finished");
+    log("Data length: " + res.data?.length);
+    log(JSON.stringify(res, null, 2));
+  });
+
+} catch(e){
+  log("CATCH ERROR:");
+  log(e.message);
+}
 </script>
 
 </body>
