@@ -1,83 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <title>StudentStream Status</title>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #0b1220;
-  color: #e5e7eb;
-  margin: 0;
-  padding: 30px;
-}
-
-h1 { margin-bottom: 5px; }
-small { color: #9ca3af; }
-
-.card {
-  background: #111827;
-  border-radius: 10px;
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #1f2933;
-}
-
-.component {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #1f2933;
-}
-
-.component:last-child { border-bottom: none; }
-
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 8px;
-}
-
-.operational { background: #22c55e; }
-.degraded { background: #facc15; }
-.outage { background: #ef4444; }
-
-.badge {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-}
-
-.ok { background: #16a34a; }
-.warn { background: #ca8a04; }
-.down { background: #dc2626; }
-
-.incident {
-  border-left: 3px solid #ef4444;
-  padding-left: 10px;
-  margin-bottom: 10px;
-}
+body { font-family: system-ui; background:#0f172a; color:#e5e7eb; padding:30px }
+.card { background:#111827; padding:20px; border-radius:10px; margin-bottom:20px }
+.comp { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1f2933 }
+.ok { color:#22c55e } .down { color:#ef4444 } .deg { color:#f59e0b }
 </style>
 </head>
 <body>
 
 <h1>StudentStream Status</h1>
-<small id="overall">Loading system status…</small>
+<div id="overall" class="card">Loading system status...</div>
 
 <div class="card">
-  <h3>System Components</h3>
-  <div id="components">Loading…</div>
+<h2>System Components</h2>
+<div id="components">Loading...</div>
 </div>
 
 <div class="card">
-  <h3>Incidents</h3>
-  <div id="incidents">No incidents</div>
+<h2>Incidents</h2>
+<div id="incidents">Loading...</div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
@@ -85,80 +32,67 @@ const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function statusClass(s) {
-  if (s === "operational") return "operational";
-  if (s === "degraded") return "degraded";
-  return "outage";
+function badge(status){
+if(status==="operational") return "<span class='ok'>Operational</span>";
+if(status==="degraded") return "<span class='deg'>Degraded</span>";
+return "<span class='down'>Down</span>";
 }
 
-function overallStatus(components) {
-  if (components.some(c => c.status === "outage")) return ["Major outage", "down"];
-  if (components.some(c => c.status === "degraded")) return ["Degraded performance", "warn"];
-  return ["All systems operational", "ok"];
+async function loadAll(){
+try {
+
+// Components
+const { data: comps, error: cErr } = await supabase
+.from("status_components")
+.select("*")
+.order("order_index");
+
+if(cErr) throw cErr;
+
+let worst = "operational";
+let html = "";
+
+comps.forEach(c=>{
+if(c.status==="down") worst="down";
+else if(c.status==="degraded" && worst!=="down") worst="degraded";
+
+html += `<div class="comp"><b>${c.name}</b>${badge(c.status)}</div>`;
+});
+
+document.getElementById("components").innerHTML = html || "No components";
+
+document.getElementById("overall").innerHTML =
+worst==="operational" ? "🟢 All systems operational" :
+worst==="degraded" ? "🟡 Partial outage" :
+"🔴 Major outage";
+
+// Incidents
+const { data: inc } = await supabase
+.from("status_incidents")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(5);
+
+let ih = "No incidents";
+if(inc && inc.length){
+ih = inc.map(i=>`<div>⚠️ ${i.title}</div>`).join("");
+}
+document.getElementById("incidents").innerHTML = ih;
+
+} catch(err){
+document.body.innerHTML = `<pre style="color:red">${err.message}</pre>`;
+}
 }
 
-async function loadComponents() {
-  const { data } = await supabase
-    .from("status_components")
-    .select("*")
-    .order("order_index");
+loadAll();
 
-  const container = document.getElementById("components");
-  container.innerHTML = "";
+// realtime updates
+supabase.channel("status-live")
+.on("postgres_changes",{event:"*",schema:"public"},()=>loadAll())
+.subscribe();
 
-  data.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "component";
-    div.innerHTML = `
-      <div>
-        <span class="status-dot ${statusClass(c.status)}"></span>
-        <strong>${c.name}</strong><br>
-        <small>${c.description || ""}</small>
-      </div>
-      <div>${c.status}</div>
-    `;
-    container.appendChild(div);
-  });
-
-  const [text, badge] = overallStatus(data);
-  document.getElementById("overall").innerHTML =
-    `<span class="badge ${badge}">${text}</span>`;
-}
-
-async function loadIncidents() {
-  const { data } = await supabase
-    .from("status_incidents")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  const container = document.getElementById("incidents");
-
-  if (!data || data.length === 0) {
-    container.textContent = "No active incidents 🎉";
-    return;
-  }
-
-  container.innerHTML = "";
-  data.forEach(i => {
-    const div = document.createElement("div");
-    div.className = "incident";
-    div.innerHTML = `<strong>${i.title}</strong><br><small>${i.status}</small>`;
-    container.appendChild(div);
-  });
-}
-
-function enableRealtime() {
-  supabase
-    .channel("status-updates")
-    .on("postgres_changes", { event: "*", schema: "public", table: "status_components" }, loadComponents)
-    .on("postgres_changes", { event: "*", schema: "public", table: "status_incidents" }, loadIncidents)
-    .subscribe();
-}
-
-loadComponents();
-loadIncidents();
-enableRealtime();
+// auto refresh backup
+setInterval(loadAll, 30000);
 </script>
 
 </body>
