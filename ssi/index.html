@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SS:I — StudentStream Investigations</title>
+  <title>StudentStream Investigations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- LOADING SCREEN -->
 <div id="loader">
-  <div class="loader-content">
-    <img src="logo.png" class="loader-logo">
-    <p id="loading-text">Initializing SS:I systems...</p>
+  <div class="loader-box">
+    <div class="spinner"></div>
+    <p>Initializing SS:I Secure Systems…</p>
   </div>
 </div>
 
@@ -24,7 +25,7 @@
     <p class="tagline">Documenting the unexplained. Researching the ignored.</p>
   </header>
 
-  <section class="panel">
+  <section class="card">
     <h2>Mission</h2>
     <p>
       SS:I is a digital investigation division of StudentStream focused on uncovering strange events,
@@ -33,15 +34,16 @@
     </p>
   </section>
 
-  <section class="panel">
+  <section class="card">
     <h2>Case Files</h2>
-
-    <div class="case">Case 001 — Coming Soon</div>
-    <div class="case locked">Case 002 — Locked</div>
-    <div class="case locked">Case 003 — Locked</div>
+    <ul class="cases">
+      <li>🗂 Case 001 — Coming Soon</li>
+      <li>🔒 Case 002 — Locked</li>
+      <li>🔒 Case 003 — Locked</li>
+    </ul>
   </section>
 
-  <section class="panel">
+  <section class="card">
     <h2>Video Reports</h2>
     <p>No reports published yet.</p>
   </section>
