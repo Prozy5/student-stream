@@ -1,16 +1,63 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <title>Supabase Status Test</title>
+  <style>
+    body { font-family: monospace; background: #0f172a; color: #e5e7eb; padding: 20px; }
+    .ok { color: #22c55e; }
+    .bad { color: #ef4444; }
+    pre { background: #020617; padding: 10px; border-radius: 6px; }
+  </style>
+</head>
 <body>
-<h1>Supabase Load Test</h1>
-<div id="out">Testing...</div>
 
+<h1>Supabase Connection Test</h1>
+
+<div id="htmlStatus" class="ok">HTML loaded ✅</div>
+<div id="jsStatus" class="bad">JS not running ❌</div>
+<div id="supabaseStatus">Supabase not tested</div>
+<div id="dbStatus">Database not tested</div>
+
+<pre id="output">Waiting...</pre>
+
+<!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-setTimeout(() => {
-  document.getElementById("out").innerText =
-    window.supabase ? "Supabase loaded OK ✅" : "Supabase BLOCKED ❌";
-}, 1000);
+document.getElementById("jsStatus").innerText = "JS running ✅";
+document.getElementById("jsStatus").className = "ok";
+
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
+
+let supabase;
+
+try {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  document.getElementById("supabaseStatus").innerHTML = "<span class='ok'>Supabase client created ✅</span>";
+} catch (e) {
+  document.getElementById("supabaseStatus").innerHTML = "<span class='bad'>Supabase client FAILED ❌</span>";
+  document.getElementById("output").innerText = e.toString();
+}
+
+async function testDB() {
+  const { data, error } = await supabase
+    .from("status_components")
+    .select("*")
+    .order("order_index");
+
+  if (error) {
+    document.getElementById("dbStatus").innerHTML = "<span class='bad'>DB ERROR ❌</span>";
+    document.getElementById("output").innerText = JSON.stringify(error, null, 2);
+  } else {
+    document.getElementById("dbStatus").innerHTML = "<span class='ok'>DB read OK ✅</span>";
+    document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+  }
+}
+
+testDB();
 </script>
+
 </body>
 </html>
