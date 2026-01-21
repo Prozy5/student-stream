@@ -1,62 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Status Test</title>
+<meta charset="UTF-8">
+<title>StudentStream Status</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <style>
-body{font-family:Arial;background:#0b1028;color:#fff;padding:20px}
-.card{background:#151b3d;padding:15px;margin:10px 0;border-radius:10px}
-.ok{color:#00ff9c}
+body{margin:0;font-family:system-ui;background:#0b0f16;color:#e5e7eb}
+header{padding:20px;background:#111827;border-bottom:1px solid #1f2933}
+h1{margin:0;color:#60a5fa}
+.container{max-width:900px;margin:auto;padding:20px}
+.card{background:#111827;border:1px solid #1f2933;border-radius:10px;padding:15px;margin-bottom:12px}
+.status-ok{color:#22c55e}
+.status-bad{color:#ef4444}
+.status-warn{color:#f59e0b}
+.small{opacity:.7;font-size:13px}
+.incident{border-left:4px solid #f59e0b;padding-left:12px}
+footer{text-align:center;opacity:.6;padding:30px}
 </style>
 </head>
 <body>
 
-<h1>StudentStream Status Test</h1>
-<pre id="debug">Starting...</pre>
-<div id="components"></div>
+<header>
+  <h1>StudentStream Status</h1>
+  <div class="small">System status & uptime</div>
+</header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<div class="container">
+
+<h2>System Components</h2>
+<div id="components">Loading…</div>
+
+<h2>Active Incidents</h2>
+<div id="incidents">Loading…</div>
+
+<h2>Incident History</h2>
+<div id="history">Loading…</div>
+
+<h2>Uptime</h2>
+<div id="uptime">Loading…</div>
+
+</div>
+
+<footer>
+StudentStream © 2026
+</footer>
+
 <script>
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-const debug = document.getElementById("debug");
-const componentsDiv = document.getElementById("components");
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function log(msg){debug.textContent += "\n" + msg;}
-
-async function loadStatus(){
- log("Creating client...");
- const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
-
- log("Querying table...");
- const { data, error } = await supabase
- .from("status_components")
- .select("*")
- .order("order_index");
-
- if(error){
- log("ERROR: " + JSON.stringify(error));
- return;
- }
-
- log("Rows loaded: " + data.length);
-
- componentsDiv.innerHTML = "";
-
- if(data.length === 0){
- componentsDiv.innerHTML = "<p>No components found.</p>";
- return;
- }
-
- data.forEach(c=>{
- const div=document.createElement("div");
- div.className="card";
- div.innerHTML=`<strong>${c.name}</strong><br>${c.description}<br>Status: <span class="ok">${c.status}</span>`;
- componentsDiv.appendChild(div);
- });
+function statusClass(s){
+  if(s==="operational") return "status-ok";
+  if(s==="degraded") return "status-warn";
+  return "status-bad";
 }
 
-loadStatus();
+async function loadComponents(){
+  const {data} = await supabase.from("status_components").select("*").order("order_index");
+  const el = document.getElementById("components");
+  el.innerHTML="";
+  data.forEach(c=>{
+    el.innerHTML+=`
+    <div class="card">
+      <strong>${c.name}</strong>
+      <div class="small">${c.description||""}</div>
+      <div class="${statusClass(c.status)}">${c.status}</div>
+    </div>`;
+  });
+}
+
+async function loadIncidents(){
+  const {data} = await supabase.from("status_incidents")
+    .select("*")
+    .is("resolved_at", null)
+    .order("created_at",{ascending:false});
+
+  const el=document.getElementById("incidents");
+  el.innerHTML=data.length? "" : "<div class='small'>No active incidents</div>";
+
+  data.forEach(i=>{
+    el.innerHTML+=`
+    <div class="card incident">
+      <strong>${i.title}</strong>
+      <div>${i.description||""}</div>
+      <div class="small">${new Date(i.created_at).toLocaleString()}</div>
+    </div>`;
+  });
+}
+
+async function loadHistory(){
+  const {data} = await supabase.from("status_incidents")
+    .select("*")
+    .not("resolved_at","is",null)
+    .order("created_at",{ascending:false})
+    .limit(5);
+
+  const el=document.getElementById("history");
+  el.innerHTML="";
+
+  data.forEach(i=>{
+    el.innerHTML+=`
+    <div class="card">
+      <strong>${i.title}</strong>
+      <div class="small">Resolved ${new Date(i.resolved_at).toLocaleString()}</div>
+    </div>`;
+  });
+}
+
+async function loadUptime(){
+  const {data} = await supabase.rpc("calculate_uptime").catch(()=>({data:null}));
+  const el=document.getElementById("uptime");
+  el.innerHTML = data ? JSON.stringify(data) : "Uptime tracking active";
+}
+
+async function refresh(){
+  await loadComponents();
+  await loadIncidents();
+  await loadHistory();
+  await loadUptime();
+}
+
+refresh();
+setInterval(refresh, 15000); // live refresh every 15 sec
+
+// Realtime updates
+supabase.channel("status-live")
+  .on("postgres_changes",{event:"*",schema:"public"},refresh)
+  .subscribe();
 </script>
+
 </body>
 </html>
