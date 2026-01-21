@@ -4,173 +4,78 @@
 <meta charset="UTF-8">
 <title>StudentStream DevForum</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-body{margin:0;font-family:system-ui;background:#0f0f12;color:#fff}
-header{padding:16px;background:#15151c;display:flex;justify-content:space-between}
-button{background:#6b5cff;border:none;color:#fff;padding:8px 14px;border-radius:6px;cursor:pointer}
-.container{max-width:900px;margin:auto;padding:16px}
-.thread{background:#171722;padding:12px;border-radius:10px;margin-bottom:10px;cursor:pointer}
-.thread:hover{background:#1e1e2b}
-.badge{font-size:12px;padding:2px 6px;border-radius:6px}
-.owner{background:#ffb703;color:black}
-.admin{background:#219ebc}
-.mod{background:#8ecae6;color:black}
-.tag{font-size:11px;background:#333;padding:2px 6px;border-radius:5px}
-.locked{color:#ff5c5c}
-.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center}
-.box{background:#181824;padding:16px;border-radius:10px;width:100%;max-width:500px}
-input,textarea,select{width:100%;padding:8px;margin:6px 0;background:#222;border:none;color:white;border-radius:6px}
-.reply{background:#1a1a25;padding:8px;border-radius:6px;margin:6px 0}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <strong>StudentStream DevForum</strong>
-  <button onclick="openPost()">New Thread</button>
+<header class="topbar">
+  <h1>StudentStream DevForum</h1>
+  <div class="top-actions">
+    <button id="newThreadBtn">+ New Thread</button>
+  </div>
 </header>
 
-<div class="container" id="threads"></div>
+<div class="layout">
 
-<!-- Create Post Modal -->
-<div class="modal" id="postModal">
-  <div class="box">
-    <h3>Create Thread</h3>
-    <input id="title" placeholder="Title">
-    <textarea id="content" placeholder="Content"></textarea>
-    <select id="category">
-      <option>General</option>
-      <option>Development</option>
-      <option>Announcements</option>
-      <option>Bug Reports</option>
-    </select>
-    <button onclick="submitPost()">Post</button>
-    <button onclick="closePost()">Cancel</button>
-  </div>
+  <!-- Categories -->
+  <aside class="sidebar">
+    <h3>Categories</h3>
+    <ul>
+      <li class="active">All</li>
+      <li>📣 Announcements</li>
+      <li>🐞 Bugs</li>
+      <li>💡 Features</li>
+      <li>⚙ API</li>
+      <li>🧪 Experiments</li>
+      <li>🗂 Archived</li>
+    </ul>
+  </aside>
+
+  <!-- Main Feed -->
+  <main class="feed">
+
+    <div id="emptyState" class="empty">
+      <h2>No threads yet</h2>
+      <p>Be the first to start a discussion.</p>
+      <button onclick="openModal()">Create Thread</button>
+    </div>
+
+    <div id="threads"></div>
+
+  </main>
+
+  <!-- Dev Tools -->
+  <aside class="devtools">
+    <h3>Dev Tools</h3>
+    <button>🚨 Reports</button>
+    <button>🔒 Lock Thread</button>
+    <button>🧷 Pin Thread</button>
+    <button>👤 Ban User</button>
+    <button>🧹 Delete Post</button>
+    <button>📜 Mod Logs</button>
+  </aside>
+
 </div>
 
-<!-- Thread View -->
+<!-- New Thread Modal -->
 <div class="modal" id="threadModal">
-  <div class="box">
-    <div id="threadView"></div>
-    <textarea id="replyText" placeholder="Reply..."></textarea>
-    <button onclick="sendReply()">Reply</button>
-    <button onclick="closeThread()">Close</button>
+  <div class="modal-content">
+    <h2>New Thread</h2>
+    <input id="titleInput" placeholder="Thread title">
+    <select id="categoryInput">
+      <option>Bug</option>
+      <option>Feature</option>
+      <option>Announcement</option>
+      <option>API</option>
+    </select>
+    <textarea id="contentInput" placeholder="Thread content..."></textarea>
+    <div class="modal-actions">
+      <button onclick="closeModal()">Cancel</button>
+      <button onclick="createThread()">Post</button>
+    </div>
   </div>
 </div>
 
-<script>
-const supabase = window.supabase.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "sb_secret_V4NnZirSto101MX4-qmDZw_XoJzP9TH"
-)
-
-let currentThreadId = null
-let userProfile = null
-
-async function getProfile(){
-  const { data:user } = await supabase.auth.getUser()
-  if(!user.user) return
-  const { data } = await supabase.from('profiles').select('*').eq('id',user.user.id).single()
-  userProfile = data
-}
-getProfile()
-
-async function loadThreads(){
-  const { data } = await supabase
-    .from('forum_posts')
-    .select('*, profiles(username,role)')
-    .eq('is_deleted',false)
-    .order('is_pinned',{ascending:false})
-    .order('created_at',{ascending:false})
-
-  const list = document.getElementById('threads')
-  list.innerHTML = ""
-
-  data.forEach(t=>{
-    const el = document.createElement('div')
-    el.className="thread"
-    el.innerHTML = `
-      <b>${t.title}</b> ${t.is_locked?'🔒':''}
-      <div>${t.profiles?.username||'anon'} 
-        ${t.profiles?.role?`<span class="badge ${t.profiles.role}">${t.profiles.role}</span>`:''}
-      </div>
-      <span class="tag">${t.category}</span>
-    `
-    el.onclick=()=>openThread(t.id)
-    list.appendChild(el)
-  })
-}
-
-async function openThread(id){
-  currentThreadId = id
-  const { data:post } = await supabase.from('forum_posts').select('*,profiles(username,role)').eq('id',id).single()
-  const { data:replies } = await supabase.from('forum_replies').select('*,profiles(username)').eq('thread_id',id)
-
-  let html = `<h3>${post.title}</h3><p>${post.content}</p>`
-  if(userProfile && ['admin','owner'].includes(userProfile.role)){
-    html += `<button onclick="toggleLock(${post.is_locked})">Lock</button>
-             <button onclick="togglePin(${post.is_pinned})">Pin</button>`
-  }
-
-  replies.forEach(r=>{
-    html+=`<div class="reply"><b>${r.profiles?.username}</b>: ${r.content}</div>`
-  })
-
-  document.getElementById('threadView').innerHTML = html
-  document.getElementById('threadModal').style.display='flex'
-}
-
-function closeThread(){document.getElementById('threadModal').style.display='none'}
-
-function openPost(){document.getElementById('postModal').style.display='flex'}
-function closePost(){document.getElementById('postModal').style.display='none'}
-
-async function submitPost(){
-  const title = document.getElementById('title').value
-  const content = document.getElementById('content').value
-  const category = document.getElementById('category').value
-
-  const { data:user } = await supabase.auth.getUser()
-  await supabase.from('forum_posts').insert({
-    title,content,category,user_id:user.user.id
-  })
-
-  closePost()
-  loadThreads()
-}
-
-async function sendReply(){
-  const text = document.getElementById('replyText').value
-  const { data:user } = await supabase.auth.getUser()
-
-  await supabase.from('forum_replies').insert({
-    thread_id:currentThreadId,
-    content:text,
-    user_id:user.user.id
-  })
-  openThread(currentThreadId)
-}
-
-async function toggleLock(val){
-  await supabase.from('forum_posts').update({is_locked:!val}).eq('id',currentThreadId)
-  openThread(currentThreadId)
-}
-
-async function togglePin(val){
-  await supabase.from('forum_posts').update({is_pinned:!val}).eq('id',currentThreadId)
-  loadThreads()
-}
-
-supabase.channel('forum')
-.on('postgres_changes',{event:'*',schema:'public',table:'forum_posts'},loadThreads)
-.subscribe()
-
-loadThreads()
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
