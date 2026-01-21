@@ -1,6 +1,19 @@
-window.addEventListener("load", () => {
+// INTRO LOADER
+window.onload = () => {
   setTimeout(() => {
-    document.getElementById("loader").style.display = "none";
+    document.getElementById("intro").style.display = "none";
     document.getElementById("site").classList.remove("hidden");
-  }, 1500); // 1.5 second intro
-});
+  }, 2000);
+};
+
+// LOGIN MODAL
+const loginBtn = document.getElementById("loginBtn");
+const modal = document.getElementById("loginModal");
+
+loginBtn.onclick = () => {
+  modal.classList.remove("hidden");
+};
+
+function closeLogin() {
+  modal.classList.add("hidden");
+}
