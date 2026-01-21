@@ -1,123 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Status</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{margin:0;font-family:system-ui;background:#0b0f14;color:#e5e7eb}
-.container{max-width:900px;margin:auto;padding:20px}
-.card{background:#111827;padding:16px;border-radius:12px;margin-bottom:12px}
-.badge{padding:4px 10px;border-radius:999px;font-size:12px}
-.ok{background:#064e3b;color:#34d399}
-.down{background:#7f1d1d;color:#f87171}
-small{color:#9ca3af}
-.loading{opacity:.6}
-</style>
+<title>Status Test</title>
 </head>
 <body>
-<div class="container">
-<h1>System Status</h1>
+<h1>Status Page Test</h1>
+<pre id="out">Loading...</pre>
 
-<div id="components" class="loading">Loading components…</div>
-
-<h2>Incidents</h2>
-<div id="incidents" class="loading">Loading incidents…</div>
-</div>
-
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function loadStatus() {
-try {
-const { data: components, error } = await client
-.from("status_components")
-.select("*")
-.order("id");
+async function load() {
+const { data, error } = await supabase
+.from('status_components')
+.select('*')
+.order('order_index');
 
-if (error) throw error;
-
-renderComponents(components);
-
-const { data: incidents } = await client
-.from("status_incidents")
-.select("*")
-.order("created_at", { ascending:false });
-
-renderIncidents(incidents || []);
-
-} catch (err) {
-console.error("Status load failed:", err);
-document.getElementById("components").innerHTML =
-"<span style='color:red'>Failed to load status</span>";
-}
+document.getElementById('out').textContent =
+error ? JSON.stringify(error, null, 2) : JSON.stringify(data, null, 2);
 }
 
-function renderComponents(list) {
-const el = document.getElementById("components");
-
-if (!list || list.length === 0) {
-el.innerHTML = "No components found";
-return;
-}
-
-let html = "";
-let allOk = true;
-
-list.forEach(c => {
-let cls = "status-ok";
-if (c.status !== "operational") {
-cls = "status-issue";
-allOk = false;
-}
-
-html += `
-<div class="component">
-<span>${c.name}</span>
-<span class="${cls}">${c.status}</span>
-</div>
-`;
-});
-
-el.innerHTML = html;
-
-const badge = document.getElementById("overall");
-badge.textContent = allOk ? "Operational" : "Issues";
-badge.style.background = allOk ? "#16a34a" : "#f97316";
-}
-
-function renderIncidents(list) {
-const el = document.getElementById("incidents");
-
-if (!list || list.length === 0) {
-el.innerHTML = "No active incidents 🎉";
-return;
-}
-
-let html = "";
-list.forEach(i => {
-html += `
-<div class="incident">
-<strong>${i.title}</strong><br>
-<small>${new Date(i.created_at).toLocaleString()}</small>
-<p>${i.description || ""}</p>
-</div>
-`;
-});
-
-el.innerHTML = html;
-}
-
-// Realtime
-client.channel("status-live")
-.on("postgres_changes", { event:"*", schema:"public", table:"status_components" }, loadStatus)
-.on("postgres_changes", { event:"*", schema:"public", table:"status_incidents" }, loadStatus)
-.subscribe();
-
-loadStatus();
+load();
 </script>
+</body>
+</html>
