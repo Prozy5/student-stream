@@ -1,23 +1,22 @@
 * {
   box-sizing: border-box;
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  background: #070b10;
-  color: #dbe7ff;
+  background: #070b12;
+  color: #cfd8ff;
 }
 
-/* Loader */
-
+/* LOADER */
 #loader {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, #0d1623, #03060a);
+  background: #05080f;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 9999;
 }
 
@@ -25,13 +24,25 @@ body {
   text-align: center;
 }
 
+#loader-logo {
+  width: 80px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.8s ease;
+}
+
+#loader-logo.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid #1e2b45;
-  border-top: 4px solid #5fa8ff;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #2a3cff;
+  border-top-color: transparent;
   border-radius: 50%;
-  margin: auto;
+  margin: 15px auto;
   animation: spin 1s linear infinite;
 }
 
@@ -39,62 +50,86 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.modal-box {
+  background: #0c1322;
+  padding: 25px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-box input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  background: #111a33;
+  border: none;
+  color: white;
+}
+
+.modal-box button {
+  width: 100%;
+  padding: 10px;
+  background: #2a3cff;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.link {
+  color: #7aa2ff;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* MAIN SITE */
 .hidden {
   display: none;
 }
 
-/* Site */
-
-#site {
-  max-width: 900px;
-  margin: auto;
-  padding: 25px;
-}
-
 header {
   text-align: center;
-  margin-bottom: 30px;
+  padding: 40px 20px;
 }
 
-.logo {
-  width: 80px;
-  margin-bottom: 10px;
+.main-logo {
+  width: 90px;
 }
 
 .tagline {
-  color: #8fa9d9;
-  font-size: 14px;
+  color: #8fa3ff;
 }
 
-.card {
-  background: #0e1624;
-  border: 1px solid #1f2d48;
+section {
+  max-width: 700px;
+  margin: auto;
   padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 10px;
 }
 
-.card h2 {
-  color: #6fa8ff;
-  margin-top: 0;
+.case {
+  background: #0f172d;
+  padding: 12px;
+  margin: 8px 0;
+  border-left: 4px solid #2a3cff;
 }
 
-.cases {
-  list-style: none;
-  padding: 0;
-}
-
-.cases li {
-  padding: 10px;
-  margin-bottom: 8px;
-  background: #0a1220;
-  border: 1px solid #1a2742;
-  border-radius: 6px;
+.case.locked {
+  opacity: 0.4;
 }
 
 footer {
   text-align: center;
-  color: #6c7fa6;
-  margin-top: 30px;
-  font-size: 13px;
+  padding: 30px;
+  color: #6f7ccf;
 }
