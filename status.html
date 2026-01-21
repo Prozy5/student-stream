@@ -1,134 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>StudentStream Status</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{
-  margin:0;
-  font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background:#0b0f17;
-  color:#fff;
-}
-header{
-  padding:20px;
-  text-align:center;
-  background:#111827;
-  border-bottom:1px solid #1f2933;
-}
-h1{margin:0;font-size:22px;}
-#components{
-  max-width:800px;
-  margin:30px auto;
-  padding:0 15px;
-  display:grid;
-  gap:15px;
-}
-.card{
-  background:#111827;
-  border:1px solid #1f2933;
-  border-radius:12px;
-  padding:15px;
-}
-.ok{color:#22c55e;font-weight:bold;}
-.degraded{color:#facc15;font-weight:bold;}
-.down{color:#ef4444;font-weight:bold;}
-
-#debug{
-  max-width:800px;
-  margin:20px auto;
-  padding:10px;
-  font-size:12px;
-  opacity:0.5;
-  white-space:pre-wrap;
-}
-footer{
-  text-align:center;
-  padding:20px;
-  opacity:.6;
-  font-size:13px;
-}
-</style>
-</head>
+<html>
 <body>
 
-<header>
-  <h1>StudentStream System Status</h1>
-  <div>Live infrastructure & service health</div>
-</header>
+<pre id="debug">Starting...</pre>
 
-<div id="components">
-  <div class="card">Loading system components…</div>
-</div>
-
-<pre id="debug"></pre>
-
-<footer>
-  StudentStream Cloud Infrastructure • Realtime Monitoring
-</footer>
-
-<!-- IMPORTANT: UMD build -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
+const SUPABASE_KEY = "sb_publishable_ipn8wnT_TIvaT6r44j8YBw_t5oMhOPC";
 
 const debug = document.getElementById("debug");
-const componentsDiv = document.getElementById("components");
 
-function log(msg){
-  debug.textContent += msg + "\n";
+function log(x){ debug.textContent += "\n" + x; }
+
+log("SDK loaded: " + !!window.supabase + " / " + !!window.supabaseJs);
+
+const clientFactory = window.supabase || window.supabaseJs;
+
+if(!clientFactory){
+  log("❌ Supabase SDK not found");
+  throw "SDK missing";
 }
 
-async function loadStatus(){
-  log("Creating client...");
+log("Creating client...");
 
-  const supabase = supabaseJs.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+const supabase = clientFactory.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  log("Querying status_components...");
+log("Client created");
 
-  const { data, error } = await supabase
-    .from("status_components")
-    .select("*")
-    .order("order_index");
+(async () => {
+  log("Querying table...");
+  const { data, error } = await supabase.from("status_components").select("*");
 
   if(error){
     log("ERROR: " + JSON.stringify(error));
-    componentsDiv.innerHTML = "<div class='card'>Failed to load status.</div>";
-    return;
+  } else {
+    log("Rows: " + data.length);
+    log(JSON.stringify(data, null, 2));
   }
-
-  log("Loaded " + data.length + " components");
-
-  componentsDiv.innerHTML = "";
-
-  data.forEach(c=>{
-    const div = document.createElement("div");
-    div.className = "card";
-
-    let statusClass = "ok";
-    if(c.status.toLowerCase().includes("degrad")) statusClass="degraded";
-    if(c.status.toLowerCase().includes("down")) statusClass="down";
-
-    div.innerHTML = `
-      <strong>${c.name}</strong><br>
-      <small>${c.description || ""}</small><br><br>
-      Status: <span class="${statusClass}">${c.status}</span>
-    `;
-    componentsDiv.appendChild(div);
-  });
-}
-
-loadStatus();
-
-/* Auto refresh every 60s */
-setInterval(loadStatus, 60000);
+})();
 </script>
 
 </body>
