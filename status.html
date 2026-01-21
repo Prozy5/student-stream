@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>StudentStream Status</title>
+  <style>
+    body { font-family: system-ui; background:#0f172a; color:white; padding:30px; }
+    .card { background:#1e293b; padding:16px; margin:12px 0; border-radius:10px; }
+    .ok { color:#22c55e; }
+  </style>
+</head>
+<body>
+
+<h1>StudentStream Status</h1>
+
+<h2>System Components</h2>
+<div id="components">Loading...</div>
+
+<h2>Debug</h2>
+<pre id="debug">Starting...</pre>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "PASTE_YOURS";
+const SUPABASE_ANON_KEY = "PASTE_YOURS";
+
+const debug = document.getElementById("debug");
+const componentsDiv = document.getElementById("components");
+
+function log(msg) {
+  debug.textContent += "\n" + msg;
+}
+
+async function loadStatus() {
+  log("Creating client...");
+
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  log("Querying status_components...");
+
+  const { data, error } = await supabase
+    .from("status_components")
+    .select("*")
+    .order("order_index");
+
+  if (error) {
+    log("ERROR: " + JSON.stringify(error));
+    componentsDiv.textContent = "Failed to load.";
+    return;
+  }
+
+  log("Loaded " + data.length + " components");
+
+  componentsDiv.innerHTML = "";
+
+  data.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <strong>${c.name}</strong><br>
+      ${c.description}<br>
+      Status: <span class="ok">${c.status}</span>
+    `;
+    componentsDiv.appendChild(div);
+  });
+}
+
+loadStatus();
+</script>
+
+</body>
+</html>
