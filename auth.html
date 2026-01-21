@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>StudentStream – Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{font-family:sans-serif;background:#0f0f14;color:white;display:flex;align-items:center;justify-content:center;height:100vh}
+.box{background:#161622;padding:25px;border-radius:12px;width:320px}
+input,button{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none}
+button{background:#4f46e5;color:white;font-weight:bold}
+.toggle{color:#aaa;font-size:13px;margin-top:10px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2 id="title">Login</h2>
+
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="submitAuth()">Continue</button>
+
+  <div class="toggle" onclick="toggleMode()">Create account instead</div>
+  <div id="msg"></div>
+</div>
+
+<script>
+const supabase = window.supabase.createClient(
+  "YOUR_PROJECT_URL",
+  "YOUR_ANON_KEY"
+)
+
+let mode = "login"
+
+function toggleMode(){
+  mode = mode === "login" ? "signup" : "login"
+  document.getElementById("title").innerText = mode === "login" ? "Login" : "Sign up"
+}
+
+async function submitAuth(){
+  const email = email.value
+  const password = password.value
+
+  let res
+
+  if(mode==="login"){
+    res = await supabase.auth.signInWithPassword({email,password})
+  } else {
+    res = await supabase.auth.signUp({email,password})
+  }
+
+  if(res.error){
+    msg.innerText = res.error.message
+  } else {
+    window.location.href = "/forum/index.html"
+  }
+}
+</script>
+
+</body>
+</html>
