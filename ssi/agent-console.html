@@ -1,44 +1,72 @@
 <!DOCTYPE html>
 <html>
-<head><link rel="stylesheet" href="style.css"></head>
+<head>
+<title>Agent Console</title>
+<style>
+body{background:#05070d;color:#dbe7ff;font-family:sans-serif;padding:20px}
+input,textarea,button{width:100%;padding:10px;margin:5px;background:#020617;color:white;border:1px solid #334155}
+.case{border:1px solid #1e293b;padding:10px;margin:10px}
+</style>
+</head>
 <body>
 
-<header>
-Agent Console
-<button onclick="logout()" style="float:right">Logout</button>
-</header>
+<h2>Agent Console</h2>
+<button onclick="logout()">Logout</button>
 
-<div class="container">
-<a href="new-case.html">+ New Case</a>
+<h3>Create Case</h3>
+<input id="title" placeholder="Title">
+<textarea id="desc" placeholder="Description"></textarea>
+<button onclick="createCase()">Create</button>
+
+<h3>Upload Evidence</h3>
+<input type="file" id="file">
+<input id="caseid" placeholder="Case ID">
+<button onclick="upload()">Upload</button>
+
 <div id="cases"></div>
-</div>
 
-<script src="supabase.js"></script>
-<script>
-async function protect(){
- const {data}=await supabase.auth.getSession();
- if(!data.session) location="agent-login.html";
-}
-protect();
+<script type="module">
+import { supabase } from "./supabase.js";
 
-async function load(){
- const {data}=await supabase.from("cases").select("*").order("created_at",{ascending:false});
- const box=document.getElementById("cases");
- box.innerHTML="";
- data.forEach(c=>{
-   box.innerHTML+=`
-   <div class="card">
-     ${c.case_number} - ${c.title}
-     <a href="case.html?id=${c.id}">Open</a>
-   </div>`;
- });
-}
-load();
+const {data:user}=await supabase.auth.getUser();
+if(!user.user) location.href="login.html";
 
 async function logout(){
- await supabase.auth.signOut();
- location="agent-login.html";
+  await supabase.auth.signOut();
+  location.href="index.html";
 }
+
+async function createCase(){
+  await supabase.from("cases").insert({
+    title:title.value,
+    description:desc.value
+  });
+  alert("Case created");
+  loadCases();
+}
+
+async function upload(){
+  const f=file.files[0];
+  const path=`${Date.now()}_${f.name}`;
+
+  await supabase.storage.from("evidence").upload(path,f);
+
+  await supabase.from("evidence").insert({
+    case_id:caseid.value,
+    file_url:path
+  });
+
+  alert("Uploaded");
+}
+
+async function loadCases(){
+  const {data}=await supabase.from("cases").select("*");
+  cases.innerHTML=data.map(c=>`<div class="case">${c.title} (${c.id})</div>`).join("");
+}
+
+const cases=document.getElementById("cases");
+loadCases();
 </script>
+
 </body>
 </html>
