@@ -1,60 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>SS:I – StudentStream Investigations</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SS:I — StudentStream Investigations</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
 
-<div class="top">
-<img src="ssi-logo.png" class="logo">
-<h1>StudentStream Investigations</h1>
-<p>Documenting the unexplained. Researching the ignored.</p>
+  <header class="hero">
+    <img src="ssi-logo.png" class="logo" onerror="this.style.display='none'">
+    <h1>StudentStream Investigations</h1>
+    <p class="tagline">Documenting the unexplained. Researching the ignored.</p>
+  </header>
+
+  <section class="mission">
+    <h2>Mission</h2>
+    <p>
+      StudentStream Investigations (SS:I) is a digital research and documentation division created to explore
+      unexplained events, strange stories, hidden internet phenomena, and real-world mysteries through structured
+      investigation, media, and analysis.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Case Files</h2>
+    <div class="card">CASE-001 — Initial Investigation (Coming Soon)</div>
+    <div class="card locked">CASE-002 — Classified</div>
+    <div class="card locked">CASE-003 — Classified</div>
+  </section>
+
+  <section class="section">
+    <h2>Video Reports</h2>
+    <div class="muted">No reports published yet.</div>
+  </section>
+
+  <footer>
+    © 2026 StudentStream Investigations
+  </footer>
+
 </div>
 
-<h2>Case Files</h2>
-<div id="cases"></div>
-
-<h2>Video Reports</h2>
-<div id="videos"></div>
-
-<div class="footer">© 2026 StudentStream Investigations</div>
-
-</div>
-
-<script src="supabase.js"></script>
-<script>
-
-async function loadCases(){
- const {data}=await supabase.from("cases").select("*").order("created_at",{ascending:false});
- const el=document.getElementById("cases");
- el.innerHTML="";
- data.forEach(c=>{
-  el.innerHTML+=`
-  <div class="card" onclick="openCase('${c.id}')">
-   ${c.classified?"🔒 CLASSIFIED":c.title}
-  </div>`;
- });
-}
-
-async function loadVideos(){
- const {data}=await supabase.from("videos").select("*").order("created_at",{ascending:false});
- const el=document.getElementById("videos");
- el.innerHTML="";
- data.forEach(v=>{
-  el.innerHTML+=`<div class="card">${v.title}</div>`;
- });
-}
-
-function openCase(id){
- location.href="case.html?id="+id;
-}
-
-loadCases();
-loadVideos();
-
-</script>
 </body>
 </html>
