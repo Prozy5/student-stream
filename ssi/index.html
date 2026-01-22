@@ -2,50 +2,56 @@
 <html>
 <head>
 <title>StudentStream Investigations</title>
-<link rel="stylesheet" href="style.css">
+<style>
+body{margin:0;font-family:sans-serif;background:#05070d;color:#dbe7ff}
+header{padding:20px;border-bottom:1px solid #1f2b45}
+.case{background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:15px;margin:15px}
+input{padding:10px;width:100%;background:#020617;color:white;border:1px solid #334155}
+a{color:#7aa2ff;text-decoration:none}
+</style>
 </head>
 <body>
 
 <header>
-  <b>StudentStream Investigations</b>
-  <a href="agent-login.html" style="float:right">Agent Login</a>
+<h2>StudentStream Investigations</h2>
+<a href="login.html">Agent Console</a>
 </header>
 
-<div class="container">
-  <input id="search" placeholder="Search cases">
-  <div id="cases"></div>
+<div style="padding:20px">
+<input id="search" placeholder="Search cases">
+<div id="cases"></div>
 </div>
 
-<script src="supabase.js"></script>
-<script>
-let page=0;
+<script type="module">
+import { supabase } from "./supabase.js";
+
+const casesDiv=document.getElementById("cases");
+const search=document.getElementById("search");
 
 async function loadCases(){
-  const q = document.getElementById("search").value;
+  const {data}=await supabase.from("cases").select("*").order("created_at",{ascending:false});
+  render(data);
+}
 
-  let req = supabase.from("cases")
-    .select("*")
-    .ilike("title", `%${q}%`)
-    .range(page*10, page*10+9)
-    .order("created_at",{ascending:false});
-
-  const {data} = await req;
-
-  const box=document.getElementById("cases");
-  box.innerHTML="";
-
-  data.forEach(c=>{
-    box.innerHTML+=`
-      <div class="card">
-        <b>${c.case_number}</b> — ${c.title}<br>
-        Status: ${c.status}<br>
-        <a href="case.html?id=${c.id}">Open Case</a>
-      </div>`;
+function render(list){
+  casesDiv.innerHTML="";
+  list.forEach(c=>{
+    casesDiv.innerHTML+=`
+    <div class="case">
+      <h3>${c.title}</h3>
+      <p>Status: ${c.status}</p>
+      <a href="case.html?id=${c.id}">Open Case</a>
+    </div>`;
   });
 }
 
-document.getElementById("search").oninput=loadCases;
+search.oninput=async()=>{
+  const {data}=await supabase.from("cases").select("*").ilike("title",`%${search.value}%`);
+  render(data);
+}
+
 loadCases();
 </script>
+
 </body>
 </html>
