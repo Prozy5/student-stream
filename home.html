@@ -1,256 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>StudentStream — Digital Intelligence Platform</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>StudentStream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-:root{
-  --bg:#050b14;
-  --panel:#0b1624;
-  --text:#eaf2ff;
-  --muted:#9bb0d3;
-  --accent:#3fa9ff;
-}
+  <style>
+    :root{
+      --bg:#050b14;
+      --panel:#0b1624;
+      --text:#e8f0ff;
+      --muted:#8aa0c4;
+      --accent:#3fa9ff;
+    }
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0b1c33,#050b14 60%);
-  color:var(--text);
-}
+    *{box-sizing:border-box}
 
-a{color:inherit;text-decoration:none}
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      background:radial-gradient(circle at top,#0b1c33,#050b14 60%);
+      color:var(--text);
+    }
 
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:30px 20px;
-}
+    nav{
+      display:flex;
+      gap:20px;
+      padding:18px 24px;
+      background:rgba(10,20,40,.6);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid #14284a;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
 
-/* Header */
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:60px;
-}
+    nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:600;
+    }
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-weight:700;
-  font-size:1.2rem;
-}
+    nav a:hover{
+      color:var(--accent);
+    }
 
-.logo img{
-  width:38px;
-  height:38px;
-  border-radius:8px;
-}
+    .container{
+      max-width:900px;
+      margin:auto;
+      padding:60px 20px;
+      text-align:center;
+    }
 
-nav a{
-  margin-left:22px;
-  color:var(--muted);
-  font-weight:500;
-}
-nav a:hover{color:var(--text)}
+    h1{
+      font-size:3rem;
+      margin-bottom:10px;
+    }
 
-/* Hero */
-.hero{
-  text-align:left;
-  padding:70px 0;
-}
+    .tagline{
+      color:var(--muted);
+      font-size:1.2rem;
+      margin-bottom:40px;
+    }
 
-.hero h1{
-  font-size:3rem;
-  line-height:1.1;
-  margin:0 0 15px;
-}
+    .actions{
+      display:flex;
+      gap:16px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
 
-.hero p{
-  color:var(--muted);
-  max-width:600px;
-  font-size:1.1rem;
-}
+    button{
+      padding:14px 26px;
+      border-radius:10px;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      font-size:1rem;
+    }
 
-.hero-buttons{
-  margin-top:30px;
-}
+    .primary{
+      background:linear-gradient(135deg,#3fa9ff,#2f6bff);
+      color:white;
+    }
 
-.btn{
-  display:inline-block;
-  padding:12px 22px;
-  border-radius:10px;
-  margin-right:12px;
-  font-weight:600;
-  background:var(--accent);
-  color:#04111f;
-}
+    .secondary{
+      background:#0b1624;
+      color:var(--text);
+      border:1px solid #1c3766;
+    }
 
-.btn.secondary{
-  background:transparent;
-  border:1px solid #1f355a;
-  color:var(--text);
-}
+    .features{
+      margin-top:80px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:20px;
+      text-align:left;
+    }
 
-/* Sections */
-.section{
-  margin-top:80px;
-}
+    .card{
+      background:linear-gradient(135deg,#0d1f38,#08111f);
+      padding:20px;
+      border-radius:14px;
+      border:1px solid #13284d;
+    }
 
-.section h2{
-  margin-bottom:20px;
-  font-size:1.7rem;
-}
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:18px;
-}
-
-.card{
-  background:linear-gradient(135deg,#0d1f38,#08111f);
-  padding:22px;
-  border-radius:14px;
-  border:1px solid #13284d;
-}
-
-.card p{
-  color:var(--muted);
-  font-size:.95rem;
-}
-
-/* Stats */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:18px;
-}
-
-.stat{
-  background:linear-gradient(135deg,#0d1f38,#08111f);
-  padding:22px;
-  border-radius:14px;
-  border:1px solid #13284d;
-  text-align:center;
-}
-
-.stat strong{
-  font-size:1.8rem;
-  display:block;
-}
-
-/* Footer */
-footer{
-  margin-top:120px;
-  padding:40px 0;
-  text-align:center;
-  color:var(--muted);
-  font-size:.9rem;
-  border-top:1px solid #13284d;
-}
-</style>
+    footer{
+      margin-top:100px;
+      padding:40px 20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+  </style>
 </head>
+
 <body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="explore.html">Explore</a>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="profile.html">Profile</a>
+</nav>
 
 <div class="container">
 
-<header>
-  <div class="logo">
-    <!-- optional logo -->
-    <!-- <img src="ssi-logo.png" alt="StudentStream"> -->
-    StudentStream
-  </div>
-
-  <nav>
-    <a href="home.html">Home</a>
-    <a href="index.html">Investigations</a>
-    <a href="#">Community</a>
-    <a href="#">Reports</a>
-    <a href="#">About</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <h1>Student-powered<br>digital intelligence platform</h1>
-  <p>
-    StudentStream is a modern research and media platform documenting digital culture,
-    real-world anomalies, emerging phenomena, and internet-based investigations.
+  <h1>StudentStream</h1>
+  <p class="tagline">
+    A next-generation platform for students and creators to stream, share, build communities, and launch digital projects.
   </p>
 
-  <div class="hero-buttons">
-    <a class="btn" href="index.html">View Investigations</a>
-    <a class="btn secondary" href="#">Join Platform</a>
+  <div class="actions">
+    <button class="primary" id="startBtn">Start Streaming</button>
+    <button class="secondary" onclick="location.href='explore.html'">Explore Streams</button>
   </div>
-</section>
 
-<section class="section">
-  <h2>Platform Divisions</h2>
+  <div class="features">
 
-  <div class="cards">
     <div class="card">
-      <h3>SS:I — Investigations</h3>
-      <p>Structured research into unexplained events, digital anomalies, and real-world cases.</p>
+      <h3>🎥 Live Streaming</h3>
+      <p>Stream instantly with low-latency technology built for student creators.</p>
     </div>
 
     <div class="card">
-      <h3>Community</h3>
-      <p>Student-driven discussion, reporting, and collaborative research tools.</p>
+      <h3>🧑‍🤝‍🧑 Communities</h3>
+      <p>Create channels, grow audiences, and collaborate with other students.</p>
     </div>
 
     <div class="card">
-      <h3>Video Reports</h3>
-      <p>Documentary-style breakdowns and case analysis.</p>
+      <h3>🛒 Marketplace</h3>
+      <p>Sell digital products, services, and creator tools directly.</p>
     </div>
 
     <div class="card">
-      <h3>Public Archive</h3>
-      <p>Open intelligence database of investigations and findings.</p>
+      <h3>🕵️ SS:I Division</h3>
+      <p>Explore StudentStream Investigations — digital intelligence & anomaly research.</p>
+      <button class="secondary" style="margin-top:10px" onclick="location.href='ssi/index.html'">
+        Visit SS:I
+      </button>
     </div>
+
   </div>
-</section>
-
-<section class="section">
-  <h2>Live Platform Overview</h2>
-
-  <div class="stats">
-    <div class="stat">
-      <strong>4</strong>
-      Active Cases
-    </div>
-    <div class="stat">
-      <strong>1</strong>
-      Divisions
-    </div>
-    <div class="stat">
-      <strong>2026</strong>
-      Founded
-    </div>
-    <div class="stat">
-      <strong>Public</strong>
-      Intelligence Archive
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <h2>About StudentStream</h2>
-  <p class="subtitle">
-    StudentStream is an independent student-founded digital intelligence platform focused on
-    responsible investigation, documentation, and public reporting of emerging and unexplained phenomena.
-  </p>
-</section>
-
-<footer>
-  © 2026 StudentStream Platform · All rights reserved
-</footer>
 
 </div>
 
+<footer>
+  © 2026 StudentStream • Built for creators & students
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
