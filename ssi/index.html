@@ -1,54 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <title>StudentStream Investigations</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header>
-  <h1>StudentStream Investigations</h1>
-  <p>Documenting the unexplained. Researching the ignored.</p>
-  <nav>
-    <a href="agent.html">Agent Console</a>
-  </nav>
-</header>
+<h1>StudentStream Investigations</h1>
+<p>Documenting the unexplained.</p>
 
-<section id="cases">
-  <h2>Active Case Files</h2>
-  <div id="caseList"></div>
-</section>
+<input id="search" placeholder="Search cases">
 
-<section id="videos">
-  <h2>Video Reports</h2>
-  <p>No reports published yet.</p>
-</section>
-
-<footer>
-  © 2026 StudentStream Investigations
-</footer>
+<div id="cases"></div>
+<button onclick="prev()">Prev</button>
+<button onclick="next()">Next</button>
 
 <script type="module">
-import { supabase } from './supabase.js';
+import { supabase } from "./supabase.js";
+
+let page = 0;
+const limit = 5;
 
 async function loadCases() {
-  const { data } = await supabase.from('cases').select('*').order('created_at', { ascending: false });
+  const { data } = await supabase
+    .from("cases")
+    .select("*")
+    .range(page*limit, page*limit+limit-1)
+    .order("created_at", { ascending:false });
 
-  const container = document.getElementById('caseList');
-  container.innerHTML = '';
-
-  data.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'caseCard';
-    div.innerHTML = `
-      <h3>${c.title}</h3>
-      <p>Status: ${c.status}</p>
-      <a href="case.html?id=${c.id}">Open Case</a>
-    `;
-    container.appendChild(div);
-  });
+  cases.innerHTML = data.map(c =>
+    `<div onclick="openCase('${c.id}')">${c.title}</div>`
+  ).join("");
 }
+
+window.openCase = id => location.href = `case.html?id=${id}`;
+window.next = ()=>{page++; loadCases();}
+window.prev = ()=>{if(page>0){page--; loadCases();}}
 
 loadCases();
 </script>
