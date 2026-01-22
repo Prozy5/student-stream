@@ -1,70 +1,284 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Agent Console</title>
+<meta charset="UTF-8">
+<title>SSI Agent Console</title>
+
 <style>
-body{background:#05070d;color:#dbe7ff;font-family:sans-serif;padding:20px}
-input,textarea,button{width:100%;padding:10px;margin:5px;background:#020617;color:white;border:1px solid #334155}
-.case{border:1px solid #1e293b;padding:10px;margin:10px}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0b1325,#02040a);
+  color:#dbe7ff;
+}
+
+header{
+  padding:20px;
+  border-bottom:1px solid #1e2a44;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#060b18;
+}
+
+.container{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  height:calc(100vh - 80px);
+}
+
+.panel{
+  border-right:1px solid #1e2a44;
+  padding:15px;
+  overflow:auto;
+}
+
+.main{
+  padding:20px;
+  overflow:auto;
+}
+
+h2,h3{margin-top:0}
+
+input,textarea,select,button{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  background:#020617;
+  color:#e5edff;
+  border:1px solid #2a3b63;
+  border-radius:6px;
+}
+
+button{
+  background:#1b2b55;
+  cursor:pointer;
+}
+button:hover{background:#263b73}
+
+.case{
+  padding:10px;
+  margin:8px 0;
+  border:1px solid #1e2a44;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.case:hover{background:#0c142b}
+
+.badge{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:12px;
+  background:#22345f;
+  margin-left:5px;
+}
+
+.section{
+  border:1px solid #1e2a44;
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:15px;
+  background:#060b18;
+}
+
+.comment{
+  border-bottom:1px solid #1e2a44;
+  padding:6px 0;
+  font-size:14px;
+}
+
+.small{font-size:12px;color:#9fb3ff}
 </style>
 </head>
 <body>
 
-<h2>Agent Console</h2>
-<button onclick="logout()">Logout</button>
+<header>
+  <div>
+    <strong>StudentStream Investigations</strong><br>
+    <span class="small">Agent Secure Console</span>
+  </div>
+  <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+<!-- LEFT PANEL -->
+<div class="panel">
 
 <h3>Create Case</h3>
-<input id="title" placeholder="Title">
-<textarea id="desc" placeholder="Description"></textarea>
-<button onclick="createCase()">Create</button>
+<input id="newTitle" placeholder="Case title">
+<textarea id="newDesc" placeholder="Case description"></textarea>
+<button onclick="createCase()">Create Case</button>
 
+<hr>
+
+<h3>Search Cases</h3>
+<input id="search" placeholder="Search...">
+
+<div id="caseList"></div>
+
+</div>
+
+<!-- MAIN PANEL -->
+<div class="main">
+
+<div class="section">
+<h3>Selected Case</h3>
+<div id="caseInfo">Select a case</div>
+
+<select id="statusSelect">
+  <option value="open">Open</option>
+  <option value="investigating">Investigating</option>
+  <option value="closed">Closed</option>
+</select>
+<button onclick="updateStatus()">Update Status</button>
+<button onclick="deleteCase()" style="background:#5a1e1e">Delete Case</button>
+</div>
+
+<div class="section">
 <h3>Upload Evidence</h3>
 <input type="file" id="file">
-<input id="caseid" placeholder="Case ID">
-<button onclick="upload()">Upload</button>
+<button onclick="uploadEvidence()">Upload</button>
+<div id="evidenceList"></div>
+</div>
 
-<div id="cases"></div>
+<div class="section">
+<h3>Case Comments</h3>
+<div id="comments"></div>
+<textarea id="commentText" placeholder="Write comment..."></textarea>
+<button onclick="postComment()">Post Comment</button>
+</div>
+
+</div>
+</div>
 
 <script type="module">
 import { supabase } from "./supabase.js";
 
+let currentCase=null;
+
+const caseList=document.getElementById("caseList");
+const caseInfo=document.getElementById("caseInfo");
+const commentsDiv=document.getElementById("comments");
+const evidenceList=document.getElementById("evidenceList");
+
 const {data:user}=await supabase.auth.getUser();
-if(!user.user) location.href="login.html";
+if(!user.user){
+  location.href="login.html";
+}
 
 async function logout(){
   await supabase.auth.signOut();
   location.href="index.html";
 }
 
-async function createCase(){
-  await supabase.from("cases").insert({
-    title:title.value,
-    description:desc.value
+async function loadCases(filter=""){
+  let q=supabase.from("cases").select("*").order("created_at",{ascending:false});
+  if(filter) q=q.ilike("title",`%${filter}%`);
+  const {data}=await q;
+
+  caseList.innerHTML="";
+  data.forEach(c=>{
+    const div=document.createElement("div");
+    div.className="case";
+    div.innerHTML=`${c.title} <span class="badge">${c.status}</span>`;
+    div.onclick=()=>selectCase(c);
+    caseList.appendChild(div);
   });
-  alert("Case created");
+}
+
+async function selectCase(c){
+  currentCase=c;
+  caseInfo.innerHTML=`
+    <b>${c.title}</b><br>
+    <span class="small">${c.id}</span><br><br>
+    ${c.description}
+  `;
+  document.getElementById("statusSelect").value=c.status;
+  loadComments();
+  loadEvidence();
+}
+
+async function createCase(){
+  const title=newTitle.value.trim();
+  if(!title) return alert("Title required");
+
+  await supabase.from("cases").insert({
+    title:title,
+    description:newDesc.value
+  });
+
+  newTitle.value="";
+  newDesc.value="";
   loadCases();
 }
 
-async function upload(){
-  const f=file.files[0];
-  const path=`${Date.now()}_${f.name}`;
+async function updateStatus(){
+  if(!currentCase) return;
+  const status=statusSelect.value;
+  await supabase.from("cases").update({status}).eq("id",currentCase.id);
+  currentCase.status=status;
+  loadCases();
+}
 
+async function deleteCase(){
+  if(!currentCase) return;
+  if(!confirm("Delete case permanently?")) return;
+  await supabase.from("cases").delete().eq("id",currentCase.id);
+  currentCase=null;
+  caseInfo.innerHTML="Select a case";
+  loadCases();
+}
+
+async function postComment(){
+  if(!currentCase) return;
+
+  await supabase.from("comments").insert({
+    case_id:currentCase.id,
+    author:user.user.email,
+    message:commentText.value
+  });
+  commentText.value="";
+  loadComments();
+}
+
+async function loadComments(){
+  const {data}=await supabase.from("comments").select("*").eq("case_id",currentCase.id).order("created_at");
+  commentsDiv.innerHTML=data.map(c=>`
+    <div class="comment">
+      <b>${c.author}</b>: ${c.message}
+    </div>
+  `).join("");
+}
+
+async function uploadEvidence(){
+  if(!currentCase) return;
+  const f=file.files[0];
+  if(!f) return alert("Select file");
+
+  const path=`${currentCase.id}/${Date.now()}_${f.name}`;
   await supabase.storage.from("evidence").upload(path,f);
 
   await supabase.from("evidence").insert({
-    case_id:caseid.value,
+    case_id:currentCase.id,
     file_url:path
   });
 
-  alert("Uploaded");
+  loadEvidence();
 }
 
-async function loadCases(){
-  const {data}=await supabase.from("cases").select("*");
-  cases.innerHTML=data.map(c=>`<div class="case">${c.title} (${c.id})</div>`).join("");
+async function loadEvidence(){
+  const {data}=await supabase.from("evidence").select("*").eq("case_id",currentCase.id);
+  evidenceList.innerHTML=data.map(e=>`
+    <div class="small">📁 ${e.file_url}</div>
+  `).join("");
 }
 
-const cases=document.getElementById("cases");
+search.oninput=()=>loadCases(search.value);
+
 loadCases();
 </script>
 
