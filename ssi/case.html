@@ -1,41 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SSI Cases</title>
-  <style>
-    body{background:#0b0f14;color:#9ecbff;font-family:sans-serif}
-    .case{padding:10px;border-bottom:1px solid #1c2b3a;cursor:pointer}
-  </style>
+<meta charset="UTF-8">
+<title>SSI Case File</title>
+
+<style>
+body{
+  margin:0;
+  background:#05070c;
+  color:#9ecbff;
+  font-family:system-ui,Segoe UI,Roboto,Arial;
+}
+a{color:#7db4ff;text-decoration:none}
+.header{
+  padding:18px 22px;
+  border-bottom:1px solid #1b2b3c;
+}
+.section{
+  padding:20px 22px;
+  border-bottom:1px solid #122;
+}
+h2,h3{margin:0 0 12px 0;font-weight:600}
+textarea,input{
+  width:100%;
+  background:#0c1118;
+  color:#9ecbff;
+  border:1px solid #23384d;
+  padding:8px;
+  border-radius:6px;
+}
+button{
+  margin-top:8px;
+  background:#132235;
+  color:#9ecbff;
+  border:1px solid #2b4a6b;
+  padding:8px 14px;
+  border-radius:6px;
+  cursor:pointer;
+}
+button:hover{background:#1a2f49}
+.comment{
+  padding:8px 0;
+  border-bottom:1px solid #1a2633;
+  font-size:14px;
+}
+.case-id{
+  font-size:13px;
+  color:#6ea3e0;
+  margin-top:4px;
+}
+</style>
 </head>
 <body>
 
-<h1>SSI Case Files</h1>
+<div class="header">
+  <a href="cases.html">← Back to cases</a>
+  <div class="case-id" id="caseId"></div>
+  <h2 id="title">Loading…</h2>
+</div>
 
-<div id="cases"></div>
+<div class="section">
+  <h3>Case Notes</h3>
+  <textarea id="notes" rows="6" placeholder="Enter investigation notes..."></textarea>
+  <button id="saveNotes">Save Notes</button>
+</div>
 
-<h3>Create Case</h3>
-<input id="title" placeholder="Title">
-<button id="create">Create</button>
+<div class="section">
+  <h3>Comments / Updates</h3>
+  <div id="comments"></div>
+  <input id="commentInput" placeholder="Add update...">
+  <button id="sendComment">Submit</button>
+</div>
 
 <script type="module">
 import { supabase } from "./supabase.js";
 
-async function loadCases(){
-  const { data } = await supabase.from("cases").select("*").order("id");
-  document.getElementById("cases").innerHTML = data.map(c =>
-    `<div class="case" onclick="location='case.html?id=${c.id}'">
-      CASE-${String(c.id).padStart(3,"0")} — ${c.title}
-    </div>`
-  ).join("");
+const params = new URLSearchParams(window.location.search);
+const caseId = params.get("id");
+
+document.getElementById("caseId").innerText =
+  "CASE-" + String(caseId).padStart(3,"0");
+
+async function loadCase(){
+  const { data, error } = await supabase
+    .from("cases")
+    .select("*")
+    .eq("id", caseId)
+    .single();
+
+  if(error){
+    document.getElementById("title").innerText = "Case not found";
+    return;
+  }
+
+  document.getElementById("title").innerText = data.title;
+  document.getElementById("notes").value = data.notes || "";
 }
 
-document.getElementById("create").onclick = async ()=>{
-  const title = document.getElementById("title").value;
-  await supabase.from("cases").insert({ title });
-  loadCases();
+async function loadComments(){
+  const { data } = await supabase
+    .from("case_comments")
+    .select("*")
+    .eq("case_id", caseId)
+    .order("id");
+
+  document.getElementById("comments").innerHTML =
+    data.map(c => `<div class="comment">${c.content}</div>`).join("");
+}
+
+document.getElementById("saveNotes").onclick = async () => {
+  const notes = document.getElementById("notes").value;
+
+  await supabase
+    .from("cases")
+    .update({ notes })
+    .eq("id", caseId);
 };
 
-loadCases();
+document.getElementById("sendComment").onclick = async () => {
+  const content = document.getElementById("commentInput").value.trim();
+  if(!content) return;
+
+  await supabase
+    .from("case_comments")
+    .insert({ case_id: caseId, content });
+
+  document.getElementById("commentInput").value = "";
+  loadComments();
+};
+
+loadCase();
+loadComments();
 </script>
+
 </body>
 </html>
