@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SS:I Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{background:#050b14;color:#e8f0ff;font-family:system-ui;padding:20px}
+input,textarea,select,button{width:100%;padding:8px;margin:6px 0}
+.panel{max-width:600px;margin:auto}
+</style>
+</head>
+<body>
+
+<div class="panel">
+<h1>SS:I Admin Panel</h1>
+
+<h3>New Case</h3>
+<input id="title" placeholder="Case title">
+<textarea id="desc" placeholder="Description"></textarea>
+<select id="status">
+<option>open</option>
+<option>closed</option>
+<option>classified</option>
+</select>
+<button onclick="addCase()">Create Case</button>
+
+<h3>Add Video Report</h3>
+<input id="vtitle" placeholder="Video title">
+<input id="vurl" placeholder="YouTube URL">
+<button onclick="addVideo()">Add Video</button>
+
+<p id="msg"></p>
+</div>
+
+<script>
+const db = supabase.createClient("YOUR_URL","YOUR_PUBLIC_KEY");
+
+async function addCase(){
+  await db.from("cases").insert({
+    title:title.value,
+    description:desc.value,
+    status:status.value
+  });
+  msg.innerText="Case added.";
+}
+
+async function addVideo(){
+  await db.from("video_reports").insert({
+    title:vtitle.value,
+    youtube_url:vurl.value
+  });
+  msg.innerText="Video report added.";
+}
+</script>
+</body>
+</html>
