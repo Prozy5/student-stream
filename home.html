@@ -4,172 +4,46 @@
   <meta charset="UTF-8">
   <title>StudentStream</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <style>
-    :root{
-      --bg:#050b14;
-      --panel:#0b1624;
-      --text:#e8f0ff;
-      --muted:#8aa0c4;
-      --accent:#3fa9ff;
-    }
-
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      font-family:system-ui,Segoe UI,Roboto,Arial;
-      background:radial-gradient(circle at top,#0b1c33,#050b14 60%);
-      color:var(--text);
-    }
-
-    nav{
-      display:flex;
-      gap:20px;
-      padding:18px 24px;
-      background:rgba(10,20,40,.6);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid #14284a;
-      position:sticky;
-      top:0;
-      z-index:10;
-    }
-
-    nav a{
-      color:var(--muted);
-      text-decoration:none;
-      font-weight:600;
-    }
-
-    nav a:hover{
-      color:var(--accent);
-    }
-
-    .container{
-      max-width:900px;
-      margin:auto;
-      padding:60px 20px;
-      text-align:center;
-    }
-
-    h1{
-      font-size:3rem;
-      margin-bottom:10px;
-    }
-
-    .tagline{
-      color:var(--muted);
-      font-size:1.2rem;
-      margin-bottom:40px;
-    }
-
-    .actions{
-      display:flex;
-      gap:16px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
-
-    button{
-      padding:14px 26px;
-      border-radius:10px;
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-      font-size:1rem;
-    }
-
-    .primary{
-      background:linear-gradient(135deg,#3fa9ff,#2f6bff);
-      color:white;
-    }
-
-    .secondary{
-      background:#0b1624;
-      color:var(--text);
-      border:1px solid #1c3766;
-    }
-
-    .features{
-      margin-top:80px;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:20px;
-      text-align:left;
-    }
-
-    .card{
-      background:linear-gradient(135deg,#0d1f38,#08111f);
-      padding:20px;
-      border-radius:14px;
-      border:1px solid #13284d;
-    }
-
-    footer{
-      margin-top:100px;
-      padding:40px 20px;
-      text-align:center;
-      color:var(--muted);
-      font-size:.9rem;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
+
+<script src="streams.js"></script>
 
 <body>
 
-<nav>
+<nav class="nav">
   <a href="index.html">Home</a>
   <a href="explore.html">Explore</a>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="marketplace.html">Marketplace</a>
+  <a href="clips.html">Clips</a>
+  <a href="messages.html">Messages</a>
+  <a href="status.html">Status</a>
   <a href="profile.html">Profile</a>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="apply.html">Apply</a>
+  <a href="ssi/index.html">SS:I</a>
 </nav>
 
-<div class="container">
+<main class="container">
 
   <h1>StudentStream</h1>
-  <p class="tagline">
-    A next-generation platform for students and creators to stream, share, build communities, and launch digital projects.
+
+  <p class="subtitle">
+    StudentStream is a startup technology company building a digital platform for emerging creators
+    and young entrepreneurs.
   </p>
 
-  <div class="actions">
-    <button class="primary" id="startBtn">Start Streaming</button>
-    <button class="secondary" onclick="location.href='explore.html'">Explore Streams</button>
-  </div>
+  <p>
+    Our goal is to help people get discovered, grow their audience, and turn creative work into real opportunities.
+    While major platforms promote creators who are already famous, StudentStream is built to highlight smaller
+    creators first — giving them a fair chance to be seen, connect with supporters, collaborate with others,
+    and earn from what they create.
+  </p>
 
-  <div class="features">
+  <button id="startBtn">Access Platform</button>
 
-    <div class="card">
-      <h3>🎥 Live Streaming</h3>
-      <p>Stream instantly with low-latency technology built for student creators.</p>
-    </div>
-
-    <div class="card">
-      <h3>🧑‍🤝‍🧑 Communities</h3>
-      <p>Create channels, grow audiences, and collaborate with other students.</p>
-    </div>
-
-    <div class="card">
-      <h3>🛒 Marketplace</h3>
-      <p>Sell digital products, services, and creator tools directly.</p>
-    </div>
-
-    <div class="card">
-      <h3>🕵️ SS:I Division</h3>
-      <p>Explore StudentStream Investigations — digital intelligence & anomaly research.</p>
-      <button class="secondary" style="margin-top:10px" onclick="location.href='ssi/index.html'">
-        Visit SS:I
-      </button>
-    </div>
-
-  </div>
-
-</div>
-
-<footer>
-  © 2026 StudentStream • Built for creators & students
-</footer>
+</main>
 
 <script src="script.js"></script>
+
 </body>
 </html>
