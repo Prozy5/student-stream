@@ -1,14 +1,8 @@
-async function getUser() {
-  const { data } = await supabase.auth.getUser();
-  return data.user;
-}
-
-async function ensureProfile(user) {
-  const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  if (!data) {
-    await supabase.from("profiles").insert({
-      id: user.id,
-      username: "user" + Math.floor(Math.random()*9999)
-    });
-  }
+async function login(){
+ const {error}=await supabase.auth.signInWithPassword({
+   email:email.value,
+   password:password.value
+ });
+ if(error) alert(error.message);
+ else location="dashboard.html";
 }
