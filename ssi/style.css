@@ -1,54 +1,68 @@
-*{box-sizing:border-box}
-body{
-margin:0;
-font-family:system-ui,Segoe UI;
-background:radial-gradient(circle at top,#0b1626,#020617 70%);
-color:#cbd5e1;
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.container{max-width:1000px;margin:auto;padding:40px 20px}
+body{
+  background: radial-gradient(circle at top, #0b1220, #05080f);
+  color:#e5e7eb;
+}
 
-h1,h2{color:#e5f2ff}
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:60px 20px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:50px;
+}
 
 .logo{
-width:140px;margin:auto;display:block;filter:drop-shadow(0 0 25px #38bdf8)
+  width:90px;
+  margin-bottom:16px;
+}
+
+h1{
+  font-size:2rem;
+  margin-bottom:8px;
+}
+
+.tagline{
+  color:#9ca3af;
+}
+
+section{
+  margin-top:50px;
+}
+
+h2{
+  color:#93c5fd;
+  margin-bottom:14px;
 }
 
 .card{
-background:linear-gradient(145deg,#0a1b2e,#020617);
-border:1px solid #1e293b;
-border-radius:12px;
-padding:16px;
-margin:12px 0;
-cursor:pointer;
-transition:.2s;
+  background:linear-gradient(180deg,#0f172a,#020617);
+  border:1px solid #1e293b;
+  border-radius:10px;
+  padding:14px;
+  margin-bottom:12px;
 }
 
-.card:hover{border-color:#38bdf8;transform:scale(1.01)}
-
-input,textarea{
-width:100%;
-padding:10px;
-background:#020617;
-border:1px solid #1e293b;
-color:white;
-border-radius:6px;
-margin:6px 0;
+.locked{
+  opacity:0.45;
 }
 
-button{
-background:#38bdf8;
-border:none;
-padding:10px 16px;
-border-radius:6px;
-cursor:pointer;
-font-weight:700;
+.muted{
+  color:#9ca3af;
 }
 
-.top{
-text-align:center;margin-bottom:50px
-}
-
-.footer{
-opacity:.4;text-align:center;margin-top:60px
+footer{
+  margin-top:70px;
+  text-align:center;
+  color:#6b7280;
+  font-size:0.9rem;
 }
