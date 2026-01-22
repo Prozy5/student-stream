@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>StudentStream Investigations</title>
-  <link rel="stylesheet" href="styles.css">
+<title>StudentStream Investigations</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
+<header>
+  <b>StudentStream Investigations</b>
+  <a href="agent-login.html" style="float:right">Agent Login</a>
+</header>
 
-  <div class="header">
-    <h1>StudentStream Investigations</h1>
-    <p>Documenting the unexplained. Researching the ignored.</p>
-
-    <div class="nav">
-      <a href="index.html">Case Files</a>
-      <a href="agent.html">Agent Console</a>
-    </div>
-  </div>
-
-  <div class="section-title">Active Case Files</div>
-
-  <div id="cases" class="case-grid"></div>
-
-  <div class="footer">
-    © 2026 StudentStream Investigations · Classified Systems Division
-  </div>
-
+<div class="container">
+  <input id="search" placeholder="Search cases">
+  <div id="cases"></div>
 </div>
 
-<script type="module">
-import { getCases } from "./supabase.js";
+<script src="supabase.js"></script>
+<script>
+let page=0;
 
-const casesDiv = document.getElementById("cases");
+async function loadCases(){
+  const q = document.getElementById("search").value;
 
-const cases = await getCases();
+  let req = supabase.from("cases")
+    .select("*")
+    .ilike("title", `%${q}%`)
+    .range(page*10, page*10+9)
+    .order("created_at",{ascending:false});
 
-cases.forEach(c => {
-  const el = document.createElement("div");
-  el.className = "case-card";
-  el.innerHTML = `
-    <div class="case-title">${c.title}</div>
-    <div class="case-status">Status: ${c.status}</div>
-    <a href="case.html?id=${c.id}">Open Case File →</a>
-  `;
-  casesDiv.appendChild(el);
-});
+  const {data} = await req;
+
+  const box=document.getElementById("cases");
+  box.innerHTML="";
+
+  data.forEach(c=>{
+    box.innerHTML+=`
+      <div class="card">
+        <b>${c.case_number}</b> — ${c.title}<br>
+        Status: ${c.status}<br>
+        <a href="case.html?id=${c.id}">Open Case</a>
+      </div>`;
+  });
+}
+
+document.getElementById("search").oninput=loadCases;
+loadCases();
 </script>
-
 </body>
 </html>
