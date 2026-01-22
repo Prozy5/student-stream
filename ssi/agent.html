@@ -1,50 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SS:I Agent Console</title>
-<link rel="stylesheet" href="styles.css">
+  <title>SS:I Agent Console</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <h1>SS:I Agent Console</h1>
 
-<h2>Create Case</h2>
-<input id="title" placeholder="Title">
+<h2>Create New Case</h2>
+<input id="title" placeholder="Case Title">
 <textarea id="desc" placeholder="Description"></textarea>
-<button onclick="createCase()">Create</button>
+<button id="createBtn">Create Case</button>
+
+<p id="status"></p>
 
 <h2>Upload Evidence</h2>
 <input id="caseId" placeholder="Case UUID">
-<input type="file" id="file">
-<button onclick="upload()">Upload</button>
+<input type="file" id="fileInput">
+<button id="uploadBtn">Upload</button>
 
 <script type="module">
-import { supabase } from "./supabase.js";
+import { createCase, uploadEvidence } from "./supabase.js";
 
-const session = await supabase.auth.getSession();
-if (!session.data.session) location.href = "login.html";
+document.getElementById("createBtn").onclick = async () => {
+  const title = document.getElementById("title").value;
+  const desc = document.getElementById("desc").value;
 
-async function createCase() {
-  const { data, error } = await supabase.from("cases").insert({
-    title: title.value,
-    description: desc.value
-  }).select().single();
+  try {
+    const c = await createCase(title, desc);
+    document.getElementById("status").innerText = "Created case ID: " + c.id;
+  } catch (e) {
+    alert(e.message);
+  }
+};
 
-  if(error) return alert(error.message);
-  alert("Case created: " + data.id);
-}
+document.getElementById("uploadBtn").onclick = async () => {
+  const caseId = document.getElementById("caseId").value;
+  const file = document.getElementById("fileInput").files[0];
 
-async function upload() {
-  const fileObj = file.files[0];
-  const caseUUID = caseId.value;
+  if (!file) return alert("Select a file");
 
-  const { error } = await supabase.storage
-    .from("case-files")
-    .upload(`${caseUUID}/${fileObj.name}`, fileObj);
-
-  if(error) alert(error.message);
-  else alert("Uploaded");
-}
+  try {
+    await uploadEvidence(caseId, file);
+    alert("Uploaded!");
+  } catch (e) {
+    alert(e.message);
+  }
+};
 </script>
+
 </body>
 </html>
