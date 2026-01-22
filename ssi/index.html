@@ -1,72 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>StudentStream Investigations</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header class="top">
-  <h1>StudentStream Investigations</h1>
-  <p class="tagline">Documenting the unexplained. Researching the ignored.</p>
-
-  <div class="top-actions">
-    <input id="search" placeholder="Search cases...">
-    <a href="agent.html" class="agent-btn">Agent Console</a>
+<div class="layout">
+  <div class="sidebar">
+    <h2>StudentStream FBI</h2>
+    <a href="index.html">Case Files</a>
+    <a href="agent.html">Agent Console</a>
   </div>
-</header>
 
-<main>
-  <h2>Active Case Files</h2>
-  <div id="cases" class="cases-grid"></div>
-</main>
-
-<footer>
-  © 2026 StudentStream Investigations
-</footer>
+  <div class="main">
+    <h1>Active Case Files</h1>
+    <div id="cases"></div>
+  </div>
+</div>
 
 <script type="module">
 import { getCases } from "./supabase.js";
 
-let allCases = [];
+const casesDiv = document.getElementById("cases");
 
-async function loadCases() {
-  allCases = await getCases();
-  render(allCases);
-}
-
-function render(list) {
-  const div = document.getElementById("cases");
-  div.innerHTML = "";
-
-  if (!list.length) {
-    div.innerHTML = "<p class='empty'>No active cases.</p>";
-    return;
-  }
-
-  list.forEach(c => {
-    const el = document.createElement("div");
-    el.className = "case-card";
-    el.innerHTML = `
-      <div class="case-title">${c.title}</div>
-      <div class="case-status">Status: ${c.status}</div>
-      <a href="case.html?id=${c.id}" class="open-btn">Open Case →</a>
-    `;
-    div.appendChild(el);
-  });
-}
-
-document.getElementById("search").addEventListener("input", e => {
-  const q = e.target.value.toLowerCase();
-  const filtered = allCases.filter(c =>
-    c.title.toLowerCase().includes(q)
-  );
-  render(filtered);
+const cases = await getCases();
+cases.forEach(c => {
+  const el = document.createElement("div");
+  el.className = "case-card";
+  el.innerHTML = `
+    <b>${c.title}</b><br>
+    Status: ${c.status}<br>
+    <a href="case.html?id=${c.id}">Open Case</a>
+  `;
+  casesDiv.appendChild(el);
 });
-
-loadCases();
 </script>
 
 </body>
