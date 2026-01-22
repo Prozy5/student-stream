@@ -1,43 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>StudentStream Investigations</title>
-<link rel="stylesheet" href="styles.css">
+  <title>StudentStream Investigations</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <h1>StudentStream Investigations</h1>
-<p>Documenting the unexplained.</p>
+<p>Documenting the unexplained. Researching the ignored.</p>
 
-<input id="search" placeholder="Search cases">
+<a href="agent.html">Agent Console</a>
 
+<h2>Active Case Files</h2>
 <div id="cases"></div>
-<button onclick="prev()">Prev</button>
-<button onclick="next()">Next</button>
 
 <script type="module">
-import { supabase } from "./supabase.js";
+import { getCases } from "./supabase.js";
 
-let page = 0;
-const limit = 5;
+async function load() {
+  const cases = await getCases();
+  const div = document.getElementById("cases");
 
-async function loadCases() {
-  const { data } = await supabase
-    .from("cases")
-    .select("*")
-    .range(page*limit, page*limit+limit-1)
-    .order("created_at", { ascending:false });
-
-  cases.innerHTML = data.map(c =>
-    `<div onclick="openCase('${c.id}')">${c.title}</div>`
-  ).join("");
+  div.innerHTML = cases.map(c => `
+    <div class="case">
+      <b>${c.title}</b><br>
+      Status: ${c.status}<br>
+      <a href="case.html?id=${c.id}">Open Case</a>
+    </div>
+  `).join("");
 }
 
-window.openCase = id => location.href = `case.html?id=${id}`;
-window.next = ()=>{page++; loadCases();}
-window.prev = ()=>{if(page>0){page--; loadCases();}}
-
-loadCases();
+load();
 </script>
+
 </body>
 </html>
