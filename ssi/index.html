@@ -1,36 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>StudentStream Investigations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h1>StudentStream Investigations</h1>
-<p>Documenting the unexplained. Researching the ignored.</p>
+<header class="top">
+  <h1>StudentStream Investigations</h1>
+  <p class="tagline">Documenting the unexplained. Researching the ignored.</p>
 
-<a href="agent.html">Agent Console</a>
+  <div class="top-actions">
+    <input id="search" placeholder="Search cases...">
+    <a href="agent.html" class="agent-btn">Agent Console</a>
+  </div>
+</header>
 
-<h2>Active Case Files</h2>
-<div id="cases"></div>
+<main>
+  <h2>Active Case Files</h2>
+  <div id="cases" class="cases-grid"></div>
+</main>
+
+<footer>
+  © 2026 StudentStream Investigations
+</footer>
 
 <script type="module">
 import { getCases } from "./supabase.js";
 
-async function load() {
-  const cases = await getCases();
-  const div = document.getElementById("cases");
+let allCases = [];
 
-  div.innerHTML = cases.map(c => `
-    <div class="case">
-      <b>${c.title}</b><br>
-      Status: ${c.status}<br>
-      <a href="case.html?id=${c.id}">Open Case</a>
-    </div>
-  `).join("");
+async function loadCases() {
+  allCases = await getCases();
+  render(allCases);
 }
 
-load();
+function render(list) {
+  const div = document.getElementById("cases");
+  div.innerHTML = "";
+
+  if (!list.length) {
+    div.innerHTML = "<p class='empty'>No active cases.</p>";
+    return;
+  }
+
+  list.forEach(c => {
+    const el = document.createElement("div");
+    el.className = "case-card";
+    el.innerHTML = `
+      <div class="case-title">${c.title}</div>
+      <div class="case-status">Status: ${c.status}</div>
+      <a href="case.html?id=${c.id}" class="open-btn">Open Case →</a>
+    `;
+    div.appendChild(el);
+  });
+}
+
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  const filtered = allCases.filter(c =>
+    c.title.toLowerCase().includes(q)
+  );
+  render(filtered);
+});
+
+loadCases();
 </script>
 
 </body>
