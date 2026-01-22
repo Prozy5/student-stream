@@ -2,21 +2,59 @@
 <html>
 <head>
   <title>Case File</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h1 id="title"></h1>
-<p id="desc"></p>
+<div class="layout">
+  <div class="sidebar">
+    <a href="index.html">← Back</a>
+  </div>
+
+  <div class="main">
+    <h1 id="title"></h1>
+
+    <h3>Comments</h3>
+    <div id="comments"></div>
+
+    <input id="author" placeholder="Agent name"><br><br>
+    <input id="message" placeholder="Write comment...">
+    <button id="send">Send</button>
+  </div>
+</div>
 
 <script type="module">
-import { getCaseById } from "./supabase.js";
+import { getCase, getComments, addComment } from "./supabase.js";
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+const params = new URLSearchParams(location.search);
+const caseId = params.get("id");
 
-const c = await getCaseById(id);
-document.getElementById("title").innerText = c.title;
-document.getElementById("desc").innerText = c.description;
+const c = await getCase(caseId);
+document.getElementById("title").textContent = c.title;
+
+async function loadComments() {
+  const list = await getComments(caseId);
+  const div = document.getElementById("comments");
+  div.innerHTML = "";
+  list.forEach(cm => {
+    const el = document.createElement("div");
+    el.className = "comment";
+    el.innerHTML = `<b>${cm.author}</b>: ${cm.message}`;
+    div.appendChild(el);
+  });
+}
+
+document.getElementById("send").onclick = async () => {
+  const author = author.value;
+  const msg = message.value;
+  if (!author || !msg) return;
+
+  await addComment(caseId, author, msg);
+  message.value = "";
+  loadComments();
+};
+
+loadComments();
 </script>
 
 </body>
