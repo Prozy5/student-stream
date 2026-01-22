@@ -1,68 +1,25 @@
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+body {
+  background: radial-gradient(circle at top, #0b1a2a, #020409);
+  color: #dfefff;
+  font-family: system-ui;
+  padding: 20px;
 }
 
-body{
-  background: radial-gradient(circle at top, #0b1220, #05080f);
-  color:#e5e7eb;
+header, section {
+  margin-bottom: 40px;
 }
 
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:60px 20px;
+.caseCard {
+  background: rgba(255,255,255,0.05);
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
 }
 
-.hero{
-  text-align:center;
-  margin-bottom:50px;
-}
-
-.logo{
-  width:90px;
-  margin-bottom:16px;
-}
-
-h1{
-  font-size:2rem;
-  margin-bottom:8px;
-}
-
-.tagline{
-  color:#9ca3af;
-}
-
-section{
-  margin-top:50px;
-}
-
-h2{
-  color:#93c5fd;
-  margin-bottom:14px;
-}
-
-.card{
-  background:linear-gradient(180deg,#0f172a,#020617);
-  border:1px solid #1e293b;
-  border-radius:10px;
-  padding:14px;
-  margin-bottom:12px;
-}
-
-.locked{
-  opacity:0.45;
-}
-
-.muted{
-  color:#9ca3af;
-}
-
-footer{
-  margin-top:70px;
-  text-align:center;
-  color:#6b7280;
-  font-size:0.9rem;
+input, textarea, button {
+  background: #0b1a2a;
+  color: white;
+  border: 1px solid #1e3a5f;
+  padding: 8px;
+  margin: 5px 0;
 }
