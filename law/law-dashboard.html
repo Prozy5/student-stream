@@ -1,143 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>StudentStream Law Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-:root{
-  --bg:#060b14;
-  --panel:#0c1626;
-  --accent:#ff5d5d;
-  --text:#eaf1ff;
-  --muted:#9fb0cc;
-  --border:rgba(255,255,255,0.08);
-}
-
-body{
-  margin:0;
-  font-family:system-ui,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
-  color:var(--text);
-}
-
-header{
-  padding:18px 22px;
-  border-bottom:1px solid var(--border);
-  background:rgba(10,20,40,.7);
-  backdrop-filter:blur(10px);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:24px;
-}
-
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:16px;
-  margin-bottom:12px;
-}
-
-select{
-  background:#111;
-  color:white;
-  border:1px solid var(--border);
-  padding:6px;
-  border-radius:6px;
-}
-
-button{
-  background:var(--accent);
-  border:none;
-  padding:6px 12px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.status{
-  font-size:12px;
-  color:var(--muted);
-}
-</style>
-</head>
-<body>
-
-<header>
-  <strong>⚖️ StudentStream Law Dashboard</strong>
-  <button onclick="logout()">Logout</button>
-</header>
-
-<div class="container">
-  <h2>Reports</h2>
-  <div id="reports">Loading...</div>
-</div>
-
 <script>
-/* ===== SECURITY CHECK ===== */
-if(localStorage.getItem("law_staff") !== "true"){
-  location.href = "law-login.html";
-}
+const supabase = supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-/* ===== SUPABASE ===== */
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function checkAuth(){
+  const { data } = await supabase.auth.getUser();
 
-/* ===== LOAD REPORTS ===== */
-async function loadReports(){
-  const { data, error } = await db
-    .from("law_reports")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  const box = document.getElementById("reports");
-  box.innerHTML = "";
-
-  if(!data || data.length === 0){
-    box.innerHTML = "<p>No reports yet.</p>";
+  if(!data.user){
+    window.location.href = "login.html";
     return;
   }
 
-  data.forEach(r=>{
-    box.innerHTML += `
-      <div class="card">
-        <strong>${r.subject}</strong>
-        <p>${r.description}</p>
-        <div class="status">From: ${r.email}</div>
-        <br>
-        <select onchange="updateStatus('${r.id}', this.value)">
-          <option ${r.status==="open"?"selected":""}>open</option>
-          <option ${r.status==="reviewing"?"selected":""}>reviewing</option>
-          <option ${r.status==="closed"?"selected":""}>closed</option>
-        </select>
-      </div>
-    `;
-  });
+  const { data: staff } = await supabase
+    .from("law_staff")
+    .select("role")
+    .eq("user_id", data.user.id)
+    .single();
+
+  if(!staff){
+    alert("Access denied");
+    await supabase.auth.signOut();
+    window.location.href = "login.html";
+  }
 }
 
-/* ===== UPDATE STATUS ===== */
-async function updateStatus(id,status){
-  await db.from("law_reports").update({status}).eq("id",id);
-}
-
-/* ===== LOGOUT ===== */
-function logout(){
-  localStorage.removeItem("law_staff");
-  location.href="law-login.html";
-}
-
-loadReports();
+checkAuth();
 </script>
-
-</body>
-</html>
