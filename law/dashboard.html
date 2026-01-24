@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>StudentStream Law Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+  background:#05080f;
+  color:#eaf1ff;
+  font-family:system-ui;
+}
+nav{
+  background:#0c1626;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+}
+.card{
+  background:#0c1626;
+  margin:20px;
+  padding:20px;
+  border-radius:12px;
+}
+button{
+  background:#ff5d5d;
+  border:none;
+  padding:10px 16px;
+  border-radius:8px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body onload="protect()">
+
+<nav>
+  <strong>⚖️ StudentStream Law Dashboard</strong>
+  <button onclick="logout()">Logout</button>
+</nav>
+
+<div class="card">
+<h3>Reports Overview</h3>
+<p>Open cases: 12</p>
+<p>Under review: 7</p>
+<p>Resolved: 39</p>
+</div>
+
+<div class="card">
+<h3>Recent Reports</h3>
+<ul>
+  <li>Copyright claim – user: visualkid</li>
+  <li>Fraud report – user: streamhubber</li>
+  <li>Harassment – user: pixelqueen</li>
+</ul>
+</div>
+
+<script src="law-auth.js"></script>
+</body>
+</html>
