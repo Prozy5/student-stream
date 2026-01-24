@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Settings – StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#070b14;
+  --panel:#0e1625;
+  --accent:#7cffb2;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:system-ui,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
+  color:var(--text);
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 24px;
+  background:rgba(10,20,40,.7);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-left{font-weight:700}
+
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+.nav-links a:hover{color:var(--text)}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:30px 22px;
+}
+
+h1{margin-bottom:6px}
+.subtitle{color:var(--muted);margin-bottom:24px}
+
+/* PANELS */
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.panel h2{
+  margin-bottom:14px;
+  font-size:18px;
+}
+
+/* FORM */
+
+label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+input, select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:#0a1220;
+  color:var(--text);
+  margin-bottom:14px;
+}
+
+.btn{
+  padding:10px 18px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  cursor:pointer;
+}
+
+.btn.primary{
+  background:linear-gradient(135deg,#7cffb2,#3cff91);
+  border:none;
+  color:#00210f;
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-left">🎨 StudentStream Studios</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="analytics.html">Analytics</a>
+    <a href="messages.html">Messages</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <h1>Studio Settings</h1>
+  <p class="subtitle">Manage your studio profile, payouts, and preferences.</p>
+
+  <div class="panel">
+    <h2>Studio Profile</h2>
+
+    <label>Studio Name</label>
+    <input type="text" placeholder="Your studio name">
+
+    <label>Description</label>
+    <input type="text" placeholder="Short description of your work">
+
+    <label>Category</label>
+    <select>
+      <option>Digital Art</option>
+      <option>Photography</option>
+      <option>Music</option>
+      <option>Design</option>
+      <option>Other</option>
+    </select>
+
+    <button class="btn primary">Save Profile</button>
+  </div>
+
+  <div class="panel">
+    <h2>Payout Settings</h2>
+
+    <label>Payment Method</label>
+    <select>
+      <option>PayPal</option>
+      <option>Bank Transfer</option>
+      <option>Crypto</option>
+    </select>
+
+    <label>Account / Wallet</label>
+    <input type="text" placeholder="your@email or wallet address">
+
+    <button class="btn primary">Save Payout Info</button>
+  </div>
+
+  <div class="panel">
+    <h2>Security</h2>
+
+    <button class="btn">Change Password</button>
+    <button class="btn" style="margin-left:10px;">Enable 2FA</button>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 StudentStream Studios
+</footer>
+
+</body>
+</html>
