@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Creator – StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#070b14;
+  --panel:#0e1625;
+  --accent:#7cffb2;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:system-ui,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
+  color:var(--text);
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 24px;
+  background:rgba(10,20,40,.7);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-left{font-weight:700}
+
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+.nav-links a:hover{color:var(--text)}
+
+/* LAYOUT */
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:40px 22px;
+}
+
+/* PROFILE HEADER */
+
+.profile{
+  display:flex;
+  gap:24px;
+  align-items:center;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px;
+}
+
+.avatar{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+}
+
+.profile-info h1{margin-bottom:6px}
+.profile-info p{color:var(--muted)}
+
+.profile-actions{
+  margin-left:auto;
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  padding:10px 16px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:#0a1220;
+  color:var(--text);
+  cursor:pointer;
+  text-decoration:none;
+  font-size:14px;
+}
+
+.btn.primary{
+  background:linear-gradient(135deg,#7cffb2,#42ff9a);
+  border:none;
+  color:#042012;
+  font-weight:700;
+}
+
+/* GRID */
+
+.section{margin-top:40px}
+
+.section h2{margin-bottom:14px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+}
+
+.item{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+  text-align:center;
+}
+
+.thumb{
+  height:120px;
+  border-radius:10px;
+  background:#111;
+  margin-bottom:10px;
+}
+
+.item p{font-size:14px}
+
+/* FOOTER */
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+  font-size:13px;
+  border-top:1px solid var(--border);
+  margin-top:60px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-left">🎨 StudentStream Studios</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore</a>
+    <a href="marketplace.html">Marketplace</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="profile">
+    <div class="avatar">🎭</div>
+
+    <div class="profile-info">
+      <h1>Creator Name</h1>
+      <p>Digital artist • Logos • Posters • Branding</p>
+    </div>
+
+    <div class="profile-actions">
+      <a href="#" class="btn">Message</a>
+      <a href="#" class="btn primary">Hire</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Portfolio</h2>
+
+    <div class="grid">
+      <div class="item">
+        <div class="thumb"></div>
+        <p>Logo Design</p>
+      </div>
+      <div class="item">
+        <div class="thumb"></div>
+        <p>Poster Art</p>
+      </div>
+      <div class="item">
+        <div class="thumb"></div>
+        <p>Album Cover</p>
+      </div>
+      <div class="item">
+        <div class="thumb"></div>
+        <p>Brand Kit</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>About</h2>
+    <p style="color:var(--muted);max-width:700px;">
+      Creator bio goes here. This is where artists describe their style,
+      experience, and what type of work they offer on StudentStream Studios.
+    </p>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 StudentStream Studios
+</footer>
+
+</body>
+</html>
