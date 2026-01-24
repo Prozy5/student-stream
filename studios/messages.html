@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Messages – StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#070b14;
+  --panel:#0e1625;
+  --accent:#7cffb2;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:system-ui,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
+  color:var(--text);
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 24px;
+  background:rgba(10,20,40,.7);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-left{font-weight:700}
+
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+.nav-links a:hover{color:var(--text)}
+
+/* LAYOUT */
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:30px 22px;
+}
+
+h1{margin-bottom:10px}
+.subtitle{color:var(--muted);margin-bottom:24px}
+
+/* MESSAGES UI */
+
+.messages-box{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:16px;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.thread{
+  padding:14px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+
+.thread:hover{background:#0b1322}
+
+.thread strong{font-size:14px}
+.thread span{
+  color:var(--muted);
+  font-size:12px;
+  display:block;
+  margin-top:3px;
+}
+
+/* CHAT */
+
+.chat{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-header{
+  padding:14px;
+  border-bottom:1px solid var(--border);
+  font-weight:600;
+}
+
+.chat-body{
+  padding:16px;
+  flex:1;
+  overflow-y:auto;
+}
+
+.msg{
+  margin-bottom:12px;
+  max-width:70%;
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:14px;
+}
+
+.from-them{
+  background:#0b1322;
+  border:1px solid var(--border);
+}
+
+.from-me{
+  background:rgba(124,255,178,.15);
+  color:#d9ffee;
+  margin-left:auto;
+}
+
+.chat-input{
+  display:flex;
+  padding:12px;
+  border-top:1px solid var(--border);
+  gap:10px;
+}
+
+.chat-input input{
+  flex:1;
+  background:#0b1322;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px;
+  color:var(--text);
+}
+
+.chat-input button{
+  padding:10px 16px;
+  background:var(--accent);
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+  .messages-box{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-left">🎨 StudentStream Studios</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="orders.html">Orders</a>
+    <a href="marketplace.html">Marketplace</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <h1>Messages</h1>
+  <p class="subtitle">Talk with buyers, collaborators, and clients.</p>
+
+  <div class="messages-box">
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+      <div class="thread">
+        <strong>creator99</strong>
+        <span>About the album cover</span>
+      </div>
+      <div class="thread">
+        <strong>visualkid</strong>
+        <span>Logo revisions</span>
+      </div>
+      <div class="thread">
+        <strong>urbanflow</strong>
+        <span>Payment question</span>
+      </div>
+    </div>
+
+    <!-- Chat -->
+
+    <div class="chat">
+      <div class="chat-header">
+        creator99
+      </div>
+
+      <div class="chat-body">
+        <div class="msg from-them">
+          Hey, can you adjust the colors a bit?
+        </div>
+
+        <div class="msg from-me">
+          Yeah no problem, I’ll send an update tonight.
+        </div>
+      </div>
+
+      <div class="chat-input">
+        <input type="text" placeholder="Type a message...">
+        <button>Send</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  © 2026 StudentStream Studios
+</footer>
+
+</body>
+</html>
