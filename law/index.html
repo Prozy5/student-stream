@@ -178,9 +178,9 @@ footer{
   </p>
 
   <div class="hero-actions">
-    <a href="#" class="btn primary">Report an Issue</a>
-    <a href="#" class="btn">Creator Rights</a>
-    <a href="#" class="btn">Transparency</a>
+    <button class="btn primary" id="reportBtn">Report an Issue</button>
+    <button class="btn" id="rightsBtn">Creator Rights</button>
+    <button class="btn" id="transparencyBtn">Transparency</button>
   </div>
 </section>
 
@@ -232,6 +232,20 @@ footer{
 <footer>
   © 2026 StudentStream Law · Digital Safety & Creator Protection Division
 </footer>
+
+<script>
+document.getElementById("reportBtn").onclick = () => {
+  window.location.href = "report.html";
+};
+
+document.getElementById("rightsBtn").onclick = () => {
+  window.location.href = "rights.html";
+};
+
+document.getElementById("transparencyBtn").onclick = () => {
+  window.location.href = "transparency.html";
+};
+</script>
 
 </body>
 </html>
