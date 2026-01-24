@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Report an Issue · StudentStream Law</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  font-family:system-ui;
+  background:#05080f;
+  color:#eaf1ff;
+  padding:40px;
+}
+.container{
+  max-width:600px;
+  margin:auto;
+  background:#0c1626;
+  padding:25px;
+  border-radius:14px;
+}
+input,textarea,select,button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  background:#060b14;
+  border:1px solid rgba(255,255,255,.1);
+  color:#fff;
+  border-radius:8px;
+}
+button{
+  background:#ff5d5d;
+  border:none;
+  margin-top:20px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Report an Issue</h2>
+<p>Submit concerns about copyright, fraud, harassment, or platform abuse.</p>
+
+<form>
+  <input placeholder="Your Username" required>
+  <input placeholder="Email (optional)">
+  
+  <select>
+    <option>Copyright / IP</option>
+    <option>Fraud / Scam</option>
+    <option>Harassment</option>
+    <option>Platform Abuse</option>
+  </select>
+
+  <textarea rows="5" placeholder="Describe the issue..." required></textarea>
+  <input placeholder="Evidence link (optional)">
+  
+  <button type="submit">Submit Report</button>
+</form>
+</div>
+
+</body>
+</html>
