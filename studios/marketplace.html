@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Marketplace – StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#070b14;
+  --panel:#0e1625;
+  --accent:#7cffb2;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:system-ui,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
+  color:var(--text);
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 24px;
+  background:rgba(10,20,40,.7);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-left{font-weight:700}
+
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+.nav-links a:hover{color:var(--text)}
+
+/* HEADER */
+
+.header{
+  max-width:1100px;
+  margin:auto;
+  padding:40px 22px 20px;
+}
+
+.header h1{margin-bottom:8px}
+.header p{color:var(--muted)}
+
+/* GRID */
+
+.grid{
+  max-width:1100px;
+  margin:auto;
+  padding:10px 22px 50px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+
+.item{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  transition:.2s;
+}
+
+.item:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+}
+
+.preview{
+  height:140px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#1b2a4a,#101a30);
+  margin-bottom:10px;
+}
+
+.item h3{
+  font-size:15px;
+  margin-bottom:4px;
+}
+
+.creator{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.price{
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.btn{
+  display:block;
+  text-align:center;
+  padding:8px;
+  border-radius:10px;
+  background:var(--accent);
+  color:#022b17;
+  text-decoration:none;
+  font-size:13px;
+}
+
+/* FOOTER */
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+  font-size:13px;
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-left">🎨 StudentStream Studios</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+</nav>
+
+<section class="header">
+  <h1>Marketplace</h1>
+  <p>Buy art, commission creators, and support talent directly.</p>
+</section>
+
+<section class="grid">
+
+  <div class="item">
+    <div class="preview"></div>
+    <h3>Cyber City Illustration</h3>
+    <div class="creator">by @nebula.art</div>
+    <div class="price">$15</div>
+    <a class="btn" href="#">Buy</a>
+  </div>
+
+  <div class="item">
+    <div class="preview"></div>
+    <h3>Logo Design Package</h3>
+    <div class="creator">by @pixeljay</div>
+    <div class="price">$45</div>
+    <a class="btn" href="#">Hire</a>
+  </div>
+
+  <div class="item">
+    <div class="preview"></div>
+    <h3>Portrait Photo Preset</h3>
+    <div class="creator">by @lensflow</div>
+    <div class="price">$9</div>
+    <a class="btn" href="#">Buy</a>
+  </div>
+
+  <div class="item">
+    <div class="preview"></div>
+    <h3>3D Avatar Model</h3>
+    <div class="creator">by @aurora3d</div>
+    <div class="price">$25</div>
+    <a class="btn" href="#">Buy</a>
+  </div>
+
+</section>
+
+<footer>
+  © 2026 StudentStream Studios Marketplace
+</footer>
+
+</body>
+</html>
