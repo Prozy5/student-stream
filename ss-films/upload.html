@@ -16,8 +16,26 @@ body{
 header{
   padding:14px 16px;
   border-bottom:1px solid #1f2630;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   font-weight:800;
   font-size:18px;
+}
+
+.btn{
+  background:#1e90ff;
+  border:none;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.btn.outline{
+  background:none;
+  border:1px solid #1e90ff;
 }
 
 .container{
@@ -44,7 +62,7 @@ input, textarea, select{
   outline:none;
 }
 
-button{
+button.upload{
   background:#1e90ff;
   border:none;
   color:#fff;
@@ -75,15 +93,16 @@ button{
 .msg{
   margin-top:10px;
   font-size:13px;
-  opacity:.8;
+  opacity:.85;
 }
-
-.hidden{display:none}
 </style>
 </head>
 <body>
 
-<header>🎬 Creator Studio – Upload Film</header>
+<header>
+  🎬 Upload Film
+  <button class="btn outline" onclick="goStudio()">Studio</button>
+</header>
 
 <div class="container">
   <div class="box">
@@ -100,7 +119,7 @@ button{
     <label>Video file</label>
     <input id="video" type="file" accept="video/*">
 
-    <button id="uploadBtn">Upload Film</button>
+    <button id="uploadBtn" class="upload">Upload Film</button>
 
     <div class="progress"><span></span></div>
     <div id="msg" class="msg"></div>
@@ -113,7 +132,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
 const titleEl = document.getElementById("title");
@@ -183,40 +202,39 @@ uploadBtn.onclick = async ()=>{
   const videoPath = `videos/${user.id}/${Date.now()}_${videoFile.name}`;
   const thumbPath = `thumbnails/${user.id}/${Date.now()}_${thumbFile.name}`;
 
-  /* Upload video */
   await supabase.storage.from("films").upload(videoPath, videoFile);
-
-  /* Upload thumbnail */
   await supabase.storage.from("films").upload(thumbPath, thumbFile);
 
   const { data:videoUrl } = supabase.storage.from("films").getPublicUrl(videoPath);
   const { data:thumbUrl } = supabase.storage.from("films").getPublicUrl(thumbPath);
 
-  /* Insert film */
   const { error } = await supabase.from("films").insert({
     title,
     description: desc,
     video_url: videoUrl.publicUrl,
     thumbnail_url: thumbUrl.publicUrl,
     creator_id: creator.id,
+    category_id: categoryId,
     is_published: true,
     views: 0
   });
 
   if(error){
     console.error(error);
-    msg.textContent="Upload failed";
-  }else{
-    msg.textContent="✅ Upload successful!";
-    titleEl.value="";
-    descEl.value="";
-    thumbEl.value="";
-    videoEl.value="";
+    msg.textContent="❌ Upload failed";
+    uploadBtn.disabled=false;
+    return;
   }
 
-  uploadBtn.disabled=false;
+  msg.textContent="✅ Film published! Redirecting to studio...";
   progressFill.style.width="100%";
+
+  setTimeout(()=>{
+    location.href="creator.html";
+  },1500);
 };
+
+window.goStudio = ()=> location.href="creator.html";
 
 init();
 </script>
