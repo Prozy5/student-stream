@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SS Films</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:#05070d;
+  color:#fff;
+}
+
+header{
+  padding:18px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(5,7,13,.85);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.logo{
+  font-weight:800;
+  font-size:20px;
+  letter-spacing:.5px;
+}
+
+.hero{
+  height:60vh;
+  background:linear-gradient(to top,#05070d,transparent),url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=1400");
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  align-items:flex-end;
+  padding:40px;
+}
+
+.hero h1{font-size:42px;margin-bottom:10px}
+.hero p{max-width:500px;color:#ccc}
+
+.section{
+  padding:25px;
+}
+
+.section h2{
+  margin-bottom:12px;
+}
+
+.row{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  padding-bottom:10px;
+}
+
+.card{
+  min-width:160px;
+  height:230px;
+  border-radius:10px;
+  background:#111;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card:hover{transform:scale(1.05)}
+
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:#777;
+  font-size:13px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SS FILMS</div>
+  <div>StudentStream</div>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>SS Films Originals</h1>
+    <p>Watch original films, series, and documentaries created on StudentStream.</p>
+  </div>
+</section>
+
+<div class="section">
+  <h2>Trending</h2>
+  <div class="row" id="trending"></div>
+</div>
+
+<div class="section">
+  <h2>New Releases</h2>
+  <div class="row" id="new"></div>
+</div>
+
+<div class="section">
+  <h2>All Films</h2>
+  <div class="row" id="all"></div>
+</div>
+
+<footer>
+© 2026 SS Films · StudentStream
+</footer>
+
+<script>
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function filmCard(f){
+  return `
+    <div class="card" onclick="openFilm('${f.id}')">
+      <img src="${f.thumbnail_url || 'https://via.placeholder.com/300x450'}">
+    </div>
+  `;
+}
+
+function openFilm(id){
+  window.location.href = "./watch.html?id=" + id;
+}
+
+async function loadFilms(){
+  const {data} = await db.from("films").select("*").order("created_at",{ascending:false});
+
+  if(!data) return;
+
+  document.getElementById("all").innerHTML = data.map(filmCard).join("");
+  document.getElementById("new").innerHTML = data.slice(0,6).map(filmCard).join("");
+  document.getElementById("trending").innerHTML = data.slice(0,6).map(filmCard).join("");
+}
+
+loadFilms();
+</script>
+
+</body>
+</html>
