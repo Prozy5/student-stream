@@ -2,33 +2,107 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>StudentStream Live Room</title>
+<title>StudentStream – Live Room</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
-  background:#000;
+  font-family:system-ui,Segoe UI,Roboto;
+  background:#05080f;
+  color:#eaf1ff;
 }
 
-iframe{
+/* Top bar */
+.header{
+  height:56px;
+  background:#0c1626;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+}
+
+.logo{
+  font-weight:700;
+  letter-spacing:.5px;
+}
+
+.room-name{
+  color:#9fb0cc;
+  font-size:14px;
+}
+
+.leave-btn{
+  background:#ff5d5d;
   border:none;
-  width:100vw;
-  height:100vh;
+  color:#1a0000;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+/* Video container */
+#jitsi-container{
+  width:100%;
+  height:calc(100vh - 56px);
 }
 </style>
 </head>
 
 <body>
 
-<iframe id="jitsi"></iframe>
+<div class="header">
+  <div class="logo">StudentStream Live</div>
+  <div class="room-name" id="roomLabel"></div>
+  <button class="leave-btn" onclick="leaveRoom()">Leave</button>
+</div>
+
+<div id="jitsi-container"></div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room") || "StudentStreamRoom";
 
-document.getElementById("jitsi").src =
-  "https://meet.jit.si/" + room + "#config.prejoinPageEnabled=false";
+document.getElementById("roomLabel").innerText = "Room: " + room;
+
+function leaveRoom(){
+  window.location.href = "index.html";
+}
+
+const domain = "meet.jit.si";
+const options = {
+  roomName: room,
+  parentNode: document.getElementById("jitsi-container"),
+  configOverwrite: {
+    prejoinPageEnabled: false,
+    disableDeepLinking: true
+  },
+  interfaceConfigOverwrite: {
+    SHOW_JITSI_WATERMARK: false,
+    SHOW_WATERMARK_FOR_GUESTS: false,
+    SHOW_BRAND_WATERMARK: false,
+    SHOW_POWERED_BY: false,
+    SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+    TOOLBAR_BUTTONS: [
+      'microphone',
+      'camera',
+      'chat',
+      'raisehand',
+      'tileview',
+      'hangup'
+    ]
+  }
+};
+
+const script = document.createElement("script");
+script.src = "https://meet.jit.si/external_api.js";
+script.onload = () => {
+  new JitsiMeetExternalAPI(domain, options);
+};
+document.body.appendChild(script);
 </script>
 
 </body>
