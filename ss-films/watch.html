@@ -1,66 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Watch – SS Films</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SS Films – Watch</title>
 
 <style>
-body{margin:0;background:#0b0f14;color:#fff;font-family:system-ui}
-header{padding:12px 16px;font-weight:700;border-bottom:1px solid #1f2937;display:flex;justify-content:space-between}
-.container{max-width:1100px;margin:auto;padding:16px}
-.player-box{background:black;border-radius:12px;overflow:hidden}
-video{width:100%;max-height:520px;background:black}
+body{
+  margin:0;
+  background:#070b12;
+  color:#fff;
+  font-family:system-ui;
+}
 
-.title{font-size:26px;font-weight:700;margin-top:12px}
-.meta{opacity:.7;font-size:14px;margin:6px 0}
-.badge{background:#1e90ff;padding:3px 8px;border-radius:6px;font-size:12px;margin-left:6px}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 18px;
+  background:#0b1220;
+}
 
-.actions{display:flex;gap:10px;margin:10px 0}
-.btn{padding:8px 14px;border:none;border-radius:8px;background:#1f2937;color:#fff;cursor:pointer}
-.btn.like.active{background:#dc2626}
+.logo{font-weight:900;font-size:18px;color:#4aa3ff}
 
-.section{margin-top:24px}
-.row{display:flex;gap:10px;overflow-x:auto}
-.card{min-width:140px}
-.card img{width:140px;height:200px;border-radius:8px;object-fit:cover}
+button{
+  background:#1e90ff;
+  color:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:600;
+}
 
-.episodes{margin-top:10px}
-.episode{padding:8px;border-bottom:1px solid #222;cursor:pointer}
-.episode:hover{background:#111827}
+.player-wrap{
+  padding:14px;
+}
 
+video{
+  width:100%;
+  max-height:65vh;
+  background:black;
+  border-radius:12px;
+}
+
+.actions{
+  margin-top:10px;
+}
+
+.section{
+  padding:14px;
+}
+
+.row{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+}
+
+.card{
+  min-width:140px;
+  background:#121a2a;
+  border-radius:10px;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.thumb{
+  height:180px;
+  background:#000;
+}
+
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.title{
+  padding:6px;
+  font-size:13px;
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div>SS Films</div>
-  <button onclick="logout()" class="btn">Logout</button>
+  <div class="logo">SS Films</div>
+  <button onclick="logout()">Logout</button>
 </header>
 
-<div class="container">
+<div class="player-wrap">
+  <video
+    id="player"
+    controls
+    playsinline
+    webkit-playsinline
+    preload="metadata"
+  ></video>
 
-<div class="player-box">
-  <video id="player" controls></video>
-</div>
-
-<div class="title" id="title"></div>
-<div class="meta" id="meta"></div>
-
-<div class="actions">
-  <button class="btn like" id="likeBtn">❤️ Like</button>
-</div>
-
-<div class="section" id="episodesSection" style="display:none">
-  <h3>Episodes</h3>
-  <div class="episodes" id="episodesList"></div>
+  <div class="actions">
+    <button onclick="likeFilm()">❤️ Like</button>
+  </div>
 </div>
 
 <div class="section">
   <h3>Recommended</h3>
-  <div class="row" id="recommended"></div>
-</div>
-
+  <div id="recommended" class="row"></div>
 </div>
 
 <script type="module">
@@ -74,141 +119,96 @@ const supabase = createClient(
 const params = new URLSearchParams(location.search);
 const filmId = params.get("id");
 
-let user, film, liked=false;
-const player = document.getElementById("player");
+const video = document.getElementById("player");
+const recommendedRow = document.getElementById("recommended");
 
-async function init(){
-  const {data:{user:u}} = await supabase.auth.getUser();
-  if(!u){ location.href="login.html"; return; }
-  user=u;
+let currentFilm = null;
 
-  await loadFilm();
-  await loadLike();
-  await loadProgress();
-  await addView();
-  loadRecommendations();
-}
+/* ---------- AUTH ---------- */
 
-async function loadFilm(){
-  const {data} = await supabase
-    .from("films")
-    .select("*, film_creators(name)")
-    .eq("id", filmId)
-    .single();
-
-  film=data;
-
-  document.getElementById("title").textContent=film.title;
-  document.getElementById("meta").innerHTML=
-    `👁 ${film.views||0} views ${film.film_creators?`<span class="badge">${film.film_creators.name}</span>`:""}`;
-
-  player.src=film.video_url;
-
-  if(film.is_series){
-    loadEpisodes();
+async function checkAuth(){
+  const { data:{user} } = await supabase.auth.getUser();
+  if(!user){
+    location.href="login.html";
   }
-}
-
-async function loadEpisodes(){
-  const {data} = await supabase
-    .from("film_episodes")
-    .select("*")
-    .eq("series_id", filmId)
-    .order("episode_number");
-
-  if(!data.length) return;
-
-  document.getElementById("episodesSection").style.display="block";
-
-  document.getElementById("episodesList").innerHTML =
-    data.map(ep=>`
-      <div class="episode" onclick="playEpisode('${ep.video_url}')">
-        Episode ${ep.episode_number} – ${ep.title}
-      </div>
-    `).join("");
-}
-
-window.playEpisode=url=>{
-  player.src=url;
-  player.play();
-}
-
-async function loadLike(){
-  const {data} = await supabase.from("film_likes")
-    .select("*")
-    .eq("film_id",filmId)
-    .eq("user_id",user.id)
-    .single();
-
-  liked=!!data;
-  updateLikeBtn();
-}
-
-function updateLikeBtn(){
-  document.getElementById("likeBtn").classList.toggle("active",liked);
-}
-
-document.getElementById("likeBtn").onclick=async()=>{
-  if(liked){
-    await supabase.from("film_likes")
-      .delete().eq("film_id",filmId).eq("user_id",user.id);
-    liked=false;
-  }else{
-    await supabase.from("film_likes")
-      .insert({film_id:filmId,user_id:user.id});
-    liked=true;
-  }
-  updateLikeBtn();
-};
-
-async function addView(){
-  await supabase.rpc("increment_film_views",{fid:filmId});
-}
-
-async function loadProgress(){
-  const {data} = await supabase.from("film_progress")
-    .select("*")
-    .eq("film_id",filmId)
-    .eq("user_id",user.id)
-    .single();
-
-  if(data){
-    player.currentTime = player.duration * (data.progress/100);
-  }
-}
-
-player.addEventListener("timeupdate", async ()=>{
-  if(!user) return;
-  const percent = (player.currentTime / player.duration) * 100;
-
-  await supabase.from("film_progress").upsert({
-    film_id:filmId,
-    user_id:user.id,
-    progress:Math.floor(percent)
-  });
-});
-
-async function loadRecommendations(){
-  const {data} = await supabase
-    .from("films")
-    .select("id,title,thumbnail_url")
-    .neq("id",filmId)
-    .limit(10);
-
-  document.getElementById("recommended").innerHTML =
-    data.map(f=>`
-      <div class="card" onclick="location.href='watch.html?id=${f.id}'">
-        <img src="${f.thumbnail_url}">
-      </div>
-    `).join("");
 }
 
 window.logout = async ()=>{
   await supabase.auth.signOut();
   location.href="login.html";
+};
+
+/* ---------- LOAD FILM ---------- */
+
+async function loadFilm(){
+  const { data, error } = await supabase
+    .from("films")
+    .select("*")
+    .eq("id", filmId)
+    .single();
+
+  if(error){
+    alert("Film not found");
+    return;
+  }
+
+  currentFilm = data;
+
+  console.log("Video URL:", data.video_url);
+
+  video.src = data.video_url;
+  video.load();
+
+  incrementViews();
 }
 
-init();
+/* ---------- VIEWS ---------- */
+
+async function incrementViews(){
+  await supabase
+    .from("films")
+    .update({ views: (currentFilm.views||0)+1 })
+    .eq("id", filmId);
+}
+
+/* ---------- LIKE ---------- */
+
+window.likeFilm = async ()=>{
+  alert("Liked ❤️ (hook this to table later)");
+};
+
+/* ---------- RECOMMENDED ---------- */
+
+async function loadRecommended(){
+  const { data } = await supabase
+    .from("films")
+    .select("id,title,thumbnail_url")
+    .eq("is_published", true)
+    .limit(10);
+
+  recommendedRow.innerHTML = (data||[])
+    .filter(f=>f.id!==filmId)
+    .map(f=>`
+      <div class="card" onclick="openFilm('${f.id}')">
+        <div class="thumb">
+          <img src="${f.thumbnail_url||''}">
+        </div>
+        <div class="title">${f.title}</div>
+      </div>
+    `).join("");
+}
+
+window.openFilm = (id)=>{
+  location.href = "watch.html?id="+id;
+};
+
+/* ---------- INIT ---------- */
+
+(async()=>{
+  await checkAuth();
+  await loadFilm();
+  await loadRecommended();
+})();
 </script>
 
 </body>
