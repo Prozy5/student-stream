@@ -23,7 +23,6 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 
 .meta{font-size:11px;opacity:.8}
 .badge{background:#1e90ff;font-size:10px;padding:2px 5px;border-radius:4px;margin-left:4px}
-.series{background:#9b59b6}
 
 .progress{height:4px;background:#222;border-radius:2px;margin-top:4px;overflow:hidden}
 .progress span{display:block;height:100%;background:#1e90ff}
@@ -42,7 +41,6 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 </header>
 
 <div id="continueSection" class="section"></div>
-<div id="recommendSection" class="section"></div>
 <div id="trendingSection" class="section"></div>
 <div id="categoriesSection"></div>
 <div id="empty" class="hero" style="display:none">No films uploaded yet</div>
@@ -58,10 +56,9 @@ const supabase = createClient(
 const continueSection = document.getElementById("continueSection");
 const trendingSection = document.getElementById("trendingSection");
 const categoriesSection = document.getElementById("categoriesSection");
-const recommendSection = document.getElementById("recommendSection");
 const searchInput = document.getElementById("search");
 
-let films=[], progressMap={}, likedSet=new Set(), episodeCounts={};
+let films=[], progressMap={}, likedSet=new Set();
 
 async function getUser(){
   const {data:{user}} = await supabase.auth.getUser();
@@ -71,7 +68,6 @@ async function getUser(){
 function filmCard(f){
   const progress = progressMap[f.id] || 0;
   const liked = likedSet.has(f.id);
-  const epCount = episodeCounts[f.id];
 
   return `
   <div class="card">
@@ -79,9 +75,8 @@ function filmCard(f){
     <img src="${f.thumbnail_url}" onclick="openWatch('${f.id}')">
     <div class="title">${f.title}</div>
     <div class="meta">
-      👁 ${f.views||0} ❤️ ${f.likes||0}
+      👁 ${f.views||0}
       ${f.creator_name?`<span class="badge">${f.creator_name}</span>`:""}
-      ${epCount?`<span class="badge series">${epCount} eps</span>`:""}
     </div>
     ${progress?`<div class="progress"><span style="width:${progress}%"></span></div>`:""}
   </div>`;
@@ -109,29 +104,36 @@ window.toggleLike=async(e,id)=>{
 async function loadProgress(){
   const user = await getUser();
   if(!user) return;
-  const {data}=await supabase.from("film_progress").select("film_id,progress").eq("user_id",user.id);
+
+  const {data}=await supabase.from("film_progress")
+    .select("film_id,progress")
+    .eq("user_id",user.id);
+
   data?.forEach(p=>progressMap[p.film_id]=p.progress);
 }
 
 async function loadLikes(){
   const user = await getUser();
   if(!user) return;
-  const {data}=await supabase.from("film_likes").select("film_id").eq("user_id",user.id);
+
+  const {data}=await supabase.from("film_likes")
+    .select("film_id")
+    .eq("user_id",user.id);
+
   data?.forEach(l=>likedSet.add(l.film_id));
 }
 
-async function loadEpisodes(){
-  const {data}=await supabase.from("film_episodes").select("film_id");
-  episodeCounts={};
-  data?.forEach(e=>{
-    episodeCounts[e.film_id]=(episodeCounts[e.film_id]||0)+1;
-  });
-}
-
 async function loadFilms(){
-  const {data}=await supabase.from("films")
-    .select("id,title,thumbnail_url,views,likes,is_series,film_creators(name)");
-  films=data.map(f=>({...f,creator_name:f.film_creators?.name}));
+  const {data,error}=await supabase.from("films")
+    .select("id,title,thumbnail_url,views,film_creators(name)")
+    .eq("is_published",true);
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  films=data.map(f=>({...f,creator_name:f.film_creators?.name || ""}));
 }
 
 function buildRow(title,list,target){
@@ -150,23 +152,22 @@ function loadContinue(){
 function loadTrending(){
   const trending=[...films].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,10);
   trendingSection.innerHTML="";
-  buildRow("Trending",trending,trendingSection);
-}
-
-function loadRecommended(){
-  const picks=[...films].sort(()=>0.5-Math.random()).slice(0,10);
-  recommendSection.innerHTML="";
-  buildRow("Recommended For You",picks,recommendSection);
+  if(trending.length) buildRow("Trending",trending,trendingSection);
 }
 
 async function loadCategories(){
   categoriesSection.innerHTML="";
   const {data:cats}=await supabase.from("film_categories").select("id,name");
-  const {data:maps}=await supabase.from("film_category_map").select("film_id,category_id");
 
   for(const c of cats){
-    const ids=maps.filter(m=>m.category_id===c.id).map(m=>m.film_id);
-    const catFilms=films.filter(f=>ids.includes(f.id));
+    const {data:maps}=await supabase.from("film_category_map")
+      .select("film_id")
+      .eq("category_id",c.id);
+
+    const catFilms=maps
+      .map(m=>films.find(f=>f.id===m.film_id))
+      .filter(Boolean);
+
     if(catFilms.length){
       const div=document.createElement("div");
       div.className="section";
@@ -181,23 +182,28 @@ searchInput.oninput=()=>{
   categoriesSection.innerHTML=`
   <div class="section">
     <h2>Search Results</h2>
-    <div class="row">${
-      films.filter(f=>f.title.toLowerCase().includes(q)).map(filmCard).join("")
-    }</div>
+    <div class="row">
+      ${films.filter(f=>f.title.toLowerCase().includes(q)).map(filmCard).join("")}
+    </div>
   </div>`;
 }
 
 async function loadAll(){
-  progressMap={}; likedSet.clear();
+  progressMap={};
+  likedSet.clear();
+
   await loadProgress();
   await loadLikes();
-  await loadEpisodes();
   await loadFilms();
 
-  if(!films.length) document.getElementById("empty").style.display="block";
+  if(!films.length){
+    document.getElementById("empty").style.display="block";
+    return;
+  }
+
+  document.getElementById("empty").style.display="none";
 
   loadContinue();
-  loadRecommended();
   loadTrending();
   loadCategories();
 }
