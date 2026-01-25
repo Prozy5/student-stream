@@ -1,171 +1,194 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Browse · SS Films</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse – SS Films</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-
 body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:#05070d;
+  margin:0;
+  background:#070b10;
   color:#fff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 
 header{
-  padding:16px 22px;
-  background:#070a12;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #111;
-}
-
-a{color:#4da3ff;text-decoration:none}
-
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:22px;
-}
-
-.search{
-  margin-bottom:20px;
-}
-
-.search input{
-  width:100%;
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:#070b10cc;
+  backdrop-filter:blur(10px);
   padding:12px;
-  border-radius:8px;
+}
+
+.top{
+  display:flex;
+  gap:10px;
+}
+
+input{
+  flex:1;
+  padding:10px;
   border:none;
-  background:#111827;
+  border-radius:10px;
+  background:#141a22;
   color:white;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-  gap:16px;
-}
-
-.card{
-  background:#0b1020;
-  border-radius:10px;
-  overflow:hidden;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.card:hover{
-  transform:scale(1.03);
-}
-
-.thumb{
-  width:100%;
-  height:240px;
-  background:#000;
-  object-fit:cover;
-}
-
-.card-info{
+select{
   padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#141a22;
+  color:white;
 }
 
-.card-info h3{
-  font-size:15px;
-  margin-bottom:4px;
+.categories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  margin-top:10px;
 }
 
-.card-info span{
-  font-size:12px;
-  color:#aaa;
+.cat{
+  padding:6px 12px;
+  background:#141a22;
+  border-radius:20px;
+  font-size:13px;
+  cursor:pointer;
+  white-space:nowrap;
 }
 
-.loading{
-  color:#888;
-  padding:30px;
-  text-align:center;
+.cat.active{
+  background:#4da3ff;
+  color:black;
+}
+
+.grid{
+  padding:12px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:12px;
+}
+
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:12px;
+}
+
+.title{
+  font-size:13px;
+  margin-top:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.meta{
+  font-size:11px;
+  opacity:.7;
 }
 </style>
 </head>
 <body>
 
 <header>
-  <strong>SS FILMS</strong>
-  <div>
-    <a href="./">Home</a>
+  <div class="top">
+    <input id="search" placeholder="Search films...">
+    <select id="sort">
+      <option value="new">Newest</option>
+      <option value="views">Trending</option>
+      <option value="likes">Popular</option>
+    </select>
   </div>
+  <div class="categories" id="categories"></div>
 </header>
 
-<div class="container">
+<div class="grid" id="grid"></div>
 
-<div class="search">
-  <input id="searchBox" placeholder="Search films...">
-</div>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-<div id="films" class="grid"></div>
-<div id="loading" class="loading">Loading films…</div>
+const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
-</div>
+const grid = document.getElementById("grid");
+const searchInput = document.getElementById("search");
+const sortSelect = document.getElementById("sort");
+const categoriesDiv = document.getElementById("categories");
 
-<script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+let films=[];
+let categories=[];
+let selectedCategory=null;
 
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let allFilms = [];
-
-async function loadFilms(){
-  const {data} = await db
-    .from("films")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  allFilms = data || [];
-  renderFilms(allFilms);
+function card(f){
+  return `
+  <div class="card" onclick="location.href='watch.html?id=${f.id}'">
+    <img src="${f.thumbnail_url}">
+    <div class="title">${f.title}</div>
+    <div class="meta">👁 ${f.views||0}</div>
+  </div>`;
 }
 
-function renderFilms(list){
-  const box = document.getElementById("films");
-  const loading = document.getElementById("loading");
+async function loadFilms(){
+  const {data}=await supabase
+    .from("films")
+    .select("*")
+    .eq("is_published",true);
 
-  box.innerHTML = "";
+  films=data||[];
+  render();
+}
 
-  if(!list.length){
-    loading.textContent = "No films found.";
-    return;
-  }
+async function loadCategories(){
+  const {data}=await supabase.from("film_categories").select("*");
+  categories=data||[];
 
-  loading.style.display = "none";
+  categoriesDiv.innerHTML=`<div class="cat active" onclick="selectCat(null,this)">All</div>`;
 
-  list.forEach(f=>{
-    box.innerHTML += `
-      <div class="card" onclick="openFilm('${f.id}')">
-        <img class="thumb" src="${f.thumbnail_url || 'https://via.placeholder.com/300x450?text=SS+Films'}">
-        <div class="card-info">
-          <h3>${f.title}</h3>
-          <span>${new Date(f.created_at).getFullYear()}</span>
-        </div>
-      </div>
-    `;
+  categories.forEach(c=>{
+    const el=document.createElement("div");
+    el.className="cat";
+    el.innerText=c.name;
+    el.onclick=()=>selectCat(c.id,el);
+    categoriesDiv.appendChild(el);
   });
 }
 
-function openFilm(id){
-  location.href = `watch.html?id=${id}`;
+window.selectCat=(id,el)=>{
+  selectedCategory=id;
+  document.querySelectorAll(".cat").forEach(c=>c.classList.remove("active"));
+  el.classList.add("active");
+  render();
 }
 
-document.getElementById("searchBox").addEventListener("input", e=>{
-  const q = e.target.value.toLowerCase();
-  renderFilms(allFilms.filter(f => f.title.toLowerCase().includes(q)));
-});
+function render(){
+  let list=[...films];
+
+  const q=searchInput.value.toLowerCase();
+  if(q){
+    list=list.filter(f=>f.title.toLowerCase().includes(q));
+  }
+
+  if(selectedCategory){
+    list=list.filter(f=>f.category_id===selectedCategory);
+  }
+
+  const sort=sortSelect.value;
+  if(sort==="views") list.sort((a,b)=>(b.views||0)-(a.views||0));
+  if(sort==="likes") list.sort((a,b)=>(b.likes||0)-(a.likes||0));
+  if(sort==="new") list.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+  grid.innerHTML=list.map(card).join("");
+}
+
+searchInput.oninput=render;
+sortSelect.onchange=render;
 
 loadFilms();
+loadCategories();
 </script>
 
 </body>
