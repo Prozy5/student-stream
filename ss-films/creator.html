@@ -15,115 +15,109 @@ header{padding:16px;border-bottom:1px solid #1f2630;display:flex;justify-content
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
 .stat{background:#0b0f14;padding:12px;border-radius:10px;text-align:center}
 .stat h3{margin:0;font-size:22px;color:#1e90ff}
+.stat p{margin:0;font-size:12px;opacity:.7}
 .films{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
 .film{background:#0b0f14;border-radius:10px;padding:10px;font-size:13px}
 .film img{width:100%;border-radius:8px;margin-bottom:6px}
-.center{text-align:center;opacity:.7;padding:40px}
+.empty{text-align:center;opacity:.6;padding:20px}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">🎬 Creator Studio</div>
-  <div>
-    <button class="btn" onclick="location.href='upload.html'">Upload</button>
-    <button class="btn" onclick="logout()">Logout</button>
-  </div>
+  <div class="logo">🎬 SS Films Studio</div>
+  <button class="btn" onclick="location.href='upload.html'">Upload Film</button>
 </header>
 
 <div class="container">
 
-  <div id="loading" class="card">Loading...</div>
+<div id="loading" class="card">Loading creator profile...</div>
 
-  <div id="pending" class="card center" style="display:none">
-    ⏳ Your creator application is pending approval.
+<div id="dashboard" style="display:none">
+
+  <div class="card">
+    <h2 id="channelName"></h2>
+    <p id="creatorId" style="opacity:.6;font-size:13px"></p>
   </div>
 
-  <div id="dashboard" style="display:none">
-
-    <div class="card">
-      <h2 id="channelName"></h2>
-      <p id="creatorId" style="opacity:.6;font-size:13px"></p>
-    </div>
-
-    <div class="card stats">
-      <div class="stat"><h3 id="filmCount">0</h3><p>Films</p></div>
-      <div class="stat"><h3 id="viewCount">0</h3><p>Views</p></div>
-      <div class="stat"><h3>$0</h3><p>Earnings</p></div>
-    </div>
-
-    <div class="card">
-      <h3>Your Films</h3>
-      <div id="films" class="films"></div>
-    </div>
-
+  <div class="card stats">
+    <div class="stat"><h3 id="filmCount">0</h3><p>Films</p></div>
+    <div class="stat"><h3 id="viewCount">0</h3><p>Views</p></div>
+    <div class="stat"><h3>$0</h3><p>Earnings</p></div>
   </div>
+
+  <div class="card">
+    <h3>Your Films</h3>
+    <div id="films" class="films"></div>
+  </div>
+
+</div>
 
 </div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-const loading=document.getElementById("loading");
-const dashboard=document.getElementById("dashboard");
-const pending=document.getElementById("pending");
-
-async function logout(){
-  await supabase.auth.signOut();
-  location.href="login.html";
-}
+const loading = document.getElementById("loading");
+const dashboard = document.getElementById("dashboard");
 
 async function init(){
 
-  const {data:{user}}=await supabase.auth.getUser();
-  if(!user){ location.href="login.html"; return; }
+  const {data:{user}} = await supabase.auth.getUser();
 
-  const {data:creator}=await supabase
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+
+  const {data:creator} = await supabase
     .from("creators")
     .select("*")
-    .eq("user_id",user.id)
+    .eq("user_id", user.id)
     .single();
-
-  loading.style.display="none";
 
   if(!creator){
     location.href="creator-apply.html";
     return;
   }
 
-  if(creator.status!=="approved"){
-    pending.style.display="block";
-    return;
-  }
+  document.getElementById("channelName").textContent = creator.name;
+  document.getElementById("creatorId").textContent = "Creator ID: " + creator.id;
 
-  document.getElementById("channelName").textContent=creator.name;
-  document.getElementById("creatorId").textContent="Creator ID: "+creator.id;
-
-  const {data:films}=await supabase
+  const {data:films} = await supabase
     .from("films")
     .select("*")
-    .eq("creator_id",creator.id);
+    .eq("creator_id", creator.id)
+    .order("created_at", {ascending:false});
 
-  document.getElementById("filmCount").textContent=films.length;
-  document.getElementById("viewCount").textContent=films.reduce((a,b)=>a+(b.views||0),0);
+  document.getElementById("filmCount").textContent = films?.length || 0;
 
-  const filmsDiv=document.getElementById("films");
-  filmsDiv.innerHTML="";
+  let views = 0;
+  films?.forEach(f=>views += f.views || 0);
+  document.getElementById("viewCount").textContent = views;
 
-  if(films.length===0){
-    filmsDiv.innerHTML="<div class='center'>No uploads yet</div>";
+  const filmsDiv = document.getElementById("films");
+
+  if(!films || films.length===0){
+    filmsDiv.innerHTML = `<div class="empty">No uploads yet</div>`;
   }else{
     films.forEach(f=>{
-      filmsDiv.innerHTML+=`
-        <div class="film">
-          <img src="${f.thumbnail_url}">
-          <b>${f.title}</b>
-        </div>`;
+      const div = document.createElement("div");
+      div.className="film";
+      div.innerHTML=`
+        <img src="${f.thumbnail_url}">
+        <b>${f.title}</b>
+      `;
+      filmsDiv.appendChild(div);
     });
   }
 
+  loading.style.display="none";
   dashboard.style.display="block";
 }
 
