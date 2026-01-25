@@ -5,6 +5,9 @@
 <title>StudentStream Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- GLOBAL PLATFORM LOCK -->
+<script type="module" src="/js/platform-guard.js"></script>
+
 <style>
 :root{
   --bg:#05080f;
@@ -138,18 +141,15 @@ button:hover{border-color:var(--accent)}
 <script type="module">
 import { supabase, logout } from "/js/auth.js";
 
-// Protect page
+/* Load user info (owner only reaches here) */
 const { data: sessionData } = await supabase.auth.getSession();
 
-if (!sessionData.session) {
-  window.location.href = "/auth/login.html";
-}
+if (!sessionData.session) return;
 
-// Load user info
 const user = sessionData.session.user;
 document.getElementById("userEmail").textContent = user.email;
 
-// Fetch role from profiles table
+/* Load role */
 const { data: profile } = await supabase
   .from("profiles")
   .select("role")
@@ -162,7 +162,7 @@ if (profile?.role) {
   roleEl.style.display = "inline-block";
 }
 
-// Logout
+/* Logout */
 document.getElementById("logoutBtn").onclick = async () => {
   await logout();
   window.location.href = "/auth/login.html";
