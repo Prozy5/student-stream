@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>StudentStream Signup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Create StudentStream Account</h2>
+
+<input id="email" placeholder="Email"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
+
+<button onclick="handleSignup()">Sign Up</button>
+
+<script type="module">
+import { signup } from "../js/auth.js";
+
+async function handleSignup(){
+  try{
+    await signup(email.value, password.value);
+    alert("Account created. You can login now.");
+    window.location.href = "login.html";
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+window.handleSignup = handleSignup;
+</script>
+
+</body>
+</html>
