@@ -2,352 +2,210 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Watch – SS Films</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body{
-  margin:0;
-  background:#070b10;
-  color:#fff;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-}
+body{margin:0;background:#0b0f14;color:#fff;font-family:system-ui}
+header{padding:12px 16px;font-weight:700;border-bottom:1px solid #1f2937;display:flex;justify-content:space-between}
+.container{max-width:1100px;margin:auto;padding:16px}
+.player-box{background:black;border-radius:12px;overflow:hidden}
+video{width:100%;max-height:520px;background:black}
 
-.player-wrap{
-  position:relative;
-  background:black;
-}
+.title{font-size:26px;font-weight:700;margin-top:12px}
+.meta{opacity:.7;font-size:14px;margin:6px 0}
+.badge{background:#1e90ff;padding:3px 8px;border-radius:6px;font-size:12px;margin-left:6px}
 
-video{
-  width:100%;
-  max-height:60vh;
-  background:black;
-}
+.actions{display:flex;gap:10px;margin:10px 0}
+.btn{padding:8px 14px;border:none;border-radius:8px;background:#1f2937;color:#fff;cursor:pointer}
+.btn.like.active{background:#dc2626}
 
-.top-bar{
-  position:absolute;
-  top:10px;
-  left:10px;
-  z-index:10;
-}
+.section{margin-top:24px}
+.row{display:flex;gap:10px;overflow-x:auto}
+.card{min-width:140px}
+.card img{width:140px;height:200px;border-radius:8px;object-fit:cover}
 
-.top-bar button{
-  background:#0009;
-  border:none;
-  color:white;
-  padding:8px 12px;
-  border-radius:10px;
-}
+.episodes{margin-top:10px}
+.episode{padding:8px;border-bottom:1px solid #222;cursor:pointer}
+.episode:hover{background:#111827}
 
-.info{
-  padding:14px;
-}
-
-.title{
-  font-size:20px;
-  font-weight:700;
-}
-
-.meta{
-  font-size:13px;
-  opacity:.7;
-  margin-top:4px;
-}
-
-.actions{
-  display:flex;
-  gap:12px;
-  margin:12px 0;
-}
-
-.actions button{
-  background:#141a22;
-  color:white;
-  border:none;
-  padding:8px 14px;
-  border-radius:12px;
-}
-
-.creator-card{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  background:#0e141c;
-  padding:10px;
-  border-radius:12px;
-  margin-top:10px;
-}
-
-.creator-avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#333;
-}
-
-.description{
-  font-size:14px;
-  opacity:.8;
-  margin-top:10px;
-}
-
-.comments{
-  padding:14px;
-}
-
-.comment{
-  padding:8px 0;
-  border-bottom:1px solid #1a2330;
-  font-size:14px;
-}
-
-.comment small{
-  opacity:.6;
-}
-
-.comment-box{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-}
-
-.comment-box input{
-  flex:1;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  background:#141a22;
-  color:white;
-}
-
-.comment-box button{
-  padding:10px 14px;
-  border:none;
-  border-radius:10px;
-  background:#4da3ff;
-  color:black;
-}
-
-.section{
-  padding:14px;
-}
-
-.row{
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-}
-
-.card{
-  min-width:120px;
-}
-
-.card img{
-  width:120px;
-  height:170px;
-  border-radius:10px;
-  object-fit:cover;
-}
-
-.card .title{
-  font-size:12px;
-}
 </style>
 </head>
 <body>
 
-<div class="player-wrap">
-  <div class="top-bar">
-    <button onclick="history.back()">← Back</button>
-  </div>
+<header>
+  <div>SS Films</div>
+  <button onclick="logout()" class="btn">Logout</button>
+</header>
+
+<div class="container">
+
+<div class="player-box">
   <video id="player" controls></video>
 </div>
 
-<div class="info">
-  <div class="title" id="title"></div>
-  <div class="meta" id="meta"></div>
+<div class="title" id="title"></div>
+<div class="meta" id="meta"></div>
 
-  <div class="actions">
-    <button onclick="toggleLike()">❤️ Like</button>
-    <button onclick="toggleSave()">💾 Save</button>
-  </div>
-
-  <div class="creator-card" id="creator"></div>
-
-  <div class="description" id="description"></div>
+<div class="actions">
+  <button class="btn like" id="likeBtn">❤️ Like</button>
 </div>
 
-<div class="comments">
-  <h3>Comments</h3>
-  <div id="commentList"></div>
-
-  <div class="comment-box">
-    <input id="commentInput" placeholder="Write a comment...">
-    <button onclick="postComment()">Send</button>
-  </div>
+<div class="section" id="episodesSection" style="display:none">
+  <h3>Episodes</h3>
+  <div class="episodes" id="episodesList"></div>
 </div>
 
 <div class="section">
-  <h3>Related</h3>
-  <div class="row" id="related"></div>
+  <h3>Recommended</h3>
+  <div class="row" id="recommended"></div>
+</div>
+
 </div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-const id = new URLSearchParams(location.search).get("id");
+const params = new URLSearchParams(location.search);
+const filmId = params.get("id");
 
-let user=null, film=null, liked=false, saved=false;
-
-const player=document.getElementById("player");
+let user, film, liked=false;
+const player = document.getElementById("player");
 
 async function init(){
-  const {data:u}=await supabase.auth.getUser();
-  user=u.user;
+  const {data:{user:u}} = await supabase.auth.getUser();
+  if(!u){ location.href="login.html"; return; }
+  user=u;
 
   await loadFilm();
-  await loadLikes();
-  await loadSave();
-  await loadComments();
-  await loadRelated();
-  setupProgressTracking();
-  addView();
+  await loadLike();
+  await loadProgress();
+  await addView();
+  loadRecommendations();
 }
 
 async function loadFilm(){
-  const {data}=await supabase
+  const {data} = await supabase
     .from("films")
-    .select("*, film_creators(name,avatar_url)")
-    .eq("id",id)
+    .select("*, film_creators(name)")
+    .eq("id", filmId)
     .single();
 
   film=data;
 
-  player.src=data.video_url;
+  document.getElementById("title").textContent=film.title;
+  document.getElementById("meta").innerHTML=
+    `👁 ${film.views||0} views ${film.film_creators?`<span class="badge">${film.film_creators.name}</span>`:""}`;
 
-  document.getElementById("title").textContent=data.title;
-  document.getElementById("meta").textContent=`${data.views||0} views`;
+  player.src=film.video_url;
 
-  document.getElementById("description").textContent=data.description||"";
-
-  document.getElementById("creator").innerHTML=`
-    <div class="creator-avatar"></div>
-    <div>
-      <div>${data.film_creators?.name||"Creator"}</div>
-      <small>Creator</small>
-    </div>`;
+  if(film.is_series){
+    loadEpisodes();
+  }
 }
+
+async function loadEpisodes(){
+  const {data} = await supabase
+    .from("film_episodes")
+    .select("*")
+    .eq("series_id", filmId)
+    .order("episode_number");
+
+  if(!data.length) return;
+
+  document.getElementById("episodesSection").style.display="block";
+
+  document.getElementById("episodesList").innerHTML =
+    data.map(ep=>`
+      <div class="episode" onclick="playEpisode('${ep.video_url}')">
+        Episode ${ep.episode_number} – ${ep.title}
+      </div>
+    `).join("");
+}
+
+window.playEpisode=url=>{
+  player.src=url;
+  player.play();
+}
+
+async function loadLike(){
+  const {data} = await supabase.from("film_likes")
+    .select("*")
+    .eq("film_id",filmId)
+    .eq("user_id",user.id)
+    .single();
+
+  liked=!!data;
+  updateLikeBtn();
+}
+
+function updateLikeBtn(){
+  document.getElementById("likeBtn").classList.toggle("active",liked);
+}
+
+document.getElementById("likeBtn").onclick=async()=>{
+  if(liked){
+    await supabase.from("film_likes")
+      .delete().eq("film_id",filmId).eq("user_id",user.id);
+    liked=false;
+  }else{
+    await supabase.from("film_likes")
+      .insert({film_id:filmId,user_id:user.id});
+    liked=true;
+  }
+  updateLikeBtn();
+};
 
 async function addView(){
-  await supabase.from("film_views").insert({film_id:id,user_id:user?.id||null});
+  await supabase.rpc("increment_film_views",{fid:filmId});
 }
 
-async function loadLikes(){
-  if(!user) return;
-  const {data}=await supabase.from("film_likes")
-    .select("*").eq("film_id",id).eq("user_id",user.id);
-  liked=!!data.length;
-}
+async function loadProgress(){
+  const {data} = await supabase.from("film_progress")
+    .select("*")
+    .eq("film_id",filmId)
+    .eq("user_id",user.id)
+    .single();
 
-async function toggleLike(){
-  if(!user) return alert("Login required");
-
-  if(liked){
-    await supabase.from("film_likes").delete().eq("film_id",id).eq("user_id",user.id);
-  }else{
-    await supabase.from("film_likes").insert({film_id:id,user_id:user.id});
+  if(data){
+    player.currentTime = player.duration * (data.progress/100);
   }
-  liked=!liked;
 }
 
-async function loadSave(){
+player.addEventListener("timeupdate", async ()=>{
   if(!user) return;
-  const {data}=await supabase.from("saved_films")
-    .select("*").eq("film_id",id).eq("user_id",user.id);
-  saved=!!data.length;
-}
+  const percent = (player.currentTime / player.duration) * 100;
 
-async function toggleSave(){
-  if(!user) return alert("Login required");
-
-  if(saved){
-    await supabase.from("saved_films").delete().eq("film_id",id).eq("user_id",user.id);
-  }else{
-    await supabase.from("saved_films").insert({film_id:id,user_id:user.id});
-  }
-  saved=!saved;
-}
-
-function setupProgressTracking(){
-  let last=0;
-  player.addEventListener("timeupdate",async()=>{
-    if(!user) return;
-    if(player.currentTime-last<10) return;
-    last=player.currentTime;
-
-    const progress=Math.floor((player.currentTime/player.duration)*100);
-
-    await supabase.from("film_progress").upsert({
-      film_id:id,
-      user_id:user.id,
-      progress
-    });
-  });
-}
-
-async function loadComments(){
-  const {data}=await supabase
-    .from("film_comments")
-    .select("*, users(email)")
-    .eq("film_id",id)
-    .order("created_at",{ascending:false});
-
-  const box=document.getElementById("commentList");
-  box.innerHTML="";
-
-  data.forEach(c=>{
-    box.innerHTML+=`
-      <div class="comment">
-        <strong>${c.users?.email||"User"}</strong>
-        <div>${c.content}</div>
-        <small>${new Date(c.created_at).toLocaleString()}</small>
-      </div>`;
-  });
-}
-
-async function postComment(){
-  if(!user) return alert("Login required");
-  const text=document.getElementById("commentInput").value.trim();
-  if(!text) return;
-
-  await supabase.from("film_comments").insert({
-    film_id:id,
+  await supabase.from("film_progress").upsert({
+    film_id:filmId,
     user_id:user.id,
-    content:text
+    progress:Math.floor(percent)
   });
+});
 
-  document.getElementById("commentInput").value="";
-  loadComments();
-}
-
-async function loadRelated(){
-  const {data}=await supabase.from("films")
+async function loadRecommendations(){
+  const {data} = await supabase
+    .from("films")
     .select("id,title,thumbnail_url")
-    .neq("id",id)
+    .neq("id",filmId)
     .limit(10);
 
-  const row=document.getElementById("related");
-  row.innerHTML="";
-
-  data.forEach(f=>{
-    row.innerHTML+=`
+  document.getElementById("recommended").innerHTML =
+    data.map(f=>`
       <div class="card" onclick="location.href='watch.html?id=${f.id}'">
         <img src="${f.thumbnail_url}">
-        <div class="title">${f.title}</div>
-      </div>`;
-  });
+      </div>
+    `).join("");
+}
+
+window.logout = async ()=>{
+  await supabase.auth.signOut();
+  location.href="login.html";
 }
 
 init();
