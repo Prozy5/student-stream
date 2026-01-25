@@ -6,95 +6,53 @@
 <title>SS Films</title>
 
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#0b0f14;color:#fff;font-family:system-ui,-apple-system,sans-serif}
-
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 16px;
-  border-bottom:1px solid #1c2230;
-}
-
-.logo{font-size:20px;font-weight:700}
+body{margin:0;background:#0b0f14;color:#fff;font-family:system-ui}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid #1f2937}
+.logo{font-size:22px;font-weight:800}
+.search{background:#1a1f27;border:none;color:#fff;padding:8px 12px;border-radius:6px;width:180px}
 
 .actions{display:flex;gap:10px}
+.btn{background:#1e90ff;border:none;padding:8px 14px;border-radius:8px;color:#fff;font-weight:600;cursor:pointer}
+.btn.secondary{background:#374151}
 
-.btn{
-  padding:7px 12px;
-  border-radius:6px;
-  border:none;
-  cursor:pointer;
-  font-size:13px;
-}
+.hero{height:60vh;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:30px}
+.hero-box{max-width:500px}
+.hero h1{font-size:36px;margin:0}
+.hero p{opacity:.85}
 
-.btn.primary{background:#1e90ff;color:#fff}
-.btn.outline{background:transparent;border:1px solid #2a3550;color:#fff}
+.section{padding:14px}
+.section h2{margin:10px 0}
 
-.section{padding:16px}
+.row{display:flex;gap:10px;overflow-x:auto}
+.row::-webkit-scrollbar{display:none}
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:12px;
-}
+.card{min-width:140px;position:relative;cursor:pointer}
+.card img{width:140px;height:200px;border-radius:8px;object-fit:cover}
 
-.card{
-  cursor:pointer;
-}
+.like{position:absolute;top:6px;right:6px;background:#0009;border-radius:50%;padding:4px;font-size:12px}
+.like.active{color:red}
 
-.card img{
-  width:100%;
-  aspect-ratio:2/3;
-  border-radius:8px;
-  object-fit:cover;
-}
+.badge{background:#1e90ff;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px}
 
-.title{
-  font-size:13px;
-  margin-top:6px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
+.progress{height:4px;background:#222;border-radius:2px;margin-top:4px;overflow:hidden}
+.progress span{display:block;height:100%;background:#1e90ff}
 
-.hero{
-  padding:40px 16px;
-  text-align:center;
-  opacity:.8
-}
-
-.creator-banner{
-  margin:16px;
-  padding:16px;
-  background:#121826;
-  border:1px solid #1f2a40;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
+.meta{font-size:11px;opacity:.7}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">SS Films</div>
-  <div class="actions" id="authButtons"></div>
+  <input id="search" class="search" placeholder="Search films">
+  <div class="actions" id="authActions"></div>
 </header>
 
-<div id="creatorBanner"></div>
+<div class="hero" id="hero"></div>
 
-<div class="section">
-  <h2>Latest Films</h2>
-  <div id="filmsGrid" class="grid"></div>
-</div>
-
-<div id="empty" class="hero" style="display:none">
-  No films yet.
-</div>
+<div id="continueSection" class="section"></div>
+<div id="trendingSection" class="section"></div>
+<div id="categoriesSection"></div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -104,99 +62,162 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const filmsGrid = document.getElementById("filmsGrid");
-const authButtons = document.getElementById("authButtons");
-const creatorBanner = document.getElementById("creatorBanner");
+let user=null;
+let films=[], progressMap={}, likedSet=new Set();
 
-async function getUser(){
-  const { data:{user} } = await supabase.auth.getUser();
-  return user;
-}
+const authBox=document.getElementById("authActions");
 
-function renderAuth(user){
+async function initAuth(){
+  const {data:{user:u}} = await supabase.auth.getUser();
+  user=u;
+
   if(user){
-    authButtons.innerHTML = `
-      <button class="btn outline" onclick="logout()">Logout</button>
-      <button class="btn primary" onclick="goUpload()">Upload</button>
-    `;
-  } else {
-    authButtons.innerHTML = `
-      <button class="btn outline" onclick="goLogin()">Login</button>
-      <button class="btn primary" onclick="goSignup()">Sign Up</button>
-    `;
+    authBox.innerHTML=`
+      <button class="btn secondary" onclick="location.href='studio.html'">Creator Studio</button>
+      <button class="btn secondary" onclick="logout()">Logout</button>`;
+  }else{
+    authBox.innerHTML=`
+      <button class="btn secondary" onclick="location.href='login.html'">Login</button>
+      <button class="btn" onclick="location.href='creator-apply.html'">Join as Creator</button>`;
   }
 }
 
+window.logout=async()=>{
+  await supabase.auth.signOut();
+  location.reload();
+};
+
 function filmCard(f){
+  const progress=progressMap[f.id]||0;
+  const liked=likedSet.has(f.id);
+
   return `
-    <div class="card" onclick="watch('${f.id}')">
-      <img src="${f.thumbnail_url}">
-      <div class="title">${f.title}</div>
+  <div class="card" onclick="openWatch('${f.id}')">
+    <div class="like ${liked?'active':''}" onclick="toggleLike(event,'${f.id}')">❤️</div>
+    <img src="${f.thumbnail_url}">
+    <div class="meta">
+      ${f.film_creators?.name?`<span class="badge">${f.film_creators.name}</span>`:""}
     </div>
-  `;
+    ${progress?`<div class="progress"><span style="width:${progress}%"></span></div>`:""}
+  </div>`;
+}
+
+window.openWatch=id=>{
+  location.href=`watch.html?id=${id}`;
+};
+
+window.toggleLike=async(e,id)=>{
+  e.stopPropagation();
+  if(!user){alert("Login required");return;}
+
+  if(likedSet.has(id)){
+    await supabase.from("film_likes").delete().eq("film_id",id).eq("user_id",user.id);
+    likedSet.delete(id);
+  }else{
+    await supabase.from("film_likes").insert({film_id:id,user_id:user.id});
+    likedSet.add(id);
+  }
+  renderAll();
+};
+
+async function loadProgress(){
+  if(!user) return;
+  const {data}=await supabase.from("film_progress").select("*").eq("user_id",user.id);
+  data?.forEach(p=>progressMap[p.film_id]=p.progress);
+}
+
+async function loadLikes(){
+  if(!user) return;
+  const {data}=await supabase.from("film_likes").select("film_id").eq("user_id",user.id);
+  data?.forEach(l=>likedSet.add(l.film_id));
 }
 
 async function loadFilms(){
-  const { data, error } = await supabase
-    .from("films")
-    .select("id,title,thumbnail_url")
-    .eq("is_published", true)
-    .order("created_at",{ascending:false});
+  const {data}=await supabase.from("films")
+    .select("id,title,thumbnail_url,film_creators(name),is_featured")
+    .eq("is_published",true);
 
-  if(error){
-    console.error(error);
-    return;
-  }
-
-  if(!data.length){
-    document.getElementById("empty").style.display="block";
-    return;
-  }
-
-  filmsGrid.innerHTML = data.map(filmCard).join("");
+  films=data||[];
 }
 
-async function checkCreator(user){
-  if(!user) return;
+function buildRow(title,list,target){
+  if(!list.length) return;
+  target.innerHTML+=`
+    <h2>${title}</h2>
+    <div class="row">${list.map(filmCard).join("")}</div>`;
+}
 
-  const { data } = await supabase
-    .from("creators")
-    .select("id")
-    .eq("user_id", user.id)
-    .single();
+function buildHero(){
+  const f=films.find(x=>x.is_featured)||films[0];
+  if(!f) return;
 
-  if(!data){
-    creatorBanner.innerHTML = `
-      <div class="creator-banner">
-        <div>
-          <strong>Become a Creator</strong><br>
-          Upload films and build your channel
-        </div>
-        <button class="btn primary" onclick="goCreatorApply()">Apply</button>
-      </div>
-    `;
+  document.getElementById("hero").style.backgroundImage=
+    `linear-gradient(to top,#0b0f14,transparent),url(${f.thumbnail_url})`;
+
+  document.getElementById("hero").innerHTML=`
+    <div class="hero-box">
+      <h1>${f.title}</h1>
+      <p>Watch now on SS Films</p>
+      <button class="btn" onclick="openWatch('${f.id}')">▶ Play</button>
+    </div>`;
+}
+
+function buildContinue(){
+  const list=films.filter(f=>progressMap[f.id]>0);
+  document.getElementById("continueSection").innerHTML="";
+  if(list.length) buildRow("Continue Watching",list,continueSection);
+}
+
+function buildTrending(){
+  const list=[...films].slice(0,10);
+  trendingSection.innerHTML="";
+  buildRow("Trending",list,trendingSection);
+}
+
+async function buildCategories(){
+  categoriesSection.innerHTML="";
+  const {data:cats}=await supabase.from("film_categories").select("*");
+
+  for(const c of cats){
+    const {data:maps}=await supabase.from("film_category_map")
+      .select("film_id").eq("category_id",c.id);
+
+    const list=maps.map(m=>films.find(f=>f.id===m.film_id)).filter(Boolean);
+
+    if(list.length){
+      const div=document.createElement("div");
+      div.className="section";
+      buildRow(c.name,list,div);
+      categoriesSection.appendChild(div);
+    }
   }
 }
 
-window.watch = id => location.href = `watch.html?id=${id}`;
-window.goLogin = () => location.href = "login.html";
-window.goSignup = () => location.href = "signup.html";
-window.goUpload = () => location.href = "upload.html";
-window.goCreatorApply = () => location.href = "creator-apply.html";
+async function renderAll(){
+  progressMap={}; likedSet.clear();
 
-window.logout = async ()=>{
-  await supabase.auth.signOut();
-  location.reload();
-}
-
-async function init(){
-  const user = await getUser();
-  renderAuth(user);
+  await loadProgress();
+  await loadLikes();
   await loadFilms();
-  await checkCreator(user);
+
+  buildHero();
+  buildContinue();
+  buildTrending();
+  await buildCategories();
 }
 
-init();
+document.getElementById("search").oninput=e=>{
+  const q=e.target.value.toLowerCase();
+  const res=films.filter(f=>f.title.toLowerCase().includes(q));
+
+  categoriesSection.innerHTML=`
+  <div class="section">
+    <h2>Search Results</h2>
+    <div class="row">${res.map(filmCard).join("")}</div>
+  </div>`;
+};
+
+initAuth().then(renderAll);
 </script>
 
 </body>
