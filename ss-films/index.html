@@ -1,153 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>SS Films</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:#05070d;
-  color:#fff;
-}
-
-header{
-  padding:18px 24px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(5,7,13,.85);
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-.logo{
-  font-weight:800;
-  font-size:20px;
-  letter-spacing:.5px;
-}
-
-.hero{
-  height:60vh;
-  background:linear-gradient(to top,#05070d,transparent),url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=1400");
-  background-size:cover;
-  background-position:center;
-  display:flex;
-  align-items:flex-end;
-  padding:40px;
-}
-
-.hero h1{font-size:42px;margin-bottom:10px}
-.hero p{max-width:500px;color:#ccc}
-
-.section{
-  padding:25px;
-}
-
-.section h2{
-  margin-bottom:12px;
-}
-
-.row{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  padding-bottom:10px;
-}
-
-.card{
-  min-width:160px;
-  height:230px;
-  border-radius:10px;
-  background:#111;
-  overflow:hidden;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.card:hover{transform:scale(1.05)}
-
-.card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-footer{
-  text-align:center;
-  padding:30px;
-  color:#777;
-  font-size:13px;
-}
+body{margin:0;background:#0f0f0f;color:white;font-family:Arial}
+header{display:flex;justify-content:space-between;padding:15px;background:black}
+button{background:#e50914;border:none;color:white;padding:8px 12px;cursor:pointer}
+input{padding:8px;width:100%;margin-bottom:8px}
+.section{padding:20px}
+.row{display:flex;gap:12px;overflow-x:auto}
+.card{width:150px}
+.card img{width:100%;height:220px;object-fit:cover;border-radius:6px}
+.hidden{display:none}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">SS FILMS</div>
-  <div>StudentStream</div>
+  <b>SS FILMS</b>
+  <div>
+    <button onclick="show('home')">Home</button>
+    <button onclick="show('upload')">Upload</button>
+    <button onclick="show('dashboard')">Dashboard</button>
+    <button onclick="show('login')">Login</button>
+  </div>
 </header>
 
-<section class="hero">
-  <div>
-    <h1>SS Films Originals</h1>
-    <p>Watch original films, series, and documentaries created on StudentStream.</p>
-  </div>
-</section>
-
-<div class="section">
-  <h2>Trending</h2>
-  <div class="row" id="trending"></div>
+<!-- HOME -->
+<div id="home" class="section">
+  <h2>Films</h2>
+  <div id="films" class="row"></div>
 </div>
 
-<div class="section">
-  <h2>New Releases</h2>
-  <div class="row" id="new"></div>
+<!-- WATCH -->
+<div id="watch" class="section hidden">
+  <button onclick="show('home')">← Back</button>
+  <h2 id="watchTitle"></h2>
+  <video id="player" controls width="100%"></video>
 </div>
 
-<div class="section">
-  <h2>All Films</h2>
-  <div class="row" id="all"></div>
+<!-- LOGIN -->
+<div id="login" class="section hidden">
+  <h2>Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
 </div>
 
-<footer>
-© 2026 SS Films · StudentStream
-</footer>
+<!-- UPLOAD -->
+<div id="upload" class="section hidden">
+  <h2>Upload Film</h2>
+  <input id="utitle" placeholder="Title">
+  <input id="uthumb" placeholder="Thumbnail URL">
+  <input id="uvideo" placeholder="Video URL">
+  <button onclick="uploadFilm()">Upload</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="section hidden">
+  <h2>My Films</h2>
+  <div id="myfilms"></div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="section hidden">
+  <h2>Admin Panel</h2>
+  <div id="adminfilms"></div>
+</div>
 
 <script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabase = window.supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentUser = null;
 
-function filmCard(f){
-  return `
-    <div class="card" onclick="openFilm('${f.id}')">
-      <img src="${f.thumbnail_url || 'https://via.placeholder.com/300x450'}">
-    </div>
-  `;
+function show(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
 
-function openFilm(id){
-  window.location.href = "./watch.html?id=" + id;
+async function login(){
+  const {data,error} = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value
+  });
+  if(error) alert(error.message);
+  else{
+    currentUser = data.user;
+    alert("Logged in");
+    loadAll();
+    show("home");
+  }
+}
+
+async function loadAll(){
+  const {data:{user}} = await supabase.auth.getUser();
+  currentUser = user;
+  loadFilms();
+  if(user){
+    loadMyFilms();
+    checkAdmin();
+  }
 }
 
 async function loadFilms(){
-  const {data} = await db.from("films").select("*").order("created_at",{ascending:false});
-
-  if(!data) return;
-
-  document.getElementById("all").innerHTML = data.map(filmCard).join("");
-  document.getElementById("new").innerHTML = data.slice(0,6).map(filmCard).join("");
-  document.getElementById("trending").innerHTML = data.slice(0,6).map(filmCard).join("");
+  const {data} = await supabase.from("films").select("*").eq("is_published",true);
+  films.innerHTML = data.map(f=>`
+    <div class="card" onclick="watchFilm('${f.id}')">
+      <img src="${f.thumbnail_url}">
+      <div>${f.title}</div>
+    </div>
+  `).join("");
 }
 
-loadFilms();
+async function watchFilm(id){
+  const {data} = await supabase.from("films").select("*").eq("id",id).single();
+  watchTitle.textContent = data.title;
+  player.src = data.video_url;
+  show("watch");
+
+  if(currentUser){
+    await supabase.from("film_views").insert({film_id:id,viewer_id:currentUser.id});
+  }
+}
+
+async function uploadFilm(){
+  if(!currentUser) return alert("Login first");
+  await supabase.from("films").insert({
+    title: utitle.value,
+    thumbnail_url: uthumb.value,
+    video_url: uvideo.value,
+    creator_id: currentUser.id
+  });
+  alert("Uploaded (awaiting approval)");
+}
+
+async function loadMyFilms(){
+  const {data} = await supabase.from("films").select("*").eq("creator_id",currentUser.id);
+  myfilms.innerHTML = data.map(f=>`<div>${f.title} (${f.is_published?"Live":"Pending"})</div>`).join("");
+}
+
+async function checkAdmin(){
+  const {data} = await supabase.from("profiles").select("role").eq("id",currentUser.id).single();
+  if(data?.role==="admin"){
+    showAdmin();
+  }
+}
+
+async function showAdmin(){
+  document.getElementById("admin").classList.remove("hidden");
+  const {data} = await supabase.from("films").select("*");
+  adminfilms.innerHTML = data.map(f=>`
+    <div>
+      ${f.title} - ${f.is_published?"Live":"Pending"}
+      <button onclick="approve('${f.id}')">Approve</button>
+    </div>
+  `).join("");
+}
+
+async function approve(id){
+  await supabase.from("films").update({is_published:true}).eq("id",id);
+  showAdmin();
+}
+
+loadAll();
 </script>
 
 </body>
