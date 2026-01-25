@@ -1,119 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Watch – SS Films</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:#05070d;
-  color:#fff;
-  font-family:system-ui,Segoe UI,Roboto;
-}
-
-header{
-  padding:16px 22px;
-  font-weight:800;
-  font-size:20px;
-  background:#000;
-  position:sticky;
-  top:0;
-  z-index:5;
-}
-
-.container{
-  max-width:1000px;
-  margin:auto;
-  padding:20px;
-}
-
-video{
-  width:100%;
-  border-radius:12px;
-  background:black;
-  margin-bottom:20px;
-}
-
-h1{
-  margin-bottom:10px;
-}
-
-.desc{
-  opacity:.8;
-  line-height:1.5;
-}
-
-.back{
-  display:inline-block;
-  margin-bottom:14px;
-  color:#e50914;
-  text-decoration:none;
-  font-weight:600;
-}
-
-.loader{
-  text-align:center;
-  padding:80px;
-  opacity:.6;
-}
-</style>
+  <title>Watch – SS Films</title>
+  <meta charset="UTF-8">
+  <style>
+    body { background:black;color:white;font-family:sans-serif;padding:20px }
+    video { width:100%;max-width:900px }
+  </style>
 </head>
 <body>
 
-<header>SS FILMS</header>
+<h1 id="title"></h1>
+<p id="desc"></p>
 
-<div class="container">
-  <a class="back" href="index.html">← Back to home</a>
+<video id="player" controls autoplay></video>
 
-  <div id="app">
-    <div class="loader">Loading film...</div>
-  </div>
-</div>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-<script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const params = new URLSearchParams(window.location.search);
+const filmId = params.get("id");
 
-function getFilmId(){
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id");
-}
-
-async function loadFilm(){
-  const filmId = getFilmId();
-  if(!filmId){
-    document.getElementById("app").innerHTML = "Film not found.";
-    return;
-  }
-
-  const { data: film, error } = await supabase
+async function loadFilm() {
+  const { data, error } = await supabase
     .from("films")
     .select("*")
     .eq("id", filmId)
     .single();
 
-  if(error || !film){
-    document.getElementById("app").innerHTML = "Film not found.";
+  if (error) {
+    alert("Film not found");
     return;
   }
 
-  document.title = film.title + " – SS Films";
-
-  document.getElementById("app").innerHTML = `
-    <video controls playsinline poster="${film.thumbnail_url || ""}">
-      <source src="${film.video_url}" type="video/mp4">
-      Your browser does not support video playback.
-    </video>
-
-    <h1>${film.title}</h1>
-    <div class="desc">${film.description || ""}</div>
-  `;
+  document.getElementById("title").innerText = data.title;
+  document.getElementById("desc").innerText = data.description;
+  document.getElementById("player").src = data.video_url;
 }
 
 loadFilm();
