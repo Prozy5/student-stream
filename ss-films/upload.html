@@ -3,238 +3,112 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Creator Studio – Upload</title>
+<title>Upload – SS Films</title>
 
 <style>
-body{
-  margin:0;
-  background:#0b0f14;
-  color:#fff;
-  font-family:system-ui;
-}
-
-header{
-  padding:14px 16px;
-  border-bottom:1px solid #1f2630;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:800;
-  font-size:18px;
-}
-
-.btn{
-  background:#1e90ff;
-  border:none;
-  color:#fff;
-  padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:700;
-}
-
-.btn.outline{
-  background:none;
-  border:1px solid #1e90ff;
-}
-
-.container{
-  max-width:700px;
-  margin:auto;
-  padding:16px;
-}
-
-.box{
-  background:#121822;
-  border:1px solid #1f2630;
-  border-radius:12px;
-  padding:16px;
-}
-
-input, textarea, select{
-  width:100%;
-  margin-top:10px;
-  padding:10px;
-  border-radius:8px;
-  border:none;
-  background:#1a2230;
-  color:#fff;
-  outline:none;
-}
-
-button.upload{
-  background:#1e90ff;
-  border:none;
-  color:#fff;
-  padding:12px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:700;
-  width:100%;
-  margin-top:14px;
-}
-
-.progress{
-  height:8px;
-  background:#222;
-  border-radius:6px;
-  overflow:hidden;
-  margin-top:10px;
-  display:none;
-}
-
-.progress span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:#1e90ff;
-}
-
-.msg{
-  margin-top:10px;
-  font-size:13px;
-  opacity:.85;
-}
+body{margin:0;background:#0b0f14;color:#fff;font-family:system-ui}
+header{padding:14px 16px;border-bottom:1px solid #1f2630;font-weight:800;font-size:18px}
+.container{max-width:700px;margin:auto;padding:16px}
+.box{background:#121822;border:1px solid #1f2630;border-radius:12px;padding:16px}
+input,textarea,select{width:100%;margin-top:10px;padding:10px;border-radius:8px;border:none;background:#1a2230;color:#fff}
+button{background:#1e90ff;border:none;color:#fff;padding:12px;border-radius:8px;cursor:pointer;font-weight:700;width:100%;margin-top:14px}
+.msg{margin-top:10px;font-size:13px}
 </style>
 </head>
 <body>
 
-<header>
-  🎬 Upload Film
-  <button class="btn outline" onclick="goStudio()">Studio</button>
-</header>
+<header>🎬 Upload Film</header>
 
 <div class="container">
-  <div class="box">
+<div class="box">
 
-    <input id="title" placeholder="Film title">
+<input id="title" placeholder="Film title">
+<textarea id="desc" placeholder="Description"></textarea>
 
-    <textarea id="desc" placeholder="Description"></textarea>
+<label>Thumbnail</label>
+<input id="thumb" type="file">
 
-    <select id="category"></select>
+<label>Video</label>
+<input id="video" type="file">
 
-    <label>Thumbnail</label>
-    <input id="thumb" type="file" accept="image/*">
+<button id="uploadBtn">Upload</button>
 
-    <label>Video file</label>
-    <input id="video" type="file" accept="video/*">
+<div id="msg" class="msg"></div>
 
-    <button id="uploadBtn" class="upload">Upload Film</button>
-
-    <div class="progress"><span></span></div>
-    <div id="msg" class="msg"></div>
-
-  </div>
+</div>
 </div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
-const titleEl = document.getElementById("title");
-const descEl = document.getElementById("desc");
-const thumbEl = document.getElementById("thumb");
-const videoEl = document.getElementById("video");
-const uploadBtn = document.getElementById("uploadBtn");
-const msg = document.getElementById("msg");
-const progressBar = document.querySelector(".progress");
-const progressFill = document.querySelector(".progress span");
-const categorySelect = document.getElementById("category");
+const msg=document.getElementById("msg");
 
-let user = null;
-let creator = null;
-
-/* ---------- AUTH GUARD ---------- */
+let creator=null;
+let user=null;
 
 async function init(){
-  const {data} = await supabase.auth.getUser();
-  user = data.user;
 
-  if(!user){
-    location.href = "login.html";
+  const {data:{user:authUser}}=await supabase.auth.getUser();
+  user=authUser;
+
+  if(!user){ location.href="login.html"; return; }
+
+  const {data}=await supabase.from("creators").select("*").eq("user_id",user.id).single();
+
+  if(!data){ location.href="creator-apply.html"; return; }
+
+  if(data.status!=="approved"){
+    alert("Your creator account is pending approval.");
+    location.href="creator.html";
     return;
   }
 
-  const res = await supabase
-    .from("creators")
-    .select("*")
-    .eq("user_id", user.id)
-    .single();
-
-  if(!res.data){
-    alert("Creator account required");
-    location.href = "creator-apply.html";
-    return;
-  }
-
-  creator = res.data;
-
-  loadCategories();
+  creator=data;
 }
 
-async function loadCategories(){
-  const {data} = await supabase.from("film_categories").select("*");
-  categorySelect.innerHTML = data.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
-}
+document.getElementById("uploadBtn").onclick=async()=>{
 
-/* ---------- UPLOAD ---------- */
+  const title=document.getElementById("title").value.trim();
+  const desc=document.getElementById("desc").value.trim();
+  const thumb=document.getElementById("thumb").files[0];
+  const video=document.getElementById("video").files[0];
 
-uploadBtn.onclick = async ()=>{
-  const title = titleEl.value.trim();
-  const desc = descEl.value.trim();
-  const thumbFile = thumbEl.files[0];
-  const videoFile = videoEl.files[0];
-  const categoryId = categorySelect.value;
-
-  if(!title || !thumbFile || !videoFile){
+  if(!title||!thumb||!video){
     alert("Fill all fields");
     return;
   }
 
-  uploadBtn.disabled = true;
-  progressBar.style.display="block";
   msg.textContent="Uploading...";
 
-  const videoPath = `videos/${user.id}/${Date.now()}_${videoFile.name}`;
-  const thumbPath = `thumbnails/${user.id}/${Date.now()}_${thumbFile.name}`;
+  const videoPath=`videos/${user.id}/${Date.now()}_${video.name}`;
+  const thumbPath=`thumbs/${user.id}/${Date.now()}_${thumb.name}`;
 
-  await supabase.storage.from("films").upload(videoPath, videoFile);
-  await supabase.storage.from("films").upload(thumbPath, thumbFile);
+  await supabase.storage.from("films").upload(videoPath,video);
+  await supabase.storage.from("films").upload(thumbPath,thumb);
 
-  const { data:videoUrl } = supabase.storage.from("films").getPublicUrl(videoPath);
-  const { data:thumbUrl } = supabase.storage.from("films").getPublicUrl(thumbPath);
+  const {data:videoUrl}=supabase.storage.from("films").getPublicUrl(videoPath);
+  const {data:thumbUrl}=supabase.storage.from("films").getPublicUrl(thumbPath);
 
-  const { error } = await supabase.from("films").insert({
+  const {error}=await supabase.from("films").insert({
     title,
-    description: desc,
-    video_url: videoUrl.publicUrl,
-    thumbnail_url: thumbUrl.publicUrl,
-    creator_id: creator.id,
-    category_id: categoryId,
-    is_published: true,
-    views: 0
+    description:desc,
+    video_url:videoUrl.publicUrl,
+    thumbnail_url:thumbUrl.publicUrl,
+    creator_id:creator.id,
+    is_published:true,
+    views:0
   });
 
   if(error){
+    msg.textContent="Upload failed";
     console.error(error);
-    msg.textContent="❌ Upload failed";
-    uploadBtn.disabled=false;
-    return;
+  }else{
+    msg.textContent="✅ Uploaded!";
+    setTimeout(()=>location.href="creator.html",1200);
   }
-
-  msg.textContent="✅ Film published! Redirecting to studio...";
-  progressFill.style.width="100%";
-
-  setTimeout(()=>{
-    location.href="creator.html";
-  },1500);
 };
-
-window.goStudio = ()=> location.href="creator.html";
 
 init();
 </script>
