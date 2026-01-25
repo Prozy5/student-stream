@@ -55,7 +55,7 @@ body{
 <script src="https://meet.jit.si/external_api.js"></script>
 <script>
 const params = new URLSearchParams(window.location.search);
-const room = (params.get("room") || "studentstreamtest").replace(/[^a-zA-Z0-9]/g,'');
+const room = (params.get("room") || "studentstreamlive").replace(/[^a-zA-Z0-9]/g,'');
 
 document.getElementById("roomLabel").innerText = "Room: " + room;
 
@@ -66,11 +66,15 @@ function leaveRoom(){
 const api = new JitsiMeetExternalAPI("meet.jit.si", {
   roomName: room,
   parentNode: document.getElementById("jitsi-container"),
+
   configOverwrite: {
     prejoinPageEnabled: false,
     startWithAudioMuted: false,
-    startWithVideoMuted: false
+    startWithVideoMuted: false,
+    enableLobby: false,
+    disableInviteFunctions: true
   },
+
   interfaceConfigOverwrite: {
     SHOW_JITSI_WATERMARK: false,
     SHOW_BRAND_WATERMARK: false,
