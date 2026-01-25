@@ -1,49 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Apply – SS Films</title>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Become a Creator – StudentStream</title>
+
 <style>
-body{background:#0b0f14;color:#fff;font-family:sans-serif;padding:30px}
-.box{max-width:400px;margin:auto}
-input,textarea,button{width:100%;margin-top:10px;padding:10px;border-radius:6px;border:none}
-button{background:#1e90ff;color:#fff;font-weight:700}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#0b0f14;
+  color:#fff;
+}
+
+header{
+  padding:16px;
+  border-bottom:1px solid #1f2630;
+  font-size:20px;
+  font-weight:800;
+  color:#1e90ff;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:#121923;
+  padding:20px;
+  border-radius:14px;
+  border:1px solid #1f2630;
+}
+
+h2{
+  margin-top:0;
+}
+
+p{
+  opacity:.85;
+  font-size:14px;
+}
+
+label{
+  font-size:13px;
+  opacity:.8;
+}
+
+input, textarea{
+  width:100%;
+  margin-top:6px;
+  margin-bottom:16px;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  background:#0b0f14;
+  color:#fff;
+}
+
+textarea{resize:vertical;min-height:90px}
+
+.btn{
+  background:#1e90ff;
+  color:#fff;
+  border:none;
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.status{
+  margin-top:12px;
+  font-size:14px;
+  opacity:.85;
+  text-align:center;
+}
 </style>
 </head>
 <body>
 
-<div class="box">
-<h2>Become a Creator</h2>
-<input id="name" placeholder="Channel name">
-<textarea id="bio" placeholder="Tell us about your content"></textarea>
-<button onclick="apply()">Submit</button>
-<p id="msg"></p>
+<header>🎬 Become a Creator</header>
+
+<div class="container">
+  <div class="card">
+
+    <h2>Join StudentStream Creators</h2>
+    <p>Upload short films, documentaries, series, and exclusive content to reach students worldwide.</p>
+
+    <label>Channel Name</label>
+    <input id="channel" placeholder="Your creator name">
+
+    <label>Why do you want to join?</label>
+    <textarea id="reason" placeholder="Tell us about your content..."></textarea>
+
+    <label>Portfolio / YouTube / TikTok (optional)</label>
+    <input id="portfolio" placeholder="https://">
+
+    <button class="btn" onclick="apply()">Submit Application</button>
+
+    <div id="status" class="status"></div>
+
+  </div>
 </div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
 async function apply(){
-  const {data:{user}} = await supabase.auth.getUser();
-  if(!user){ location.href="login.html"; return; }
+  const channel = document.getElementById("channel").value.trim();
+  const reason = document.getElementById("reason").value.trim();
+  const portfolio = document.getElementById("portfolio").value.trim();
+  const status = document.getElementById("status");
 
-  const name=document.getElementById("name").value;
-  const bio=document.getElementById("bio").value;
+  if(!channel || !reason){
+    status.textContent = "Please fill all required fields.";
+    return;
+  }
+
+  status.textContent = "Checking login...";
+
+  const {data:userData} = await supabase.auth.getUser();
+  const user = userData.user;
+
+  if(!user){
+    status.textContent = "You must be logged in.";
+    return;
+  }
+
+  status.textContent = "Submitting application...";
 
   const {error} = await supabase.from("creator_applications").insert({
-    user_id:user.id,
-    channel_name:name,
-    bio:bio
+    user_id: user.id,
+    channel_name: channel,
+    reason,
+    portfolio_url: portfolio,
+    status: "pending"
   });
 
   if(error){
-    document.getElementById("msg").textContent=error.message;
-  }else{
-    document.getElementById("msg").textContent="Application submitted!";
+    status.textContent = "❌ Failed to submit application.";
+    console.error(error);
+    return;
   }
+
+  status.textContent = "✅ Application submitted! We'll review it soon.";
+
+  setTimeout(()=>{
+    location.href = "index.html";
+  },1500);
 }
 </script>
+
 </body>
 </html>
