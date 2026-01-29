@@ -1,41 +1,267 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Category</title>
-  <link rel="stylesheet" href="forum.css">
+  <meta charset="UTF-8" />
+  <title>StudentStream DevForum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111a2e;
+      --panel-hover: #152242;
+      --border: #1f2c4d;
+      --text: #e6ebff;
+      --muted: #9aa7d9;
+      --accent: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at top, #0f1b33, #070b15);
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    header button {
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .category-header {
+      margin-bottom: 24px;
+    }
+
+    .category-header h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .category-header p {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .thread {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .thread:hover {
+      background: var(--panel-hover);
+    }
+
+    .thread-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .thread-meta {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      gap: 12px;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 40px 0;
+    }
+  </style>
 </head>
+
 <body>
 
 <header>
-  <a href="index.html">← Back</a>
-  <a href="new.html">New Thread</a>
+  <h1>StudentStream DevForum</h1>
+  <button id="actionBtn">Sign In</button>
 </header>
 
-<main id="threads"></main>
+<main>
+  <div class="category-header">
+    <h2 id="categoryName">Loading…</h2>
+    <p id="categoryDesc">Threads in this category</p>
+  </div>
 
-<script type="module">
-import { supabase } from "./supabase.js";
+  <div id="threads"></div>
+</main>
 
-const id = new URLSearchParams(location.search).get("id");
-const container = document.getElementById("threads");
+<footer>
+  © 2026 StudentStream · Developer Forum
+</footer>
 
-const { data } = await supabase
-  .from("forum_threads")
-  .select("id,title,created_at,forum_profiles(username)")
-  .eq("category_id", id)
-  .order("created_at", { ascending: false });
+<script>
+  /* ============================
+     CONFIG
+  ============================ */
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-data.forEach(t => {
-  const div = document.createElement("div");
-  div.className = "thread";
-  div.innerHTML = `
-    <a href="thread.html?id=${t.id}">${t.title}</a>
-    <div class="thread-meta">
-      by ${t.forum_profiles.username}
-    </div>
-  `;
-  container.appendChild(div);
-});
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  /* ============================
+     HELPERS
+  ============================ */
+  const params = new URLSearchParams(window.location.search);
+  const categoryId = params.get("id");
+
+  if (!categoryId) {
+    alert("Missing category ID");
+    location.href = "index.html";
+  }
+
+  function timeAgo(date) {
+    const seconds = Math.floor((Date.now() - new Date(date)) / 1000);
+    const units = [
+      [31536000, "year"],
+      [2592000, "month"],
+      [86400, "day"],
+      [3600, "hour"],
+      [60, "minute"]
+    ];
+    for (const [s, n] of units) {
+      const v = Math.floor(seconds / s);
+      if (v >= 1) return `${v} ${n}${v > 1 ? "s" : ""} ago`;
+    }
+    return "just now";
+  }
+
+  /* ============================
+     AUTH
+  ============================ */
+  const actionBtn = document.getElementById("actionBtn");
+
+  supabase.auth.getUser().then(({ data }) => {
+    if (data.user) {
+      actionBtn.textContent = "New Thread";
+      actionBtn.onclick = () =>
+        location.href = `new.html?category=${categoryId}`;
+    } else {
+      actionBtn.onclick = () => location.href = "login.html";
+    }
+  });
+
+  /* ============================
+     LOAD CATEGORY
+  ============================ */
+  async function loadCategory() {
+    const { data, error } = await supabase
+      .from("forum_categories")
+      .select("*")
+      .eq("id", categoryId)
+      .single();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    document.getElementById("categoryName").textContent = data.name;
+  }
+
+  /* ============================
+     LOAD THREADS
+  ============================ */
+  async function loadThreads() {
+    const { data, error } = await supabase
+      .from("forum_threads")
+      .select(`
+        id,
+        title,
+        created_at,
+        author_id,
+        forum_profiles(username),
+        forum_replies(count)
+      `)
+      .eq("category_id", categoryId)
+      .order("created_at", { ascending: false });
+
+    const container = document.getElementById("threads");
+    container.innerHTML = "";
+
+    if (error) {
+      container.innerHTML = "<div class='empty'>Failed to load threads</div>";
+      console.error(error);
+      return;
+    }
+
+    if (!data.length) {
+      container.innerHTML =
+        "<div class='empty'>No threads yet. Be the first to post.</div>";
+      return;
+    }
+
+    data.forEach(thread => {
+      const el = document.createElement("div");
+      el.className = "thread";
+      el.onclick = () => location.href = `thread.html?id=${thread.id}`;
+
+      el.innerHTML = `
+        <div class="thread-title">${thread.title}</div>
+        <div class="thread-meta">
+          <span>@${thread.forum_profiles?.username || "unknown"}</span>
+          <span>${thread.forum_replies?.length || 0} replies</span>
+          <span>${timeAgo(thread.created_at)}</span>
+        </div>
+      `;
+
+      container.appendChild(el);
+    });
+  }
+
+  /* ============================
+     INIT
+  ============================ */
+  loadCategory();
+  loadThreads();
 </script>
 
 </body>
