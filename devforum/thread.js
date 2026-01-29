@@ -1,56 +1,31 @@
-const supabase = supabase.createClient("URL","KEY");
-const params = new URLSearchParams(location.search);
-const threadId = params.get("id");
+import { supabase } from "./supabase.js";
 
-async function loadThread(){
-  const {data} = await supabase
-    .from("forum_posts")
-    .select("title,content,profiles(username,role)")
-    .eq("id",threadId)
-    .single();
+const id = new URLSearchParams(location.search).get("id");
+const container = document.getElementById("thread");
 
-  threadBox.innerHTML = `
-    <h2>${data.title}</h2>
-    <div class="meta">${data.profiles.username}</div>
-    <p>${data.content}</p>
+const { data: thread } = await supabase
+  .from("forum_threads")
+  .select("*, forum_profiles(username)")
+  .eq("id", id)
+  .single();
+
+container.innerHTML += `
+  <div class="post">
+    <div class="post-author">${thread.forum_profiles.username}</div>
+    <div class="post-body">${thread.body}</div>
+  </div>
+`;
+
+const { data: replies } = await supabase
+  .from("forum_replies")
+  .select("body, forum_profiles(username)")
+  .eq("thread_id", id);
+
+replies.forEach(r => {
+  container.innerHTML += `
+    <div class="post">
+      <div class="post-author">${r.forum_profiles.username}</div>
+      <div class="post-body">${r.body}</div>
+    </div>
   `;
-}
-
-async function loadReplies(){
-  const {data} = await supabase
-    .from("forum_replies")
-    .select("content,created_at,profiles(username,role)")
-    .eq("post_id",threadId)
-    .order("created_at");
-
-  replies.innerHTML="";
-  data.forEach(r=>{
-    replies.innerHTML += `
-      <div class="reply">
-        <b>${r.profiles.username}</b>
-        <div class="meta">${new Date(r.created_at).toLocaleString()}</div>
-        <p>${r.content}</p>
-      </div>
-    `;
-  });
-}
-
-async function postReply(){
-  const text = replyText.value;
-  const {data:{user}} = await supabase.auth.getUser();
-
-  await supabase.from("forum_replies").insert({
-    post_id:threadId,
-    content:text,
-    user_id:user.id
-  });
-
-  replyText.value="";
-}
-
-supabase.channel("replies")
-.on("postgres_changes",{event:"INSERT",table:"forum_replies"},loadReplies)
-.subscribe();
-
-loadThread();
-loadReplies();
+});
