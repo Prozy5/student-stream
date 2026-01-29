@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="css/forum.css">
+  <title>StudentStream DevForum</title>
+  <link rel="stylesheet" href="forum.css">
 </head>
 <body>
-<h1>StudentStream DevForum</h1>
-<a href="new.html">+ New Thread</a>
 
-<div id="threads"></div>
+<header>
+  <h1>StudentStream DevForum</h1>
+  <a href="new.html">New Thread</a>
+</header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase.js"></script>
-<script src="js/forum.js"></script>
+<main id="categories"></main>
+
+<script type="module" src="forum.js"></script>
 </body>
 </html>
