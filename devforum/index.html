@@ -32,120 +32,92 @@ body{
   padding:16px;
 }
 
-/* HEADER */
-.header{
+/* TOP BAR */
+.topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:16px;
 }
 
-.header h1{
-  margin:0;
-  font-size:22px;
+.topbar h1{
+  font-size:20px;
   font-weight:800;
+  margin:0;
 }
 
-.header button{
-  background:var(--panel2);
+.signin{
+  background:#111827;
   border:1px solid var(--border);
   color:var(--text);
   padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
+  border-radius:10px;
+  font-weight:600;
 }
 
 /* WELCOME */
 .welcome{
-  background:linear-gradient(135deg,#1e293b,#14532d);
-  border-radius:14px;
+  background:linear-gradient(135deg,#064e3b,#0f172a);
+  border-radius:16px;
   padding:18px;
   margin-bottom:20px;
 }
 
 .welcome h2{
-  margin:0 0 6px 0;
+  margin:0 0 6px;
+  font-size:22px;
 }
 
 .welcome p{
   margin:0;
-  color:#d1fae5;
+  color:var(--muted);
 }
 
-/* SECTION */
-.section{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-}
-
-.section-header{
-  background:var(--panel2);
-  padding:12px 14px;
-  font-weight:700;
-}
-
-/* CATEGORY */
-.category{
+/* CATEGORY LIST */
+.categories{
   display:flex;
-  justify-content:space-between;
-  padding:14px;
-  border-top:1px solid var(--border);
-  cursor:pointer;
-}
-
-.category:hover{
-  background:#0b1220;
-}
-
-.cat-left{
-  display:flex;
+  flex-direction:column;
   gap:12px;
 }
 
-.icon{
-  width:38px;
-  height:38px;
-  border-radius:8px;
-  background:#22c55e;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-  color:#052e16;
+.category{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  cursor:pointer;
+  transition:.15s;
 }
 
-.cat-title{
-  font-weight:600;
+.category:hover{
+  background:var(--panel2);
 }
 
-.cat-desc{
-  font-size:13px;
+.category-title{
+  font-weight:700;
+  font-size:16px;
+}
+
+.category-desc{
   color:var(--muted);
+  font-size:14px;
+  margin-top:4px;
 }
 
-.cat-right{
-  text-align:right;
-  font-size:13px;
-  color:var(--muted);
-}
-
-.empty{
-  padding:20px;
-  text-align:center;
-  color:var(--muted);
+.category-meta{
+  margin-top:8px;
+  font-size:12px;
+  color:#9ca3af;
 }
 </style>
 </head>
 
 <body>
-
 <div class="wrapper">
 
-  <div class="header">
+  <div class="topbar">
     <h1>StudentStream DevForum</h1>
-    <button>Sign In</button>
+    <button class="signin">Sign In</button>
   </div>
 
   <div class="welcome">
@@ -153,75 +125,55 @@ body{
     <p>Announcements, development updates, bugs, and feedback.</p>
   </div>
 
-  <div class="section">
-    <div class="section-header">StudentStream</div>
-    <div id="categories"></div>
-  </div>
+  <div id="categories" class="categories"></div>
 
 </div>
 
 <script>
-/* ===============================
-   SUPABASE
-=============================== */
-const supabase = window.supabase.createClient(
+const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* ===============================
-   LOAD DEVFORUM INDEX
-=============================== */
-async function loadDevForum(){
-  const container = document.getElementById("categories");
-  container.innerHTML = "";
-
-  // get categories
-  const { data: categories } = await supabase
+async function loadCategories(){
+  const { data, error } = await supabase
     .from("forum_categories")
-    .select("*")
-    .order("order_index",{ascending:true});
+    .select(`
+      id,
+      name,
+      description,
+      forum_threads(count)
+    `)
+    .order("order_index",{ ascending:true });
 
-  if(!categories || categories.length === 0){
-    container.innerHTML = `<div class="empty">No categories yet</div>`;
+  if(error){
+    console.error(error);
     return;
   }
 
-  // get threads
-  const { data: threads } = await supabase
-    .from("forum_threads")
-    .select("id, title, category_id, created_at");
+  const wrap = document.getElementById("categories");
+  wrap.innerHTML = "";
 
-  categories.forEach(cat=>{
-    const catThreads = threads?.filter(t=>t.category_id===cat.id) || [];
-
-    const last = catThreads.sort(
-      (a,b)=>new Date(b.created_at)-new Date(a.created_at)
-    )[0];
+  data.forEach(cat=>{
+    const count = cat.forum_threads?.[0]?.count || 0;
 
     const el = document.createElement("div");
     el.className = "category";
-    el.onclick = ()=>location.href=`/devforum/category.html?id=${cat.id}`;
+    el.onclick = () => {
+      location.href = `category.html?id=${cat.id}`;
+    };
 
     el.innerHTML = `
-      <div class="cat-left">
-        <div class="icon">${cat.icon || "💬"}</div>
-        <div>
-          <div class="cat-title">${cat.name}</div>
-          <div class="cat-desc">${cat.description || ""}</div>
-        </div>
-      </div>
-      <div class="cat-right">
-        ${catThreads.length} threads<br>
-        ${last ? new Date(last.created_at).toLocaleDateString() : "No activity"}
-      </div>
+      <div class="category-title">${cat.name}</div>
+      <div class="category-desc">${cat.description || ""}</div>
+      <div class="category-meta">${count} threads</div>
     `;
 
-    container.appendChild(el);
+    wrap.appendChild(el);
   });
 }
 
-loadDevForum();
+loadCategories();
 </script>
 
 </body>
