@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>StudentStream DevForum</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta charset="UTF-8" />
+<title>StudentStream Community</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
-  --bg:#0a0f18;
-  --panel:#0f172a;
-  --panel2:#111827;
-  --border:#1f2937;
+  --bg:#070b14;
+  --card:#0e1525;
+  --card2:#101a33;
+  --border:#1f2a44;
   --text:#e5e7eb;
-  --muted:#9ca3af;
+  --muted:#94a3b8;
   --accent:#22c55e;
   --blue:#38bdf8;
-  --red:#ef4444;
   --yellow:#facc15;
+  --red:#ef4444;
+  --purple:#a78bfa;
 }
 
 *{box-sizing:border-box}
 body{
   margin:0;
+  font-family:Inter,system-ui,sans-serif;
   background:var(--bg);
   color:var(--text);
-  font-family:Inter,system-ui,sans-serif;
 }
 
-.wrapper{
-  max-width:980px;
+.container{
+  max-width:1100px;
   margin:auto;
-  padding:16px;
+  padding:18px;
 }
 
 /* HEADER */
@@ -40,154 +40,164 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:16px;
+  margin-bottom:20px;
 }
 
-.header h1{
-  font-size:20px;
+.brand{
+  font-size:22px;
   font-weight:900;
+  letter-spacing:.3px;
 }
 
-.header button{
-  background:var(--panel);
+.auth-btn{
+  background:var(--card);
   border:1px solid var(--border);
   color:var(--text);
   padding:8px 14px;
-  border-radius:10px;
-  font-weight:600;
-}
-
-/* WELCOME */
-.welcome{
-  background:linear-gradient(135deg,#064e3b,#0f172a);
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:22px;
-}
-
-.welcome h2{
-  margin:0 0 6px;
-  font-size:22px;
-}
-
-.welcome p{
-  margin:0;
-  color:var(--muted);
-}
-
-/* CATEGORY LIST */
-.categories{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.category{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  transition:.15s;
-  cursor:pointer;
-}
-
-.category:hover{
-  background:var(--panel2);
-  transform:translateY(-1px);
-}
-
-.cat-left{
-  max-width:75%;
-}
-
-.cat-title{
-  font-size:16px;
-  font-weight:800;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.badge{
-  font-size:11px;
-  padding:3px 7px;
-  border-radius:999px;
+  border-radius:12px;
   font-weight:700;
 }
 
-.badge.ann{background:rgba(239,68,68,.15);color:var(--red)}
-.badge.bug{background:rgba(250,204,21,.15);color:var(--yellow)}
-.badge.dev{background:rgba(56,189,248,.15);color:var(--blue)}
-.badge.gen{background:rgba(34,197,94,.15);color:var(--accent)}
-
-.cat-desc{
-  color:var(--muted);
-  font-size:14px;
-  margin-top:4px;
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,#052e1b,#0e1525 55%);
+  border-radius:20px;
+  padding:26px;
+  margin-bottom:26px;
 }
 
-.cat-right{
-  text-align:right;
+.hero h1{
+  margin:0 0 6px;
+  font-size:26px;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  max-width:640px;
+}
+
+/* CATEGORIES */
+.section-title{
+  font-weight:800;
+  margin-bottom:14px;
+}
+
+.categories{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:14px;
+}
+
+.category{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.category:hover{
+  background:var(--card2);
+  transform:translateY(-2px);
+}
+
+.cat-top{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+}
+
+.icon{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  font-weight:900;
+}
+
+.icon.ann{background:rgba(239,68,68,.15);color:var(--red)}
+.icon.dev{background:rgba(56,189,248,.15);color:var(--blue)}
+.icon.bug{background:rgba(250,204,21,.15);color:var(--yellow)}
+.icon.gen{background:rgba(34,197,94,.15);color:var(--accent)}
+.icon.meta{background:rgba(167,139,250,.15);color:var(--purple)}
+
+.cat-name{
+  font-size:17px;
+  font-weight:900;
+}
+
+.cat-desc{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+.cat-stats{
+  display:flex;
+  justify-content:space-between;
   font-size:12px;
   color:var(--muted);
 }
 
-.cat-count{
-  font-weight:800;
+.stat strong{
   color:var(--text);
 }
 </style>
 </head>
 
 <body>
-<div class="wrapper">
+<div class="container">
 
+  <!-- HEADER -->
   <div class="header">
-    <h1>StudentStream DevForum</h1>
-    <button id="authBtn">Sign In</button>
+    <div class="brand">StudentStream Community</div>
+    <button class="auth-btn" id="authBtn">Sign In</button>
   </div>
 
-  <div class="welcome">
-    <h2>Welcome to the StudentStream DevForum</h2>
-    <p>Announcements, development updates, bugs, and feedback.</p>
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Build. Share. Improve StudentStream.</h1>
+    <p>
+      Official community for platform updates, engineering discussions,
+      bug reports, feedback, and creator collaboration.
+    </p>
   </div>
 
-  <div id="categories" class="categories"></div>
+  <!-- CATEGORIES -->
+  <div class="section-title">Categories</div>
+  <div class="categories" id="categories"></div>
 
 </div>
 
 <script>
-/* =======================
-   SUPABASE CONFIG
-======================= */
+/* =====================
+   SUPABASE
+===================== */
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* =======================
-   AUTH STATE
-======================= */
-async function handleAuth(){
+/* =====================
+   AUTH
+===================== */
+async function authState(){
   const { data:{ user } } = await supabase.auth.getUser();
   const btn = document.getElementById("authBtn");
-
-  if(user){
-    btn.textContent = "Profile";
-    btn.onclick = ()=>location.href="/profile";
-  }else{
-    btn.textContent = "Sign In";
-    btn.onclick = ()=>location.href="/login";
-  }
+  btn.textContent = user ? "Profile" : "Sign In";
+  btn.onclick = ()=>location.href = user ? "/profile" : "/login";
 }
-handleAuth();
+authState();
 
-/* =======================
+/* =====================
    LOAD CATEGORIES
-======================= */
+===================== */
 async function loadCategories(){
   const { data, error } = await supabase
     .from("forum_categories")
@@ -196,17 +206,11 @@ async function loadCategories(){
       name,
       description,
       type,
-      forum_threads(
-        id,
-        created_at
-      )
+      forum_threads(id, created_at)
     `)
     .order("order_index",{ascending:true});
 
-  if(error){
-    console.error(error);
-    return;
-  }
+  if(error){console.error(error);return;}
 
   const wrap = document.getElementById("categories");
   wrap.innerHTML = "";
@@ -217,31 +221,29 @@ async function loadCategories(){
       ? new Date(Math.max(...threads.map(t=>new Date(t.created_at)))).toLocaleDateString()
       : "No activity";
 
-    const badgeClass =
-      cat.type === "announcements" ? "ann" :
-      cat.type === "bugs" ? "bug" :
-      cat.type === "development" ? "dev" : "gen";
+    const iconMap = {
+      announcements:["📢","ann"],
+      development:["🧠","dev"],
+      bugs:["🐞","bug"],
+      general:["💬","gen"],
+      meta:["⚙️","meta"]
+    };
 
-    const badgeText =
-      cat.type === "announcements" ? "Announcements" :
-      cat.type === "bugs" ? "Bugs" :
-      cat.type === "development" ? "Development" : "General";
+    const [icon,cls] = iconMap[cat.type] || ["📁","gen"];
 
     const el = document.createElement("div");
     el.className = "category";
     el.onclick = ()=>location.href=`category.html?id=${cat.id}`;
 
     el.innerHTML = `
-      <div class="cat-left">
-        <div class="cat-title">
-          ${cat.name}
-          <span class="badge ${badgeClass}">${badgeText}</span>
-        </div>
-        <div class="cat-desc">${cat.description || ""}</div>
+      <div class="cat-top">
+        <div class="icon ${cls}">${icon}</div>
+        <div class="cat-name">${cat.name}</div>
       </div>
-      <div class="cat-right">
-        <div class="cat-count">${threads.length}</div>
-        <div>${latest}</div>
+      <div class="cat-desc">${cat.description || ""}</div>
+      <div class="cat-stats">
+        <div class="stat"><strong>${threads.length}</strong> Threads</div>
+        <div class="stat">${latest}</div>
       </div>
     `;
 
@@ -251,6 +253,5 @@ async function loadCategories(){
 
 loadCategories();
 </script>
-
 </body>
 </html>
