@@ -1,286 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudentStream DevForum</title>
+  <meta charset="UTF-8" />
+  <title>StudentStream DevForum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- =========================
+       GLOBAL STYLES / THEME
+  ========================== -->
+  <style>
+    :root {
+      --bg-main: #0b1020;
+      --bg-panel: #0f172a;
+      --bg-panel-hover: #111827;
+      --border: #1f2937;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59,130,246,.15);
+      --radius: 12px;
+    }
 
-<style>
-/* =========================
-   ROOT / THEME
-========================= */
-:root {
-  --bg-main: #0b0f14;
-  --bg-card: #121826;
-  --bg-soft: #0f1523;
-  --accent: #1fd1a5;
-  --accent-2: #4c8cff;
-  --text-main: #e6eaf2;
-  --text-muted: #9aa4bf;
-  --radius: 18px;
-  --radius-soft: 14px;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-/* =========================
-   GLOBAL
-========================= */
-* {
-  box-sizing: border-box;
-}
+    body {
+      margin: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
 
-body {
-  margin: 0;
-  background: var(--bg-main);
-  color: var(--text-main);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-weight: 600;
+    }
 
-/* =========================
-   HEADER
-========================= */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 20px;
-  background: linear-gradient(180deg, #0e1422, #0b0f14);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
+    /* =========================
+       LAYOUT
+    ========================== */
 
-header h1 {
-  font-size: 20px;
-  font-weight: 800;
-}
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
 
-header button {
-  background: var(--bg-card);
-  color: var(--text-main);
-  border: none;
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-weight: 600;
-}
+    /* =========================
+       SIDEBAR
+    ========================== */
 
-/* =========================
-   HERO / WELCOME
-========================= */
-.hero {
-  margin: 16px;
-  padding: 22px;
-  border-radius: var(--radius);
-  background: linear-gradient(135deg, #123c3a, #1a2a45);
-}
+    .sidebar {
+      background: #020617;
+      border-right: 1px solid var(--border);
+      padding: 20px;
+    }
 
-.hero h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
-}
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
 
-.hero p {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 14px;
-}
+    .logo span {
+      color: var(--accent);
+    }
 
-/* =========================
-   FORUM WRAPPER
-========================= */
-.forum {
-  margin: 16px;
-}
+    .nav-section {
+      margin-bottom: 24px;
+    }
 
-/* =========================
-   SECTION TITLE
-========================= */
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 20px 0 12px;
-}
+    .nav-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
 
-/* =========================
-   CATEGORY LIST
-========================= */
-.category {
-  background: var(--bg-card);
-  border-radius: var(--radius-soft);
-  padding: 16px;
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .nav-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 4px;
+    }
 
-.category-left {
-  display: flex;
-  flex-direction: column;
-}
+    .nav-item:hover {
+      background: var(--bg-panel);
+    }
 
-.category-name {
-  font-weight: 700;
-  font-size: 16px;
-}
+    /* =========================
+       MAIN CONTENT
+    ========================== */
 
-.category-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-}
+    .main {
+      padding: 24px 32px;
+    }
 
-.category-right {
-  font-size: 13px;
-  color: var(--text-muted);
-}
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
 
-/* =========================
-   FOOTER NAV (MOBILE)
-========================= */
-.footer-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #0e1422;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-}
+    .topbar h1 {
+      font-size: 24px;
+    }
 
-.footer-nav div {
-  font-size: 12px;
-  color: var(--text-muted);
-}
+    .user-actions button {
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
 
-/* =========================
-   HIDDEN
-========================= */
-.hidden {
-  display: none;
-}
-</style>
+    /* =========================
+       CATEGORIES
+    ========================== */
+
+    .categories {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .category {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      cursor: pointer;
+      transition: background .15s ease, border .15s ease;
+    }
+
+    .category:hover {
+      background: var(--bg-panel-hover);
+      border-color: var(--accent);
+    }
+
+    .category-left h3 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .category-left p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .category-right {
+      font-size: 18px;
+      color: var(--text-muted);
+    }
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    .footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+
+  <!-- =========================
+       SUPABASE
+  ========================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
 
-<!-- =========================
-     HEADER
-========================= -->
-<header>
-  <h1>StudentStream DevForum</h1>
-  <button id="authBtn">Sign In</button>
-</header>
+  <div class="app">
 
-<!-- =========================
-     HERO
-========================= -->
-<section class="hero">
-  <h2>Welcome to the StudentStream DevForum</h2>
-  <p>Announcements, updates, bugs, feedback, and developer discussion.</p>
-</section>
-
-<!-- =========================
-     FORUM
-========================= -->
-<main class="forum">
-
-  <div class="section-title">Forums</div>
-
-  <!-- CATEGORY LIST -->
-  <div id="categories"></div>
-
-</main>
-
-<!-- =========================
-     FOOTER NAV
-========================= -->
-<div class="footer-nav">
-  <div>Home</div>
-  <div>Search</div>
-  <div>Menu</div>
-</div>
-
-<script>
-/* =========================
-   SUPABASE INIT
-========================= */
-const supabase = supabase.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
-
-/* =========================
-   AUTH STATE
-========================= */
-async function loadAuth() {
-  const { data } = await supabase.auth.getUser();
-  const btn = document.getElementById("authBtn");
-
-  if (data.user) {
-    btn.textContent = "Account";
-    btn.onclick = async () => {
-      await supabase.auth.signOut();
-      location.reload();
-    };
-  } else {
-    btn.onclick = () => {
-      window.location.href = "login.html";
-    };
-  }
-}
-
-/* =========================
-   LOAD CATEGORIES
-========================= */
-async function loadCategories() {
-  const { data, error } = await supabase
-    .from("forum_categories")
-    .select("*")
-    .order("name");
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  const container = document.getElementById("categories");
-  container.innerHTML = "";
-
-  data.forEach(cat => {
-    const el = document.createElement("div");
-    el.className = "category";
-    el.innerHTML = `
-      <div class="category-left">
-        <div class="category-name">${cat.name}</div>
-        <div class="category-desc">${cat.description || "Discussion forum"}</div>
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside class="sidebar">
+      <div class="logo">
+        Student<span>Stream</span>
       </div>
-      <div class="category-right">
-        View →
+
+      <div class="nav-section">
+        <div class="nav-title">DevForum</div>
+        <div class="nav-item">Forums</div>
+        <div class="nav-item">Announcements</div>
+        <div class="nav-item">Bug Reports</div>
       </div>
-    `;
 
-    el.onclick = () => {
-      window.location.href = "category.html?id=" + cat.id;
-    };
+      <div class="nav-section">
+        <div class="nav-title">Platform</div>
+        <div class="nav-item">Dashboard</div>
+        <div class="nav-item">Docs</div>
+      </div>
+    </aside>
 
-    container.appendChild(el);
-  });
-}
+    <!-- =========================
+         MAIN
+    ========================== -->
+    <main class="main">
 
-/* =========================
-   INIT
-========================= */
-loadAuth();
-loadCategories();
-</script>
+      <div class="topbar">
+        <h1>StudentStream DevForum</h1>
+        <div class="user-actions">
+          <button onclick="goLogin()">Sign In</button>
+        </div>
+      </div>
+
+      <!-- =========================
+           CATEGORIES CONTAINER
+      ========================== -->
+      <div id="forum-categories" class="categories">
+        <!-- Supabase injects here -->
+      </div>
+
+      <div class="footer">
+        © 2026 StudentStream · Developer Forum
+      </div>
+
+    </main>
+  </div>
+
+  <!-- =========================
+       LOGIC
+  ========================== -->
+  <script>
+    /* =========================
+       CONFIG
+    ========================== */
+
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+    const supabase = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+    /* =========================
+       NAV
+    ========================== */
+
+    function goLogin() {
+      window.location.href = "/devforum/login.html";
+    }
+
+    /* =========================
+       LOAD CATEGORIES
+    ========================== */
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const container = document.getElementById("forum-categories");
+
+      if (!container) {
+        console.error("Forum categories container missing");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("forum_categories")
+        .select("*")
+        .order("order_index", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        container.innerHTML = "<p>Failed to load forums.</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = "<p>No categories available.</p>";
+        return;
+      }
+
+      container.innerHTML = "";
+
+      data.forEach(cat => {
+        const el = document.createElement("div");
+        el.className = "category";
+        el.onclick = () => {
+          window.location.href = `/devforum/category.html?id=${cat.id}`;
+        };
+
+        el.innerHTML = `
+          <div class="category-left">
+            <h3>${cat.name}</h3>
+            <p>${cat.description ?? ""}</p>
+          </div>
+          <div class="category-right">›</div>
+        `;
+
+        container.appendChild(el);
+      });
+
+      console.log("Categories loaded:", data.length);
+    });
+  </script>
 
 </body>
 </html>
