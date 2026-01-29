@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>StudentStream DevForum</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
-  --bg:#0b0e13;
-  --panel:#111827;
-  --panel2:#0f172a;
+  --bg:#090c12;
+  --panel:#0f172a;
+  --panel2:#111827;
   --border:#1f2937;
   --text:#e5e7eb;
   --muted:#9ca3af;
   --accent:#22c55e;
+  --blue:#3b82f6;
+  --amber:#f59e0b;
+  --red:#ef4444;
 }
 
 *{box-sizing:border-box}
@@ -34,38 +37,61 @@ header{
   padding:14px 18px;
   border-bottom:1px solid var(--border);
 }
-header h1{font-size:15px;font-weight:600}
+header h1{font-size:15px;margin:0}
+header span{font-size:12px;color:var(--muted)}
 header input{
   background:var(--panel);
   border:1px solid var(--border);
   color:var(--text);
-  padding:6px 10px;
+  padding:7px 10px;
   border-radius:6px;
+  width:260px;
 }
 
 /* LAYOUT */
-.layout{display:flex;min-height:calc(100vh - 56px)}
+.layout{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  min-height:calc(100vh - 60px);
+}
 
 /* SIDEBAR */
 aside{
-  width:260px;
   background:var(--panel);
   border-right:1px solid var(--border);
-  padding:10px;
+  padding:12px;
+}
+.group{
+  margin-bottom:16px;
+}
+.group-title{
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:6px;
+  text-transform:uppercase;
 }
 .cat{
   padding:10px 12px;
   border-radius:6px;
   cursor:pointer;
 }
-.cat:hover{background:#1f2937}
 .cat.active{
   background:#1f2937;
   border-left:3px solid var(--accent);
 }
+.cat-name{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+}
+.cat-desc{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:4px;
+}
 
 /* MAIN */
-main{flex:1;padding:16px}
+main{padding:16px}
 
 /* TABS */
 .tabs{
@@ -74,7 +100,7 @@ main{flex:1;padding:16px}
   margin-bottom:14px;
 }
 .tab{
-  padding:6px 12px;
+  padding:6px 14px;
   border-radius:999px;
   background:#1f2937;
   font-size:13px;
@@ -89,30 +115,63 @@ main{flex:1;padding:16px}
 /* THREAD */
 .thread{
   display:grid;
-  grid-template-columns:1fr 120px;
-  gap:12px;
+  grid-template-columns:1fr 120px 140px;
+  gap:14px;
   padding:14px;
   border-bottom:1px solid var(--border);
   cursor:pointer;
 }
 .thread:hover{background:var(--panel2)}
-.thread h3{margin:0;font-size:15px}
-.meta{font-size:12px;color:var(--muted);margin-top:6px}
-.stats{text-align:right;font-size:12px;color:var(--muted)}
-.pin{color:var(--accent);font-size:11px;margin-right:6px}
+
+.thread h3{
+  margin:0;
+  font-size:15px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.badge{
+  font-size:10px;
+  padding:2px 6px;
+  border-radius:999px;
+}
+.pin{background:#1e3a8a;color:#bfdbfe}
+.lock{background:#27272a}
+.ann{background:#1d4ed8}
+.update{background:#92400e}
+.rfc{background:#065f46}
+.incident{background:#7f1d1d}
+
+.preview{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:6px;
+  max-width:720px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.stats, .activity{
+  font-size:12px;
+  color:var(--muted);
+  text-align:right;
+}
 
 /* EMPTY */
 .empty{
-  padding:40px;
+  padding:60px;
   text-align:center;
   color:var(--muted);
 }
 
 /* MOBILE */
-@media(max-width:800px){
+@media(max-width:1000px){
+  .layout{grid-template-columns:1fr}
   aside{display:none}
   .thread{grid-template-columns:1fr}
-  .stats{text-align:left}
+  .stats,.activity{text-align:left}
 }
 </style>
 </head>
@@ -120,8 +179,11 @@ main{flex:1;padding:16px}
 <body>
 
 <header>
-  <h1>StudentStream DevForum</h1>
-  <input id="search" placeholder="Search threads…" />
+  <div>
+    <h1>StudentStream DevForum</h1>
+    <span>Engineering • Platform • Systems</span>
+  </div>
+  <input id="search" placeholder="Search DevForum…" />
 </header>
 
 <div class="layout">
@@ -144,56 +206,76 @@ const supabase = supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-let threads=[]
+let categories=[], threads=[]
 let activeCategory=null
 let mode="hot"
 
-/* ---------- LOAD CATEGORIES ---------- */
+/* CATEGORY LOAD */
 async function loadCategories(){
   const {data}=await supabase
     .from("forum_categories")
-    .select("id,name")
+    .select("id,name,description,group,forum_threads(count)")
+  categories=data||[]
 
   const el=document.getElementById("categories")
   el.innerHTML=""
+  const groups={}
 
-  data.forEach((c,i)=>{
-    const d=document.createElement("div")
-    d.className="cat"+(i===0?" active":"")
-    d.textContent=c.name
-    d.onclick=()=>{
-      document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"))
-      d.classList.add("active")
-      activeCategory=c.id
-      render()
-    }
-    if(i===0) activeCategory=c.id
-    el.appendChild(d)
+  categories.forEach(c=>{
+    groups[c.group]=groups[c.group]||[]
+    groups[c.group].push(c)
+  })
+
+  Object.keys(groups).forEach(g=>{
+    const wrap=document.createElement("div")
+    wrap.className="group"
+    wrap.innerHTML=`<div class="group-title">${g}</div>`
+    groups[g].forEach((c,i)=>{
+      const d=document.createElement("div")
+      d.className="cat"
+      d.innerHTML=`
+        <div class="cat-name">
+          <span>${c.name}</span>
+          <span>${c.forum_threads?.[0]?.count||0}</span>
+        </div>
+        <div class="cat-desc">${c.description||""}</div>
+      `
+      d.onclick=()=>{
+        document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"))
+        d.classList.add("active")
+        activeCategory=c.id
+        render()
+      }
+      if(!activeCategory){activeCategory=c.id; d.classList.add("active")}
+      wrap.appendChild(d)
+    })
+    el.appendChild(wrap)
   })
 }
 
-/* ---------- LOAD THREADS ---------- */
+/* THREAD LOAD */
 async function loadThreads(){
   const {data}=await supabase
     .from("forum_threads")
     .select(`
-      id,title,created_at,is_pinned,category_id,
+      id,title,preview,created_at,last_activity,
+      views,is_pinned,is_locked,type,category_id,
       forum_replies(count),
       forum_likes(count)
     `)
-
   threads=data||[]
   render()
 }
 
-/* ---------- SORT LOGIC ---------- */
-function scoreHot(t){
-  const replies=t.forum_replies?.[0]?.count||0
-  const likes=t.forum_likes?.[0]?.count||0
-  const ageHours=(Date.now()-new Date(t.created_at))/36e5
-  return (likes*2 + replies*3) / Math.max(ageHours,1)
+/* ALGORITHMS */
+function hotScore(t){
+  const r=t.forum_replies?.[0]?.count||0
+  const l=t.forum_likes?.[0]?.count||0
+  const age=(Date.now()-new Date(t.created_at))/36e5
+  return (l*2+r*3)/Math.max(age,1)
 }
 
+/* RENDER */
 function render(){
   const q=document.getElementById("search").value.toLowerCase()
   const el=document.getElementById("threads")
@@ -204,47 +286,51 @@ function render(){
     t.title.toLowerCase().includes(q)
   )
 
-  if(mode==="new"){
-    list.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
-  }
-
-  if(mode==="hot"){
-    list.sort((a,b)=>scoreHot(b)-scoreHot(a))
-  }
-
+  if(mode==="new") list.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+  if(mode==="hot") list.sort((a,b)=>hotScore(b)-hotScore(a))
   if(mode==="trending"){
-    const cutoff=Date.now()-48*3600*1000
-    list=list.filter(t=>new Date(t.created_at)>=cutoff)
-    list.sort((a,b)=>scoreHot(b)-scoreHot(a))
+    const cut=Date.now()-12*3600*1000
+    list=list.filter(t=>new Date(t.last_activity||t.created_at)>=cut)
+    list.sort((a,b)=>hotScore(b)-hotScore(a))
   }
 
-  // pinned always top
   list.sort((a,b)=>b.is_pinned-a.is_pinned)
 
   if(!list.length){
-    el.innerHTML=`<div class="empty">No threads found.</div>`
+    el.innerHTML=`<div class="empty">No threads yet.</div>`
     return
   }
 
   list.forEach(t=>{
-    const replies=t.forum_replies?.[0]?.count||0
-    const likes=t.forum_likes?.[0]?.count||0
+    const r=t.forum_replies?.[0]?.count||0
+    const l=t.forum_likes?.[0]?.count||0
 
     const d=document.createElement("div")
     d.className="thread"
     d.innerHTML=`
       <div>
-        <h3>${t.is_pinned?'<span class="pin">PINNED</span>':''}${t.title}</h3>
-        <div class="meta">${new Date(t.created_at).toLocaleString()}</div>
+        <h3>
+          ${t.is_pinned?'<span class="badge pin">PIN</span>':''}
+          ${t.is_locked?'<span class="badge lock">LOCKED</span>':''}
+          ${t.type?`<span class="badge ${t.type}">${t.type.toUpperCase()}</span>`:''}
+          ${t.title}
+        </h3>
+        <div class="preview">${t.preview||""}</div>
       </div>
-      <div class="stats">💬 ${replies}<br>👍 ${likes}</div>
+      <div class="stats">
+        👁️ ${t.views||0}<br>
+        💬 ${r} · 👍 ${l}
+      </div>
+      <div class="activity">
+        ${new Date(t.last_activity||t.created_at).toLocaleString()}
+      </div>
     `
     d.onclick=()=>location.href="/thread.html?id="+t.id
     el.appendChild(d)
   })
 }
 
-/* ---------- EVENTS ---------- */
+/* EVENTS */
 document.getElementById("search").addEventListener("input",render)
 document.querySelectorAll(".tab").forEach(t=>{
   t.onclick=()=>{
@@ -255,7 +341,7 @@ document.querySelectorAll(".tab").forEach(t=>{
   }
 })
 
-/* ---------- INIT ---------- */
+/* INIT */
 loadCategories()
 loadThreads()
 </script>
