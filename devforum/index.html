@@ -9,16 +9,13 @@
 
 <style>
 :root{
-  --bg:#060a13;
-  --panel:#0c1424;
-  --panel2:#101c33;
-  --border:#1e2a44;
-  --text:#e6edff;
-  --muted:#8ea0c4;
-  --accent:#4da3ff;
-  --pin:#1d4ed8;
-  --lock:#7c2d12;
-  --solve:#14532d;
+  --bg:#0b0f16;
+  --panel:#111827;
+  --panel2:#0f172a;
+  --border:#1f2937;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --accent:#22c55e;
 }
 
 *{box-sizing:border-box}
@@ -26,269 +23,205 @@ body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  font-family:Inter,system-ui,sans-serif;
+}
+
+.wrapper{
+  max-width:960px;
+  margin:auto;
+  padding:16px;
 }
 
 /* HEADER */
-header{
-  height:68px;
-  padding:0 28px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:linear-gradient(90deg,#0b1220,#0e1b30);
-  border-bottom:1px solid var(--border);
-}
-header h1{
-  margin:0;
-  font-size:20px;
-  letter-spacing:.5px;
-}
-header span{
-  color:var(--muted);
-  font-size:13px;
-}
-
-/* LAYOUT */
-.layout{
-  display:grid;
-  grid-template-columns:280px 1fr;
-  min-height:calc(100vh - 68px);
-}
-
-/* SIDEBAR */
-aside{
-  background:var(--panel);
-  border-right:1px solid var(--border);
-  padding:18px;
-}
-.cat{
-  padding:14px;
-  border-radius:10px;
-  cursor:pointer;
-  margin-bottom:8px;
-  transition:.15s;
-}
-.cat:hover,.cat.active{
-  background:var(--panel2);
-}
-.cat-title{
-  font-weight:600;
-}
-.cat-desc{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
-}
-
-/* MAIN */
-main{
-  padding:24px;
-}
-
-/* TOP BAR */
-.topbar{
+.header{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:16px;
-  gap:12px;
-}
-.search{
-  flex:1;
-}
-.search input{
-  width:100%;
-  background:var(--panel2);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px 14px;
-  color:var(--text);
 }
 
-/* FILTERS */
-.filters{
-  display:flex;
-  gap:8px;
+.header h1{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
 }
-.filters button{
+
+.header button{
   background:var(--panel2);
   border:1px solid var(--border);
   color:var(--text);
   padding:8px 14px;
-  border-radius:10px;
+  border-radius:8px;
   cursor:pointer;
 }
-.filters button.active{
-  background:var(--accent);
-  color:#02111f;
+
+/* WELCOME */
+.welcome{
+  background:linear-gradient(135deg,#1e293b,#14532d);
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:20px;
 }
 
-/* THREAD */
-.thread{
+.welcome h2{
+  margin:0 0 6px 0;
+}
+
+.welcome p{
+  margin:0;
+  color:#d1fae5;
+}
+
+/* SECTION */
+.section{
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:14px;
-  padding:16px;
-  margin-bottom:12px;
-  display:grid;
-  grid-template-columns:1fr 180px;
+  overflow:hidden;
+}
+
+.section-header{
+  background:var(--panel2);
+  padding:12px 14px;
+  font-weight:700;
+}
+
+/* CATEGORY */
+.category{
+  display:flex;
+  justify-content:space-between;
+  padding:14px;
+  border-top:1px solid var(--border);
+  cursor:pointer;
+}
+
+.category:hover{
+  background:#0b1220;
+}
+
+.cat-left{
+  display:flex;
   gap:12px;
-  transition:.15s;
 }
-.thread:hover{
-  border-color:var(--accent);
+
+.icon{
+  width:38px;
+  height:38px;
+  border-radius:8px;
+  background:#22c55e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  color:#052e16;
 }
-.thread-title{
+
+.cat-title{
   font-weight:600;
-  font-size:16px;
 }
-.thread-meta{
-  margin-top:6px;
+
+.cat-desc{
   font-size:13px;
   color:var(--muted);
 }
-.stats{
+
+.cat-right{
   text-align:right;
   font-size:13px;
   color:var(--muted);
 }
 
-/* BADGES */
-.badge{
-  display:inline-block;
-  padding:4px 8px;
-  font-size:11px;
-  border-radius:6px;
-  margin-right:6px;
-}
-.pinned{background:var(--pin)}
-.locked{background:var(--lock)}
-.solved{background:var(--solve)}
-
 .empty{
-  padding:90px 0;
+  padding:20px;
   text-align:center;
-  opacity:.6;
+  color:var(--muted);
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>StudentStream DevForum</h1>
-  <span>Official development & platform discussions</span>
-</header>
+<div class="wrapper">
 
-<div class="layout">
+  <div class="header">
+    <h1>StudentStream DevForum</h1>
+    <button>Sign In</button>
+  </div>
 
-  <aside id="categories"></aside>
+  <div class="welcome">
+    <h2>Welcome to the StudentStream DevForum</h2>
+    <p>Announcements, development updates, bugs, and feedback.</p>
+  </div>
 
-  <main>
-
-    <div class="topbar">
-      <div class="search">
-        <input id="search" placeholder="Search threads…" oninput="loadThreads()">
-      </div>
-      <div class="filters">
-        <button class="active" onclick="setFilter('latest')">Latest</button>
-        <button onclick="setFilter('hot')">Hot</button>
-        <button onclick="setFilter('unanswered')">Unanswered</button>
-        <button onclick="setFilter('pinned')">Pinned</button>
-      </div>
-    </div>
-
-    <div id="threads"></div>
-
-  </main>
+  <div class="section">
+    <div class="section-header">StudentStream</div>
+    <div id="categories"></div>
+  </div>
 
 </div>
 
 <script>
-/* SUPABASE */
+/* ===============================
+   SUPABASE
+=============================== */
 const supabase = window.supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let currentCategory=null;
-let currentFilter="latest";
+/* ===============================
+   LOAD DEVFORUM INDEX
+=============================== */
+async function loadDevForum(){
+  const container = document.getElementById("categories");
+  container.innerHTML = "";
 
-/* CATEGORIES */
-async function loadCategories(){
-  const {data}=await supabase.from("forum_categories").select("*").order("position");
-  const el=document.getElementById("categories");
-  el.innerHTML="";
-  data?.forEach(c=>{
-    const d=document.createElement("div");
-    d.className="cat";
-    d.innerHTML=`<div class="cat-title">${c.name}</div><div class="cat-desc">${c.description||""}</div>`;
-    d.onclick=()=>{
-      document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));
-      d.classList.add("active");
-      currentCategory=c.id;
-      loadThreads();
-    };
-    el.appendChild(d);
-  });
-}
+  // get categories
+  const { data: categories } = await supabase
+    .from("forum_categories")
+    .select("*")
+    .order("order_index",{ascending:true});
 
-/* THREADS */
-async function loadThreads(){
-  let q=supabase.from("forum_threads").select("*").limit(50);
-  if(currentCategory) q=q.eq("category_id",currentCategory);
-
-  const s=document.getElementById("search").value;
-  if(s) q=q.ilike("title",`%${s}%`);
-
-  if(currentFilter==="pinned") q=q.eq("is_pinned",true);
-  if(currentFilter==="unanswered") q=q.eq("reply_count",0);
-  if(currentFilter==="hot") q=q.order("reply_count",{ascending:false});
-  else q=q.order("created_at",{ascending:false});
-
-  const {data}=await q;
-  const el=document.getElementById("threads");
-  el.innerHTML="";
-
-  if(!data||!data.length){
-    el.innerHTML=`<div class="empty">No discussions yet</div>`;
+  if(!categories || categories.length === 0){
+    container.innerHTML = `<div class="empty">No categories yet</div>`;
     return;
   }
 
-  data.forEach(t=>{
-    const d=document.createElement("div");
-    d.className="thread";
-    d.innerHTML=`
-      <div>
-        <div class="thread-title">
-          ${t.is_pinned?'<span class="badge pinned">PINNED</span>':''}
-          ${t.is_locked?'<span class="badge locked">LOCKED</span>':''}
-          ${t.is_solved?'<span class="badge solved">SOLVED</span>':''}
-          ${t.title}
-        </div>
-        <div class="thread-meta">
-          by ${t.author_name||"System"} • ${new Date(t.created_at).toLocaleDateString()}
+  // get threads
+  const { data: threads } = await supabase
+    .from("forum_threads")
+    .select("id, title, category_id, created_at");
+
+  categories.forEach(cat=>{
+    const catThreads = threads?.filter(t=>t.category_id===cat.id) || [];
+
+    const last = catThreads.sort(
+      (a,b)=>new Date(b.created_at)-new Date(a.created_at)
+    )[0];
+
+    const el = document.createElement("div");
+    el.className = "category";
+    el.onclick = ()=>location.href=`/devforum/category.html?id=${cat.id}`;
+
+    el.innerHTML = `
+      <div class="cat-left">
+        <div class="icon">${cat.icon || "💬"}</div>
+        <div>
+          <div class="cat-title">${cat.name}</div>
+          <div class="cat-desc">${cat.description || ""}</div>
         </div>
       </div>
-      <div class="stats">
-        💬 ${t.reply_count||0}<br>
-        👁 ${t.view_count||0}
-      </div>`;
-    el.appendChild(d);
+      <div class="cat-right">
+        ${catThreads.length} threads<br>
+        ${last ? new Date(last.created_at).toLocaleDateString() : "No activity"}
+      </div>
+    `;
+
+    container.appendChild(el);
   });
 }
 
-/* FILTER */
-function setFilter(f){
-  currentFilter=f;
-  document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
-  loadThreads();
-}
-
-loadCategories();
-loadThreads();
+loadDevForum();
 </script>
 
 </body>
