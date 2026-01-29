@@ -5,7 +5,7 @@
 <title>SS:I — StudentStream Investigations</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- GLOBAL PLATFORM LOCK -->
+<!-- PLATFORM LOCK -->
 <script type="module" src="/js/platform-guard.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,12 +18,293 @@
   --text:#e8f0ff;
   --muted:#8aa0c4;
   --accent:#3fa9ff;
-  --classified:#ff3b3b;
-  --open:#3bff7a;
-  --closed:#ffd23b;
+  --danger:#ff3b3b;
 }
 
-/* (rest of your CSS unchanged) */
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+}
+
+/* ===== Loading Screen ===== */
+
+#loader{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at center,#0c1a33,#050b14);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  transition:opacity .8s ease;
+}
+
+.loader-title{
+  font-size:36px;
+  letter-spacing:4px;
+  font-weight:900;
+  color:var(--accent);
+}
+
+.loader-sub{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:14px;
+  letter-spacing:2px;
+}
+
+.loader-bar{
+  width:220px;
+  height:3px;
+  background:#13223d;
+  margin-top:28px;
+  overflow:hidden;
+}
+
+.loader-bar span{
+  display:block;
+  height:100%;
+  width:40%;
+  background:var(--accent);
+  animation:load 1.2s infinite linear;
+}
+
+@keyframes load{
+  from{transform:translateX(-100%)}
+  to{transform:translateX(300%)}
+}
+
+/* ===== Main UI ===== */
+
+#app{
+  opacity:0;
+  transition:opacity 1s ease;
+  overflow:auto;
+  height:100vh;
+}
+
+header{
+  position:sticky;
+  top:0;
+  background:#050b14ee;
+  border-bottom:1px solid #13213a;
+  padding:16px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:10;
+}
+
+.logo{
+  font-weight:900;
+  letter-spacing:3px;
+  color:var(--accent);
+}
+
+nav a{
+  color:var(--muted);
+  margin-left:18px;
+  text-decoration:none;
+  font-size:14px;
+}
+
+nav a:hover{color:#fff}
+
+.hero{
+  min-height:90vh;
+  display:flex;
+  align-items:center;
+  padding:40px 28px;
+  background:
+    linear-gradient(to bottom,rgba(5,11,20,.65),#050b14),
+    radial-gradient(circle at top,#0d1b36,#050b14);
+}
+
+.hero h1{
+  font-size:60px;
+  margin:0 0 14px;
+  letter-spacing:4px;
+}
+
+.hero p{
+  font-size:20px;
+  color:var(--muted);
+  max-width:720px;
+  line-height:1.6;
+}
+
+.section{
+  max-width:1100px;
+  margin:90px auto;
+  padding:0 28px;
+}
+
+.section h2{
+  font-size:32px;
+  margin-bottom:12px;
+}
+
+.section p{
+  color:var(--muted);
+  line-height:1.7;
+  font-size:17px;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:16px;
+  margin-top:28px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid #16284a;
+  border-radius:14px;
+  padding:20px;
+}
+
+.card h3{
+  margin-top:0;
+  color:#9bb8ff;
+}
+
+.quote{
+  margin-top:28px;
+  font-style:italic;
+  opacity:.7;
+}
+
+footer{
+  border-top:1px solid #13213a;
+  padding:50px 28px;
+  text-align:center;
+  font-size:13px;
+  opacity:.6;
+}
 </style>
 </head>
 <body>
+
+<!-- Loading Screen -->
+<div id="loader">
+  <div class="loader-title">SS:I</div>
+  <div class="loader-sub">INITIALIZING ARCHIVES</div>
+  <div class="loader-bar"><span></span></div>
+</div>
+
+<div id="app">
+
+<header>
+  <div class="logo">SS:I</div>
+  <nav>
+    <a href="/index.html">SS Films</a>
+    <a href="/company.html">Company</a>
+    <a href="/founder.html">Founder</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>SS:I</h1>
+    <p>
+      StudentStream Investigations<br><br>
+      Documenting what doesn’t fit the record.  
+      Archiving what refuses to disappear.  
+      Investigating what others overlook.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Division Overview</h2>
+  <p>
+    SS:I (StudentStream Investigations) is StudentStream’s investigative division focused on documenting
+    unexplained events, digital anomalies, emerging phenomena, and real-world cases through structured reporting,
+    verified media evidence, and public intelligence archives.
+  </p>
+
+  <p>
+    Every case is preserved, indexed, and presented with transparency — forming a growing record of modern mystery.
+  </p>
+</section>
+
+<section class="section">
+  <h2>Primary Focus Areas</h2>
+
+  <div class="cards">
+    <div class="card"><h3>Unexplained Events</h3><p>Incidents without clear scientific explanation.</p></div>
+    <div class="card"><h3>Digital Anomalies</h3><p>Strange data patterns, lost systems, unknown networks.</p></div>
+    <div class="card"><h3>Emerging Phenomena</h3><p>New behaviors and unexplained global patterns.</p></div>
+    <div class="card"><h3>Real-World Cases</h3><p>Documented investigations and unresolved events.</p></div>
+    <div class="card"><h3>Hidden Records</h3><p>Suppressed or forgotten information archives.</p></div>
+    <div class="card"><h3>Media Evidence</h3><p>Video, audio, photography, and digital artifacts.</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Methodology</h2>
+
+  <p>
+    SS:I operates using structured investigation frameworks, evidence classification systems, and long-term digital archiving.
+  </p>
+
+  <p>
+    Findings are protected legally by SSI Law and distributed through SS Films under StudentStream Studios.
+  </p>
+
+  <div class="quote">
+    “Some truths don’t surface. They accumulate.”
+  </div>
+</section>
+
+<section class="section">
+  <h2>StudentStream Integration</h2>
+
+  <div class="cards">
+    <div class="card"><h3>SS Films</h3><p>Documentary distribution.</p></div>
+    <div class="card"><h3>StudentStream Studios</h3><p>Production infrastructure.</p></div>
+    <div class="card"><h3>SSI Law</h3><p>Legal protection.</p></div>
+    <div class="card"><h3>StudentStream Platform</h3><p>Secure publishing.</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Status</h2>
+  <p>
+    First investigative archives entering preparation phase.
+  </p>
+  <p>
+    Public access opening soon.
+  </p>
+</section>
+
+<footer>
+  © 2026 StudentStream — SS:I Division
+</footer>
+
+</div>
+
+<script>
+window.addEventListener("load",()=>{
+  setTimeout(()=>{
+    const loader=document.getElementById("loader");
+    const app=document.getElementById("app");
+    loader.style.opacity="0";
+    setTimeout(()=>{
+      loader.style.display="none";
+      app.style.opacity="1";
+      document.body.style.overflow="auto";
+    },800);
+  },900);
+});
+</script>
+
+</body>
+</html>
