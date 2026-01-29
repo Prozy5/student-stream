@@ -1,9 +1,17 @@
-<div id="thread"></div>
-<div id="replies"></div>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Thread</title>
+  <link rel="stylesheet" href="forum.css">
+</head>
+<body>
 
-<textarea id="reply"></textarea>
-<button onclick="postReply()">Reply</button>
+<header>
+  <a href="index.html">← Forum</a>
+</header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase.js"></script>
-<script src="js/thread.js"></script>
+<main id="thread"></main>
+
+<script type="module" src="thread.js"></script>
+</body>
+</html>
