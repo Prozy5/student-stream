@@ -5,23 +5,23 @@
 <title>SS:I — StudentStream Investigations</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- GLOBAL PLATFORM LOCK -->
+<!-- Platform Lock -->
 <script type="module" src="/js/platform-guard.js"></script>
 
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
   --bg:#050b14;
   --panel:#0b1624;
-  --panel2:#081526;
   --text:#e8f0ff;
   --muted:#8aa0c4;
   --accent:#3fa9ff;
-  --classified:#ff3b3b;
 }
 
 *{box-sizing:border-box}
+
 body{
   margin:0;
   background:radial-gradient(circle at top,#0c1b33,#050b14 70%);
@@ -30,33 +30,44 @@ body{
   overflow:hidden;
 }
 
-/* Loading Screen */
+/* Loader */
 #loader{
   position:fixed;
   inset:0;
   background:#050b14;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  flex-direction:column;
   z-index:9999;
 }
-
 .loader-ring{
-  width:70px;
-  height:70px;
-  border:4px solid #1b2f4f;
+  width:64px;height:64px;
+  border:4px solid #223a5a;
   border-top:4px solid var(--accent);
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
-
 @keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{margin-top:16px;color:var(--muted);letter-spacing:2px}
 
-.loader-text{
-  margin-top:20px;
-  letter-spacing:2px;
-  color:var(--muted);
+/* Background effects */
+.scanlines{
+  position:fixed;inset:0;
+  background:linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:100% 3px;
+  pointer-events:none;
+  opacity:.15;
+}
+
+.grid{
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(#0c1e36 1px,transparent 1px),
+    linear-gradient(90deg,#0c1e36 1px,transparent 1px);
+  background-size:40px 40px;
+  opacity:.15;
+  pointer-events:none;
 }
 
 /* Main */
@@ -64,129 +75,103 @@ main{
   min-height:100vh;
   display:flex;
   align-items:center;
-  padding:80px;
+  padding:clamp(30px,6vw,90px);
 }
 
 .hero{
-  max-width:720px;
-  animation:fadeIn 1.2s ease;
+  max-width:780px;
+  animation:fade 1.2s ease;
 }
-
-@keyframes fadeIn{
+@keyframes fade{
   from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:none}
+  to{opacity:1}
 }
 
 .badge{
   display:inline-block;
   padding:6px 12px;
-  background:#0f223f;
-  border:1px solid #244a82;
+  border:1px solid #2f5fa3;
   border-radius:6px;
   color:var(--accent);
   font-size:13px;
   letter-spacing:1px;
 }
 
-h1{
-  font-size:64px;
-  margin:20px 0 10px;
-}
+h1{font-size:clamp(48px,8vw,72px);margin:16px 0 8px}
 
-.sub{
-  color:var(--muted);
-  font-size:20px;
-  margin-bottom:16px;
-}
+.sub{color:var(--muted);font-size:20px;margin-bottom:12px}
 
 .desc{
   color:#b7c9ea;
-  line-height:1.6;
-  margin-bottom:40px;
+  line-height:1.7;
+  margin-bottom:36px;
+  max-width:650px;
 }
 
-.buttons{
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-}
+.buttons{display:flex;gap:14px;flex-wrap:wrap}
 
 .btn{
   padding:14px 22px;
   border-radius:10px;
+  font-weight:600;
   border:none;
   cursor:pointer;
-  font-weight:600;
-  font-size:15px;
+  transition:.15s;
 }
 
-.btn-primary{
-  background:var(--accent);
-  color:#031422;
+.btn-primary{background:var(--accent);color:#031422}
+.btn-outline{background:transparent;color:var(--text);border:1px solid #3c6fb4}
+
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(63,169,255,.2)}
+
+.status{
+  margin-top:18px;
+  font-size:13px;
+  color:#7dfca2;
 }
 
-.btn-outline{
-  background:transparent;
-  color:var(--text);
-  border:1px solid #355c96;
-}
-
-.btn:hover{transform:translateY(-2px)}
-
-/* Trailer Modal */
+/* Trailer modal */
 #trailerModal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.75);
   display:none;
   align-items:center;
   justify-content:center;
   z-index:9998;
 }
 
-.modal-box{
+.modal{
   width:min(900px,92%);
   background:#020b1a;
   border-radius:12px;
   padding:12px;
-  border:1px solid #274b7d;
+  border:1px solid #2a558c;
 }
 
-.modal-header{
+.modal-head{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   margin-bottom:8px;
 }
 
-.close-btn{
-  cursor:pointer;
-  color:var(--muted);
-}
+.close{cursor:pointer;color:#aaa}
+.close:hover{color:white}
 
-/* Background scan effect */
-.scan{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(120deg,transparent 30%,rgba(63,169,255,.03),transparent 70%);
-  animation:scan 6s linear infinite;
-  pointer-events:none;
-}
-
-@keyframes scan{
-  from{transform:translateX(-100%)}
-  to{transform:translateX(100%)}
-}
+video{border-radius:8px;width:100%}
 </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
+<!-- Loader -->
 <div id="loader">
   <div class="loader-ring"></div>
   <div class="loader-text">INITIALIZING SS:I SYSTEMS</div>
 </div>
 
-<div class="scan"></div>
+<div class="grid"></div>
+<div class="scanlines"></div>
 
 <main>
   <section class="hero">
@@ -194,26 +179,28 @@ h1{
     <h1>SS:I</h1>
     <div class="sub">StudentStream Investigations</div>
     <div class="desc">
-      Documenting what doesn’t fit the record. Archiving what refuses to disappear.<br>
-      Investigating what others overlook.
+      Documenting what doesn’t fit the record. Archiving what refuses to disappear.
+      Investigating digital anomalies, unexplained events, and emerging phenomena through verified intelligence and media evidence.
     </div>
 
     <div class="buttons">
       <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
       <button class="btn btn-outline" onclick="openTrailer()">Watch Trailer</button>
     </div>
+
+    <div class="status">SYSTEM STATUS: OPERATIONAL</div>
   </section>
 </main>
 
 <!-- Trailer Modal -->
 <div id="trailerModal">
-  <div class="modal-box">
-    <div class="modal-header">
+  <div class="modal">
+    <div class="modal-head">
       <strong>SS:I — Official Trailer</strong>
-      <span class="close-btn" onclick="closeTrailer()">✕</span>
+      <span class="close" onclick="closeTrailer()">✕</span>
     </div>
-    <video id="trailerVideo" controls width="100%" poster="/media/ssi-poster.jpg">
-      <!-- Replace with your real trailer file -->
+
+    <video id="trailerVideo" controls poster="/media/ssi-poster.jpg">
       <source src="/media/ssi-trailer.mp4" type="video/mp4">
       Your browser does not support video.
     </video>
@@ -221,39 +208,50 @@ h1{
 </div>
 
 <script>
-/* Supabase Init (already wired) */
-const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
-const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* Safe Supabase init */
+let supabase=null;
+try{
+  supabase = window.supabase.createClient(
+    "https://YOUR_PROJECT_ID.supabase.co",
+    "YOUR_PUBLIC_ANON_KEY"
+  );
+}catch(e){
+  console.warn("Supabase not loaded");
+}
 
 /* Loader */
-window.addEventListener("load", () => {
+window.addEventListener("load",()=>{
   setTimeout(()=>{
     document.getElementById("loader").style.display="none";
     document.body.style.overflow="auto";
-  },900);
+  },800);
 });
 
 /* Navigation */
 function openCases(){
-  window.location.href = "/ssi/cases.html";
+  window.location.href="/ssi/cases.html";
 }
 
 function openTrailer(){
-  document.getElementById("trailerModal").style.display="flex";
-  document.getElementById("trailerVideo").play();
+  const modal=document.getElementById("trailerModal");
+  const video=document.getElementById("trailerVideo");
+  modal.style.display="flex";
+  video.play().catch(()=>{});
 }
 
 function closeTrailer(){
-  const v=document.getElementById("trailerVideo");
-  v.pause(); v.currentTime=0;
-  document.getElementById("trailerModal").style.display="none";
+  const modal=document.getElementById("trailerModal");
+  const video=document.getElementById("trailerVideo");
+  video.pause();
+  video.currentTime=0;
+  modal.style.display="none";
 }
 
-/* Optional: quick auth check */
+/* Optional auth check */
 (async()=>{
+  if(!supabase) return;
   const { data } = await supabase.auth.getUser();
-  console.log("SS:I User:", data?.user?.id || "guest");
+  console.log("SS:I user:", data?.user?.id || "guest");
 })();
 </script>
 
