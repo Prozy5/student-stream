@@ -5,10 +5,6 @@
 <title>SS:I — StudentStream Investigations</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Platform Lock -->
-<script type="module" src="/js/platform-guard.js"></script>
-
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -18,6 +14,7 @@
   --text:#e8f0ff;
   --muted:#8aa0c4;
   --accent:#3fa9ff;
+  --good:#3bff7a;
 }
 
 *{box-sizing:border-box}
@@ -40,9 +37,10 @@ body{
   align-items:center;
   justify-content:center;
   z-index:9999;
+  transition:opacity .6s;
 }
 .loader-ring{
-  width:64px;height:64px;
+  width:60px;height:60px;
   border:4px solid #223a5a;
   border-top:4px solid var(--accent);
   border-radius:50%;
@@ -57,17 +55,22 @@ body{
   background:linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);
   background-size:100% 3px;
   pointer-events:none;
-  opacity:.15;
+  opacity:.12;
 }
 
-.grid{
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(#0c1e36 1px,transparent 1px),
-    linear-gradient(90deg,#0c1e36 1px,transparent 1px);
-  background-size:40px 40px;
-  opacity:.15;
+.particles{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(63,169,255,.08),transparent 40%),
+    radial-gradient(circle at 70% 60%,rgba(63,169,255,.05),transparent 45%);
+  animation:pulse 8s infinite alternate;
   pointer-events:none;
+}
+
+@keyframes pulse{
+  from{opacity:.4}
+  to{opacity:.8}
 }
 
 /* Main */
@@ -75,11 +78,11 @@ main{
   min-height:100vh;
   display:flex;
   align-items:center;
-  padding:clamp(30px,6vw,90px);
+  padding:clamp(24px,6vw,90px);
 }
 
 .hero{
-  max-width:780px;
+  max-width:820px;
   animation:fade 1.2s ease;
 }
 @keyframes fade{
@@ -97,7 +100,7 @@ main{
   letter-spacing:1px;
 }
 
-h1{font-size:clamp(48px,8vw,72px);margin:16px 0 8px}
+h1{font-size:clamp(48px,8vw,76px);margin:16px 0 8px}
 
 .sub{color:var(--muted);font-size:20px;margin-bottom:12px}
 
@@ -105,7 +108,7 @@ h1{font-size:clamp(48px,8vw,72px);margin:16px 0 8px}
   color:#b7c9ea;
   line-height:1.7;
   margin-bottom:36px;
-  max-width:650px;
+  max-width:700px;
 }
 
 .buttons{display:flex;gap:14px;flex-wrap:wrap}
@@ -122,12 +125,37 @@ h1{font-size:clamp(48px,8vw,72px);margin:16px 0 8px}
 .btn-primary{background:var(--accent);color:#031422}
 .btn-outline{background:transparent;color:var(--text);border:1px solid #3c6fb4}
 
-.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(63,169,255,.2)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(63,169,255,.25)}
 
 .status{
   margin-top:18px;
   font-size:13px;
-  color:#7dfca2;
+  color:var(--good);
+}
+
+/* Diagnostics */
+.diag{
+  margin-top:28px;
+  padding:14px;
+  border:1px solid #244b7c;
+  border-radius:10px;
+  background:#071325;
+  font-size:13px;
+  color:#9fc3ff;
+}
+
+/* Trailer section */
+.trailer-inline{
+  margin-top:40px;
+  border:1px solid #234c7a;
+  border-radius:12px;
+  overflow:hidden;
+  background:#020b1a;
+}
+
+.trailer-inline video{
+  width:100%;
+  display:block;
 }
 
 /* Trailer modal */
@@ -167,29 +195,45 @@ video{border-radius:8px;width:100%}
 <!-- Loader -->
 <div id="loader">
   <div class="loader-ring"></div>
-  <div class="loader-text">INITIALIZING SS:I SYSTEMS</div>
+  <div class="loader-text">INITIALIZING BLACK ARCHIVE SYSTEMS</div>
 </div>
 
-<div class="grid"></div>
+<div class="particles"></div>
 <div class="scanlines"></div>
 
 <main>
-  <section class="hero">
-    <div class="badge">STUDENTSTREAM BLACK FILES DIVISION</div>
-    <h1>SS:I</h1>
-    <div class="sub">StudentStream Investigations</div>
-    <div class="desc">
-      Documenting what doesn’t fit the record. Archiving what refuses to disappear.
-      Investigating digital anomalies, unexplained events, and emerging phenomena through verified intelligence and media evidence.
-    </div>
+<section class="hero">
+  <div class="badge">STUDENTSTREAM INVESTIGATIONS DIVISION</div>
+  <h1>SS:I</h1>
+  <div class="sub">StudentStream Investigations</div>
 
-    <div class="buttons">
-      <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
-      <button class="btn btn-outline" onclick="openTrailer()">Watch Trailer</button>
-    </div>
+  <div class="desc">
+    A classified intelligence archive documenting unexplained events, digital anomalies,
+    emerging phenomena, and real-world cases through verified reporting, media evidence,
+    and public intelligence records.
+  </div>
 
-    <div class="status">SYSTEM STATUS: OPERATIONAL</div>
-  </section>
+  <div class="buttons">
+    <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
+    <button class="btn btn-outline" onclick="openTrailer()">Watch Full Trailer</button>
+  </div>
+
+  <div class="status">SYSTEM STATUS: OPERATIONAL</div>
+
+  <div class="diag" id="diagBox">
+    • Database: Checking...<br>
+    • Identity Service: Checking...<br>
+    • Archive Nodes: Online
+  </div>
+
+  <!-- Inline trailer -->
+  <div class="trailer-inline">
+    <video controls poster="/media/ssi-poster.jpg">
+      <source src="/media/ssi-trailer.mp4" type="video/mp4">
+    </video>
+  </div>
+
+</section>
 </main>
 
 <!-- Trailer Modal -->
@@ -199,32 +243,30 @@ video{border-radius:8px;width:100%}
       <strong>SS:I — Official Trailer</strong>
       <span class="close" onclick="closeTrailer()">✕</span>
     </div>
-
     <video id="trailerVideo" controls poster="/media/ssi-poster.jpg">
       <source src="/media/ssi-trailer.mp4" type="video/mp4">
-      Your browser does not support video.
     </video>
   </div>
 </div>
 
 <script>
-/* Safe Supabase init */
+/* Supabase safe init */
 let supabase=null;
 try{
   supabase = window.supabase.createClient(
     "https://YOUR_PROJECT_ID.supabase.co",
     "YOUR_PUBLIC_ANON_KEY"
   );
-}catch(e){
-  console.warn("Supabase not loaded");
-}
+}catch(e){}
 
-/* Loader */
+/* Loader fix */
 window.addEventListener("load",()=>{
   setTimeout(()=>{
-    document.getElementById("loader").style.display="none";
+    const l=document.getElementById("loader");
+    l.style.opacity="0";
+    setTimeout(()=>l.remove(),600);
     document.body.style.overflow="auto";
-  },800);
+  },600);
 });
 
 /* Navigation */
@@ -233,25 +275,35 @@ function openCases(){
 }
 
 function openTrailer(){
-  const modal=document.getElementById("trailerModal");
-  const video=document.getElementById("trailerVideo");
-  modal.style.display="flex";
-  video.play().catch(()=>{});
+  const m=document.getElementById("trailerModal");
+  const v=document.getElementById("trailerVideo");
+  m.style.display="flex";
+  v.play().catch(()=>{});
 }
 
 function closeTrailer(){
-  const modal=document.getElementById("trailerModal");
-  const video=document.getElementById("trailerVideo");
-  video.pause();
-  video.currentTime=0;
-  modal.style.display="none";
+  const m=document.getElementById("trailerModal");
+  const v=document.getElementById("trailerVideo");
+  v.pause(); v.currentTime=0;
+  m.style.display="none";
 }
 
-/* Optional auth check */
+/* Diagnostics */
 (async()=>{
-  if(!supabase) return;
+  const diag=document.getElementById("diagBox");
+
+  if(!supabase){
+    diag.innerHTML+="<br>• Database: Offline";
+    return;
+  }
+
   const { data } = await supabase.auth.getUser();
-  console.log("SS:I user:", data?.user?.id || "guest");
+
+  diag.innerHTML = `
+    • Database: Connected<br>
+    • Identity Service: ${data?.user ? "Authenticated" : "Guest"}<br>
+    • Archive Nodes: Online
+  `;
 })();
 </script>
 
