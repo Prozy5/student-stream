@@ -5,7 +5,7 @@
 <title>SS:I — StudentStream Investigations</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- PLATFORM LOCK -->
+<!-- GLOBAL PLATFORM LOCK -->
 <script type="module" src="/js/platform-guard.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,328 +18,243 @@
   --text:#e8f0ff;
   --muted:#8aa0c4;
   --accent:#3fa9ff;
+  --classified:#ff3b3b;
 }
 
 *{box-sizing:border-box}
-
 body{
   margin:0;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  background:var(--bg);
+  background:radial-gradient(circle at top,#0c1b33,#050b14 70%);
   color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   overflow:hidden;
 }
 
-/* ===== Loader ===== */
-
+/* Loading Screen */
 #loader{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle at center,#0c1a33,#050b14);
+  background:#050b14;
   display:flex;
-  flex-direction:column;
+  align-items:center;
   justify-content:center;
-  align-items:center;
+  flex-direction:column;
   z-index:9999;
-  transition:opacity .8s ease;
 }
 
-.loader-title{
-  font-size:36px;
-  letter-spacing:4px;
-  font-weight:900;
-  color:var(--accent);
+.loader-ring{
+  width:70px;
+  height:70px;
+  border:4px solid #1b2f4f;
+  border-top:4px solid var(--accent);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
 }
 
-.loader-sub{
-  margin-top:10px;
-  color:var(--muted);
-  font-size:14px;
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.loader-text{
+  margin-top:20px;
   letter-spacing:2px;
-}
-
-.loader-bar{
-  width:220px;
-  height:3px;
-  background:#13223d;
-  margin-top:28px;
-  overflow:hidden;
-}
-
-.loader-bar span{
-  display:block;
-  height:100%;
-  width:40%;
-  background:var(--accent);
-  animation:load 1.2s infinite linear;
-}
-
-@keyframes load{
-  from{transform:translateX(-100%)}
-  to{transform:translateX(300%)}
-}
-
-#app{
-  opacity:0;
-  transition:opacity 1s ease;
-  overflow:auto;
-  height:100vh;
-}
-
-/* ===== UI ===== */
-
-header{
-  position:sticky;
-  top:0;
-  background:#050b14ee;
-  border-bottom:1px solid #13213a;
-  padding:16px 28px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  z-index:10;
-}
-
-.logo{
-  font-weight:900;
-  letter-spacing:3px;
-  color:var(--accent);
-}
-
-nav a{
   color:var(--muted);
-  margin-left:18px;
-  text-decoration:none;
-  font-size:14px;
 }
 
-nav a:hover{color:#fff}
+/* Main */
+main{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  padding:80px;
+}
 
 .hero{
-  min-height:90vh;
-  display:flex;
-  align-items:center;
-  padding:40px 28px;
-  background:
-    linear-gradient(to bottom,rgba(5,11,20,.65),#050b14),
-    radial-gradient(circle at top,#0d1b36,#050b14);
-}
-
-.hero h1{
-  font-size:60px;
-  margin:0 0 14px;
-  letter-spacing:4px;
-}
-
-.hero p{
-  font-size:20px;
-  color:var(--muted);
   max-width:720px;
-  line-height:1.6;
+  animation:fadeIn 1.2s ease;
 }
 
-.hero-buttons{
-  margin-top:30px;
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  background:#0f223f;
+  border:1px solid #244a82;
+  border-radius:6px;
+  color:var(--accent);
+  font-size:13px;
+  letter-spacing:1px;
+}
+
+h1{
+  font-size:64px;
+  margin:20px 0 10px;
+}
+
+.sub{
+  color:var(--muted);
+  font-size:20px;
+  margin-bottom:16px;
+}
+
+.desc{
+  color:#b7c9ea;
+  line-height:1.6;
+  margin-bottom:40px;
+}
+
+.buttons{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
 }
 
 .btn{
-  display:inline-block;
-  padding:12px 22px;
-  border-radius:8px;
-  background:var(--accent);
-  color:#04101f;
-  text-decoration:none;
+  padding:14px 22px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
   font-weight:600;
-  margin-right:12px;
-  transition:.2s;
+  font-size:15px;
 }
 
-.btn.secondary{
+.btn-primary{
+  background:var(--accent);
+  color:#031422;
+}
+
+.btn-outline{
   background:transparent;
-  color:var(--accent);
-  border:1px solid #244a7a;
+  color:var(--text);
+  border:1px solid #355c96;
 }
 
 .btn:hover{transform:translateY(-2px)}
 
-.section{
-  max-width:1100px;
-  margin:90px auto;
-  padding:0 28px;
+/* Trailer Modal */
+#trailerModal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9998;
 }
 
-.section h2{
-  font-size:32px;
-  margin-bottom:12px;
+.modal-box{
+  width:min(900px,92%);
+  background:#020b1a;
+  border-radius:12px;
+  padding:12px;
+  border:1px solid #274b7d;
 }
 
-.section p{
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+
+.close-btn{
+  cursor:pointer;
   color:var(--muted);
-  line-height:1.7;
-  font-size:17px;
 }
 
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:16px;
-  margin-top:28px;
+/* Background scan effect */
+.scan{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(63,169,255,.03),transparent 70%);
+  animation:scan 6s linear infinite;
+  pointer-events:none;
 }
 
-.card{
-  background:var(--panel);
-  border:1px solid #16284a;
-  border-radius:14px;
-  padding:20px;
-}
-
-.card h3{
-  margin-top:0;
-  color:#9bb8ff;
-}
-
-/* ===== Trailer ===== */
-
-.trailer-box{
-  background:#060d18;
-  border:1px solid #16284a;
-  border-radius:16px;
-  overflow:hidden;
-  margin-top:30px;
-}
-
-.trailer-box video{
-  width:100%;
-  display:block;
-}
-
-.quote{
-  margin-top:28px;
-  font-style:italic;
-  opacity:.7;
-}
-
-footer{
-  border-top:1px solid #13213a;
-  padding:50px 28px;
-  text-align:center;
-  font-size:13px;
-  opacity:.6;
+@keyframes scan{
+  from{transform:translateX(-100%)}
+  to{transform:translateX(100%)}
 }
 </style>
 </head>
 <body>
 
-<!-- Loader -->
+<!-- Loading Screen -->
 <div id="loader">
-  <div class="loader-title">SS:I</div>
-  <div class="loader-sub">INITIALIZING ARCHIVES</div>
-  <div class="loader-bar"><span></span></div>
+  <div class="loader-ring"></div>
+  <div class="loader-text">INITIALIZING SS:I SYSTEMS</div>
 </div>
 
-<div id="app">
+<div class="scan"></div>
 
-<header>
-  <div class="logo">SS:I</div>
-  <nav>
-    <a href="/index.html">SS Films</a>
-    <a href="/company.html">Company</a>
-    <a href="/founder.html">Founder</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <div>
+<main>
+  <section class="hero">
+    <div class="badge">STUDENTSTREAM BLACK FILES DIVISION</div>
     <h1>SS:I</h1>
-    <p>
-      StudentStream Investigations<br><br>
-      Documenting what doesn’t fit the record.  
-      Archiving what refuses to disappear.  
+    <div class="sub">StudentStream Investigations</div>
+    <div class="desc">
+      Documenting what doesn’t fit the record. Archiving what refuses to disappear.<br>
       Investigating what others overlook.
-    </p>
-
-    <div class="hero-buttons">
-      <a href="/ssi-cases.html" class="btn">Access Case Archives</a>
-      <a href="#trailer" class="btn secondary">Watch Trailer</a>
     </div>
-  </div>
-</section>
 
-<section class="section">
-  <h2>Division Overview</h2>
-  <p>
-    SS:I (StudentStream Investigations) is StudentStream’s investigative division focused on documenting unexplained events,
-    digital anomalies, emerging phenomena, and real-world cases through structured reporting, verified media evidence,
-    and public intelligence archives.
-  </p>
-</section>
+    <div class="buttons">
+      <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
+      <button class="btn btn-outline" onclick="openTrailer()">Watch Trailer</button>
+    </div>
+  </section>
+</main>
 
-<section class="section" id="trailer">
-  <h2>Official Trailer</h2>
-
-  <div class="trailer-box">
-    <!-- Replace src with your real trailer file -->
-    <video controls poster="/assets/ssi-poster.jpg">
-      <source src="/assets/ssi-trailer.mp4" type="video/mp4">
-      Your browser does not support the video tag.
+<!-- Trailer Modal -->
+<div id="trailerModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <strong>SS:I — Official Trailer</strong>
+      <span class="close-btn" onclick="closeTrailer()">✕</span>
+    </div>
+    <video id="trailerVideo" controls width="100%" poster="/media/ssi-poster.jpg">
+      <!-- Replace with your real trailer file -->
+      <source src="/media/ssi-trailer.mp4" type="video/mp4">
+      Your browser does not support video.
     </video>
   </div>
-</section>
-
-<section class="section">
-  <h2>Primary Focus Areas</h2>
-
-  <div class="cards">
-    <div class="card"><h3>Unexplained Events</h3><p>Incidents without clear explanation.</p></div>
-    <div class="card"><h3>Digital Anomalies</h3><p>Unknown systems and strange data patterns.</p></div>
-    <div class="card"><h3>Emerging Phenomena</h3><p>New unexplained global behavior.</p></div>
-    <div class="card"><h3>Real-World Cases</h3><p>Verified investigations.</p></div>
-    <div class="card"><h3>Hidden Records</h3><p>Suppressed archives.</p></div>
-    <div class="card"><h3>Media Evidence</h3><p>Video, audio, photography, artifacts.</p></div>
-  </div>
-</section>
-
-<section class="section">
-  <h2>Methodology</h2>
-
-  <p>
-    SS:I operates using structured investigation frameworks, evidence classification systems, and long-term digital archiving.
-  </p>
-
-  <p>
-    Findings are protected legally by SSI Law and distributed through SS Films.
-  </p>
-
-  <div class="quote">
-    “Some truths don’t surface. They accumulate.”
-  </div>
-</section>
-
-<section class="section">
-  <h2>Status</h2>
-  <p>Archive system under construction.</p>
-  <p>Public cases releasing soon.</p>
-</section>
-
-<footer>
-  © 2026 StudentStream — SS:I Division
-</footer>
-
 </div>
 
 <script>
-window.addEventListener("load",()=>{
+/* Supabase Init (already wired) */
+const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
+const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* Loader */
+window.addEventListener("load", () => {
   setTimeout(()=>{
-    const loader=document.getElementById("loader");
-    const app=document.getElementById("app");
-    loader.style.opacity="0";
-    setTimeout(()=>{
-      loader.style.display="none";
-      app.style.opacity="1";
-      document.body.style.overflow="auto";
-    },800);
+    document.getElementById("loader").style.display="none";
+    document.body.style.overflow="auto";
   },900);
 });
+
+/* Navigation */
+function openCases(){
+  window.location.href = "/ssi/cases.html";
+}
+
+function openTrailer(){
+  document.getElementById("trailerModal").style.display="flex";
+  document.getElementById("trailerVideo").play();
+}
+
+function closeTrailer(){
+  const v=document.getElementById("trailerVideo");
+  v.pause(); v.currentTime=0;
+  document.getElementById("trailerModal").style.display="none";
+}
+
+/* Optional: quick auth check */
+(async()=>{
+  const { data } = await supabase.auth.getUser();
+  console.log("SS:I User:", data?.user?.id || "guest");
+})();
 </script>
 
 </body>
