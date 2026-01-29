@@ -2,16 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>StudentStream DevForum</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+/* =======================
+   CORE THEME (V200)
+======================= */
 :root{
-  --bg:#090c12;
-  --panel:#0f172a;
-  --panel2:#111827;
+  --bg:#070a11;
+  --panel:#0e1526;
+  --panel2:#121a2f;
   --border:#1f2937;
   --text:#e5e7eb;
   --muted:#9ca3af;
@@ -24,62 +27,94 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  background:var(--bg);
+  background:linear-gradient(180deg,#070a11,#05070d);
   color:var(--text);
   font-family:Inter,system-ui,sans-serif;
 }
 
-/* HEADER */
+/* =======================
+   HEADER
+======================= */
 header{
+  position:sticky;
+  top:0;
+  z-index:50;
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:14px 18px;
+  background:rgba(7,10,17,.9);
+  backdrop-filter:blur(10px);
   border-bottom:1px solid var(--border);
 }
-header h1{font-size:15px;margin:0}
-header span{font-size:12px;color:var(--muted)}
-header input{
-  background:var(--panel);
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:7px 10px;
-  border-radius:6px;
-  width:260px;
+
+.brand{
+  display:flex;
+  flex-direction:column;
+}
+.brand h1{
+  margin:0;
+  font-size:15px;
+  font-weight:600;
+}
+.brand span{
+  font-size:11px;
+  color:var(--muted);
 }
 
-/* LAYOUT */
+header input{
+  width:260px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px 10px;
+  color:var(--text);
+}
+
+/* =======================
+   LAYOUT
+======================= */
 .layout{
   display:grid;
   grid-template-columns:300px 1fr;
-  min-height:calc(100vh - 60px);
+  min-height:calc(100vh - 62px);
 }
 
-/* SIDEBAR */
+/* =======================
+   SIDEBAR
+======================= */
 aside{
   background:var(--panel);
   border-right:1px solid var(--border);
-  padding:12px;
+  padding:14px;
+  overflow-y:auto;
 }
+
 .group{
-  margin-bottom:16px;
+  margin-bottom:18px;
 }
 .group-title{
   font-size:11px;
   color:var(--muted);
+  letter-spacing:.08em;
   margin-bottom:6px;
   text-transform:uppercase;
 }
-.cat{
+
+.category{
   padding:10px 12px;
-  border-radius:6px;
+  border-radius:8px;
   cursor:pointer;
 }
-.cat.active{
+.category:hover{
+  background:#1f2937;
+}
+.category.active{
   background:#1f2937;
   border-left:3px solid var(--accent);
 }
-.cat-name{
+
+.cat-row{
   display:flex;
   justify-content:space-between;
   font-size:14px;
@@ -90,10 +125,16 @@ aside{
   margin-top:4px;
 }
 
-/* MAIN */
-main{padding:16px}
+/* =======================
+   MAIN
+======================= */
+main{
+  padding:18px;
+}
 
-/* TABS */
+/* =======================
+   FILTER TABS
+======================= */
 .tabs{
   display:flex;
   gap:10px;
@@ -102,9 +143,9 @@ main{padding:16px}
 .tab{
   padding:6px 14px;
   border-radius:999px;
-  background:#1f2937;
   font-size:13px;
   cursor:pointer;
+  background:#1f2937;
 }
 .tab.active{
   background:var(--accent);
@@ -112,16 +153,20 @@ main{padding:16px}
   font-weight:600;
 }
 
-/* THREAD */
+/* =======================
+   THREAD LIST
+======================= */
 .thread{
   display:grid;
-  grid-template-columns:1fr 120px 140px;
+  grid-template-columns:1fr 130px 160px;
   gap:14px;
   padding:14px;
   border-bottom:1px solid var(--border);
   cursor:pointer;
 }
-.thread:hover{background:var(--panel2)}
+.thread:hover{
+  background:var(--panel2);
+}
 
 .thread h3{
   margin:0;
@@ -131,37 +176,40 @@ main{padding:16px}
   align-items:center;
 }
 
+/* BADGES */
 .badge{
   font-size:10px;
   padding:2px 6px;
   border-radius:999px;
+  white-space:nowrap;
 }
 .pin{background:#1e3a8a;color:#bfdbfe}
 .lock{background:#27272a}
-.ann{background:#1d4ed8}
+.announcement{background:#1d4ed8}
 .update{background:#92400e}
 .rfc{background:#065f46}
 .incident{background:#7f1d1d}
 
+/* META */
 .preview{
   font-size:12px;
   color:var(--muted);
   margin-top:6px;
-  max-width:720px;
+  max-width:800px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.stats, .activity{
+.stats,.activity{
   font-size:12px;
   color:var(--muted);
   text-align:right;
 }
 
-/* EMPTY */
+/* EMPTY STATE */
 .empty{
-  padding:60px;
+  padding:80px;
   text-align:center;
   color:var(--muted);
 }
@@ -179,15 +227,15 @@ main{padding:16px}
 <body>
 
 <header>
-  <div>
+  <div class="brand">
     <h1>StudentStream DevForum</h1>
-    <span>Engineering • Platform • Systems</span>
+    <span>Platform • Engineering • Systems</span>
   </div>
   <input id="search" placeholder="Search DevForum…" />
 </header>
 
 <div class="layout">
-  <aside id="categories"></aside>
+  <aside id="categoryPanel"></aside>
 
   <main>
     <div class="tabs">
@@ -196,64 +244,77 @@ main{padding:16px}
       <div class="tab" data-mode="trending">📈 Trending</div>
     </div>
 
-    <div id="threads"></div>
+    <div id="threadList"></div>
   </main>
 </div>
 
 <script>
+/* =======================
+   SUPABASE INIT
+======================= */
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-let categories=[], threads=[]
+let categories=[]
+let threads=[]
 let activeCategory=null
 let mode="hot"
 
-/* CATEGORY LOAD */
+/* =======================
+   LOAD CATEGORIES
+======================= */
 async function loadCategories(){
   const {data}=await supabase
     .from("forum_categories")
     .select("id,name,description,group,forum_threads(count)")
+    .order("order_index",{ascending:true})
+
   categories=data||[]
+  const panel=document.getElementById("categoryPanel")
+  panel.innerHTML=""
 
-  const el=document.getElementById("categories")
-  el.innerHTML=""
-  const groups={}
-
+  const grouped={}
   categories.forEach(c=>{
-    groups[c.group]=groups[c.group]||[]
-    groups[c.group].push(c)
+    grouped[c.group]=grouped[c.group]||[]
+    grouped[c.group].push(c)
   })
 
-  Object.keys(groups).forEach(g=>{
+  Object.keys(grouped).forEach(g=>{
     const wrap=document.createElement("div")
     wrap.className="group"
     wrap.innerHTML=`<div class="group-title">${g}</div>`
-    groups[g].forEach((c,i)=>{
+
+    grouped[g].forEach((c,i)=>{
       const d=document.createElement("div")
-      d.className="cat"
+      d.className="category"
       d.innerHTML=`
-        <div class="cat-name">
+        <div class="cat-row">
           <span>${c.name}</span>
           <span>${c.forum_threads?.[0]?.count||0}</span>
         </div>
         <div class="cat-desc">${c.description||""}</div>
       `
       d.onclick=()=>{
-        document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"))
+        document.querySelectorAll(".category").forEach(x=>x.classList.remove("active"))
         d.classList.add("active")
         activeCategory=c.id
         render()
       }
-      if(!activeCategory){activeCategory=c.id; d.classList.add("active")}
+      if(!activeCategory){
+        activeCategory=c.id
+        d.classList.add("active")
+      }
       wrap.appendChild(d)
     })
-    el.appendChild(wrap)
+    panel.appendChild(wrap)
   })
 }
 
-/* THREAD LOAD */
+/* =======================
+   LOAD THREADS
+======================= */
 async function loadThreads(){
   const {data}=await supabase
     .from("forum_threads")
@@ -263,22 +324,27 @@ async function loadThreads(){
       forum_replies(count),
       forum_likes(count)
     `)
+
   threads=data||[]
   render()
 }
 
-/* ALGORITHMS */
+/* =======================
+   SCORING (V200)
+======================= */
 function hotScore(t){
   const r=t.forum_replies?.[0]?.count||0
   const l=t.forum_likes?.[0]?.count||0
   const age=(Date.now()-new Date(t.created_at))/36e5
-  return (l*2+r*3)/Math.max(age,1)
+  return (l*2.2 + r*3.1) / Math.max(age,1)
 }
 
-/* RENDER */
+/* =======================
+   RENDER THREADS
+======================= */
 function render(){
   const q=document.getElementById("search").value.toLowerCase()
-  const el=document.getElementById("threads")
+  const el=document.getElementById("threadList")
   el.innerHTML=""
 
   let list=threads.filter(t=>
@@ -302,8 +368,8 @@ function render(){
   }
 
   list.forEach(t=>{
-    const r=t.forum_replies?.[0]?.count||0
-    const l=t.forum_likes?.[0]?.count||0
+    const replies=t.forum_replies?.[0]?.count||0
+    const likes=t.forum_likes?.[0]?.count||0
 
     const d=document.createElement("div")
     d.className="thread"
@@ -319,29 +385,33 @@ function render(){
       </div>
       <div class="stats">
         👁️ ${t.views||0}<br>
-        💬 ${r} · 👍 ${l}
+        💬 ${replies} · 👍 ${likes}
       </div>
       <div class="activity">
         ${new Date(t.last_activity||t.created_at).toLocaleString()}
       </div>
     `
-    d.onclick=()=>location.href="/thread.html?id="+t.id
+    d.onclick=()=>location.href="/devforum/thread.html?id="+t.id
     el.appendChild(d)
   })
 }
 
-/* EVENTS */
+/* =======================
+   EVENTS
+======================= */
 document.getElementById("search").addEventListener("input",render)
-document.querySelectorAll(".tab").forEach(t=>{
-  t.onclick=()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"))
-    t.classList.add("active")
-    mode=t.dataset.mode
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
+    tab.classList.add("active")
+    mode=tab.dataset.mode
     render()
   }
 })
 
-/* INIT */
+/* =======================
+   INIT
+======================= */
 loadCategories()
 loadThreads()
 </script>
