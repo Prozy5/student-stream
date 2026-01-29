@@ -18,7 +18,6 @@
   --text:#e8f0ff;
   --muted:#8aa0c4;
   --accent:#3fa9ff;
-  --danger:#ff3b3b;
 }
 
 *{box-sizing:border-box}
@@ -31,7 +30,7 @@ body{
   overflow:hidden;
 }
 
-/* ===== Loading Screen ===== */
+/* ===== Loader ===== */
 
 #loader{
   position:fixed;
@@ -80,14 +79,14 @@ body{
   to{transform:translateX(300%)}
 }
 
-/* ===== Main UI ===== */
-
 #app{
   opacity:0;
   transition:opacity 1s ease;
   overflow:auto;
   height:100vh;
 }
+
+/* ===== UI ===== */
 
 header{
   position:sticky;
@@ -139,6 +138,30 @@ nav a:hover{color:#fff}
   line-height:1.6;
 }
 
+.hero-buttons{
+  margin-top:30px;
+}
+
+.btn{
+  display:inline-block;
+  padding:12px 22px;
+  border-radius:8px;
+  background:var(--accent);
+  color:#04101f;
+  text-decoration:none;
+  font-weight:600;
+  margin-right:12px;
+  transition:.2s;
+}
+
+.btn.secondary{
+  background:transparent;
+  color:var(--accent);
+  border:1px solid #244a7a;
+}
+
+.btn:hover{transform:translateY(-2px)}
+
 .section{
   max-width:1100px;
   margin:90px auto;
@@ -175,6 +198,21 @@ nav a:hover{color:#fff}
   color:#9bb8ff;
 }
 
+/* ===== Trailer ===== */
+
+.trailer-box{
+  background:#060d18;
+  border:1px solid #16284a;
+  border-radius:16px;
+  overflow:hidden;
+  margin-top:30px;
+}
+
+.trailer-box video{
+  width:100%;
+  display:block;
+}
+
 .quote{
   margin-top:28px;
   font-style:italic;
@@ -192,7 +230,7 @@ footer{
 </head>
 <body>
 
-<!-- Loading Screen -->
+<!-- Loader -->
 <div id="loader">
   <div class="loader-title">SS:I</div>
   <div class="loader-sub">INITIALIZING ARCHIVES</div>
@@ -219,32 +257,45 @@ footer{
       Archiving what refuses to disappear.  
       Investigating what others overlook.
     </p>
+
+    <div class="hero-buttons">
+      <a href="/ssi-cases.html" class="btn">Access Case Archives</a>
+      <a href="#trailer" class="btn secondary">Watch Trailer</a>
+    </div>
   </div>
 </section>
 
 <section class="section">
   <h2>Division Overview</h2>
   <p>
-    SS:I (StudentStream Investigations) is StudentStream’s investigative division focused on documenting
-    unexplained events, digital anomalies, emerging phenomena, and real-world cases through structured reporting,
-    verified media evidence, and public intelligence archives.
+    SS:I (StudentStream Investigations) is StudentStream’s investigative division focused on documenting unexplained events,
+    digital anomalies, emerging phenomena, and real-world cases through structured reporting, verified media evidence,
+    and public intelligence archives.
   </p>
+</section>
 
-  <p>
-    Every case is preserved, indexed, and presented with transparency — forming a growing record of modern mystery.
-  </p>
+<section class="section" id="trailer">
+  <h2>Official Trailer</h2>
+
+  <div class="trailer-box">
+    <!-- Replace src with your real trailer file -->
+    <video controls poster="/assets/ssi-poster.jpg">
+      <source src="/assets/ssi-trailer.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
 </section>
 
 <section class="section">
   <h2>Primary Focus Areas</h2>
 
   <div class="cards">
-    <div class="card"><h3>Unexplained Events</h3><p>Incidents without clear scientific explanation.</p></div>
-    <div class="card"><h3>Digital Anomalies</h3><p>Strange data patterns, lost systems, unknown networks.</p></div>
-    <div class="card"><h3>Emerging Phenomena</h3><p>New behaviors and unexplained global patterns.</p></div>
-    <div class="card"><h3>Real-World Cases</h3><p>Documented investigations and unresolved events.</p></div>
-    <div class="card"><h3>Hidden Records</h3><p>Suppressed or forgotten information archives.</p></div>
-    <div class="card"><h3>Media Evidence</h3><p>Video, audio, photography, and digital artifacts.</p></div>
+    <div class="card"><h3>Unexplained Events</h3><p>Incidents without clear explanation.</p></div>
+    <div class="card"><h3>Digital Anomalies</h3><p>Unknown systems and strange data patterns.</p></div>
+    <div class="card"><h3>Emerging Phenomena</h3><p>New unexplained global behavior.</p></div>
+    <div class="card"><h3>Real-World Cases</h3><p>Verified investigations.</p></div>
+    <div class="card"><h3>Hidden Records</h3><p>Suppressed archives.</p></div>
+    <div class="card"><h3>Media Evidence</h3><p>Video, audio, photography, artifacts.</p></div>
   </div>
 </section>
 
@@ -256,7 +307,7 @@ footer{
   </p>
 
   <p>
-    Findings are protected legally by SSI Law and distributed through SS Films under StudentStream Studios.
+    Findings are protected legally by SSI Law and distributed through SS Films.
   </p>
 
   <div class="quote">
@@ -265,24 +316,9 @@ footer{
 </section>
 
 <section class="section">
-  <h2>StudentStream Integration</h2>
-
-  <div class="cards">
-    <div class="card"><h3>SS Films</h3><p>Documentary distribution.</p></div>
-    <div class="card"><h3>StudentStream Studios</h3><p>Production infrastructure.</p></div>
-    <div class="card"><h3>SSI Law</h3><p>Legal protection.</p></div>
-    <div class="card"><h3>StudentStream Platform</h3><p>Secure publishing.</p></div>
-  </div>
-</section>
-
-<section class="section">
   <h2>Status</h2>
-  <p>
-    First investigative archives entering preparation phase.
-  </p>
-  <p>
-    Public access opening soon.
-  </p>
+  <p>Archive system under construction.</p>
+  <p>Public cases releasing soon.</p>
 </section>
 
 <footer>
