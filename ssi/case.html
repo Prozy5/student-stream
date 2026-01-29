@@ -1,45 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Case File</title>
+<title>SS:I Case File</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-body{background:#050b14;color:#e8f0ff;font-family:system-ui;padding:20px}
-.panel{max-width:800px;margin:auto;background:#0b1624;padding:20px;border-radius:10px}
-.update{border-left:3px solid #3fa9ff;padding-left:10px;margin:15px 0;color:#cfe2ff}
+:root{
+  --bg:#050b14;
+  --panel:#0b1624;
+  --text:#e8f0ff;
+  --muted:#8aa0c4;
+  --accent:#3fa9ff;
+  --open:#3bff7a;
+  --closed:#ffd23b;
+  --classified:#ff3b3b;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:radial-gradient(circle at top,#0c1b33,#050b14 70%);
+  color:var(--text);
+}
+
+.container{
+  max-width:900px;
+  margin:60px auto;
+  padding:30px;
+  background:var(--panel);
+  border:1px solid #1f3c66;
+  border-radius:12px;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:6px;
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:16px;
+}
+
+.status-open{background:rgba(59,255,122,.15);color:var(--open)}
+.status-closed{background:rgba(255,210,59,.15);color:var(--closed)}
+.status-classified{background:rgba(255,59,59,.15);color:var(--classified)}
+
+h1{
+  margin:10px 0 8px;
+  font-size:40px;
+}
+
+.meta{
+  color:var(--muted);
+  margin-bottom:24px;
+}
+
+.desc{
+  line-height:1.7;
+  color:#cfe1ff;
+  white-space:pre-line;
+}
+
+.back{
+  display:inline-block;
+  margin-bottom:20px;
+  color:var(--accent);
+  text-decoration:none;
+}
+
+.error{
+  color:#ff6b6b;
+  text-align:center;
+  margin-top:80px;
+}
 </style>
 </head>
 <body>
 
-<div class="panel">
-<h1 id="title"></h1>
-<p id="desc"></p>
-<h3>Status: <span id="status"></span></h3>
+<div class="container" id="caseBox" style="display:none">
+  <a class="back" href="cases.html">← Back to Case Archive</a>
 
-<h2>Timeline</h2>
-<div id="updates"></div>
+  <div id="statusBadge" class="badge"></div>
+  <h1 id="title"></h1>
+  <div class="meta" id="meta"></div>
+  <div class="desc" id="description"></div>
+</div>
+
+<div class="error" id="errorBox" style="display:none">
+  Case file not found.
 </div>
 
 <script>
-const urlParams = new URLSearchParams(location.search);
-const id = urlParams.get("id");
+/* ========= SUPABASE CONFIG ========= */
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-const db = supabase.createClient("YOUR_URL","YOUR_PUBLIC_KEY");
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+/* ================================== */
 
-async function load(){
-  const {data:caseData} = await db.from("cases").select().eq("id",id).single();
-  document.getElementById("title").innerText = caseData.title;
-  document.getElementById("desc").innerText = caseData.description;
-  document.getElementById("status").innerText = caseData.status.toUpperCase();
-
-  const {data:updates} = await db.from("case_updates").select().eq("case_id",id).order("created_at");
-  const box=document.getElementById("updates");
-  updates.forEach(u=>{
-    box.innerHTML+=`<div class="update">${u.content}</div>`;
-  });
+function getCaseId(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
 }
-load();
+
+function statusClass(status){
+  if(status === "closed") return "status-closed";
+  if(status === "classified") return "status-classified";
+  return "status-open";
+}
+
+async function loadCase(){
+  const id = getCaseId();
+  if(!id){
+    showError();
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("ssi_cases")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if(error || !data){
+    showError();
+    return;
+  }
+
+  document.getElementById("title").textContent = data.title;
+  document.getElementById("description").textContent = data.description || "";
+
+  const date = new Date(data.created_at).toLocaleDateString();
+
+  document.getElementById("meta").textContent =
+    `Category: ${data.category || "general"} • Filed: ${date}`;
+
+  const badge = document.getElementById("statusBadge");
+  badge.textContent = (data.status || "open").toUpperCase();
+  badge.className = `badge ${statusClass(data.status)}`;
+
+  document.getElementById("caseBox").style.display = "block";
+}
+
+function showError(){
+  document.getElementById("errorBox").style.display = "block";
+}
+
+loadCase();
 </script>
+
 </body>
 </html>
