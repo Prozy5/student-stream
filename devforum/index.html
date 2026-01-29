@@ -1,34 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ================= META ================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StudentStream DevForum</title>
 
-  <!-- ===================== -->
-  <!--       STYLES          -->
-  <!-- ===================== -->
+  <meta name="description" content="StudentStream Developer Forum — build, learn, and collaborate." />
+  <meta name="theme-color" content="#0b1020" />
+
+  <!-- ================= FONTS ================= -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ================= SUPABASE ================= -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- ================= STYLES ================= -->
   <style>
     :root {
-      --bg: #0b1220;
-      --panel: #0f1b2d;
-      --panel-soft: #12233b;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #3b82f6;
-      --accent-2: #22c55e;
-      --border: #1f2937;
-      --radius: 16px;
+      --bg: #0b1020;
+      --panel: #111831;
+      --panel-hover: #172048;
+      --border: #1f2a55;
+      --text: #e7eaf6;
+      --muted: #9aa3c7;
+      --accent: #4c7dff;
+      --radius: 14px;
     }
 
     * {
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     body {
       margin: 0;
-      background: radial-gradient(1200px 600px at top, #0f172a, var(--bg));
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #111831, var(--bg));
       color: var(--text);
       min-height: 100vh;
     }
@@ -38,261 +45,237 @@
       text-decoration: none;
     }
 
-    /* ===================== */
-    /*        HEADER         */
-    /* ===================== */
+    /* ================= HEADER ================= */
 
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 20px;
+      padding: 22px 28px;
       border-bottom: 1px solid var(--border);
-      background: rgba(11,18,32,0.85);
-      backdrop-filter: blur(10px);
     }
 
-    header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-
-    .sign-in-btn {
-      background: var(--accent);
-      color: white;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    /* ===================== */
-    /*      CONTAINER        */
-    /* ===================== */
-
-    .container {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    /* ===================== */
-    /*     WELCOME CARD      */
-    /* ===================== */
-
-    .welcome {
-      background: linear-gradient(135deg, #0f172a, #064e3b);
-      border-radius: var(--radius);
-      padding: 22px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-    }
-
-    .welcome h2 {
-      margin: 0 0 6px;
+    .brand {
       font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
     }
 
-    .welcome p {
-      margin: 0;
+    .brand span {
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* ================= LAYOUT ================= */
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .page-sub {
       color: var(--muted);
-      font-size: 14px;
+      margin-bottom: 28px;
     }
 
-    /* ===================== */
-    /*     FORUM LIST        */
-    /* ===================== */
+    /* ================= FORUM ================= */
 
-    .forum-section {
-      margin-top: 18px;
-    }
-
-    .forum-section h3 {
-      margin-bottom: 10px;
-      font-size: 16px;
-      letter-spacing: 0.4px;
-      color: var(--muted);
-    }
-
-    .categories {
+    .forums {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
     }
 
     .category {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 16px 18px;
-      background: linear-gradient(180deg, var(--panel), var(--panel-soft));
-      border-radius: 14px;
+      align-items: center;
+      background: var(--panel);
       border: 1px solid var(--border);
-      transition: transform .15s ease, border .15s ease;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      transition: all 0.2s ease;
     }
 
     .category:hover {
+      background: var(--panel-hover);
       transform: translateY(-1px);
-      border-color: var(--accent);
     }
 
-    .category-left h4 {
+    .cat-left h3 {
       margin: 0;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 600;
     }
 
-    .category-left p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .category-right {
-      font-size: 20px;
-      color: var(--muted);
-    }
-
-    /* ===================== */
-    /*     STATES / UI       */
-    /* ===================== */
-
-    .state {
-      padding: 16px;
-      border-radius: 12px;
-      background: var(--panel);
-      border: 1px dashed var(--border);
+    .cat-left p {
+      margin: 6px 0 0;
       font-size: 14px;
       color: var(--muted);
     }
 
-    .error {
-      color: #f87171;
-      white-space: pre-wrap;
+    .cat-right {
+      font-size: 22px;
+      opacity: 0.6;
     }
 
-    /* ===================== */
-    /*        FOOTER         */
-    /* ===================== */
+    .state {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+
+    .state.error {
+      color: #ff7b7b;
+    }
+
+    /* ================= FOOTER ================= */
 
     footer {
-      margin-top: 40px;
-      padding: 20px;
       text-align: center;
-      font-size: 13px;
+      padding: 30px 20px;
       color: var(--muted);
+      font-size: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 600px) {
+      .page-title {
+        font-size: 22px;
+      }
+
+      header {
+        padding: 18px;
+      }
     }
   </style>
-
-  <!-- Supabase SDK -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-  <!-- ===================== -->
-  <!--        HEADER         -->
-  <!-- ===================== -->
+  <!-- ================= HEADER ================= -->
   <header>
-    <h1>StudentStream DevForum</h1>
-    <a class="sign-in-btn" href="/login.html">Sign In</a>
+    <div class="brand">StudentStream <span>DevForum</span></div>
+
+    <div class="nav-actions">
+      <button id="authBtn" class="btn primary">Sign In</button>
+    </div>
   </header>
 
-  <!-- ===================== -->
-  <!--      MAIN BODY        -->
-  <!-- ===================== -->
-  <main class="container">
+  <!-- ================= MAIN ================= -->
+  <main>
+    <h1 class="page-title">Developer Forums</h1>
+    <p class="page-sub">Discuss features, report bugs, and build StudentStream together.</p>
 
-    <!-- Welcome -->
-    <section class="welcome">
-      <h2>Welcome to the StudentStream DevForum</h2>
-      <p>Announcements, updates, bugs, feature requests, and developer discussion.</p>
-    </section>
-
-    <!-- Forum Categories -->
-    <section class="forum-section">
-      <h3>Forums</h3>
-
-      <div id="forum-categories" class="categories">
+    <section class="forums">
+      <div id="categories">
         <div class="state">Loading categories…</div>
       </div>
     </section>
-
   </main>
 
-  <!-- ===================== -->
-  <!--        FOOTER         -->
-  <!-- ===================== -->
+  <!-- ================= FOOTER ================= -->
   <footer>
     © 2026 StudentStream · Developer Forum
   </footer>
 
-  <!-- ===================== -->
-  <!--      JAVASCRIPT       -->
-  <!-- ===================== -->
+  <!-- ================= SCRIPT ================= -->
   <script>
-    // ============================
-    //   SUPABASE CONFIG (REPLACE)
-    // ============================
-    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    document.addEventListener("DOMContentLoaded", async () => {
 
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+      /* ===== CONFIG ===== */
+      const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-    const container = document.getElementById("forum-categories");
+      const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
-    async function loadCategories() {
-      container.innerHTML = '<div class="state">Fetching categories…</div>';
+      const categoriesEl = document.getElementById("categories");
+      const authBtn = document.getElementById("authBtn");
 
+      /* ===== AUTH CHECK ===== */
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        authBtn.textContent = "Account";
+        authBtn.onclick = () => location.href = "/account.html";
+      } else {
+        authBtn.onclick = () => location.href = "/login.html";
+      }
+
+      /* ===== LOAD CATEGORIES ===== */
       const { data, error } = await supabase
         .from("forum_categories")
-        .select("id, name")
+        .select("*")
         .order("name", { ascending: true });
 
+      console.log("Categories:", data, error);
+
       if (error) {
-        container.innerHTML = `
-          <div class="state error">
-            Supabase error:
-            ${error.message}
-          </div>
-        `;
-        console.error(error);
+        categoriesEl.innerHTML =
+          `<div class="state error">${error.message}</div>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        container.innerHTML = `
-          <div class="state">
-            No categories found.
-          </div>
-        `;
+        categoriesEl.innerHTML =
+          `<div class="state">No categories yet.</div>`;
         return;
       }
 
-      container.innerHTML = "";
+      categoriesEl.innerHTML = "";
 
       data.forEach(cat => {
         const el = document.createElement("a");
         el.className = "category";
-        el.href = "/category.html?id=" + cat.id;
+        el.href = `/category.html?id=${cat.id}`;
 
         el.innerHTML = `
-          <div class="category-left">
-            <h4>${cat.name}</h4>
-            <p>View discussions in ${cat.name}</p>
+          <div class="cat-left">
+            <h3>${cat.name}</h3>
+            <p>${cat.description || "View discussions"}</p>
           </div>
-          <div class="category-right">›</div>
+          <div class="cat-right">›</div>
         `;
 
-        container.appendChild(el);
+        categoriesEl.appendChild(el);
       });
-    }
 
-    document.addEventListener("DOMContentLoaded", loadCategories);
+    });
   </script>
 
 </body>
