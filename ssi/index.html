@@ -14,7 +14,7 @@
   --text:#e8f0ff;
   --muted:#8aa0c4;
   --accent:#3fa9ff;
-  --good:#3bff7a;
+  --danger:#ff3b3b;
 }
 
 *{box-sizing:border-box}
@@ -37,40 +37,37 @@ body{
   align-items:center;
   justify-content:center;
   z-index:9999;
-  transition:opacity .6s;
 }
+
 .loader-ring{
-  width:60px;height:60px;
-  border:4px solid #223a5a;
+  width:70px;height:70px;
+  border:4px solid #1b2f4f;
   border-top:4px solid var(--accent);
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-.loader-text{margin-top:16px;color:var(--muted);letter-spacing:2px}
 
-/* Background effects */
-.scanlines{
-  position:fixed;inset:0;
-  background:linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);
-  background-size:100% 3px;
-  pointer-events:none;
-  opacity:.12;
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.loader-text{
+  margin-top:18px;
+  letter-spacing:2px;
+  color:var(--muted);
+  font-size:13px;
 }
 
-.particles{
+/* Scan effect */
+.scan{
   position:fixed;
   inset:0;
-  background:
-    radial-gradient(circle at 20% 30%,rgba(63,169,255,.08),transparent 40%),
-    radial-gradient(circle at 70% 60%,rgba(63,169,255,.05),transparent 45%);
-  animation:pulse 8s infinite alternate;
+  background:linear-gradient(120deg,transparent 30%,rgba(63,169,255,.03),transparent 70%);
+  animation:scan 6s linear infinite;
   pointer-events:none;
 }
 
-@keyframes pulse{
-  from{opacity:.4}
-  to{opacity:.8}
+@keyframes scan{
+  from{transform:translateX(-100%)}
+  to{transform:translateX(100%)}
 }
 
 /* Main */
@@ -78,87 +75,81 @@ main{
   min-height:100vh;
   display:flex;
   align-items:center;
-  padding:clamp(24px,6vw,90px);
+  padding:60px;
 }
 
 .hero{
-  max-width:820px;
-  animation:fade 1.2s ease;
+  max-width:750px;
+  animation:fadeIn 1.3s ease;
 }
-@keyframes fade{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(25px)}
+  to{opacity:1;transform:none}
 }
 
 .badge{
   display:inline-block;
-  padding:6px 12px;
-  border:1px solid #2f5fa3;
+  padding:6px 14px;
+  border:1px solid #244a82;
   border-radius:6px;
+  font-size:12px;
   color:var(--accent);
-  font-size:13px;
-  letter-spacing:1px;
+  letter-spacing:1.2px;
+  background:#0f223f;
 }
 
-h1{font-size:clamp(48px,8vw,76px);margin:16px 0 8px}
+h1{
+  font-size:64px;
+  margin:20px 0 6px;
+  letter-spacing:2px;
+}
 
-.sub{color:var(--muted);font-size:20px;margin-bottom:12px}
+.sub{
+  color:var(--muted);
+  font-size:20px;
+  margin-bottom:18px;
+}
 
 .desc{
   color:#b7c9ea;
-  line-height:1.7;
-  margin-bottom:36px;
-  max-width:700px;
+  line-height:1.65;
+  margin-bottom:38px;
 }
 
-.buttons{display:flex;gap:14px;flex-wrap:wrap}
+.buttons{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
 
 .btn{
-  padding:14px 22px;
+  padding:14px 24px;
   border-radius:10px;
-  font-weight:600;
   border:none;
   cursor:pointer;
-  transition:.15s;
+  font-weight:600;
+  font-size:15px;
+  transition:.2s ease;
 }
 
-.btn-primary{background:var(--accent);color:#031422}
-.btn-outline{background:transparent;color:var(--text);border:1px solid #3c6fb4}
-
-.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(63,169,255,.25)}
-
-.status{
-  margin-top:18px;
-  font-size:13px;
-  color:var(--good);
+.btn-primary{
+  background:var(--accent);
+  color:#031422;
 }
 
-/* Diagnostics */
-.diag{
-  margin-top:28px;
-  padding:14px;
-  border:1px solid #244b7c;
-  border-radius:10px;
-  background:#071325;
-  font-size:13px;
-  color:#9fc3ff;
+.btn-outline{
+  background:transparent;
+  color:var(--text);
+  border:1px solid #355c96;
 }
 
-/* Trailer section */
-.trailer-inline{
-  margin-top:40px;
-  border:1px solid #234c7a;
-  border-radius:12px;
-  overflow:hidden;
-  background:#020b1a;
+.btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(63,169,255,.15);
 }
 
-.trailer-inline video{
-  width:100%;
-  display:block;
-}
-
-/* Trailer modal */
+/* Trailer Modal */
 #trailerModal{
   position:fixed;
   inset:0;
@@ -169,105 +160,125 @@ h1{font-size:clamp(48px,8vw,76px);margin:16px 0 8px}
   z-index:9998;
 }
 
-.modal{
-  width:min(900px,92%);
+.modal-box{
+  width:min(900px,94%);
   background:#020b1a;
-  border-radius:12px;
+  border-radius:14px;
   padding:12px;
-  border:1px solid #2a558c;
+  border:1px solid #274b7d;
 }
 
-.modal-head{
+.modal-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:8px;
+  margin-bottom:10px;
+  font-size:14px;
 }
 
-.close{cursor:pointer;color:#aaa}
-.close:hover{color:white}
+.close-btn{
+  cursor:pointer;
+  color:var(--muted);
+  font-size:18px;
+}
+.close-btn:hover{color:#fff}
 
-video{border-radius:8px;width:100%}
+/* Status */
+#authStatus{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#071426;
+  border:1px solid #23436f;
+  padding:8px 14px;
+  border-radius:8px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+@media(max-width:700px){
+  main{padding:30px}
+  h1{font-size:46px}
+}
 </style>
 </head>
 <body>
 
-<!-- Loader -->
 <div id="loader">
   <div class="loader-ring"></div>
-  <div class="loader-text">INITIALIZING BLACK ARCHIVE SYSTEMS</div>
+  <div class="loader-text">INITIALIZING SS:I SYSTEMS</div>
 </div>
 
-<div class="particles"></div>
-<div class="scanlines"></div>
+<div class="scan"></div>
 
-<main>
-<section class="hero">
-  <div class="badge">STUDENTSTREAM INVESTIGATIONS DIVISION</div>
-  <h1>SS:I</h1>
-  <div class="sub">StudentStream Investigations</div>
+<main style="display:none" id="mainApp">
+  <section class="hero">
+    <div class="badge">STUDENTSTREAM INVESTIGATION DIVISION</div>
+    <h1>SS:I</h1>
+    <div class="sub">StudentStream Investigations</div>
+    <div class="desc">
+      StudentStream’s investigation division focused on documenting unexplained events, digital anomalies,
+      emerging phenomena, and real-world cases through structured reporting, media evidence, and public intelligence archives.
+    </div>
 
-  <div class="desc">
-    A classified intelligence archive documenting unexplained events, digital anomalies,
-    emerging phenomena, and real-world cases through verified reporting, media evidence,
-    and public intelligence records.
-  </div>
-
-  <div class="buttons">
-    <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
-    <button class="btn btn-outline" onclick="openTrailer()">Watch Full Trailer</button>
-  </div>
-
-  <div class="status">SYSTEM STATUS: OPERATIONAL</div>
-
-  <div class="diag" id="diagBox">
-    • Database: Checking...<br>
-    • Identity Service: Checking...<br>
-    • Archive Nodes: Online
-  </div>
-
-  <!-- Inline trailer -->
-  <div class="trailer-inline">
-    <video controls poster="/media/ssi-poster.jpg">
-      <source src="/media/ssi-trailer.mp4" type="video/mp4">
-    </video>
-  </div>
-
-</section>
+    <div class="buttons">
+      <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
+      <button class="btn btn-outline" onclick="openTrailer()">Watch Trailer</button>
+    </div>
+  </section>
 </main>
+
+<div id="authStatus">Connecting…</div>
 
 <!-- Trailer Modal -->
 <div id="trailerModal">
-  <div class="modal">
-    <div class="modal-head">
+  <div class="modal-box">
+    <div class="modal-header">
       <strong>SS:I — Official Trailer</strong>
-      <span class="close" onclick="closeTrailer()">✕</span>
+      <span class="close-btn" onclick="closeTrailer()">✕</span>
     </div>
-    <video id="trailerVideo" controls poster="/media/ssi-poster.jpg">
+    <video id="trailerVideo" controls width="100%" poster="/media/ssi-poster.jpg">
       <source src="/media/ssi-trailer.mp4" type="video/mp4">
+      Your browser does not support video.
     </video>
   </div>
 </div>
 
 <script>
-/* Supabase safe init */
-let supabase=null;
-try{
-  supabase = window.supabase.createClient(
-    "https://YOUR_PROJECT_ID.supabase.co",
-    "YOUR_PUBLIC_ANON_KEY"
-  );
-}catch(e){}
+/* =============================
+   SUPABASE CONFIG
+============================= */
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* Loader fix */
-window.addEventListener("load",()=>{
+window.addEventListener("load", async () => {
+
+  await checkAuth();
+
   setTimeout(()=>{
-    const l=document.getElementById("loader");
-    l.style.opacity="0";
-    setTimeout(()=>l.remove(),600);
+    document.getElementById("loader").style.display="none";
+    document.getElementById("mainApp").style.display="flex";
     document.body.style.overflow="auto";
-  },600);
+  }, 600);
+
 });
+
+/* Auth check */
+async function checkAuth(){
+  const { data } = await supabase.auth.getUser();
+  const status = document.getElementById("authStatus");
+
+  if(data?.user){
+    status.textContent = "Authenticated: " + data.user.email;
+    status.style.color = "#3bff7a";
+  } else {
+    status.textContent = "Guest Access";
+    status.style.color = "#ffd23b";
+  }
+}
 
 /* Navigation */
 function openCases(){
@@ -275,36 +286,16 @@ function openCases(){
 }
 
 function openTrailer(){
-  const m=document.getElementById("trailerModal");
-  const v=document.getElementById("trailerVideo");
-  m.style.display="flex";
-  v.play().catch(()=>{});
+  document.getElementById("trailerModal").style.display="flex";
+  document.getElementById("trailerVideo").play();
 }
 
 function closeTrailer(){
-  const m=document.getElementById("trailerModal");
   const v=document.getElementById("trailerVideo");
-  v.pause(); v.currentTime=0;
-  m.style.display="none";
+  v.pause();
+  v.currentTime=0;
+  document.getElementById("trailerModal").style.display="none";
 }
-
-/* Diagnostics */
-(async()=>{
-  const diag=document.getElementById("diagBox");
-
-  if(!supabase){
-    diag.innerHTML+="<br>• Database: Offline";
-    return;
-  }
-
-  const { data } = await supabase.auth.getUser();
-
-  diag.innerHTML = `
-    • Database: Connected<br>
-    • Identity Service: ${data?.user ? "Authenticated" : "Guest"}<br>
-    • Archive Nodes: Online
-  `;
-})();
 </script>
 
 </body>
