@@ -1,18 +1,173 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>StudentStream DevForum</title>
-  <link rel="stylesheet" href="forum.css">
+<meta charset="UTF-8">
+<title>StudentStream DevForum</title>
+
+<!-- ===== STYLES ===== -->
+<style>
+  body {
+    margin: 0;
+    background: #0b0d12;
+    color: #e5e7eb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  }
+
+  header {
+    padding: 14px 18px;
+    border-bottom: 1px solid #1f2937;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  header h1 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  header button {
+    background: #22c55e;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100vh - 50px);
+  }
+
+  aside {
+    border-right: 1px solid #1f2937;
+    padding: 14px;
+  }
+
+  aside h3 {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 10px;
+  }
+
+  .category {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 6px;
+  }
+
+  .category:hover {
+    background: #111827;
+  }
+
+  main {
+    padding: 14px;
+  }
+
+  .thread {
+    padding: 12px;
+    border-bottom: 1px solid #1f2937;
+    cursor: pointer;
+  }
+
+  .thread:hover {
+    background: #0f172a;
+  }
+
+  .thread-title {
+    font-weight: 600;
+  }
+
+  .thread-meta {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+</style>
 </head>
+
 <body>
 
 <header>
   <h1>StudentStream DevForum</h1>
-  <a href="new.html">New Thread</a>
+  <button onclick="alert('New thread modal later')">New Thread</button>
 </header>
 
-<main id="categories"></main>
+<div class="layout">
+  <aside>
+    <h3>CATEGORIES</h3>
+    <div id="categories"></div>
+  </aside>
 
-<script type="module" src="forum.js"></script>
+  <main>
+    <div id="threads"></div>
+  </main>
+</div>
+
+<!-- ===== SUPABASE + LOGIC ===== -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+/* ---------- LOAD CATEGORIES ---------- */
+async function loadCategories() {
+  const { data } = await supabase
+    .from("forum_categories")
+    .select("*")
+    .order("position");
+
+  const el = document.getElementById("categories");
+  el.innerHTML = "";
+
+  data.forEach(cat => {
+    const div = document.createElement("div");
+    div.className = "category";
+    div.textContent = cat.name;
+    div.onclick = () => loadThreads(cat.id);
+    el.appendChild(div);
+  });
+}
+
+/* ---------- LOAD THREADS ---------- */
+async function loadThreads(categoryId = null) {
+  let query = supabase
+    .from("forum_threads")
+    .select("id,title,created_at");
+
+  if (categoryId) query = query.eq("category_id", categoryId);
+
+  const { data } = await query.order("created_at", { ascending: false });
+
+  const el = document.getElementById("threads");
+  el.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    el.innerHTML = "<p style='color:#9ca3af'>No threads yet</p>";
+    return;
+  }
+
+  data.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "thread";
+    div.innerHTML = `
+      <div class="thread-title">${t.title}</div>
+      <div class="thread-meta">${new Date(t.created_at).toLocaleString()}</div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+/* ---------- INIT ---------- */
+loadCategories();
+loadThreads();
+</script>
+
 </body>
 </html>
