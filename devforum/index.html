@@ -9,13 +9,16 @@
 
 <style>
 :root{
-  --bg:#0b0f16;
-  --panel:#111827;
-  --panel2:#0f172a;
+  --bg:#0a0f18;
+  --panel:#0f172a;
+  --panel2:#111827;
   --border:#1f2937;
   --text:#e5e7eb;
   --muted:#9ca3af;
   --accent:#22c55e;
+  --blue:#38bdf8;
+  --red:#ef4444;
+  --yellow:#facc15;
 }
 
 *{box-sizing:border-box}
@@ -27,27 +30,26 @@ body{
 }
 
 .wrapper{
-  max-width:960px;
+  max-width:980px;
   margin:auto;
   padding:16px;
 }
 
-/* TOP BAR */
-.topbar{
+/* HEADER */
+.header{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:16px;
 }
 
-.topbar h1{
+.header h1{
   font-size:20px;
-  font-weight:800;
-  margin:0;
+  font-weight:900;
 }
 
-.signin{
-  background:#111827;
+.header button{
+  background:var(--panel);
   border:1px solid var(--border);
   color:var(--text);
   padding:8px 14px;
@@ -58,9 +60,9 @@ body{
 /* WELCOME */
 .welcome{
   background:linear-gradient(135deg,#064e3b,#0f172a);
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:20px;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:22px;
 }
 
 .welcome h2{
@@ -83,31 +85,59 @@ body{
 .category{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px;
-  cursor:pointer;
+  border-radius:16px;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   transition:.15s;
+  cursor:pointer;
 }
 
 .category:hover{
   background:var(--panel2);
+  transform:translateY(-1px);
 }
 
-.category-title{
-  font-weight:700;
+.cat-left{
+  max-width:75%;
+}
+
+.cat-title{
   font-size:16px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
-.category-desc{
+.badge{
+  font-size:11px;
+  padding:3px 7px;
+  border-radius:999px;
+  font-weight:700;
+}
+
+.badge.ann{background:rgba(239,68,68,.15);color:var(--red)}
+.badge.bug{background:rgba(250,204,21,.15);color:var(--yellow)}
+.badge.dev{background:rgba(56,189,248,.15);color:var(--blue)}
+.badge.gen{background:rgba(34,197,94,.15);color:var(--accent)}
+
+.cat-desc{
   color:var(--muted);
   font-size:14px;
   margin-top:4px;
 }
 
-.category-meta{
-  margin-top:8px;
+.cat-right{
+  text-align:right;
   font-size:12px;
-  color:#9ca3af;
+  color:var(--muted);
+}
+
+.cat-count{
+  font-weight:800;
+  color:var(--text);
 }
 </style>
 </head>
@@ -115,9 +145,9 @@ body{
 <body>
 <div class="wrapper">
 
-  <div class="topbar">
+  <div class="header">
     <h1>StudentStream DevForum</h1>
-    <button class="signin">Sign In</button>
+    <button id="authBtn">Sign In</button>
   </div>
 
   <div class="welcome">
@@ -130,11 +160,34 @@ body{
 </div>
 
 <script>
+/* =======================
+   SUPABASE CONFIG
+======================= */
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
+/* =======================
+   AUTH STATE
+======================= */
+async function handleAuth(){
+  const { data:{ user } } = await supabase.auth.getUser();
+  const btn = document.getElementById("authBtn");
+
+  if(user){
+    btn.textContent = "Profile";
+    btn.onclick = ()=>location.href="/profile";
+  }else{
+    btn.textContent = "Sign In";
+    btn.onclick = ()=>location.href="/login";
+  }
+}
+handleAuth();
+
+/* =======================
+   LOAD CATEGORIES
+======================= */
 async function loadCategories(){
   const { data, error } = await supabase
     .from("forum_categories")
@@ -142,9 +195,13 @@ async function loadCategories(){
       id,
       name,
       description,
-      forum_threads(count)
+      type,
+      forum_threads(
+        id,
+        created_at
+      )
     `)
-    .order("order_index",{ ascending:true });
+    .order("order_index",{ascending:true});
 
   if(error){
     console.error(error);
@@ -155,18 +212,37 @@ async function loadCategories(){
   wrap.innerHTML = "";
 
   data.forEach(cat=>{
-    const count = cat.forum_threads?.[0]?.count || 0;
+    const threads = cat.forum_threads || [];
+    const latest = threads.length
+      ? new Date(Math.max(...threads.map(t=>new Date(t.created_at)))).toLocaleDateString()
+      : "No activity";
+
+    const badgeClass =
+      cat.type === "announcements" ? "ann" :
+      cat.type === "bugs" ? "bug" :
+      cat.type === "development" ? "dev" : "gen";
+
+    const badgeText =
+      cat.type === "announcements" ? "Announcements" :
+      cat.type === "bugs" ? "Bugs" :
+      cat.type === "development" ? "Development" : "General";
 
     const el = document.createElement("div");
     el.className = "category";
-    el.onclick = () => {
-      location.href = `category.html?id=${cat.id}`;
-    };
+    el.onclick = ()=>location.href=`category.html?id=${cat.id}`;
 
     el.innerHTML = `
-      <div class="category-title">${cat.name}</div>
-      <div class="category-desc">${cat.description || ""}</div>
-      <div class="category-meta">${count} threads</div>
+      <div class="cat-left">
+        <div class="cat-title">
+          ${cat.name}
+          <span class="badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="cat-desc">${cat.description || ""}</div>
+      </div>
+      <div class="cat-right">
+        <div class="cat-count">${threads.length}</div>
+        <div>${latest}</div>
+      </div>
     `;
 
     wrap.appendChild(el);
