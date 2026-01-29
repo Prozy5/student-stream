@@ -14,7 +14,7 @@
   --text:#e8f0ff;
   --muted:#8aa0c4;
   --accent:#3fa9ff;
-  --classified:#ff3b3b;
+  --danger:#ff3b3b;
 }
 
 *{box-sizing:border-box}
@@ -28,11 +28,24 @@ body{
   overflow-x:hidden;
 }
 
+/* animated grid */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(63,169,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63,169,255,.03) 1px, transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+
+/* scanning light */
 .scan{
   position:fixed;
   inset:0;
-  background:linear-gradient(120deg,transparent 30%,rgba(63,169,255,.04),transparent 70%);
-  animation:scan 7s linear infinite;
+  background:linear-gradient(120deg,transparent 40%,rgba(63,169,255,.06),transparent 60%);
+  animation:scan 6s linear infinite;
   pointer-events:none;
 }
 
@@ -49,13 +62,13 @@ main{
 }
 
 .hero{
-  max-width:760px;
+  max-width:820px;
   animation:fadeIn 1.2s ease;
 }
 
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:none}
+  to{opacity:1}
 }
 
 .badge{
@@ -69,21 +82,50 @@ main{
   letter-spacing:1px;
 }
 
+/* glitch title */
 h1{
-  font-size:64px;
+  font-size:70px;
   margin:20px 0 10px;
+  position:relative;
+}
+
+h1::after{
+  content:attr(data-text);
+  position:absolute;
+  left:2px;
+  top:2px;
+  color:var(--accent);
+  opacity:.15;
 }
 
 .sub{
   color:var(--muted);
   font-size:20px;
-  margin-bottom:16px;
+  margin-bottom:14px;
 }
 
 .desc{
   color:#b7c9ea;
   line-height:1.6;
-  margin-bottom:40px;
+  margin-bottom:28px;
+}
+
+.stats{
+  display:flex;
+  gap:24px;
+  margin-bottom:36px;
+}
+
+.stat{
+  background:#081526;
+  border:1px solid #1e3b63;
+  padding:12px 18px;
+  border-radius:8px;
+}
+
+.stat b{
+  color:var(--accent);
+  font-size:18px;
 }
 
 .buttons{
@@ -93,7 +135,7 @@ h1{
 }
 
 .btn{
-  padding:14px 22px;
+  padding:14px 24px;
   border-radius:10px;
   border:none;
   cursor:pointer;
@@ -103,7 +145,7 @@ h1{
 }
 
 .btn-primary{
-  background:var(--accent);
+  background:linear-gradient(135deg,#3fa9ff,#1e7fd6);
   color:#031422;
 }
 
@@ -114,14 +156,22 @@ h1{
 }
 
 .btn:hover{
-  transform:translateY(-2px);
+  transform:translateY(-2px) scale(1.02);
 }
 
-/* Trailer modal */
+/* activity ticker */
+.ticker{
+  margin-top:30px;
+  font-size:13px;
+  color:#8fb7ff;
+  opacity:.8;
+}
+
+/* trailer modal */
 #trailerModal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.75);
+  background:rgba(0,0,0,.8);
   display:none;
   align-items:center;
   justify-content:center;
@@ -153,50 +203,52 @@ h1{
 <div class="scan"></div>
 
 <main>
-  <section class="hero">
-    <div class="badge">STUDENTSTREAM BLACK FILES DIVISION</div>
-    <h1>SS:I</h1>
-    <div class="sub">StudentStream Investigations</div>
+<section class="hero">
+  <div class="badge">STUDENTSTREAM BLACK FILES DIVISION</div>
 
-    <div class="desc">
-      Documenting what doesn’t fit the record. Archiving what refuses to disappear.<br>
-      Investigating what others overlook.
-    </div>
+  <h1 data-text="SS:I">SS:I</h1>
 
-    <div class="buttons">
-      <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
-      <button class="btn btn-outline" onclick="openTrailer()">Watch Trailer</button>
-    </div>
-  </section>
+  <div class="sub">StudentStream Investigations</div>
+
+  <div class="desc">
+    Documenting what doesn’t fit the record. Archiving what refuses to disappear.<br>
+    Investigating what others overlook.
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>128</b><br>Cases Archived</div>
+    <div class="stat"><b>34</b><br>Active Files</div>
+    <div class="stat"><b>19</b><br>Unresolved</div>
+  </div>
+
+  <div class="buttons">
+    <button class="btn btn-primary" onclick="openCases()">Access Case Archives</button>
+    <button class="btn btn-outline" onclick="openTrailer()">Watch Trailer</button>
+  </div>
+
+  <div class="ticker">
+    ▸ New anomaly reported – Nevada desert •  
+    ▸ Signal interference detected – Sector 3 •  
+    ▸ File SSI-044 reopened
+  </div>
+</section>
 </main>
 
-<!-- Trailer Modal -->
 <div id="trailerModal">
   <div class="modal-box">
     <div class="modal-header">
       <strong>SS:I — Official Trailer</strong>
       <span class="close-btn" onclick="closeTrailer()">✕</span>
     </div>
-    <video id="trailerVideo" controls width="100%" poster="/media/ssi-poster.jpg">
+    <video id="trailerVideo" controls width="100%">
       <source src="/media/ssi-trailer.mp4" type="video/mp4">
-      Your browser does not support video.
     </video>
   </div>
 </div>
 
 <script>
-/* Supabase (optional for later use) */
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR_ANON_KEY_HERE"; // optional for index
-
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-/* Navigation */
 function openCases(){
-  window.location.href = "/ssi/cases.html";
+  window.location.href="/ssi/cases.html";
 }
 
 function openTrailer(){
