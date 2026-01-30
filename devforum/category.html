@@ -12,7 +12,7 @@
     :root {
       --bg: #0b1220;
       --panel: #111a2e;
-      --panel-hover: #152242;
+      --panel-hover: #162447;
       --border: #1f2c4d;
       --text: #e6ebff;
       --muted: #9aa7d9;
@@ -41,6 +41,7 @@
     header h1 {
       font-size: 18px;
       margin: 0;
+      cursor: pointer;
     }
 
     header button {
@@ -65,7 +66,7 @@
 
     .category-header h2 {
       margin: 0;
-      font-size: 24px;
+      font-size: 26px;
     }
 
     .category-header p {
@@ -96,13 +97,11 @@
     .thread-meta {
       font-size: 13px;
       color: var(--muted);
-      display: flex;
-      gap: 12px;
     }
 
-    .empty {
-      color: var(--muted);
+    .state {
       text-align: center;
+      color: var(--muted);
       margin-top: 60px;
     }
 
@@ -118,17 +117,19 @@
 <body>
 
 <header>
-  <h1>StudentStream DevForum</h1>
+  <h1 onclick="location.href='index.html'">StudentStream DevForum</h1>
   <button id="actionBtn">Sign In</button>
 </header>
 
 <main>
   <div class="category-header">
     <h2 id="categoryName">Loading…</h2>
-    <p id="categoryDesc">Threads in this category</p>
+    <p id="categoryDesc"></p>
   </div>
 
-  <div id="threads"></div>
+  <div id="threads">
+    <div class="state">Loading threads…</div>
+  </div>
 </main>
 
 <footer>
@@ -136,9 +137,9 @@
 </footer>
 
 <script>
-  /* ============================
-     CONFIG
-  ============================ */
+  /* ===============================
+     CONFIG (USE SAME AS index.html)
+  =============================== */
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
@@ -147,121 +148,97 @@
     SUPABASE_KEY
   );
 
-  /* ============================
-     HELPERS
-  ============================ */
+  /* ===============================
+     PARAMS
+  =============================== */
   const params = new URLSearchParams(window.location.search);
-  const categoryId = params.get("id");
+  const slug = params.get("slug");
 
-  if (!categoryId) {
-    alert("Missing category ID");
+  if (!slug) {
+    alert("Missing category slug");
     location.href = "index.html";
   }
 
-  function timeAgo(date) {
-    const seconds = Math.floor((Date.now() - new Date(date)) / 1000);
-    const units = [
-      [31536000, "year"],
-      [2592000, "month"],
-      [86400, "day"],
-      [3600, "hour"],
-      [60, "minute"]
-    ];
-    for (const [s, n] of units) {
-      const v = Math.floor(seconds / s);
-      if (v >= 1) return `${v} ${n}${v > 1 ? "s" : ""} ago`;
-    }
-    return "just now";
-  }
-
-  /* ============================
-     AUTH
-  ============================ */
+  /* ===============================
+     AUTH BUTTON
+  =============================== */
   const actionBtn = document.getElementById("actionBtn");
 
   supabase.auth.getUser().then(({ data }) => {
-    if (data.user) {
+    if (data?.user) {
       actionBtn.textContent = "New Thread";
       actionBtn.onclick = () =>
-        location.href = `new.html?category=${categoryId}`;
+        location.href = `new.html?category=${slug}`;
     } else {
-      actionBtn.onclick = () => location.href = "login.html";
+      actionBtn.onclick = () =>
+        location.href = "login.html";
     }
   });
 
-  /* ============================
-     LOAD CATEGORY
-  ============================ */
-  async function loadCategory() {
-    const { data, error } = await supabase
+  /* ===============================
+     LOAD CATEGORY + THREADS
+  =============================== */
+  async function loadPage() {
+    const threadsContainer = document.getElementById("threads");
+
+    // 1️⃣ Get category
+    const { data: category, error: catErr } = await supabase
       .from("forum_categories")
       .select("*")
-      .eq("id", categoryId)
+      .eq("slug", slug)
       .single();
 
-    if (error) {
-      console.error(error);
+    if (catErr || !category) {
+      console.error(catErr);
+      threadsContainer.innerHTML =
+        "<div class='state'>Category not found.</div>";
       return;
     }
 
-    document.getElementById("categoryName").textContent = data.name;
-  }
+    document.getElementById("categoryName").textContent = category.name;
+    document.getElementById("categoryDesc").textContent =
+      category.description || "";
 
-  /* ============================
-     LOAD THREADS
-  ============================ */
-  async function loadThreads() {
-    const { data, error } = await supabase
+    // 2️⃣ Get threads
+    const { data: threads, error: threadErr } = await supabase
       .from("forum_threads")
-      .select(`
-        id,
-        title,
-        created_at,
-        author_id,
-        forum_profiles(username),
-        forum_replies(count)
-      `)
-      .eq("category_id", categoryId)
+      .select("id, title, slug, created_at")
+      .eq("category_id", category.id)
       .order("created_at", { ascending: false });
 
-    const container = document.getElementById("threads");
-    container.innerHTML = "";
-
-    if (error) {
-      container.innerHTML = "<div class='empty'>Failed to load threads</div>";
-      console.error(error);
+    if (threadErr) {
+      console.error(threadErr);
+      threadsContainer.innerHTML =
+        "<div class='state'>Failed to load threads.</div>";
       return;
     }
 
-    if (!data.length) {
-      container.innerHTML =
-        "<div class='empty'>No threads yet. Be the first to post.</div>";
+    if (!threads || threads.length === 0) {
+      threadsContainer.innerHTML =
+        "<div class='state'>No threads yet.</div>";
       return;
     }
 
-    data.forEach(thread => {
+    threadsContainer.innerHTML = "";
+
+    threads.forEach(thread => {
       const el = document.createElement("div");
       el.className = "thread";
-      el.onclick = () => location.href = `thread.html?id=${thread.id}`;
+      el.onclick = () =>
+        location.href = `thread.html?slug=${thread.slug}`;
 
       el.innerHTML = `
         <div class="thread-title">${thread.title}</div>
         <div class="thread-meta">
-          <span>@${thread.forum_profiles?.username || "unknown"}</span>
-          <span>${thread.forum_replies?.length || 0} replies</span>
-          <span>${timeAgo(thread.created_at)}</span>
+          ${new Date(thread.created_at).toLocaleString()}
         </div>
       `;
 
-      container.appendChild(el);
+      threadsContainer.appendChild(el);
     });
   }
 
-  /* ============================
-     INIT
-  ============================ */
-  loadCategory();
-  loadThreads();
+  loadPage();
 </script>
 
 </body>
