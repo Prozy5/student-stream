@@ -2,36 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>StudentStream Security — Trust, Safety & Protection</title>
+<title>StudentStream Security — Trust, Safety & Platform Integrity</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- ================= CANONICAL ================= -->
 <link rel="canonical" href="https://studentstream.online/security.html" />
 
 <!-- ================= SEO ================= -->
-<meta name="description" content="StudentStream Security is the trust & safety division of StudentStream, protecting creators, brands, and communities from fraud, impersonation, abuse, and digital threats." />
-<meta name="keywords" content="StudentStream Security, creator safety, trust and safety, impersonation protection, fraud prevention, platform security" />
+<meta name="description" content="StudentStream Security is the trust, safety, and platform integrity division of StudentStream — protecting creators, brands, and communities from fraud, impersonation, abuse, and digital threats." />
+<meta name="keywords" content="StudentStream Security, trust and safety, creator protection, impersonation prevention, fraud detection, platform integrity, online safety" />
 <meta name="author" content="StudentStream" />
 <meta name="theme-color" content="#05080f" />
 
 <!-- ================= OPEN GRAPH ================= -->
 <meta property="og:title" content="StudentStream Security — Trust & Safety Division" />
-<meta property="og:description" content="Protecting creators, brands, and communities through proactive security, enforcement, and platform integrity systems." />
+<meta property="og:description" content="Protecting creators, brands, and the StudentStream ecosystem through proactive security, enforcement, and intelligence systems." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://studentstream.online/security.html" />
 
 <!-- ================= STRUCTURED DATA ================= -->
 <script type="application/ld+json">
 {
-  "@context":"https://schema.org",
-  "@type":"Organization",
-  "name":"StudentStream Security",
-  "url":"https://studentstream.online/security.html",
-  "description":"StudentStream Security is the trust and safety division of StudentStream, responsible for platform integrity, creator protection, fraud prevention, and enforcement.",
-  "parentOrganization":{
-    "@type":"Organization",
-    "name":"StudentStream",
-    "url":"https://studentstream.online"
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "StudentStream Security",
+  "url": "https://studentstream.online/security.html",
+  "description": "StudentStream Security is the trust, safety, and platform integrity division of StudentStream, responsible for creator protection, fraud prevention, enforcement, and ecosystem security.",
+  "parentOrganization": {
+    "@type": "Organization",
+    "name": "StudentStream",
+    "url": "https://studentstream.online"
   }
 }
 </script>
@@ -44,6 +44,8 @@
   --text:#eaf1ff;
   --muted:#9fb0cc;
   --border:rgba(255,255,255,0.08);
+  --danger:#ff6b6b;
+  --success:#5dffb3;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -54,6 +56,7 @@ body{
   color:var(--text);
 }
 
+/* NAV */
 nav{
   display:flex;
   justify-content:space-between;
@@ -75,35 +78,19 @@ nav{
 .nav-links a:hover{color:var(--text)}
 
 main{
-  max-width:1100px;
+  max-width:1200px;
   margin:auto;
   padding:90px 22px;
 }
 
-h1{
-  font-size:46px;
-  margin-bottom:14px;
-}
-
-h2{
-  font-size:28px;
-  margin-top:70px;
-  margin-bottom:18px;
-}
-
-h3{
-  font-size:18px;
-  margin-bottom:8px;
-}
+h1{font-size:48px;margin-bottom:14px}
+h2{font-size:30px;margin-top:90px;margin-bottom:18px}
+h3{font-size:18px;margin-bottom:6px}
 
 p{
   color:var(--muted);
-  line-height:1.7;
-  max-width:880px;
-}
-
-.hero p{
-  font-size:17px;
+  line-height:1.75;
+  max-width:920px;
 }
 
 .badge{
@@ -113,40 +100,53 @@ p{
   padding:6px 14px;
   border-radius:999px;
   font-size:.85rem;
-  margin-bottom:16px;
+  margin-bottom:18px;
   border:1px solid rgba(122,182,255,.25);
 }
 
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:18px;
-  margin-top:26px;
+  gap:20px;
+  margin-top:30px;
 }
 
 .card{
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:18px;
-  padding:22px;
+  padding:24px;
 }
 
-.card p{
-  font-size:14px;
+.card p{font-size:14px}
+
+.stat{
+  font-size:32px;
+  font-weight:700;
+  margin-bottom:6px;
 }
 
-.highlight{
-  color:var(--accent);
-  font-weight:600;
+.highlight{color:var(--accent);font-weight:600}
+.warn{color:var(--danger)}
+.ok{color:var(--success)}
+
+.timeline{
+  border-left:2px solid var(--border);
+  padding-left:20px;
+  margin-top:24px;
+}
+
+.timeline div{
+  margin-bottom:18px;
 }
 
 footer{
   text-align:center;
-  padding:60px 20px;
+  padding:70px 20px;
   color:var(--muted);
   font-size:13px;
   border-top:1px solid var(--border);
-  margin-top:90px;
+  margin-top:110px;
 }
 </style>
 </head>
@@ -168,119 +168,135 @@ footer{
 <main>
 
 <!-- HERO -->
-<section class="hero">
-  <span class="badge">Trust & Safety Division</span>
+<section>
+  <span class="badge">Trust, Safety & Platform Integrity</span>
   <h1>StudentStream Security</h1>
   <p>
-    StudentStream Security is responsible for protecting creators, brands, and communities
-    across the entire StudentStream ecosystem.
-    We focus on proactive defense, platform integrity, and fair enforcement — not reaction after damage.
+    StudentStream Security is the enforcement, intelligence, and protection layer
+    powering the entire StudentStream ecosystem.
+    We safeguard creators, brands, and communities against abuse, fraud,
+    impersonation, and emerging digital threats.
   </p>
 </section>
 
-<!-- WHY -->
+<!-- PHILOSOPHY -->
 <section>
-  <h2>Why StudentStream Security Exists</h2>
+  <h2>Our Security Philosophy</h2>
   <p>
-    The creator economy is increasingly targeted by impersonation, fraud, content theft,
-    harassment, and coordinated abuse.
-    Most platforms respond only after harm spreads.
-    <span class="highlight">StudentStream Security is built to prevent harm before it scales.</span>
+    Most platforms treat security as moderation.
+    <span class="highlight">We treat security as infrastructure.</span><br><br>
+    StudentStream Security operates on three core principles:
+    prevention over reaction, transparency over secrecy,
+    and creator protection over corporate convenience.
   </p>
 </section>
 
-<!-- CORE SYSTEMS -->
+<!-- SYSTEMS -->
 <section>
-  <h2>Core Security Systems</h2>
-
+  <h2>Security Systems</h2>
   <div class="grid">
     <div class="card">
       <h3>🛡 Creator Protection</h3>
       <p>
         Impersonation detection, content theft response,
-        account abuse prevention, and creator-focused safety tools.
+        harassment prevention, and identity integrity.
       </p>
     </div>
-
     <div class="card">
-      <h3>🔍 Fraud & Abuse Detection</h3>
+      <h3>🔍 Fraud & Scam Defense</h3>
       <p>
-        Monitoring scams, fake accounts, malicious behavior,
-        coordinated attacks, and emerging exploitation tactics.
+        Blocking fake giveaways, phishing, financial scams,
+        fake brands, and malicious actors.
       </p>
     </div>
-
     <div class="card">
       <h3>⚖️ Enforcement & Appeals</h3>
       <p>
-        Transparent enforcement actions, evidence-based moderation,
-        structured appeals, and consistent platform rules.
+        Evidence-based enforcement, transparent penalties,
+        structured appeals, and audit trails.
       </p>
     </div>
-
     <div class="card">
-      <h3>🧠 Security Research</h3>
+      <h3>🧠 Threat Intelligence</h3>
       <p>
-        Studying new threat patterns, digital manipulation,
-        platform abuse trends, and creator safety risks.
+        Research into coordinated abuse,
+        manipulation tactics, and emerging online threats.
       </p>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST METRICS -->
+<section>
+  <h2>Trust & Safety Metrics</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="stat">100%</div>
+      <p>Baseline security coverage for all users</p>
+    </div>
+    <div class="card">
+      <div class="stat">0</div>
+      <p>Tolerance for impersonation & fraud</p>
+    </div>
+    <div class="card">
+      <div class="stat">24/7</div>
+      <p>Automated monitoring & reporting systems</p>
     </div>
   </div>
 </section>
 
 <!-- FREE VS ADVANCED -->
 <section>
-  <h2>Security for Everyone</h2>
-  <p>
-    All StudentStream users receive baseline protection by default —
-    regardless of follower count or status.
-  </p>
-
+  <h2>Protection Tiers</h2>
   <div class="grid">
     <div class="card">
       <h3>Included Protection</h3>
       <p>
-        Account safety, reporting tools, impersonation response,
-        and platform enforcement at no cost.
+        Account safety, reporting tools,
+        impersonation response, and enforcement — free for everyone.
       </p>
     </div>
-
     <div class="card">
-      <h3>Advanced Protection (Future)</h3>
+      <h3>Advanced Security (Planned)</h3>
       <p>
-        Enhanced monitoring, faster response times,
-        creator verification, brand protection,
-        and priority security support.
+        Creator verification, brand protection,
+        faster response times, priority enforcement,
+        and security consulting.
       </p>
     </div>
   </div>
 </section>
 
-<!-- ECOSYSTEM -->
+<!-- ROADMAP -->
 <section>
-  <h2>Security Across the Ecosystem</h2>
-  <p>
-    StudentStream Security supports Studios, Law, SS:I,
-    and future divisions — ensuring discovery, collaboration,
-    and monetization happen in a safe environment.
-  </p>
+  <h2>Security Roadmap</h2>
+  <div class="timeline">
+    <div>
+      <strong>Phase 1:</strong> Platform-wide protection & enforcement
+    </div>
+    <div>
+      <strong>Phase 2:</strong> Creator verification & transparency reports
+    </div>
+    <div>
+      <strong>Phase 3:</strong> External brand & enterprise security services
+    </div>
+  </div>
 </section>
 
-<!-- FUTURE -->
+<!-- FINAL -->
 <section>
-  <h2>The Future of StudentStream Security</h2>
+  <h2>Security Is Not Optional</h2>
   <p>
-    As StudentStream grows, Security will expand into
-    automated detection systems, creator education,
-    transparency reports, and external brand safety services.
-    <span class="highlight">Security is infrastructure, not a feature.</span>
+    StudentStream Security exists to ensure that growth never comes at the cost
+    of safety, trust, or creator wellbeing.
+    <span class="highlight">Security is the foundation of everything we build.</span>
   </p>
 </section>
 
 </main>
 
 <footer>
-  © 2026 StudentStream · Security & Trust Division
+  © 2026 StudentStream · Security, Trust & Integrity Division
 </footer>
 
 </body>
