@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>StudentStream Security — Trust, Safety & Platform Integrity</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>StudentStream Security | Trust, Safety & Intelligence Division</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- ================= CANONICAL ================= -->
-<link rel="canonical" href="https://studentstream.online/security.html" />
+<!-- CANONICAL -->
+<link rel="canonical" href="https://studentstream.online/security.html">
 
-<!-- ================= SEO ================= -->
-<meta name="description" content="StudentStream Security is the trust, safety, and platform integrity division of StudentStream — protecting creators, brands, and communities from fraud, impersonation, abuse, and digital threats." />
-<meta name="keywords" content="StudentStream Security, trust and safety, creator protection, impersonation prevention, fraud detection, platform integrity, online safety" />
-<meta name="author" content="StudentStream" />
-<meta name="theme-color" content="#05080f" />
+<!-- SEO -->
+<meta name="description" content="StudentStream Security is the Trust, Safety, and Intelligence division of StudentStream — protecting creators, brands, and communities through enforcement, threat intelligence, and platform integrity systems.">
+<meta name="keywords" content="StudentStream Security, trust and safety, creator protection, platform integrity, fraud prevention, online security, digital enforcement">
+<meta name="author" content="StudentStream">
 
-<!-- ================= OPEN GRAPH ================= -->
-<meta property="og:title" content="StudentStream Security — Trust & Safety Division" />
-<meta property="og:description" content="Protecting creators, brands, and the StudentStream ecosystem through proactive security, enforcement, and intelligence systems." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://studentstream.online/security.html" />
+<!-- OPEN GRAPH -->
+<meta property="og:title" content="StudentStream Security — Trust & Safety Division">
+<meta property="og:description" content="A creator-first security infrastructure built for the next generation of digital platforms.">
+<meta property="og:url" content="https://studentstream.online/security.html">
+<meta property="og:type" content="website">
 
-<!-- ================= STRUCTURED DATA ================= -->
+<!-- STRUCTURED DATA -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "StudentStream Security",
   "url": "https://studentstream.online/security.html",
-  "description": "StudentStream Security is the trust, safety, and platform integrity division of StudentStream, responsible for creator protection, fraud prevention, enforcement, and ecosystem security.",
+  "description": "The trust, safety, and intelligence division of StudentStream.",
   "parentOrganization": {
     "@type": "Organization",
     "name": "StudentStream",
@@ -38,115 +37,106 @@
 
 <style>
 :root{
-  --bg:#05080f;
-  --panel:#0c1626;
-  --accent:#5da9ff;
-  --text:#eaf1ff;
-  --muted:#9fb0cc;
-  --border:rgba(255,255,255,0.08);
-  --danger:#ff6b6b;
-  --success:#5dffb3;
+  --bg:#050912;
+  --panel:#0e1a2f;
+  --accent:#6bb2ff;
+  --text:#eef3ff;
+  --muted:#9fb1cc;
+  --border:rgba(255,255,255,.08);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
-  font-family:system-ui,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f2345,#050912 70%);
   color:var(--text);
 }
 
-/* NAV */
 nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:10;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:18px 26px;
-  background:rgba(10,20,40,.75);
-  backdrop-filter:blur(10px);
+  padding:18px 28px;
+  background:rgba(8,16,32,.85);
+  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
 }
 
-.nav-left{font-weight:700;letter-spacing:.4px}
-
-.nav-links a{
+nav a{
   color:var(--muted);
   text-decoration:none;
   margin-left:18px;
   font-size:14px;
 }
-.nav-links a:hover{color:var(--text)}
+nav a:hover{color:var(--text)}
 
 main{
-  max-width:1200px;
+  max-width:1250px;
   margin:auto;
-  padding:90px 22px;
+  padding:130px 24px 80px;
 }
 
-h1{font-size:48px;margin-bottom:14px}
-h2{font-size:30px;margin-top:90px;margin-bottom:18px}
-h3{font-size:18px;margin-bottom:6px}
+h1{font-size:52px;margin-bottom:16px}
+h2{font-size:32px;margin:100px 0 22px}
+h3{font-size:18px;margin-bottom:8px}
 
 p{
+  max-width:950px;
+  line-height:1.8;
   color:var(--muted);
-  line-height:1.75;
-  max-width:920px;
 }
 
 .badge{
   display:inline-block;
-  background:rgba(93,169,255,.15);
-  color:#7ab6ff;
-  padding:6px 14px;
+  padding:7px 16px;
   border-radius:999px;
+  background:rgba(107,178,255,.15);
+  border:1px solid rgba(107,178,255,.35);
+  color:#88c2ff;
   font-size:.85rem;
-  margin-bottom:18px;
-  border:1px solid rgba(122,182,255,.25);
+  margin-bottom:22px;
 }
 
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
-  margin-top:30px;
+  gap:22px;
+  margin-top:32px;
 }
 
 .card{
-  background:var(--panel);
+  background:linear-gradient(180deg,#0e1a2f,#0b1425);
   border:1px solid var(--border);
-  border-radius:18px;
-  padding:24px;
+  border-radius:20px;
+  padding:26px;
 }
 
 .card p{font-size:14px}
 
 .stat{
-  font-size:32px;
-  font-weight:700;
+  font-size:36px;
+  font-weight:800;
   margin-bottom:6px;
+  color:var(--accent);
 }
 
-.highlight{color:var(--accent);font-weight:600}
-.warn{color:var(--danger)}
-.ok{color:var(--success)}
-
-.timeline{
-  border-left:2px solid var(--border);
-  padding-left:20px;
-  margin-top:24px;
-}
-
-.timeline div{
-  margin-bottom:18px;
+.divider{
+  height:1px;
+  background:var(--border);
+  margin:90px 0;
 }
 
 footer{
-  text-align:center;
-  padding:70px 20px;
-  color:var(--muted);
-  font-size:13px;
   border-top:1px solid var(--border);
-  margin-top:110px;
+  padding:80px 24px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -154,13 +144,12 @@ footer{
 <body>
 
 <nav>
-  <div class="nav-left">StudentStream</div>
-  <div class="nav-links">
+  <strong>StudentStream</strong>
+  <div>
     <a href="/">Home</a>
     <a href="/studios/">Studios</a>
     <a href="/security.html">Security</a>
     <a href="/law/">Law</a>
-    <a href="/ssi/">SS:I</a>
     <a href="/company.html">Company</a>
   </div>
 </nav>
@@ -169,99 +158,105 @@ footer{
 
 <!-- HERO -->
 <section>
-  <span class="badge">Trust, Safety & Platform Integrity</span>
+  <span class="badge">Trust · Safety · Intelligence</span>
   <h1>StudentStream Security</h1>
   <p>
-    StudentStream Security is the enforcement, intelligence, and protection layer
-    powering the entire StudentStream ecosystem.
-    We safeguard creators, brands, and communities against abuse, fraud,
-    impersonation, and emerging digital threats.
+    StudentStream Security is the sovereign protection layer of the StudentStream ecosystem.
+    We operate at the intersection of enforcement, intelligence, and creator safety —
+    ensuring growth without exploitation, scale without harm, and freedom without chaos.
   </p>
 </section>
 
-<!-- PHILOSOPHY -->
+<!-- WHY WE EXIST -->
 <section>
-  <h2>Our Security Philosophy</h2>
+  <h2>Why StudentStream Security Exists</h2>
   <p>
-    Most platforms treat security as moderation.
-    <span class="highlight">We treat security as infrastructure.</span><br><br>
-    StudentStream Security operates on three core principles:
-    prevention over reaction, transparency over secrecy,
-    and creator protection over corporate convenience.
+    Most platforms build first and patch safety later.
+    StudentStream was designed differently.
+    <br><br>
+    Security is not a reactionary feature — it is foundational infrastructure.
+    Every creator, brand, and community relies on systems that prevent abuse
+    before it spreads, detect manipulation early, and enforce rules consistently.
   </p>
 </section>
 
-<!-- SYSTEMS -->
+<!-- CORE PILLARS -->
 <section>
-  <h2>Security Systems</h2>
+  <h2>Core Security Pillars</h2>
   <div class="grid">
     <div class="card">
-      <h3>🛡 Creator Protection</h3>
+      <h3>🛡 Identity & Authenticity</h3>
       <p>
-        Impersonation detection, content theft response,
-        harassment prevention, and identity integrity.
+        Protection against impersonation, deepfake misuse,
+        fake accounts, and identity fraud.
       </p>
     </div>
     <div class="card">
-      <h3>🔍 Fraud & Scam Defense</h3>
+      <h3>🔍 Threat Detection</h3>
       <p>
-        Blocking fake giveaways, phishing, financial scams,
-        fake brands, and malicious actors.
+        Monitoring coordinated abuse, scam networks,
+        content manipulation, and platform exploitation.
       </p>
     </div>
     <div class="card">
-      <h3>⚖️ Enforcement & Appeals</h3>
+      <h3>⚖️ Enforcement Systems</h3>
       <p>
-        Evidence-based enforcement, transparent penalties,
-        structured appeals, and audit trails.
+        Evidence-driven actions, structured penalties,
+        transparent appeals, and audit logging.
       </p>
     </div>
     <div class="card">
-      <h3>🧠 Threat Intelligence</h3>
+      <h3>🧠 Behavioral Intelligence</h3>
       <p>
-        Research into coordinated abuse,
-        manipulation tactics, and emerging online threats.
+        Research into online behavior, manipulation tactics,
+        harassment psychology, and digital harm patterns.
       </p>
     </div>
   </div>
 </section>
 
-<!-- TRUST METRICS -->
+<!-- METRICS -->
 <section>
-  <h2>Trust & Safety Metrics</h2>
+  <h2>Security Standards</h2>
   <div class="grid">
     <div class="card">
-      <div class="stat">100%</div>
-      <p>Baseline security coverage for all users</p>
-    </div>
-    <div class="card">
-      <div class="stat">0</div>
+      <div class="stat">Zero</div>
       <p>Tolerance for impersonation & fraud</p>
     </div>
     <div class="card">
       <div class="stat">24/7</div>
-      <p>Automated monitoring & reporting systems</p>
+      <p>Automated monitoring & reporting</p>
+    </div>
+    <div class="card">
+      <div class="stat">100%</div>
+      <p>Baseline protection for all users</p>
     </div>
   </div>
 </section>
 
-<!-- FREE VS ADVANCED -->
+<!-- TIERS -->
 <section>
-  <h2>Protection Tiers</h2>
+  <h2>Protection Levels</h2>
   <div class="grid">
     <div class="card">
-      <h3>Included Protection</h3>
+      <h3>Standard Protection (Free)</h3>
       <p>
-        Account safety, reporting tools,
-        impersonation response, and enforcement — free for everyone.
+        Reporting tools, impersonation response,
+        content enforcement, and account safety.
       </p>
     </div>
     <div class="card">
       <h3>Advanced Security (Planned)</h3>
       <p>
         Creator verification, brand protection,
-        faster response times, priority enforcement,
-        and security consulting.
+        priority enforcement, and incident response.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Enterprise Security (Future)</h3>
+      <p>
+        White-label protection, platform consulting,
+        audits, and intelligence services.
       </p>
     </div>
   </div>
@@ -270,33 +265,35 @@ footer{
 <!-- ROADMAP -->
 <section>
   <h2>Security Roadmap</h2>
-  <div class="timeline">
-    <div>
-      <strong>Phase 1:</strong> Platform-wide protection & enforcement
-    </div>
-    <div>
-      <strong>Phase 2:</strong> Creator verification & transparency reports
-    </div>
-    <div>
-      <strong>Phase 3:</strong> External brand & enterprise security services
-    </div>
-  </div>
+  <p>
+    Phase 1 — Platform-wide enforcement & protection<br>
+    Phase 2 — Verification, transparency reports, creator dashboards<br>
+    Phase 3 — External security services & institutional partnerships
+  </p>
 </section>
 
-<!-- FINAL -->
+<div class="divider"></div>
+
+<!-- CLOSING -->
 <section>
-  <h2>Security Is Not Optional</h2>
+  <h2>Security Is Power</h2>
   <p>
-    StudentStream Security exists to ensure that growth never comes at the cost
-    of safety, trust, or creator wellbeing.
-    <span class="highlight">Security is the foundation of everything we build.</span>
+    StudentStream Security exists to protect creativity,
+    preserve trust, and ensure the platform remains fair,
+    safe, and resilient as it scales.
+    <br><br>
+    This is not moderation.
+    <br>
+    <strong>This is infrastructure.</strong>
   </p>
 </section>
 
 </main>
 
 <footer>
-  © 2026 StudentStream · Security, Trust & Integrity Division
+  © 2026 StudentStream  
+  <br>
+  Trust, Safety & Intelligence Division
 </footer>
 
 </body>
