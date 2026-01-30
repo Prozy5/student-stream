@@ -1,163 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>StudentStream – Creator Platform</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>StudentStream — Creator Ecosystem Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-:root{
-  --bg:#05080f;
-  --panel:#0c1626;
-  --accent:#5da9ff;
-  --text:#eaf1ff;
-  --muted:#9fb0cc;
-  --border:rgba(255,255,255,0.08);
-}
+  <!-- ================= SEO ================= -->
+  <meta name="description" content="StudentStream is a creator-focused technology platform building an ecosystem for discovery, collaboration, protection, and monetization of creative work." />
+  <meta name="keywords" content="StudentStream, creator platform, creator ecosystem, content discovery, digital creators, creative tools" />
+  <meta name="author" content="StudentStream" />
+  <meta name="theme-color" content="#05080f" />
 
-*{box-sizing:border-box;margin:0;padding:0}
+  <!-- ================= OPEN GRAPH ================= -->
+  <meta property="og:title" content="StudentStream — Creator Ecosystem Platform" />
+  <meta property="og:description" content="An all-in-one ecosystem built to help creators get discovered, collaborate, protect their work, and grow real opportunities." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://studentstream.online/" />
 
-body{
-  font-family:system-ui,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
-  color:var(--text);
-}
+  <!-- ================= STRUCTURED DATA (THIS IS HUGE) ================= -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "StudentStream",
+    "url": "https://studentstream.online",
+    "description": "StudentStream is a technology company building a creator-first digital ecosystem focused on discovery, collaboration, protection, and monetization.",
+    "foundingDate": "2026",
+    "sameAs": []
+  }
+  </script>
 
-/* NAV */
+  <style>
+    :root{
+      --bg:#05080f;
+      --panel:#0c1626;
+      --accent:#5da9ff;
+      --text:#eaf1ff;
+      --muted:#9fb0cc;
+      --border:rgba(255,255,255,0.08);
+    }
 
-nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 26px;
-  background:rgba(10,20,40,.75);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
-}
+    *{box-sizing:border-box;margin:0;padding:0}
 
-.nav-left{
-  font-weight:700;
-  letter-spacing:.4px;
-}
+    body{
+      font-family:system-ui,Segoe UI,Roboto;
+      background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
+      color:var(--text);
+    }
 
-.nav-links a{
-  color:var(--muted);
-  text-decoration:none;
-  margin-left:18px;
-  font-size:14px;
-}
-.nav-links a:hover{color:var(--text)}
+    nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:18px 26px;
+      background:rgba(10,20,40,.75);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--border);
+    }
 
-/* HERO */
+    .nav-left{
+      font-weight:700;
+      letter-spacing:.4px;
+    }
 
-.hero{
-  max-width:1100px;
-  margin:auto;
-  padding:90px 22px 70px;
-  text-align:center;
-}
+    .nav-links a{
+      color:var(--muted);
+      text-decoration:none;
+      margin-left:18px;
+      font-size:14px;
+    }
+    .nav-links a:hover{color:var(--text)}
 
-.hero h1{
-  font-size:52px;
-  line-height:1.1;
-  margin-bottom:18px;
-}
+    .hero{
+      max-width:1100px;
+      margin:auto;
+      padding:90px 22px 70px;
+      text-align:center;
+    }
 
-.hero span{color:var(--accent)}
+    .hero h1{
+      font-size:52px;
+      line-height:1.1;
+      margin-bottom:18px;
+    }
 
-.hero p{
-  color:var(--muted);
-  max-width:760px;
-  margin:auto;
-  line-height:1.7;
-  font-size:17px;
-}
+    .hero span{color:var(--accent)}
 
-.hero-actions{
-  margin-top:32px;
-  display:flex;
-  justify-content:center;
-  gap:14px;
-  flex-wrap:wrap;
-}
+    .hero p{
+      color:var(--muted);
+      max-width:780px;
+      margin:auto;
+      line-height:1.7;
+      font-size:17px;
+    }
 
-.btn{
-  padding:13px 24px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:var(--panel);
-  color:var(--text);
-  text-decoration:none;
-  transition:.2s;
-}
+    .hero-actions{
+      margin-top:32px;
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
 
-.btn.primary{
-  background:linear-gradient(135deg,#5da9ff,#3f8cff);
-  color:#081425;
-  border:none;
-}
+    .btn{
+      padding:13px 24px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      text-decoration:none;
+      transition:.2s;
+    }
 
-.btn:hover{
-  transform:translateY(-2px);
-  opacity:.95;
-}
+    .btn.primary{
+      background:linear-gradient(135deg,#5da9ff,#3f8cff);
+      color:#081425;
+      border:none;
+    }
 
-/* SECTIONS */
+    .btn:hover{
+      transform:translateY(-2px);
+      opacity:.95;
+    }
 
-.section{
-  max-width:1100px;
-  margin:auto;
-  padding:60px 22px;
-}
+    .section{
+      max-width:1100px;
+      margin:auto;
+      padding:60px 22px;
+    }
 
-.section h2{
-  font-size:26px;
-  margin-bottom:18px;
-}
+    .section h2{
+      font-size:26px;
+      margin-bottom:18px;
+    }
 
-.section p{
-  color:var(--muted);
-  line-height:1.6;
-  max-width:800px;
-}
+    .section p{
+      color:var(--muted);
+      line-height:1.6;
+      max-width:820px;
+    }
 
-/* GRID */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:18px;
+      margin-top:24px;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:18px;
-  margin-top:24px;
-}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+    }
 
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:22px;
-}
+    .card h3{
+      margin-bottom:8px;
+    }
 
-.card h3{
-  margin-bottom:8px;
-}
+    .card p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
 
-.card p{
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.6;
-}
-
-/* FOOTER */
-
-footer{
-  text-align:center;
-  padding:50px 20px;
-  color:var(--muted);
-  font-size:13px;
-  border-top:1px solid var(--border);
-  margin-top:60px;
-}
-</style>
+    footer{
+      text-align:center;
+      padding:50px 20px;
+      color:var(--muted);
+      font-size:13px;
+      border-top:1px solid var(--border);
+      margin-top:60px;
+    }
+  </style>
 </head>
 
 <body>
@@ -179,8 +194,9 @@ footer{
   <h1>Build. Share. Protect.<br><span>Get Discovered.</span></h1>
 
   <p>
-    StudentStream is a creator-focused digital platform designed to help small and emerging creators
-    showcase their work, grow audiences, collaborate, protect their content, and turn creativity into real opportunities.
+    StudentStream is a creator-first technology platform building an all-in-one ecosystem
+    for discovery, collaboration, protection, and monetization.
+    We exist to give creators real opportunity — not just visibility.
   </p>
 
   <div class="hero-actions">
@@ -192,9 +208,9 @@ footer{
 <section class="section">
   <h2>What is StudentStream?</h2>
   <p>
-    Big platforms prioritize creators who are already famous. StudentStream is different.
-    Our system is built to surface smaller creators first, giving everyone a real chance to be seen,
-    supported, and rewarded for their work.
+    StudentStream is not a social network and not a marketplace alone.
+    It is a connected ecosystem of tools and platforms designed to surface emerging creators,
+    protect original work, and turn creativity into sustainable outcomes.
   </p>
 </section>
 
@@ -202,70 +218,34 @@ footer{
   <h2>Platform Divisions</h2>
 
   <div class="grid">
-
     <div class="card">
       <h3>🎨 StudentStream Studios</h3>
-      <p>
-        Creator portfolios, digital & physical art marketplaces, commissions, and creative collaboration tools.
-      </p>
+      <p>Creator portfolios, publishing tools, commissions, marketplaces, and collaboration.</p>
     </div>
 
     <div class="card">
       <h3>⚖️ StudentStream Law</h3>
-      <p>
-        Creator protection, fraud prevention, copyright handling, platform enforcement, and safety systems.
-      </p>
+      <p>Creator protection systems, enforcement, reporting, copyright, and platform safety.</p>
     </div>
 
     <div class="card">
       <h3>🕵️ SS:I</h3>
-      <p>
-        Investigation of unexplained digital phenomena, online cases, platform threats, and things people don’t talk about.
-      </p>
+      <p>Research and investigation into digital threats, platform abuse, and unexplained online phenomena.</p>
     </div>
-
   </div>
 </section>
 
 <section class="section">
-  <h2>Why Creators Choose StudentStream</h2>
-
-  <div class="grid">
-
-    <div class="card">
-      <h3>Discovery First</h3>
-      <p>Your work doesn’t get buried by celebrities or corporations.</p>
-    </div>
-
-    <div class="card">
-      <h3>Ownership</h3>
-      <p>You keep control over your content and brand.</p>
-    </div>
-
-    <div class="card">
-      <h3>Built-in Protection</h3>
-      <p>Safety, reporting, and enforcement systems designed for creators.</p>
-    </div>
-
-    <div class="card">
-      <h3>Monetization</h3>
-      <p>Sell work, accept commissions, grow audiences, and earn.</p>
-    </div>
-
-  </div>
-</section>
-
-<section class="section">
-  <h2>Our Mission</h2>
+  <h2>Why StudentStream Exists</h2>
   <p>
-    StudentStream exists to give creators real opportunity — not just views.
-    We believe creative talent should be discovered, protected, and rewarded fairly,
-    regardless of follower count.
+    The internet rewards scale, not talent.
+    StudentStream is built to reverse that — giving smaller creators real discovery,
+    ownership over their work, and tools that grow with them.
   </p>
 </section>
 
 <footer>
-  © 2026 StudentStream, Inc. · Creator Platform & Digital Ecosystem
+  © 2026 StudentStream · Creator Technology Ecosystem
 </footer>
 
 </body>
