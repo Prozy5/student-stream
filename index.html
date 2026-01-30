@@ -1,9 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>StudentStream — Launching April 4</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+
+  <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
+  <meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8">
+
+  <title>StudentStream — Launching April 4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- BASIC SEO (helps Google understand you immediately) -->
+  <meta name="description" content="StudentStream is a next-generation creator and brand ecosystem launching April 4, 2026. Built for creators, founders, startups, and modern brands.">
+  <meta name="keywords" content="StudentStream, creator ecosystem, creators, startups, brands, streaming platform">
+  <meta name="author" content="StudentStream">
+
+  <!-- CANONICAL (tells Google THIS is the real StudentStream) -->
+  <link rel="canonical" href="https://studentstream.online/">
+
+  <!-- OPEN GRAPH -->
+  <meta property="og:title" content="StudentStream — Creator Ecosystem">
+  <meta property="og:description" content="Where creators, founders, and brands get seen first. Launching April 4, 2026.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://studentstream.online/">
+
+  <!-- STRUCTURED DATA (AI + GOOGLE TRUST SIGNAL) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "StudentStream",
+    "url": "https://studentstream.online",
+    "description": "StudentStream is an independent creator-first technology platform building an ecosystem for creators, founders, startups, and brands.",
+    "foundingDate": "2026"
+  }
+  </script>
 
 <style>
 *{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
@@ -129,8 +159,9 @@ text-align:center;
     <h1>Where creators, founders, and brands get seen first.</h1>
 
     <p>
-StudentStream is a next-gen platform for streamers, artists, entrepreneurs, startups,
-and modern brands to grow faster, build real audiences, and monetize earlier.
+      StudentStream is a next-gen platform for creators, entrepreneurs,
+      startups, and modern brands to grow faster, build real audiences,
+      and monetize earlier.
     </p>
 
     <div class="countdown" id="countdown">
@@ -177,30 +208,27 @@ const launchDate = new Date("2026-04-04T00:00:00").getTime();
 setInterval(()=>{
   const now = new Date().getTime();
   const diff = launchDate - now;
-
   if(diff <= 0) return;
 
-  document.getElementById("d").textContent = Math.floor(diff / (1000*60*60*24));
-  document.getElementById("h").textContent = Math.floor((diff / (1000*60*60)) % 24);
-  document.getElementById("m").textContent = Math.floor((diff / (1000*60)) % 60);
-  document.getElementById("s").textContent = Math.floor((diff / 1000) % 60);
+  d.textContent = Math.floor(diff / (1000*60*60*24));
+  h.textContent = Math.floor((diff / (1000*60*60)) % 24);
+  m.textContent = Math.floor((diff / (1000*60)) % 60);
+  s.textContent = Math.floor((diff / 1000) % 60);
 },1000);
 
-// Formspree submit
+// Form submit
 document.getElementById("waitlistForm").addEventListener("submit", async e=>{
   e.preventDefault();
-
-  const data = {
-    first_name: firstName.value,
-    last_name: lastName.value,
-    email: emailField.value,
-    role: roleSelect.value
-  };
 
   await fetch("https://formspree.io/f/xojqgpan",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(data)
+    body:JSON.stringify({
+      first_name:firstName.value,
+      last_name:lastName.value,
+      email:emailField.value,
+      role:roleSelect.value
+    })
   });
 
   alert("You're on the waitlist 🚀");
