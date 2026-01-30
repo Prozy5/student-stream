@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StudentStream Transparency Report | Platform Integrity & Enforcement</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- CANONICAL -->
+<link rel="canonical" href="https://studentstream.online/transparency.html">
+
+<!-- SEO -->
+<meta name="description" content="The official StudentStream Transparency Report detailing enforcement actions, safety systems, and platform integrity metrics.">
+<meta name="keywords" content="StudentStream transparency, trust and safety, enforcement report, platform integrity, creator protection">
+<meta name="author" content="StudentStream">
+
+<!-- OPEN GRAPH -->
+<meta property="og:title" content="StudentStream Transparency Report">
+<meta property="og:description" content="How StudentStream protects creators, enforces rules, and maintains platform integrity.">
+<meta property="og:url" content="https://studentstream.online/transparency.html">
+<meta property="og:type" content="website">
+
+<!-- STRUCTURED DATA -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "StudentStream Transparency Report",
+  "publisher": {
+    "@type": "Organization",
+    "name": "StudentStream",
+    "url": "https://studentstream.online"
+  }
+}
+</script>
+
+<style>
+:root{
+  --bg:#050912;
+  --panel:#0e1a2f;
+  --accent:#6bb2ff;
+  --text:#eef3ff;
+  --muted:#9fb1cc;
+  --border:rgba(255,255,255,.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f2345,#050912 70%);
+  color:var(--text);
+}
+
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 28px;
+  background:rgba(8,16,32,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+nav a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+nav a:hover{color:var(--text)}
+
+main{
+  max-width:1250px;
+  margin:auto;
+  padding:130px 24px 80px;
+}
+
+h1{font-size:52px;margin-bottom:16px}
+h2{font-size:32px;margin:90px 0 22px}
+h3{font-size:18px;margin-bottom:8px}
+
+p{
+  max-width:950px;
+  line-height:1.8;
+  color:var(--muted);
+}
+
+.badge{
+  display:inline-block;
+  padding:7px 16px;
+  border-radius:999px;
+  background:rgba(107,178,255,.15);
+  border:1px solid rgba(107,178,255,.35);
+  color:#88c2ff;
+  font-size:.85rem;
+  margin-bottom:22px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px;
+  margin-top:32px;
+}
+
+.card{
+  background:linear-gradient(180deg,#0e1a2f,#0b1425);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:26px;
+}
+
+.stat{
+  font-size:36px;
+  font-weight:800;
+  margin-bottom:6px;
+  color:var(--accent);
+}
+
+.table{
+  margin-top:30px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.table-row{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  padding:16px 22px;
+  border-bottom:1px solid var(--border);
+}
+
+.table-row:last-child{border-bottom:none}
+.table-header{background:#0c1830;font-weight:600}
+
+footer{
+  border-top:1px solid var(--border);
+  padding:80px 24px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <strong>StudentStream</strong>
+  <div>
+    <a href="/">Home</a>
+    <a href="/security.html">Security</a>
+    <a href="/transparency.html">Transparency</a>
+    <a href="/company.html">Company</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section>
+  <span class="badge">Platform Integrity & Accountability</span>
+  <h1>Transparency Report</h1>
+  <p>
+    This report outlines how StudentStream enforces its rules, protects users,
+    and maintains platform integrity.
+    <br><br>
+    Transparency is a core principle of the StudentStream ecosystem.
+  </p>
+</section>
+
+<!-- PURPOSE -->
+<section>
+  <h2>Why Transparency Matters</h2>
+  <p>
+    Trust cannot exist without visibility.
+    StudentStream publishes transparency reports to give creators, brands,
+    and partners insight into how safety decisions are made and enforced.
+    <br><br>
+    Our goal is fairness, consistency, and accountability — not silent moderation.
+  </p>
+</section>
+
+<!-- ENFORCEMENT METRICS -->
+<section>
+  <h2>Enforcement Overview</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="stat">0</div>
+      <p>Known unresolved impersonation cases</p>
+    </div>
+    <div class="card">
+      <div class="stat">100%</div>
+      <p>Reports reviewed by automated + human systems</p>
+    </div>
+    <div class="card">
+      <div class="stat">24/7</div>
+      <p>Monitoring and reporting availability</p>
+    </div>
+  </div>
+</section>
+
+<!-- ACTIONS TABLE -->
+<section>
+  <h2>Enforcement Actions (Pre-Launch)</h2>
+
+  <div class="table">
+    <div class="table-row table-header">
+      <div>Category</div>
+      <div>Actions Taken</div>
+      <div>Status</div>
+    </div>
+
+    <div class="table-row">
+      <div>Impersonation & Fraud</div>
+      <div>Preventative systems active</div>
+      <div>Ongoing</div>
+    </div>
+
+    <div class="table-row">
+      <div>Scams & Malicious Activity</div>
+      <div>Detection frameworks deployed</div>
+      <div>Ongoing</div>
+    </div>
+
+    <div class="table-row">
+      <div>Harassment & Abuse</div>
+      <div>Policy enforcement enabled</div>
+      <div>Ongoing</div>
+    </div>
+  </div>
+
+  <p style="margin-top:14px;font-size:13px">
+    *Platform is currently in pre-launch. Metrics will be updated quarterly post-launch.
+  </p>
+</section>
+
+<!-- REQUESTS -->
+<section>
+  <h2>Legal & Government Requests</h2>
+  <p>
+    StudentStream evaluates all legal requests for user data and content
+    under applicable law.
+    <br><br>
+    During pre-launch, no government or law-enforcement data requests have been received.
+  </p>
+</section>
+
+<!-- APPEALS -->
+<section>
+  <h2>Appeals & Corrections</h2>
+  <p>
+    Users may appeal enforcement actions through official support channels.
+    All appeals are reviewed with evidence, logs, and policy references.
+    <br><br>
+    Our systems are designed to correct mistakes — not hide them.
+  </p>
+</section>
+
+<!-- FUTURE -->
+<section>
+  <h2>Future Transparency Commitments</h2>
+  <p>
+    After public launch, StudentStream will publish transparency updates on a
+    scheduled basis, including:
+    <br><br>
+    • Enforcement statistics<br>
+    • Policy changes<br>
+    • Safety system upgrades<br>
+    • Verified creator protections
+  </p>
+</section>
+
+</main>
+
+<footer>
+  © 2026 StudentStream  
+  <br>
+  Transparency & Platform Integrity
+</footer>
+
+</body>
+</html>
