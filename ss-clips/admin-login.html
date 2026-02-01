@@ -2,262 +2,138 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SS Clips • Admin</title>
+<title>SS Clips Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
   --bg:#050816;
-  --panel:#0b1328;
-  --accent:#00e5ff;
-  --text:#eaf1ff;
-  --muted:#8fa3c8;
+  --panel:#0c1426;
+  --panel-dark:#091020;
+  --accent:#4facfe;
+  --text:#eef3ff;
+  --muted:#9aa8c7;
+  --border:rgba(255,255,255,.08);
   --danger:#ff5c5c;
-  --success:#38f89a;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
   min-height:100vh;
-  background:radial-gradient(circle at top,#0f2a4d,#050816 70%);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  color:var(--text);
-}
-
-.hidden{display:none}
-
-.center{
-  min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
+  color:var(--text);
 }
 
 .card{
   width:100%;
   max-width:420px;
-  background:var(--panel);
-  padding:38px;
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  border:1px solid var(--border);
   border-radius:24px;
-  box-shadow:0 50px 140px rgba(0,0,0,.65);
+  padding:36px;
 }
 
-input, select{
+h1{
+  margin-bottom:8px;
+}
+
+p{
+  color:var(--muted);
+  margin-bottom:28px;
+  font-size:14px;
+}
+
+input{
   width:100%;
   padding:14px;
-  margin-bottom:14px;
   border-radius:14px;
-  border:none;
-  background:#050c1e;
-  color:var(--text);
+  border:1px solid var(--border);
+  margin-bottom:16px;
+  font-size:15px;
 }
 
 button{
-  padding:12px 18px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,#00e5ff,#4facfe);
-  font-weight:900;
-  cursor:pointer;
-}
-
-button.danger{
-  background:linear-gradient(135deg,#ff5c5c,#ff2d2d);
-  color:white;
-}
-
-.error{color:var(--danger);margin-top:10px}
-.success{color:var(--success)}
-
-header{
-  padding:22px 28px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #12224a;
-}
-
-main{
-  padding:28px;
-}
-
-table{
   width:100%;
-  border-collapse:collapse;
-  margin-top:20px;
+  padding:14px;
+  border-radius:16px;
+  border:none;
+  font-weight:900;
+  font-size:15px;
+  cursor:pointer;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  color:#00121f;
 }
 
-th,td{
-  padding:12px;
-  border-bottom:1px solid #142455;
-  text-align:left;
+.error{
+  margin-top:16px;
+  color:var(--danger);
+  font-size:13px;
+  display:none;
 }
-
-th{color:var(--accent)}
-
-.badge{
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:800;
-}
-
-.pending{background:#3b2b00;color:#ffcc00}
-.approved{background:#003b1e;color:#38f89a}
-.rejected{background:#3b0000;color:#ff5c5c}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN VIEW -->
-<div id="loginView" class="center hidden">
-  <div class="card">
-    <h2>SS Clips Admin</h2>
-    <p style="color:var(--muted);margin:10px 0 22px">Restricted access</p>
+<div class="card">
+  <h1>SS Clips Login</h1>
+  <p>Sign in to manage your submissions</p>
 
-    <input id="email" placeholder="Admin email">
-    <input id="password" type="password" placeholder="Password">
+  <input id="email" type="email" placeholder="Email" autocomplete="email">
+  <input id="password" type="password" placeholder="Password" autocomplete="current-password">
 
-    <button onclick="login()">Login</button>
-    <div id="loginError" class="error"></div>
-  </div>
+  <button id="loginBtn">Login</button>
+
+  <div id="error" class="error"></div>
 </div>
 
-<!-- ADMIN DASHBOARD -->
-<div id="adminView" class="hidden">
-
-<header>
-  <strong>SS Clips Admin Panel</strong>
-  <button class="danger" onclick="logout()">Logout</button>
-</header>
-
-<main>
-  <h2>Submitted Clips</h2>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Creator</th>
-        <th>Platform</th>
-        <th>Category</th>
-        <th>Status</th>
-        <th>Tier</th>
-        <th>Price</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="clipsTable"></tbody>
-  </table>
-</main>
-
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwODM3MCwiZXhwIjoyMDgyNjg0MzcwfQ.CsPZH8iEu--QB8Zcug4TaqBS8T-g_eqWBbnx9zJH7yA"
 );
 
-const ADMIN_EMAILS = [
-  "youradmin@email.com"
-];
+const btn = document.getElementById("loginBtn");
+const errorBox = document.getElementById("error");
 
-// INIT
-checkSession();
+btn.addEventListener("click", async () => {
+  errorBox.style.display = "none";
+  btn.textContent = "Logging in...";
+  btn.disabled = true;
 
-async function checkSession(){
-  const { data } = await supabase.auth.getSession();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
 
-  if(!data.session){
-    showLogin();
+  if(!email || !password){
+    showError("Enter email and password");
     return;
   }
 
-  const user = data.session.user;
-
-  if(!ADMIN_EMAILS.includes(user.email)){
-    await supabase.auth.signOut();
-    showLogin();
-    return;
-  }
-
-  showAdmin();
-  loadClips();
-}
-
-function showLogin(){
-  document.getElementById("loginView").classList.remove("hidden");
-  document.getElementById("adminView").classList.add("hidden");
-}
-
-function showAdmin(){
-  document.getElementById("loginView").classList.add("hidden");
-  document.getElementById("adminView").classList.remove("hidden");
-}
-
-async function login(){
-  const email = email.value.trim();
-  const password = password.value;
-
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
   if(error){
-    loginError.innerText = error.message;
+    showError(error.message);
     return;
   }
 
-  checkSession();
-}
+  // ✅ SUCCESS — REDIRECT
+  window.location.href = "/ss-clips/admin.html";
+});
 
-async function logout(){
-  await supabase.auth.signOut();
-  showLogin();
-}
-
-// LOAD CLIPS
-async function loadClips(){
-  const { data, error } = await supabase
-    .from("clips")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  if(error) return;
-
-  clipsTable.innerHTML = "";
-
-  data.forEach(c=>{
-    clipsTable.innerHTML += `
-      <tr>
-        <td>${c.creator}</td>
-        <td>${c.platform}</td>
-        <td>${c.category}</td>
-        <td><span class="badge ${c.status}">${c.status}</span></td>
-        <td>${c.tier}</td>
-        <td>$${c.price ?? 0}</td>
-        <td>
-          <button onclick="updateStatus('${c.id}','approved')">Approve</button>
-          <button class="danger" onclick="updateStatus('${c.id}','rejected')">Reject</button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-async function updateStatus(id,status){
-  await supabase
-    .from("clips")
-    .update({
-      status,
-      approved_at: status === "approved" ? new Date() : null,
-      rejected_at: status === "rejected" ? new Date() : null
-    })
-    .eq("id",id);
-
-  loadClips();
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.style.display = "block";
+  btn.textContent = "Login";
+  btn.disabled = false;
 }
 </script>
 
