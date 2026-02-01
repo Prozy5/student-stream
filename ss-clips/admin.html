@@ -28,33 +28,15 @@ body{
 header{
   padding:22px 28px;
   border-bottom:1px solid var(--border);
-  background:rgba(6,12,26,.85);
-  backdrop-filter:blur(12px);
-  position:sticky;
-  top:0;
-  z-index:10;
   display:flex;
   justify-content:space-between;
-  align-items:center;
-}
-
-header button{
-  padding:10px 16px;
-  border-radius:12px;
-  border:none;
-  background:#18244a;
-  color:var(--text);
-  cursor:pointer;
 }
 
 main{
   max-width:1300px;
   margin:auto;
-  padding:40px 24px 100px;
+  padding:40px 24px 120px;
 }
-
-h1{font-size:38px;margin-bottom:10px}
-h2{font-size:26px;margin:50px 0 18px}
 
 .grid{
   display:grid;
@@ -69,39 +51,19 @@ h2{font-size:26px;margin:50px 0 18px}
   padding:22px;
 }
 
-.card h3{font-size:18px;margin-bottom:6px}
-.card p{font-size:14px;color:var(--muted);margin-bottom:10px}
-
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:14px;
-}
-
 .actions button{
+  margin-top:10px;
+  margin-right:8px;
   padding:10px 14px;
   border-radius:10px;
   border:none;
-  font-size:13px;
   font-weight:700;
   cursor:pointer;
 }
 
-.approve{background:var(--success);color:#01210f}
-.deny{background:var(--danger);color:#300}
-.feature{background:var(--accent);color:#00121f}
-.unfeature{background:#26345c;color:white}
-
-.badge{
-  display:inline-block;
-  font-size:12px;
-  padding:4px 10px;
-  border-radius:999px;
-  background:rgba(79,172,254,.15);
-  color:var(--accent);
-  margin-top:8px;
-}
+.approve{background:var(--success)}
+.deny{background:var(--danger)}
+.feature{background:var(--accent)}
 </style>
 </head>
 
@@ -113,100 +75,86 @@ h2{font-size:26px;margin:50px 0 18px}
 </header>
 
 <main>
-  <h1>Dashboard</h1>
-  <p style="color:var(--muted)">Approve, deny, and feature submitted clips.</p>
 
-  <h2>⏳ Pending</h2>
-  <div id="pending" class="grid"></div>
+<h2>Pending</h2>
+<div id="pending" class="grid"></div>
 
-  <h2>✅ Approved</h2>
-  <div id="approved" class="grid"></div>
+<h2>Approved</h2>
+<div id="approved" class="grid"></div>
 
-  <h2>❌ Denied</h2>
-  <div id="denied" class="grid"></div>
+<h2>Denied</h2>
+<div id="denied" class="grid"></div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
 // 🔐 AUTO BLOCK
 (async()=>{
   const { data:{ user } } = await supabase.auth.getUser();
-  if(!user){
-    window.location.href="/ss-clips/admin-login.html";
-    return;
-  }
+  if(!user) location.href="/ss-clips/admin-login.html";
 
   const { data:admin } = await supabase
     .from("admins")
-    .select("user_id")
+    .select("*")
     .eq("user_id", user.id)
     .single();
 
-  if(!admin){
-    alert("Access denied");
-    window.location.href="/";
-    return;
-  }
-
-  loadClips();
+  if(!admin) location.href="/";
+  load();
 })();
 
-async function loadClips(){
-  const { data } = await supabase
-    .from("clips")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  render("pending", data.filter(c=>c.status==="pending"));
-  render("approved", data.filter(c=>c.status==="approved"));
-  render("denied", data.filter(c=>c.status==="denied"));
+async function load(){
+  const { data } = await supabase.from("clips").select("*").order("created_at",{ascending:false});
+  render("pending", data.filter(x=>x.status==="pending"));
+  render("approved", data.filter(x=>x.status==="approved"));
+  render("denied", data.filter(x=>x.status==="denied"));
 }
 
-function render(target, clips){
-  const el = document.getElementById(target);
+function render(id,list){
+  const el=document.getElementById(id);
   el.innerHTML="";
-  clips.forEach(c=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`
-      <h3>${c.creator}</h3>
-      <p>${c.platform} • ${c.category}</p>
-      <a href="${c.clip_url}" target="_blank">Open Clip ↗</a>
-      ${c.featured?`<div class="badge">Featured</div>`:""}
-      <div class="actions">
-        ${target==="pending"?`
-          <button class="approve" onclick="update('${c.id}','approved')">Approve</button>
-          <button class="deny" onclick="update('${c.id}','denied')">Deny</button>
-        `:""}
-        ${target==="approved"?`
-          <button class="${c.featured?'unfeature':'feature'}"
-            onclick="feature('${c.id}',${!c.featured})">
-            ${c.featured?'Unfeature':'Feature'}
-          </button>
-        `:""}
+  list.forEach(c=>{
+    el.innerHTML+=`
+      <div class="card">
+        <strong>${c.creator}</strong>
+        <p>${c.platform} • ${c.category}</p>
+        <a href="${c.clip_url}" target="_blank">Open Clip</a>
+        <div class="actions">
+          ${id==="pending"?`
+            <button class="approve" onclick="setStatus('${c.id}','approved')">Approve</button>
+            <button class="deny" onclick="setStatus('${c.id}','denied')">Deny</button>
+          `:""}
+          ${id==="approved" && c.paid_request && c.payment_status!=="paid"?`
+            <button class="feature" onclick="markPaid('${c.id}')">Mark Paid & Feature</button>
+          `:""}
+        </div>
       </div>
     `;
-    el.appendChild(card);
   });
 }
 
-async function update(id,status){
+async function setStatus(id,status){
   await supabase.from("clips").update({status}).eq("id",id);
-  loadClips();
+  load();
 }
 
-async function feature(id,val){
-  await supabase.from("clips").update({featured:val}).eq("id",id);
-  loadClips();
+async function markPaid(id){
+  await supabase.from("clips").update({
+    payment_status:"paid",
+    featured:true
+  }).eq("id",id);
+  load();
 }
 
 async function logout(){
   await supabase.auth.signOut();
-  window.location.href="/ss-clips/admin-login.html";
+  location.href="/ss-clips/admin-login.html";
 }
 </script>
 
