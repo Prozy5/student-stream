@@ -5,8 +5,7 @@
 <title>Featured Clips | SS Clips</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="Featured creator clips curated by SS Clips.">
-<meta name="author" content="StudentStream">
+<meta name="description" content="Featured creator clips curated by SS Clips — StudentStream’s creator discovery division.">
 
 <style>
 :root{
@@ -33,12 +32,12 @@ nav{
   top:0;
   width:100%;
   padding:18px 28px;
+  background:rgba(6,12,26,.9);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:rgba(6,12,26,.85);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
   z-index:10;
 }
 
@@ -56,21 +55,44 @@ main{
   padding:140px 24px 120px;
 }
 
-h1{font-size:54px;margin-bottom:14px}
-p{color:var(--muted);line-height:1.7}
+h1{
+  font-size:54px;
+  margin-bottom:14px;
+}
+
+p{
+  color:var(--muted);
+  line-height:1.7;
+  max-width:720px;
+}
 
 .grid{
-  margin-top:50px;
+  margin-top:60px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
   gap:26px;
 }
 
 .clip{
   background:linear-gradient(180deg,var(--panel),var(--panel-dark));
   border:1px solid var(--border);
-  border-radius:24px;
+  border-radius:26px;
   padding:22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.thumb{
+  height:160px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#1b2b4a,#0c1426);
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--muted);
+  font-size:13px;
 }
 
 .clip h3{
@@ -83,26 +105,25 @@ p{color:var(--muted);line-height:1.7}
   color:var(--muted);
 }
 
-.clip a{
-  display:inline-block;
-  margin-top:14px;
-  font-weight:800;
-  font-size:14px;
-  text-decoration:none;
-  color:#00121f;
-  padding:10px 16px;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+.meta{
+  margin-bottom:14px;
 }
 
-.badge{
-  display:inline-block;
-  margin-bottom:10px;
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:900;
-  background:#003f6b;
+.open{
+  margin-top:14px;
+  padding:12px;
+  border-radius:14px;
+  text-align:center;
+  font-weight:800;
+  text-decoration:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#00121f;
+}
+
+.empty{
+  margin-top:80px;
+  text-align:center;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -114,7 +135,6 @@ p{color:var(--muted);line-height:1.7}
   <div>
     <a href="/">Home</a>
     <a href="index.html">SS Clips</a>
-    <a href="featured.html">Featured</a>
     <a href="submit.html">Submit</a>
   </div>
 </nav>
@@ -123,18 +143,17 @@ p{color:var(--muted);line-height:1.7}
 
 <h1>Featured Clips</h1>
 <p>
-A hand-picked selection of standout creator moments.
-Every clip links directly to the original source.
+A curated selection of standout moments from creators across the internet.
+Every feature links directly to the original post.
 </p>
 
-<div id="featured" class="grid"></div>
+<div class="grid" id="clips"></div>
+
+<div class="empty" id="empty" style="display:none">
+  No featured clips yet — check back soon.
+</div>
 
 </main>
-
-<footer style="border-top:1px solid var(--border);padding:80px 24px;text-align:center;font-size:13px;color:var(--muted)">
-© 2026 StudentStream<br>
-SS Clips — Creator Discovery Division
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -144,34 +163,32 @@ const supabase = supabase.createClient(
 );
 
 async function loadFeatured(){
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("clips")
-    .select("creator, platform, category, clip_url")
+    .select("*")
     .eq("status","approved")
     .eq("featured",true)
-    .order("approved_at",{ascending:false});
+    .order("created_at",{ascending:false});
 
-  const container = document.getElementById("featured");
-  container.innerHTML = "";
+  const grid = document.getElementById("clips");
+  grid.innerHTML="";
 
-  if(error){
-    console.error(error);
-    container.innerHTML = "<p>Error loading clips.</p>";
-    return;
-  }
-
-  if(!data.length){
-    container.innerHTML = "<p>No featured clips yet.</p>";
+  if(!data || data.length === 0){
+    document.getElementById("empty").style.display="block";
     return;
   }
 
   data.forEach(c=>{
-    container.innerHTML += `
+    grid.innerHTML += `
       <div class="clip">
-        <div class="badge">FEATURED</div>
-        <h3>${c.creator}</h3>
-        <span>${c.platform} • ${c.category}</span><br>
-        <a href="${c.clip_url}" target="_blank">Watch Clip ↗</a>
+        <div>
+          <div class="thumb">Featured Clip</div>
+          <h3>${c.creator_name}</h3>
+          <div class="meta">
+            <span>${c.platform} • ${c.category}</span>
+          </div>
+        </div>
+        <a class="open" href="${c.clip_url}" target="_blank">Open Original Clip</a>
       </div>
     `;
   });
