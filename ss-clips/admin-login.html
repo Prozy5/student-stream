@@ -1,47 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Admin Login | SS Clips</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root{
+  --bg:#050816;
+  --panel:#0c1426;
+  --panel-dark:#091020;
+  --accent:#4facfe;
+  --accent-2:#00f2fe;
+  --text:#eef3ff;
+  --muted:#9aa8c7;
+  --border:rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
 body{
-  background:#050816;
-  color:white;
-  font-family:system-ui;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
+  color:var(--text);
+  min-height:100vh;
   display:flex;
-  justify-content:center;
   align-items:center;
-  height:100vh;
+  justify-content:center;
 }
-.box{
-  background:#0c1426;
-  padding:32px;
-  border-radius:20px;
+
+.card{
   width:100%;
-  max-width:380px;
+  max-width:420px;
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:36px;
 }
-input,button{
+
+h1{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+p{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:26px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+input{
   width:100%;
-  padding:14px;
-  border-radius:12px;
-  margin-top:14px;
-  border:none;
+  padding:15px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#ffffff;
+  font-size:15px;
+  margin-bottom:18px;
 }
+
 button{
-  background:linear-gradient(135deg,#4facfe,#00f2fe);
-  font-weight:700;
+  width:100%;
+  padding:16px;
+  border-radius:18px;
+  border:none;
+  font-weight:900;
+  font-size:15px;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#00121f;
+}
+
+.error{
+  margin-top:16px;
+  font-size:13px;
+  color:#ff7a7a;
+  display:none;
 }
 </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h2>SS Clips Admin</h2>
-  <input id="email" type="email" placeholder="Admin email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
+<div class="card">
+  <h1>Admin Login</h1>
+  <p>SS Clips moderation access</p>
+
+  <form id="loginForm">
+    <label>Email</label>
+    <input id="email" type="email" required>
+
+    <label>Password</label>
+    <input id="password" type="password" required>
+
+    <button type="submit">Sign In</button>
+  </form>
+
+  <div class="error" id="error"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -51,20 +113,50 @@ const supabase = supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-async function login(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+/* AUTO REDIRECT IF ALREADY LOGGED IN */
+(async()=>{
+  const { data:{ user } } = await supabase.auth.getUser();
+  if(user){
+    const { data:admin } = await supabase
+      .from("admins")
+      .select("id")
+      .eq("user_id", user.id)
+      .single();
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email, password
+    if(admin) location.href="/ss-clips/admin.html";
+  }
+})();
+
+loginForm.addEventListener("submit", async e=>{
+  e.preventDefault();
+  error.style.display = "none";
+
+  const { data, error:err } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value
   });
 
-  if(error){
-    alert("Login failed");
-  } else {
-    window.location.href = "/ss-clips/admin.html";
+  if(err){
+    error.textContent = "Invalid login.";
+    error.style.display = "block";
+    return;
   }
-}
+
+  const { data:admin } = await supabase
+    .from("admins")
+    .select("id")
+    .eq("user_id", data.user.id)
+    .single();
+
+  if(!admin){
+    error.textContent = "Access denied.";
+    error.style.display = "block";
+    await supabase.auth.signOut();
+    return;
+  }
+
+  location.href="/ss-clips/admin.html";
+});
 </script>
 
 </body>
