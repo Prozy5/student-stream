@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>SS Clips Admin | StudentStream</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<title>SS Clips Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 :root{
   --bg:#050816;
   --panel:#0c1426;
+  --panel-dark:#091020;
   --accent:#4facfe;
   --danger:#ff5c5c;
-  --success:#4cff9a;
+  --success:#4dff88;
+  --warning:#ffd24d;
   --text:#eef3ff;
   --muted:#9aa8c7;
   --border:rgba(255,255,255,.08);
@@ -27,6 +27,45 @@ body{
   color:var(--text);
 }
 
+/* LOGIN */
+.login{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:36px;
+}
+.login-card h1{margin-bottom:10px}
+.login-card p{color:var(--muted);margin-bottom:26px}
+input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  margin-bottom:16px;
+  font-size:15px;
+}
+button{
+  border:none;
+  border-radius:14px;
+  padding:12px 16px;
+  font-weight:800;
+  cursor:pointer;
+}
+.primary{
+  width:100%;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  color:#00121f;
+}
+
+/* DASHBOARD */
 header{
   padding:22px 28px;
   border-bottom:1px solid var(--border);
@@ -35,205 +74,211 @@ header{
   align-items:center;
 }
 
-header h1{font-size:22px}
-
 main{
-  padding:32px;
-  max-width:1400px;
+  max-width:1500px;
   margin:auto;
+  padding:40px 24px 120px;
 }
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;
+  margin-bottom:40px;
+}
+.stat{
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
+.stat strong{font-size:26px}
+.stat span{color:var(--muted);font-size:13px}
 
 .tabs{
   display:flex;
   gap:14px;
-  margin-bottom:24px;
+  margin-bottom:30px;
 }
-
 .tabs button{
-  padding:10px 18px;
-  border-radius:14px;
-  background:var(--panel);
-  border:1px solid var(--border);
+  background:#101a33;
   color:var(--text);
-  cursor:pointer;
 }
-
-.tabs button.active{
+.tabs .active{
   background:linear-gradient(135deg,#4facfe,#00f2fe);
   color:#00121f;
-  font-weight:800;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:var(--panel);
-  border-radius:18px;
-  overflow:hidden;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:22px;
 }
 
-th,td{
-  padding:14px;
-  border-bottom:1px solid var(--border);
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+}
+.card p{
   font-size:14px;
-  vertical-align:top;
-}
-
-th{
   color:var(--muted);
-  text-align:left;
-  font-weight:600;
+  margin:6px 0;
 }
-
-.actions button{
-  padding:6px 12px;
-  border-radius:10px;
-  border:none;
-  font-weight:700;
-  cursor:pointer;
-  margin-right:6px;
-}
-
-.approve{background:var(--success);color:#002b18}
-.reject{background:var(--danger);color:#300}
-.feature{background:var(--accent);color:#00121f}
 
 .badge{
+  display:inline-block;
+  font-size:12px;
   padding:4px 8px;
   border-radius:8px;
-  font-size:12px;
-  font-weight:700;
+  margin-right:6px;
+}
+.pending{background:var(--warning)}
+.approved{background:var(--success)}
+.denied{background:var(--danger)}
+
+.actions{
+  margin-top:14px;
+}
+.actions button{
+  margin-right:8px;
+  margin-top:8px;
 }
 
-.pending{background:#f5c76a;color:#2a1c00}
-.approved{background:#4cff9a;color:#002b18}
-.rejected{background:#ff7b7b;color:#300}
-
-a{color:var(--accent);text-decoration:none}
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
+<div id="login" class="login hidden">
+  <div class="login-card">
+    <h1>SS Clips Admin</h1>
+    <p>Authorized access only</p>
+    <input id="email" type="email" placeholder="Admin email">
+    <input id="password" type="password" placeholder="Password">
+    <button class="primary" onclick="login()">Login</button>
+  </div>
+</div>
+
+<div id="dashboard" class="hidden">
 <header>
-  <h1>SS Clips — Admin Dashboard</h1>
-  <span style="color:var(--muted)">StudentStream Internal</span>
+  <strong>SS Clips Admin</strong>
+  <button onclick="logout()">Logout</button>
 </header>
 
 <main>
 
-<div class="tabs">
-  <button class="active" onclick="loadClips('pending')">Pending</button>
-  <button onclick="loadClips('approved')">Approved</button>
-  <button onclick="loadClips('rejected')">Rejected</button>
+<div class="stats">
+  <div class="stat"><strong id="total">0</strong><span>Total</span></div>
+  <div class="stat"><strong id="pendingCount">0</strong><span>Pending</span></div>
+  <div class="stat"><strong id="approvedCount">0</strong><span>Approved</span></div>
+  <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
+  <div class="stat"><strong id="paidCount">0</strong><span>Paid</span></div>
 </div>
 
-<table>
-<thead>
-<tr>
-  <th>Creator</th>
-  <th>Clip</th>
-  <th>Details</th>
-  <th>Stats</th>
-  <th>Actions</th>
-</tr>
-</thead>
-<tbody id="rows"></tbody>
-</table>
+<div class="tabs">
+  <button class="active" onclick="switchTab('pending')">Pending</button>
+  <button onclick="switchTab('approved')">Approved</button>
+  <button onclick="switchTab('denied')">Denied</button>
+</div>
+
+<div id="pending" class="grid"></div>
+<div id="approved" class="grid hidden"></div>
+<div id="denied" class="grid hidden"></div>
 
 </main>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwODM3MCwiZXhwIjoyMDgyNjg0MzcwfQ.CsPZH8iEu--QB8Zcug4TaqBS8T-g_eqWBbnx9zJH7yA"
 );
 
-let currentStatus = "pending";
+const ADMINS=["youremail@email.com"];
 
-async function loadClips(status){
-  currentStatus = status;
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
+(async()=>{
+  const { data:{ user } } = await supabase.auth.getUser();
+  if(!user || !ADMINS.includes(user.email)){
+    login.classList.remove("hidden");
+    return;
+  }
+  dashboard.classList.remove("hidden");
+  load();
+})();
 
-  const { data, error } = await supabase
-    .from("clips")
-    .select("*")
-    .eq("status", status)
-    .order("created_at", { ascending:false });
+async function login(){
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value
+  });
+  if(error) return alert("Login failed");
+  location.reload();
+}
 
-  if(error){ alert(error.message); return; }
+async function logout(){
+  await supabase.auth.signOut();
+  location.reload();
+}
 
-  const tbody = document.getElementById("rows");
-  tbody.innerHTML = "";
+async function load(){
+  const { data } = await supabase.from("clips").select("*").order("created_at",{ascending:false});
+  total.textContent=data.length;
+  pendingCount.textContent=data.filter(x=>x.status==="pending").length;
+  approvedCount.textContent=data.filter(x=>x.status==="approved").length;
+  featuredCount.textContent=data.filter(x=>x.featured).length;
+  paidCount.textContent=data.filter(x=>x.payment_status==="paid").length;
 
-  data.forEach(c=>{
-    tbody.innerHTML += `
-      <tr>
-        <td>
-          <strong>${c.creator}</strong><br>
-          <span style="color:var(--muted)">${c.email}</span>
-        </td>
+  render("pending",data.filter(x=>x.status==="pending"));
+  render("approved",data.filter(x=>x.status==="approved"));
+  render("denied",data.filter(x=>x.status==="denied"));
+}
 
-        <td>
-          <a href="${c.clip_url}" target="_blank">View Clip</a><br>
-          <span style="color:var(--muted)">${c.platform}</span>
-        </td>
-
-        <td>
-          <span class="badge ${c.status}">${c.status}</span><br><br>
-          Category: ${c.category}<br>
-          Tier: ${c.tier ?? "—"}<br>
-          Price: $${c.price ?? 0}<br>
-          Featured: ${c.featured ? "Yes" : "No"}<br>
-          Note: ${c.note ?? "—"}
-        </td>
-
-        <td>
-          Views: ${c.views ?? 0}<br>
-          Clicks: ${c.clicks ?? 0}<br>
-          Paid: ${c.payment_status ?? "—"}
-        </td>
-
-        <td class="actions">
-          ${status==="pending" ? `
-            <button class="approve" onclick="approve('${c.id}')">Approve</button>
-            <button class="reject" onclick="rejectClip('${c.id}')">Reject</button>
-          ` : ""}
-          <button class="feature" onclick="toggleFeature('${c.id}',${c.featured})">
-            ${c.featured ? "Unfeature" : "Feature"}
-          </button>
-        </td>
-      </tr>
-    `;
+function render(id,list){
+  const el=document.getElementById(id);
+  el.innerHTML="";
+  list.forEach(c=>{
+    el.innerHTML+=`
+    <div class="card">
+      <span class="badge ${c.status}">${c.status}</span>
+      ${c.featured?`<span class="badge approved">FEATURED</span>`:""}
+      <strong>${c.creator}</strong>
+      <p>${c.platform} • ${c.category}</p>
+      <a href="${c.clip_url}" target="_blank">Open Clip</a>
+      ${c.note?`<p>${c.note}</p>`:""}
+      <div class="actions">
+        ${id==="pending"?`
+          <button onclick="setStatus('${c.id}','approved')">Approve</button>
+          <button onclick="setStatus('${c.id}','denied')">Deny</button>
+        `:""}
+        ${id==="approved" && c.paid_request && !c.featured?`
+          <button onclick="feature('${c.id}')">Mark Paid & Feature</button>
+        `:""}
+      </div>
+    </div>`;
   });
 }
 
-async function approve(id){
-  await supabase.from("clips").update({
-    status:"approved",
-    approved_at:new Date()
-  }).eq("id",id);
-  loadClips(currentStatus);
+async function setStatus(id,status){
+  await supabase.from("clips").update({status}).eq("id",id);
+  load();
 }
-
-async function rejectClip(id){
+async function feature(id){
   await supabase.from("clips").update({
-    status:"rejected",
-    rejected_at:new Date()
+    featured:true,
+    payment_status:"paid"
   }).eq("id",id);
-  loadClips(currentStatus);
+  load();
 }
-
-async function toggleFeature(id,current){
-  await supabase.from("clips").update({
-    featured:!current
-  }).eq("id",id);
-  loadClips(currentStatus);
+function switchTab(tab){
+  ["pending","approved","denied"].forEach(t=>document.getElementById(t).classList.add("hidden"));
+  document.getElementById(tab).classList.remove("hidden");
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
 }
-
-loadClips("pending");
 </script>
-
 </body>
 </html>
