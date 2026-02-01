@@ -7,64 +7,141 @@
 
 <link rel="canonical" href="https://studentstream.online/clips/">
 
-<meta name="description" content="SS Clips is StudentStream’s short-form discovery hub — featuring viral, creative, and standout clips from emerging creators.">
-<meta name="keywords" content="SS Clips, StudentStream clips, creator clips, viral clips, short form video">
+<meta name="description" content="SS Clips is StudentStream’s short-form discovery hub — featuring curated clips from emerging creators, founders, and brands.">
+<meta name="keywords" content="SS Clips, StudentStream, creator clips, viral clips, short form video">
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:#050912;
-  color:#fff;
+:root{
+  --bg:#050912;
+  --panel:#0e1a2f;
+  --accent:#5da9ff;
+  --text:#eef3ff;
+  --muted:#9fb1cc;
+  --border:rgba(255,255,255,.08);
 }
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f2345,#050912 70%);
+  color:var(--text);
+}
+
 header{
-  padding:60px 20px 30px;
+  padding:80px 20px 40px;
   text-align:center;
 }
-header h1{font-size:42px;margin-bottom:10px}
-header p{opacity:.7;max-width:700px;margin:auto}
+
+header h1{
+  font-size:48px;
+  margin-bottom:12px;
+}
+
+header p{
+  max-width:760px;
+  margin:auto;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:20px;
+  padding:7px 16px;
+  border-radius:999px;
+  background:rgba(93,169,255,.15);
+  border:1px solid rgba(93,169,255,.3);
+  color:#8fc1ff;
+  font-size:.85rem;
+}
+
+.actions{
+  margin-top:28px;
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.actions a{
+  padding:13px 24px;
+  border-radius:999px;
+  font-weight:600;
+  text-decoration:none;
+}
+
+.primary{
+  background:linear-gradient(135deg,#5da9ff,#3f8cff);
+  color:#001020;
+}
+
+.secondary{
+  border:1px solid var(--border);
+  color:var(--text);
+}
+
+.categories{
+  max-width:1200px;
+  margin:40px auto 10px;
+  padding:0 20px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.category{
+  padding:8px 16px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  font-size:13px;
+  color:var(--muted);
+}
+
 .grid{
   max-width:1200px;
-  margin:40px auto;
+  margin:30px auto 80px;
   padding:0 20px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
   gap:22px;
 }
+
 .card{
-  background:#0e1a2f;
-  border-radius:16px;
+  background:linear-gradient(180deg,#0e1a2f,#0b1425);
+  border-radius:18px;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid var(--border);
 }
+
 .card iframe{
   width:100%;
   height:200px;
   border:none;
 }
+
 .card .info{
-  padding:14px;
+  padding:14px 16px;
   font-size:14px;
-  opacity:.85;
+  color:var(--muted);
 }
-.submit{
-  text-align:center;
-  padding:60px 20px;
+
+.card .tag{
+  font-size:12px;
+  color:var(--accent);
+  margin-bottom:4px;
 }
-.submit a{
-  display:inline-block;
-  padding:14px 26px;
-  border-radius:999px;
-  background:linear-gradient(135deg,#5da9ff,#3f8cff);
-  color:#001020;
-  text-decoration:none;
-  font-weight:600;
+
+.featured{
+  outline:2px solid rgba(93,169,255,.35);
 }
+
 footer{
+  border-top:1px solid var(--border);
+  padding:60px 20px;
   text-align:center;
-  padding:40px 20px;
-  opacity:.5;
   font-size:13px;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -72,29 +149,54 @@ footer{
 <body>
 
 <header>
+  <span class="badge">StudentStream · Discovery Layer</span>
   <h1>SS Clips</h1>
-  <p>Short-form discovery powered by StudentStream.  
-  Featured clips from creators, founders, and brands.</p>
+  <p>
+    SS Clips is StudentStream’s short-form discovery hub — spotlighting creators,
+    founders, and brands through curated, high-signal clips.
+    <br><br>
+    No algorithms. No paywalls. Just discovery.
+  </p>
+
+  <div class="actions">
+    <a href="submit.html" class="primary">Submit a Clip</a>
+    <a href="/company.html" class="secondary">About StudentStream</a>
+  </div>
 </header>
 
+<!-- Categories -->
+<div class="categories">
+  <div class="category">🎮 Gaming</div>
+  <div class="category">🎵 Music</div>
+  <div class="category">📸 Creators</div>
+  <div class="category">😂 Comedy</div>
+  <div class="category">🏷 Brands</div>
+</div>
+
+<!-- Clips -->
 <section class="grid">
 
-  <!-- Example clip -->
+  <div class="card featured">
+    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+    <div class="info">
+      <div class="tag">⭐ Featured Clip</div>
+      Creator Spotlight · Gaming
+    </div>
+  </div>
+
   <div class="card">
     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
     <div class="info">
-      🎮 Creator Highlight — Gaming Clip  
+      Creator Submission · Comedy
     </div>
   </div>
 
 </section>
 
-<div class="submit">
-  <a href="submit.html">Submit a Clip</a>
-</div>
-
 <footer>
-© 2026 StudentStream · SS Clips
+© 2026 StudentStream  
+<br>
+SS Clips · Media & Discovery Division
 </footer>
 
 </body>
