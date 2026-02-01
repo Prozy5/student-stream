@@ -2,18 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Submit a Clip | SS Clips</title>
+<title>Submit a Clip | SS Clips by StudentStream</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- SEO -->
 <link rel="canonical" href="https://studentstream.online/clips/submit.html">
-
-<meta name="description" content="Submit your clip to SS Clips, StudentStream’s curated discovery network. Free submissions. Optional promotion. Transparent review.">
+<meta name="description" content="Submit your clip to SS Clips — StudentStream’s curated discovery network. Free submissions. Optional promotion. Full creator ownership.">
+<meta name="keywords" content="SS Clips, StudentStream, clip submission, creator discovery, viral clips">
 <meta name="author" content="StudentStream">
+
+<!-- OPEN GRAPH -->
+<meta property="og:title" content="Submit a Clip | SS Clips">
+<meta property="og:description" content="A curated discovery system built to surface creators — not exploit them.">
+<meta property="og:type" content="website">
 
 <style>
 :root{
   --bg:#050912;
   --panel:#0e1a2f;
+  --panel2:#0b1425;
   --accent:#5da9ff;
   --accent2:#3cffc3;
   --text:#eef3ff;
@@ -25,7 +32,7 @@
 
 body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0f2345,#050912 70%);
+  background:radial-gradient(circle at top,#0f2345,#050912 75%);
   color:var(--text);
 }
 
@@ -34,13 +41,13 @@ nav{
   position:fixed;
   top:0;
   width:100%;
-  z-index:20;
+  z-index:50;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:16px 26px;
-  background:rgba(8,16,32,.85);
-  backdrop-filter:blur(12px);
+  padding:16px 28px;
+  background:rgba(8,16,32,.9);
+  backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border);
 }
 nav a{
@@ -53,36 +60,65 @@ nav a:hover{color:var(--text)}
 
 /* PAGE */
 main{
-  max-width:900px;
-  margin:130px auto 120px;
-  padding:0 20px;
+  max-width:980px;
+  margin:140px auto 120px;
+  padding:0 22px;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 18px;
+  border-radius:999px;
+  background:rgba(93,169,255,.15);
+  border:1px solid rgba(93,169,255,.35);
+  color:#8fc1ff;
+  font-size:.85rem;
+  margin-bottom:22px;
 }
 
 h1{
-  font-size:44px;
-  margin-bottom:12px;
+  font-size:48px;
+  margin-bottom:14px;
+  line-height:1.1;
 }
 p{
   color:var(--muted);
-  line-height:1.8;
+  line-height:1.85;
+  max-width:820px;
 }
 
-/* INFO BOX */
-.info{
+/* TRUST STRIP */
+.trust{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+  margin:40px 0 55px;
+}
+.trust div{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:18px;
-  padding:22px;
-  margin:30px 0 40px;
-  font-size:14px;
+  border-radius:16px;
+  padding:18px;
+  font-size:13px;
 }
 
 /* FORM */
 form{
-  background:linear-gradient(180deg,#0e1a2f,#0b1425);
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
   border:1px solid var(--border);
-  border-radius:22px;
-  padding:30px;
+  border-radius:26px;
+  padding:34px;
+}
+
+fieldset{
+  border:none;
+  margin-bottom:28px;
+}
+
+legend{
+  font-weight:800;
+  margin-bottom:14px;
+  font-size:15px;
 }
 
 label{
@@ -94,30 +130,58 @@ label{
 
 input, select, textarea{
   width:100%;
-  padding:14px;
+  padding:14px 16px;
   border-radius:14px;
   border:1px solid var(--border);
   background:#070f1f;
   color:var(--text);
-  margin-bottom:22px;
+  margin-bottom:18px;
   font-size:14px;
 }
 
-textarea{resize:vertical;min-height:120px}
+textarea{
+  resize:vertical;
+  min-height:120px;
+}
 
+/* PROMO CARDS */
+.promos{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
+
+.promo{
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  background:#060d1c;
+  font-size:13px;
+}
+.promo strong{color:var(--accent)}
+.promo span{
+  display:block;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* ACTIONS */
 .actions{
   display:flex;
-  gap:14px;
+  gap:16px;
   flex-wrap:wrap;
+  margin-top:30px;
 }
 
 button{
-  padding:14px 28px;
+  padding:15px 30px;
   border-radius:999px;
   border:none;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
+  font-size:14px;
 }
+
 .submit{
   background:linear-gradient(135deg,#5da9ff,#3f8cff);
   color:#001020;
@@ -130,9 +194,12 @@ button{
 
 /* FOOTER NOTE */
 .note{
-  margin-top:30px;
+  margin-top:34px;
   font-size:12px;
   color:var(--muted);
+  line-height:1.7;
+  border-top:1px solid var(--border);
+  padding-top:22px;
 }
 </style>
 </head>
@@ -149,73 +216,104 @@ button{
 </nav>
 
 <main>
-  <h1>Submit a Clip</h1>
+
+  <span class="badge">SS Clips · Creator Discovery</span>
+
+  <h1>Submit Your Clip</h1>
   <p>
-    SS Clips is a curated discovery network.  
-    Submissions are reviewed for originality, safety, and relevance.
+    SS Clips is a curated discovery system — not an algorithm farm.
+    We surface standout moments from creators, brands, and builders
+    while enforcing authenticity, ownership, and platform safety.
   </p>
 
-  <div class="info">
-    ✔ Free submission always available  
-    <br>⭐ Optional promotion (clearly labeled)  
-    <br>🛡 Enforced by StudentStream Security  
-    <br>⚖️ You retain full ownership of your content
+  <!-- TRUST -->
+  <div class="trust">
+    <div>🛡 Enforced by StudentStream Security</div>
+    <div>© You retain full content ownership</div>
+    <div>🚫 No shadowbanning or manipulation</div>
+    <div>⭐ Paid ≠ guaranteed approval</div>
   </div>
 
-  <!-- FORM (frontend only for now) -->
+  <!-- FORM -->
   <form>
-    <label>Creator / Channel Name</label>
-    <input type="text" placeholder="@YourName" required>
 
-    <label>Email (for review updates)</label>
-    <input type="email" placeholder="you@email.com" required>
+    <fieldset>
+      <legend>Creator Information</legend>
 
-    <label>Clip Platform</label>
-    <select required>
-      <option value="">Select platform</option>
-      <option>YouTube</option>
-      <option>TikTok</option>
-      <option>Twitch</option>
-      <option>Instagram</option>
-      <option>Other</option>
-    </select>
+      <label>Creator / Channel Name</label>
+      <input type="text" placeholder="@username" required>
 
-    <label>Clip URL</label>
-    <input type="url" placeholder="https://..." required>
+      <label>Email (review updates)</label>
+      <input type="email" placeholder="you@email.com" required>
+    </fieldset>
 
-    <label>Category</label>
-    <select required>
-      <option value="">Select category</option>
-      <option>Gaming</option>
-      <option>Music</option>
-      <option>Comedy</option>
-      <option>Creator / Lifestyle</option>
-      <option>Brand / Promo</option>
-      <option>Startup / Tech</option>
-    </select>
+    <fieldset>
+      <legend>Clip Details</legend>
 
-    <label>Clip Description (optional)</label>
-    <textarea placeholder="What makes this clip worth featuring?"></textarea>
+      <label>Platform</label>
+      <select required>
+        <option value="">Select platform</option>
+        <option>YouTube</option>
+        <option>TikTok</option>
+        <option>Twitch</option>
+        <option>Instagram</option>
+        <option>Other</option>
+      </select>
 
-    <label>Promotion (optional)</label>
-    <select>
-      <option>No promotion (free)</option>
-      <option>Highlighted Clip — $3</option>
-      <option>Featured Placement (7 days) — $5</option>
-      <option>Spotlight Slot — $10</option>
-    </select>
+      <label>Clip URL</label>
+      <input type="url" placeholder="https://..." required>
+
+      <label>Category</label>
+      <select required>
+        <option value="">Select category</option>
+        <option>Gaming</option>
+        <option>Music</option>
+        <option>Comedy</option>
+        <option>Creator / Lifestyle</option>
+        <option>Brand / Promo</option>
+        <option>Startup / Tech</option>
+      </select>
+
+      <label>Description (optional)</label>
+      <textarea placeholder="Context, moment, or why this clip stands out"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Optional Promotion</legend>
+
+      <div class="promos">
+        <div class="promo">
+          <strong>Free Submission</strong>
+          <span>Standard review · curated placement</span>
+        </div>
+        <div class="promo">
+          <strong>$3 Highlight</strong>
+          <span>Visual emphasis · no rule overrides</span>
+        </div>
+        <div class="promo">
+          <strong>$5 Featured</strong>
+          <span>Front-page rotation (7 days)</span>
+        </div>
+        <div class="promo">
+          <strong>$10 Spotlight</strong>
+          <span>Top placement + social amplification</span>
+        </div>
+      </div>
+    </fieldset>
 
     <div class="actions">
       <button class="submit" type="submit">Submit Clip</button>
       <button class="reset" type="reset">Reset</button>
     </div>
+
+    <div class="note">
+      Submitting a clip does not guarantee publication.  
+      Paid promotion does not override authenticity, safety, or originality review.  
+      Stolen content, impersonation, or abuse results in rejection or enforcement action.
+    </div>
+
   </form>
 
-  <div class="note">
-    Submitting does not guarantee publication.  
-    Paid promotion does not override safety or authenticity review.
-    Abuse, stolen content, or impersonation results in rejection.
-  </div>
 </main>
 
 </body>
