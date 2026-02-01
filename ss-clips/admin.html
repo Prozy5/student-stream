@@ -5,87 +5,154 @@
 <title>SS Clips Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
+:root{
+  --bg:#050816;
+  --panel:#0c1426;
+  --accent:#4facfe;
+  --danger:#ff5c5c;
+  --success:#4cff88;
+  --text:#eef3ff;
+  --muted:#9aa8c7;
+  --border:rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
 body{
   font-family:system-ui;
-  background:#050816;
-  color:#eef3ff;
-  padding:40px;
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
+  color:var(--text);
 }
-h1{margin-bottom:20px}
+
+header{
+  padding:22px 32px;
+  border-bottom:1px solid var(--border);
+  background:rgba(6,12,26,.85);
+  backdrop-filter:blur(12px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+main{
+  max-width:1300px;
+  margin:auto;
+  padding:40px 24px 120px;
+}
+
+h1{font-size:32px}
+h2{font-size:22px;margin:40px 0 16px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
+}
+
 .card{
-  background:#0c1426;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
+  background:linear-gradient(180deg,#0c1426,#091020);
+  border:1px solid var(--border);
+  border-radius:20px;
   padding:20px;
-  margin-bottom:16px;
 }
+
+.meta{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
 button{
-  padding:8px 14px;
-  margin-right:8px;
+  flex:1;
+  padding:12px;
+  border-radius:12px;
   border:none;
-  border-radius:10px;
-  cursor:pointer;
   font-weight:700;
+  cursor:pointer;
 }
-.approve{background:#4caf50;color:#000}
-.deny{background:#f44336;color:#000}
-.feature{background:#2196f3;color:#000}
-small{color:#9aa8c7}
+
+.approve{background:var(--success)}
+.feature{background:linear-gradient(135deg,#4facfe,#00f2fe)}
+.deny{background:var(--danger);color:white}
+
+a{
+  color:var(--accent);
+  font-size:13px;
+  text-decoration:none;
+}
 </style>
 </head>
 
 <body>
 
-<h1>SS Clips Admin</h1>
-<div id="clips"></div>
+<header>
+  <strong>SS Clips Admin</strong>
+  <span style="color:var(--muted)">Pending Review</span>
+</header>
 
+<main>
+  <h2>Pending Submissions</h2>
+  <div id="pending" class="grid"></div>
+
+  <h2>Approved Clips</h2>
+  <div id="approved" class="grid"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwODM3MCwiZXhwIjoyMDgyNjg0MzcwfQ.CsPZH8iEu--QB8Zcug4TaqBS8T-g_eqWBbnx9zJH7yA"; // ADMIN ONLY
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 async function loadClips(){
-  const { data } = await supabase
-    .from('clips')
-    .select('*')
-    .eq('status','pending')
-    .order('created_at',{ascending:false});
+  const { data } = await supabase.from("clips").select("*").order("created_at",{ascending:false});
 
-  const container = document.getElementById("clips");
-  container.innerHTML = "";
+  document.getElementById("pending").innerHTML = "";
+  document.getElementById("approved").innerHTML = "";
 
   data.forEach(clip=>{
-    container.innerHTML += `
-      <div class="card">
-        <strong>${clip.creator}</strong> — ${clip.platform} / ${clip.category}<br>
-        <small>${clip.clip_url}</small><br><br>
-        <button class="approve" onclick="approve('${clip.id}')">Approve</button>
-        <button class="feature" onclick="feature('${clip.id}')">Approve + Feature</button>
-        <button class="deny" onclick="deny('${clip.id}')">Deny</button>
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="meta">${clip.platform} • ${clip.category}</div>
+      <strong>${clip.creator}</strong>
+      <p class="meta">${clip.note || "No note provided"}</p>
+      <a href="${clip.clip_url}" target="_blank">View Clip ↗</a>
+      <div class="actions">
+        ${clip.status === "pending" ? `
+          <button class="approve" onclick="update('${clip.id}','approved')">Approve</button>
+          <button class="feature" onclick="feature('${clip.id}')">Feature</button>
+          <button class="deny" onclick="update('${clip.id}','denied')">Deny</button>
+        ` : `
+          <button class="feature" onclick="feature('${clip.id}')">Toggle Feature</button>
+        `}
       </div>
     `;
+
+    if(clip.status === "pending"){
+      pending.appendChild(card);
+    } else if(clip.status === "approved"){
+      approved.appendChild(card);
+    }
   });
 }
 
-async function approve(id){
-  await supabase.from('clips').update({status:'approved'}).eq('id',id);
+async function update(id,status){
+  await supabase.from("clips").update({status}).eq("id",id);
   loadClips();
 }
 
 async function feature(id){
-  await supabase.from('clips').update({
-    status:'approved',
-    featured:true
-  }).eq('id',id);
-  loadClips();
-}
-
-async function deny(id){
-  await supabase.from('clips').update({status:'denied'}).eq('id',id);
+  const { data } = await supabase.from("clips").select("featured").eq("id",id).single();
+  await supabase.from("clips").update({featured: !data.featured}).eq("id",id);
   loadClips();
 }
 
