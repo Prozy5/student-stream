@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Submit a Clip | SS Clips</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#050912;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+}
+form{
+  background:#0e1a2f;
+  padding:30px;
+  border-radius:18px;
+  width:100%;
+  max-width:420px;
+  border:1px solid rgba(255,255,255,.1);
+}
+h1{text-align:center;margin-bottom:20px}
+input,select,button{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  margin-bottom:12px;
+  font-size:15px;
+}
+button{
+  background:linear-gradient(135deg,#5da9ff,#3f8cff);
+  color:#001020;
+  font-weight:600;
+  cursor:pointer;
+}
+.small{
+  font-size:12px;
+  opacity:.6;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<form action="https://formspree.io/f/xojqgpan" method="POST">
+  <h1>Submit a Clip</h1>
+
+  <input type="text" name="name" placeholder="Creator name" required>
+  <input type="url" name="link" placeholder="YouTube / TikTok / Twitch link" required>
+
+  <select name="type" required>
+    <option value="">Clip type</option>
+    <option>Gaming</option>
+    <option>Music</option>
+    <option>Creator</option>
+    <option>Comedy</option>
+    <option>Brand</option>
+  </select>
+
+  <button type="submit">Submit Clip</button>
+  <div class="small">Free submissions · Paid features coming soon</div>
+</form>
+
+</body>
+</html>
