@@ -7,7 +7,7 @@
 
 <link rel="canonical" href="https://studentstream.online/clips/submit.html">
 
-<meta name="description" content="Submit your clip to SS Clips — the creator discovery division of StudentStream.">
+<meta name="description" content="Submit your clip to SS Clips — the creator discovery division of StudentStream. Free and featured submissions available.">
 <meta name="author" content="StudentStream">
 
 <style>
@@ -35,9 +35,11 @@ nav{
   padding:18px 28px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
   background:rgba(6,12,26,.85);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
+  z-index:10;
 }
 
 nav a{
@@ -55,6 +57,7 @@ main{
 }
 
 h1{font-size:44px;margin-bottom:14px}
+h2{font-size:26px;margin:70px 0 14px}
 p{color:var(--muted);line-height:1.7}
 
 .form-card{
@@ -77,12 +80,15 @@ input, select, textarea{
   padding:14px;
   border-radius:14px;
   border:1px solid var(--border);
-  background:#fff;
+  background:#ffffff;
   font-size:15px;
   margin-bottom:18px;
 }
 
-textarea{resize:none;height:120px}
+textarea{
+  resize:none;
+  height:120px;
+}
 
 button{
   width:100%;
@@ -103,11 +109,20 @@ button{
   line-height:1.6;
 }
 
-.rules{
-  margin-top:60px;
+.info-box{
+  margin-top:40px;
+  padding:22px;
+  border-radius:18px;
+  background:rgba(79,172,254,.08);
+  border:1px solid rgba(79,172,254,.25);
+  font-size:14px;
+  color:var(--muted);
 }
 
-.rules h2{font-size:26px;margin-bottom:14px}
+.rules{
+  margin-top:80px;
+}
+
 .rules ul{
   margin-left:18px;
   color:var(--muted);
@@ -141,14 +156,16 @@ footer{
 <section>
   <h1>Submit Your Clip</h1>
   <p>
-    SS Clips highlights standout moments from creators across the internet.
-    We do not re-host content — all submissions link directly to the original source.
+    SS Clips is the creator discovery division of StudentStream.
+    We spotlight standout moments across the internet — without re-hosting content.
+    All featured clips link directly to their original platforms.
   </p>
 </section>
 
 <section class="form-card">
 
 <form>
+
   <label>Creator Name / Handle</label>
   <input type="text" placeholder="@yourname" required>
 
@@ -180,20 +197,45 @@ footer{
     <option>Other</option>
   </select>
 
+  <label>Submission Type</label>
+  <select required>
+    <option value="">Select submission type</option>
+    <option>Free Submission — No Payment</option>
+    <option>Featured Placement — $5 (24 Hours)</option>
+    <option>Priority Feature — $10 (72 Hours)</option>
+  </select>
+
   <label>Optional Note</label>
-  <textarea placeholder="Tell us why this clip stands out (optional)"></textarea>
+  <textarea placeholder="Why does this clip deserve to be featured? (Optional)"></textarea>
 
   <button type="submit">Submit Clip</button>
+
+  <p class="note">
+    <strong>Important:</strong><br>
+    All submissions are reviewed manually.  
+    Paid submissions are <strong>only charged if approved</strong>.  
+    Payment instructions are sent via email after review.
+  </p>
+
 </form>
 
 </section>
+
+<div class="info-box">
+  <strong>How SS Clips Works</strong><br><br>
+  • We do not host or re-upload videos<br>
+  • All clips link to the original creator<br>
+  • Free submissions are reviewed equally<br>
+  • Paid placements increase visibility, not approval chances<br>
+  • Editorial decisions remain final
+</div>
 
 <section class="rules">
   <h2>Submission Guidelines</h2>
   <ul>
     <li>You must own or have permission to submit the clip</li>
     <li>No hate, harassment, or illegal content</li>
-    <li>Original platform links only</li>
+    <li>No stolen or re-uploaded videos</li>
     <li>Submission does not guarantee featuring</li>
     <li>SS Clips reserves final editorial control</li>
   </ul>
