@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SS Clips | StudentStream</title>
+<title>SS Clips | StudentStream Discovery Network</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="canonical" href="https://studentstream.online/clips/">
 
-<meta name="description" content="SS Clips is StudentStream’s short-form discovery hub — featuring curated clips from emerging creators, founders, and brands.">
-<meta name="keywords" content="SS Clips, StudentStream, creator clips, viral clips, short form video">
+<meta name="description" content="SS Clips is StudentStream’s curated short-form discovery network — spotlighting creators, founders, and brands through high-signal clips.">
+<meta name="keywords" content="SS Clips, StudentStream, creator discovery, viral clips, short form video">
 
 <style>
 :root{
   --bg:#050912;
   --panel:#0e1a2f;
   --accent:#5da9ff;
+  --accent2:#3cffc3;
   --text:#eef3ff;
   --muted:#9fb1cc;
   --border:rgba(255,255,255,.08);
@@ -28,36 +29,37 @@ body{
   color:var(--text);
 }
 
+/* HERO */
 header{
-  padding:80px 20px 40px;
+  padding:100px 20px 60px;
   text-align:center;
-}
-
-header h1{
-  font-size:48px;
-  margin-bottom:12px;
-}
-
-header p{
-  max-width:760px;
-  margin:auto;
-  color:var(--muted);
-  line-height:1.7;
 }
 
 .badge{
   display:inline-block;
-  margin-bottom:20px;
   padding:7px 16px;
   border-radius:999px;
   background:rgba(93,169,255,.15);
-  border:1px solid rgba(93,169,255,.3);
+  border:1px solid rgba(93,169,255,.35);
   color:#8fc1ff;
   font-size:.85rem;
+  margin-bottom:18px;
+}
+
+header h1{
+  font-size:52px;
+  margin-bottom:14px;
+}
+
+header p{
+  max-width:820px;
+  margin:auto;
+  color:var(--muted);
+  line-height:1.75;
 }
 
 .actions{
-  margin-top:28px;
+  margin-top:32px;
   display:flex;
   justify-content:center;
   gap:14px;
@@ -65,7 +67,7 @@ header p{
 }
 
 .actions a{
-  padding:13px 24px;
+  padding:13px 26px;
   border-radius:999px;
   font-weight:600;
   text-decoration:none;
@@ -81,9 +83,29 @@ header p{
   color:var(--text);
 }
 
+/* TRUST STRIP */
+.trust{
+  max-width:1100px;
+  margin:40px auto 0;
+  padding:0 20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+
+.trust div{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+  font-size:14px;
+  color:var(--muted);
+}
+
+/* CATEGORIES */
 .categories{
   max-width:1200px;
-  margin:40px auto 10px;
+  margin:70px auto 10px;
   padding:0 20px;
   display:flex;
   gap:12px;
@@ -98,13 +120,14 @@ header p{
   color:var(--muted);
 }
 
+/* GRID */
 .grid{
   max-width:1200px;
-  margin:30px auto 80px;
+  margin:30px auto 90px;
   padding:0 20px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:22px;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:24px;
 }
 
 .card{
@@ -112,6 +135,7 @@ header p{
   border-radius:18px;
   overflow:hidden;
   border:1px solid var(--border);
+  position:relative;
 }
 
 .card iframe{
@@ -126,19 +150,32 @@ header p{
   color:var(--muted);
 }
 
-.card .tag{
+.tag{
   font-size:12px;
   color:var(--accent);
-  margin-bottom:4px;
+  margin-bottom:6px;
 }
 
 .featured{
   outline:2px solid rgba(93,169,255,.35);
 }
 
+.premium{
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:linear-gradient(135deg,#3cffc3,#2bd9ff);
+  color:#002018;
+  font-size:11px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-weight:700;
+}
+
+/* FOOTER */
 footer{
   border-top:1px solid var(--border);
-  padding:60px 20px;
+  padding:70px 20px;
   text-align:center;
   font-size:13px;
   color:var(--muted);
@@ -149,13 +186,12 @@ footer{
 <body>
 
 <header>
-  <span class="badge">StudentStream · Discovery Layer</span>
+  <span class="badge">StudentStream · Discovery Network</span>
   <h1>SS Clips</h1>
   <p>
-    SS Clips is StudentStream’s short-form discovery hub — spotlighting creators,
-    founders, and brands through curated, high-signal clips.
-    <br><br>
-    No algorithms. No paywalls. Just discovery.
+    SS Clips is StudentStream’s curated short-form discovery network.
+    We surface high-signal creators, founders, and brands through clips
+    that deserve attention — without algorithmic noise.
   </p>
 
   <div class="actions">
@@ -164,30 +200,41 @@ footer{
   </div>
 </header>
 
-<!-- Categories -->
+<!-- TRUST -->
+<section class="trust">
+  <div>🛡 Curated — not algorithmic</div>
+  <div>🚫 No repost theft or impersonation</div>
+  <div>⭐ Featured placement is transparent</div>
+  <div>🧠 Built for discovery, not dopamine</div>
+</section>
+
+<!-- CATEGORIES -->
 <div class="categories">
   <div class="category">🎮 Gaming</div>
   <div class="category">🎵 Music</div>
   <div class="category">📸 Creators</div>
   <div class="category">😂 Comedy</div>
   <div class="category">🏷 Brands</div>
+  <div class="category">🚀 Startups</div>
 </div>
 
-<!-- Clips -->
+<!-- CLIPS -->
 <section class="grid">
 
   <div class="card featured">
+    <span class="premium">FEATURED</span>
     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
     <div class="info">
-      <div class="tag">⭐ Featured Clip</div>
-      Creator Spotlight · Gaming
+      <div class="tag">Creator Spotlight</div>
+      High-signal gaming moment · Verified creator
     </div>
   </div>
 
   <div class="card">
     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
     <div class="info">
-      Creator Submission · Comedy
+      <div class="tag">Community Pick</div>
+      Comedy clip · Emerging creator
     </div>
   </div>
 
