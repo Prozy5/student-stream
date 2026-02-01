@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Creator | SS Clips</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#050816;
+  --panel:#0c1426;
+  --accent:#4facfe;
+  --text:#eef3ff;
+  --muted:#9aa8c7;
+  --border:rgba(255,255,255,.08);
+}
+
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
+  color:var(--text);
+  margin:0;
+}
+
+main{
+  max-width:1100px;
+  margin:auto;
+  padding:120px 24px;
+}
+
+.profile{
+  display:flex;
+  gap:22px;
+  align-items:center;
+  margin-bottom:60px;
+}
+
+.avatar{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:34px;
+  color:#00121f;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:22px;
+}
+
+.card{
+  background:linear-gradient(180deg,#0c1426,#091020);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px;
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<div class="profile">
+  <div class="avatar" id="avatar"></div>
+  <div>
+    <h1 id="name"></h1>
+    <p id="count" style="color:var(--muted)"></p>
+  </div>
+</div>
+
+<h2>Featured Clips</h2>
+<div class="grid" id="clips"></div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabase = supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const params = new URLSearchParams(location.search);
+const slug = params.get("u");
+
+(async()=>{
+  const { data:clips } = await supabase
+    .from("clips")
+    .select("*")
+    .eq("creator_slug", slug)
+    .eq("status","approved")
+    .order("created_at",{ascending:false});
+
+  if(!clips || clips.length===0){
+    document.body.innerHTML="<p style='color:white;padding:40px'>Creator not found</p>";
+    return;
+  }
+
+  name.textContent = clips[0].creator;
+  avatar.textContent = clips[0].creator[0].toUpperCase();
+  count.textContent = `${clips.length} approved clip${clips.length>1?"s":""}`;
+
+  clips.forEach(c=>{
+    clipsEl.innerHTML += `
+      <div class="card">
+        <strong>${c.category}</strong>
+        <p style="color:var(--muted)">${c.platform}</p>
+        <a href="${c.clip_url}" target="_blank">Watch Clip ↗</a>
+      </div>
+    `;
+  });
+})();
+</script>
+
+</body>
+</html>
