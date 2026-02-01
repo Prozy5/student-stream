@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SS Clips Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+  font-family:system-ui;
+  background:#050816;
+  color:#eef3ff;
+  padding:40px;
+}
+h1{margin-bottom:20px}
+.card{
+  background:#0c1426;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:16px;
+}
+button{
+  padding:8px 14px;
+  margin-right:8px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
+.approve{background:#4caf50;color:#000}
+.deny{background:#f44336;color:#000}
+.feature{background:#2196f3;color:#000}
+small{color:#9aa8c7}
+</style>
+</head>
+
+<body>
+
+<h1>SS Clips Admin</h1>
+<div id="clips"></div>
+
+<script>
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadClips(){
+  const { data } = await supabase
+    .from('clips')
+    .select('*')
+    .eq('status','pending')
+    .order('created_at',{ascending:false});
+
+  const container = document.getElementById("clips");
+  container.innerHTML = "";
+
+  data.forEach(clip=>{
+    container.innerHTML += `
+      <div class="card">
+        <strong>${clip.creator}</strong> — ${clip.platform} / ${clip.category}<br>
+        <small>${clip.clip_url}</small><br><br>
+        <button class="approve" onclick="approve('${clip.id}')">Approve</button>
+        <button class="feature" onclick="feature('${clip.id}')">Approve + Feature</button>
+        <button class="deny" onclick="deny('${clip.id}')">Deny</button>
+      </div>
+    `;
+  });
+}
+
+async function approve(id){
+  await supabase.from('clips').update({status:'approved'}).eq('id',id);
+  loadClips();
+}
+
+async function feature(id){
+  await supabase.from('clips').update({
+    status:'approved',
+    featured:true
+  }).eq('id',id);
+  loadClips();
+}
+
+async function deny(id){
+  await supabase.from('clips').update({status:'denied'}).eq('id',id);
+  loadClips();
+}
+
+loadClips();
+</script>
+
+</body>
+</html>
