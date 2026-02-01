@@ -1,107 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StudentStream Clips</title>
+<meta charset="UTF-8">
+<title>SS Clips | StudentStream</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<link rel="canonical" href="https://studentstream.online/ss-clips/">
+<meta name="description" content="SS Clips is StudentStream’s creator discovery division — surfacing standout moments from creators across the internet.">
+<meta name="author" content="StudentStream">
 
-  <style>
-    body {
-      margin: 0;
-      background: #0b0b0b;
-      color: white;
-      font-family: Inter, system-ui, sans-serif;
-    }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    header {
-      padding: 24px;
-      text-align: center;
-      font-size: 1.6rem;
-      font-weight: 700;
-    }
+<style>
+:root{
+  --bg:#050816;
+  --panel:#0c1426;
+  --panel-dark:#091020;
+  --accent:#4facfe;
+  --accent-2:#00f2fe;
+  --text:#eef3ff;
+  --muted:#9aa8c7;
+  --border:rgba(255,255,255,.08);
+}
 
-    .clips {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 24px;
-    }
+*{box-sizing:border-box;margin:0;padding:0}
 
-    .clip {
-      background: #161616;
-      border-radius: 14px;
-      overflow: hidden;
-    }
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
+  color:var(--text);
+}
 
-    iframe {
-      width: 100%;
-      height: 320px;
-      border: none;
-    }
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(6,12,26,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  z-index:10;
+}
 
-    .meta {
-      padding: 12px;
-    }
+nav a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+nav a:hover{color:var(--text)}
 
-    .creator {
-      font-weight: 600;
-    }
+main{
+  max-width:1300px;
+  margin:auto;
+  padding:160px 24px 140px;
+}
 
-    .badge {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 4px 8px;
-      background: #22c55e;
-      color: black;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-    }
-  </style>
+h1{font-size:64px;margin-bottom:18px}
+h2{font-size:38px;margin-bottom:18px}
+h3{font-size:22px;margin-bottom:8px}
+
+p{color:var(--muted);line-height:1.7}
+
+/* HERO */
+.hero{
+  max-width:900px;
+}
+
+.hero span{
+  display:inline-block;
+  margin-bottom:14px;
+  padding:6px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:700;
+  background:#0e1a35;
+  border:1px solid var(--border);
+}
+
+.hero-buttons{
+  margin-top:36px;
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+.hero-buttons a{
+  padding:16px 26px;
+  border-radius:18px;
+  font-weight:900;
+  font-size:15px;
+  text-decoration:none;
+}
+
+.primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#00121f;
+}
+
+.secondary{
+  border:1px solid var(--border);
+  color:var(--text);
+}
+
+/* SECTIONS */
+.section{margin-top:140px}
+
+.grid{
+  margin-top:40px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}
+
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:30px;
+}
+
+/* FEATURED */
+.featured-grid{
+  margin-top:40px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:26px;
+}
+
+.clip{
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:18px;
+}
+
+.thumb{
+  height:170px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#1b2b4a,#0c1426);
+  margin-bottom:14px;
+}
+
+.clip h4{font-size:17px;margin-bottom:6px}
+.clip span{font-size:13px;color:var(--muted)}
+
+.clip a{
+  display:inline-block;
+  margin-top:10px;
+  font-size:13px;
+  color:var(--accent);
+  text-decoration:none;
+}
+
+/* CTA */
+.cta{
+  text-align:center;
+  max-width:720px;
+  margin:160px auto 0;
+}
+
+.divider{
+  height:1px;
+  background:var(--border);
+  margin:160px 0;
+}
+
+footer{
+  border-top:1px solid var(--border);
+  padding:90px 24px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+</style>
 </head>
+
 <body>
 
-<header>🔥 StudentStream Clips</header>
+<nav>
+  <strong>StudentStream</strong>
+  <div>
+    <a href="/">Home</a>
+    <a href="index.html">SS Clips</a>
+    <a href="featured.html">Featured</a>
+    <a href="submit.html">Submit</a>
+  </div>
+</nav>
 
-<section class="clips" id="clips"></section>
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <span>Creator Discovery Division</span>
+  <h1>SS Clips</h1>
+  <p>
+    SS Clips surfaces standout moments from creators across the internet.
+    No re-uploads. No content theft. Just discovery that sends attention
+    directly back to the source.
+  </p>
+
+  <div class="hero-buttons">
+    <a class="primary" href="submit.html">Submit a Clip</a>
+    <a class="secondary" href="featured.html">View Featured</a>
+  </div>
+</section>
+
+<!-- VALUE -->
+<section class="section">
+  <h2>Why SS Clips Exists</h2>
+  <p>
+    Algorithms reward volume. SS Clips rewards moments.
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>🌐 Platform-Agnostic</h3>
+      <p>Any platform. Any format. If the moment hits, it belongs.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧠 Human-Curated</h3>
+      <p>No algorithm spam. Every clip is manually reviewed.</p>
+    </div>
+
+    <div class="card">
+      <h3>🔗 Traffic Back to You</h3>
+      <p>We never host content. Every feature links out.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="section">
+  <h2>Featured Clips</h2>
+  <p>Hand-picked moments currently getting attention.</p>
+
+  <div class="featured-grid" id="featuredGrid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Get Your Moment Seen</h2>
+  <p>
+    Submit for free or apply for featured placement.
+    SS Clips is built to amplify creators — not replace them.
+  </p>
+
+  <div class="hero-buttons" style="justify-content:center">
+    <a class="primary" href="submit.html">Submit a Clip</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  © 2026 StudentStream<br>
+  SS Clips — Creator Discovery Division
+</footer>
 
 <script>
-  const supabase = window.supabase.createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  )
+const supabase = supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  async function loadClips() {
-    const { data, error } = await supabase
-      .from("public_clips_feed")
-      .select("*")
+async function loadFeatured(){
+  const { data } = await supabase
+    .from("clips")
+    .select("creator,platform,category,clip_url")
+    .eq("featured",true)
+    .order("featured_order",{ascending:true})
+    .limit(12);
 
-    if (error) {
-      console.error(error)
-      return
-    }
+  featuredGrid.innerHTML = (data || []).map(c=>`
+    <div class="clip">
+      <div class="thumb"></div>
+      <h4>${c.creator}</h4>
+      <span>${c.platform} • ${c.category}</span><br>
+      <a href="${c.clip_url}" target="_blank">Watch ↗</a>
+    </div>
+  `).join("");
+}
 
-    const container = document.getElementById("clips")
-
-    data.forEach(clip => {
-      const card = document.createElement("div")
-      card.className = "clip"
-
-      card.innerHTML = `
-        <iframe src="${clip.clip_url}" allowfullscreen></iframe>
-        <div class="meta">
-          <div class="creator">@${clip.creator}</div>
-          ${clip.featured ? `<div class="badge">FEATURED</div>` : ""}
-        </div>
-      `
-
-      container.appendChild(card)
-    })
-  }
-
-  loadClips()
+loadFeatured();
 </script>
 
 </body>
