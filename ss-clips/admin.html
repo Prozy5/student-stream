@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SS Clips Admin | StudentStream</title>
+<title>SS Clips Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -11,9 +11,9 @@
   --panel:#0c1426;
   --panel-dark:#091020;
   --accent:#4facfe;
-  --danger:#ff5c5c;
-  --success:#4dff88;
-  --warning:#ffd24d;
+  --accent-2:#00f2fe;
+  --green:#2cff9a;
+  --red:#ff6b6b;
   --text:#eef3ff;
   --muted:#9aa8c7;
   --border:rgba(255,255,255,.08);
@@ -28,62 +28,43 @@ body{
 }
 
 header{
-  position:sticky;
+  position:fixed;
   top:0;
-  z-index:10;
+  width:100%;
+  padding:18px 28px;
   background:rgba(6,12,26,.9);
-  backdrop-filter:blur(14px);
+  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  padding:18px 26px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  z-index:10;
 }
 
 header button{
-  padding:10px 16px;
-  border-radius:12px;
+  background:none;
   border:1px solid var(--border);
-  background:#101a33;
   color:var(--text);
+  padding:10px 16px;
+  border-radius:14px;
   cursor:pointer;
 }
 
 main{
-  max-width:1400px;
+  max-width:1200px;
   margin:auto;
-  padding:40px 24px 140px;
+  padding:140px 24px 120px;
 }
 
-h2{
-  margin:50px 0 16px;
-  font-size:26px;
-}
+h1{font-size:44px;margin-bottom:10px}
+p{color:var(--muted)}
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:18px;
-}
-
-.stat{
-  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:20px;
-}
-
-.stat span{
-  display:block;
-  font-size:13px;
-  color:var(--muted);
-}
-
-.stat strong{
-  font-size:26px;
+.section{
+  margin-top:60px;
 }
 
 .grid{
+  margin-top:30px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
   gap:22px;
@@ -92,86 +73,58 @@ h2{
 .card{
   background:linear-gradient(180deg,var(--panel),var(--panel-dark));
   border:1px solid var(--border);
-  border-radius:20px;
+  border-radius:22px;
   padding:22px;
 }
 
-.card p{
-  font-size:14px;
-  color:var(--muted);
-  margin:6px 0;
-}
-
-.card a{
-  display:inline-block;
-  margin-top:6px;
-  color:var(--accent);
-  text-decoration:none;
-  font-size:14px;
-}
+.card h3{font-size:18px;margin-bottom:6px}
+.card span{font-size:13px;color:var(--muted)}
 
 .actions{
-  margin-top:14px;
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+  flex-wrap:wrap;
 }
 
 .actions button{
   padding:10px 14px;
-  border-radius:10px;
+  border-radius:14px;
   border:none;
-  font-weight:800;
+  font-weight:700;
   font-size:13px;
   cursor:pointer;
-  margin-right:8px;
-  margin-top:6px;
 }
 
-.approve{background:var(--success)}
-.deny{background:var(--danger)}
-.feature{background:var(--accent)}
-.warn{background:var(--warning);color:#00121f}
+.approve{background:var(--green);color:#00121f}
+.deny{background:var(--red);color:#00121f}
+.feature{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#00121f}
 
-.badge{
+a.cliplink{
   display:inline-block;
-  margin-top:8px;
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:800;
+  margin-top:10px;
+  font-size:13px;
+  color:var(--accent);
+  text-decoration:none;
 }
-
-.pending{background:#1c2b4a}
-.approved{background:#163a28}
-.denied{background:#3a1616}
-.featured{background:#003f6b}
 </style>
 </head>
 
 <body>
 
 <header>
-  <strong>SS Clips — Admin</strong>
+  <strong>SS Clips Admin</strong>
   <button onclick="logout()">Logout</button>
 </header>
 
 <main>
+  <h1>Moderation Dashboard</h1>
+  <p>Approve, deny, or feature submitted clips.</p>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat"><span>Pending</span><strong id="sPending">0</strong></div>
-  <div class="stat"><span>Approved</span><strong id="sApproved">0</strong></div>
-  <div class="stat"><span>Featured</span><strong id="sFeatured">0</strong></div>
-  <div class="stat"><span>Paid</span><strong id="sPaid">0</strong></div>
-</div>
-
-<h2>Pending Review</h2>
-<div id="pending" class="grid"></div>
-
-<h2>Approved</h2>
-<div id="approved" class="grid"></div>
-
-<h2>Denied</h2>
-<div id="denied" class="grid"></div>
-
+  <section class="section">
+    <h2>Pending Submissions</h2>
+    <div class="grid" id="pendingGrid"></div>
+  </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -181,10 +134,10 @@ const supabase = supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* 🔐 AUTO BLOCK */
+/* 🔐 PROTECT PAGE */
 (async()=>{
   const { data:{ user } } = await supabase.auth.getUser();
-  if(!user) return location.href="/ss-clips/admin-login.html";
+  if(!user) return location.href="admin-login.html";
 
   const { data:admin } = await supabase
     .from("admins")
@@ -192,80 +145,69 @@ const supabase = supabase.createClient(
     .eq("user_id", user.id)
     .single();
 
-  if(!admin) return location.href="/";
+  if(!admin){
+    await supabase.auth.signOut();
+    location.href="admin-login.html";
+  }
 
-  load();
+  loadPending();
 })();
 
-async function load(){
+/* LOAD PENDING CLIPS */
+async function loadPending(){
   const { data } = await supabase
     .from("clips")
     .select("*")
+    .eq("status","pending")
     .order("created_at",{ascending:false});
 
-  const pending = data.filter(x=>x.status==="pending");
-  const approved = data.filter(x=>x.status==="approved");
-  const denied = data.filter(x=>x.status==="denied");
+  pendingGrid.innerHTML = "";
 
-  document.getElementById("sPending").textContent = pending.length;
-  document.getElementById("sApproved").textContent = approved.length;
-  document.getElementById("sFeatured").textContent = approved.filter(x=>x.featured).length;
-  document.getElementById("sPaid").textContent = approved.filter(x=>x.payment_status==="paid").length;
+  if(!data || data.length === 0){
+    pendingGrid.innerHTML = "<p>No pending submissions.</p>";
+    return;
+  }
 
-  render("pending", pending);
-  render("approved", approved);
-  render("denied", denied);
-}
+  data.forEach(c=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${c.title}</h3>
+      <span>${c.creator_name} • ${c.platform}</span>
+      <a class="cliplink" href="${c.clip_url}" target="_blank">View Clip ↗</a>
 
-function render(id,list){
-  const el = document.getElementById(id);
-  el.innerHTML = "";
-
-  list.forEach(c=>{
-    el.innerHTML += `
-      <div class="card">
-        <strong>${c.creator}</strong>
-        <p>${c.platform} • ${c.category}</p>
-        <p>${c.note || ""}</p>
-        <a href="${c.clip_url}" target="_blank">Open Clip ↗</a>
-
-        <div class="badge ${c.status}">${c.status.toUpperCase()}</div>
-        ${c.featured ? `<div class="badge featured">FEATURED</div>` : ""}
-
-        <div class="actions">
-          ${id==="pending" ? `
-            <button class="approve" onclick="setStatus('${c.id}','approved')">Approve</button>
-            <button class="deny" onclick="setStatus('${c.id}','denied')">Deny</button>
-          ` : ""}
-
-          ${id==="approved" && c.paid_request && c.payment_status!=="paid" ? `
-            <button class="warn" onclick="alert('Request payment manually')">Awaiting Payment</button>
-          ` : ""}
-
-          ${id==="approved" && c.payment_status==="paid" && !c.featured ? `
-            <button class="feature" onclick="feature('${c.id}')">Feature</button>
-          ` : ""}
-        </div>
+      <div class="actions">
+        <button class="approve" onclick="approve('${c.id}')">Approve</button>
+        <button class="deny" onclick="deny('${c.id}')">Deny</button>
+        <button class="feature" onclick="feature('${c.id}')">Feature</button>
       </div>
     `;
+    pendingGrid.appendChild(div);
   });
 }
 
-async function setStatus(id,status){
-  const update = { status };
-  if(status==="approved") update.approved_at = new Date().toISOString();
-  await supabase.from("clips").update(update).eq("id",id);
-  load();
+/* ACTIONS */
+async function approve(id){
+  await supabase.from("clips").update({ status:"approved" }).eq("id",id);
+  loadPending();
+}
+
+async function deny(id){
+  await supabase.from("clips").update({ status:"denied" }).eq("id",id);
+  loadPending();
 }
 
 async function feature(id){
-  await supabase.from("clips").update({ featured:true }).eq("id",id);
-  load();
+  await supabase.from("clips").update({
+    status:"approved",
+    featured:true
+  }).eq("id",id);
+  loadPending();
 }
 
 async function logout(){
   await supabase.auth.signOut();
-  location.href="/ss-clips/admin-login.html";
+  location.href="admin-login.html";
 }
 </script>
 
