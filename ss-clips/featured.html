@@ -5,10 +5,7 @@
 <title>Featured Clips | SS Clips</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="canonical" href="https://studentstream.online/ss-clips/featured.html">
-
-<meta name="description" content="Featured clips on SS Clips — curated standout moments from creators across the internet.">
-<meta name="author" content="StudentStream">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -23,7 +20,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  font-family:system-ui;
   background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
   color:var(--text);
 }
@@ -35,11 +32,9 @@ nav{
   padding:18px 28px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
   background:rgba(6,12,26,.85);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  z-index:10;
 }
 
 nav a{
@@ -56,45 +51,14 @@ main{
   padding:140px 24px 120px;
 }
 
-h1{font-size:52px;margin-bottom:14px}
-h2{font-size:28px;margin-bottom:14px}
-
-p{
-  color:var(--muted);
-  line-height:1.7;
-}
-
-.header{
-  max-width:800px;
-}
-
-.filter-bar{
-  margin-top:50px;
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.filter{
-  padding:10px 16px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:transparent;
-  color:var(--muted);
-  font-size:13px;
-}
-
-.filter.active{
-  background:rgba(79,172,254,.15);
-  border-color:rgba(79,172,254,.35);
-  color:#a8d4ff;
-}
+h1{font-size:48px;margin-bottom:12px}
+p{color:var(--muted);line-height:1.7}
 
 .grid{
-  margin-top:50px;
+  margin-top:40px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:26px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:24px;
 }
 
 .clip{
@@ -102,64 +66,40 @@ p{
   border:1px solid var(--border);
   border-radius:22px;
   padding:18px;
-  display:flex;
-  flex-direction:column;
 }
 
 .thumb{
-  height:180px;
+  height:160px;
   border-radius:14px;
   background:linear-gradient(135deg,#1b2b4a,#0c1426);
   margin-bottom:14px;
 }
 
-.clip h3{
-  font-size:17px;
-  margin-bottom:6px;
-}
-
-.meta{
-  font-size:13px;
-  color:var(--muted);
-  margin-bottom:10px;
-}
-
-.clip a{
-  margin-top:auto;
-  text-decoration:none;
-  font-size:14px;
-  font-weight:700;
-  color:#8fc6ff;
-}
-
-.clip a:hover{text-decoration:underline}
-
-.divider{
-  height:1px;
-  background:var(--border);
-  margin:120px 0;
-}
-
-.cta{
-  text-align:center;
-  max-width:700px;
-  margin:auto;
-}
-
-.cta a{
+.featured-badge{
   display:inline-block;
-  margin-top:24px;
-  padding:14px 24px;
-  border-radius:16px;
-  font-weight:800;
-  text-decoration:none;
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:12px;
   background:linear-gradient(135deg,#4facfe,#00f2fe);
   color:#00121f;
+  font-weight:800;
+  margin-bottom:8px;
 }
+
+.clip h4{font-size:16px;margin-bottom:6px}
+.clip span{font-size:13px;color:var(--muted)}
+.clip a{
+  display:block;
+  margin-top:10px;
+  font-size:14px;
+  color:var(--accent);
+  text-decoration:none;
+}
+.clip a:hover{text-decoration:underline}
 
 footer{
   border-top:1px solid var(--border);
-  padding:80px 24px;
+  padding:70px 24px;
   text-align:center;
   font-size:13px;
   color:var(--muted);
@@ -173,16 +113,15 @@ footer{
   <strong>StudentStream</strong>
   <div>
     <a href="/">Home</a>
-    <a href="index.html">SS Clips</a>
-    <a href="featured.html">Featured</a>
-    <a href="submit.html">Submit</a>
+    <a href="/ss-clips/">SS Clips</a>
+    <a href="/ss-clips/featured.html">Featured</a>
+    <a href="/ss-clips/submit.html">Submit</a>
   </div>
 </nav>
 
 <main>
 
-<!-- HEADER -->
-<section class="header">
+<section>
   <h1>Featured Clips</h1>
   <p>
     A curated selection of standout moments from creators across the internet.
@@ -190,52 +129,7 @@ footer{
   </p>
 </section>
 
-<!-- FILTERS -->
-<div class="filter-bar">
-  <div class="filter active">All</div>
-  <div class="filter">Gaming</div>
-  <div class="filter">Music</div>
-  <div class="filter">Entertainment</div>
-  <div class="filter">Education</div>
-</div>
-
-<!-- CLIPS GRID -->
-<section class="grid">
-
-  <div class="clip">
-    <div class="thumb"></div>
-    <h3>Creator Name</h3>
-    <div class="meta">YouTube • Gaming</div>
-    <a href="#" target="_blank">Watch original clip →</a>
-  </div>
-
-  <div class="clip">
-    <div class="thumb"></div>
-    <h3>Creator Name</h3>
-    <div class="meta">TikTok • Entertainment</div>
-    <a href="#" target="_blank">Watch original clip →</a>
-  </div>
-
-  <div class="clip">
-    <div class="thumb"></div>
-    <h3>Creator Name</h3>
-    <div class="meta">Twitch • Creator</div>
-    <a href="#" target="_blank">Watch original clip →</a>
-  </div>
-
-</section>
-
-<div class="divider"></div>
-
-<!-- CTA -->
-<section class="cta">
-  <h2>Want Your Clip Featured?</h2>
-  <p>
-    Submit for free or apply for featured placement.
-    SS Clips exists to amplify creators.
-  </p>
-  <a href="submit.html">Submit a Clip</a>
-</section>
+<section class="grid" id="clips"></section>
 
 </main>
 
@@ -244,6 +138,39 @@ footer{
   <br>
   SS Clips — Creator Discovery Division
 </footer>
+
+<script>
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadClips(){
+  const { data } = await supabase
+    .from('clips')
+    .select('*')
+    .eq('status','approved')
+    .order('featured',{ascending:false})
+    .order('created_at',{ascending:false});
+
+  const container = document.getElementById("clips");
+  container.innerHTML = "";
+
+  data.forEach(clip=>{
+    container.innerHTML += `
+      <div class="clip">
+        ${clip.featured ? `<div class="featured-badge">FEATURED</div>` : ``}
+        <div class="thumb"></div>
+        <h4>${clip.creator}</h4>
+        <span>${clip.platform} • ${clip.category}</span>
+        <a href="${clip.clip_url}" target="_blank">Watch original clip →</a>
+      </div>
+    `;
+  });
+}
+
+loadClips();
+</script>
 
 </body>
 </html>
