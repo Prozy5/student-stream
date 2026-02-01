@@ -5,9 +5,9 @@
 <title>Submit a Clip | SS Clips</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="canonical" href="https://studentstream.online/clips/submit.html">
+<link rel="canonical" href="https://studentstream.online/ss-clips/submit.html">
 
-<meta name="description" content="Submit your clip to SS Clips — the creator discovery division of StudentStream. Free and featured submissions available.">
+<meta name="description" content="Submit your clip to SS Clips — the creator discovery division of StudentStream.">
 <meta name="author" content="StudentStream">
 
 <style>
@@ -53,19 +53,22 @@ nav a:hover{color:var(--text)}
 main{
   max-width:900px;
   margin:auto;
-  padding:130px 24px 100px;
+  padding:140px 24px 120px;
 }
 
-h1{font-size:44px;margin-bottom:14px}
-h2{font-size:26px;margin:70px 0 14px}
-p{color:var(--muted);line-height:1.7}
+h1{font-size:46px;margin-bottom:14px}
+h2{font-size:28px;margin-bottom:14px}
+p{
+  color:var(--muted);
+  line-height:1.7;
+}
 
 .form-card{
   margin-top:40px;
   background:linear-gradient(180deg,#0c1426,#091020);
   border:1px solid var(--border);
   border-radius:22px;
-  padding:30px;
+  padding:34px;
 }
 
 label{
@@ -77,29 +80,41 @@ label{
 
 input, select, textarea{
   width:100%;
-  padding:14px;
+  padding:15px;
   border-radius:14px;
   border:1px solid var(--border);
-  background:#ffffff;
+  background:#fff;
   font-size:15px;
-  margin-bottom:18px;
+  margin-bottom:22px;
 }
 
-textarea{
-  resize:none;
-  height:120px;
-}
+textarea{resize:none;height:120px}
 
 button{
   width:100%;
-  padding:15px;
-  border-radius:16px;
+  padding:16px;
+  border-radius:18px;
   border:none;
   font-weight:800;
-  font-size:15px;
+  font-size:16px;
   cursor:pointer;
   background:linear-gradient(135deg,#4facfe,#00f2fe);
   color:#00121f;
+}
+
+.badges{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:22px 0;
+}
+
+.badge{
+  padding:8px 14px;
+  font-size:12px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  color:var(--muted);
 }
 
 .note{
@@ -109,29 +124,19 @@ button{
   line-height:1.6;
 }
 
-.info-box{
-  margin-top:40px;
-  padding:22px;
-  border-radius:18px;
-  background:rgba(79,172,254,.08);
-  border:1px solid rgba(79,172,254,.25);
-  font-size:14px;
-  color:var(--muted);
-}
-
 .rules{
-  margin-top:80px;
+  margin-top:70px;
 }
 
 .rules ul{
   margin-left:18px;
   color:var(--muted);
-  line-height:1.7;
+  line-height:1.8;
 }
 
 footer{
   border-top:1px solid var(--border);
-  padding:70px 24px;
+  padding:80px 24px;
   text-align:center;
   font-size:13px;
   color:var(--muted);
@@ -145,9 +150,9 @@ footer{
   <strong>StudentStream</strong>
   <div>
     <a href="/">Home</a>
-    <a href="/clips/">SS Clips</a>
-    <a href="/clips/featured.html">Featured</a>
-    <a href="/clips/submit.html">Submit</a>
+    <a href="/ss-clips/">SS Clips</a>
+    <a href="/ss-clips/featured.html">Featured</a>
+    <a href="/ss-clips/submit.html">Submit</a>
   </div>
 </nav>
 
@@ -156,24 +161,29 @@ footer{
 <section>
   <h1>Submit Your Clip</h1>
   <p>
-    SS Clips is the creator discovery division of StudentStream.
-    We spotlight standout moments across the internet — without re-hosting content.
-    All featured clips link directly to their original platforms.
+    SS Clips highlights standout creator moments across the internet.
+    We don’t re-host content — every feature links directly to the original source.
   </p>
+
+  <div class="badges">
+    <div class="badge">Creator-First</div>
+    <div class="badge">Manual Review</div>
+    <div class="badge">Traffic Back to You</div>
+  </div>
 </section>
 
 <section class="form-card">
 
-<form>
+<form id="clipForm">
 
   <label>Creator Name / Handle</label>
-  <input type="text" placeholder="@yourname" required>
+  <input id="creator" type="text" placeholder="@yourname" required>
 
-  <label>Email (for contact only)</label>
-  <input type="email" placeholder="you@email.com" required>
+  <label>Email (contact only)</label>
+  <input id="email" type="email" placeholder="you@email.com" required>
 
-  <label>Platform</label>
-  <select required>
+  <label>Primary Platform</label>
+  <select id="platform" required>
     <option value="">Select platform</option>
     <option>YouTube</option>
     <option>TikTok</option>
@@ -184,60 +194,64 @@ footer{
   </select>
 
   <label>Clip URL</label>
-  <input type="url" placeholder="https://..." required>
+  <input id="clip_url" type="url" placeholder="https://..." required>
 
-  <label>Category</label>
-  <select required>
-    <option value="">Select category</option>
-    <option>Gaming</option>
-    <option>Music</option>
-    <option>Creator</option>
-    <option>Entertainment</option>
-    <option>Education</option>
-    <option>Other</option>
-  </select>
+  <label>Clip Category</label>
+  <select id="category" required>
+    <option value="">Select clip type</option>
 
-  <label>Submission Type</label>
-  <select required>
-    <option value="">Select submission type</option>
-    <option>Free Submission — No Payment</option>
-    <option>Featured Placement — $5 (24 Hours)</option>
-    <option>Priority Feature — $10 (72 Hours)</option>
+    <optgroup label="🎬 Creator Moments">
+      <option>Viral Moment</option>
+      <option>Funny / Unhinged</option>
+      <option>Cold Clip</option>
+      <option>Storytime / POV</option>
+      <option>Real Talk</option>
+    </optgroup>
+
+    <optgroup label="🎮 Stream & Content Energy">
+      <option>Live Moment</option>
+      <option>Clutch / Skill</option>
+      <option>Fail / L</option>
+      <option>Chat Interaction</option>
+    </optgroup>
+
+    <optgroup label="🎤 Creator Type">
+      <option>Streamer</option>
+      <option>YouTuber</option>
+      <option>Short-Form Creator</option>
+      <option>Musician / Artist</option>
+      <option>Commentary / Personality</option>
+    </optgroup>
+
+    <optgroup label="🌍 Culture">
+      <option>Internet Culture</option>
+      <option>Trends / Challenges</option>
+      <option>Underground / Upcoming</option>
+    </optgroup>
   </select>
 
   <label>Optional Note</label>
-  <textarea placeholder="Why does this clip deserve to be featured? (Optional)"></textarea>
+  <textarea id="note" placeholder="Why does this clip deserve attention?"></textarea>
 
   <button type="submit">Submit Clip</button>
 
-  <p class="note">
-    <strong>Important:</strong><br>
-    All submissions are reviewed manually.  
-    Paid submissions are <strong>only charged if approved</strong>.  
-    Payment instructions are sent via email after review.
-  </p>
+  <div class="note">
+    Submissions are reviewed manually.  
+    Approved clips may appear on SS Clips or be offered featured placement.
+  </div>
 
 </form>
 
 </section>
-
-<div class="info-box">
-  <strong>How SS Clips Works</strong><br><br>
-  • We do not host or re-upload videos<br>
-  • All clips link to the original creator<br>
-  • Free submissions are reviewed equally<br>
-  • Paid placements increase visibility, not approval chances<br>
-  • Editorial decisions remain final
-</div>
 
 <section class="rules">
   <h2>Submission Guidelines</h2>
   <ul>
     <li>You must own or have permission to submit the clip</li>
     <li>No hate, harassment, or illegal content</li>
-    <li>No stolen or re-uploaded videos</li>
-    <li>Submission does not guarantee featuring</li>
-    <li>SS Clips reserves final editorial control</li>
+    <li>Original platform links only</li>
+    <li>Approval is not guaranteed</li>
+    <li>SS Clips retains editorial discretion</li>
   </ul>
 </section>
 
@@ -248,6 +262,37 @@ footer{
   <br>
   SS Clips — Creator Discovery Division
 </footer>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const form = document.getElementById("clipForm");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const { error } = await supabaseClient.from("clips").insert({
+    creator: creator.value,
+    email: email.value,
+    platform: platform.value,
+    clip_url: clip_url.value,
+    category: category.value,
+    note: note.value
+  });
+
+  if(error){
+    alert("Submission failed. Try again.");
+    console.error(error);
+  } else {
+    form.reset();
+    alert("Clip submitted! Pending review.");
+  }
+});
+</script>
 
 </body>
 </html>
