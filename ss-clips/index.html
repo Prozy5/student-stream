@@ -9,23 +9,23 @@
 <link rel="canonical" href="https://studentstream.online/clips/">
 
 <!-- SEO -->
-<meta name="description" content="SS Clips by StudentStream — discover, submit, and promote creator clips.">
+<meta name="description" content="SS Clips by StudentStream — submit short-form clips, highlights, and moments for discovery, promotion, and creator visibility. Free submissions.">
+<meta name="keywords" content="SS Clips, StudentStream clips, creator clips, short form video, gaming clips, music clips">
 <meta name="author" content="StudentStream">
 
-<!-- OPEN GRAPH -->
-<meta property="og:title" content="SS Clips">
-<meta property="og:description" content="Creator clips powered by StudentStream.">
+<!-- OG -->
+<meta property="og:title" content="SS Clips — Creator Highlights by StudentStream">
+<meta property="og:description" content="Free clip submissions. Optional promotion. Built for creators.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studentstream.online/clips/">
 
 <style>
 :root{
-  --bg:#050912;
-  --panel:#0e1a2f;
-  --panel2:#0b1425;
-  --accent:#5da9ff;
+  --bg:#050816;
+  --panel:#0c1426;
+  --accent:#4facfe;
   --text:#eef3ff;
-  --muted:#9fb1cc;
+  --muted:#9aa8c7;
   --border:rgba(255,255,255,.08);
 }
 
@@ -33,7 +33,7 @@
 
 body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0f2345,#050912 75%);
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
   color:var(--text);
 }
 
@@ -41,13 +41,13 @@ nav{
   position:fixed;
   top:0;
   width:100%;
-  z-index:50;
+  z-index:10;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:16px 28px;
-  background:rgba(8,16,32,.9);
-  backdrop-filter:blur(14px);
+  padding:18px 28px;
+  background:rgba(6,12,26,.85);
+  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
 }
 
@@ -61,63 +61,69 @@ nav a:hover{color:var(--text)}
 
 main{
   max-width:1200px;
-  margin:140px auto 120px;
-  padding:0 22px;
+  margin:auto;
+  padding:130px 24px 100px;
 }
 
-.hero{
+h1{font-size:54px;margin-bottom:16px}
+h2{font-size:32px;margin:90px 0 22px}
+h3{font-size:18px;margin-bottom:8px}
+
+p{
   max-width:900px;
-}
-
-.hero h1{
-  font-size:54px;
-  line-height:1.1;
-  margin-bottom:18px;
-}
-
-.hero p{
+  line-height:1.8;
   color:var(--muted);
-  font-size:18px;
-  line-height:1.7;
 }
 
-.actions{
-  margin-top:34px;
-  display:flex;
-  gap:18px;
-  flex-wrap:wrap;
-}
-
-.btn{
-  padding:14px 26px;
+.badge{
+  display:inline-block;
+  padding:7px 16px;
   border-radius:999px;
-  text-decoration:none;
-  font-weight:600;
+  background:rgba(79,172,254,.15);
+  border:1px solid rgba(79,172,254,.35);
+  color:#7fc1ff;
+  font-size:.85rem;
+  margin-bottom:22px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px;
+  margin-top:32px;
+}
+
+.card{
+  background:linear-gradient(180deg,#0c1426,#091020);
   border:1px solid var(--border);
+  border-radius:20px;
+  padding:26px;
 }
 
-.primary{
-  background:linear-gradient(135deg,#5da9ff,#3c7dff);
-  color:#081325;
-}
+.card p{font-size:14px}
 
-.secondary{
-  color:var(--text);
-  background:transparent;
-}
-
-.section{
-  margin-top:110px;
-}
-
-.section h2{
+.stat{
   font-size:34px;
-  margin-bottom:14px;
+  font-weight:800;
+  color:var(--accent);
+  margin-bottom:6px;
 }
 
-.section p{
-  color:var(--muted);
-  max-width:800px;
+.cta{
+  display:inline-block;
+  margin-top:28px;
+  padding:14px 26px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  color:#00121f;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.divider{
+  height:1px;
+  background:var(--border);
+  margin:100px 0;
 }
 
 footer{
@@ -127,75 +133,132 @@ footer{
   font-size:13px;
   color:var(--muted);
 }
-footer a{
-  color:var(--muted);
-  text-decoration:none;
-  margin:0 10px;
-}
-footer a:hover{color:var(--text)}
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
 <nav>
   <strong>StudentStream</strong>
   <div>
     <a href="/">Home</a>
     <a href="/clips/">SS Clips</a>
-    <a href="/clips/submit.html">Submit</a>
-    <a href="/clips/rules.html">Rules</a>
-    <a href="/clips/transparency.html">Transparency</a>
     <a href="/security.html">Security</a>
+    <a href="/company.html">Company</a>
   </div>
 </nav>
 
 <main>
 
 <!-- HERO -->
-<section class="hero">
+<section>
+  <span class="badge">Creator Discovery Division</span>
   <h1>SS Clips</h1>
   <p>
-    A creator-first clip discovery division by StudentStream.
-    Submit, get featured, and grow without algorithms working against you.
+    SS Clips is StudentStream’s short-form highlight division.
+    Built to surface creators early, amplify moments that matter,
+    and reward originality — without paywalls.
   </p>
 
-  <div class="actions">
-    <a href="/clips/submit.html" class="btn primary">Submit a Clip</a>
-    <a href="/clips/rules.html" class="btn secondary">Read the Rules</a>
+  <a href="/clips/submit.html" class="cta">Submit a Clip</a>
+</section>
+
+<!-- WHAT IT IS -->
+<section>
+  <h2>What Is SS Clips?</h2>
+  <p>
+    SS Clips curates short-form highlights across gaming, music,
+    content creation, and culture.
+    <br><br>
+    We don’t host full videos.
+    Creators submit clips via links and permissioned embeds,
+    allowing discovery without ownership conflicts.
+  </p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <h2>How It Works</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>📤 Submit</h3>
+      <p>Send your clip via link with creator credit and category.</p>
+    </div>
+    <div class="card">
+      <h3>🧠 Review</h3>
+      <p>Clips are reviewed for quality, originality, and safety.</p>
+    </div>
+    <div class="card">
+      <h3>🚀 Spotlight</h3>
+      <p>Top clips are featured across StudentStream platforms.</p>
+    </div>
   </div>
 </section>
 
-<!-- ABOUT -->
-<section class="section">
-  <h2>What is SS Clips?</h2>
+<!-- MONETIZATION -->
+<section>
+  <h2>Free by Default. Boost If You Want.</h2>
   <p>
-    SS Clips is a curated submission platform.
-    We don’t host videos — we surface them.
-    Creators keep ownership while StudentStream amplifies reach.
+    SS Clips is free to submit.
+    Creators can optionally pay for visibility tools — never access.
   </p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>🎯 Featured Clip</h3>
+      <p>Homepage placement for increased exposure.</p>
+      <p><strong>$3</strong> · 7 days</p>
+    </div>
+    <div class="card">
+      <h3>✔ Verified Creator</h3>
+      <p>Badge + priority review for serious creators.</p>
+      <p><strong>$5</strong></p>
+    </div>
+    <div class="card">
+      <h3>🔥 Top Spotlight</h3>
+      <p>Premium positioning for top-tier clips.</p>
+      <p><strong>$10</strong></p>
+    </div>
+  </div>
 </section>
 
 <!-- TRUST -->
-<section class="section">
-  <h2>Built on Transparency</h2>
+<section>
+  <h2>Creator-First Rules</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="stat">0</div>
+      <p>Ownership claims on your content</p>
+    </div>
+    <div class="card">
+      <div class="stat">100%</div>
+      <p>Creator credit preserved</p>
+    </div>
+    <div class="card">
+      <div class="stat">Always</div>
+      <p>Free submissions</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <h2>Built for What’s Next</h2>
   <p>
-    Every decision has a reason.
-    Our rules, enforcement, and monetization practices are public.
+    SS Clips is phase one.
+    <br><br>
+    Future plans include creator dashboards, analytics,
+    cross-platform promotion, and brand partnerships.
   </p>
 </section>
 
 </main>
 
-<!-- FOOTER -->
 <footer>
   © 2026 StudentStream  
-  <br><br>
-  <a href="/clips/submit.html">Submit</a> |
-  <a href="/clips/rules.html">Rules</a> |
-  <a href="/clips/transparency.html">Transparency</a> |
-  <a href="/security.html">Security</a>
+  <br>
+  SS Clips — Creator Discovery Division
 </footer>
 
 </body>
