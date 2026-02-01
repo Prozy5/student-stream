@@ -5,16 +5,33 @@
 <title>Submit a Clip | SS Clips by StudentStream</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SEO -->
+<!-- CANONICAL -->
 <link rel="canonical" href="https://studentstream.online/clips/submit.html">
-<meta name="description" content="Submit your clip to SS Clips — StudentStream’s curated discovery network. Free submissions. Optional promotion. Full creator ownership.">
-<meta name="keywords" content="SS Clips, StudentStream, clip submission, creator discovery, viral clips">
+
+<!-- SEO -->
+<meta name="description" content="Submit your clip to SS Clips — a curated creator discovery network by StudentStream. Free submissions. Optional promotion. Full ownership retained.">
+<meta name="keywords" content="SS Clips, StudentStream clips, creator discovery, submit clip">
 <meta name="author" content="StudentStream">
 
 <!-- OPEN GRAPH -->
 <meta property="og:title" content="Submit a Clip | SS Clips">
-<meta property="og:description" content="A curated discovery system built to surface creators — not exploit them.">
+<meta property="og:description" content="A curated discovery system built to elevate creators — not exploit them.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://studentstream.online/clips/submit.html">
+
+<!-- STRUCTURED DATA -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebPage",
+  "name":"SS Clips Submission",
+  "publisher":{
+    "@type":"Organization",
+    "name":"StudentStream",
+    "url":"https://studentstream.online"
+  }
+}
+</script>
 
 <style>
 :root{
@@ -58,9 +75,8 @@ nav a{
 }
 nav a:hover{color:var(--text)}
 
-/* PAGE */
 main{
-  max-width:980px;
+  max-width:1000px;
   margin:140px auto 120px;
   padding:0 22px;
 }
@@ -84,15 +100,15 @@ h1{
 p{
   color:var(--muted);
   line-height:1.85;
-  max-width:820px;
+  max-width:860px;
 }
 
-/* TRUST STRIP */
+/* TRUST GRID */
 .trust{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:18px;
-  margin:40px 0 55px;
+  margin:42px 0 60px;
 }
 .trust div{
   background:var(--panel);
@@ -106,17 +122,17 @@ p{
 form{
   background:linear-gradient(180deg,var(--panel),var(--panel2));
   border:1px solid var(--border);
-  border-radius:26px;
-  padding:34px;
+  border-radius:28px;
+  padding:38px;
 }
 
 fieldset{
   border:none;
-  margin-bottom:28px;
+  margin-bottom:30px;
 }
 
 legend{
-  font-weight:800;
+  font-weight:900;
   margin-bottom:14px;
   font-size:15px;
 }
@@ -144,13 +160,12 @@ textarea{
   min-height:120px;
 }
 
-/* PROMO CARDS */
+/* PROMOS */
 .promos{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:16px;
 }
-
 .promo{
   border:1px solid var(--border);
   border-radius:18px;
@@ -159,22 +174,28 @@ textarea{
   font-size:13px;
 }
 .promo strong{color:var(--accent)}
-.promo span{
-  display:block;
+.promo span{display:block;color:var(--muted);margin-top:6px}
+
+/* CHECKBOX */
+.check{
+  display:flex;
+  gap:10px;
+  font-size:12px;
   color:var(--muted);
-  margin-top:6px;
+  margin-top:14px;
 }
+.check input{margin-top:4px}
 
 /* ACTIONS */
 .actions{
   display:flex;
   gap:16px;
   flex-wrap:wrap;
-  margin-top:30px;
+  margin-top:34px;
 }
 
 button{
-  padding:15px 30px;
+  padding:15px 34px;
   border-radius:999px;
   border:none;
   font-weight:900;
@@ -192,14 +213,13 @@ button{
   color:var(--text);
 }
 
-/* FOOTER NOTE */
 .note{
-  margin-top:34px;
+  margin-top:36px;
   font-size:12px;
   color:var(--muted);
   line-height:1.7;
   border-top:1px solid var(--border);
-  padding-top:22px;
+  padding-top:24px;
 }
 </style>
 </head>
@@ -217,102 +237,106 @@ button{
 
 <main>
 
-  <span class="badge">SS Clips · Creator Discovery</span>
+<span class="badge">SS Clips · Curated Discovery</span>
 
-  <h1>Submit Your Clip</h1>
-  <p>
-    SS Clips is a curated discovery system — not an algorithm farm.
-    We surface standout moments from creators, brands, and builders
-    while enforcing authenticity, ownership, and platform safety.
-  </p>
+<h1>Submit Your Clip</h1>
+<p>
+SS Clips is a human-curated discovery layer inside StudentStream.
+We surface standout moments from creators and brands while enforcing
+authenticity, ownership, and platform integrity.
+</p>
 
-  <!-- TRUST -->
-  <div class="trust">
-    <div>🛡 Enforced by StudentStream Security</div>
-    <div>© You retain full content ownership</div>
-    <div>🚫 No shadowbanning or manipulation</div>
-    <div>⭐ Paid ≠ guaranteed approval</div>
+<div class="trust">
+  <div>🛡 Reviewed by StudentStream Security</div>
+  <div>© You retain full ownership</div>
+  <div>🚫 No algorithm manipulation</div>
+  <div>⚖️ Transparent enforcement & appeals</div>
+</div>
+
+<form>
+
+<fieldset>
+  <legend>Creator Information</legend>
+  <label>Creator / Channel Name</label>
+  <input type="text" required placeholder="@username or brand">
+
+  <label>Contact Email</label>
+  <input type="email" required placeholder="you@email.com">
+</fieldset>
+
+<fieldset>
+  <legend>Clip Information</legend>
+
+  <label>Platform</label>
+  <select required>
+    <option value="">Select platform</option>
+    <option>YouTube</option>
+    <option>TikTok</option>
+    <option>Twitch</option>
+    <option>Instagram</option>
+    <option>Other</option>
+  </select>
+
+  <label>Clip URL</label>
+  <input type="url" required placeholder="https://">
+
+  <label>Category</label>
+  <select required>
+    <option value="">Select category</option>
+    <option>Gaming</option>
+    <option>Music</option>
+    <option>Comedy</option>
+    <option>Creator / Lifestyle</option>
+    <option>Brand / Promo</option>
+    <option>Startup / Tech</option>
+  </select>
+
+  <label>Description (optional)</label>
+  <textarea placeholder="Context, moment, or reason this clip stands out"></textarea>
+</fieldset>
+
+<fieldset>
+  <legend>Optional Promotion</legend>
+
+  <div class="promos">
+    <div class="promo">
+      <strong>Free</strong>
+      <span>Standard review & placement</span>
+    </div>
+    <div class="promo">
+      <strong>$3 Highlight</strong>
+      <span>Visual emphasis in feeds</span>
+    </div>
+    <div class="promo">
+      <strong>$5 Featured</strong>
+      <span>Front-page rotation (7 days)</span>
+    </div>
+    <div class="promo">
+      <strong>$10 Spotlight</strong>
+      <span>Top placement + amplification</span>
+    </div>
   </div>
+</fieldset>
 
-  <!-- FORM -->
-  <form>
+<div class="check">
+  <input type="checkbox" required>
+  <span>
+    I confirm I own or have rights to this content and agree to StudentStream’s
+    enforcement, review, and removal policies.
+  </span>
+</div>
 
-    <fieldset>
-      <legend>Creator Information</legend>
+<div class="actions">
+  <button class="submit" type="submit">Submit Clip</button>
+  <button class="reset" type="reset">Reset</button>
+</div>
 
-      <label>Creator / Channel Name</label>
-      <input type="text" placeholder="@username" required>
+<div class="note">
+Submissions are reviewed manually. Paid promotion does not guarantee approval.
+Abuse, impersonation, or stolen content will be rejected or escalated.
+</div>
 
-      <label>Email (review updates)</label>
-      <input type="email" placeholder="you@email.com" required>
-    </fieldset>
-
-    <fieldset>
-      <legend>Clip Details</legend>
-
-      <label>Platform</label>
-      <select required>
-        <option value="">Select platform</option>
-        <option>YouTube</option>
-        <option>TikTok</option>
-        <option>Twitch</option>
-        <option>Instagram</option>
-        <option>Other</option>
-      </select>
-
-      <label>Clip URL</label>
-      <input type="url" placeholder="https://..." required>
-
-      <label>Category</label>
-      <select required>
-        <option value="">Select category</option>
-        <option>Gaming</option>
-        <option>Music</option>
-        <option>Comedy</option>
-        <option>Creator / Lifestyle</option>
-        <option>Brand / Promo</option>
-        <option>Startup / Tech</option>
-      </select>
-
-      <label>Description (optional)</label>
-      <textarea placeholder="Context, moment, or why this clip stands out"></textarea>
-    </fieldset>
-
-    <fieldset>
-      <legend>Optional Promotion</legend>
-
-      <div class="promos">
-        <div class="promo">
-          <strong>Free Submission</strong>
-          <span>Standard review · curated placement</span>
-        </div>
-        <div class="promo">
-          <strong>$3 Highlight</strong>
-          <span>Visual emphasis · no rule overrides</span>
-        </div>
-        <div class="promo">
-          <strong>$5 Featured</strong>
-          <span>Front-page rotation (7 days)</span>
-        </div>
-        <div class="promo">
-          <strong>$10 Spotlight</strong>
-          <span>Top placement + social amplification</span>
-        </div>
-      </div>
-    </fieldset>
-
-    <div class="actions">
-      <button class="submit" type="submit">Submit Clip</button>
-      <button class="reset" type="reset">Reset</button>
-    </div>
-
-    <div class="note">
-      Submitting a clip does not guarantee publication.  
-      Paid promotion does not override authenticity, safety, or originality review.  
-      Stolen content, impersonation, or abuse results in rejection or enforcement action.
-    </div>
-
-  </form>
+</form>
 
 </main>
 
