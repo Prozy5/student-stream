@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Login | SS Clips</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  background:#050816;
+  color:white;
+  font-family:system-ui;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box{
+  background:#0c1426;
+  padding:32px;
+  border-radius:20px;
+  width:100%;
+  max-width:380px;
+}
+input,button{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  margin-top:14px;
+  border:none;
+}
+button{
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  font-weight:700;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>SS Clips Admin</h2>
+  <input id="email" type="email" placeholder="Admin email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabase = supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function login(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email, password
+  });
+
+  if(error){
+    alert("Login failed");
+  } else {
+    window.location.href = "/ss-clips/admin.html";
+  }
+}
+</script>
+
+</body>
+</html>
