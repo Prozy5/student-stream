@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>SS Clips Admin Access</title>
+<title>SS Clips Admin Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
@@ -16,9 +16,10 @@
   --border:rgba(255,255,255,.08);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box}
 
 body{
+  margin:0;
   min-height:100vh;
   display:flex;
   align-items:center;
@@ -37,16 +38,8 @@ body{
   padding:36px;
 }
 
-h1{
-  font-size:28px;
-  margin-bottom:6px;
-}
-
-p{
-  font-size:14px;
-  color:var(--muted);
-  margin-bottom:26px;
-}
+h1{font-size:28px;margin-bottom:6px}
+p{font-size:14px;color:var(--muted);margin-bottom:24px}
 
 label{
   font-size:13px;
@@ -76,11 +69,9 @@ button{
   color:#00121f;
 }
 
-.secondary{
-  margin-top:12px;
-  background:none;
-  border:1px solid var(--border);
-  color:var(--text);
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
 }
 
 .error{
@@ -97,24 +88,18 @@ button{
 
 <div class="card">
   <h1>SS Clips Admin</h1>
-  <p id="statusText">Authorized access only</p>
+  <p>Authorized access only</p>
 
-  <!-- LOGIN FORM -->
-  <form id="loginForm">
+  <form id="loginForm" novalidate>
     <label>Email</label>
     <input id="email" type="email" required />
 
     <label>Password</label>
     <input id="password" type="password" required />
 
-    <button type="submit">Login</button>
+    <button id="loginBtn" type="submit">Login</button>
     <div id="error" class="error"></div>
   </form>
-
-  <!-- LOGOUT -->
-  <button id="logoutBtn" class="secondary" style="display:none">
-    Logout
-  </button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -124,46 +109,22 @@ const supabase = supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const loginForm = document.getElementById("loginForm");
-const logoutBtn  = document.getElementById("logoutBtn");
-const errorBox   = document.getElementById("error");
-const statusText = document.getElementById("statusText");
+const form = document.getElementById("loginForm");
+const btn  = document.getElementById("loginBtn");
+const err  = document.getElementById("error");
 
-/* ===============================
-   AUTO CHECK (ON PAGE LOAD)
-================================ */
-(async()=>{
-  const { data:{ user } } = await supabase.auth.getUser();
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault(); // 🔒 STOPS PAGE RESET
+  err.style.display = "none";
+  btn.disabled = true;
 
-  if(!user) return;
-
-  const { data: admin } = await supabase
-    .from("admins")
-    .select("user_id")
-    .eq("user_id", user.id)
-    .single();
-
-  if(admin){
-    statusText.textContent = "Admin session active";
-    loginForm.style.display = "none";
-    logoutBtn.style.display = "block";
-
-    // Optional auto redirect
-    setTimeout(()=>{
-      window.location.href = "/ss-clips/admin.html";
-    }, 800);
-  }
-})();
-
-/* ===============================
-   LOGIN
-================================ */
-loginForm.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  errorBox.style.display = "none";
-
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  if(!email || !password){
+    showError("Missing email or password");
+    return;
+  }
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email, password
@@ -182,24 +143,17 @@ loginForm.addEventListener("submit", async (e)=>{
 
   if(!admin){
     await supabase.auth.signOut();
-    showError("Access denied. Admin only.");
+    showError("Access denied");
     return;
   }
 
   window.location.href = "/ss-clips/admin.html";
 });
 
-/* ===============================
-   LOGOUT
-================================ */
-logoutBtn.addEventListener("click", async ()=>{
-  await supabase.auth.signOut();
-  location.reload();
-});
-
 function showError(msg){
-  errorBox.textContent = msg;
-  errorBox.style.display = "block";
+  err.textContent = msg;
+  err.style.display = "block";
+  btn.disabled = false;
 }
 </script>
 
