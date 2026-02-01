@@ -5,68 +5,218 @@
 <title>Submit a Clip | SS Clips</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="canonical" href="https://studentstream.online/clips/submit.html">
+
+<meta name="description" content="Submit your clip to SS Clips, StudentStream’s curated discovery network. Free submissions. Optional promotion. Transparent review.">
+<meta name="author" content="StudentStream">
+
 <style>
+:root{
+  --bg:#050912;
+  --panel:#0e1a2f;
+  --accent:#5da9ff;
+  --accent2:#3cffc3;
+  --text:#eef3ff;
+  --muted:#9fb1cc;
+  --border:rgba(255,255,255,.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
 body{
-  margin:0;
-  font-family:system-ui;
-  background:#050912;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f2345,#050912 70%);
+  color:var(--text);
 }
-form{
-  background:#0e1a2f;
-  padding:30px;
-  border-radius:18px;
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
   width:100%;
-  max-width:420px;
-  border:1px solid rgba(255,255,255,.1);
+  z-index:20;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 26px;
+  background:rgba(8,16,32,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
 }
-h1{text-align:center;margin-bottom:20px}
-input,select,button{
+nav a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+nav a:hover{color:var(--text)}
+
+/* PAGE */
+main{
+  max-width:900px;
+  margin:130px auto 120px;
+  padding:0 20px;
+}
+
+h1{
+  font-size:44px;
+  margin-bottom:12px;
+}
+p{
+  color:var(--muted);
+  line-height:1.8;
+}
+
+/* INFO BOX */
+.info{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+  margin:30px 0 40px;
+  font-size:14px;
+}
+
+/* FORM */
+form{
+  background:linear-gradient(180deg,#0e1a2f,#0b1425);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:30px;
+}
+
+label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+input, select, textarea{
   width:100%;
   padding:14px;
-  border-radius:12px;
-  border:none;
-  margin-bottom:12px;
-  font-size:15px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#070f1f;
+  color:var(--text);
+  margin-bottom:22px;
+  font-size:14px;
 }
+
+textarea{resize:vertical;min-height:120px}
+
+.actions{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
 button{
-  background:linear-gradient(135deg,#5da9ff,#3f8cff);
-  color:#001020;
-  font-weight:600;
+  padding:14px 28px;
+  border-radius:999px;
+  border:none;
+  font-weight:800;
   cursor:pointer;
 }
-.small{
+.submit{
+  background:linear-gradient(135deg,#5da9ff,#3f8cff);
+  color:#001020;
+}
+.reset{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text);
+}
+
+/* FOOTER NOTE */
+.note{
+  margin-top:30px;
   font-size:12px;
-  opacity:.6;
-  text-align:center;
+  color:var(--muted);
 }
 </style>
 </head>
 
 <body>
 
-<form action="https://formspree.io/f/xojqgpan" method="POST">
+<nav>
+  <strong>StudentStream</strong>
+  <div>
+    <a href="/">Home</a>
+    <a href="/clips/">SS Clips</a>
+    <a href="/security.html">Security</a>
+  </div>
+</nav>
+
+<main>
   <h1>Submit a Clip</h1>
+  <p>
+    SS Clips is a curated discovery network.  
+    Submissions are reviewed for originality, safety, and relevance.
+  </p>
 
-  <input type="text" name="name" placeholder="Creator name" required>
-  <input type="url" name="link" placeholder="YouTube / TikTok / Twitch link" required>
+  <div class="info">
+    ✔ Free submission always available  
+    <br>⭐ Optional promotion (clearly labeled)  
+    <br>🛡 Enforced by StudentStream Security  
+    <br>⚖️ You retain full ownership of your content
+  </div>
 
-  <select name="type" required>
-    <option value="">Clip type</option>
-    <option>Gaming</option>
-    <option>Music</option>
-    <option>Creator</option>
-    <option>Comedy</option>
-    <option>Brand</option>
-  </select>
+  <!-- FORM (frontend only for now) -->
+  <form>
+    <label>Creator / Channel Name</label>
+    <input type="text" placeholder="@YourName" required>
 
-  <button type="submit">Submit Clip</button>
-  <div class="small">Free submissions · Paid features coming soon</div>
-</form>
+    <label>Email (for review updates)</label>
+    <input type="email" placeholder="you@email.com" required>
+
+    <label>Clip Platform</label>
+    <select required>
+      <option value="">Select platform</option>
+      <option>YouTube</option>
+      <option>TikTok</option>
+      <option>Twitch</option>
+      <option>Instagram</option>
+      <option>Other</option>
+    </select>
+
+    <label>Clip URL</label>
+    <input type="url" placeholder="https://..." required>
+
+    <label>Category</label>
+    <select required>
+      <option value="">Select category</option>
+      <option>Gaming</option>
+      <option>Music</option>
+      <option>Comedy</option>
+      <option>Creator / Lifestyle</option>
+      <option>Brand / Promo</option>
+      <option>Startup / Tech</option>
+    </select>
+
+    <label>Clip Description (optional)</label>
+    <textarea placeholder="What makes this clip worth featuring?"></textarea>
+
+    <label>Promotion (optional)</label>
+    <select>
+      <option>No promotion (free)</option>
+      <option>Highlighted Clip — $3</option>
+      <option>Featured Placement (7 days) — $5</option>
+      <option>Spotlight Slot — $10</option>
+    </select>
+
+    <div class="actions">
+      <button class="submit" type="submit">Submit Clip</button>
+      <button class="reset" type="reset">Reset</button>
+    </div>
+  </form>
+
+  <div class="note">
+    Submitting does not guarantee publication.  
+    Paid promotion does not override safety or authenticity review.
+    Abuse, stolen content, or impersonation results in rejection.
+  </div>
+</main>
 
 </body>
 </html>
