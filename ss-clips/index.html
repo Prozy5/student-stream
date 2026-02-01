@@ -5,10 +5,19 @@
 <title>SS Clips | StudentStream Discovery Network</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- CANONICAL -->
 <link rel="canonical" href="https://studentstream.online/clips/">
 
-<meta name="description" content="SS Clips is StudentStream’s curated short-form discovery network — spotlighting creators, founders, and brands through high-signal clips.">
-<meta name="keywords" content="SS Clips, StudentStream, creator discovery, viral clips, short form video">
+<!-- SEO -->
+<meta name="description" content="SS Clips is StudentStream’s curated short-form discovery network, spotlighting creators, founders, and brands through high-signal clips.">
+<meta name="keywords" content="SS Clips, StudentStream, creator discovery, short form clips, creator spotlight">
+<meta name="author" content="StudentStream">
+
+<!-- OPEN GRAPH -->
+<meta property="og:title" content="SS Clips — StudentStream Discovery Network">
+<meta property="og:description" content="A curated, brand-safe clip network built for creator discovery — not algorithmic noise.">
+<meta property="og:url" content="https://studentstream.online/clips/">
+<meta property="og:type" content="website">
 
 <style>
 :root{
@@ -29,12 +38,33 @@ body{
   color:var(--text);
 }
 
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 26px;
+  background:rgba(8,16,32,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+nav a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+nav a:hover{color:var(--text)}
+
 /* HERO */
 header{
-  padding:100px 20px 60px;
+  padding:120px 20px 70px;
   text-align:center;
 }
-
 .badge{
   display:inline-block;
   padding:7px 16px;
@@ -45,54 +75,47 @@ header{
   font-size:.85rem;
   margin-bottom:18px;
 }
-
 header h1{
-  font-size:52px;
+  font-size:54px;
   margin-bottom:14px;
 }
-
 header p{
-  max-width:820px;
+  max-width:850px;
   margin:auto;
   color:var(--muted);
   line-height:1.75;
 }
-
 .actions{
-  margin-top:32px;
+  margin-top:34px;
   display:flex;
   justify-content:center;
   gap:14px;
   flex-wrap:wrap;
 }
-
 .actions a{
   padding:13px 26px;
   border-radius:999px;
   font-weight:600;
   text-decoration:none;
 }
-
 .primary{
   background:linear-gradient(135deg,#5da9ff,#3f8cff);
   color:#001020;
 }
-
 .secondary{
   border:1px solid var(--border);
   color:var(--text);
 }
 
-/* TRUST STRIP */
+/* TRUST */
 .trust{
-  max-width:1100px;
+  max-width:1150px;
   margin:40px auto 0;
   padding:0 20px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:18px;
 }
-
 .trust div{
   background:var(--panel);
   border:1px solid var(--border);
@@ -105,13 +128,12 @@ header p{
 /* CATEGORIES */
 .categories{
   max-width:1200px;
-  margin:70px auto 10px;
+  margin:80px auto 10px;
   padding:0 20px;
   display:flex;
   gap:12px;
   flex-wrap:wrap;
 }
-
 .category{
   padding:8px 16px;
   border-radius:999px;
@@ -127,39 +149,47 @@ header p{
   padding:0 20px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:24px;
+  gap:26px;
 }
-
 .card{
   background:linear-gradient(180deg,#0e1a2f,#0b1425);
-  border-radius:18px;
+  border-radius:20px;
   overflow:hidden;
   border:1px solid var(--border);
   position:relative;
 }
-
 .card iframe{
   width:100%;
   height:200px;
   border:none;
 }
-
 .card .info{
-  padding:14px 16px;
+  padding:16px;
   font-size:14px;
   color:var(--muted);
 }
-
 .tag{
   font-size:12px;
   color:var(--accent);
   margin-bottom:6px;
 }
-
+.creator{
+  font-size:12px;
+  margin-top:6px;
+  color:#7fb5ff;
+}
+.badge-mini{
+  display:inline-block;
+  font-size:10px;
+  padding:4px 8px;
+  border-radius:999px;
+  margin-left:6px;
+  background:rgba(93,169,255,.2);
+  color:#9cc8ff;
+}
 .featured{
   outline:2px solid rgba(93,169,255,.35);
 }
-
 .premium{
   position:absolute;
   top:12px;
@@ -172,10 +202,25 @@ header p{
   font-weight:700;
 }
 
+/* INFO SECTIONS */
+.section{
+  max-width:1000px;
+  margin:100px auto;
+  padding:0 20px;
+}
+.section h2{
+  font-size:32px;
+  margin-bottom:16px;
+}
+.section p{
+  color:var(--muted);
+  line-height:1.8;
+}
+
 /* FOOTER */
 footer{
   border-top:1px solid var(--border);
-  padding:70px 20px;
+  padding:80px 20px;
   text-align:center;
   font-size:13px;
   color:var(--muted);
@@ -185,30 +230,38 @@ footer{
 
 <body>
 
+<nav>
+  <strong>StudentStream</strong>
+  <div>
+    <a href="/">Home</a>
+    <a href="/clips/">SS Clips</a>
+    <a href="/security.html">Security</a>
+    <a href="/company.html">Company</a>
+  </div>
+</nav>
+
 <header>
-  <span class="badge">StudentStream · Discovery Network</span>
+  <span class="badge">StudentStream · Media & Discovery</span>
   <h1>SS Clips</h1>
   <p>
     SS Clips is StudentStream’s curated short-form discovery network.
-    We surface high-signal creators, founders, and brands through clips
-    that deserve attention — without algorithmic noise.
+    We spotlight creators, founders, and brands through high-signal clips —
+    without algorithmic chaos, repost theft, or shadow ranking.
   </p>
 
   <div class="actions">
     <a href="submit.html" class="primary">Submit a Clip</a>
-    <a href="/company.html" class="secondary">About StudentStream</a>
+    <a href="/security.html" class="secondary">Trust & Safety</a>
   </div>
 </header>
 
-<!-- TRUST -->
 <section class="trust">
-  <div>🛡 Curated — not algorithmic</div>
-  <div>🚫 No repost theft or impersonation</div>
-  <div>⭐ Featured placement is transparent</div>
-  <div>🧠 Built for discovery, not dopamine</div>
+  <div>🛡 Brand-safe & curated</div>
+  <div>✔️ Creator verification available</div>
+  <div>⭐ Paid features are labeled</div>
+  <div>🧠 Built for discovery, not addiction</div>
 </section>
 
-<!-- CATEGORIES -->
 <div class="categories">
   <div class="category">🎮 Gaming</div>
   <div class="category">🎵 Music</div>
@@ -218,7 +271,6 @@ footer{
   <div class="category">🚀 Startups</div>
 </div>
 
-<!-- CLIPS -->
 <section class="grid">
 
   <div class="card featured">
@@ -226,7 +278,11 @@ footer{
     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
     <div class="info">
       <div class="tag">Creator Spotlight</div>
-      High-signal gaming moment · Verified creator
+      High-signal gaming moment
+      <div class="creator">
+        @KaiPlays · YouTube
+        <span class="badge-mini">Verified</span>
+      </div>
     </div>
   </div>
 
@@ -234,10 +290,48 @@ footer{
     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
     <div class="info">
       <div class="tag">Community Pick</div>
-      Comedy clip · Emerging creator
+      Comedy clip from emerging creator
+      <div class="creator">
+        @LaughLab · TikTok
+      </div>
     </div>
   </div>
 
+</section>
+
+<section class="section">
+  <h2>How SS Clips Works</h2>
+  <p>
+    SS Clips is a curated discovery network. Creators submit clips hosted on
+    platforms like YouTube, TikTok, or Twitch. Submissions are reviewed for
+    originality, safety, and relevance before appearing.
+    <br><br>
+    Featured placement is optional, paid, and clearly labeled.
+    Payment does not bypass enforcement, verification, or security standards.
+    StudentStream does not claim ownership of creator content.
+  </p>
+</section>
+
+<section class="section">
+  <h2>Promotion & Verification</h2>
+  <p>
+    Free submission is always available.
+    Optional promotion helps creators gain visibility:
+    <br><br>
+    • Highlighted Clip — $3<br>
+    • Featured Placement (7 days) — $5<br>
+    • Spotlight Slot (limited) — $10<br><br>
+    Verification badges confirm creator authenticity and platform trust.
+  </p>
+</section>
+
+<section class="section">
+  <h2>Roadmap</h2>
+  <p>
+    SS Clips is evolving into a full media surface within StudentStream.
+    Planned expansions include SS Clips Originals, SS Films Select,
+    and future integration with SS:Watch.
+  </p>
 </section>
 
 <footer>
