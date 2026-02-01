@@ -1,51 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SS Clips Admin Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8" />
+<title>SS Clips Admin Access</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
+:root{
+  --bg:#050816;
+  --panel:#0c1426;
+  --accent:#4facfe;
+  --danger:#ff6b6b;
+  --text:#eef3ff;
+  --muted:#9aa8c7;
+  --border:rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
 body{
-  margin:0;
-  height:100vh;
+  min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:radial-gradient(circle at top,#0b1430,#000);
-  font-family:system-ui;
-  color:#fff;
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  color:var(--text);
 }
+
 .card{
-  background:rgba(255,255,255,.08);
-  padding:30px;
-  border-radius:20px;
   width:100%;
-  max-width:380px;
+  max-width:440px;
+  background:linear-gradient(180deg,#0c1426,#091020);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:36px;
 }
-h1{margin-bottom:20px}
+
+h1{
+  font-size:28px;
+  margin-bottom:6px;
+}
+
+p{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:26px;
+}
+
+label{
+  font-size:13px;
+  color:var(--muted);
+  display:block;
+  margin-bottom:6px;
+}
+
 input{
   width:100%;
-  padding:12px;
-  margin-bottom:14px;
-  border-radius:10px;
-  border:none;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  font-size:15px;
+  margin-bottom:18px;
 }
+
 button{
   width:100%;
-  padding:12px;
+  padding:16px;
+  border-radius:16px;
   border:none;
-  border-radius:12px;
-  font-weight:700;
-  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  font-weight:900;
+  font-size:15px;
   cursor:pointer;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  color:#00121f;
 }
+
+.secondary{
+  margin-top:12px;
+  background:none;
+  border:1px solid var(--border);
+  color:var(--text);
+}
+
 .error{
-  margin-top:10px;
-  color:#ff5c5c;
-  font-size:14px;
+  margin-top:16px;
+  font-size:13px;
+  color:var(--danger);
+  display:none;
+  text-align:center;
 }
 </style>
 </head>
@@ -54,51 +97,109 @@ button{
 
 <div class="card">
   <h1>SS Clips Admin</h1>
+  <p id="statusText">Authorized access only</p>
 
-  <input id="email" type="email" placeholder="Admin Email">
-  <input id="password" type="password" placeholder="Password">
+  <!-- LOGIN FORM -->
+  <form id="loginForm">
+    <label>Email</label>
+    <input id="email" type="email" required />
 
-  <button onclick="login()">Login</button>
+    <label>Password</label>
+    <input id="password" type="password" required />
 
-  <div class="error" id="error"></div>
+    <button type="submit">Login</button>
+    <div id="error" class="error"></div>
+  </form>
+
+  <!-- LOGOUT -->
+  <button id="logoutBtn" class="secondary" style="display:none">
+    Logout
+  </button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-async function login(){
-  error.textContent="";
+const loginForm = document.getElementById("loginForm");
+const logoutBtn  = document.getElementById("logoutBtn");
+const errorBox   = document.getElementById("error");
+const statusText = document.getElementById("statusText");
 
-  const { data, error:err } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value
+/* ===============================
+   AUTO CHECK (ON PAGE LOAD)
+================================ */
+(async()=>{
+  const { data:{ user } } = await supabase.auth.getUser();
+
+  if(!user) return;
+
+  const { data: admin } = await supabase
+    .from("admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .single();
+
+  if(admin){
+    statusText.textContent = "Admin session active";
+    loginForm.style.display = "none";
+    logoutBtn.style.display = "block";
+
+    // Optional auto redirect
+    setTimeout(()=>{
+      window.location.href = "/ss-clips/admin.html";
+    }, 800);
+  }
+})();
+
+/* ===============================
+   LOGIN
+================================ */
+loginForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  errorBox.style.display = "none";
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email, password
   });
 
-  if(err){
-    error.textContent = err.message;
+  if(error){
+    showError(error.message);
     return;
   }
 
-  const userId = data.user.id;
-
-  // 🔒 VERIFY ADMIN
-  const { data:admin } = await supabase
+  const { data: admin } = await supabase
     .from("admins")
-    .select("*")
-    .eq("user_id", userId)
+    .select("user_id")
+    .eq("user_id", data.user.id)
     .single();
 
   if(!admin){
     await supabase.auth.signOut();
-    error.textContent = "Not authorized as admin.";
+    showError("Access denied. Admin only.");
     return;
   }
 
-  // ✅ SUCCESS
-  location.href = "/ss-clips/admin.html";
+  window.location.href = "/ss-clips/admin.html";
+});
+
+/* ===============================
+   LOGOUT
+================================ */
+logoutBtn.addEventListener("click", async ()=>{
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.style.display = "block";
 }
 </script>
 
