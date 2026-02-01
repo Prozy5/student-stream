@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Featured Clips | SS Clips</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="canonical" href="https://studentstream.online/clips/featured.html">
+
+<meta name="description" content="Featured creator clips curated by SS Clips — the discovery division of StudentStream.">
+<meta name="author" content="StudentStream">
+
+<style>
+:root{
+  --bg:#050816;
+  --panel:#0c1426;
+  --accent:#4facfe;
+  --text:#eef3ff;
+  --muted:#9aa8c7;
+  --border:rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
+  color:var(--text);
+}
+
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  background:rgba(6,12,26,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+nav a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:14px;
+}
+nav a:hover{color:var(--text)}
+
+main{
+  max-width:1250px;
+  margin:auto;
+  padding:130px 24px 100px;
+}
+
+h1{font-size:48px;margin-bottom:14px}
+p{color:var(--muted);max-width:850px;line-height:1.8}
+
+.grid{
+  margin-top:50px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:26px;
+}
+
+.clip{
+  background:linear-gradient(180deg,#0c1426,#091020);
+  border:1px solid var(--border);
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.thumb{
+  height:180px;
+  background:linear-gradient(135deg,#1a2f5a,#0c1426);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  color:var(--muted);
+}
+
+.clip-body{
+  padding:18px 20px 22px;
+}
+
+.clip-body h3{
+  font-size:18px;
+  margin-bottom:6px;
+}
+
+.meta{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+.tags span{
+  display:inline-block;
+  font-size:12px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  margin-right:6px;
+  color:#8dbbff;
+}
+
+.watch{
+  display:inline-block;
+  margin-top:16px;
+  padding:10px 18px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  color:#00121f;
+  font-weight:700;
+  text-decoration:none;
+  font-size:14px;
+}
+
+.note{
+  margin-top:80px;
+  font-size:14px;
+  color:var(--muted);
+}
+
+footer{
+  border-top:1px solid var(--border);
+  padding:70px 24px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <strong>StudentStream</strong>
+  <div>
+    <a href="/">Home</a>
+    <a href="/clips/">SS Clips</a>
+    <a href="/clips/featured.html">Featured</a>
+    <a href="/clips/submit.html">Submit</a>
+  </div>
+</nav>
+
+<main>
+
+<section>
+  <h1>Featured Clips</h1>
+  <p>
+    Hand-selected highlights from creators across gaming, music,
+    content, and culture.
+    <br><br>
+    SS Clips does not re-host content. All clips link directly
+    to the creator’s original platform.
+  </p>
+</section>
+
+<section class="grid">
+
+  <!-- CLIP -->
+  <div class="clip">
+    <div class="thumb">Clip Preview</div>
+    <div class="clip-body">
+      <h3>Insane 1v3 Clutch</h3>
+      <div class="meta">by @CreatorName • Gaming</div>
+      <div class="tags">
+        <span>#Gaming</span><span>#FPS</span>
+      </div>
+      <a class="watch" href="#" target="_blank">Watch Clip</a>
+    </div>
+  </div>
+
+  <!-- CLIP -->
+  <div class="clip">
+    <div class="thumb">Clip Preview</div>
+    <div class="clip-body">
+      <h3>Studio Session Snippet</h3>
+      <div class="meta">by @ArtistName • Music</div>
+      <div class="tags">
+        <span>#Music</span><span>#Studio</span>
+      </div>
+      <a class="watch" href="#" target="_blank">Watch Clip</a>
+    </div>
+  </div>
+
+  <!-- CLIP -->
+  <div class="clip">
+    <div class="thumb">Clip Preview</div>
+    <div class="clip-body">
+      <h3>First Brand Collab</h3>
+      <div class="meta">by @CreatorName • Creator</div>
+      <div class="tags">
+        <span>#Creator</span><span>#Brand</span>
+      </div>
+      <a class="watch" href="#" target="_blank">Watch Clip</a>
+    </div>
+  </div>
+
+</section>
+
+<div class="note">
+  Featured clips are selected based on quality, originality,
+  and community safety. Paid promotion does not override review standards.
+</div>
+
+</main>
+
+<footer>
+  © 2026 StudentStream  
+  <br>
+  SS Clips — Featured Highlights
+</footer>
+
+</body>
+</html>
