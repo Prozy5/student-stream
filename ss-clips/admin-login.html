@@ -2,19 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SS Clips Login</title>
+<title>SS Clips Admin Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="robots" content="noindex, nofollow">
 
 <style>
 :root{
   --bg:#050816;
   --panel:#0c1426;
-  --panel-dark:#091020;
   --accent:#4facfe;
+  --accent-2:#00f2fe;
+  --danger:#ff5c5c;
   --text:#eef3ff;
   --muted:#9aa8c7;
   --border:rgba(255,255,255,.08);
-  --danger:#ff5c5c;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,48 +34,76 @@ body{
 .card{
   width:100%;
   max-width:420px;
-  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
+  background:linear-gradient(180deg,var(--panel),#091020);
   border:1px solid var(--border);
-  border-radius:24px;
+  border-radius:26px;
   padding:36px;
 }
 
-h1{
-  margin-bottom:8px;
+.logo{
+  text-align:center;
+  font-weight:900;
+  font-size:22px;
+  margin-bottom:6px;
 }
 
-p{
+.sub{
+  text-align:center;
   color:var(--muted);
+  font-size:13px;
   margin-bottom:28px;
-  font-size:14px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  margin-bottom:6px;
+  color:var(--muted);
 }
 
 input{
   width:100%;
-  padding:14px;
+  padding:15px;
   border-radius:14px;
   border:1px solid var(--border);
-  margin-bottom:16px;
+  background:#ffffff;
   font-size:15px;
+  margin-bottom:18px;
 }
 
 button{
   width:100%;
-  padding:14px;
+  padding:16px;
   border-radius:16px;
   border:none;
   font-weight:900;
   font-size:15px;
   cursor:pointer;
-  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
   color:#00121f;
 }
 
+button:disabled{
+  opacity:.7;
+  cursor:not-allowed;
+}
+
 .error{
+  display:none;
   margin-top:16px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:rgba(255,92,92,.15);
   color:var(--danger);
   font-size:13px;
-  display:none;
+  text-align:center;
+}
+
+.footer{
+  margin-top:22px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -81,34 +111,56 @@ button{
 <body>
 
 <div class="card">
-  <h1>SS Clips Login</h1>
-  <p>Sign in to manage your submissions</p>
+  <div class="logo">SS Clips Admin</div>
+  <div class="sub">Authorized access only</div>
 
-  <input id="email" type="email" placeholder="Email" autocomplete="email">
-  <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+  <label>Email</label>
+  <input id="email" type="email" placeholder="admin@email.com" autocomplete="username">
+
+  <label>Password</label>
+  <input id="password" type="password" placeholder="••••••••" autocomplete="current-password">
 
   <button id="loginBtn">Login</button>
 
   <div id="error" class="error"></div>
+
+  <div class="footer">
+    StudentStream • SS Clips
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwODM3MCwiZXhwIjoyMDgyNjg0MzcwfQ.CsPZH8iEu--QB8Zcug4TaqBS8T-g_eqWBbnx9zJH7yA"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ",
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:false
+    }
+  }
 );
+
+// 🔁 AUTO REDIRECT IF ALREADY LOGGED IN
+(async()=>{
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(session){
+    window.location.replace("/ss-clips/admin.html");
+  }
+})();
 
 const btn = document.getElementById("loginBtn");
 const errorBox = document.getElementById("error");
 
-btn.addEventListener("click", async () => {
-  errorBox.style.display = "none";
-  btn.textContent = "Logging in...";
-  btn.disabled = true;
+btn.addEventListener("click", async()=>{
+  errorBox.style.display="none";
+  btn.textContent="Logging in…";
+  btn.disabled=true;
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
 
   if(!email || !password){
     showError("Enter email and password");
@@ -125,15 +177,23 @@ btn.addEventListener("click", async () => {
     return;
   }
 
-  // ✅ SUCCESS — REDIRECT
-  window.location.href = "/ss-clips/admin.html";
+  // 🔐 CONFIRM SESSION EXISTS
+  const { data:{ session } } = await supabase.auth.getSession();
+
+  if(!session){
+    showError("Session failed. Try again.");
+    return;
+  }
+
+  // 🚀 REDIRECT
+  window.location.replace("/ss-clips/admin.html");
 });
 
 function showError(msg){
-  errorBox.textContent = msg;
-  errorBox.style.display = "block";
-  btn.textContent = "Login";
-  btn.disabled = false;
+  errorBox.textContent=msg;
+  errorBox.style.display="block";
+  btn.textContent="Login";
+  btn.disabled=false;
 }
 </script>
 
