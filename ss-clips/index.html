@@ -2,37 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SS Clips | Curated Creator Discovery by StudentStream</title>
+<title>SS Clips | StudentStream</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- CANONICAL -->
 <link rel="canonical" href="https://studentstream.online/clips/">
 
 <!-- SEO -->
-<meta name="description" content="SS Clips is a curated short-form discovery network by StudentStream — spotlighting standout creators, moments, and brands without algorithmic manipulation.">
-<meta name="keywords" content="SS Clips, StudentStream, creator clips, content discovery">
+<meta name="description" content="SS Clips by StudentStream — discover, submit, and promote creator clips.">
 <meta name="author" content="StudentStream">
 
 <!-- OPEN GRAPH -->
-<meta property="og:title" content="SS Clips — Curated Creator Discovery">
-<meta property="og:description" content="A human-curated clips network built to surface creators, not exploit them.">
+<meta property="og:title" content="SS Clips">
+<meta property="og:description" content="Creator clips powered by StudentStream.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studentstream.online/clips/">
-
-<!-- STRUCTURED DATA -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"WebSite",
-  "name":"SS Clips",
-  "url":"https://studentstream.online/clips/",
-  "publisher":{
-    "@type":"Organization",
-    "name":"StudentStream",
-    "url":"https://studentstream.online"
-  }
-}
-</script>
 
 <style>
 :root{
@@ -40,7 +24,6 @@
   --panel:#0e1a2f;
   --panel2:#0b1425;
   --accent:#5da9ff;
-  --accent2:#3cffc3;
   --text:#eef3ff;
   --muted:#9fb1cc;
   --border:rgba(255,255,255,.08);
@@ -54,7 +37,6 @@ body{
   color:var(--text);
 }
 
-/* NAV */
 nav{
   position:fixed;
   top:0;
@@ -68,6 +50,7 @@ nav{
   backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border);
 }
+
 nav a{
   color:var(--muted);
   text-decoration:none;
@@ -77,136 +60,93 @@ nav a{
 nav a:hover{color:var(--text)}
 
 main{
-  max-width:1300px;
+  max-width:1200px;
   margin:140px auto 120px;
   padding:0 22px;
 }
 
-/* HERO */
 .hero{
   max-width:900px;
-  margin-bottom:70px;
 }
-.badge{
-  display:inline-block;
-  padding:8px 18px;
-  border-radius:999px;
-  background:rgba(93,169,255,.15);
-  border:1px solid rgba(93,169,255,.35);
-  color:#8fc1ff;
-  font-size:.85rem;
-  margin-bottom:22px;
+
+.hero h1{
+  font-size:54px;
+  line-height:1.1;
+  margin-bottom:18px;
 }
-h1{
-  font-size:56px;
-  line-height:1.05;
-  margin-bottom:16px;
-}
+
 .hero p{
   color:var(--muted);
   font-size:18px;
   line-height:1.7;
 }
 
-/* ACTIONS */
 .actions{
-  margin-top:28px;
+  margin-top:34px;
   display:flex;
-  gap:14px;
+  gap:18px;
   flex-wrap:wrap;
 }
+
 .btn{
-  padding:14px 30px;
+  padding:14px 26px;
   border-radius:999px;
   text-decoration:none;
-  font-weight:800;
-  font-size:14px;
-}
-.primary{
-  background:linear-gradient(135deg,#5da9ff,#3f8cff);
-  color:#001020;
-}
-.secondary{
+  font-weight:600;
   border:1px solid var(--border);
-  color:var(--text);
 }
 
-/* SECTION HEADERS */
-section h2{
+.primary{
+  background:linear-gradient(135deg,#5da9ff,#3c7dff);
+  color:#081325;
+}
+
+.secondary{
+  color:var(--text);
+  background:transparent;
+}
+
+.section{
+  margin-top:110px;
+}
+
+.section h2{
   font-size:34px;
   margin-bottom:14px;
 }
-section p{
+
+.section p{
   color:var(--muted);
-  max-width:900px;
-  line-height:1.8;
+  max-width:800px;
 }
 
-/* CLIPS GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:26px;
-  margin-top:36px;
-}
-.clip{
-  background:linear-gradient(180deg,var(--panel),var(--panel2));
-  border:1px solid var(--border);
-  border-radius:22px;
-  overflow:hidden;
-}
-.clip iframe{
-  width:100%;
-  height:190px;
-  border:none;
-}
-.clip-info{
-  padding:18px;
-}
-.clip-info h3{
-  font-size:15px;
-  margin-bottom:6px;
-}
-.clip-info span{
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* TRUST */
-.trust{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:20px;
-  margin-top:40px;
-}
-.trust div{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:20px;
-  font-size:14px;
-}
-
-/* FOOTER */
 footer{
   border-top:1px solid var(--border);
-  padding:70px 24px;
+  padding:80px 24px;
   text-align:center;
   font-size:13px;
   color:var(--muted);
-  margin-top:120px;
 }
+footer a{
+  color:var(--muted);
+  text-decoration:none;
+  margin:0 10px;
+}
+footer a:hover{color:var(--text)}
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <nav>
   <strong>StudentStream</strong>
   <div>
     <a href="/">Home</a>
     <a href="/clips/">SS Clips</a>
     <a href="/clips/submit.html">Submit</a>
+    <a href="/clips/rules.html">Rules</a>
+    <a href="/clips/transparency.html">Transparency</a>
     <a href="/security.html">Security</a>
   </div>
 </nav>
@@ -214,81 +154,48 @@ footer{
 <main>
 
 <!-- HERO -->
-<div class="hero">
-  <span class="badge">SS Clips · Curated Discovery</span>
-  <h1>Clips worth seeing.<br>No algorithm games.</h1>
+<section class="hero">
+  <h1>SS Clips</h1>
   <p>
-    SS Clips is StudentStream’s curated short-form discovery hub.
-    We spotlight standout creators, moments, and brands —
-    reviewed by humans, protected by security systems, and free from manipulation.
+    A creator-first clip discovery division by StudentStream.
+    Submit, get featured, and grow without algorithms working against you.
   </p>
 
   <div class="actions">
     <a href="/clips/submit.html" class="btn primary">Submit a Clip</a>
-    <a href="#featured" class="btn secondary">View Featured</a>
-  </div>
-</div>
-
-<!-- FEATURED -->
-<section id="featured">
-  <h2>Featured Clips</h2>
-  <p>
-    Hand-selected highlights from creators across gaming, music,
-    culture, startups, and emerging brands.
-  </p>
-
-  <div class="grid">
-    <!-- SAMPLE CLIP -->
-    <div class="clip">
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <div class="clip-info">
-        <h3>Creator Moment Highlight</h3>
-        <span>YouTube · Gaming</span>
-      </div>
-    </div>
-
-    <div class="clip">
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <div class="clip-info">
-        <h3>Breakout Artist Snippet</h3>
-        <span>YouTube · Music</span>
-      </div>
-    </div>
-
-    <div class="clip">
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <div class="clip-info">
-        <h3>Founder Insight Clip</h3>
-        <span>YouTube · Startup</span>
-      </div>
-    </div>
+    <a href="/clips/rules.html" class="btn secondary">Read the Rules</a>
   </div>
 </section>
 
-<!-- WHY -->
-<section style="margin-top:120px">
-  <h2>Why SS Clips Exists</h2>
+<!-- ABOUT -->
+<section class="section">
+  <h2>What is SS Clips?</h2>
   <p>
-    Algorithms reward volume. SS Clips rewards quality.
-    <br><br>
-    This division exists to give creators visibility without forcing
-    them into trends, spam tactics, or pay-to-play systems.
+    SS Clips is a curated submission platform.
+    We don’t host videos — we surface them.
+    Creators keep ownership while StudentStream amplifies reach.
   </p>
+</section>
 
-  <div class="trust">
-    <div>🧠 Human-curated selections</div>
-    <div>🛡 Enforced by StudentStream Security</div>
-    <div>© Creators keep full ownership</div>
-    <div>🚫 No shadow bans or manipulation</div>
-  </div>
+<!-- TRUST -->
+<section class="section">
+  <h2>Built on Transparency</h2>
+  <p>
+    Every decision has a reason.
+    Our rules, enforcement, and monetization practices are public.
+  </p>
 </section>
 
 </main>
 
+<!-- FOOTER -->
 <footer>
   © 2026 StudentStream  
-  <br>
-  SS Clips · A StudentStream Media Division
+  <br><br>
+  <a href="/clips/submit.html">Submit</a> |
+  <a href="/clips/rules.html">Rules</a> |
+  <a href="/clips/transparency.html">Transparency</a> |
+  <a href="/security.html">Security</a>
 </footer>
 
 </body>
