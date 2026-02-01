@@ -5,13 +5,15 @@
 <title>Submit a Clip | SS Clips</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="Submit your clip to SS Clips by StudentStream. Free or featured submissions available.">
+<meta name="description" content="Submit your clip to SS Clips — StudentStream’s creator discovery platform. Free or featured submissions available.">
 
 <style>
 :root{
   --bg:#050816;
   --panel:#0c1426;
+  --panel-dark:#091020;
   --accent:#4facfe;
+  --accent-2:#00f2fe;
   --text:#eef3ff;
   --muted:#9aa8c7;
   --border:rgba(255,255,255,.08);
@@ -20,7 +22,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
-  font-family:system-ui;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
   background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
   color:var(--text);
 }
@@ -32,9 +34,11 @@ nav{
   padding:18px 28px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
   background:rgba(6,12,26,.85);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
+  z-index:10;
 }
 
 nav a{
@@ -43,24 +47,58 @@ nav a{
   margin-left:18px;
   font-size:14px;
 }
+nav a:hover{color:var(--text)}
 
 main{
-  max-width:900px;
+  max-width:920px;
   margin:auto;
-  padding:130px 24px 120px;
+  padding:140px 24px 120px;
 }
 
-h1{font-size:44px;margin-bottom:14px}
-p{color:var(--muted);line-height:1.7}
+h1{
+  font-size:46px;
+  margin-bottom:12px;
+}
 
-.form-card{
-  margin-top:40px;
-  background:linear-gradient(180deg,#0c1426,#091020);
+.subtitle{
+  color:var(--muted);
+  max-width:720px;
+  line-height:1.7;
+}
+
+.card{
+  margin-top:42px;
+  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
   border:1px solid var(--border);
-  border-radius:22px;
-  padding:30px;
+  border-radius:24px;
+  padding:34px;
 }
 
+/* Toggle */
+.toggle{
+  display:flex;
+  gap:14px;
+  margin-bottom:30px;
+}
+
+.toggle button{
+  flex:1;
+  padding:15px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:#101a33;
+  color:var(--text);
+  font-weight:800;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.toggle button.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#00121f;
+}
+
+/* Form */
 label{
   display:block;
   font-size:13px;
@@ -70,54 +108,44 @@ label{
 
 input,select,textarea{
   width:100%;
-  padding:14px;
+  padding:15px;
   border-radius:14px;
   border:1px solid var(--border);
-  background:#fff;
+  background:#ffffff;
   font-size:15px;
-  margin-bottom:18px;
+  margin-bottom:20px;
 }
 
-textarea{height:110px;resize:none}
-
-.toggle{
-  display:flex;
-  gap:14px;
-  margin-bottom:24px;
+textarea{
+  resize:none;
+  height:120px;
 }
 
-.toggle button{
-  flex:1;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:#101a33;
-  color:white;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.toggle .active{
-  background:linear-gradient(135deg,#4facfe,#00f2fe);
-  color:#00121f;
-}
-
-button.submit{
+.submit-btn{
   width:100%;
-  padding:16px;
-  border-radius:16px;
+  padding:18px;
+  border-radius:18px;
   border:none;
-  font-weight:800;
-  background:linear-gradient(135deg,#4facfe,#00f2fe);
-  color:#00121f;
+  font-weight:900;
+  font-size:15px;
   cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#00121f;
 }
 
-.note{
+.helper{
+  margin-top:26px;
   font-size:13px;
   color:var(--muted);
-  margin-top:22px;
-  line-height:1.6;
+  line-height:1.7;
+}
+
+footer{
+  border-top:1px solid var(--border);
+  padding:80px 24px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -129,33 +157,39 @@ button.submit{
   <div>
     <a href="/">Home</a>
     <a href="/ss-clips/">SS Clips</a>
+    <a href="/ss-clips/featured.html">Featured</a>
   </div>
 </nav>
 
 <main>
 
 <h1>Submit Your Clip</h1>
-<p>
-SS Clips highlights standout creator moments.  
-We never re-host content — all clips link to the original source.
+<p class="subtitle">
+SS Clips highlights standout moments from creators across the internet.
+We never re-host content — every submission links directly to the original source.
 </p>
 
-<div class="form-card">
+<div class="card">
 
+<!-- TYPE TOGGLE -->
 <div class="toggle">
-  <button id="freeBtn" class="active" onclick="setType(false)">Free Submission</button>
-  <button id="paidBtn" onclick="setType(true)">Apply for Featured</button>
+  <button id="freeBtn" class="active" onclick="setType(false)">
+    Free Submission
+  </button>
+  <button id="paidBtn" onclick="setType(true)">
+    Apply for Featured
+  </button>
 </div>
 
 <form id="clipForm">
 
 <label>Creator Name / Handle</label>
-<input id="creator" required>
+<input id="creator" placeholder="@creatorname" required>
 
-<label>Email</label>
-<input id="email" type="email" required>
+<label>Email (contact only)</label>
+<input id="email" type="email" placeholder="you@email.com" required>
 
-<label>Platform</label>
+<label>Primary Platform</label>
 <select id="platform" required>
   <option value="">Select platform</option>
   <option>YouTube</option>
@@ -163,43 +197,51 @@ We never re-host content — all clips link to the original source.
   <option>Twitch</option>
   <option>Instagram</option>
   <option>Kick</option>
+  <option>Twitter / X</option>
   <option>Other</option>
 </select>
 
 <label>Clip URL</label>
-<input id="url" type="url" required>
+<input id="clip_url" type="url" placeholder="https://…" required>
 
-<label>Clip Category</label>
+<label>Clip Type</label>
 <select id="category" required>
-  <option value="">Select type</option>
+  <option value="">Select clip type</option>
   <option>Viral Moment</option>
   <option>Funny / Unhinged</option>
   <option>Cold Clip</option>
-  <option>Storytime / POV</option>
-  <option>Real Talk</option>
-  <option>Live Moment</option>
   <option>Clutch / Skill</option>
-  <option>Fail / L</option>
+  <option>Live Stream Moment</option>
+  <option>Storytime / POV</option>
+  <option>Real Talk / Commentary</option>
   <option>Chat Interaction</option>
   <option>Internet Culture</option>
-  <option>Underground / Upcoming</option>
+  <option>Fail / L</option>
+  <option>Underground / Upcoming Creator</option>
 </select>
 
 <label>Optional Note</label>
-<textarea id="note"></textarea>
+<textarea id="note" placeholder="Why does this clip stand out?"></textarea>
 
-<button class="submit">Submit Clip</button>
+<button class="submit-btn">Submit Clip</button>
 
 </form>
 
-<div class="note" id="paidNote" style="display:none">
-Featured submissions are reviewed first.  
-Payment is only requested **after approval**.
+<div class="helper" id="paidInfo" style="display:none">
+<strong>Featured submissions:</strong><br>
+• Reviewed first<br>
+• Payment is requested only after approval<br>
+• No automatic charges — ever
 </div>
 
 </div>
 
 </main>
+
+<footer>
+© 2026 StudentStream<br>
+SS Clips — Creator Discovery Division
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -208,33 +250,49 @@ const supabase = supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let paid = false;
+let isPaid = false;
 
 function setType(val){
-  paid = val;
+  isPaid = val;
   freeBtn.classList.toggle("active", !val);
   paidBtn.classList.toggle("active", val);
-  paidNote.style.display = val ? "block" : "none";
+  paidInfo.style.display = val ? "block" : "none";
+}
+
+function slugify(text){
+  return text
+    .toLowerCase()
+    .replace(/[@]/g,"")
+    .replace(/\s+/g,"-")
+    .replace(/[^a-z0-9-]/g,"");
 }
 
 clipForm.addEventListener("submit", async e=>{
   e.preventDefault();
 
-  await supabase.from("clips").insert({
+  const { error } = await supabase.from("clips").insert({
     creator: creator.value,
+    creator_slug: slugify(creator.value),
     email: email.value,
     platform: platform.value,
-    clip_url: url.value,
+    clip_url: clip_url.value,
     category: category.value,
     note: note.value,
     status: "pending",
-    paid_request: paid,
+    paid_request: isPaid,
     payment_status: "unpaid",
-    price: paid ? 10 : 0
+    price: isPaid ? 10 : 0
   });
 
-  alert("Clip submitted!");
+  if(error){
+    alert("Something went wrong. Try again.");
+    console.error(error);
+    return;
+  }
+
+  alert("Clip submitted! Pending review.");
   clipForm.reset();
+  setType(false);
 });
 </script>
 
