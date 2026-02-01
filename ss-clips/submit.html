@@ -5,10 +5,7 @@
 <title>Submit a Clip | SS Clips</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="canonical" href="https://studentstream.online/ss-clips/submit.html">
-
-<meta name="description" content="Submit your clip to SS Clips — the creator discovery division of StudentStream.">
-<meta name="author" content="StudentStream">
+<meta name="description" content="Submit your clip to SS Clips by StudentStream. Free or featured submissions available.">
 
 <style>
 :root{
@@ -23,7 +20,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  font-family:system-ui;
   background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
   color:var(--text);
 }
@@ -35,11 +32,9 @@ nav{
   padding:18px 28px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
   background:rgba(6,12,26,.85);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  z-index:10;
 }
 
 nav a{
@@ -48,27 +43,22 @@ nav a{
   margin-left:18px;
   font-size:14px;
 }
-nav a:hover{color:var(--text)}
 
 main{
   max-width:900px;
   margin:auto;
-  padding:140px 24px 120px;
+  padding:130px 24px 120px;
 }
 
-h1{font-size:46px;margin-bottom:14px}
-h2{font-size:28px;margin-bottom:14px}
-p{
-  color:var(--muted);
-  line-height:1.7;
-}
+h1{font-size:44px;margin-bottom:14px}
+p{color:var(--muted);line-height:1.7}
 
 .form-card{
   margin-top:40px;
   background:linear-gradient(180deg,#0c1426,#091020);
   border:1px solid var(--border);
   border-radius:22px;
-  padding:34px;
+  padding:30px;
 }
 
 label{
@@ -78,68 +68,56 @@ label{
   color:var(--muted);
 }
 
-input, select, textarea{
+input,select,textarea{
   width:100%;
-  padding:15px;
+  padding:14px;
   border-radius:14px;
   border:1px solid var(--border);
   background:#fff;
   font-size:15px;
-  margin-bottom:22px;
+  margin-bottom:18px;
 }
 
-textarea{resize:none;height:120px}
+textarea{height:110px;resize:none}
 
-button{
-  width:100%;
-  padding:16px;
-  border-radius:18px;
-  border:none;
-  font-weight:800;
-  font-size:16px;
+.toggle{
+  display:flex;
+  gap:14px;
+  margin-bottom:24px;
+}
+
+.toggle button{
+  flex:1;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#101a33;
+  color:white;
+  font-weight:700;
   cursor:pointer;
+}
+
+.toggle .active{
   background:linear-gradient(135deg,#4facfe,#00f2fe);
   color:#00121f;
 }
 
-.badges{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:22px 0;
-}
-
-.badge{
-  padding:8px 14px;
-  font-size:12px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  color:var(--muted);
+button.submit{
+  width:100%;
+  padding:16px;
+  border-radius:16px;
+  border:none;
+  font-weight:800;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+  color:#00121f;
+  cursor:pointer;
 }
 
 .note{
-  margin-top:26px;
   font-size:13px;
   color:var(--muted);
+  margin-top:22px;
   line-height:1.6;
-}
-
-.rules{
-  margin-top:70px;
-}
-
-.rules ul{
-  margin-left:18px;
-  color:var(--muted);
-  line-height:1.8;
-}
-
-footer{
-  border-top:1px solid var(--border);
-  padding:80px 24px;
-  text-align:center;
-  font-size:13px;
-  color:var(--muted);
 }
 </style>
 </head>
@@ -151,146 +129,112 @@ footer{
   <div>
     <a href="/">Home</a>
     <a href="/ss-clips/">SS Clips</a>
-    <a href="/ss-clips/featured.html">Featured</a>
-    <a href="/ss-clips/submit.html">Submit</a>
   </div>
 </nav>
 
 <main>
 
-<section>
-  <h1>Submit Your Clip</h1>
-  <p>
-    SS Clips highlights standout creator moments across the internet.
-    We don’t re-host content — every feature links directly to the original source.
-  </p>
+<h1>Submit Your Clip</h1>
+<p>
+SS Clips highlights standout creator moments.  
+We never re-host content — all clips link to the original source.
+</p>
 
-  <div class="badges">
-    <div class="badge">Creator-First</div>
-    <div class="badge">Manual Review</div>
-    <div class="badge">Traffic Back to You</div>
-  </div>
-</section>
+<div class="form-card">
 
-<section class="form-card">
+<div class="toggle">
+  <button id="freeBtn" class="active" onclick="setType(false)">Free Submission</button>
+  <button id="paidBtn" onclick="setType(true)">Apply for Featured</button>
+</div>
 
 <form id="clipForm">
 
-  <label>Creator Name / Handle</label>
-  <input id="creator" type="text" placeholder="@yourname" required>
+<label>Creator Name / Handle</label>
+<input id="creator" required>
 
-  <label>Email (contact only)</label>
-  <input id="email" type="email" placeholder="you@email.com" required>
+<label>Email</label>
+<input id="email" type="email" required>
 
-  <label>Primary Platform</label>
-  <select id="platform" required>
-    <option value="">Select platform</option>
-    <option>YouTube</option>
-    <option>TikTok</option>
-    <option>Twitch</option>
-    <option>Instagram</option>
-    <option>Kick</option>
-    <option>Other</option>
-  </select>
+<label>Platform</label>
+<select id="platform" required>
+  <option value="">Select platform</option>
+  <option>YouTube</option>
+  <option>TikTok</option>
+  <option>Twitch</option>
+  <option>Instagram</option>
+  <option>Kick</option>
+  <option>Other</option>
+</select>
 
-  <label>Clip URL</label>
-  <input id="clip_url" type="url" placeholder="https://..." required>
+<label>Clip URL</label>
+<input id="url" type="url" required>
 
-  <label>Clip Category</label>
-  <select id="category" required>
-    <option value="">Select clip type</option>
+<label>Clip Category</label>
+<select id="category" required>
+  <option value="">Select type</option>
+  <option>Viral Moment</option>
+  <option>Funny / Unhinged</option>
+  <option>Cold Clip</option>
+  <option>Storytime / POV</option>
+  <option>Real Talk</option>
+  <option>Live Moment</option>
+  <option>Clutch / Skill</option>
+  <option>Fail / L</option>
+  <option>Chat Interaction</option>
+  <option>Internet Culture</option>
+  <option>Underground / Upcoming</option>
+</select>
 
-    <optgroup label="🎬 Creator Moments">
-      <option>Viral Moment</option>
-      <option>Funny / Unhinged</option>
-      <option>Cold Clip</option>
-      <option>Storytime / POV</option>
-      <option>Real Talk</option>
-    </optgroup>
+<label>Optional Note</label>
+<textarea id="note"></textarea>
 
-    <optgroup label="🎮 Stream & Content Energy">
-      <option>Live Moment</option>
-      <option>Clutch / Skill</option>
-      <option>Fail / L</option>
-      <option>Chat Interaction</option>
-    </optgroup>
-
-    <optgroup label="🎤 Creator Type">
-      <option>Streamer</option>
-      <option>YouTuber</option>
-      <option>Short-Form Creator</option>
-      <option>Musician / Artist</option>
-      <option>Commentary / Personality</option>
-    </optgroup>
-
-    <optgroup label="🌍 Culture">
-      <option>Internet Culture</option>
-      <option>Trends / Challenges</option>
-      <option>Underground / Upcoming</option>
-    </optgroup>
-  </select>
-
-  <label>Optional Note</label>
-  <textarea id="note" placeholder="Why does this clip deserve attention?"></textarea>
-
-  <button type="submit">Submit Clip</button>
-
-  <div class="note">
-    Submissions are reviewed manually.  
-    Approved clips may appear on SS Clips or be offered featured placement.
-  </div>
+<button class="submit">Submit Clip</button>
 
 </form>
 
-</section>
+<div class="note" id="paidNote" style="display:none">
+Featured submissions are reviewed first.  
+Payment is only requested **after approval**.
+</div>
 
-<section class="rules">
-  <h2>Submission Guidelines</h2>
-  <ul>
-    <li>You must own or have permission to submit the clip</li>
-    <li>No hate, harassment, or illegal content</li>
-    <li>Original platform links only</li>
-    <li>Approval is not guaranteed</li>
-    <li>SS Clips retains editorial discretion</li>
-  </ul>
-</section>
+</div>
 
 </main>
 
-<footer>
-  © 2026 StudentStream  
-  <br>
-  SS Clips — Creator Discovery Division
-</footer>
-
-<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-const form = document.getElementById("clipForm");
+let paid = false;
 
-form.addEventListener("submit", async (e) => {
+function setType(val){
+  paid = val;
+  freeBtn.classList.toggle("active", !val);
+  paidBtn.classList.toggle("active", val);
+  paidNote.style.display = val ? "block" : "none";
+}
+
+clipForm.addEventListener("submit", async e=>{
   e.preventDefault();
 
-  const { error } = await supabaseClient.from("clips").insert({
+  await supabase.from("clips").insert({
     creator: creator.value,
     email: email.value,
     platform: platform.value,
-    clip_url: clip_url.value,
+    clip_url: url.value,
     category: category.value,
-    note: note.value
+    note: note.value,
+    status: "pending",
+    paid_request: paid,
+    payment_status: "unpaid",
+    price: paid ? 10 : 0
   });
 
-  if(error){
-    alert("Submission failed. Try again.");
-    console.error(error);
-  } else {
-    form.reset();
-    alert("Clip submitted! Pending review.");
-  }
+  alert("Clip submitted!");
+  clipForm.reset();
 });
 </script>
 
