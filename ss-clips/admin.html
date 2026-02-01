@@ -3,282 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <title>SS Clips Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --bg:#050816;
-  --panel:#0c1426;
-  --panel-dark:#091020;
-  --accent:#4facfe;
-  --danger:#ff5c5c;
-  --success:#4dff88;
-  --warning:#ffd24d;
-  --text:#eef3ff;
-  --muted:#9aa8c7;
-  --border:rgba(255,255,255,.08);
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-
 body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
-  color:var(--text);
+  margin:0;
+  background:radial-gradient(circle at top,#0b1430,#000);
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,system-ui;
 }
-
-/* LOGIN */
-.login{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.login-card{
-  width:100%;
-  max-width:420px;
-  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:36px;
-}
-.login-card h1{margin-bottom:10px}
-.login-card p{color:var(--muted);margin-bottom:26px}
-input{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  margin-bottom:16px;
-  font-size:15px;
-}
-button{
-  border:none;
-  border-radius:14px;
-  padding:12px 16px;
-  font-weight:800;
-  cursor:pointer;
-}
-.primary{
-  width:100%;
-  background:linear-gradient(135deg,#4facfe,#00f2fe);
-  color:#00121f;
-}
-
-/* DASHBOARD */
 header{
-  padding:22px 28px;
-  border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
+  padding:18px 24px;
+  background:rgba(255,255,255,.06);
 }
-
-main{
-  max-width:1500px;
-  margin:auto;
-  padding:40px 24px 120px;
+button{
+  padding:8px 14px;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
 }
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:18px;
-  margin-bottom:40px;
-}
-.stat{
-  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
-  border:1px solid var(--border);
-  border-radius:18px;
+.logout{background:#ef4444;color:#000}
+.panel{
   padding:20px;
 }
-.stat strong{font-size:26px}
-.stat span{color:var(--muted);font-size:13px}
-
-.tabs{
-  display:flex;
-  gap:14px;
-  margin-bottom:30px;
-}
-.tabs button{
-  background:#101a33;
-  color:var(--text);
-}
-.tabs .active{
-  background:linear-gradient(135deg,#4facfe,#00f2fe);
-  color:#00121f;
-}
-
-.grid{
+.stats{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
-  gap:22px;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:14px;
 }
-
 .card{
-  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:22px;
+  background:rgba(255,255,255,.08);
+  padding:14px;
+  border-radius:14px;
 }
-.card p{
-  font-size:14px;
-  color:var(--muted);
-  margin:6px 0;
+.controls{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
-
-.badge{
-  display:inline-block;
-  font-size:12px;
-  padding:4px 8px;
+input,select,textarea{
+  padding:8px;
   border-radius:8px;
-  margin-right:6px;
+  border:none;
 }
-.pending{background:var(--warning)}
-.approved{background:var(--success)}
-.denied{background:var(--danger)}
-
-.actions{
-  margin-top:14px;
+table{
+  width:100%;
+  margin-top:20px;
+  border-collapse:collapse;
 }
-.actions button{
-  margin-right:8px;
-  margin-top:8px;
+th,td{
+  padding:10px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  vertical-align:top;
 }
-
-.hidden{display:none}
+.badge{
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+}
+.pending{background:#facc15;color:#000}
+.approved{background:#22c55e;color:#000}
+.rejected{background:#ef4444}
+.featured{background:#38bdf8;color:#000}
+.actions button{margin-right:6px}
+video{max-width:120px;border-radius:10px}
+textarea{width:100%;resize:none}
 </style>
 </head>
 
 <body>
 
-<div id="login" class="login hidden">
-  <div class="login-card">
-    <h1>SS Clips Admin</h1>
-    <p>Authorized access only</p>
-    <input id="email" type="email" placeholder="Admin email">
-    <input id="password" type="password" placeholder="Password">
-    <button class="primary" onclick="login()">Login</button>
-  </div>
-</div>
-
-<div id="dashboard" class="hidden">
 <header>
-  <strong>SS Clips Admin</strong>
-  <button onclick="logout()">Logout</button>
+  <strong>SS Clips — Admin Control</strong>
+  <button class="logout" onclick="logout()">Logout</button>
 </header>
 
-<main>
+<div class="panel">
 
-<div class="stats">
-  <div class="stat"><strong id="total">0</strong><span>Total</span></div>
-  <div class="stat"><strong id="pendingCount">0</strong><span>Pending</span></div>
-  <div class="stat"><strong id="approvedCount">0</strong><span>Approved</span></div>
-  <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
-  <div class="stat"><strong id="paidCount">0</strong><span>Paid</span></div>
+<section class="stats">
+  <div class="card">Total <b id="s_total">0</b></div>
+  <div class="card">Pending <b id="s_pending">0</b></div>
+  <div class="card">Approved <b id="s_approved">0</b></div>
+  <div class="card">Featured <b id="s_featured">0</b></div>
+  <div class="card">Paid <b id="s_paid">0</b></div>
+  <div class="card">Revenue $<b id="s_revenue">0</b></div>
+</section>
+
+<div class="controls">
+  <input id="search" placeholder="Search email or creator">
+  <select id="filter">
+    <option value="">All</option>
+    <option value="pending">Pending</option>
+    <option value="approved">Approved</option>
+    <option value="rejected">Rejected</option>
+  </select>
+  <button onclick="bulk('approved')">Bulk Approve</button>
+  <button onclick="bulk('rejected')">Bulk Reject</button>
+  <button onclick="bulkFeature()">Bulk Feature</button>
 </div>
 
-<div class="tabs">
-  <button class="active" onclick="switchTab('pending')">Pending</button>
-  <button onclick="switchTab('approved')">Approved</button>
-  <button onclick="switchTab('denied')">Denied</button>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Clip</th>
+<th>Creator</th>
+<th>Status</th>
+<th>Paid</th>
+<th>Revenue</th>
+<th>Admin Notes</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+
 </div>
 
-<div id="pending" class="grid"></div>
-<div id="approved" class="grid hidden"></div>
-<div id="denied" class="grid hidden"></div>
-
-</main>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwODM3MCwiZXhwIjoyMDgyNjg0MzcwfQ.CsPZH8iEu--QB8Zcug4TaqBS8T-g_eqWBbnx9zJH7yA"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const ADMINS=["youremail@email.com"];
+let selected=new Set(), adminId=null;
 
 (async()=>{
-  const { data:{ user } } = await supabase.auth.getUser();
-  if(!user || !ADMINS.includes(user.email)){
-    login.classList.remove("hidden");
-    return;
-  }
-  dashboard.classList.remove("hidden");
+  const {data:{session}}=await supabase.auth.getSession();
+  if(!session)location.href="/ss-clips/admin-login.html";
+
+  adminId=session.user.id;
+  const {data:admin}=await supabase.from("admins").select("*").eq("user_id",adminId).single();
+  if(!admin)location.href="/";
+
   load();
 })();
 
-async function login(){
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value
-  });
-  if(error) return alert("Login failed");
-  location.reload();
-}
-
 async function logout(){
   await supabase.auth.signOut();
-  location.reload();
+  location.href="/ss-clips/admin-login.html";
+}
+
+async function log(action,id){
+  await supabase.from("admin_logs").insert({admin_id:adminId,clip_id:id,action});
 }
 
 async function load(){
-  const { data } = await supabase.from("clips").select("*").order("created_at",{ascending:false});
-  total.textContent=data.length;
-  pendingCount.textContent=data.filter(x=>x.status==="pending").length;
-  approvedCount.textContent=data.filter(x=>x.status==="approved").length;
-  featuredCount.textContent=data.filter(x=>x.featured).length;
-  paidCount.textContent=data.filter(x=>x.payment_status==="paid").length;
+  const {data}=await supabase.from("clips").select("*").order("created_at",{ascending:false});
 
-  render("pending",data.filter(x=>x.status==="pending"));
-  render("approved",data.filter(x=>x.status==="approved"));
-  render("denied",data.filter(x=>x.status==="denied"));
-}
+  let t=0,p=0,a=0,f=0,paid=0,rev=0;
+  rows.innerHTML="";
 
-function render(id,list){
-  const el=document.getElementById(id);
-  el.innerHTML="";
-  list.forEach(c=>{
-    el.innerHTML+=`
-    <div class="card">
-      <span class="badge ${c.status}">${c.status}</span>
-      ${c.featured?`<span class="badge approved">FEATURED</span>`:""}
-      <strong>${c.creator}</strong>
-      <p>${c.platform} • ${c.category}</p>
-      <a href="${c.clip_url}" target="_blank">Open Clip</a>
-      ${c.note?`<p>${c.note}</p>`:""}
-      <div class="actions">
-        ${id==="pending"?`
-          <button onclick="setStatus('${c.id}','approved')">Approve</button>
-          <button onclick="setStatus('${c.id}','denied')">Deny</button>
-        `:""}
-        ${id==="approved" && c.paid_request && !c.featured?`
-          <button onclick="feature('${c.id}')">Mark Paid & Feature</button>
-        `:""}
-      </div>
-    </div>`;
+  data.forEach(c=>{
+    t++;
+    if(c.status==="pending")p++;
+    if(c.status==="approved")a++;
+    if(c.featured)f++;
+    if(c.payment_status==="paid")paid++;
+    rev+=Number(c.revenue||0);
+
+    rows.innerHTML+=`
+    <tr>
+      <td><input type="checkbox" onchange="toggle('${c.id}')"></td>
+      <td><video src="${c.video_url}" controls muted></video></td>
+      <td>${c.creator_email||"—"}</td>
+      <td><span class="badge ${c.status}">${c.status}</span></td>
+      <td>${c.payment_status}</td>
+      <td>$<input value="${c.revenue||0}" style="width:70px" onchange="setRevenue('${c.id}',this.value)"></td>
+      <td><textarea onchange="setNote('${c.id}',this.value)">${c.admin_note||""}</textarea></td>
+      <td class="actions">
+        <button onclick="setStatus('${c.id}','approved')">Approve</button>
+        <button onclick="setStatus('${c.id}','rejected')">Reject</button>
+        <button onclick="toggleFeature('${c.id}',${!c.featured})">${c.featured?"Unfeature":"Feature"}</button>
+        <button onclick="markPaid('${c.id}')">Mark Paid</button>
+        <button onclick="del('${c.id}')">Delete</button>
+      </td>
+    </tr>`;
   });
+
+  s_total.textContent=t;
+  s_pending.textContent=p;
+  s_approved.textContent=a;
+  s_featured.textContent=f;
+  s_paid.textContent=paid;
+  s_revenue.textContent=rev.toFixed(2);
 }
 
-async function setStatus(id,status){
+function toggle(id){selected.has(id)?selected.delete(id):selected.add(id)}
+
+async function bulk(status){
+  for(const id of selected) await setStatus(id,status,false);
+  selected.clear();load();
+}
+
+async function bulkFeature(){
+  for(const id of selected) await toggleFeature(id,true,false);
+  selected.clear();load();
+}
+
+async function setStatus(id,status,refresh=true){
   await supabase.from("clips").update({status}).eq("id",id);
-  load();
+  await log(status,id);
+  if(refresh)load();
 }
-async function feature(id){
-  await supabase.from("clips").update({
-    featured:true,
-    payment_status:"paid"
-  }).eq("id",id);
-  load();
+
+async function toggleFeature(id,val,refresh=true){
+  await supabase.from("clips").update({featured:val}).eq("id",id);
+  await log(val?"featured":"unfeatured",id);
+  if(refresh)load();
 }
-function switchTab(tab){
-  ["pending","approved","denied"].forEach(t=>document.getElementById(t).classList.add("hidden"));
-  document.getElementById(tab).classList.remove("hidden");
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
+
+async function markPaid(id){
+  await supabase.from("clips").update({payment_status:"paid"}).eq("id",id);
+  await log("paid",id);load();
 }
+
+async function setRevenue(id,val){
+  await supabase.from("clips").update({revenue:val}).eq("id",id);
+}
+
+async function setNote(id,val){
+  await supabase.from("clips").update({admin_note:val}).eq("id",id);
+}
+
+async function del(id){
+  if(!confirm("Delete clip?"))return;
+  await supabase.from("clips").delete().eq("id",id);
+  await log("deleted",id);load();
+}
+
+filter.onchange=load;
+search.oninput=()=>{
+  [...rows.children].forEach(r=>{
+    r.style.display=r.innerText.toLowerCase().includes(search.value.toLowerCase())?"":"none";
+  });
+};
 </script>
+
 </body>
 </html>
