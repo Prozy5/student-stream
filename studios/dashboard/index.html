@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Creator Dashboard — StudentStream Studios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <meta name="description" content="Creator dashboard for StudentStream Studios. Manage assets, sales, and earnings." />
+  <link rel="canonical" href="https://studentstream.online/studios/dashboard" />
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:radial-gradient(circle at top,#0c102a,#040406);
+color:#fff;
+}
+
+.layout{
+display:grid;
+grid-template-columns:260px 1fr;
+min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+background:rgba(255,255,255,.04);
+border-right:1px solid rgba(255,255,255,.12);
+padding:28px 20px;
+}
+
+.logo{
+font-weight:800;
+font-size:1.2rem;
+margin-bottom:30px;
+}
+
+.nav a{
+display:block;
+padding:12px 14px;
+border-radius:12px;
+color:#fff;
+text-decoration:none;
+opacity:.7;
+margin-bottom:6px;
+}
+
+.nav a.active,
+.nav a:hover{
+background:rgba(122,162,255,.18);
+opacity:1;
+}
+
+/* MAIN */
+.main{
+padding:36px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:32px;
+}
+
+.badge{
+background:rgba(108,242,194,.15);
+border:1px solid rgba(108,242,194,.35);
+color:#6cf2c2;
+padding:6px 14px;
+border-radius:999px;
+font-size:.8rem;
+}
+
+h1{
+margin:0;
+font-size:2.4rem;
+}
+
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-bottom:40px;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:24px;
+box-shadow:0 0 40px rgba(0,0,0,.4);
+}
+
+.card span{
+opacity:.6;
+font-size:.85rem;
+}
+
+.card b{
+display:block;
+font-size:1.8rem;
+margin-top:8px;
+}
+
+/* TABLE */
+.table{
+margin-top:20px;
+}
+
+.table h2{
+margin-bottom:14px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:14px 10px;
+text-align:left;
+font-size:.9rem;
+}
+
+th{
+opacity:.6;
+border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+td{
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.status{
+padding:4px 10px;
+border-radius:999px;
+font-size:.75rem;
+display:inline-block;
+}
+
+.live{background:rgba(108,242,194,.2);color:#6cf2c2}
+.pending{background:rgba(255,215,0,.2);color:#ffd700}
+
+/* UPLOAD */
+.upload{
+margin-top:40px;
+}
+
+.upload button{
+padding:14px 26px;
+border-radius:999px;
+border:none;
+font-weight:700;
+cursor:pointer;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
+}
+
+/* FOOTER */
+.footer{
+margin-top:60px;
+opacity:.6;
+font-size:.85rem;
+}
+
+@media(max-width:900px){
+.layout{grid-template-columns:1fr}
+.sidebar{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">🎬 SS Studios</div>
+    <nav class="nav">
+      <a class="active" href="#">Dashboard</a>
+      <a href="/studios/marketplace">Marketplace</a>
+      <a href="/studios/upload">Upload Asset</a>
+      <a href="/studios/licenses">Licenses</a>
+      <a href="/studios/payouts">Payouts</a>
+      <a href="/">StudentStream</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="header">
+      <h1>Creator Dashboard</h1>
+      <span class="badge">Verified Creator</span>
+    </div>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="card">
+        <span>Total Revenue</span>
+        <b>$2,184</b>
+      </div>
+      <div class="card">
+        <span>This Month</span>
+        <b>$486</b>
+      </div>
+      <div class="card">
+        <span>Assets Live</span>
+        <b>12</b>
+      </div>
+      <div class="card">
+        <span>Total Sales</span>
+        <b>94</b>
+      </div>
+    </section>
+
+    <!-- ASSETS TABLE -->
+    <section class="table">
+      <h2>Your Assets</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Sales</th>
+            <th>Earnings</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cinematic Overlay Pack</td>
+            <td>Video</td>
+            <td><span class="status live">Live</span></td>
+            <td>42</td>
+            <td>$1,134</td>
+          </tr>
+          <tr>
+            <td>Urban LUT Collection</td>
+            <td>LUTs</td>
+            <td><span class="status live">Live</span></td>
+            <td>31</td>
+            <td>$620</td>
+          </tr>
+          <tr>
+            <td>Motion Titles Vol. 1</td>
+            <td>Templates</td>
+            <td><span class="status pending">Review</span></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- UPLOAD -->
+    <section class="upload">
+      <h2>Upload new asset</h2>
+      <p style="opacity:.7;max-width:520px">
+        Upload video packs, templates, LUTs, sound effects, or design assets.
+        All uploads are reviewed for quality and licensing compliance.
+      </p>
+      <button onclick="location.href='/studios/upload'">Upload Asset</button>
+    </section>
+
+    <div class="footer">
+      © 2026 StudentStream Studios · Creator Dashboard
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>
