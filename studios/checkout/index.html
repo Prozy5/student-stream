@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout — StudentStream Studios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <meta name="description" content="Secure checkout for digital assets on StudentStream Studios." />
+  <link rel="canonical" href="https://studentstream.online/studios/checkout" />
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:radial-gradient(circle at top,#0c102a,#040406);
+color:#fff;
+padding:20px;
+}
+
+.wrapper{
+max-width:1200px;
+margin:0 auto;
+}
+
+.header{
+margin-bottom:40px;
+}
+
+.badge{
+display:inline-block;
+padding:7px 16px;
+border-radius:999px;
+background:rgba(108,242,194,.15);
+border:1px solid rgba(108,242,194,.35);
+color:#6cf2c2;
+font-size:.8rem;
+margin-bottom:16px;
+}
+
+h1{
+margin:0 0 10px;
+font-size:2.6rem;
+}
+
+p{opacity:.75;max-width:650px}
+
+.layout{
+display:grid;
+grid-template-columns:1.2fr .8fr;
+gap:40px;
+}
+
+.panel{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:28px;
+padding:32px;
+box-shadow:0 0 60px rgba(0,0,0,.45);
+}
+
+.asset{
+display:flex;
+gap:18px;
+margin-bottom:24px;
+}
+
+.thumb{
+width:120px;
+height:80px;
+border-radius:14px;
+background:linear-gradient(135deg,#2c2f5a,#15172b);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:.8rem;
+opacity:.6;
+}
+
+.asset h3{
+margin:0 0 6px;
+font-size:1.2rem;
+}
+
+.asset span{
+font-size:.85rem;
+opacity:.6;
+}
+
+.license{
+border:1px solid rgba(255,255,255,.18);
+border-radius:18px;
+padding:18px;
+margin-bottom:14px;
+cursor:pointer;
+transition:.2s;
+}
+
+.license:hover{
+background:rgba(255,255,255,.04);
+border-color:#7aa2ff;
+}
+
+.license b{
+display:block;
+margin-bottom:4px;
+}
+
+.price{
+font-size:1.2rem;
+font-weight:700;
+color:#6cf2c2;
+}
+
+.divider{
+height:1px;
+background:rgba(255,255,255,.12);
+margin:22px 0;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+margin-bottom:12px;
+font-size:.95rem;
+}
+
+.total{
+font-size:1.2rem;
+font-weight:800;
+}
+
+input{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:none;
+margin-bottom:14px;
+font-size:1rem;
+background:rgba(255,255,255,.95);
+}
+
+button{
+width:100%;
+padding:16px;
+border-radius:999px;
+border:none;
+font-weight:700;
+font-size:1rem;
+cursor:pointer;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
+}
+
+.secure{
+margin-top:12px;
+font-size:.8rem;
+opacity:.6;
+text-align:center;
+}
+
+.footer{
+margin-top:70px;
+opacity:.6;
+font-size:.85rem;
+display:flex;
+gap:18px;
+flex-wrap:wrap;
+}
+
+@media(max-width:900px){
+.layout{grid-template-columns:1fr}
+h1{font-size:2.2rem}
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <span class="badge">Studios Checkout</span>
+    <h1>Complete your purchase</h1>
+    <p>
+      Securely license digital assets from verified creators on
+      StudentStream Studios.
+    </p>
+  </div>
+
+  <div class="layout">
+
+    <!-- LEFT: LICENSE -->
+    <div class="panel">
+      <div class="asset">
+        <div class="thumb">Preview</div>
+        <div>
+          <h3>Cinematic Overlay Pack</h3>
+          <span>by @creatorname</span>
+        </div>
+      </div>
+
+      <h3>Select a license</h3>
+
+      <div class="license">
+        <b>Standard Commercial License</b>
+        <span style="opacity:.65;font-size:.9rem">
+          Use in personal & client projects. No resale.
+        </span>
+        <div class="price">$29</div>
+      </div>
+
+      <div class="license">
+        <b>Extended Commercial License</b>
+        <span style="opacity:.65;font-size:.9rem">
+          Unlimited commercial usage, monetized content allowed.
+        </span>
+        <div class="price">$59</div>
+      </div>
+
+      <div class="license">
+        <b>Exclusive License</b>
+        <span style="opacity:.65;font-size:.9rem">
+          Asset removed from marketplace after purchase.
+        </span>
+        <div class="price">$199</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: PAYMENT -->
+    <div class="panel">
+      <h3>Payment details</h3>
+
+      <input type="email" placeholder="Email address" required>
+      <input type="text" placeholder="Cardholder name" required>
+      <input type="text" placeholder="Card number (Stripe)" required>
+      <input type="text" placeholder="MM / YY">
+      <input type="text" placeholder="CVC">
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <span>Asset price</span>
+        <span>$59.00</span>
+      </div>
+      <div class="row">
+        <span>Platform fee</span>
+        <span>$3.00</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row total">
+        <span>Total</span>
+        <span>$62.00</span>
+      </div>
+
+      <button>Complete Purchase</button>
+      <div class="secure">Secure checkout • Powered by StudentStream Studios</div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    © 2026 StudentStream Studios
+    <a href="/studios/marketplace">Marketplace</a>
+    <a href="/studios/licenses">Licensing</a>
+    <a href="/">StudentStream</a>
+  </div>
+
+</div>
+
+</body>
+</html>
