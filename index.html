@@ -6,12 +6,12 @@
   <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
   <meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8">
 
-  <title>StudentStream — Digital Media & Production Ecosystem</title>
+  <title>StudentStream — A New Media Platform</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO -->
-  <meta name="description" content="StudentStream is a digital media and production ecosystem developing original content, creators, and brand collaborations." />
-  <meta name="keywords" content="StudentStream, StudentStream HQ, production company, digital media, creators, original series" />
+  <meta name="description" content="StudentStream is a next-generation media platform and creative ecosystem. Our first division, StudentStream Productions, is now live. Platform launching April 4, 2026." />
+  <meta name="keywords" content="StudentStream, media platform, StudentStream Productions, creators, digital media, production company" />
   <meta name="author" content="StudentStream" />
 
   <!-- CANONICAL -->
@@ -19,7 +19,7 @@
 
   <!-- OPEN GRAPH -->
   <meta property="og:title" content="StudentStream" />
-  <meta property="og:description" content="A digital media and production ecosystem building original content and creative opportunities." />
+  <meta property="og:description" content="A next-generation media platform. StudentStream Productions is now live. Platform launching April 4, 2026." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://studentstream.online/" />
 
@@ -31,7 +31,7 @@
     "name": "StudentStream",
     "alternateName": "StudentStream HQ",
     "url": "https://studentstream.online",
-    "description": "StudentStream is a digital media and production ecosystem developing original content, creators, and brand collaborations.",
+    "description": "StudentStream is a next-generation media platform and creative ecosystem. Its first public division, StudentStream Productions, develops original films and digital content.",
     "founder": {
       "@type": "Person",
       "name": "Deondre Chambers"
@@ -57,7 +57,7 @@ padding:20px;
 }
 
 .container{
-max-width:1100px;
+max-width:1200px;
 width:100%;
 display:grid;
 grid-template-columns:1.1fr .9fr;
@@ -66,14 +66,16 @@ align-items:center;
 }
 
 h1{
-font-size:3.2rem;
+font-size:3.3rem;
 margin:0 0 18px;
 line-height:1.1;
 }
 
+h2{margin-top:0}
+
 p{
 opacity:.85;
-max-width:540px;
+max-width:560px;
 }
 
 .badge{
@@ -87,12 +89,67 @@ margin-bottom:22px;
 border:1px solid rgba(108,242,194,.25);
 }
 
+.countdown{
+display:flex;
+gap:12px;
+margin:28px 0;
+}
+
+.time-box{
+background:rgba(255,255,255,.08);
+padding:14px 18px;
+border-radius:14px;
+min-width:70px;
+text-align:center;
+backdrop-filter:blur(8px);
+}
+
+.time-box b{
+display:block;
+font-size:1.5rem;
+}
+
 .panel{
 background:rgba(255,255,255,.07);
 border:1px solid rgba(255,255,255,.12);
-border-radius:22px;
-padding:34px;
+border-radius:24px;
+padding:36px;
 box-shadow:0 0 50px rgba(0,0,0,.45);
+}
+
+form input, form select{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:none;
+margin-bottom:12px;
+background:rgba(255,255,255,.95);
+font-size:1rem;
+}
+
+form button{
+width:100%;
+padding:15px;
+border-radius:999px;
+border:none;
+font-weight:600;
+font-size:1rem;
+cursor:pointer;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
+transition:.2s;
+}
+
+form button:hover{
+transform:translateY(-1px);
+box-shadow:0 12px 28px rgba(0,0,0,.45);
+}
+
+.small{
+font-size:.8rem;
+opacity:.65;
+margin-top:10px;
+text-align:center;
 }
 
 .actions{
@@ -102,39 +159,14 @@ flex-wrap:wrap;
 margin-top:28px;
 }
 
-.btn{
-padding:14px 28px;
-border-radius:999px;
-border:none;
-font-weight:600;
-font-size:.95rem;
-cursor:pointer;
-transition:.2s;
-}
-
-.btn-primary{
-background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
-color:#040406;
-}
-
 .btn-outline{
 background:transparent;
 border:1px solid rgba(255,255,255,.25);
 color:#fff;
+padding:14px 26px;
+border-radius:999px;
+cursor:pointer;
 }
-
-.btn:hover{
-transform:translateY(-1px);
-box-shadow:0 10px 25px rgba(0,0,0,.4);
-}
-
-ul{
-padding-left:18px;
-margin:20px 0 0;
-opacity:.85;
-}
-
-li{margin-bottom:8px}
 
 @media(max-width:900px){
 .container{grid-template-columns:1fr}
@@ -149,47 +181,103 @@ h1{font-size:2.6rem}
 
   <!-- LEFT -->
   <div>
-    <span class="badge">StudentStream Productions</span>
+    <span class="badge">StudentStream Platform</span>
 
-    <h1>Building the next generation of digital media.</h1>
+    <h1>The future of media is being built.</h1>
 
     <p>
-      StudentStream is a digital media and production ecosystem focused on
-      original content, creator development, and culture-driven storytelling.
+      StudentStream is a next-generation media platform and creative ecosystem
+      designed to empower creators, productions, and brands.
     </p>
 
-    <p style="opacity:.65;margin-top:14px">
-      We work across film, digital series, short-form content, and brand collaborations.
+    <p style="opacity:.65;margin-top:12px">
+      Our first public division, <strong>StudentStream Productions</strong>,
+      is now live — developing original films, series, and digital content.
+    </p>
+
+    <div class="countdown">
+      <div class="time-box"><b id="d">--</b>Days</div>
+      <div class="time-box"><b id="h">--</b>Hours</div>
+      <div class="time-box"><b id="m">--</b>Mins</div>
+      <div class="time-box"><b id="s">--</b>Secs</div>
+    </div>
+
+    <p style="opacity:.6">
+      Full StudentStream platform launches April 4, 2026
     </p>
 
     <div class="actions">
-      <a href="/productions"><button class="btn btn-primary">Explore Productions</button></a>
-      <a href="/about"><button class="btn btn-outline">About StudentStream</button></a>
+      <a href="/productions"><button class="btn-outline">Explore Productions</button></a>
+      <a href="https://www.instagram.com/studentstreamhq" target="_blank">
+        <button class="btn-outline">Follow @studentstreamhq</button>
+      </a>
     </div>
   </div>
 
   <!-- RIGHT -->
   <div class="panel">
-    <h2 style="margin-top:0">What We’re Building</h2>
+    <h2>Join the Platform Waitlist</h2>
 
-    <ul>
-      <li>🎬 Original films & digital series</li>
-      <li>🎭 Acting, casting & creator opportunities</li>
-      <li>🤝 Brand & media collaborations</li>
-      <li>🚀 A future platform for distribution & discovery</li>
-    </ul>
+    <p style="opacity:.75">
+      Get early access to the full StudentStream platform,
+      creator tools, and future opportunities.
+    </p>
 
-    <div class="actions" style="margin-top:26px">
-      <a href="https://www.instagram.com/studentstreamhq" target="_blank">
-        <button class="btn btn-primary">Instagram</button>
-      </a>
-      <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">
-        <button class="btn btn-outline">TikTok</button>
-      </a>
-    </div>
+    <form id="waitlistForm">
+      <input type="text" id="firstName" placeholder="First name" required>
+      <input type="text" id="lastName" placeholder="Last name" required>
+      <input type="email" id="emailField" placeholder="Email address" required>
+
+      <select id="roleSelect" required>
+        <option value="">I am a...</option>
+        <option value="Creator">🎥 Creator</option>
+        <option value="Actor">🎭 Actor</option>
+        <option value="Entrepreneur">🚀 Entrepreneur</option>
+        <option value="Brand">🏷 Brand / Business</option>
+        <option value="Developer">🛠 Developer</option>
+      </select>
+
+      <button type="submit">Join the Waitlist</button>
+      <div class="small">Platform access • No spam • Limited rollout</div>
+    </form>
   </div>
 
 </div>
+
+<script>
+// Countdown
+const launchDate = new Date("2026-04-04T00:00:00").getTime();
+setInterval(()=>{
+  const now = new Date().getTime();
+  const diff = launchDate - now;
+  if(diff <= 0) return;
+
+  d.textContent = Math.floor(diff / (1000*60*60*24));
+  h.textContent = Math.floor((diff / (1000*60*60)) % 24);
+  m.textContent = Math.floor((diff / (1000*60)) % 60);
+  s.textContent = Math.floor((diff / 1000) % 60);
+},1000);
+
+// Waitlist submit
+document.getElementById("waitlistForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+
+  await fetch("https://formspree.io/f/xojqgpan",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      first_name:firstName.value,
+      last_name:lastName.value,
+      email:emailField.value,
+      role:roleSelect.value,
+      source:"Platform Waitlist"
+    })
+  });
+
+  alert("You're on the StudentStream waitlist 🚀");
+  e.target.reset();
+});
+</script>
 
 </body>
 </html>
