@@ -2,19 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Studios — StudentStream Productions | Creator Marketplace</title>
+<title>Studios Marketplace — StudentStream Productions</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SEO CORE -->
-<meta name="description" content="Studios by StudentStream Productions is a creator marketplace where artists, designers, filmmakers, and creators license work, sell assets, and connect with brands. Creators earn 70% revenue share." />
-<meta name="keywords" content="creator marketplace, sell digital art, license content, student creators, filmmaking marketplace, StudentStream Studios" />
+<!-- SEO -->
+<meta name="description" content="Browse the StudentStream Studios marketplace. Discover digital art, film, photography, and creative talent from emerging creators." />
+<meta name="keywords" content="creative marketplace, browse creators, digital art marketplace, student creators, StudentStream Studios" />
 <link rel="canonical" href="https://studentstream.online/studios" />
-
-<!-- SOCIAL PREVIEW -->
-<meta property="og:title" content="Studios — Creator Marketplace by StudentStream" />
-<meta property="og:description" content="Where creators turn work into opportunity. Submit, license, and sell creative work. 70% creator revenue share." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://studentstream.online/studios" />
 
 <!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,12 +18,11 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Studios by StudentStream",
+  "name": "StudentStream Studios Marketplace",
   "url": "https://studentstream.online/studios",
   "publisher": {
     "@type": "Organization",
-    "name": "StudentStream Productions",
-    "url": "https://studentstream.online"
+    "name": "StudentStream Productions"
   }
 }
 </script>
@@ -40,12 +33,14 @@ body{
 margin:0;
 background:radial-gradient(circle at top,#0f1224,#050507);
 color:#fff;
-padding:20px;
 }
-.wrapper{max-width:1300px;margin:0 auto}
+
+.wrapper{max-width:1300px;margin:auto;padding:24px}
 
 /* HERO */
-.hero{padding:80px 0 60px}
+.hero{
+padding:90px 0 60px;
+}
 .badge{
 display:inline-block;
 padding:7px 18px;
@@ -54,32 +49,28 @@ font-size:.8rem;
 background:rgba(108,242,194,.15);
 border:1px solid rgba(108,242,194,.3);
 color:#6cf2c2;
+margin-bottom:18px;
 }
 .hero h1{
 font-size:3.4rem;
-margin:18px 0 14px;
-line-height:1.08;
+line-height:1.05;
+margin:0 0 16px;
 }
 .hero p{
 max-width:820px;
 opacity:.85;
 font-size:1.05rem;
 }
-.hero .sub{
-opacity:.6;
-margin-top:10px;
-font-size:.95rem;
-}
 
 /* CTA */
 .cta-row{
 display:flex;
 gap:14px;
-margin-top:28px;
+margin-top:34px;
 flex-wrap:wrap;
 }
 .btn{
-padding:15px 30px;
+padding:15px 32px;
 border-radius:999px;
 font-weight:600;
 border:none;
@@ -95,44 +86,57 @@ background:transparent;
 border:1px solid rgba(255,255,255,.25);
 color:#fff;
 }
-.cta-note{
-margin-top:14px;
-opacity:.55;
-font-size:.85rem;
+
+/* MARKETPLACE GRID */
+.section{
+margin-top:90px;
+}
+.section h2{
+font-size:2.4rem;
+margin-bottom:10px;
+}
+.section p{
+opacity:.75;
+max-width:800px;
 }
 
-/* SECTIONS */
-.section{margin-top:90px}
-.section h2{font-size:2.3rem;margin-bottom:14px}
-.section p{opacity:.75;max-width:800px}
-
-/* GRID */
-.grid{
+.market-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:26px;
 margin-top:36px;
 }
-.card{
+
+.market-card{
 background:rgba(255,255,255,.06);
 border:1px solid rgba(255,255,255,.12);
-border-radius:24px;
+border-radius:26px;
 padding:34px;
-box-shadow:0 0 50px rgba(0,0,0,.55);
-transition:.25s;
-cursor:pointer;
+transition:.3s;
 }
-.card:hover{
+.market-card:hover{
 transform:translateY(-6px);
-box-shadow:0 26px 80px rgba(0,0,0,.7);
+box-shadow:0 28px 80px rgba(0,0,0,.7);
 }
-.card h3{margin-top:0;font-size:1.5rem}
-.card p{opacity:.75}
+.market-card h3{
+margin:0 0 8px;
+}
+.market-card p{
+opacity:.75;
+font-size:.95rem;
+}
+.market-card a{
+display:inline-block;
+margin-top:18px;
+color:#6cf2c2;
+font-weight:600;
+text-decoration:none;
+}
 
-/* PIPELINE */
+/* HOW IT WORKS */
 .pipeline{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:22px;
 margin-top:36px;
 }
@@ -142,30 +146,27 @@ border:1px solid rgba(255,255,255,.1);
 border-radius:22px;
 padding:26px;
 }
-.step b{display:block;font-size:1.05rem;margin-bottom:6px}
-
-/* DIVIDER */
-.divider{
-margin:100px 0 70px;
-height:1px;
-background:linear-gradient(to right,transparent,rgba(255,255,255,.25),transparent);
+.step b{
+display:block;
+margin-bottom:6px;
 }
 
 /* FOOTER */
 .footer{
-margin-top:80px;
+margin-top:100px;
 opacity:.6;
 font-size:.85rem;
 display:flex;
 flex-wrap:wrap;
 gap:16px;
 }
-.footer a{color:#7aa2ff;text-decoration:none}
+.footer a{
+color:#7aa2ff;
+text-decoration:none;
+}
 
-/* MOBILE */
-@media(max-width:768px){
-.hero{padding:60px 0 40px}
-.hero h1{font-size:2.3rem}
+@media(max-width:900px){
+.hero h1{font-size:2.4rem}
 }
 </style>
 </head>
@@ -175,55 +176,71 @@ gap:16px;
 
 <!-- HERO -->
 <section class="hero">
-  <span class="badge">Studios · Creator Marketplace</span>
-  <h1>Where creators<br>turn work into opportunity.</h1>
+  <span class="badge">Studios · Creative Marketplace</span>
+
+  <h1>
+    Discover creative work.<br>
+    License talent. Hire creators.
+  </h1>
 
   <p>
-    Studios is the creative marketplace and talent hub of StudentStream Productions.
-    Artists, designers, filmmakers, and creators showcase work, license assets,
-    and connect with real opportunities.
-  </p>
-
-  <p class="sub">
-    For brands: license visuals, hire creators, or commission original work.
+    StudentStream Studios is a curated creative marketplace where brands, teams,
+    and individuals discover digital art, film, photography, and emerging creators.
   </p>
 
   <div class="cta-row" id="ctaRow"></div>
-  <div class="cta-note" id="ctaNote"></div>
 </section>
 
-<!-- WHAT CAN BE SOLD -->
+<!-- MARKETPLACE CATEGORIES -->
 <section class="section">
-<h2>What Creators Can Sell</h2>
-<p>Studios supports a wide range of digital-first, license-ready creative work.</p>
+<h2>Browse the Marketplace</h2>
+<p>
+Explore licensed creative work and discover talent across multiple categories.
+</p>
 
-<div class="grid">
-  <div class="card"><h3>Digital Art & Design</h3><p>Illustrations, branding assets, graphics, posters.</p></div>
-  <div class="card"><h3>Video & Motion</h3><p>Short films, edits, motion graphics, clips.</p></div>
-  <div class="card"><h3>Photography</h3><p>Editorial, lifestyle, product, creative photography.</p></div>
-  <div class="card"><h3>Creative Services</h3><p>Custom commissions & licensed creative work.</p></div>
+<div class="market-grid">
+  <div class="market-card">
+    <h3>Digital Art & Design</h3>
+    <p>Illustrations, posters, brand assets, visual packs.</p>
+    <a href="/studios/marketplace?category=art">Browse Art →</a>
+  </div>
+
+  <div class="market-card">
+    <h3>Film & Video</h3>
+    <p>Short films, edits, motion graphics, clips.</p>
+    <a href="/studios/marketplace?category=video">Browse Video →</a>
+  </div>
+
+  <div class="market-card">
+    <h3>Photography</h3>
+    <p>Editorial, lifestyle, product, creative shots.</p>
+    <a href="/studios/marketplace?category=photo">Browse Photos →</a>
+  </div>
+
+  <div class="market-card">
+    <h3>Creative Services</h3>
+    <p>Commission-based work & collaborations.</p>
+    <a href="/studios/marketplace?category=services">Browse Services →</a>
+  </div>
 </div>
 </section>
-
-<div class="divider"></div>
 
 <!-- HOW IT WORKS -->
 <section class="section">
 <h2>How Studios Works</h2>
-<p>A simple, creator-first pipeline.</p>
 
 <div class="pipeline">
-  <div class="step"><b>Submit</b>Creators submit work or portfolios.</div>
-  <div class="step"><b>Approve</b>Studios reviews and curates listings.</div>
-  <div class="step"><b>Sell</b>Brands license or purchase assets.</div>
-  <div class="step"><b>Payout</b>Creators earn 70% via Cash App.</div>
+  <div class="step"><b>Browse</b>Discover curated creative work.</div>
+  <div class="step"><b>License</b>Purchase or request usage rights.</div>
+  <div class="step"><b>Connect</b>Work directly with creators.</div>
+  <div class="step"><b>Payout</b>Creators earn 70% per sale.</div>
 </div>
 </section>
 
+<!-- FOOTER -->
 <div class="footer">
   © 2026 StudentStream Studios
   <a href="/ss-productions">StudentStream Productions</a>
-  <a href="/ss-clips">SS Clips</a>
   <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
   <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
 </div>
@@ -239,46 +256,21 @@ const supabase = supabaseJs.createClient(
 (async () => {
   const { data: { user } } = await supabase.auth.getUser();
   const cta = document.getElementById("ctaRow");
-  const note = document.getElementById("ctaNote");
 
-  // NOT LOGGED IN
   if (!user) {
     cta.innerHTML = `
-      <a href="/studios/marketplace">
-        <button class="btn btn-primary">Browse Marketplace</button>
-      </a>
-      <a href="/studios/creators/submit">
-        <button class="btn btn-outline">Submit Your Work</button>
-      </a>
-      <a href="/ss-productions">
-        <button class="btn btn-outline">About Productions</button>
-      </a>
+      <a href="/studios/marketplace"><button class="btn btn-primary">Browse Marketplace</button></a>
+      <a href="/studios/signup"><button class="btn btn-outline">Become a Creator</button></a>
     `;
-    note.innerText = "Discover creators · License work · Hire talent";
     return;
   }
 
-  // LOGGED IN → CHECK ROLE
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role === "admin") {
-    window.location.href = "/studios/admin/dashboard.html";
-    return;
-  }
-
-  // LOGGED IN CREATOR
   cta.innerHTML = `
-    <a href="/studios/creators/dashboard">
-      <button class="btn btn-primary">Creator Dashboard</button>
-    </a>
-    <a href="/studios/marketplace">
-      <button class="btn btn-outline">Browse Marketplace</button>
-    </a>
+    <a href="/studios/marketplace"><button class="btn btn-primary">Browse Marketplace</button></a>
+    <a href="/studios/creators/dashboard"><button class="btn btn-outline">Creator Dashboard</button></a>
   `;
-  note.innerText = "Manage submissions, sales, and payouts";
 })();
 </script>
+
+</body>
+</html>
