@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Earnings — StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui}
+body{margin:0;background:#050507;color:#fff;padding:30px}
+h1{margin-bottom:4px}
+p{opacity:.7}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+margin:30px 0;
+}
+.stat{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:18px;
+padding:22px;
+}
+.stat b{font-size:1.4rem}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:30px;
+}
+th,td{
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,.1);
+}
+th{font-size:.8rem;opacity:.6;text-align:left}
+.badge{
+font-size:.7rem;
+padding:4px 10px;
+border-radius:999px;
+}
+.paid{background:rgba(108,242,194,.2);color:#6cf2c2}
+.pending{background:rgba(255,193,7,.2);color:#ffc107}
+</style>
+</head>
+
+<body>
+
+<h1>My Earnings</h1>
+<p>Track your payouts and revenue</p>
+
+<div class="stats">
+  <div class="stat">
+    <div>Total Earned</div>
+    <b id="total">$0.00</b>
+  </div>
+  <div class="stat">
+    <div>Paid Out</div>
+    <b id="paid">$0.00</b>
+  </div>
+  <div class="stat">
+    <div>Pending</div>
+    <b id="pending">$0.00</b>
+  </div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Date</th>
+<th>Amount</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="rows">
+<tr><td colspan="4">Loading…</td></tr>
+</tbody>
+</table>
+
+<script>
+const supabase = supabaseJs.createClient(
+ "https://iabzmoxzbqzcqgypxctr.supabase.co",
+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+(async()=>{
+ const {data:{user}} = await supabase.auth.getUser();
+ if(!user){location.href="/studios/login";return;}
+
+ const {data:sales} = await supabase
+  .from("marketplace_sales")
+  .select("title, creator_cut, status, created_at, paid_at")
+  .eq("creator_id", user.id)
+  .order("created_at",{ascending:false});
+
+ let total=0, paid=0, pending=0;
+
+ const rows=document.getElementById("rows");
+
+ if(!sales?.length){
+  rows.innerHTML=`<tr><td colspan="4">No earnings yet</td></tr>`;
+  return;
+ }
+
+ rows.innerHTML=sales.map(s=>{
+  total+=Number(s.creator_cut);
+  if(s.status==="paid") paid+=Number(s.creator_cut);
+  else pending+=Number(s.creator_cut);
+
+  return `
+   <tr>
+     <td>${s.title||"Untitled"}</td>
+     <td>${new Date(s.created_at).toLocaleDateString()}</td>
+     <td>$${Number(s.creator_cut).toFixed(2)}</td>
+     <td>
+       <span class="badge ${s.status}">
+         ${s.status}
+       </span>
+     </td>
+   </tr>
+  `;
+ }).join("");
+
+ document.getElementById("total").textContent=`$${total.toFixed(2)}`;
+ document.getElementById("paid").textContent=`$${paid.toFixed(2)}`;
+ document.getElementById("pending").textContent=`$${pending.toFixed(2)}`;
+})();
+</script>
+
+</body>
+</html>
