@@ -1,320 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SS Productions | StudentStream</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudentStream Productions</title>
 
-<meta name="description" content="SS Productions is the production division of StudentStream — developing original shows, films, and digital content while connecting emerging talent with brands and opportunities.">
+  <!-- SEO -->
+  <meta name="description" content="StudentStream Productions is a digital-first production division developing original series, films, and branded content." />
+  <meta name="keywords" content="StudentStream Productions, production company, digital series, creators, acting opportunities" />
 
-<style>
-:root{
-  --bg:#050816;
-  --panel:#0c1426;
-  --panel-dark:#091020;
-  --accent:#4facfe;
-  --accent-2:#00f2fe;
-  --text:#eef3ff;
-  --muted:#9aa8c7;
-  --border:rgba(255,255,255,.08);
-}
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-*{box-sizing:border-box;margin:0;padding:0}
+  <style>
+    :root {
+      --bg: #050508;
+      --panel: #0d0d14;
+      --card: #12121c;
+      --accent: #6cf2c2;
+      --accent2: #7aa2ff;
+      --text: #f1f1f7;
+      --muted: #9a9ab3;
+    }
 
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0f1f3a,#050816 70%);
-  color:var(--text);
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-/* NAV */
-nav{
-  position:fixed;
-  top:0;
-  width:100%;
-  padding:18px 28px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(6,12,26,.85);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-  z-index:10;
-}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #10101c, #040406);
+      color: var(--text);
+      line-height: 1.7;
+    }
 
-nav a{
-  color:var(--muted);
-  text-decoration:none;
-  margin-left:18px;
-  font-size:14px;
-}
-nav a:hover{color:var(--text)}
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
-main{
-  max-width:1200px;
-  margin:auto;
-  padding:160px 24px 120px;
-}
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(5,5,8,0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
 
-h1{font-size:64px;margin-bottom:18px}
-h2{font-size:36px;margin-bottom:14px}
-h3{font-size:20px;margin-bottom:8px}
+    .nav-inner {
+      max-width: 1200px;
+      margin: auto;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-p{
-  color:var(--muted);
-  line-height:1.7;
-}
+    .logo {
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+    }
 
-/* HERO */
-.hero{
-  max-width:900px;
-}
+    .nav-links a {
+      margin-left: 24px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
 
-.hero p{
-  font-size:17px;
-}
+    .nav-links a:hover {
+      color: var(--accent);
+    }
 
-.hero-buttons{
-  margin-top:34px;
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-}
+    /* HERO */
+    .hero {
+      padding: 120px 24px 100px;
+      text-align: center;
+    }
 
-.hero-buttons a{
-  padding:16px 26px;
-  border-radius:18px;
-  font-weight:900;
-  font-size:15px;
-  text-decoration:none;
-}
+    .hero h1 {
+      font-size: clamp(3rem, 6vw, 4.5rem);
+      font-weight: 900;
+      margin-bottom: 20px;
+    }
 
-.primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  color:#00121f;
-}
+    .hero span {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-.secondary{
-  border:1px solid var(--border);
-  color:var(--text);
-}
+    .hero p {
+      max-width: 900px;
+      margin: auto;
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
 
-/* SECTIONS */
-.section{
-  margin-top:140px;
-}
+    .hero-actions {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
 
-.grid{
-  margin-top:40px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:26px;
-}
+    .btn {
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+    }
 
-.card{
-  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:30px;
-}
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #050508;
+    }
 
-.card p{font-size:14px}
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text);
+    }
 
-/* SHOWCASE */
-.showcase{
-  margin-top:50px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:26px;
-}
+    /* SECTION */
+    section {
+      max-width: 1200px;
+      margin: auto;
+      padding: 90px 24px;
+    }
 
-.project{
-  background:linear-gradient(180deg,var(--panel),var(--panel-dark));
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:20px;
-}
+    section h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
 
-.thumb{
-  height:170px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#1b2b4a,#0c1426);
-  margin-bottom:16px;
-}
+    section p {
+      color: var(--muted);
+      max-width: 850px;
+    }
 
-/* CTA */
-.cta{
-  text-align:center;
-  max-width:760px;
-  margin:160px auto 0;
-}
+    /* GRID */
+    .grid {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 26px;
+    }
 
-footer{
-  border-top:1px solid var(--border);
-  padding:80px 24px;
-  text-align:center;
-  font-size:13px;
-  color:var(--muted);
-}
-</style>
+    .card {
+      background: linear-gradient(180deg, #141424, #0c0c14);
+      padding: 30px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 1.25rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+    }
+
+    /* CASTING */
+    .casting {
+      background: linear-gradient(135deg, rgba(108,242,194,0.08), rgba(122,162,255,0.05));
+      border: 1px solid rgba(108,242,194,0.25);
+      border-radius: 24px;
+      padding: 60px;
+    }
+
+    .casting ul {
+      margin-top: 20px;
+      list-style: none;
+    }
+
+    .casting li {
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 50px 20px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <nav>
-  <strong>StudentStream</strong>
-  <div>
-    <a href="/">Home</a>
-    <a href="/ss-clips/">SS Clips</a>
-    <a href="/ss-productions/">Productions</a>
+  <div class="nav-inner">
+    <div class="logo">StudentStream Productions</div>
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#casting">Casting</a>
+      <a href="#brands">Brands</a>
+      <a href="/about.html">About</a>
+    </div>
   </div>
 </nav>
 
-<main>
-
 <!-- HERO -->
-<section class="hero">
-  <h1>SS Productions</h1>
+<header class="hero">
+  <h1>We Produce <span>What’s Next</span></h1>
   <p>
-    SS Productions is the production division of StudentStream —  
-    focused on developing original shows, films, and digital series while
-    connecting emerging on-camera talent with real creative opportunities.
+    StudentStream Productions is a digital-first production division developing
+    original series, films, and branded content — powered by emerging talent.
   </p>
 
-  <div class="hero-buttons">
-    <a class="primary" href="#talent">Join as Talent</a>
-    <a class="secondary" href="#brands">Work With Us</a>
+  <div class="hero-actions">
+    <button class="btn btn-primary">Submit a Pitch</button>
+    <button class="btn btn-outline">Join a Production</button>
   </div>
-</section>
+</header>
 
-<!-- WHAT WE DO -->
-<section class="section">
+<!-- WHAT WE PRODUCE -->
+<section id="projects">
   <h2>What We Produce</h2>
   <p>
-    SS Productions operates as a modern, culture-driven studio —
-    blending internet energy with professional storytelling.
+    Our productions range from short-form digital content to long-form series
+    and branded collaborations.
   </p>
 
   <div class="grid">
     <div class="card">
-      <h3>🎬 Original Series</h3>
-      <p>Scripted and unscripted shows developed in-house.</p>
+      <h3>Original Series</h3>
+      <p>Scripted & unscripted digital shows built for online-first distribution.</p>
     </div>
-
     <div class="card">
-      <h3>🎥 Short Films</h3>
-      <p>High-impact narrative and experimental short projects.</p>
+      <h3>Short Films</h3>
+      <p>Cinematic storytelling from emerging writers, actors, and directors.</p>
     </div>
-
     <div class="card">
-      <h3>📱 Digital Content</h3>
-      <p>Platform-native content built for modern audiences.</p>
+      <h3>Branded Content</h3>
+      <p>Authentic campaigns connecting brands with culture and creators.</p>
     </div>
-
     <div class="card">
-      <h3>⭐ Talent Discovery</h3>
-      <p>Finding and developing emerging on-camera personalities.</p>
+      <h3>Creator Collaborations</h3>
+      <p>Projects co-developed with talent discovered through StudentStream.</p>
     </div>
   </div>
 </section>
 
-<!-- PROJECTS -->
-<section class="section">
-  <h2>In Development</h2>
-  <p>Early-stage concepts and upcoming productions.</p>
+<!-- CASTING -->
+<section id="casting">
+  <div class="casting">
+    <h2>Casting & Opportunities</h2>
+    <p>
+      We actively source talent for upcoming productions.
+      Experience is welcome — potential is required.
+    </p>
 
-  <div class="showcase">
-    <div class="project">
-      <div class="thumb"></div>
-      <h3>Untitled Series</h3>
-      <p>Scripted digital series currently in development.</p>
-    </div>
+    <ul>
+      <li>🎭 Actors & Performers</li>
+      <li>🎥 Directors & Cinematographers</li>
+      <li>✍️ Writers & Creatives</li>
+      <li>🎞 Editors & Visual Artists</li>
+    </ul>
 
-    <div class="project">
-      <div class="thumb"></div>
-      <h3>Short Film Project</h3>
-      <p>Culture-driven narrative short.</p>
-    </div>
-
-    <div class="project">
-      <div class="thumb"></div>
-      <h3>Doc-Style Concept</h3>
-      <p>Real stories told through a modern lens.</p>
-    </div>
-  </div>
-</section>
-
-<!-- TALENT -->
-<section class="section" id="talent">
-  <h2>For Actors & Creators</h2>
-  <p>
-    SS Productions is building a talent network of actors,
-    performers, and creators interested in original projects and brand work.
-  </p>
-
-  <div class="grid">
-    <div class="card">
-      <h3>🎭 Casting Opportunities</h3>
-      <p>Roles across scripted, unscripted, and digital projects.</p>
-    </div>
-
-    <div class="card">
-      <h3>📈 Exposure & Growth</h3>
-      <p>Projects designed to build real momentum.</p>
-    </div>
-
-    <div class="card">
-      <h3>🤝 Long-Term Collaboration</h3>
-      <p>Not one-offs — building careers.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary">Apply for Casting</button>
+      <button class="btn btn-outline">Submit Portfolio</button>
     </div>
   </div>
 </section>
 
 <!-- BRANDS -->
-<section class="section" id="brands">
+<section id="brands">
   <h2>For Brands & Partners</h2>
   <p>
-    We collaborate with brands seeking authentic storytelling
-    and on-camera talent for campaigns, integrations, and original content.
+    StudentStream Productions partners with brands looking to connect
+    authentically with new audiences through original content.
   </p>
 
   <div class="grid">
     <div class="card">
-      <h3>🎯 Branded Content</h3>
-      <p>Campaigns that feel natural, not forced.</p>
+      <h3>Custom Campaigns</h3>
+      <p>Original concepts designed around your brand’s identity.</p>
     </div>
-
     <div class="card">
-      <h3>📺 Talent Casting</h3>
-      <p>Access to emerging on-camera personalities.</p>
+      <h3>Talent Access</h3>
+      <p>Direct access to emerging creators and performers.</p>
     </div>
-
     <div class="card">
-      <h3>🎬 Production Support</h3>
-      <p>Concept, production, and delivery.</p>
+      <h3>Distribution</h3>
+      <p>Online-first release strategies across social and digital platforms.</p>
     </div>
   </div>
 </section>
-
-<!-- CTA -->
-<section class="cta">
-  <h2>Let’s Build Something Real</h2>
-  <p>
-    Whether you’re a creator, actor, or brand —
-    SS Productions is building the next wave of original content.
-  </p>
-
-  <div class="hero-buttons" style="justify-content:center">
-    <a class="primary" href="mailto:contact@studentstream.online">Get In Touch</a>
-  </div>
-</section>
-
-</main>
 
 <footer>
-  © 2026 StudentStream  
-  <br>
-  SS Productions — Original Content & Talent Division
+  © 2026 StudentStream Productions — A division of StudentStream
 </footer>
 
 </body>
