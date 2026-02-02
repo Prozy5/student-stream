@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Studios Admin — Payouts</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+}
+.container{
+max-width:1300px;
+margin:auto;
+padding:70px 20px;
+}
+h1{
+font-size:3rem;
+margin-bottom:10px;
+}
+p{opacity:.75}
+
+.badge{
+display:inline-block;
+background:rgba(255,99,132,.18);
+border:1px solid rgba(255,99,132,.35);
+color:#ff6384;
+padding:6px 14px;
+border-radius:999px;
+font-size:.8rem;
+margin-bottom:18px;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:24px;
+padding:30px;
+margin-top:30px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+}
+th,td{
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,.12);
+font-size:.95rem;
+text-align:left;
+}
+th{opacity:.6}
+
+.status{
+padding:5px 12px;
+border-radius:999px;
+font-size:.75rem;
+}
+.pending{background:rgba(255,193,7,.2);color:#ffc107}
+.paid{background:rgba(76,175,80,.25);color:#4caf50}
+
+button{
+padding:8px 16px;
+border-radius:999px;
+border:1px solid rgba(255,255,255,.25);
+background:transparent;
+color:#fff;
+cursor:pointer;
+font-size:.8rem;
+}
+button:hover{background:rgba(255,255,255,.1)}
+
+.export{
+margin-top:20px;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+}
+.export button{
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
+border:none;
+font-weight:600;
+}
+.small{
+font-size:.8rem;
+opacity:.6;
+margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<span class="badge">Admin · Studios</span>
+<h1>Payout Dashboard</h1>
+<p>
+Review creator earnings and process Cash App payouts manually.
+</p>
+
+<div class="card">
+<h2>Pending Creator Payouts</h2>
+
+<table>
+<thead>
+<tr>
+<th>Creator</th>
+<th>Cash App</th>
+<th>Total Earned</th>
+<th>Already Paid</th>
+<th>Pending</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="payoutRows">
+<tr><td colspan="7">Loading…</td></tr>
+</tbody>
+</table>
+
+<div class="export">
+  <button onclick="exportCSV()">Export CSV</button>
+</div>
+
+<div class="small">
+• Creators receive 70% per sale  
+• Cash App payouts processed manually  
+• Mark payouts as paid after sending
+</div>
+</div>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function loadPayouts(){
+  const { data, error } = await supabase
+    .from("creator_earnings") // ← your VIEW
+    .select("*")
+    .order("pending_cents", { ascending: false });
+
+  const tbody = document.getElementById("payoutRows");
+  tbody.innerHTML = "";
+
+  if (error || !data || data.length === 0){
+    tbody.innerHTML = "<tr><td colspan='7'>No pending payouts</td></tr>";
+    return;
+  }
+
+  data.forEach(row=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.display_name}</td>
+      <td>${row.cashapp_tag || "—"}</td>
+      <td>$${(row.total_earned_cents/100).toFixed(2)}</td>
+      <td>$${(row.total_paid_cents/100).toFixed(2)}</td>
+      <td>$${(row.pending_cents/100).toFixed(2)}</td>
+      <td>
+        <span class="status ${row.pending_cents > 0 ? "pending" : "paid"}">
+          ${row.pending_cents > 0 ? "Pending" : "Paid"}
+        </span>
+      </td>
+      <td>
+        ${row.pending_cents > 0
+          ? `<button onclick="markPaid('${row.creator_id}', ${row.pending_cents})">Mark Paid</button>`
+          : "—"}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function markPaid(creatorId, amount){
+  if(!confirm("Confirm payout sent via Cash App?")) return;
+
+  const { error } = await supabase
+    .from("creator_payouts")
+    .insert({
+      creator_id: creatorId,
+      amount_cents: amount
+    });
+
+  if(error){
+    alert("Failed to record payout");
+    return;
+  }
+
+  alert("Payout recorded");
+  loadPayouts();
+}
+
+function exportCSV(){
+  const rows = document.querySelectorAll("table tr");
+  let csv = "";
+  rows.forEach(row=>{
+    const cols = row.querySelectorAll("td,th");
+    csv += [...cols].map(c=>`"${c.innerText}"`).join(",") + "\n";
+  });
+
+  const blob = new Blob([csv], { type:"text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "studios_payouts.csv";
+  a.click();
+}
+
+loadPayouts();
+</script>
+
+</body>
+</html>
