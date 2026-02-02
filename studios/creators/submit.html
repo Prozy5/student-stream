@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Submit Your Work — StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Submit your creative work to StudentStream Studios. Creators earn 70% revenue share. Manual review and Cash App payouts." />
+<link rel="canonical" href="https://studentstream.online/studios/creators/submit" />
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+}
+.container{
+max-width:900px;
+margin:auto;
+padding:70px 20px;
+}
+h1{
+font-size:3rem;
+margin-bottom:10px;
+}
+p{
+opacity:.85;
+line-height:1.6;
+}
+.badge{
+display:inline-block;
+background:rgba(122,162,255,.15);
+border:1px solid rgba(122,162,255,.3);
+color:#7aa2ff;
+padding:6px 14px;
+border-radius:999px;
+font-size:.8rem;
+margin-bottom:18px;
+}
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:34px;
+margin-top:30px;
+}
+form input, form textarea, form select{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:none;
+margin-bottom:14px;
+background:rgba(255,255,255,.95);
+font-size:1rem;
+}
+textarea{
+resize:vertical;
+min-height:120px;
+}
+button{
+width:100%;
+padding:15px;
+border-radius:999px;
+border:none;
+font-weight:600;
+font-size:1rem;
+cursor:pointer;
+background:linear-gradient(135deg,#7aa2ff,#6cf2c2);
+color:#040406;
+transition:.2s;
+}
+button:hover{
+transform:translateY(-1px);
+box-shadow:0 12px 30px rgba(0,0,0,.45);
+}
+.small{
+font-size:.8rem;
+opacity:.65;
+margin-top:12px;
+}
+.footer{
+margin-top:70px;
+opacity:.6;
+font-size:.85rem;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<span class="badge">Creator Submissions</span>
+<h1>Submit Your Work</h1>
+
+<p>
+StudentStream Studios is accepting submissions from creators across film,
+digital art, visuals, music, and original content.
+</p>
+
+<p style="opacity:.65">
+Creators earn <strong>70% revenue share</strong>. Payouts are processed manually via Cash App during early rollout.
+</p>
+
+<div class="card">
+<h2>Creator Information</h2>
+
+<form id="submitForm">
+
+<input type="text" name="creator_name" placeholder="Full name" required>
+<input type="email" name="creator_email" placeholder="Email address" required>
+<input type="text" name="cashapp" placeholder="Cash App username (e.g. $yourname)" required>
+
+<select name="creator_role" required>
+<option value="">I am a...</option>
+<option>Filmmaker</option>
+<option>Actor</option>
+<option>Digital Artist</option>
+<option>Photographer</option>
+<option>Musician / Audio Creator</option>
+<option>Editor / Visual Designer</option>
+<option>Other</option>
+</select>
+
+<h2 style="margin-top:30px">Project / Asset Details</h2>
+
+<input type="text" name="project_title" placeholder="Project or asset title" required>
+
+<select name="asset_type" required>
+<option value="">Type of content</option>
+<option>Short Film</option>
+<option>Visual Pack / Graphics</option>
+<option>Music / Audio</option>
+<option>Stock Footage</option>
+<option>Photography</option>
+<option>Digital Art</option>
+<option>Other</option>
+</select>
+
+<input type="url" name="portfolio_link" placeholder="Portfolio / Drive / Preview link" required>
+
+<textarea name="description" placeholder="Brief description of the work, usage rights, and any restrictions"></textarea>
+
+<select name="rights_confirm" required>
+<option value="">Ownership confirmation</option>
+<option>I own all rights to this content</option>
+<option>I have legal permission to license this content</option>
+</select>
+
+<select name="agreement_confirm" required>
+<option value="">Agreement</option>
+<option>I agree to the StudentStream Studios Creator Agreement</option>
+</select>
+
+<button type="submit">Submit for Review</button>
+
+<div class="small">
+Submissions are reviewed manually. Approval typically within 3–5 business days.
+</div>
+
+</form>
+</div>
+
+<div class="footer">
+<p>
+By submitting, you confirm that all information is accurate and that you agree to the
+<a href="/studios/creators/agreement" style="color:#7aa2ff">Creator Agreement</a>.
+</p>
+<p>
+StudentStream Studios · A division of StudentStream
+</p>
+</div>
+
+</div>
+
+<script>
+document.getElementById("submitForm").addEventListener("submit", async e=>{
+e.preventDefault();
+
+await fetch("https://formspree.io/f/xojqgpan",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(Object.fromEntries(new FormData(e.target)))
+});
+
+alert("Submission received! We'll review your work and reach out soon.");
+e.target.reset();
+});
+</script>
+
+</body>
+</html>
