@@ -230,7 +230,6 @@ gap:16px;
 
 </div>
 
-<!-- AUTH AWARE CTA LOGIC -->
 <script>
 const supabase = supabaseJs.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
@@ -242,15 +241,24 @@ const supabase = supabaseJs.createClient(
   const cta = document.getElementById("ctaRow");
   const note = document.getElementById("ctaNote");
 
+  // NOT LOGGED IN
   if (!user) {
     cta.innerHTML = `
-      <a href="/studios/signup"><button class="btn btn-primary">Submit Your Work</button></a>
-      <a href="/studios/marketplace"><button class="btn btn-outline">Browse Talent</button></a>
+      <a href="/studios/marketplace">
+        <button class="btn btn-primary">Browse Marketplace</button>
+      </a>
+      <a href="/studios/creators/submit">
+        <button class="btn btn-outline">Submit Your Work</button>
+      </a>
+      <a href="/ss-productions">
+        <button class="btn btn-outline">About Productions</button>
+      </a>
     `;
-    note.innerText = "Creators earn 70% · No exclusivity · Approval required";
+    note.innerText = "Discover creators · License work · Hire talent";
     return;
   }
 
+  // LOGGED IN → CHECK ROLE
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
@@ -262,13 +270,15 @@ const supabase = supabaseJs.createClient(
     return;
   }
 
+  // LOGGED IN CREATOR
   cta.innerHTML = `
-    <a href="/studios/creators/dashboard"><button class="btn btn-primary">Go to Dashboard</button></a>
-    <a href="/studios/creators/submit"><button class="btn btn-outline">Submit New Work</button></a>
+    <a href="/studios/creators/dashboard">
+      <button class="btn btn-primary">Creator Dashboard</button>
+    </a>
+    <a href="/studios/marketplace">
+      <button class="btn btn-outline">Browse Marketplace</button>
+    </a>
   `;
   note.innerText = "Manage submissions, sales, and payouts";
 })();
 </script>
-
-</body>
-</html>
