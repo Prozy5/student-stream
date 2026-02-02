@@ -2,28 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Analytics — Studios</title>
+<title>Admin Analytics — StudentStream Studios</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{margin:0;background:#050507;color:#fff;font-family:Inter,system-ui;padding:30px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
-.box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-border-radius:20px;padding:26px}
-.box h3{margin:0;font-size:.85rem;opacity:.7}
-.box p{margin:10px 0 0;font-size:1.9rem;font-weight:700}
+*{box-sizing:border-box;font-family:Inter,system-ui}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+padding:40px 20px;
+}
+
+.wrapper{max-width:1200px;margin:auto}
+
+h1{font-size:2.8rem;margin-bottom:6px}
+p{opacity:.7}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+margin-top:30px;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:26px;
+}
+
+.card h2{
+margin:0;
+font-size:2.2rem;
+}
+.card span{
+opacity:.6;
+font-size:.85rem;
+}
+
+.section{
+margin-top:60px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:14px;
+}
+
+th,td{
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,.12);
+font-size:.95rem;
+text-align:left;
+}
+th{opacity:.6}
+
+.badge{
+padding:4px 10px;
+border-radius:999px;
+font-size:.75rem;
+}
+.paid{background:rgba(76,175,80,.25);color:#4caf50}
+.unpaid{background:rgba(255,193,7,.2);color:#ffc107}
 </style>
 </head>
 
 <body>
-<h1>Studios Analytics</h1>
-<p style="opacity:.7">Platform revenue overview</p>
+<div class="wrapper">
 
+<h1>Studios Analytics</h1>
+<p>Revenue, creator earnings, and payout tracking</p>
+
+<!-- STATS -->
 <div class="grid">
-  <div class="box"><h3>Total Revenue</h3><p id="rev">$0</p></div>
-  <div class="box"><h3>Creator Owed</h3><p id="owed">$0</p></div>
-  <div class="box"><h3>Paid Out</h3><p id="paid">$0</p></div>
+  <div class="card">
+    <h2 id="totalRevenue">$0.00</h2>
+    <span>Total Revenue</span>
+  </div>
+  <div class="card">
+    <h2 id="creatorOwed">$0.00</h2>
+    <span>Creator Owed (Unpaid)</span>
+  </div>
+  <div class="card">
+    <h2 id="creatorPaid">$0.00</h2>
+    <span>Total Paid Out</span>
+  </div>
+  <div class="card">
+    <h2 id="salesCount">0</h2>
+    <span>Total Sales</span>
+  </div>
+</div>
+
+<!-- PER CREATOR -->
+<div class="section">
+<h2>Creator Breakdown</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Creator</th>
+  <th>Sales</th>
+  <th>Earned</th>
+  <th>Paid</th>
+  <th>Unpaid</th>
+</tr>
+</thead>
+<tbody id="creatorRows"></tbody>
+</table>
+</div>
+
 </div>
 
 <script>
@@ -32,35 +124,68 @@ const supabase = supabaseJs.createClient(
  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
+function money(cents){
+ return "$" + (cents/100).toFixed(2);
+}
+
 (async()=>{
- const {data:{user}} = await supabase.auth.getUser();
- if(!user){location.href="/studios/login";return;}
+  /* 🔐 Admin guard */
+  const { data:{ user } } = await supabase.auth.getUser();
+  if(!user){
+    window.location.href="/studios/login";
+    return;
+  }
 
- const {data:profile} = await supabase
-  .from("profiles")
-  .select("role")
-  .eq("id",user.id)
-  .single();
+  const { data: admin } = await supabase
+    .from("admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .single();
 
- if(profile?.role!=="admin"){
-  location.href="/studios";
-  return;
- }
+  if(!admin){
+    window.location.href="/studios";
+    return;
+  }
 
- const {data:sales} = await supabase
-  .from("marketplace_sales")
-  .select("*");
+  /* 📊 Pull analytics view */
+  const { data, error } = await supabase
+    .from("admin_analytics")
+    .select("*");
 
- let rev=0,owed=0,paid=0;
- sales?.forEach(s=>{
-  rev+=Number(s.amount||0);
-  s.status==="paid"?paid+=Number(s.creator_cut||0):owed+=Number(s.creator_cut||0);
- });
+  if(error){
+    console.error(error);
+    return;
+  }
 
- revEl.textContent=`$${rev.toFixed(2)}`;
- owed.textContent=`$${owed.toFixed(2)}`;
- paid.textContent=`$${paid.toFixed(2)}`;
+  let totalRevenue=0, paid=0, unpaid=0, sales=0;
+
+  document.getElementById("creatorRows").innerHTML = data.map(row=>{
+    totalRevenue += row.total_revenue_cents;
+    paid += row.paid_cents;
+    unpaid += row.unpaid_cents;
+    sales += row.sales_count;
+
+    return `
+      <tr>
+        <td>${row.display_name}</td>
+        <td>${row.sales_count}</td>
+        <td>${money(row.creator_earned_cents)}</td>
+        <td>${money(row.paid_cents)}</td>
+        <td>
+          <span class="badge ${row.unpaid_cents>0?"unpaid":"paid"}">
+            ${money(row.unpaid_cents)}
+          </span>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  document.getElementById("totalRevenue").innerText = money(totalRevenue);
+  document.getElementById("creatorPaid").innerText = money(paid);
+  document.getElementById("creatorOwed").innerText = money(unpaid);
+  document.getElementById("salesCount").innerText = sales;
 })();
 </script>
+
 </body>
 </html>
