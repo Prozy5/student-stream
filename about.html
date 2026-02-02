@@ -1,222 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>About StudentStream</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About StudentStream</title>
 
-<style>
-:root{
-  --bg:#05080f;
-  --panel:#0c1626;
-  --accent:#5da9ff;
-  --text:#eaf1ff;
-  --muted:#9fb0cc;
-  --border:rgba(255,255,255,0.08);
-}
+  <!-- SEO -->
+  <meta name="description" content="StudentStream is a digital media platform and production ecosystem built to discover, develop, and distribute modern creative talent and original content." />
+  <meta name="keywords" content="StudentStream, media platform, production company, creators, digital media, original content" />
+  <meta name="author" content="StudentStream" />
 
-*{box-sizing:border-box;margin:0;padding:0}
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-body{
-  font-family:system-ui,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
-  color:var(--text);
-}
+  <style>
+    :root {
+      --bg: #0b0b0f;
+      --card: #12121a;
+      --accent: #6cf2c2;
+      --text: #eaeaf0;
+      --muted: #a1a1b3;
+    }
 
-/* NAV */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 24px;
-  background:rgba(10,20,40,.7);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
-}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #141423, #07070b);
+      color: var(--text);
+      line-height: 1.7;
+    }
 
-.nav-left{
-  font-weight:700;
-  letter-spacing:.5px;
-}
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
 
-.nav-links a{
-  color:var(--muted);
-  text-decoration:none;
-  margin-left:18px;
-  font-size:14px;
-}
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
 
-.nav-links a:hover{color:var(--text)}
+    .hero {
+      text-align: center;
+      margin-bottom: 80px;
+    }
 
-/* HERO */
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
 
-.hero{
-  max-width:1000px;
-  margin:auto;
-  padding:70px 22px 40px;
-  text-align:center;
-}
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 800px;
+      margin: 0 auto;
+    }
 
-.hero h1{
-  font-size:42px;
-  margin-bottom:12px;
-}
+    .section {
+      margin-bottom: 72px;
+    }
 
-.hero p{
-  color:var(--muted);
-  max-width:760px;
-  margin:auto;
-  line-height:1.7;
-}
+    .section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
 
-/* SECTIONS */
+    .section p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 900px;
+    }
 
-.section{
-  max-width:1100px;
-  margin:auto;
-  padding:40px 22px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
 
-.section h2{
-  margin-bottom:14px;
-  font-size:22px;
-}
+    .card {
+      background: linear-gradient(180deg, #141420, #0f0f17);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-/* CARDS */
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;
-}
+    .card h3 {
+      margin-bottom: 12px;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
 
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:18px;
-}
+    .card p {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
 
-.card h3{
-  margin-bottom:6px;
-  font-size:17px;
-}
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
+      margin: 80px 0;
+    }
 
-.card p{
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.6;
-}
+    .vision {
+      background: linear-gradient(135deg, rgba(108,242,194,0.08), rgba(108,242,194,0.02));
+      border: 1px solid rgba(108,242,194,0.25);
+      border-radius: 20px;
+      padding: 48px;
+    }
 
-/* FOOTER */
+    .vision h2 {
+      margin-bottom: 20px;
+    }
 
-footer{
-  text-align:center;
-  padding:40px 20px;
-  color:var(--muted);
-  font-size:13px;
-}
-</style>
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+  </style>
 </head>
-
 <body>
 
-<nav>
-  <div class="nav-left">StudentStream</div>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="company.html">Company</a>
-    <a href="studios/">Studios</a>
-    <a href="law/">Law</a>
-    <a href="ssi/">SS:I</a>
-    <a href="profile.html">Profile</a>
+  <div class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1>About StudentStream</h1>
+      <p>
+        StudentStream is a digital platform and media ecosystem built to discover, develop,
+        and distribute modern creative talent and original content.
+      </p>
+    </section>
+
+    <!-- WHAT WE DO -->
+    <section class="section">
+      <h2>What We Do</h2>
+      <p>
+        StudentStream operates at the intersection of technology, media, and production.
+        We create pathways for creators to turn visibility into real opportunities by combining
+        a creator platform with an in-house production division.
+      </p>
+    </section>
+
+    <!-- ECOSYSTEM -->
+    <section class="section">
+      <h2>The StudentStream Ecosystem</h2>
+
+      <div class="grid">
+        <div class="card">
+          <h3>StudentStream Media</h3>
+          <p>
+            The platform layer where creators share content, gain visibility,
+            and build momentum across digital audiences.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>StudentStream Productions</h3>
+          <p>
+            Our production division focused on original series, short films,
+            branded content, and collaborative creative projects.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>StudentStream Opportunities</h3>
+          <p>
+            A growing pipeline connecting creators and performers with brands,
+            productions, and paid opportunities.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- MISSION -->
+    <section class="section">
+      <h2>Our Mission</h2>
+      <p>
+        The internet creates talent faster than it creates opportunity.
+        StudentStream exists to bridge that gap by giving creators infrastructure,
+        exposure, and direction — turning creativity into something sustainable.
+      </p>
+    </section>
+
+    <!-- NOT JUST STUDENTS -->
+    <section class="section">
+      <h2>Not Just Students</h2>
+      <p>
+        Despite the name, StudentStream is not limited to students.
+        The platform is built for creators, performers, editors, actors,
+        and digital talent from all backgrounds who are serious about building
+        a future in media and entertainment.
+      </p>
+    </section>
+
+    <!-- VISION -->
+    <section class="vision">
+      <h2>Our Vision</h2>
+      <p>
+        StudentStream is building toward becoming a fully independent digital media
+        and production company — capable of developing original shows, funding creative
+        projects, paying talent, partnering with brands, and distributing content at scale.
+      </p>
+    </section>
+
   </div>
-</nav>
 
-<section class="hero">
-  <h1>About StudentStream</h1>
-  <p>
-    StudentStream is a technology company building a digital platform for creators to get discovered,
-    grow their audience, protect their work, and turn creativity into real opportunity.
-    We focus on people who are overlooked by big platforms and give them tools to build something real.
-  </p>
-</section>
-
-<section class="section">
-  <h2>Why StudentStream Exists</h2>
-  <p style="color:var(--muted);max-width:850px;line-height:1.7;">
-    Most major platforms are designed to benefit creators who are already famous. Algorithms push the same
-    faces to the top while smaller creators struggle to be seen.
-    StudentStream was built to change that.
-    <br><br>
-    Our platform is designed to highlight emerging creators first, help them connect with supporters,
-    collaborate with others, and earn from what they create — without needing millions of followers.
-  </p>
-</section>
-
-<section class="section">
-  <h2>What We’re Building</h2>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Creator Discovery</h3>
-      <p>
-        Systems designed to surface new creators instead of hiding them behind popularity.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Creative Tools</h3>
-      <p>
-        Portfolios, marketplaces, messaging, collaboration tools, and audience growth features.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Creator Protection</h3>
-      <p>
-        Built-in safety systems, fraud prevention, copyright handling, and platform enforcement.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Monetization</h3>
-      <p>
-        Multiple ways for creators to earn through digital work, commissions, products, and services.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <h2>Our Philosophy</h2>
-  <p style="color:var(--muted);max-width:850px;line-height:1.7;">
-    Creativity is valuable. Small creators matter.  
-    Opportunity shouldn’t be locked behind algorithms or popularity contests.
-    <br><br>
-    StudentStream is built around fairness, transparency, safety, and long-term creator success.
-    We believe the next generation of talent shouldn’t have to wait for permission to be seen.
-  </p>
-</section>
-
-<section class="section">
-  <h2>Founded & Vision</h2>
-
-  <div class="card">
-    <p>
-      StudentStream was founded by Deondre with the vision of building a platform where creators
-      can grow without being ignored, exploited, or buried by large systems.
-    </p>
-    <p style="margin-top:10px;color:var(--muted);font-size:13px;">
-      Independent platform · Creator-first design · Long-term ecosystem vision
-    </p>
-  </div>
-</section>
-
-<footer>
-  © 2026 StudentStream, Inc. · Built for creators
-</footer>
+  <footer>
+    © 2026 StudentStream. All rights reserved.
+  </footer>
 
 </body>
 </html>
