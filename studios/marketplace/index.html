@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Studios Marketplace — StudentStream</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Browse approved creative work on StudentStream Studios. License digital art, video, photography, and creative assets from emerging creators." />
+<link rel="canonical" href="https://studentstream.online/studios/marketplace" />
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:radial-gradient(circle at top,#0f1224,#040406);
+color:#fff;
+}
+.container{
+max-width:1300px;
+margin:auto;
+padding:70px 20px;
+}
+h1{
+font-size:3.4rem;
+margin-bottom:10px;
+}
+p{opacity:.8}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:26px;
+margin-top:50px;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:26px;
+padding:26px;
+box-shadow:0 0 50px rgba(0,0,0,.6);
+transition:.3s;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 24px 70px rgba(0,0,0,.7);
+}
+
+.thumb{
+height:180px;
+border-radius:18px;
+background:rgba(255,255,255,.08);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:.85rem;
+opacity:.6;
+margin-bottom:18px;
+}
+
+.card h3{
+margin:0 0 6px;
+font-size:1.4rem;
+}
+.meta{
+font-size:.85rem;
+opacity:.6;
+margin-bottom:12px;
+}
+
+.price{
+font-size:1.2rem;
+font-weight:600;
+margin-bottom:12px;
+}
+
+button{
+padding:12px;
+border-radius:999px;
+border:none;
+cursor:pointer;
+font-weight:600;
+font-size:.9rem;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
+}
+button:disabled{
+opacity:.4;
+cursor:not-allowed;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+flex-wrap:wrap;
+}
+.badge{
+padding:6px 14px;
+border-radius:999px;
+background:rgba(108,242,194,.15);
+border:1px solid rgba(108,242,194,.3);
+color:#6cf2c2;
+font-size:.8rem;
+}
+.footer{
+margin-top:90px;
+opacity:.6;
+font-size:.85rem;
+display:flex;
+gap:16px;
+flex-wrap:wrap;
+}
+.footer a{
+color:#7aa2ff;
+text-decoration:none;
+}
+
+@media(max-width:800px){
+h1{font-size:2.4rem}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+  <div>
+    <span class="badge">Studios Marketplace</span>
+    <h1>Browse approved creative work</h1>
+    <p>All listings are reviewed and approved by StudentStream Studios.</p>
+  </div>
+  <a href="/studios"><button style="background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff">Back to Studios</button></a>
+</div>
+
+<div id="grid" class="grid"></div>
+
+<div class="footer">
+  © 2026 StudentStream Studios
+  <a href="/studios">Studios</a>
+  <a href="/ss-productions">Productions</a>
+  <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
+  <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
+</div>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function loadMarketplace(){
+  const { data, error } = await supabase
+    .from("creator_uploads")
+    .select(`
+      id,
+      title,
+      type,
+      price_cents,
+      preview_url,
+      creators (
+        display_name
+      )
+    `)
+    .eq("status", "approved")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    document.getElementById("grid").innerHTML = "<p>Failed to load marketplace.</p>";
+    return;
+  }
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  if (data.length === 0){
+    grid.innerHTML = "<p>No approved listings yet.</p>";
+    return;
+  }
+
+  data.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <div>
+        <div class="thumb">
+          ${item.preview_url ? "Preview Available" : "No Preview"}
+        </div>
+        <h3>${item.title}</h3>
+        <div class="meta">
+          ${item.type} · ${item.creators?.display_name || "Creator"}
+        </div>
+        <div class="price">
+          $${(item.price_cents / 100).toFixed(2)}
+        </div>
+      </div>
+      <button disabled>
+        Purchase (Coming Soon)
+      </button>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+loadMarketplace();
+</script>
+
+</body>
+</html>
