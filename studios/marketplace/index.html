@@ -2,26 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Marketplace — Studios</title>
+<title>Marketplace — StudentStream Studios</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Browse approved creative work from StudentStream Studios creators. License digital art, visuals, photography, and more." />
+<link rel="canonical" href="https://studentstream.online/studios/marketplace" />
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{margin:0;background:#050507;color:#fff;font-family:Inter,system-ui;padding:30px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px}
-.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-border-radius:22px;padding:26px;transition:.3s}
-.card:hover{transform:translateY(-4px)}
-.price{font-weight:700;font-size:1.2rem;margin-top:10px}
-.badge{font-size:.7rem;opacity:.6}
+*{box-sizing:border-box;font-family:Inter,system-ui}
+body{
+margin:0;
+background:radial-gradient(circle at top,#0f1224,#050507);
+color:#fff;
+padding:26px;
+}
+.wrapper{max-width:1400px;margin:auto}
+h1{font-size:3rem;margin-bottom:10px}
+p{opacity:.75}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:26px;
+margin-top:50px;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:26px;
+overflow:hidden;
+transition:.3s;
+}
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+
+.preview{
+height:180px;
+background:#111;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#777;
+font-size:.9rem;
+}
+.preview img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.content{padding:22px}
+.content h3{margin:0 0 6px}
+.content p{font-size:.9rem;opacity:.7}
+.price{
+margin-top:14px;
+font-weight:700;
+font-size:1.1rem;
+color:#6cf2c2;
+}
+
+.btn{
+margin-top:18px;
+display:inline-block;
+padding:10px 22px;
+border-radius:999px;
+font-size:.85rem;
+font-weight:600;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#050507;
+text-decoration:none;
+}
+
+.empty{
+opacity:.6;
+margin-top:80px;
+text-align:center;
+}
 </style>
 </head>
 
 <body>
+<div class="wrapper">
+
 <h1>Studios Marketplace</h1>
-<p style="opacity:.7">Curated creator assets</p>
+<p>Browse licensed creative work from approved StudentStream creators.</p>
 
 <div class="grid" id="listings"></div>
+<div class="empty" id="empty" style="display:none">No listings available yet.</div>
+
+</div>
 
 <script>
 const supabase = supabaseJs.createClient(
@@ -30,20 +104,45 @@ const supabase = supabaseJs.createClient(
 );
 
 (async()=>{
- const {data:listings} = await supabase
+ const {data:listings,error} = await supabase
   .from("marketplace_listings")
-  .select("id,title,price,category,description")
-  .eq("status","approved");
+  .select(`
+    id,
+    title,
+    description,
+    price,
+    preview_url
+  `)
+  .eq("approved",true)
+  .order("created_at",{ascending:false});
 
- document.getElementById("listings").innerHTML =
- listings?.map(l=>`
+ if(error){console.error(error);return;}
+
+ if(!listings || listings.length===0){
+  document.getElementById("empty").style.display="block";
+  return;
+ }
+
+ const grid=document.getElementById("listings");
+ grid.innerHTML = listings.map(l=>`
   <div class="card">
-    <div class="badge">${l.category}</div>
-    <h3>${l.title}</h3>
-    <p style="opacity:.75">${l.description||""}</p>
-    <div class="price">$${l.price}</div>
-  </div>`).join("") || "No listings yet";
+    <div class="preview">
+      ${l.preview_url
+        ? `<img src="${l.preview_url}" />`
+        : `Preview unavailable`}
+    </div>
+    <div class="content">
+      <h3>${l.title}</h3>
+      <p>${l.description || ""}</p>
+      <div class="price">$${Number(l.price).toFixed(2)}</div>
+      <a class="btn" href="/studios/inquire.html?listing=${l.id}">
+        License / Inquire
+      </a>
+    </div>
+  </div>
+ `).join("");
 })();
 </script>
+
 </body>
 </html>
