@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>New Sale — Studios Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+}
+.container{
+max-width:700px;
+margin:auto;
+padding:70px 20px;
+}
+h1{font-size:2.6rem;margin-bottom:10px}
+p{opacity:.7}
+
+.card{
+margin-top:30px;
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:34px;
+}
+
+input,select{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:none;
+margin-bottom:14px;
+font-size:1rem;
+}
+
+button{
+width:100%;
+padding:15px;
+border-radius:999px;
+border:none;
+font-weight:600;
+font-size:1rem;
+cursor:pointer;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
+}
+
+.note{
+margin-top:18px;
+font-size:.85rem;
+opacity:.6;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Record New Sale</h1>
+<p>Manual sale entry for Cash App payouts.</p>
+
+<div class="card">
+<form id="saleForm">
+
+<select id="creator" required>
+<option value="">Select creator</option>
+</select>
+
+<select id="upload" required>
+<option value="">Select asset</option>
+</select>
+
+<input type="number" id="amount" placeholder="Sale amount (USD)" step="0.01" required>
+
+<button type="submit">Record Sale</button>
+
+<div class="note">
+• Creator gets 70%  
+• Sale is marked unpaid  
+• Cash App payout sent manually
+</div>
+
+</form>
+</div>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+// Load creators
+async function loadCreators(){
+  const { data } = await supabase
+    .from("creators")
+    .select("id, display_name")
+    .eq("approved", true);
+
+  const select = document.getElementById("creator");
+  data.forEach(c=>{
+    select.innerHTML += `<option value="${c.id}">${c.display_name}</option>`;
+  });
+}
+
+// Load uploads
+async function loadUploads(){
+  const { data } = await supabase
+    .from("creator_uploads")
+    .select("id, title")
+    .eq("status","approved");
+
+  const select = document.getElementById("upload");
+  data.forEach(u=>{
+    select.innerHTML += `<option value="${u.id}">${u.title}</option>`;
+  });
+}
+
+document.getElementById("saleForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+
+  const amount = parseFloat(amount.value);
+  const cents = Math.round(amount * 100);
+
+  await supabase.from("marketplace_sales").insert({
+    creator_id: creator.value,
+    upload_id: upload.value,
+    sale_price_cents: cents,
+    creator_share_cents: Math.round(cents * 0.7),
+    platform_share_cents: Math.round(cents * 0.3),
+    paid: false
+  });
+
+  alert("Sale recorded. Send Cash App payout before marking paid.");
+  e.target.reset();
+});
+
+loadCreators();
+loadUploads();
+</script>
+
+</body>
+</html>
