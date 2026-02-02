@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Studios — Creator Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      background:radial-gradient(circle at top,#0d0f1f,#040406);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:Inter,system-ui,Arial,sans-serif;
+      color:#fff;
+      padding:20px;
+    }
+
+    .box{
+      max-width:420px;
+      width:100%;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:24px;
+      padding:36px;
+      box-shadow:0 0 60px rgba(0,0,0,.6);
+    }
+
+    h1{margin-top:0}
+    p{opacity:.75}
+
+    input{
+      width:100%;
+      padding:14px;
+      margin-bottom:14px;
+      border-radius:14px;
+      border:none;
+      font-size:1rem;
+    }
+
+    button{
+      width:100%;
+      padding:15px;
+      border-radius:999px;
+      border:none;
+      font-weight:600;
+      font-size:1rem;
+      cursor:pointer;
+      background:linear-gradient(135deg,#7aa2ff,#6cf2c2);
+      color:#040406;
+    }
+
+    .note{
+      font-size:.8rem;
+      opacity:.6;
+      margin-top:12px;
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>Join Studios</h1>
+  <p>Create a creator account to submit and sell your work.</p>
+
+  <input id="email" placeholder="Email" type="email" required />
+  <input id="password" placeholder="Password" type="password" required />
+  <input id="displayName" placeholder="Display name" />
+  <input id="cashapp" placeholder="Cash App tag ($username)" />
+
+  <button onclick="signup()">Create Creator Account</button>
+
+  <div class="note">
+    70% creator • 30% platform<br/>
+    Approval required before selling
+  </div>
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function signup(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const displayName = document.getElementById("displayName").value;
+  const cashapp = document.getElementById("cashapp").value;
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const user = data.user;
+
+  const { error: profileError } = await supabase
+    .from("creators")
+    .insert({
+      id: user.id,
+      display_name: displayName,
+      cashapp_tag: cashapp
+    });
+
+  if(profileError){
+    alert(profileError.message);
+    return;
+  }
+
+  alert("Creator account created! Pending approval 🚀");
+}
+</script>
+
+</body>
+</html>
