@@ -5,8 +5,7 @@
 <title>Marketplace — StudentStream Studios</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="Browse approved creative work from StudentStream Studios creators. License digital art, visuals, photography, and more." />
-<link rel="canonical" href="https://studentstream.online/studios/marketplace" />
+<meta name="description" content="Browse approved creative work on StudentStream Studios. License digital art, video, photography, and creative assets." />
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -16,71 +15,84 @@ body{
 margin:0;
 background:radial-gradient(circle at top,#0f1224,#050507);
 color:#fff;
-padding:26px;
+padding:30px;
 }
-.wrapper{max-width:1400px;margin:auto}
+
+.wrapper{max-width:1300px;margin:auto}
+
 h1{font-size:3rem;margin-bottom:10px}
-p{opacity:.75}
+p{opacity:.75;max-width:820px}
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:26px;
-margin-top:50px;
+margin-top:40px;
 }
 
 .card{
 background:rgba(255,255,255,.06);
 border:1px solid rgba(255,255,255,.12);
-border-radius:26px;
-overflow:hidden;
+border-radius:24px;
+padding:26px;
 transition:.3s;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
 }
 .card:hover{
 transform:translateY(-6px);
-box-shadow:0 30px 80px rgba(0,0,0,.6);
+box-shadow:0 26px 70px rgba(0,0,0,.7);
 }
 
-.preview{
-height:180px;
-background:#111;
-display:flex;
-align-items:center;
-justify-content:center;
-color:#777;
-font-size:.9rem;
-}
-.preview img{
-width:100%;
-height:100%;
-object-fit:cover;
+.card h3{margin:0 0 6px;font-size:1.4rem}
+.card span{
+opacity:.6;
+font-size:.85rem;
 }
 
-.content{padding:22px}
-.content h3{margin:0 0 6px}
-.content p{font-size:.9rem;opacity:.7}
 .price{
-margin-top:14px;
-font-weight:700;
-font-size:1.1rem;
+margin:16px 0;
+font-size:1.2rem;
+font-weight:600;
 color:#6cf2c2;
 }
 
-.btn{
-margin-top:18px;
-display:inline-block;
-padding:10px 22px;
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.actions a{
+padding:10px 18px;
 border-radius:999px;
-font-size:.85rem;
-font-weight:600;
-background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
-color:#050507;
+border:1px solid rgba(255,255,255,.25);
+color:#fff;
 text-decoration:none;
+font-size:.85rem;
+}
+.actions a.primary{
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
+border:none;
+}
+.actions a:hover{opacity:.9}
+
+.badge{
+display:inline-block;
+margin-bottom:8px;
+padding:4px 10px;
+border-radius:999px;
+font-size:.7rem;
+background:rgba(122,162,255,.15);
+border:1px solid rgba(122,162,255,.3);
+color:#7aa2ff;
 }
 
 .empty{
+margin-top:60px;
 opacity:.6;
-margin-top:80px;
 text-align:center;
 }
 </style>
@@ -90,10 +102,16 @@ text-align:center;
 <div class="wrapper">
 
 <h1>Studios Marketplace</h1>
-<p>Browse licensed creative work from approved StudentStream creators.</p>
+<p>
+Browse approved creative work from filmmakers, designers, photographers,
+and digital artists inside StudentStream Studios.
+</p>
 
 <div class="grid" id="listings"></div>
-<div class="empty" id="empty" style="display:none">No listings available yet.</div>
+
+<div class="empty" id="empty" style="display:none">
+No listings available yet. Check back soon.
+</div>
 
 </div>
 
@@ -104,39 +122,43 @@ const supabase = supabaseJs.createClient(
 );
 
 (async()=>{
- const {data:listings,error} = await supabase
-  .from("marketplace_listings")
+ const { data, error } = await supabase
+  .from("creator_uploads")
   .select(`
     id,
     title,
-    description,
     price,
-    preview_url
+    asset_type,
+    creators ( display_name )
   `)
-  .eq("approved",true)
+  .eq("status","approved")
   .order("created_at",{ascending:false});
 
- if(error){console.error(error);return;}
+ if(error){
+  console.error(error);
+  return;
+ }
 
- if(!listings || listings.length===0){
+ if(!data || data.length===0){
   document.getElementById("empty").style.display="block";
   return;
  }
 
- const grid=document.getElementById("listings");
- grid.innerHTML = listings.map(l=>`
+ document.getElementById("listings").innerHTML = data.map(item=>`
   <div class="card">
-    <div class="preview">
-      ${l.preview_url
-        ? `<img src="${l.preview_url}" />`
-        : `Preview unavailable`}
+    <div>
+      <span class="badge">${item.asset_type}</span>
+      <h3>${item.title}</h3>
+      <span>by ${item.creators?.display_name || "Creator"}</span>
+      <div class="price">$${Number(item.price).toFixed(2)}</div>
     </div>
-    <div class="content">
-      <h3>${l.title}</h3>
-      <p>${l.description || ""}</p>
-      <div class="price">$${Number(l.price).toFixed(2)}</div>
-      <a class="btn" href="/studios/inquire.html?listing=${l.id}">
-        License / Inquire
+
+    <div class="actions">
+      <a class="primary" href="/studios/request.html?asset=${item.id}">
+        Request License
+      </a>
+      <a href="/studios/creators/${item.id}">
+        View Details
       </a>
     </div>
   </div>
