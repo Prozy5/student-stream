@@ -1,318 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StudentStream Productions</title>
+  <meta charset="UTF-8">
+  <title>StudentStream Productions — Creative Production Division</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO -->
-  <meta name="description" content="StudentStream Productions is a digital-first production division developing original series, films, and branded content." />
-  <meta name="keywords" content="StudentStream Productions, production company, digital series, creators, acting opportunities" />
+  <meta name="description" content="StudentStream Productions is the production division of StudentStream, operating across short-form media, creative studios, and an art marketplace." />
+  <meta name="keywords" content="StudentStream Productions, creative studio, art marketplace, digital media, SS Clips, Studios" />
+  <meta name="author" content="StudentStream" />
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="canonical" href="https://studentstream.online/ss-productions" />
 
-  <style>
-    :root {
-      --bg: #050508;
-      --panel: #0d0d14;
-      --card: #12121c;
-      --accent: #6cf2c2;
-      --accent2: #7aa2ff;
-      --text: #f1f1f7;
-      --muted: #9a9ab3;
-    }
+  <!-- SCHEMA -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "StudentStream Productions",
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "StudentStream",
+      "url": "https://studentstream.online"
+    },
+    "description": "The production division of StudentStream, spanning short-form content, creative studios, and an art marketplace."
+  }
+  </script>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:radial-gradient(circle at top,#0e0e1a,#040406);
+color:#fff;
+padding:20px;
+}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top, #10101c, #040406);
-      color: var(--text);
-      line-height: 1.7;
-    }
+.wrapper{
+max-width:1200px;
+margin:0 auto;
+}
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+.badge{
+display:inline-block;
+background:rgba(108,242,194,.15);
+color:#6cf2c2;
+padding:6px 16px;
+border-radius:999px;
+font-size:.85rem;
+border:1px solid rgba(108,242,194,.25);
+}
 
-    /* NAV */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(5,5,8,0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
+.hero{
+padding:70px 0 40px;
+}
 
-    .nav-inner {
-      max-width: 1200px;
-      margin: auto;
-      padding: 18px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+h1{
+font-size:3.1rem;
+margin:18px 0 14px;
+line-height:1.1;
+}
 
-    .logo {
-      font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: 0.5px;
-    }
+p{
+opacity:.85;
+max-width:760px;
+}
 
-    .nav-links a {
-      margin-left: 24px;
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:26px;
+margin-top:42px;
+}
 
-    .nav-links a:hover {
-      color: var(--accent);
-    }
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:24px;
+padding:30px;
+box-shadow:0 0 45px rgba(0,0,0,.5);
+transition:.25s;
+}
 
-    /* HERO */
-    .hero {
-      padding: 120px 24px 100px;
-      text-align: center;
-    }
+.card:hover{
+transform:translateY(-4px);
+box-shadow:0 18px 55px rgba(0,0,0,.65);
+}
 
-    .hero h1 {
-      font-size: clamp(3rem, 6vw, 4.5rem);
-      font-weight: 900;
-      margin-bottom: 20px;
-    }
+.card h3{
+margin-top:0;
+font-size:1.5rem;
+}
 
-    .hero span {
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+.card p{
+font-size:.95rem;
+opacity:.75;
+}
 
-    .hero p {
-      max-width: 900px;
-      margin: auto;
-      font-size: 1.15rem;
-      color: var(--muted);
-    }
+.card a{
+display:inline-block;
+margin-top:20px;
+font-weight:600;
+text-decoration:none;
+color:#7aa2ff;
+}
 
-    .hero-actions {
-      margin-top: 40px;
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
+.divider{
+margin:80px 0 50px;
+height:1px;
+background:linear-gradient(to right,transparent,rgba(255,255,255,.25),transparent);
+}
 
-    .btn {
-      padding: 14px 28px;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      border: none;
-      cursor: pointer;
-    }
+.footer{
+opacity:.6;
+font-size:.85rem;
+margin-top:70px;
+}
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #050508;
-    }
+.footer a{
+color:#7aa2ff;
+text-decoration:none;
+margin-right:14px;
+}
 
-    .btn-outline {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: var(--text);
-    }
-
-    /* SECTION */
-    section {
-      max-width: 1200px;
-      margin: auto;
-      padding: 90px 24px;
-    }
-
-    section h2 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-
-    section p {
-      color: var(--muted);
-      max-width: 850px;
-    }
-
-    /* GRID */
-    .grid {
-      margin-top: 40px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 26px;
-    }
-
-    .card {
-      background: linear-gradient(180deg, #141424, #0c0c14);
-      padding: 30px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.06);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-    }
-
-    .card h3 {
-      margin-bottom: 10px;
-      font-size: 1.25rem;
-    }
-
-    .card p {
-      font-size: 0.95rem;
-    }
-
-    /* CASTING */
-    .casting {
-      background: linear-gradient(135deg, rgba(108,242,194,0.08), rgba(122,162,255,0.05));
-      border: 1px solid rgba(108,242,194,0.25);
-      border-radius: 24px;
-      padding: 60px;
-    }
-
-    .casting ul {
-      margin-top: 20px;
-      list-style: none;
-    }
-
-    .casting li {
-      margin-bottom: 12px;
-      color: var(--muted);
-    }
-
-    /* FOOTER */
-    footer {
-      padding: 50px 20px;
-      text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-  </style>
+@media(max-width:700px){
+h1{font-size:2.4rem}
+}
+</style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <div class="logo">StudentStream Productions</div>
-    <div class="nav-links">
-      <a href="#projects">Projects</a>
-      <a href="#casting">Casting</a>
-      <a href="#brands">Brands</a>
-      <a href="/about.html">About</a>
-    </div>
-  </div>
-</nav>
+<div class="wrapper">
 
-<!-- HERO -->
-<header class="hero">
-  <h1>We Produce <span>What’s Next</span></h1>
-  <p>
-    StudentStream Productions is a digital-first production division developing
-    original series, films, and branded content — powered by emerging talent.
-  </p>
-
-  <div class="hero-actions">
-    <button class="btn btn-primary">Submit a Pitch</button>
-    <button class="btn btn-outline">Join a Production</button>
-  </div>
-</header>
-
-<!-- WHAT WE PRODUCE -->
-<section id="projects">
-  <h2>What We Produce</h2>
-  <p>
-    Our productions range from short-form digital content to long-form series
-    and branded collaborations.
-  </p>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Original Series</h3>
-      <p>Scripted & unscripted digital shows built for online-first distribution.</p>
-    </div>
-    <div class="card">
-      <h3>Short Films</h3>
-      <p>Cinematic storytelling from emerging writers, actors, and directors.</p>
-    </div>
-    <div class="card">
-      <h3>Branded Content</h3>
-      <p>Authentic campaigns connecting brands with culture and creators.</p>
-    </div>
-    <div class="card">
-      <h3>Creator Collaborations</h3>
-      <p>Projects co-developed with talent discovered through StudentStream.</p>
-    </div>
-  </div>
-</section>
-
-<!-- CASTING -->
-<section id="casting">
-  <div class="casting">
-    <h2>Casting & Opportunities</h2>
+  <!-- HERO -->
+  <section class="hero">
+    <span class="badge">Production Division</span>
+    <h1>StudentStream Productions</h1>
     <p>
-      We actively source talent for upcoming productions.
-      Experience is welcome — potential is required.
+      StudentStream Productions is the creative production division of StudentStream.
+      It operates across content creation, digital media, and creative infrastructure
+      built to support artists, creators, and brands.
     </p>
 
-    <ul>
-      <li>🎭 Actors & Performers</li>
-      <li>🎥 Directors & Cinematographers</li>
-      <li>✍️ Writers & Creatives</li>
-      <li>🎞 Editors & Visual Artists</li>
-    </ul>
+    <p style="opacity:.6;margin-top:12px">
+      This division houses multiple creative verticals and marketplaces.
+    </p>
+  </section>
 
-    <div class="hero-actions">
-      <button class="btn btn-primary">Apply for Casting</button>
-      <button class="btn btn-outline">Submit Portfolio</button>
+  <!-- DIVISIONS -->
+  <section>
+    <h2>Divisions</h2>
+
+    <div class="grid">
+
+      <!-- SS CLIPS -->
+      <div class="card">
+        <h3>SS Clips</h3>
+        <p>
+          Short-form, digital-first media.
+          Clips, edits, highlights, and viral content created for
+          TikTok, Instagram, YouTube Shorts, and emerging platforms.
+        </p>
+        <a href="/ss-clips">Enter SS Clips →</a>
+      </div>
+
+      <!-- STUDIOS -->
+      <div class="card">
+        <h3>Studios</h3>
+        <p>
+          A creative studios hub and art marketplace.
+          Studios connects artists, designers, and creators with
+          opportunities, tools, and a marketplace to showcase and sell work.
+        </p>
+        <a href="/studios">Enter Studios →</a>
+      </div>
+
     </div>
+  </section>
+
+  <!-- PURPOSE -->
+  <div class="divider"></div>
+
+  <section>
+    <h2>Our Purpose</h2>
+    <p>
+      StudentStream Productions exists to give creatives real infrastructure —
+      not just exposure. We build systems that help creators distribute,
+      monetize, and scale their work across platforms.
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    © 2026 StudentStream Productions ·
+    <a href="/">StudentStream</a>
+    <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
+    <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
   </div>
-</section>
 
-<!-- BRANDS -->
-<section id="brands">
-  <h2>For Brands & Partners</h2>
-  <p>
-    StudentStream Productions partners with brands looking to connect
-    authentically with new audiences through original content.
-  </p>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Custom Campaigns</h3>
-      <p>Original concepts designed around your brand’s identity.</p>
-    </div>
-    <div class="card">
-      <h3>Talent Access</h3>
-      <p>Direct access to emerging creators and performers.</p>
-    </div>
-    <div class="card">
-      <h3>Distribution</h3>
-      <p>Online-first release strategies across social and digital platforms.</p>
-    </div>
-  </div>
-</section>
-
-<footer>
-  © 2026 StudentStream Productions — A division of StudentStream
-</footer>
+</div>
 
 </body>
 </html>
