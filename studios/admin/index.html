@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard — StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#0b0d16;
+color:#fff;
+padding:20px;
+}
+
+.wrapper{max-width:1300px;margin:0 auto;}
+
+h1{margin-bottom:8px}
+p{opacity:.7}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:26px;
+margin-top:36px;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:28px;
+box-shadow:0 0 40px rgba(0,0,0,.5);
+}
+
+.card h2{
+margin-top:0;
+font-size:1.4rem;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+margin-top:18px;
+}
+
+.table th,.table td{
+padding:12px;
+border-bottom:1px solid rgba(255,255,255,.12);
+font-size:.9rem;
+text-align:left;
+}
+
+.status{
+padding:6px 12px;
+border-radius:999px;
+font-size:.75rem;
+font-weight:600;
+display:inline-block;
+}
+
+.pending{background:rgba(255,193,7,.2);color:#ffc107}
+.approved{background:rgba(108,242,194,.2);color:#6cf2c2}
+.completed{background:rgba(122,162,255,.2);color:#7aa2ff}
+
+.btn{
+padding:8px 14px;
+border-radius:999px;
+border:none;
+cursor:pointer;
+font-size:.8rem;
+font-weight:600;
+margin-right:6px;
+}
+
+.btn-approve{background:#6cf2c2;color:#040406}
+.btn-deny{background:#ff6b6b;color:#040406}
+.btn-view{background:#7aa2ff;color:#040406}
+
+.footer{
+margin-top:80px;
+opacity:.6;
+font-size:.85rem;
+display:flex;
+gap:16px;
+flex-wrap:wrap;
+}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+
+<h1>StudentStream Studios — Admin</h1>
+<p>Manual control panel for creators, brands, and payouts</p>
+
+<div class="grid">
+
+<!-- CREATOR SUBMISSIONS -->
+<div class="card">
+<h2>Creator Submissions</h2>
+
+<table class="table">
+<tr>
+<th>Name</th>
+<th>Role</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>Jane Artist</td>
+<td>Digital Artist</td>
+<td><span class="status pending">Pending</span></td>
+<td>
+<button class="btn btn-approve">Approve</button>
+<button class="btn btn-deny">Deny</button>
+</td>
+</tr>
+
+<tr>
+<td>Mike Editor</td>
+<td>Filmmaker</td>
+<td><span class="status approved">Approved</span></td>
+<td>
+<button class="btn btn-view">View</button>
+</td>
+</tr>
+</table>
+</div>
+
+<!-- BRAND REQUESTS -->
+<div class="card">
+<h2>Brand Requests</h2>
+
+<table class="table">
+<tr>
+<th>Brand</th>
+<th>Project</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>Nike Concept</td>
+<td>Campaign Video</td>
+<td><span class="status pending">Pending</span></td>
+<td>
+<button class="btn btn-view">Assign</button>
+</td>
+</tr>
+
+<tr>
+<td>Startup X</td>
+<td>Logo + Visuals</td>
+<td><span class="status approved">In Progress</span></td>
+<td>
+<button class="btn btn-view">View</button>
+</td>
+</tr>
+</table>
+</div>
+
+<!-- DEALS / PAYOUTS -->
+<div class="card">
+<h2>Deals & Payouts</h2>
+
+<table class="table">
+<tr>
+<th>Creator</th>
+<th>Total</th>
+<th>Creator 70%</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Jane Artist</td>
+<td>$1,000</td>
+<td>$700</td>
+<td><span class="status completed">Paid</span></td>
+</tr>
+
+<tr>
+<td>Mike Editor</td>
+<td>$600</td>
+<td>$420</td>
+<td><span class="status pending">Pending</span></td>
+</tr>
+</table>
+</div>
+
+</div>
+
+<div class="footer">
+© 2026 StudentStream Studios Admin
+<a href="/studios">Studios</a>
+<a href="/ss-productions">Productions</a>
+<a href="/">StudentStream</a>
+</div>
+
+</div>
+</body>
+</html>
