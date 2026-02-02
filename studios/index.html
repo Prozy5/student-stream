@@ -5,27 +5,10 @@
 <title>Studios — StudentStream Productions</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SEO -->
 <meta name="description" content="Studios is the creative marketplace of StudentStream Productions — connecting artists, designers, filmmakers, and creators with brands and opportunities." />
-<meta name="keywords" content="Studios marketplace, creators, artists, digital art, licensing, StudentStream Studios" />
 <link rel="canonical" href="https://studentstream.online/studios" />
 
-<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- SCHEMA -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"WebSite",
-  "name":"Studios by StudentStream",
-  "url":"https://studentstream.online/studios",
-  "publisher":{
-    "@type":"Organization",
-    "name":"StudentStream Productions"
-  }
-}
-</script>
 
 <style>
 *{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
@@ -137,13 +120,10 @@ gap:16px;
     and connect with real opportunities.
   </p>
 
-  <div class="cta-row" id="ctaRow">
-    <!-- populated by JS -->
-  </div>
+  <div class="cta-row" id="ctaRow"></div>
 </section>
 
-<!-- CONTENT (unchanged) -->
-<!-- WHAT CAN BE SOLD -->
+<!-- CONTENT -->
 <section class="section">
 <h2>What Creators Can Sell</h2>
 <p>Studios supports a wide range of creative work — digital-first and license-ready.</p>
@@ -170,8 +150,8 @@ gap:16px;
 <div class="footer">
   © 2026 StudentStream Studios
   <a href="/ss-productions">StudentStream Productions</a>
+  <a href="/studios/marketplace">Marketplace</a>
   <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
-  <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
 </div>
 
 </div>
@@ -186,28 +166,37 @@ const supabase = supabaseJs.createClient(
   const { data: { user } } = await supabase.auth.getUser();
   const cta = document.getElementById("ctaRow");
 
+  // Logged out
   if (!user) {
     cta.innerHTML = `
       <a href="/studios/signup"><button class="btn btn-primary">Join as a Creator</button></a>
       <a href="/studios/login"><button class="btn btn-outline">Log In</button></a>
+      <a href="/studios/marketplace"><button class="btn btn-outline">Browse Marketplace</button></a>
     `;
     return;
   }
 
-  const { data: role } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
+  // Check admin
+  const { data: admin } = await supabase
+    .from("admins")
+    .select("user_id")
+    .eq("user_id", user.id)
     .single();
 
-  if (role?.role === "admin") {
-    window.location.href = "/studios/admin/dashboard.html";
-  } else {
+  if (admin) {
     cta.innerHTML = `
-      <a href="/studios/upload.html"><button class="btn btn-primary">Submit Your Work</button></a>
-      <a href="/studios/dashboard.html"><button class="btn btn-outline">Creator Dashboard</button></a>
+      <a href="/studios/admin/dashboard.html"><button class="btn btn-primary">Admin Dashboard</button></a>
+      <a href="/studios/marketplace"><button class="btn btn-outline">View Marketplace</button></a>
     `;
+    return;
   }
+
+  // Creator
+  cta.innerHTML = `
+    <a href="/studios/creators/submit"><button class="btn btn-primary">Submit Your Work</button></a>
+    <a href="/studios/creators/dashboard"><button class="btn btn-outline">Creator Dashboard</button></a>
+    <a href="/studios/marketplace"><button class="btn btn-outline">Marketplace</button></a>
+  `;
 })();
 </script>
 
