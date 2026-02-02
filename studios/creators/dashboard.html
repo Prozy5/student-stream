@@ -7,6 +7,8 @@
 <meta name="description" content="Creator dashboard for StudentStream Studios. Track submissions, sales, and payouts." />
 <link rel="canonical" href="https://studentstream.online/studios/creators/dashboard" />
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
 body{
@@ -89,7 +91,7 @@ font-size:.75rem;
 }
 .pending{background:rgba(255,193,7,.2);color:#ffc107}
 .approved{background:rgba(108,242,194,.2);color:#6cf2c2}
-.sold{background:rgba(122,162,255,.2);color:#7aa2ff}
+.rejected{background:rgba(244,67,54,.2);color:#f44336}
 .paid{background:rgba(76,175,80,.25);color:#4caf50}
 
 .notice{
@@ -120,27 +122,25 @@ button:hover{background:rgba(255,255,255,.08)}
 <div class="container">
 
 <span class="badge">Creator Dashboard</span>
-<h1>Welcome back, Creator</h1>
-<p>
-Track your submissions, sales, and payouts with StudentStream Studios.
-</p>
+<h1>Welcome back</h1>
+<p>Track your submissions, sales, and payouts with StudentStream Studios.</p>
 
 <!-- STATS -->
 <div class="grid">
   <div class="stat">
-    <h2>$0.00</h2>
+    <h2 id="totalEarned">$0.00</h2>
     <span>Total Earnings</span>
   </div>
   <div class="stat">
-    <h2>$0.00</h2>
+    <h2 id="pendingEarned">$0.00</h2>
     <span>Pending Payout</span>
   </div>
   <div class="stat">
-    <h2>0</h2>
+    <h2 id="approvedCount">0</h2>
     <span>Approved Assets</span>
   </div>
   <div class="stat">
-    <h2>0</h2>
+    <h2 id="salesCount">0</h2>
     <span>Total Sales</span>
   </div>
 </div>
@@ -159,13 +159,8 @@ Track your submissions, sales, and payouts with StudentStream Studios.
 <th>Revenue</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td>—</td>
-<td>—</td>
-<td><span class="status pending">Pending Review</span></td>
-<td>$0.00</td>
-</tr>
+<tbody id="uploadsTable">
+<tr><td colspan="4">Loading…</td></tr>
 </tbody>
 </table>
 </div>
@@ -185,13 +180,8 @@ Track your submissions, sales, and payouts with StudentStream Studios.
 <th>Payout Status</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td>—</td>
-<td>$0.00</td>
-<td>$0.00</td>
-<td><span class="status paid">—</span></td>
-</tr>
+<tbody id="salesTable">
+<tr><td colspan="4">Loading…</td></tr>
 </tbody>
 </table>
 </div>
@@ -204,14 +194,112 @@ Track your submissions, sales, and payouts with StudentStream Studios.
 
 <div class="notice">
 <p>
-⚠️ This dashboard reflects manually processed data during early rollout.
-Payouts are issued via Cash App after confirmed sales.
-</p>
-<p>
-Automation and real-time updates will be introduced in future platform updates.
+⚠️ Early rollout: payouts are processed manually via Cash App.
 </p>
 </div>
 
 </div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function loadDashboard() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    window.location.href = "/studios/login.html";
+    return;
+  }
+
+  if (user.user_metadata?.role !== "creator") {
+    alert("Access denied");
+    return;
+  }
+
+  const { data: creator } = await supabase
+    .from("creators")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (!creator) {
+    alert("Creator profile missing");
+    return;
+  }
+
+  document.querySelector("h1").textContent =
+    `Welcome back, ${creator.display_name || "Creator"}`;
+
+  /* Uploads */
+  const { data: uploads } = await supabase
+    .from("creator_uploads")
+    .select("*")
+    .eq("creator_id", user.id)
+    .order("created_at", { ascending: false });
+
+  const uploadsTable = document.getElementById("uploadsTable");
+  uploadsTable.innerHTML = "";
+
+  let approved = 0;
+
+  if (!uploads || uploads.length === 0) {
+    uploadsTable.innerHTML = `<tr><td colspan="4">No submissions yet</td></tr>`;
+  } else {
+    uploads.forEach(u => {
+      if (u.status === "approved") approved++;
+
+      uploadsTable.innerHTML += `
+        <tr>
+          <td>${u.title}</td>
+          <td>${u.type || "—"}</td>
+          <td><span class="status ${u.status}">${u.status}</span></td>
+          <td>$${((u.earned_cents || 0)/100).toFixed(2)}</td>
+        </tr>
+      `;
+    });
+  }
+
+  /* Sales */
+  const { data: sales } = await supabase
+    .from("marketplace_sales")
+    .select("*")
+    .eq("creator_id", user.id);
+
+  const salesTable = document.getElementById("salesTable");
+  salesTable.innerHTML = "";
+
+  let total = 0;
+  let pending = 0;
+
+  if (!sales || sales.length === 0) {
+    salesTable.innerHTML = `<tr><td colspan="4">No sales yet</td></tr>`;
+  } else {
+    sales.forEach(s => {
+      total += s.creator_share_cents || 0;
+      if (!s.paid) pending += s.creator_share_cents || 0;
+
+      salesTable.innerHTML += `
+        <tr>
+          <td>${s.asset_title || "—"}</td>
+          <td>$${(s.amount_cents/100).toFixed(2)}</td>
+          <td>$${(s.creator_share_cents/100).toFixed(2)}</td>
+          <td><span class="status ${s.paid ? "paid" : "pending"}">${s.paid ? "Paid" : "Pending"}</span></td>
+        </tr>
+      `;
+    });
+  }
+
+  document.getElementById("totalEarned").textContent = `$${(total/100).toFixed(2)}`;
+  document.getElementById("pendingEarned").textContent = `$${(pending/100).toFixed(2)}`;
+  document.getElementById("approvedCount").textContent = approved;
+  document.getElementById("salesCount").textContent = sales?.length || 0;
+}
+
+loadDashboard();
+</script>
+
 </body>
 </html>
