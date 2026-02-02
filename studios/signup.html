@@ -89,39 +89,56 @@ const supabase = supabaseJs.createClient(
 );
 
 async function signup(){
-  const email = document.getElementById("email").value;
+  const btn = document.querySelector("button");
+  btn.disabled = true;
+  btn.textContent = "Creating account…";
+
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  const displayName = document.getElementById("displayName").value;
-  const cashapp = document.getElementById("cashapp").value;
+  const displayName = document.getElementById("displayName").value.trim();
+  const cashapp = document.getElementById("cashapp").value.trim();
 
   const { data, error } = await supabase.auth.signUp({
     email,
-    password
+    password,
+    options: {
+      data: {
+        role: "creator",
+        display_name: displayName
+      }
+    }
   });
 
-  if(error){
+  if (error) {
     alert(error.message);
+    btn.disabled = false;
+    btn.textContent = "Create Creator Account";
+    return;
+  }
+
+  // Email confirmation enabled
+  if (!data.user) {
+    alert("Check your email to confirm your account 📩");
     return;
   }
 
   const user = data.user;
 
-  const { error: profileError } = await supabase
+  const { error: creatorError } = await supabase
     .from("creators")
     .insert({
       id: user.id,
       display_name: displayName,
-      cashapp_tag: cashapp
+      cashapp_tag: cashapp,
+      status: "pending"
     });
 
-  if(profileError){
-    alert(profileError.message);
+  if (creatorError) {
+    alert("Account created, but profile setup failed. Contact support.");
     return;
   }
 
   alert("Creator account created! Pending approval 🚀");
+  window.location.href = "/studios/login.html";
 }
 </script>
-
-</body>
-</html>
