@@ -1,0 +1,34 @@
+<script src="/js/supabase.js"></script>
+
+<script>
+async function login(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    document.getElementById("error").innerText = error.message;
+    document.getElementById("error").style.display = "block";
+    return;
+  }
+
+  // Check admin table
+  const { data: admin } = await supabase
+    .from("admins")
+    .select("*")
+    .eq("user_id", data.user.id)
+    .single();
+
+  if(!admin){
+    await supabase.auth.signOut();
+    alert("Access denied");
+    return;
+  }
+
+  window.location.href = "/admin/";
+}
+</script>
