@@ -2,203 +2,188 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Dashboard — StudentStream Studios</title>
+<title>Studios Admin — StudentStream</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
 body{
 margin:0;
-background:#0b0d16;
+background:#040406;
 color:#fff;
-padding:20px;
 }
-
-.wrapper{max-width:1300px;margin:0 auto;}
-
-h1{margin-bottom:8px}
+.container{
+max-width:1200px;
+margin:auto;
+padding:60px 20px;
+}
+h1{
+font-size:2.8rem;
+margin-bottom:6px;
+}
 p{opacity:.7}
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:26px;
-margin-top:36px;
-}
-
-.card{
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.12);
-border-radius:22px;
-padding:28px;
-box-shadow:0 0 40px rgba(0,0,0,.5);
-}
-
-.card h2{
-margin-top:0;
-font-size:1.4rem;
-}
-
-.table{
+table{
 width:100%;
 border-collapse:collapse;
-margin-top:18px;
+margin-top:30px;
 }
-
-.table th,.table td{
-padding:12px;
+th,td{
+padding:14px;
 border-bottom:1px solid rgba(255,255,255,.12);
-font-size:.9rem;
 text-align:left;
+font-size:.95rem;
 }
+th{opacity:.6}
 
 .status{
-padding:6px 12px;
+padding:4px 10px;
 border-radius:999px;
 font-size:.75rem;
-font-weight:600;
-display:inline-block;
 }
+.pending{background:rgba(255,193,7,.25);color:#ffc107}
+.approved{background:rgba(108,242,194,.25);color:#6cf2c2}
+.rejected{background:rgba(244,67,54,.25);color:#f44336}
 
-.pending{background:rgba(255,193,7,.2);color:#ffc107}
-.approved{background:rgba(108,242,194,.2);color:#6cf2c2}
-.completed{background:rgba(122,162,255,.2);color:#7aa2ff}
-
-.btn{
+button{
 padding:8px 14px;
 border-radius:999px;
 border:none;
 cursor:pointer;
-font-size:.8rem;
 font-weight:600;
+font-size:.8rem;
 margin-right:6px;
 }
-
-.btn-approve{background:#6cf2c2;color:#040406}
-.btn-deny{background:#ff6b6b;color:#040406}
-.btn-view{background:#7aa2ff;color:#040406}
-
-.footer{
-margin-top:80px;
-opacity:.6;
-font-size:.85rem;
-display:flex;
-gap:16px;
-flex-wrap:wrap;
+.approve{background:#6cf2c2;color:#040406}
+.reject{background:#f44336;color:#fff}
+.logout{
+margin-top:30px;
+background:transparent;
+border:1px solid rgba(255,255,255,.3);
+color:#fff;
 }
 </style>
 </head>
 
 <body>
-<div class="wrapper">
+<div class="container">
 
-<h1>StudentStream Studios — Admin</h1>
-<p>Manual control panel for creators, brands, and payouts</p>
+<h1>Studios Admin</h1>
+<p>Review, approve, and manage creator submissions.</p>
 
-<div class="grid">
-
-<!-- CREATOR SUBMISSIONS -->
-<div class="card">
-<h2>Creator Submissions</h2>
-
-<table class="table">
+<table>
+<thead>
 <tr>
-<th>Name</th>
-<th>Role</th>
-<th>Status</th>
-<th>Action</th>
+  <th>Title</th>
+  <th>Type</th>
+  <th>Creator</th>
+  <th>Cash App</th>
+  <th>Status</th>
+  <th>Actions</th>
 </tr>
-
-<tr>
-<td>Jane Artist</td>
-<td>Digital Artist</td>
-<td><span class="status pending">Pending</span></td>
-<td>
-<button class="btn btn-approve">Approve</button>
-<button class="btn btn-deny">Deny</button>
-</td>
-</tr>
-
-<tr>
-<td>Mike Editor</td>
-<td>Filmmaker</td>
-<td><span class="status approved">Approved</span></td>
-<td>
-<button class="btn btn-view">View</button>
-</td>
-</tr>
+</thead>
+<tbody id="rows"></tbody>
 </table>
-</div>
 
-<!-- BRAND REQUESTS -->
-<div class="card">
-<h2>Brand Requests</h2>
-
-<table class="table">
-<tr>
-<th>Brand</th>
-<th>Project</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-
-<tr>
-<td>Nike Concept</td>
-<td>Campaign Video</td>
-<td><span class="status pending">Pending</span></td>
-<td>
-<button class="btn btn-view">Assign</button>
-</td>
-</tr>
-
-<tr>
-<td>Startup X</td>
-<td>Logo + Visuals</td>
-<td><span class="status approved">In Progress</span></td>
-<td>
-<button class="btn btn-view">View</button>
-</td>
-</tr>
-</table>
-</div>
-
-<!-- DEALS / PAYOUTS -->
-<div class="card">
-<h2>Deals & Payouts</h2>
-
-<table class="table">
-<tr>
-<th>Creator</th>
-<th>Total</th>
-<th>Creator 70%</th>
-<th>Status</th>
-</tr>
-
-<tr>
-<td>Jane Artist</td>
-<td>$1,000</td>
-<td>$700</td>
-<td><span class="status completed">Paid</span></td>
-</tr>
-
-<tr>
-<td>Mike Editor</td>
-<td>$600</td>
-<td>$420</td>
-<td><span class="status pending">Pending</span></td>
-</tr>
-</table>
-</div>
+<button class="logout" onclick="logout()">Log out</button>
 
 </div>
 
-<div class="footer">
-© 2026 StudentStream Studios Admin
-<a href="/studios">Studios</a>
-<a href="/ss-productions">Productions</a>
-<a href="/">StudentStream</a>
-</div>
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-</div>
+async function guardAdmin(){
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    location.href = "/studios/login.html";
+    return;
+  }
+
+  const { data: admin } = await supabase
+    .from("admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!admin) {
+    alert("Access denied");
+    location.href = "/studios";
+  }
+}
+
+async function loadSubmissions(){
+  const { data, error } = await supabase
+    .from("creator_uploads")
+    .select(`
+      id,
+      title,
+      type,
+      status,
+      creators (
+        display_name,
+        cashapp_tag
+      )
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  const tbody = document.getElementById("rows");
+  tbody.innerHTML = "";
+
+  data.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.title}</td>
+      <td>${item.type}</td>
+      <td>${item.creators?.display_name || "—"}</td>
+      <td>${item.creators?.cashapp_tag || "—"}</td>
+      <td>
+        <span class="status ${item.status}">
+          ${item.status}
+        </span>
+      </td>
+      <td>
+        ${item.status === "pending" ? `
+          <button class="approve" onclick="updateStatus('${item.id}','approved')">Approve</button>
+          <button class="reject" onclick="updateStatus('${item.id}','rejected')">Reject</button>
+        ` : "—"}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function updateStatus(id, status){
+  const { error } = await supabase
+    .from("creator_uploads")
+    .update({ status })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  loadSubmissions();
+}
+
+async function logout(){
+  await supabase.auth.signOut();
+  location.href = "/studios";
+}
+
+guardAdmin();
+loadSubmissions();
+</script>
+
 </body>
 </html>
