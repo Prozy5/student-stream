@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Studios Admin — StudentStream</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Admin dashboard for StudentStream Studios." />
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -15,20 +16,42 @@ background:#040406;
 color:#fff;
 }
 .container{
-max-width:1200px;
+max-width:1300px;
 margin:auto;
-padding:60px 20px;
+padding:70px 20px;
 }
 h1{
 font-size:2.8rem;
-margin-bottom:6px;
+margin-bottom:10px;
 }
 p{opacity:.7}
+
+.badge{
+display:inline-block;
+background:rgba(122,162,255,.15);
+border:1px solid rgba(122,162,255,.3);
+color:#7aa2ff;
+padding:6px 14px;
+border-radius:999px;
+font-size:.8rem;
+margin-bottom:16px;
+}
+
+.section{
+margin-top:60px;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:24px;
+padding:30px;
+margin-top:20px;
+}
 
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:30px;
 }
 th,td{
 padding:14px;
@@ -38,31 +61,24 @@ font-size:.95rem;
 }
 th{opacity:.6}
 
-.status{
-padding:4px 10px;
-border-radius:999px;
-font-size:.75rem;
-}
-.pending{background:rgba(255,193,7,.25);color:#ffc107}
-.approved{background:rgba(108,242,194,.25);color:#6cf2c2}
-.rejected{background:rgba(244,67,54,.25);color:#f44336}
-
 button{
-padding:8px 14px;
+padding:8px 16px;
 border-radius:999px;
-border:none;
+border:1px solid rgba(255,255,255,.25);
+background:transparent;
+color:#fff;
 cursor:pointer;
-font-weight:600;
 font-size:.8rem;
 margin-right:6px;
 }
-.approve{background:#6cf2c2;color:#040406}
-.reject{background:#f44336;color:#fff}
-.logout{
-margin-top:30px;
-background:transparent;
-border:1px solid rgba(255,255,255,.3);
-color:#fff;
+.approve{border-color:#6cf2c2;color:#6cf2c2}
+.reject{border-color:#ff6b6b;color:#ff6b6b}
+.pay{border-color:#4caf50;color:#4caf50}
+
+.notice{
+margin-top:50px;
+opacity:.65;
+font-size:.85rem;
 }
 </style>
 </head>
@@ -70,24 +86,81 @@ color:#fff;
 <body>
 <div class="container">
 
-<h1>Studios Admin</h1>
-<p>Review, approve, and manage creator submissions.</p>
+<span class="badge">Studios · Admin</span>
+<h1>Admin Dashboard</h1>
+<p>Manage creators, submissions, and payouts.</p>
 
+<!-- CREATORS -->
+<div class="section">
+<h2>Creators</h2>
+
+<div class="card">
 <table>
 <thead>
 <tr>
-  <th>Title</th>
-  <th>Type</th>
-  <th>Creator</th>
-  <th>Cash App</th>
-  <th>Status</th>
-  <th>Actions</th>
+<th>Name</th>
+<th>Email</th>
+<th>Cash App</th>
+<th>Status</th>
+<th>Actions</th>
 </tr>
 </thead>
-<tbody id="rows"></tbody>
+<tbody id="creatorsTable">
+<tr><td colspan="5">Loading…</td></tr>
+</tbody>
 </table>
+</div>
+</div>
 
-<button class="logout" onclick="logout()">Log out</button>
+<!-- SUBMISSIONS -->
+<div class="section">
+<h2>Submissions</h2>
+
+<div class="card">
+<table>
+<thead>
+<tr>
+<th>Title</th>
+<th>Creator</th>
+<th>Type</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="uploadsTable">
+<tr><td colspan="5">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- SALES -->
+<div class="section">
+<h2>Sales & Payouts</h2>
+
+<div class="card">
+<table>
+<thead>
+<tr>
+<th>Asset</th>
+<th>Creator</th>
+<th>Sale</th>
+<th>Creator 70%</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="salesTable">
+<tr><td colspan="6">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="notice">
+⚠️ Early rollout: approvals & payouts are manual.  
+Cash App payouts must be sent before marking as paid.
+</div>
 
 </div>
 
@@ -97,92 +170,106 @@ const supabase = supabaseJs.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-async function guardAdmin(){
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    location.href = "/studios/login.html";
-    return;
-  }
+// ---------- LOAD CREATORS ----------
+async function loadCreators(){
+  const { data } = await supabase
+    .from("creators")
+    .select("id, display_name, email, cashapp_tag, approved");
 
-  const { data: admin } = await supabase
-    .from("admins")
-    .select("user_id")
-    .eq("user_id", user.id)
-    .single();
-
-  if (!admin) {
-    alert("Access denied");
-    location.href = "/studios";
-  }
-}
-
-async function loadSubmissions(){
-  const { data, error } = await supabase
-    .from("creator_uploads")
-    .select(`
-      id,
-      title,
-      type,
-      status,
-      creators (
-        display_name,
-        cashapp_tag
-      )
-    `)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  const tbody = document.getElementById("rows");
+  const tbody = document.getElementById("creatorsTable");
   tbody.innerHTML = "";
 
-  data.forEach(item => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${item.title}</td>
-      <td>${item.type}</td>
-      <td>${item.creators?.display_name || "—"}</td>
-      <td>${item.creators?.cashapp_tag || "—"}</td>
-      <td>
-        <span class="status ${item.status}">
-          ${item.status}
-        </span>
-      </td>
-      <td>
-        ${item.status === "pending" ? `
-          <button class="approve" onclick="updateStatus('${item.id}','approved')">Approve</button>
-          <button class="reject" onclick="updateStatus('${item.id}','rejected')">Reject</button>
-        ` : "—"}
-      </td>
+  data.forEach(c=>{
+    tbody.innerHTML += `
+      <tr>
+        <td>${c.display_name || "—"}</td>
+        <td>${c.email || "—"}</td>
+        <td>${c.cashapp_tag || "—"}</td>
+        <td>${c.approved ? "Approved" : "Pending"}</td>
+        <td>
+          ${!c.approved ? `<button class="approve" onclick="approveCreator('${c.id}')">Approve</button>` : ""}
+        </td>
+      </tr>
     `;
-    tbody.appendChild(tr);
   });
 }
 
-async function updateStatus(id, status){
-  const { error } = await supabase
+// ---------- LOAD UPLOADS ----------
+async function loadUploads(){
+  const { data } = await supabase
     .from("creator_uploads")
-    .update({ status })
-    .eq("id", id);
+    .select("id, title, asset_type, status, creators(display_name)");
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+  const tbody = document.getElementById("uploadsTable");
+  tbody.innerHTML = "";
 
-  loadSubmissions();
+  data.forEach(u=>{
+    tbody.innerHTML += `
+      <tr>
+        <td>${u.title}</td>
+        <td>${u.creators?.display_name || "—"}</td>
+        <td>${u.asset_type}</td>
+        <td>${u.status}</td>
+        <td>
+          ${u.status === "pending" ? `
+            <button class="approve" onclick="approveUpload('${u.id}')">Approve</button>
+            <button class="reject" onclick="rejectUpload('${u.id}')">Reject</button>
+          ` : "—"}
+        </td>
+      </tr>
+    `;
+  });
 }
 
-async function logout(){
-  await supabase.auth.signOut();
-  location.href = "/studios";
+// ---------- LOAD SALES ----------
+async function loadSales(){
+  const { data } = await supabase
+    .from("marketplace_sales")
+    .select("id, asset_title, sale_price_cents, creator_share_cents, paid, creators(display_name)");
+
+  const tbody = document.getElementById("salesTable");
+  tbody.innerHTML = "";
+
+  data.forEach(s=>{
+    tbody.innerHTML += `
+      <tr>
+        <td>${s.asset_title}</td>
+        <td>${s.creators?.display_name || "—"}</td>
+        <td>$${(s.sale_price_cents/100).toFixed(2)}</td>
+        <td>$${(s.creator_share_cents/100).toFixed(2)}</td>
+        <td>${s.paid ? "Paid" : "Pending"}</td>
+        <td>
+          ${!s.paid ? `<button class="pay" onclick="markPaid('${s.id}')">Mark Paid</button>` : "—"}
+        </td>
+      </tr>
+    `;
+  });
 }
 
-guardAdmin();
-loadSubmissions();
+// ---------- ACTIONS ----------
+async function approveCreator(id){
+  await supabase.from("creators").update({ approved:true }).eq("id",id);
+  loadCreators();
+}
+
+async function approveUpload(id){
+  await supabase.from("creator_uploads").update({ status:"approved" }).eq("id",id);
+  loadUploads();
+}
+
+async function rejectUpload(id){
+  await supabase.from("creator_uploads").update({ status:"rejected" }).eq("id",id);
+  loadUploads();
+}
+
+async function markPaid(id){
+  await supabase.from("marketplace_sales").update({ paid:true }).eq("id",id);
+  loadSales();
+}
+
+loadCreators();
+loadUploads();
+loadSales();
 </script>
 
 </body>
