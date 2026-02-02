@@ -1,213 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Creator – StudentStream Studios</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Creator Profile — StudentStream Studios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <meta name="description" content="Creator profile on StudentStream Studios — showcasing original work, services, and collaborations." />
+  <link rel="canonical" href="https://studentstream.online/studios/creator" />
 
 <style>
-:root{
-  --bg:#070b14;
-  --panel:#0e1625;
-  --accent:#7cffb2;
-  --text:#eaf1ff;
-  --muted:#9fb0cc;
-  --border:rgba(255,255,255,0.08);
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
 body{
-  font-family:system-ui,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
-  color:var(--text);
+margin:0;
+background:radial-gradient(circle at top,#0f1224,#040406);
+color:#fff;
+padding:20px;
 }
 
-/* NAV */
-
-nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 24px;
-  background:rgba(10,20,40,.7);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
+.wrapper{
+max-width:1200px;
+margin:0 auto;
 }
 
-.nav-left{font-weight:700}
+a{color:#7aa2ff;text-decoration:none}
 
-.nav-links a{
-  color:var(--muted);
-  text-decoration:none;
-  margin-left:18px;
-  font-size:14px;
-}
-.nav-links a:hover{color:var(--text)}
-
-/* LAYOUT */
-
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:40px 22px;
-}
-
-/* PROFILE HEADER */
-
-.profile{
-  display:flex;
-  gap:24px;
-  align-items:center;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:24px;
+.header{
+display:flex;
+gap:40px;
+align-items:center;
+margin-bottom:60px;
+flex-wrap:wrap;
 }
 
 .avatar{
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  background:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
+width:140px;
+height:140px;
+border-radius:50%;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:2.5rem;
+font-weight:700;
+color:#040406;
 }
 
-.profile-info h1{margin-bottom:6px}
-.profile-info p{color:var(--muted)}
+.info h1{
+margin:0;
+font-size:2.6rem;
+}
 
-.profile-actions{
-  margin-left:auto;
-  display:flex;
-  gap:10px;
+.info span{
+display:block;
+opacity:.65;
+margin:6px 0 14px;
+}
+
+.badges{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.badge{
+padding:6px 14px;
+border-radius:999px;
+font-size:.8rem;
+background:rgba(108,242,194,.15);
+border:1px solid rgba(108,242,194,.3);
+color:#6cf2c2;
+}
+
+.actions{
+margin-top:18px;
+display:flex;
+gap:14px;
+flex-wrap:wrap;
 }
 
 .btn{
-  padding:10px 16px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:#0a1220;
-  color:var(--text);
-  cursor:pointer;
-  text-decoration:none;
-  font-size:14px;
+padding:14px 26px;
+border-radius:999px;
+border:none;
+cursor:pointer;
+font-weight:600;
 }
 
-.btn.primary{
-  background:linear-gradient(135deg,#7cffb2,#42ff9a);
-  border:none;
-  color:#042012;
-  font-weight:700;
+.btn-primary{
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#040406;
 }
 
-/* GRID */
+.btn-outline{
+background:transparent;
+border:1px solid rgba(255,255,255,.25);
+color:#fff;
+}
 
-.section{margin-top:40px}
+.section{
+margin-top:80px;
+}
 
-.section h2{margin-bottom:14px}
+.section h2{
+font-size:2rem;
+margin-bottom:14px;
+}
+
+.section p{
+opacity:.8;
+max-width:800px;
+}
 
 .grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:16px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:26px;
+margin-top:30px;
 }
 
-.item{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:12px;
-  text-align:center;
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:24px;
 }
 
-.thumb{
-  height:120px;
-  border-radius:10px;
-  background:#111;
-  margin-bottom:10px;
+.card b{
+font-size:1.15rem;
 }
 
-.item p{font-size:14px}
+.card span{
+display:block;
+opacity:.6;
+margin:6px 0 12px;
+}
 
-/* FOOTER */
+.work{
+aspect-ratio:16/10;
+border-radius:16px;
+background:linear-gradient(135deg,#1f244a,#0b0e1f);
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:.7;
+font-weight:600;
+}
 
-footer{
-  text-align:center;
-  padding:30px;
-  color:var(--muted);
-  font-size:13px;
-  border-top:1px solid var(--border);
-  margin-top:60px;
+.footer{
+margin-top:100px;
+opacity:.6;
+font-size:.85rem;
+display:flex;
+gap:18px;
+flex-wrap:wrap;
 }
 </style>
 </head>
 
 <body>
 
-<nav>
-  <div class="nav-left">🎨 StudentStream Studios</div>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="explore.html">Explore</a>
-    <a href="marketplace.html">Marketplace</a>
-  </div>
-</nav>
+<div class="wrapper">
 
-<div class="container">
+  <!-- NAV -->
+  <a href="/studios">← Back to Studios</a>
 
-  <div class="profile">
-    <div class="avatar">🎭</div>
+  <!-- HEADER -->
+  <section class="header">
+    <div class="avatar">A</div>
 
-    <div class="profile-info">
-      <h1>Creator Name</h1>
-      <p>Digital artist • Logos • Posters • Branding</p>
+    <div class="info">
+      <h1>Alex Monroe</h1>
+      <span>Digital Artist • Motion Designer</span>
+
+      <div class="badges">
+        <div class="badge">Verified Creator</div>
+        <div class="badge">Available for Work</div>
+        <div class="badge">Studios Member</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary">Commission Creator</button>
+        <button class="btn btn-outline">View Marketplace Items</button>
+      </div>
     </div>
+  </section>
 
-    <div class="profile-actions">
-      <a href="#" class="btn">Message</a>
-      <a href="#" class="btn primary">Hire</a>
-    </div>
-  </div>
+  <!-- ABOUT -->
+  <section class="section">
+    <h2>About</h2>
+    <p>
+      Alex is a multidisciplinary digital artist specializing in motion graphics,
+      visual identity, and experimental media. Active within StudentStream Studios,
+      collaborating on commercial and creative projects.
+    </p>
+  </section>
 
-  <div class="section">
-    <h2>Portfolio</h2>
+  <!-- SERVICES -->
+  <section class="section">
+    <h2>Services</h2>
 
     <div class="grid">
-      <div class="item">
-        <div class="thumb"></div>
-        <p>Logo Design</p>
+      <div class="card">
+        <b>Motion Graphics</b>
+        <span>Brand visuals & promos</span>
+        <p>Short-form animations, intros, transitions, and digital effects.</p>
       </div>
-      <div class="item">
-        <div class="thumb"></div>
-        <p>Poster Art</p>
+
+      <div class="card">
+        <b>Visual Design</b>
+        <span>Logos & identity</span>
+        <p>Brand systems, digital posters, and creative direction.</p>
       </div>
-      <div class="item">
-        <div class="thumb"></div>
-        <p>Album Cover</p>
-      </div>
-      <div class="item">
-        <div class="thumb"></div>
-        <p>Brand Kit</p>
+
+      <div class="card">
+        <b>Custom Commissions</b>
+        <span>Unique requests</span>
+        <p>Tailored creative work for brands, creators, and studios.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="section">
-    <h2>About</h2>
-    <p style="color:var(--muted);max-width:700px;">
-      Creator bio goes here. This is where artists describe their style,
-      experience, and what type of work they offer on StudentStream Studios.
-    </p>
+  <!-- WORK -->
+  <section class="section">
+    <h2>Featured Work</h2>
+
+    <div class="grid">
+      <div class="work">Project Preview</div>
+      <div class="work">Artwork Preview</div>
+      <div class="work">Motion Clip</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    © 2026 StudentStream Studios
+    <a href="/ss-productions">StudentStream Productions</a>
+    <a href="/">StudentStream</a>
   </div>
 
 </div>
-
-<footer>
-  © 2026 StudentStream Studios
-</footer>
 
 </body>
 </html>
