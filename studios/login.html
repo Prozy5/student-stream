@@ -2,129 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login – StudentStream Studios</title>
+<title>Login — StudentStream Studios</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{
-  --bg:#070b14;
-  --panel:#0e1625;
-  --accent:#7cffb2;
-  --text:#eaf1ff;
-  --muted:#9fb0cc;
-  --border:rgba(255,255,255,0.08);
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
 body{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:system-ui,Segoe UI,Roboto;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
-  color:var(--text);
+margin:0;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at top,#0f1224,#050507);
+color:#fff;
+padding:20px;
 }
-
 .card{
-  width:100%;
-  max-width:420px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:28px;
+width:100%;
+max-width:420px;
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.15);
+border-radius:26px;
+padding:40px;
+box-shadow:0 40px 120px rgba(0,0,0,.7);
 }
-
-.logo{
-  text-align:center;
-  font-weight:800;
-  font-size:22px;
-  margin-bottom:6px;
+h1{
+margin:0 0 8px;
+font-size:2.2rem;
 }
-
-.subtitle{
-  text-align:center;
-  color:var(--muted);
-  font-size:14px;
-  margin-bottom:24px;
+p{
+opacity:.7;
+margin-bottom:28px;
 }
-
-label{
-  display:block;
-  font-size:13px;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-
 input{
-  width:100%;
-  padding:11px 12px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:#0a1220;
-  color:var(--text);
-  margin-bottom:16px;
+width:100%;
+padding:14px 16px;
+margin-bottom:16px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,.25);
+background:rgba(0,0,0,.35);
+color:#fff;
+font-size:.95rem;
 }
-
 button{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  cursor:pointer;
-  background:linear-gradient(135deg,#7cffb2,#3cff91);
-  color:#00210f;
-  font-weight:700;
-  margin-top:6px;
+width:100%;
+padding:15px;
+border-radius:999px;
+border:none;
+font-weight:600;
+cursor:pointer;
+font-size:.95rem;
+background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
+color:#050507;
 }
-
 .links{
-  text-align:center;
-  margin-top:16px;
-  font-size:13px;
+margin-top:18px;
+display:flex;
+justify-content:space-between;
+font-size:.85rem;
+opacity:.7;
 }
-
 .links a{
-  color:var(--accent);
-  text-decoration:none;
+color:#7aa2ff;
+text-decoration:none;
 }
-
-footer{
-  position:fixed;
-  bottom:12px;
-  font-size:12px;
-  color:var(--muted);
+.error{
+margin-top:14px;
+color:#ff7a7a;
+font-size:.85rem;
+display:none;
 }
 </style>
 </head>
+
 <body>
 
 <div class="card">
+  <h1>Welcome back</h1>
+  <p>Log in to StudentStream Studios</p>
 
-  <div class="logo">🎨 StudentStream Studios</div>
-  <div class="subtitle">Log into your studio</div>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
 
-  <form>
-    <label>Email</label>
-    <input type="email" placeholder="you@email.com" required>
+  <button onclick="login()">Log In</button>
 
-    <label>Password</label>
-    <input type="password" placeholder="Your password" required>
-
-    <button type="submit">Log In</button>
-  </form>
+  <div class="error" id="error"></div>
 
   <div class="links">
-    Don’t have an account?
-    <a href="signup.html">Create one</a>
+    <a href="/studios/signup.html">Create account</a>
+    <a href="/studios">← Back to Studios</a>
   </div>
-
 </div>
 
-<footer>
-© 2026 StudentStream Studios
-</footer>
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const errorBox = document.getElementById("error");
+
+  errorBox.style.display = "none";
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    errorBox.textContent = error.message;
+    errorBox.style.display = "block";
+    return;
+  }
+
+  const user = data.user;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role === "admin") {
+    window.location.href = "/studios/admin/dashboard.html";
+  } else {
+    window.location.href = "/studios/dashboard.html";
+  }
+}
+</script>
 
 </body>
 </html>
