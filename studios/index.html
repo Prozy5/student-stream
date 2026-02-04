@@ -2,174 +2,199 @@
 <html lang="en">
 <head>
   <!-- =========================
-       CORE META / SEO
+       CORE META
   ========================== -->
   <meta charset="UTF-8" />
-  <title>Studios Marketplace | StudentStream</title>
+  <title>Studios Marketplace | StudentStream HQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta name="description" content="Studios is the creator marketplace by StudentStream. Browse student creators, license digital work, and hire emerging talent." />
-  <meta name="keywords" content="student creators, creator marketplace, digital assets, hire student creators, studentstream studios" />
-  <meta name="author" content="StudentStream Productions" />
+  <meta name="description" content="StudentStream Studios is a creator marketplace by StudentStream HQ where emerging and independent creators license work, showcase talent, and get paid." />
+  <meta name="keywords" content="creator marketplace, digital assets marketplace, filmmakers marketplace, creative licensing, studentstream studios" />
+  <meta name="author" content="StudentStream HQ" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://studentstream.online/studios/" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Studios Marketplace | StudentStream" />
-  <meta property="og:description" content="Discover and license work from verified student creators." />
+  <!-- =========================
+       OPEN GRAPH (SOCIAL)
+  ========================== -->
+  <meta property="og:title" content="StudentStream Studios | Creator Marketplace" />
+  <meta property="og:description" content="Where creators turn work into opportunity." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://studentstream.online/studios" />
+  <meta property="og:url" content="https://studentstream.online/studios/" />
+
+  <!-- =========================
+       SCHEMA.ORG (GOOGLE)
+  ========================== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "StudentStream Studios",
+    "url": "https://studentstream.online/studios/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "StudentStream HQ",
+      "url": "https://studentstream.online",
+      "sameAs": [
+        "https://www.instagram.com/studentstreamhq",
+        "https://www.tiktok.com/@studentstreamhq"
+      ]
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://studentstream.online/studios/marketplace.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "StudentStream HQ",
+    "url": "https://studentstream.online",
+    "logo": "https://studentstream.online/logo.png",
+    "sameAs": [
+      "https://www.instagram.com/studentstreamhq",
+      "https://www.tiktok.com/@studentstreamhq"
+    ]
+  }
+  </script>
 
   <!-- =========================
        STYLES
   ========================== -->
   <style>
     :root {
-      --bg: #070b1a;
-      --panel: rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.08);
+      --bg: #060913;
+      --panel: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.12);
       --muted: #9aa4c7;
       --primary: #5eead4;
       --primary-dark: #2dd4bf;
+      --accent: #38bdf8;
+      --warning: #fbbf24;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
       background:
-        radial-gradient(1200px 600px at 20% -10%, #101a4a, transparent),
-        radial-gradient(1000px 500px at 80% 10%, #0a3b34, transparent),
+        radial-gradient(1200px 600px at 10% -10%, #0d1b4c, transparent),
+        radial-gradient(1000px 500px at 90% 10%, #053a34, transparent),
         var(--bg);
       color: #fff;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { text-decoration: none; }
 
-    /* =========================
-       HEADER
-    ========================== */
+    /* NAV */
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(7,11,26,0.8);
-      backdrop-filter: blur(12px);
+      z-index: 100;
+      background: rgba(6,9,19,0.85);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
 
     .nav {
       max-width: 1200px;
       margin: auto;
-      padding: 16px 24px;
+      padding: 16px 20px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
     }
 
-    .nav strong {
-      font-size: 18px;
-      letter-spacing: .3px;
+    .logo {
+      font-weight: 800;
+      letter-spacing: 0.4px;
     }
 
-    .nav-links a {
-      margin-left: 18px;
-      font-weight: 500;
+    .nav a {
+      margin-left: 20px;
       color: var(--muted);
+      font-size: 14px;
     }
 
-    .nav-links a:hover {
-      color: #fff;
-    }
-
-    /* =========================
-       HERO
-    ========================== */
+    /* HERO */
     .hero {
       max-width: 1200px;
       margin: auto;
-      padding: 96px 24px 72px;
+      padding: 90px 20px 70px;
     }
 
     .badge {
       display: inline-block;
-      background: rgba(94,234,212,0.15);
-      color: var(--primary);
       padding: 6px 14px;
-      border-radius: 999px;
       font-size: 13px;
-      margin-bottom: 20px;
+      border-radius: 999px;
+      background: rgba(94,234,212,0.12);
+      color: var(--primary);
+      border: 1px solid rgba(94,234,212,0.35);
+      margin-bottom: 18px;
     }
 
     h1 {
-      font-size: clamp(42px, 6vw, 64px);
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
       line-height: 1.05;
-      margin-bottom: 20px;
+      margin: 0 0 16px;
+      font-weight: 900;
     }
 
     .hero p {
-      font-size: 18px;
+      max-width: 680px;
       color: var(--muted);
-      max-width: 720px;
+      font-size: 1.05rem;
     }
 
     .cta {
-      margin-top: 36px;
+      margin-top: 32px;
       display: flex;
-      gap: 16px;
       flex-wrap: wrap;
+      gap: 14px;
     }
 
     .btn {
-      padding: 14px 24px;
+      padding: 14px 28px;
       border-radius: 999px;
-      font-weight: 600;
-      transition: transform .15s ease, box-shadow .15s ease;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
     }
 
     .btn.primary {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: #03120f;
-      box-shadow: 0 10px 30px rgba(94,234,212,.35);
+      color: #022c22;
     }
 
     .btn.secondary {
+      background: transparent;
       border: 1px solid var(--border);
       color: #fff;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-    /* =========================
-       SECTIONS
-    ========================== */
+    /* SECTIONS */
     section {
       max-width: 1200px;
       margin: auto;
-      padding: 72px 24px;
+      padding: 70px 20px;
     }
 
-    section h2 {
-      font-size: 32px;
-      margin-bottom: 12px;
-    }
-
-    section p {
-      color: var(--muted);
-      max-width: 720px;
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 14px;
     }
 
     .grid {
-      margin-top: 36px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 20px;
+      margin-top: 32px;
     }
 
     .card {
@@ -177,140 +202,117 @@
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 24px;
-      transition: transform .2s ease, border .2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(94,234,212,.4);
     }
 
     .card h3 {
-      margin: 0 0 8px;
+      margin-top: 0;
+      font-size: 1.1rem;
     }
 
     .card p {
-      margin: 0;
-      font-size: 15px;
       color: var(--muted);
+      font-size: 0.95rem;
     }
 
-    /* =========================
-       FOOTER
-    ========================== */
+    /* NOTICE */
+    .notice {
+      background: rgba(251,191,36,0.12);
+      border: 1px solid rgba(251,191,36,0.35);
+      color: #fde68a;
+      padding: 22px;
+      border-radius: 16px;
+      margin-top: 30px;
+      font-size: 0.95rem;
+    }
+
+    /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
-      padding: 32px 24px;
-      text-align: center;
+      padding: 40px 20px;
       color: var(--muted);
       font-size: 14px;
     }
 
-    /* =========================
-       MOBILE
-    ========================== */
-    @media (max-width: 640px) {
-      .nav-links {
-        display: none;
-      }
+    .footer-inner {
+      max-width: 1200px;
+      margin: auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .socials a {
+      margin-right: 16px;
+      color: var(--accent);
     }
   </style>
 </head>
 
 <body>
 
-  <!-- =========================
-       HEADER
-  ========================== -->
-  <header>
-    <div class="nav">
-      <strong>StudentStream Studios</strong>
-      <div class="nav-links">
-        <a href="/studios/marketplace.html">Marketplace</a>
-        <a href="/studios/submit.html">Submit</a>
-        <a href="/studios/login.html">Login</a>
-      </div>
-    </div>
-  </header>
+<header>
+  <div class="nav">
+    <div class="logo">StudentStream HQ · Studios</div>
+    <nav>
+      <a href="/studios/marketplace.html">Marketplace</a>
+      <a href="/studios/submit.html">Submit Work</a>
+      <a href="/studios/login.html">Login</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- =========================
-       HERO
-  ========================== -->
-  <main class="hero">
-    <span class="badge">Studios · Marketplace</span>
-    <h1>Browse student creators.  
-      License real work.</h1>
+<main>
 
+  <div class="hero">
+    <span class="badge">Studios · Creator Marketplace</span>
+    <h1>Where creators turn work into opportunity.</h1>
     <p>
-      Studios is the official creator marketplace by StudentStream.
-      Discover emerging talent, license digital assets, or hire creators directly.
+      StudentStream Studios is the creator marketplace built by
+      <strong>StudentStream HQ</strong>.
+      Emerging and independent creators license work, showcase talent,
+      and connect with real opportunities.
     </p>
 
     <div class="cta">
       <a class="btn primary" href="/studios/marketplace.html">Browse Marketplace</a>
-      <a class="btn secondary" href="/studios/submit.html">Become a Creator</a>
+      <a class="btn secondary" href="/studios/submit.html">Submit Your Work</a>
     </div>
-  </main>
+  </div>
 
-  <!-- =========================
-       CATEGORIES
-  ========================== -->
   <section>
-    <h2>What creators sell</h2>
-    <p>Digital-first, license-ready work from verified student creators.</p>
-
+    <h2>Built for Real Creators</h2>
     <div class="grid">
       <div class="card">
-        <h3>🎨 Digital Art & Design</h3>
-        <p>Illustration, branding, UI kits, thumbnails.</p>
+        <h3>License & Sell Work</h3>
+        <p>Digital assets, creative services, and licensed media.</p>
       </div>
       <div class="card">
-        <h3>🎬 Film & Video</h3>
-        <p>Edits, motion graphics, short films.</p>
+        <h3>Get Discovered</h3>
+        <p>Exposure to productions, brands, and creative teams.</p>
       </div>
       <div class="card">
-        <h3>🎵 Music & Audio</h3>
-        <p>Beats, sound effects, original scores.</p>
+        <h3>Track Earnings</h3>
+        <p>Clear creator earnings dashboards powered by live data.</p>
       </div>
-      <div class="card">
-        <h3>🧠 Talent Profiles</h3>
-        <p>Hire creators directly for custom work.</p>
-      </div>
+    </div>
+
+    <div class="notice">
+      ⚠️ <strong>Payouts:</strong> Studios currently supports
+      <strong>manual creator payouts</strong> while automated payments are finalized.
+      All earnings are tracked transparently.
     </div>
   </section>
 
-  <!-- =========================
-       TRUST
-  ========================== -->
-  <section>
-    <h2>Built for creators</h2>
-    <p>
-      Studios is part of the StudentStream ecosystem — designed to help students
-      turn creative work into real opportunity.
-    </p>
+</main>
 
-    <div class="grid">
-      <div class="card">
-        <h3>🔒 Secure payouts</h3>
-        <p>Transparent earnings and creator ownership.</p>
-      </div>
-      <div class="card">
-        <h3>📊 Creator dashboards</h3>
-        <p>Track sales, views, and revenue.</p>
-      </div>
-      <div class="card">
-        <h3>🚀 Early-stage exposure</h3>
-        <p>Get discovered before the crowd.</p>
-      </div>
+<footer>
+  <div class="footer-inner">
+    <div>© 2026 StudentStream HQ · Studios</div>
+    <div class="socials">
+      <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
+      <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
     </div>
-  </section>
-
-  <!-- =========================
-       FOOTER
-  ========================== -->
-  <footer>
-    © 2026 StudentStream Productions · Studios Marketplace
-  </footer>
+  </div>
+</footer>
 
 </body>
 </html>
