@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Studios Dashboard | StudentStream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <style>
+    :root {
+      --bg: #070b16;
+      --panel: #0d1326;
+      --panel-2: #111a3a;
+      --text: #ffffff;
+      --muted: #b3b9d4;
+      --accent: #38f2c7;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(1200px 600px at 20% 0%, #0e1636, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 22px 6%;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header strong {
+      font-size: 18px;
+    }
+
+    header button {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 50px 6%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+      margin-bottom: 60px;
+    }
+
+    .stat {
+      background: linear-gradient(180deg, var(--panel), #0a1020);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 6px;
+    }
+
+    section {
+      margin-top: 70px;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 18px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      transition: all .2s ease;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), #1fd3aa);
+      color: #00140f;
+      border: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    .panel {
+      margin-top: 30px;
+      background: linear-gradient(180deg, var(--panel), #0a1020);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 6%;
+      color: var(--muted);
+      margin-top: 80px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <strong>StudentStream Studios</strong>
+  <button id="logoutBtn">Log out</button>
+</header>
+
+<main>
+  <h1 id="welcome">Dashboard</h1>
+  <p class="sub">Manage your creator presence inside StudentStream Studios.</p>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <span>Submissions</span>
+      <strong id="submissions">0</strong>
+    </div>
+    <div class="stat">
+      <span>Approved Assets</span>
+      <strong id="approved">0</strong>
+    </div>
+    <div class="stat">
+      <span>Total Views</span>
+      <strong id="views">—</strong>
+    </div>
+    <div class="stat">
+      <span>Payout Status</span>
+      <strong>Manual</strong>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <section>
+    <h2>Creator Actions</h2>
+    <div class="actions">
+      <a class="btn primary" href="/studios/submit.html">Submit New Work</a>
+      <a class="btn" href="/studios/marketplace.html">View Marketplace</a>
+      <a class="btn" href="/studios/profile.html">Edit Profile</a>
+    </div>
+
+    <div class="panel">
+      <strong>Manual Payouts Active</strong><br /><br />
+      All payouts are currently reviewed and processed directly by StudentStream HQ.
+      You’ll be contacted via your account email when payments are issued.
+    </div>
+  </section>
+
+  <!-- SUBMISSIONS -->
+  <section>
+    <h2>Your Submissions</h2>
+    <div class="panel" id="submissionsPanel">
+      Loading your submissions…
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2026 StudentStream HQ · Studios is a division of StudentStream
+</footer>
+
+<!-- SUPABASE -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  const supabase = supabase.createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  const submissionsEl = document.getElementById("submissions");
+  const approvedEl = document.getElementById("approved");
+  const panel = document.getElementById("submissionsPanel");
+  const welcome = document.getElementById("welcome");
+
+  logoutBtn.onclick = async () => {
+    await supabase.auth.signOut();
+    location.href = "/studios/";
+  };
+
+  async function loadDashboard() {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      location.href = "/studios/login.html";
+      return;
+    }
+
+    welcome.textContent = `Welcome, ${session.user.email}`;
+
+    const { data, error } = await supabase
+      .from("studios_submissions")
+      .select("*")
+      .eq("user_id", session.user.id);
+
+    if (error || !data) {
+      panel.textContent = "Unable to load submissions.";
+      return;
+    }
+
+    submissionsEl.textContent = data.length;
+    approvedEl.textContent = data.filter(i => i.status === "approved").length;
+
+    if (data.length === 0) {
+      panel.innerHTML = "You haven’t submitted anything yet.";
+      return;
+    }
+
+    panel.innerHTML = data.map(item => `
+      <div style="margin-bottom:14px;">
+        <strong>${item.title}</strong><br />
+        Status: ${item.status}
+      </div>
+    `).join("");
+  }
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
