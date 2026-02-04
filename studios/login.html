@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <title>Studios Login • StudentStream HQ</title>
 
-  <!-- Mobile / iOS -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!-- Mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
   <!-- SEO -->
@@ -29,12 +29,13 @@
       align-items: center;
       justify-content: center;
       color: white;
+      padding: 20px;
     }
 
     .card {
       width: 100%;
       max-width: 420px;
-      padding: 28px;
+      padding: 30px;
       border-radius: 22px;
       background: rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(20px);
@@ -43,12 +44,12 @@
 
     h1 {
       margin: 0 0 6px;
-      font-size: 28px;
-      font-weight: 700;
+      font-size: 30px;
+      font-weight: 800;
     }
 
     p {
-      margin: 0 0 20px;
+      margin: 0 0 22px;
       opacity: 0.75;
       font-size: 14px;
     }
@@ -58,13 +59,9 @@
       padding: 14px 16px;
       border-radius: 14px;
       border: none;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       font-size: 15px;
       outline: none;
-    }
-
-    input::placeholder {
-      color: #999;
     }
 
     button {
@@ -73,7 +70,7 @@
       border-radius: 16px;
       border: none;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       background: linear-gradient(135deg, #5b8cff, #5cffc7);
       color: #000;
@@ -85,67 +82,96 @@
       cursor: not-allowed;
     }
 
+    .error {
+      margin-top: 12px;
+      color: #ff6b6b;
+      font-size: 13px;
+      display: none;
+    }
+
+    .success {
+      margin-top: 12px;
+      color: #4cffb0;
+      font-size: 13px;
+      display: none;
+    }
+
     .footer {
       margin-top: 18px;
       text-align: center;
       font-size: 12px;
       opacity: 0.6;
     }
-
-    .error {
-      margin-top: 10px;
-      color: #ff6b6b;
-      font-size: 13px;
-      display: none;
-    }
   </style>
 </head>
+
 <body>
 
   <div class="card">
     <h1>Studios Login</h1>
-    <p>Use your StudentStream account</p>
+    <p>Use your StudentStream HQ account</p>
 
-    <!-- NO FORM SUBMIT -->
+    <!-- LOGIN FORM -->
     <input id="email" type="email" placeholder="Email" autocomplete="email" />
     <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
 
-    <button id="loginBtn" type="button">Log In</button>
+    <button id="loginBtn">Log In</button>
 
     <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
 
     <div class="footer">
-      StudentStream HQ • Studios
+      StudentStream HQ • Studios Marketplace
     </div>
   </div>
 
   <script>
+    // ✅ Supabase Config
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
 
+    // Elements
     const loginBtn = document.getElementById("loginBtn");
     const errorBox = document.getElementById("error");
+    const successBox = document.getElementById("success");
 
-    loginBtn.addEventListener("click", async () => {
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.style.display = "block";
+      successBox.style.display = "none";
+    }
+
+    function showSuccess(msg) {
+      successBox.textContent = msg;
+      successBox.style.display = "block";
+      errorBox.style.display = "none";
+    }
+
+    // ✅ Prevent Safari Reset Bug
+    loginBtn.addEventListener("click", async (event) => {
+      event.preventDefault(); // FIXES iPhone refresh behavior
+
       errorBox.style.display = "none";
 
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
       if (!email || !password) {
-        showError("Enter email and password");
+        showError("Enter email and password.");
         return;
       }
 
       loginBtn.disabled = true;
       loginBtn.textContent = "Signing in…";
 
-      const { error } = await supabase.auth.signInWithPassword({
+      // ✅ Supabase Login
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
@@ -157,20 +183,19 @@
         return;
       }
 
-      // SUCCESS — redirect to Studios dashboard
-      window.location.replace("/studios/");
+      showSuccess("Login successful. Redirecting…");
+
+      // ✅ Redirect to Dashboard (not homepage)
+      setTimeout(() => {
+        window.location.href = "/studios/dashboard.html";
+      }, 1200);
     });
 
-    function showError(msg) {
-      errorBox.textContent = msg;
-      errorBox.style.display = "block";
-    }
-
-    // Auto-redirect if already logged in
+    // ✅ Auto Redirect if already logged in
     (async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
-        window.location.replace("/studios/");
+        window.location.href = "/studios/dashboard.html";
       }
     })();
   </script>
