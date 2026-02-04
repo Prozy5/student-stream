@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Earnings — StudentStream Studios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top,#0f1224,#050507);
+      color: #fff;
+      padding: 24px;
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 50px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    .note {
+      opacity: .6;
+      font-size: .85rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 22px;
+      margin-bottom: 60px;
+    }
+
+    .card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      padding: 26px;
+    }
+
+    .card span {
+      font-size: .8rem;
+      opacity: .6;
+    }
+
+    .card h2 {
+      margin: 10px 0 0;
+      font-size: 2.1rem;
+    }
+
+    section {
+      margin-bottom: 70px;
+    }
+
+    h3 {
+      margin-bottom: 16px;
+      font-size: 1.25rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255,255,255,.04);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: .9rem;
+    }
+
+    th {
+      background: rgba(255,255,255,.08);
+      opacity: .7;
+    }
+
+    tr {
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .status {
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: .75rem;
+    }
+
+    .paid {
+      background: rgba(108,242,194,.15);
+      color: #6cf2c2;
+    }
+
+    .pending {
+      background: rgba(255,184,108,.15);
+      color: #ffb86c;
+    }
+
+    .footer-note {
+      margin-top: 50px;
+      opacity: .55;
+      font-size: .85rem;
+      max-width: 700px;
+    }
+
+    a {
+      color: #7aa2ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrapper">
+
+<header>
+  <div>
+    <h1>My Earnings</h1>
+    <div class="note">StudentStream Studios · Creator Dashboard</div>
+  </div>
+  <a href="/studios/dashboard.html">Back to Dashboard</a>
+</header>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="card">
+    <span>Total Earned</span>
+    <h2 id="totalEarned">$0.00</h2>
+  </div>
+  <div class="card">
+    <span>Paid Out</span>
+    <h2 id="paidOut">$0.00</h2>
+  </div>
+  <div class="card">
+    <span>Pending Payout</span>
+    <h2 id="pending">$0.00</h2>
+  </div>
+</div>
+
+<!-- EARNINGS HISTORY -->
+<section>
+  <h3>Earnings History</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Asset</th>
+        <th>Sale Amount</th>
+        <th>Your Cut</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="earningsTable"></tbody>
+  </table>
+</section>
+
+<div class="footer-note">
+  Payouts are currently processed manually by StudentStream Studios.
+  Once your earnings are marked as <b>Paid</b>, funds are sent via the payout
+  method you provided (Cash App, Zelle, etc).  
+  Questions? Contact <a href="mailto:studios@studentstream.online">studios@studentstream.online</a>
+</div>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+function money(n){ return `$${Number(n || 0).toFixed(2)}` }
+
+(async () => {
+  // AUTH
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    location.href = "/studios/login";
+    return;
+  }
+
+  // CREATOR PROFILE
+  const { data: creator } = await supabase
+    .from("creators")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (!creator) {
+    alert("Creator profile not found.");
+    return;
+  }
+
+  // SALES FOR CREATOR
+  const { data: sales } = await supabase
+    .from("sales")
+    .select("*")
+    .eq("creator_id", user.id)
+    .order("created_at", { ascending: false });
+
+  let total = 0;
+  let paid = creator.total_paid || 0;
+
+  sales?.forEach(s => total += s.creator_earnings);
+
+  document.getElementById("totalEarned").textContent = money(total);
+  document.getElementById("paidOut").textContent = money(paid);
+  document.getElementById("pending").textContent = money(total - paid);
+
+  document.getElementById("earningsTable").innerHTML =
+    sales?.map(s => `
+      <tr>
+        <td>${new Date(s.created_at).toLocaleDateString()}</td>
+        <td>${s.asset_title}</td>
+        <td>${money(s.amount)}</td>
+        <td>${money(s.creator_earnings)}</td>
+        <td>
+          <span class="status ${s.paid ? "paid" : "pending"}">
+            ${s.paid ? "Paid" : "Pending"}
+          </span>
+        </td>
+      </tr>
+    `).join("") || "<tr><td colspan='5'>No earnings yet.</td></tr>";
+})();
+</script>
+
+</body>
+</html>
