@@ -2,36 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Studios Marketplace | StudentStream HQ</title>
+<title>Marketplace | StudentStream Studios</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SEO -->
-<meta name="description" content="Browse creative work from filmmakers, designers, photographers, and digital artists on StudentStream Studios. License assets and collaborate with creators." />
-<meta name="keywords" content="creative marketplace, creators, filmmakers, digital artists, licensing, StudentStream Studios" />
+<meta name="description" content="Browse licensed creative work from filmmakers, designers, photographers, and artists on StudentStream Studios." />
+<meta name="keywords" content="creative marketplace, license digital art, film assets, StudentStream Studios" />
 <link rel="canonical" href="https://studentstream.online/studios/marketplace" />
 
-<!-- Open Graph -->
-<meta property="og:title" content="Studios Marketplace | StudentStream HQ" />
-<meta property="og:description" content="Discover and license creative work from top independent creators." />
-<meta property="og:type" content="website" />
-
-<!-- Supabase -->
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Schema.org -->
+<!-- SCHEMA -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "name": "Studios Marketplace",
-  "description": "A curated marketplace of creative work by independent creators on StudentStream.",
+  "name": "StudentStream Studios Marketplace",
+  "url": "https://studentstream.online/studios/marketplace",
   "publisher": {
     "@type": "Organization",
     "name": "StudentStream HQ",
-    "sameAs": [
-      "https://www.instagram.com/studentstreamhq",
-      "https://www.tiktok.com/@studentstreamhq"
-    ]
+    "url": "https://studentstream.online"
   }
 }
 </script>
@@ -42,155 +33,111 @@ body{
 margin:0;
 background:radial-gradient(circle at top,#0f1224,#050507);
 color:#fff;
-padding:20px;
 }
-.wrapper{max-width:1400px;margin:0 auto;}
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:60px;
+.container{
+max-width:1300px;
+margin:auto;
+padding:80px 20px;
 }
-header strong{font-size:1.2rem}
-header a{
-color:#7aa2ff;
-text-decoration:none;
-font-weight:600;
-}
-.hero{
-max-width:900px;
-margin-bottom:70px;
-}
-.hero h1{
+h1{
 font-size:3.2rem;
 margin-bottom:14px;
 }
-.hero p{
-opacity:.8;
-font-size:1.05rem;
-line-height:1.6;
-}
-.notice{
-margin-top:22px;
-opacity:.65;
-font-size:.9rem;
-}
-
-.filters{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-margin-bottom:40px;
-}
-select{
-padding:12px 16px;
-border-radius:999px;
-border:1px solid rgba(255,255,255,.2);
-background:transparent;
-color:#fff;
-}
-select option{color:#000}
+p{opacity:.8;max-width:850px}
 
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:28px;
+margin-top:50px;
 }
+
 .card{
 background:rgba(255,255,255,.06);
 border:1px solid rgba(255,255,255,.12);
-border-radius:24px;
-padding:28px;
-transition:.25s;
-display:flex;
-flex-direction:column;
+border-radius:26px;
+padding:30px;
+transition:.3s;
+box-shadow:0 0 50px rgba(0,0,0,.6);
 }
 .card:hover{
 transform:translateY(-6px);
-box-shadow:0 25px 70px rgba(0,0,0,.7);
+box-shadow:0 26px 80px rgba(0,0,0,.8);
 }
-.tag{
+
+.card h3{margin-top:0;font-size:1.4rem}
+.card span{
 display:inline-block;
-padding:6px 14px;
-border-radius:999px;
-font-size:.75rem;
-background:rgba(122,162,255,.2);
-color:#7aa2ff;
-margin-bottom:14px;
-}
-.card h3{
-margin:0 0 8px;
-font-size:1.4rem;
-}
-.card p{
-opacity:.75;
-font-size:.95rem;
-flex:1;
-}
-.meta{
-margin-top:18px;
-font-size:.85rem;
+margin-top:6px;
+font-size:.8rem;
 opacity:.65;
 }
-.card a{
-margin-top:20px;
-display:inline-block;
-text-decoration:none;
-font-weight:600;
+
+.price{
+margin-top:14px;
+font-weight:700;
+font-size:1.1rem;
 color:#6cf2c2;
 }
 
+.btn{
+margin-top:18px;
+display:inline-block;
+padding:10px 22px;
+border-radius:999px;
+font-size:.85rem;
+font-weight:600;
+background:transparent;
+border:1px solid rgba(255,255,255,.25);
+color:#fff;
+text-decoration:none;
+}
+.btn:hover{background:rgba(255,255,255,.08)}
+
+.empty{
+opacity:.6;
+margin-top:40px;
+}
+
+.notice{
+margin-top:70px;
+font-size:.85rem;
+opacity:.6;
+max-width:800px;
+}
+
 .footer{
-margin-top:100px;
+margin-top:90px;
 opacity:.6;
 font-size:.85rem;
 display:flex;
 flex-wrap:wrap;
 gap:16px;
 }
-.footer a{color:#7aa2ff;text-decoration:none;}
+.footer a{color:#7aa2ff;text-decoration:none}
 </style>
 </head>
 
 <body>
-<div class="wrapper">
+<div class="container">
 
-<header>
-  <strong>StudentStream Studios</strong>
-  <a href="/studios">← Back to Studios</a>
-</header>
+<h1>Studios Marketplace</h1>
+<p>
+Browse curated creative work from StudentStream Studios creators.
+All assets are approved, license-ready, and sold directly through StudentStream.
+</p>
 
-<section class="hero">
-  <h1>Browse the Studios Marketplace</h1>
-  <p>
-    Discover curated creative work from filmmakers, designers, photographers,
-    and digital artists. License assets or collaborate directly with creators
-    through StudentStream Studios.
-  </p>
-  <div class="notice">
-    ⚠️ Early rollout: purchases and payouts are handled manually by StudentStream HQ.
-  </div>
-</section>
-
-<!-- FILTERS -->
-<div class="filters">
-  <select id="typeFilter">
-    <option value="">All Types</option>
-    <option value="Film">Film</option>
-    <option value="Photography">Photography</option>
-    <option value="Digital Art">Digital Art</option>
-    <option value="Music">Music</option>
-    <option value="Design">Design</option>
-  </select>
+<div class="grid" id="marketGrid">
+  <div class="empty">Loading marketplace…</div>
 </div>
 
-<!-- MARKETPLACE GRID -->
-<div class="grid" id="marketplace">
-  Loading marketplace…
+<div class="notice">
+⚠️ Purchases and licensing are handled manually during early rollout.
+To inquire about an asset, use the contact button — our team will respond directly.
 </div>
 
 <div class="footer">
-  © 2026 StudentStream HQ
+  © 2026 StudentStream Studios
   <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
   <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
 </div>
@@ -203,46 +150,31 @@ const supabase = supabaseJs.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const grid = document.getElementById("marketplace");
-const filter = document.getElementById("typeFilter");
-
-async function loadMarketplace(type = "") {
-  grid.innerHTML = "Loading marketplace…";
-
-  let query = supabase
-    .from("studios_assets")
+(async () => {
+  const { data: listings } = await supabase
+    .from("studio_listings")
     .select("*")
-    .eq("approved", true);
+    .eq("approved", true)
+    .order("created_at", { ascending: false });
 
-  if (type) query = query.eq("type", type);
+  const grid = document.getElementById("marketGrid");
 
-  const { data, error } = await query;
-
-  if (error || !data || data.length === 0) {
-    grid.innerHTML = "No listings available yet.";
+  if (!listings || listings.length === 0) {
+    grid.innerHTML = `<div class="empty">No listings available yet.</div>`;
     return;
   }
 
-  grid.innerHTML = data.map(item => `
+  grid.innerHTML = listings.map(item => `
     <div class="card">
-      <span class="tag">${item.type}</span>
       <h3>${item.title}</h3>
-      <p>${item.description || "No description provided."}</p>
-      <div class="meta">
-        Creator • ${item.creator_name || "Verified Creator"}
-      </div>
-      <a href="${item.preview_link || "#"}" target="_blank">
-        View Preview →
+      <span>${item.asset_type}</span>
+      <div class="price">$${(item.price_cents / 100).toFixed(2)}</div>
+      <a class="btn" href="mailto:studios@studentstream.online?subject=Marketplace Inquiry: ${encodeURIComponent(item.title)}">
+        Inquire / License
       </a>
     </div>
   `).join("");
-}
-
-filter.addEventListener("change", () => {
-  loadMarketplace(filter.value);
-});
-
-loadMarketplace();
+})();
 </script>
 
 </body>
