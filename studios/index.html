@@ -1,210 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- BASIC META -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StudentStream Studios | Creator Marketplace & Talent Hub</title>
-  <meta name="description" content="StudentStream Studios is the official creative marketplace and talent hub of StudentStream HQ. Creators showcase work, connect with opportunities, and receive manual payouts." />
-  <meta name="keywords" content="StudentStream, StudentStream Studios, creator marketplace, talent hub, creatives, filmmakers, designers, manual payouts" />
+  <title>StudentStream Studios — Digital Marketplace for Student Media</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="StudentStream Studios is the official digital marketplace for StudentStream. Browse creator assets, manage studio sales, and access creator earnings. Manual payouts currently in effect." />
+  <meta name="keywords" content="StudentStream, StudentStream Studios, digital marketplace, creator economy, student media, digital assets" />
   <meta name="author" content="StudentStream HQ" />
-  <link rel="canonical" href="https://studentstream.online/studios/" />
 
-  <!-- OPEN GRAPH -->
+  <!-- Open Graph -->
   <meta property="og:title" content="StudentStream Studios" />
-  <meta property="og:description" content="Where creators turn work into opportunity. The official marketplace and talent hub of StudentStream HQ." />
-  <meta property="og:url" content="https://studentstream.online/studios/" />
+  <meta property="og:description" content="The official marketplace and studio dashboard for StudentStream creators." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://studentstream.app/studios" />
 
-  <!-- TWITTER/X (NO ACCOUNT YET, STILL SAFE) -->
-  <meta name="twitter:card" content="summary_large_image" />
-
-  <!-- SCHEMA.ORG (GOOGLE MAX LEVEL) -->
+  <!-- Schema.org -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "StudentStream Studios",
-    "url": "https://studentstream.online/studios/",
-    "logo": "https://studentstream.online/assets/logo.png",
+    "name": "StudentStream",
+    "url": "https://studentstream.app",
     "sameAs": [
-      "https://www.instagram.com/studentstreamhq",
-      "https://www.tiktok.com/@studentstreamhq"
+      "https://www.instagram.com/studentstream",
+      "https://www.tiktok.com/@studentstream"
     ],
-    "parentOrganization": {
+    "department": {
       "@type": "Organization",
-      "name": "StudentStream HQ",
-      "url": "https://studentstream.online"
+      "name": "StudentStream Studios",
+      "description": "Digital marketplace and creator studio for StudentStream."
     }
   }
   </script>
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "StudentStream Studios",
-    "url": "https://studentstream.online/studios/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://studentstream.online/studios/?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- STYLES -->
   <style>
-    :root {
-      --bg: #070b16;
-      --panel: #0d1326;
-      --text: #ffffff;
-      --muted: #b3b9d4;
-      --accent: #38f2c7;
-      --accent-dark: #1fd3aa;
-      --border: rgba(255,255,255,0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
-    }
-
+    * { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
     body {
-      background: radial-gradient(1200px 600px at 20% 0%, #0e1636, var(--bg));
-      color: var(--text);
-      line-height: 1.6;
+      margin: 0;
+      background: radial-gradient(1200px 600px at top, #0b0b14, #030305);
+      color: #ffffff;
     }
 
     header {
-      padding: 28px 6%;
+      padding: 22px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
 
-    header a {
-      color: var(--muted);
+    header h1 {
+      font-size: 1.3rem;
+      letter-spacing: .4px;
+    }
+
+    nav a {
+      margin-left: 20px;
+      color: rgba(255,255,255,.75);
       text-decoration: none;
-      margin-left: 18px;
-      font-weight: 500;
+      font-size: .9rem;
+    }
+
+    nav a:hover { color: #fff; }
+
+    .hero {
+      max-width: 1200px;
+      margin: auto;
+      padding: 120px 20px 90px;
+      text-align: center;
     }
 
     .badge {
       display: inline-block;
-      background: rgba(56,242,199,0.12);
-      color: var(--accent);
-      padding: 6px 14px;
+      padding: 8px 18px;
       border-radius: 999px;
-      font-size: 13px;
-      margin-bottom: 18px;
+      background: rgba(108,242,194,.12);
+      border: 1px solid rgba(108,242,194,.3);
+      color: #6cf2c2;
+      font-size: .8rem;
+      margin-bottom: 20px;
     }
 
-    main {
-      padding: 80px 6% 100px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    h1 {
-      font-size: clamp(36px, 5vw, 64px);
+    .hero h2 {
+      font-size: 3.5rem;
       line-height: 1.1;
-      margin-bottom: 22px;
+      margin: 10px 0 18px;
     }
 
-    p.lead {
-      font-size: 18px;
-      color: var(--muted);
+    .hero p {
       max-width: 700px;
-      margin-bottom: 40px;
+      margin: auto;
+      opacity: .75;
+      font-size: 1.1rem;
     }
 
     .cta {
+      margin-top: 40px;
       display: flex;
+      justify-content: center;
+      gap: 18px;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 80px;
     }
 
     .btn {
-      padding: 14px 26px;
+      padding: 14px 30px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--text);
+      border: 1px solid rgba(255,255,255,.25);
+      background: transparent;
+      color: #fff;
+      font-size: .95rem;
+      cursor: pointer;
       text-decoration: none;
-      font-weight: 600;
-      transition: all .2s ease;
     }
 
     .btn.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color: #00140f;
+      background: linear-gradient(135deg,#6cf2c2,#5aa8ff);
+      color: #020204;
       border: none;
+      font-weight: 600;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      opacity: 0.95;
-    }
+    .btn:hover { opacity: .9; }
 
     section {
-      margin-top: 100px;
-    }
-
-    h2 {
-      font-size: 36px;
-      margin-bottom: 20px;
+      max-width: 1200px;
+      margin: auto;
+      padding: 80px 20px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 26px;
-      margin-top: 40px;
+      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+      gap: 28px;
     }
 
     .card {
-      background: linear-gradient(180deg, var(--panel), #0a1020);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
       padding: 28px;
     }
 
     .card h3 {
+      margin-top: 0;
       margin-bottom: 10px;
-      font-size: 20px;
     }
 
     .card p {
-      color: var(--muted);
-      font-size: 15px;
+      opacity: .7;
+      font-size: .95rem;
     }
 
     footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 6%;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    footer a {
-      color: var(--muted);
-      text-decoration: none;
-      margin-right: 16px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 40px 20px;
+      text-align: center;
+      opacity: .6;
+      font-size: .85rem;
     }
 
     .notice {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 22px;
-      margin-top: 60px;
-      color: var(--muted);
+      margin-top: 20px;
+      font-size: .85rem;
+      opacity: .6;
     }
   </style>
 </head>
@@ -212,101 +173,78 @@
 <body>
 
 <header>
-  <strong>StudentStream Studios</strong>
-  <nav>
-    <a href="/studios/">Studios</a>
-    <a href="/">StudentStream HQ</a>
-    <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
-    <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
+  <h1>StudentStream Studios</h1>
+  <nav id="navLinks">
+    <a href="/studios/marketplace">Marketplace</a>
+    <a href="/studios/login">Login</a>
   </nav>
 </header>
 
-<main>
-  <span class="badge">Studios · Marketplace</span>
-
-  <h1>Where creators turn work into opportunity.</h1>
-
-  <p class="lead">
-    StudentStream Studios is the official creative marketplace and talent hub of
-    <strong>StudentStream HQ</strong>. Creators showcase work, license assets,
-    connect with real opportunities, and build credibility inside the StudentStream ecosystem.
+<main class="hero">
+  <span class="badge">Official StudentStream HQ</span>
+  <h2>The Creative Engine of StudentStream</h2>
+  <p>
+    StudentStream Studios is the internal marketplace and creator dashboard powering
+    digital assets, studio sales, and creator earnings across the StudentStream ecosystem.
   </p>
 
-  <div class="cta" id="cta-area">
-    <!-- Auth-aware buttons injected here -->
+  <div class="cta" id="ctaButtons">
+    <a class="btn primary" href="/studios/marketplace">Browse Marketplace</a>
+    <a class="btn" href="/studios/login">Creator Login</a>
   </div>
 
-  <section>
-    <h2>What Studios Supports</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Digital Art & Design</h3>
-        <p>Illustration, branding, UI/UX, motion assets, and visual systems.</p>
-      </div>
-      <div class="card">
-        <h3>Film & Video</h3>
-        <p>Short films, edits, cinematography reels, licensed footage.</p>
-      </div>
-      <div class="card">
-        <h3>Music & Audio</h3>
-        <p>Beats, scores, sound design, and licensed audio assets.</p>
-      </div>
-      <div class="card">
-        <h3>Creative Services</h3>
-        <p>Freelance talent discovery for productions and brand collaborations.</p>
-      </div>
-    </div>
-  </section>
-
   <div class="notice">
-    <strong>Payouts:</strong> Studios currently operates with <strong>manual payouts</strong>.
-    All payments are reviewed and processed directly by StudentStream HQ while automated
-    systems are finalized.
+    Payouts are currently processed manually by StudentStream HQ.
   </div>
 </main>
 
+<section>
+  <div class="grid">
+    <div class="card">
+      <h3>Marketplace Access</h3>
+      <p>Browse and purchase digital assets approved and distributed through StudentStream Studios.</p>
+    </div>
+
+    <div class="card">
+      <h3>Creator Earnings</h3>
+      <p>Creators can view sales, earnings, and payout status in real time via their studio dashboard.</p>
+    </div>
+
+    <div class="card">
+      <h3>Admin Operations</h3>
+      <p>Studio administrators manage listings, track revenue, and process creator payouts securely.</p>
+    </div>
+  </div>
+</section>
+
 <footer>
-  <div>
-    © 2026 StudentStream HQ<br />
-    Studios is a division of StudentStream
-  </div>
-  <div>
-    <a href="/">Home</a>
-    <a href="/studios/">Studios</a>
-    <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
-    <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
-  </div>
+  © <span id="year"></span> StudentStream HQ · Studios Division  
+  <br />
+  Instagram & TikTok: @studentstream
 </footer>
 
-<!-- SUPABASE -->
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-  const supabase = supabase.createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
+document.getElementById("year").textContent = new Date().getFullYear();
 
-  const ctaArea = document.getElementById("cta-area");
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  async function renderCTAs() {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (session) {
-      ctaArea.innerHTML = `
-        <a class="btn primary" href="/studios/dashboard.html">Go to Dashboard</a>
-        <a class="btn" href="/studios/submit.html">Submit New Work</a>
-      `;
-    } else {
-      ctaArea.innerHTML = `
-        <a class="btn primary" href="/studios/submit.html">Submit Your Work</a>
-        <a class="btn" href="/studios/marketplace.html">Browse Talent</a>
-        <a class="btn" href="/studios/login.html">Login</a>
-      `;
-    }
+(async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    document.getElementById("navLinks").innerHTML = `
+      <a href="/studios/dashboard">Dashboard</a>
+      <a href="/studios/marketplace">Marketplace</a>
+      <a href="/studios/logout">Logout</a>
+    `;
+    document.getElementById("ctaButtons").innerHTML = `
+      <a class="btn primary" href="/studios/dashboard">Go to Dashboard</a>
+      <a class="btn" href="/studios/marketplace">Browse Marketplace</a>
+    `;
   }
-
-  renderCTAs();
-  supabase.auth.onAuthStateChange(renderCTAs);
+})();
 </script>
 
 </body>
