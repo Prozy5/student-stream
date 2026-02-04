@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Your Earnings | StudentStream Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Track your earnings, payouts, and sales on StudentStream Studios." />
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+}
+.container{
+max-width:1100px;
+margin:auto;
+padding:70px 20px;
+}
+.badge{
+display:inline-block;
+background:rgba(108,242,194,.18);
+border:1px solid rgba(108,242,194,.35);
+color:#6cf2c2;
+padding:6px 16px;
+border-radius:999px;
+font-size:.8rem;
+margin-bottom:16px;
+}
+h1{font-size:2.8rem;margin-bottom:10px}
+p{opacity:.75}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:22px;
+margin-top:40px;
+}
+.stat{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:26px;
+}
+.stat h2{margin:0;font-size:2.2rem}
+.stat span{opacity:.65;font-size:.9rem}
+
+.section{
+margin-top:70px;
+}
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:28px;
+margin-top:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+th,td{
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,.12);
+text-align:left;
+font-size:.95rem;
+}
+th{opacity:.6}
+
+.paid{color:#4caf50}
+.pending{color:#ff9800}
+
+.notice{
+margin-top:40px;
+font-size:.85rem;
+opacity:.6;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<span class="badge">Creator Earnings</span>
+<h1>Your Earnings</h1>
+<p>
+Live earnings from approved sales on StudentStream Studios.
+</p>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <h2 id="totalEarned">$0.00</h2>
+    <span>Total Earned</span>
+  </div>
+  <div class="stat">
+    <h2 id="paidOut">$0.00</h2>
+    <span>Paid Out</span>
+  </div>
+  <div class="stat">
+    <h2 id="outstanding">$0.00</h2>
+    <span>Outstanding</span>
+  </div>
+</div>
+
+<!-- SALES TABLE -->
+<div class="section">
+<h2>Sales History</h2>
+
+<div class="card">
+<table>
+<thead>
+<tr>
+  <th>Asset</th>
+  <th>Sale Amount</th>
+  <th>Your 70%</th>
+  <th>Status</th>
+</tr>
+</thead>
+<tbody id="salesTable">
+<tr><td colspan="4">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="notice">
+⚠️ Payouts are processed manually via Cash App during early rollout.
+</div>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+function money(cents){
+  return "$" + (cents/100).toFixed(2);
+}
+
+(async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return window.location.href = "/studios/login";
+
+  // Load creator profile
+  const { data: creator } = await supabase
+    .from("creators")
+    .select("display_name")
+    .eq("id", user.id)
+    .single();
+
+  // Load creator sales
+  const { data: sales } = await supabase
+    .from("studio_sales")
+    .select("*")
+    .eq("creator_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (!sales || sales.length === 0) {
+    document.getElementById("salesTable").innerHTML =
+      `<tr><td colspan="4">No sales yet</td></tr>`;
+    return;
+  }
+
+  let earned = 0;
+  let paid = 0;
+
+  document.getElementById("salesTable").innerHTML = sales.map(s => {
+    earned += s.creator_earn_cents;
+    if (s.paid) paid += s.creator_earn_cents;
+
+    return `
+      <tr>
+        <td>${s.asset_title}</td>
+        <td>${money(s.amount_cents)}</td>
+        <td>${money(s.creator_earn_cents)}</td>
+        <td class="${s.paid ? 'paid' : 'pending'}">
+          ${s.paid ? 'Paid' : 'Pending'}
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  document.getElementById("totalEarned").textContent = money(earned);
+  document.getElementById("paidOut").textContent = money(paid);
+  document.getElementById("outstanding").textContent = money(earned - paid);
+})();
+</script>
+
+</body>
+</html>
