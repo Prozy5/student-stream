@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Studios Admin Analytics | StudentStream HQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="robots" content="noindex,nofollow" />
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+}
+.container{
+max-width:1300px;
+margin:auto;
+padding:60px 20px;
+}
+h1{font-size:3rem;margin-bottom:10px}
+p{opacity:.75}
+
+.badge{
+display:inline-block;
+background:rgba(255,82,82,.18);
+border:1px solid rgba(255,82,82,.35);
+color:#ff5252;
+padding:6px 16px;
+border-radius:999px;
+font-size:.8rem;
+margin-bottom:16px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:22px;
+margin-top:40px;
+}
+.stat{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:28px;
+}
+.stat h2{
+margin:0;
+font-size:2.3rem;
+}
+.stat span{
+opacity:.65;
+font-size:.9rem;
+}
+
+.section{
+margin-top:70px;
+}
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:28px;
+margin-top:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+th,td{
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,.12);
+text-align:left;
+font-size:.95rem;
+}
+th{opacity:.6}
+
+.paid{color:#4caf50}
+.unpaid{color:#ff9800}
+
+.footer{
+margin-top:80px;
+opacity:.6;
+font-size:.85rem;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<span class="badge">Admin Only</span>
+<h1>Studios Revenue Analytics</h1>
+<p>
+Manual sales & payouts dashboard for StudentStream Studios.
+</p>
+
+<!-- SUMMARY STATS -->
+<div class="stats">
+  <div class="stat">
+    <h2 id="totalRevenue">$0.00</h2>
+    <span>Total Marketplace Revenue</span>
+  </div>
+  <div class="stat">
+    <h2 id="creatorOwed">$0.00</h2>
+    <span>Creators Owed (70%)</span>
+  </div>
+  <div class="stat">
+    <h2 id="platformEarned">$0.00</h2>
+    <span>Platform Share (30%)</span>
+  </div>
+  <div class="stat">
+    <h2 id="paidOut">$0.00</h2>
+    <span>Total Paid Out</span>
+  </div>
+</div>
+
+<!-- CREATOR BREAKDOWN -->
+<div class="section">
+<h2>Creator Breakdown</h2>
+
+<div class="card">
+<table>
+<thead>
+<tr>
+  <th>Creator</th>
+  <th>Total Earned</th>
+  <th>Paid</th>
+  <th>Outstanding</th>
+</tr>
+</thead>
+<tbody id="creatorTable">
+<tr><td colspan="4">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="footer">
+⚠️ This dashboard reflects manually entered sales and payouts.
+</div>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+function money(cents){
+  return "$" + (cents/100).toFixed(2);
+}
+
+(async () => {
+  // AUTH CHECK
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return window.location.href = "/studios/login";
+
+  const { data: admin } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (admin?.role !== "admin") {
+    document.body.innerHTML = "Access denied.";
+    return;
+  }
+
+  // LOAD SALES
+  const { data: sales } = await supabase
+    .from("studio_sales")
+    .select("*");
+
+  if (!sales) return;
+
+  let totalRevenue = 0;
+  let creatorOwed = 0;
+  let paidOut = 0;
+
+  const creators = {};
+
+  sales.forEach(s => {
+    totalRevenue += s.amount_cents;
+    creatorOwed += s.creator_earn_cents;
+    if (s.paid) paidOut += s.creator_earn_cents;
+
+    if (!creators[s.creator_name]) {
+      creators[s.creator_name] = {
+        earned: 0,
+        paid: 0
+      };
+    }
+
+    creators[s.creator_name].earned += s.creator_earn_cents;
+    if (s.paid) creators[s.creator_name].paid += s.creator_earn_cents;
+  });
+
+  document.getElementById("totalRevenue").textContent = money(totalRevenue);
+  document.getElementById("creatorOwed").textContent = money(creatorOwed);
+  document.getElementById("platformEarned").textContent = money(totalRevenue - creatorOwed);
+  document.getElementById("paidOut").textContent = money(paidOut);
+
+  const table = document.getElementById("creatorTable");
+  table.innerHTML = Object.entries(creators).map(([name, c]) => `
+    <tr>
+      <td>${name}</td>
+      <td>${money(c.earned)}</td>
+      <td class="paid">${money(c.paid)}</td>
+      <td class="unpaid">${money(c.earned - c.paid)}</td>
+    </tr>
+  `).join("");
+})();
+</script>
+
+</body>
+</html>
