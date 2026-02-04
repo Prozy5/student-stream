@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Payouts | Studios Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow" />
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+}
+.container{
+max-width:1200px;
+margin:auto;
+padding:70px 20px;
+}
+
+.badge{
+display:inline-block;
+background:rgba(255,82,82,.18);
+border:1px solid rgba(255,82,82,.35);
+color:#ff5252;
+padding:6px 16px;
+border-radius:999px;
+font-size:.8rem;
+margin-bottom:16px;
+}
+
+h1{font-size:2.8rem;margin-bottom:10px}
+p{opacity:.7}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:30px;
+}
+th,td{
+padding:16px;
+border-bottom:1px solid rgba(255,255,255,.12);
+text-align:left;
+font-size:.95rem;
+}
+th{opacity:.6}
+
+.amount{
+font-weight:700;
+color:#6cf2c2;
+}
+
+button{
+padding:8px 16px;
+border-radius:999px;
+border:1px solid rgba(255,255,255,.25);
+background:transparent;
+color:#fff;
+cursor:pointer;
+font-size:.85rem;
+}
+button:hover{
+background:rgba(255,255,255,.08);
+}
+
+.paid{
+color:#4caf50;
+font-weight:600;
+}
+
+.empty{
+opacity:.6;
+margin-top:30px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<span class="badge">Admin · Payouts</span>
+<h1>Creator Payouts</h1>
+<p>
+Unpaid creator earnings from Studios sales. Mark payouts after sending funds.
+</p>
+
+<table>
+<thead>
+<tr>
+  <th>Creator</th>
+  <th>Asset</th>
+  <th>Total Sale</th>
+  <th>Creator Owed</th>
+  <th>Status</th>
+</tr>
+</thead>
+<tbody id="payoutTable">
+<tr><td colspan="5">Loading payouts…</td></tr>
+</tbody>
+</table>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+function money(cents){
+  return "$" + (cents / 100).toFixed(2);
+}
+
+(async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return window.location.href = "/studios/login";
+
+  // Admin check
+  const { data: admin } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (admin?.role !== "admin") {
+    document.body.innerHTML = "<p>Unauthorized</p>";
+    return;
+  }
+
+  loadPayouts();
+})();
+
+async function loadPayouts(){
+  const { data: sales } = await supabase
+    .from("studio_sales")
+    .select("*")
+    .eq("paid", false)
+    .order("created_at", { ascending: false });
+
+  const table = document.getElementById("payoutTable");
+
+  if (!sales || sales.length === 0) {
+    table.innerHTML = `<tr><td colspan="5" class="empty">No unpaid payouts 🎉</td></tr>`;
+    return;
+  }
+
+  table.innerHTML = sales.map(s => `
+    <tr>
+      <td>${s.creator_name}</td>
+      <td>${s.asset_title}</td>
+      <td>${money(s.amount_cents)}</td>
+      <td class="amount">${money(s.creator_earn_cents)}</td>
+      <td>
+        <button onclick="markPaid('${s.id}')">Mark as Paid</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function markPaid(id){
+  if (!confirm("Confirm payout has been sent?")) return;
+
+  const { error } = await supabase
+    .from("studio_sales")
+    .update({
+      paid: true,
+      paid_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  loadPayouts();
+}
+</script>
+
+</body>
+</html>
