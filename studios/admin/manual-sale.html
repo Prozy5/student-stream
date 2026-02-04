@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manual Sale Entry | Studios Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow" />
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+body{
+margin:0;
+background:#040406;
+color:#fff;
+}
+.container{
+max-width:720px;
+margin:auto;
+padding:70px 20px;
+}
+.badge{
+display:inline-block;
+background:rgba(255,82,82,.18);
+border:1px solid rgba(255,82,82,.35);
+color:#ff5252;
+padding:6px 16px;
+border-radius:999px;
+font-size:.8rem;
+margin-bottom:16px;
+}
+h1{font-size:2.6rem;margin-bottom:10px}
+p{opacity:.7}
+
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+border-radius:22px;
+padding:34px;
+margin-top:30px;
+}
+
+input,select{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:none;
+margin-bottom:16px;
+font-size:1rem;
+}
+
+.split{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+button{
+width:100%;
+padding:15px;
+border-radius:999px;
+border:none;
+font-weight:600;
+font-size:1rem;
+cursor:pointer;
+background:linear-gradient(135deg,#7aa2ff,#6cf2c2);
+color:#040406;
+}
+
+.note{
+margin-top:16px;
+font-size:.85rem;
+opacity:.6;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<span class="badge">Admin Only</span>
+<h1>Manual Sale Entry</h1>
+<p>
+Log a completed Studios sale. Creator payout is calculated automatically (70%).
+</p>
+
+<div class="card">
+<form id="saleForm">
+
+<input type="text" id="creator_name" placeholder="Creator name" required />
+<input type="text" id="asset_title" placeholder="Asset / project title" required />
+
+<input type="number" id="amount" placeholder="Total sale amount (USD)" required />
+
+<div class="split">
+  <input type="text" id="creator_earn" placeholder="Creator earns (70%)" disabled />
+  <input type="text" id="platform_earn" placeholder="Platform earns (30%)" disabled />
+</div>
+
+<select id="payment_method">
+  <option value="cashapp">Cash App</option>
+  <option value="zelle">Zelle</option>
+  <option value="paypal">PayPal</option>
+  <option value="other">Other</option>
+</select>
+
+<button type="submit">Record Sale</button>
+
+<div class="note">
+Sales are saved as <strong>unpaid</strong> by default.<br>
+Mark as paid after sending creator payout.
+</div>
+
+</form>
+</div>
+
+</div>
+
+<script>
+const supabase = supabaseJs.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const amountInput = document.getElementById("amount");
+const creatorEarn = document.getElementById("creator_earn");
+const platformEarn = document.getElementById("platform_earn");
+
+amountInput.addEventListener("input", () => {
+  const amt = parseFloat(amountInput.value || 0);
+  creatorEarn.value = "$" + (amt * 0.7).toFixed(2);
+  platformEarn.value = "$" + (amt * 0.3).toFixed(2);
+});
+
+document.getElementById("saleForm").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const amount = Math.round(parseFloat(amountInput.value) * 100);
+  const creatorShare = Math.round(amount * 0.7);
+
+  const { error } = await supabase
+    .from("studio_sales")
+    .insert({
+      creator_name: document.getElementById("creator_name").value,
+      asset_title: document.getElementById("asset_title").value,
+      amount_cents: amount,
+      creator_earn_cents: creatorShare,
+      payment_method: document.getElementById("payment_method").value,
+      paid: false
+    });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Sale recorded successfully.");
+  e.target.reset();
+});
+</script>
+
+</body>
+</html>
