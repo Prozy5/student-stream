@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ===========================================
+   STUDENTSTREAM STUDIOS • SUBMIT WORK (V10000)
+   Upload Listings → Supabase → Marketplace
+  ============================================ -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>Submit Work • StudentStream Studios</title>
+
+  <!-- SEO -->
+  <meta name="description"
+    content="Submit your creative work to the official StudentStream Studios Marketplace. Listings go live instantly inside StudentStream HQ." />
+
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://studentstream.online/studios/submit.html" />
+
+  <!-- Schema.org Submit Page -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Submit Work • StudentStream Studios",
+    "url": "https://studentstream.online/studios/submit.html",
+    "description": "Submit creative services, assets, or talent listings into StudentStream Studios Marketplace."
+  }
+  </script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Styling -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #14192c, #05060c);
+      color: white;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      opacity: 0.7;
+      font-size: 14px;
+      margin-left: 14px;
+    }
+
+    nav a:hover {
+      opacity: 1;
+    }
+
+    .wrap {
+      max-width: 700px;
+      margin: auto;
+      padding: 50px 20px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(90, 255, 200, 0.10);
+      border: 1px solid rgba(90, 255, 200, 0.20);
+      color: #5cffc7;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 950;
+      margin-bottom: 10px;
+    }
+
+    p.sub {
+      opacity: 0.75;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .notice {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      padding: 22px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    label {
+      font-size: 13px;
+      opacity: 0.7;
+      display: block;
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      background: rgba(255,255,255,0.07);
+      color: white;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #5b8cff, #5cffc7);
+      color: black;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .msg {
+      margin-top: 15px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .success {
+      color: #5cffc7;
+    }
+
+    .error {
+      color: #ff6b6b;
+    }
+
+    footer {
+      padding: 35px 20px;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.6;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 60px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">StudentStream Studios</div>
+    <nav>
+      <a href="/studios/">Home</a>
+      <a href="/studios/marketplace.html">Marketplace</a>
+      <a href="/studios/login.html">Login</a>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <div class="wrap">
+    <div class="pill">Submit • Studios Marketplace</div>
+
+    <h1>Submit Your Work</h1>
+
+    <p class="sub">
+      Upload your creative listing into the StudentStream Studios Marketplace.
+      Once approved, your work becomes discoverable across StudentStream HQ.
+    </p>
+
+    <div class="notice">
+      ⚡ Manual payouts are active right now. Automated creator payouts are being finalized.
+    </div>
+
+    <!-- Submit Form -->
+    <div class="card">
+
+      <form id="submitForm">
+
+        <label>Creator Name</label>
+        <input id="creator" placeholder="Your name or studio brand" required />
+
+        <label>Listing Title</label>
+        <input id="title" placeholder="Ex: Music Video Editing Service" required />
+
+        <label>Description</label>
+        <textarea id="description" placeholder="Explain what you're offering..." required></textarea>
+
+        <label>Category</label>
+        <select id="category">
+          <option value="Digital Assets">Digital Assets</option>
+          <option value="Video Editing">Video Editing</option>
+          <option value="Design">Design</option>
+          <option value="Music">Music</option>
+          <option value="Film">Film</option>
+        </select>
+
+        <label>Price ($)</label>
+        <input id="price" type="number" placeholder="Ex: 50" required />
+
+        <button id="submitBtn" type="submit">
+          Submit Listing
+        </button>
+
+      </form>
+
+      <div id="successMsg" class="msg success">
+        ✅ Listing submitted successfully! It will appear in Marketplace.
+      </div>
+
+      <div id="errorMsg" class="msg error">
+        ❌ Something went wrong. Try again.
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> StudentStream HQ • Studios Submission Portal
+  </footer>
+
+  <!-- Supabase Logic -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ✅ Supabase Config
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const form = document.getElementById("submitForm");
+    const btn = document.getElementById("submitBtn");
+
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
+
+    // ✅ Require Login
+    async function requireAuth() {
+      const { data } = await supabase.auth.getSession();
+
+      if (!data.session) {
+        window.location.replace("/studios/login.html");
+      }
+    }
+
+    requireAuth();
+
+    // ✅ Submit Listing
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      successMsg.style.display = "none";
+      errorMsg.style.display = "none";
+
+      btn.disabled = true;
+      btn.textContent = "Submitting…";
+
+      const creator = document.getElementById("creator").value.trim();
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const category = document.getElementById("category").value;
+      const price = document.getElementById("price").value;
+
+      const { error } = await supabase
+        .from("studios_marketplace")
+        .insert([
+          {
+            creator_name: creator,
+            title: title,
+            description: description,
+            category: category,
+            price: price
+          }
+        ]);
+
+      if (error) {
+        console.error(error);
+        errorMsg.style.display = "block";
+        btn.disabled = false;
+        btn.textContent = "Submit Listing";
+        return;
+      }
+
+      successMsg.style.display = "block";
+      form.reset();
+
+      btn.disabled = false;
+      btn.textContent = "Submit Listing";
+    });
+  </script>
+
+</body>
+</html>
