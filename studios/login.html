@@ -4,62 +4,49 @@
   <meta charset="UTF-8" />
   <title>Studios Login • StudentStream HQ</title>
 
-  <!-- Mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-
-  <!-- SEO -->
-  <meta name="description" content="Log in to StudentStream Studios using your StudentStream account." />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
-    }
-
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #1a1f35, #05060c);
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #151a2e, #05060c);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
       color: white;
-      padding: 20px;
     }
 
     .card {
-      width: 100%;
+      width: 92%;
       max-width: 420px;
       padding: 30px;
       border-radius: 22px;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255,255,255,0.06);
       backdrop-filter: blur(20px);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     h1 {
-      margin: 0 0 6px;
-      font-size: 30px;
-      font-weight: 800;
+      margin: 0 0 8px;
+      font-size: 28px;
     }
 
     p {
-      margin: 0 0 22px;
-      opacity: 0.75;
-      font-size: 14px;
+      margin: 0 0 20px;
+      opacity: 0.7;
     }
 
     input {
       width: 100%;
-      padding: 14px 16px;
+      padding: 14px;
+      margin-bottom: 12px;
       border-radius: 14px;
       border: none;
-      margin-bottom: 14px;
       font-size: 15px;
       outline: none;
     }
@@ -69,38 +56,18 @@
       padding: 14px;
       border-radius: 16px;
       border: none;
-      font-size: 16px;
       font-weight: 700;
+      font-size: 16px;
       cursor: pointer;
       background: linear-gradient(135deg, #5b8cff, #5cffc7);
-      color: #000;
-      margin-top: 6px;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      color: black;
     }
 
     .error {
       margin-top: 12px;
       color: #ff6b6b;
-      font-size: 13px;
       display: none;
-    }
-
-    .success {
-      margin-top: 12px;
-      color: #4cffb0;
-      font-size: 13px;
-      display: none;
-    }
-
-    .footer {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 12px;
-      opacity: 0.6;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -111,51 +78,30 @@
     <h1>Studios Login</h1>
     <p>Use your StudentStream HQ account</p>
 
-    <!-- LOGIN FORM -->
     <input id="email" type="email" placeholder="Email" autocomplete="email" />
     <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
 
     <button id="loginBtn">Log In</button>
 
-    <div id="error" class="error"></div>
-    <div id="success" class="success"></div>
-
-    <div class="footer">
-      StudentStream HQ • Studios Marketplace
-    </div>
+    <div id="errorBox" class="error"></div>
   </div>
 
   <script>
-    // ✅ Supabase Config
-    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
     const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
+      "https://iabzmoxzbqzcqgypxctr.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
     );
 
-    // Elements
-    const loginBtn = document.getElementById("loginBtn");
-    const errorBox = document.getElementById("error");
-    const successBox = document.getElementById("success");
+    const btn = document.getElementById("loginBtn");
+    const errorBox = document.getElementById("errorBox");
 
     function showError(msg) {
-      errorBox.textContent = msg;
       errorBox.style.display = "block";
-      successBox.style.display = "none";
+      errorBox.textContent = msg;
     }
 
-    function showSuccess(msg) {
-      successBox.textContent = msg;
-      successBox.style.display = "block";
-      errorBox.style.display = "none";
-    }
-
-    // ✅ Prevent Safari Reset Bug
-    loginBtn.addEventListener("click", async (event) => {
-      event.preventDefault(); // FIXES iPhone refresh behavior
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault(); // ✅ prevents refresh
 
       errorBox.style.display = "none";
 
@@ -163,41 +109,28 @@
       const password = document.getElementById("password").value.trim();
 
       if (!email || !password) {
-        showError("Enter email and password.");
+        showError("Enter your email and password.");
         return;
       }
 
-      loginBtn.disabled = true;
-      loginBtn.textContent = "Signing in…";
+      btn.disabled = true;
+      btn.textContent = "Signing in...";
 
-      // ✅ Supabase Login
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
         showError(error.message);
-        loginBtn.disabled = false;
-        loginBtn.textContent = "Log In";
+        btn.disabled = false;
+        btn.textContent = "Log In";
         return;
       }
 
-      showSuccess("Login successful. Redirecting…");
-
-      // ✅ Redirect to Dashboard (not homepage)
-      setTimeout(() => {
-        window.location.href = "/studios/dashboard.html";
-      }, 1200);
+      // ✅ success redirect
+      window.location.href = "/studios/";
     });
-
-    // ✅ Auto Redirect if already logged in
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        window.location.href = "/studios/dashboard.html";
-      }
-    })();
   </script>
 
 </body>
