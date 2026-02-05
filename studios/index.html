@@ -1,62 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- =========================================
-   STUDENTSTREAM STUDIOS — V10000 INDEX
-   Official URL: https://studentstream.online/studios/
-  ========================================== -->
+  <!-- =======================================================
+   STUDENTSTREAM STUDIOS • OFFICIAL INDEX (V10000)
+   Brand: StudentStream HQ (NOT student-only)
+   Division: Studios Marketplace
+  ======================================================== -->
 
-  <!-- BASIC META -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <title>StudentStream Studios — Marketplace & Talent Hub</title>
+  <title>StudentStream Studios • Marketplace by StudentStream HQ</title>
 
+  <!-- SEO Core -->
   <meta name="description"
-    content="StudentStream Studios is the official creative marketplace of StudentStream HQ — where filmmakers, designers, editors, artists, and creators showcase work, connect with opportunities, and earn through manual payouts during early launch." />
+    content="StudentStream Studios is the official creative marketplace of StudentStream HQ — built for filmmakers, designers, editors, and modern digital creators to showcase, license, and sell work." />
 
   <meta name="keywords"
-    content="StudentStream Studios, StudentStream HQ, creator marketplace, student filmmakers, video editors, designers, talent hub, creative marketplace, StudentStream Productions" />
+    content="StudentStream Studios, creator marketplace, digital assets, filmmaking marketplace, StudentStream HQ, creative licensing, sell creative work" />
 
-  <meta name="author" content="StudentStream HQ" />
+  <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://studentstream.online/studios/" />
 
-  <!-- OPEN GRAPH (SOCIAL PREVIEW) -->
-  <meta property="og:title" content="StudentStream Studios — Marketplace & Talent Hub" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="StudentStream Studios • Marketplace by StudentStream HQ" />
   <meta property="og:description"
-    content="The official creative marketplace of StudentStream HQ. Showcase work, connect with opportunities, and grow your career." />
+    content="A premium marketplace for creators, filmmakers, designers, and digital talent. Powered by StudentStream HQ." />
   <meta property="og:url" content="https://studentstream.online/studios/" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://studentstream.online/assets/studios-preview.png" />
 
-  <!-- TWITTER CARD (works even if you don't have Twitter yet) -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="StudentStream Studios — Marketplace & Talent Hub" />
-  <meta name="twitter:description"
-    content="StudentStream Studios is the creative marketplace inside StudentStream HQ." />
+  <!-- Social Profiles -->
+  <meta property="og:site_name" content="StudentStream HQ" />
 
-  <!-- ============================
-      SCHEMA.ORG STRUCTURED DATA
-  ============================ -->
-
-  <!-- ORGANIZATION SCHEMA -->
+  <!-- Schema.org Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "StudentStream HQ",
-    "url": "https://studentstream.online/",
-    "logo": "https://studentstream.online/assets/logo.png",
+    "url": "https://studentstream.online",
     "sameAs": [
       "https://www.instagram.com/studentstreamhq/",
       "https://www.tiktok.com/@studentstreamhq"
     ],
-    "description": "StudentStream HQ is a next-generation student-powered platform building opportunities across media, studios, and entrepreneurship.",
-    "foundingDate": "2026-04-04"
+    "description": "StudentStream HQ is a next-generation streaming and media ecosystem built for creators, entrepreneurs, productions, and modern digital culture."
   }
   </script>
 
-  <!-- WEBSITE SCHEMA -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -67,255 +57,262 @@
       "@type": "Organization",
       "name": "StudentStream HQ"
     },
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://studentstream.online/studios/?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
+    "description": "StudentStream Studios is the creative marketplace division of StudentStream HQ where creators showcase and sell professional work."
   }
   </script>
 
-  <!-- WEBPAGE SCHEMA -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "StudentStream Studios Marketplace",
-    "url": "https://studentstream.online/studios/",
-    "description": "Studios is the creative marketplace and talent hub inside StudentStream HQ.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "StudentStream HQ",
-      "url": "https://studentstream.online/"
-    }
-  }
-  </script>
-
-  <!-- ============================
-      PREMIUM UI STYLING
-  ============================ -->
+  <!-- Styles -->
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
     }
 
     body {
-      background: radial-gradient(circle at top, #0c1225, #05060d);
+      background: radial-gradient(circle at top, #151a2e, #05060c);
       color: white;
+      min-height: 100vh;
       overflow-x: hidden;
     }
 
     header {
-      padding: 60px 20px;
+      padding: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.4px;
+    }
+
+    .logo span {
+      opacity: 0.6;
+      font-weight: 500;
+      font-size: 13px;
+      margin-left: 6px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      opacity: 0.75;
+      margin-left: 14px;
+    }
+
+    nav a:hover {
+      opacity: 1;
+    }
+
+    .hero {
+      padding: 80px 22px 60px;
       max-width: 1100px;
       margin: auto;
     }
 
     .pill {
       display: inline-block;
-      padding: 10px 18px;
+      padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(0, 255, 200, 0.08);
-      border: 1px solid rgba(0, 255, 200, 0.2);
-      color: #3dffda;
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 25px;
+      background: rgba(90, 255, 200, 0.12);
+      border: 1px solid rgba(90, 255, 200, 0.25);
+      font-size: 13px;
+      color: #5cffc7;
+      margin-bottom: 20px;
     }
 
     h1 {
-      font-size: clamp(2.6rem, 6vw, 4.2rem);
-      font-weight: 800;
+      font-size: 54px;
       line-height: 1.05;
+      font-weight: 900;
       margin-bottom: 18px;
     }
 
-    p {
+    .subtext {
       font-size: 18px;
-      max-width: 700px;
-      opacity: 0.8;
+      opacity: 0.75;
+      max-width: 680px;
       line-height: 1.6;
+      margin-bottom: 30px;
     }
 
-    .buttons {
-      margin-top: 35px;
+    .cta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 14px;
+      margin-top: 18px;
     }
 
     .btn {
-      padding: 16px 22px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 16px;
+      padding: 14px 18px;
+      border-radius: 16px;
       border: none;
       cursor: pointer;
-      transition: 0.25s;
+      font-weight: 700;
+      font-size: 15px;
+      transition: 0.2s ease;
       text-decoration: none;
       display: inline-block;
     }
 
     .btn-primary {
-      background: linear-gradient(90deg, #38bdf8, #34d399);
+      background: linear-gradient(135deg, #5b8cff, #5cffc7);
       color: black;
     }
 
     .btn-primary:hover {
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
 
     .btn-outline {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.04);
       color: white;
     }
 
     .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+      opacity: 0.75;
+      max-width: 640px;
     }
 
     section {
       max-width: 1100px;
       margin: auto;
-      padding: 80px 20px;
+      padding: 50px 22px;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-      margin-top: 40px;
+      gap: 18px;
+      margin-top: 20px;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 22px;
+      padding: 20px;
       border-radius: 18px;
-      transition: 0.25s;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(0, 255, 200, 0.25);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     .card h3 {
-      font-size: 18px;
+      font-size: 16px;
       margin-bottom: 10px;
     }
 
-    .notice {
-      margin-top: 30px;
-      padding: 18px;
-      border-radius: 14px;
-      background: rgba(255, 255, 0, 0.06);
-      border: 1px solid rgba(255, 255, 0, 0.15);
-      color: rgba(255, 255, 255, 0.85);
-      font-size: 15px;
+    .card p {
+      opacity: 0.7;
+      font-size: 14px;
       line-height: 1.5;
     }
 
     footer {
-      padding: 50px 20px;
+      padding: 40px 22px;
       text-align: center;
       opacity: 0.6;
-      font-size: 14px;
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
 
     footer a {
-      color: #3dffda;
+      color: white;
+      opacity: 0.8;
       text-decoration: none;
-      margin: 0 10px;
+      margin: 0 8px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- HERO -->
+  <!-- Header -->
   <header>
-    <div class="pill">Studios • Marketplace • StudentStream HQ</div>
+    <div class="logo">
+      StudentStream <span>Studios</span>
+    </div>
 
-    <h1>
-      Where creators turn work<br />
-      into opportunity.
-    </h1>
+    <nav>
+      <a href="/studios/login.html">Login</a>
+      <a href="https://www.instagram.com/studentstreamhq/" target="_blank">Instagram</a>
+      <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
+    </nav>
+  </header>
 
-    <p>
-      StudentStream Studios is the official creative marketplace inside
-      <strong>StudentStream HQ</strong> — built for filmmakers, editors,
-      designers, photographers, artists, and next-gen talent ready to grow.
+  <!-- Hero -->
+  <div class="hero">
+    <div class="pill">Studios Marketplace • Powered by StudentStream HQ</div>
+
+    <h1>Where creators turn work into opportunity.</h1>
+
+    <p class="subtext">
+      StudentStream Studios is the official creative marketplace division of
+      <strong>StudentStream HQ</strong> — built for filmmakers, designers, editors,
+      photographers, digital artists, and modern creative talent.
     </p>
 
-    <div class="buttons">
-      <a class="btn btn-primary" href="/studios/submit.html">Submit Your Work</a>
-      <a class="btn btn-outline" href="/studios/browse.html">Browse Talent</a>
-      <a class="btn btn-outline" href="/productions/">About Productions</a>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="/studios/login.html">Submit Your Work</a>
+      <a class="btn btn-outline" href="/studios/marketplace.html">Browse Marketplace</a>
+      <a class="btn btn-outline" href="/">Back to HQ</a>
     </div>
 
     <div class="notice">
-      ⚡ Early Launch Notice: Studios payouts are currently processed manually
-      during the early rollout stage. Automated payouts are coming soon.
+      ⚡ Manual Payouts Active: Creator earnings are currently paid manually while Studios finishes full automated payouts.
     </div>
-  </header>
+  </div>
 
-  <!-- WHAT CAN BE LISTED -->
+  <!-- Features -->
   <section>
-    <h2 style="font-size:2.2rem;font-weight:800;">
-      What Creators Can Showcase
-    </h2>
-
-    <p style="margin-top:15px;">
-      Studios supports digital-first creative work — built for real licensing,
-      collaboration, and paid opportunities.
-    </p>
+    <h2 style="font-size:28px;font-weight:800;">What You Can Do in Studios</h2>
 
     <div class="grid">
       <div class="card">
-        <h3>🎬 Film & Video</h3>
-        <p>Short films, edits, cinematography, trailers, reels.</p>
+        <h3>Sell Digital Work</h3>
+        <p>Upload assets, templates, edits, film packs, and creative products.</p>
       </div>
 
       <div class="card">
-        <h3>🎨 Design & Visual Art</h3>
-        <p>Branding, cover art, posters, creative assets.</p>
+        <h3>Get Discovered</h3>
+        <p>Studios connects creators with real opportunities inside the StudentStream ecosystem.</p>
       </div>
 
       <div class="card">
-        <h3>🎧 Music & Audio</h3>
-        <p>Beats, scoring, sound packs, production work.</p>
+        <h3>Track Earnings</h3>
+        <p>View creator revenue, sales history, and payouts directly in your dashboard.</p>
       </div>
 
       <div class="card">
-        <h3>📸 Photography</h3>
-        <p>Portraits, event work, digital licensing portfolios.</p>
-      </div>
-
-      <div class="card">
-        <h3>🧑‍💻 Creative Services</h3>
-        <p>Editing, graphic work, production help, freelance talent.</p>
-      </div>
-
-      <div class="card">
-        <h3>🚀 Opportunities</h3>
-        <p>Connect with real StudentStream Productions projects.</p>
+        <h3>Built for Modern Media</h3>
+        <p>Designed for the next era of creators, productions, brands, and digital culture.</p>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- Footer -->
   <footer>
-    © 2026 StudentStream HQ • Studios Marketplace <br /><br />
-
+    © <span id="year"></span> StudentStream HQ • Studios Division<br/><br/>
     <a href="https://www.instagram.com/studentstreamhq/" target="_blank">Instagram</a>
     <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
-    <a href="/login.html">Login</a>
   </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 
 </body>
 </html>
