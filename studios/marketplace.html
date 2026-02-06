@@ -1,38 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ===========================================
-   STUDENTSTREAM STUDIOS • MARKETPLACE (LIVE V10000)
-   Powered by StudentStream HQ + Supabase
-  ============================================ -->
-
+  <!-- Core -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Marketplace • StudentStream Studios</title>
 
   <!-- SEO -->
-  <meta name="description"
-    content="Browse the official StudentStream Studios Marketplace — digital work, creative assets, filmmaking services, and talent listings powered by StudentStream HQ." />
-
+  <meta name="description" content="Browse the StudentStream Studios Marketplace. License digital media, visuals, music, and production-ready assets directly from Studios HQ." />
+  <meta name="keywords" content="Studios Marketplace, licensing, media assets, production content, StudentStream HQ" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://studentstream.online/studios/marketplace.html" />
+  <link rel="canonical" href="https://studentstreamhq.github.io/studios/marketplace.html" />
 
-  <!-- Schema.org Marketplace -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "StudentStream Studios Marketplace",
-    "url": "https://studentstream.online/studios/marketplace.html",
-    "description": "The official marketplace for creators, filmmakers, editors, designers, and digital talent inside StudentStream HQ.",
-    "publisher": {
-      "@type": "Organization",
-      "name": "StudentStream HQ",
-      "url": "https://studentstream.online"
-    }
-  }
-  </script>
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Marketplace • StudentStream Studios" />
+  <meta property="og:description" content="Browse licensing-ready content and marketplace inventory inside Studios HQ." />
+  <meta property="og:type" content="website" />
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -47,323 +30,272 @@
     }
 
     body {
-      background: radial-gradient(circle at top, #14192c, #05060c);
+      background: radial-gradient(circle at top, #121a2f, #05060c);
       color: white;
       min-height: 100vh;
     }
 
     header {
-      padding: 20px;
+      padding: 24px 50px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .brand {
+    header h1 {
+      font-size: 20px;
       font-weight: 900;
-      font-size: 18px;
     }
 
     nav a {
-      color: white;
+      margin-left: 20px;
       text-decoration: none;
-      opacity: 0.7;
-      font-size: 14px;
-      margin-left: 14px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+      transition: 0.2s;
     }
 
     nav a:hover {
-      opacity: 1;
-    }
-
-    .hero {
-      max-width: 1100px;
-      margin: auto;
-      padding: 50px 20px 25px;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(90, 255, 200, 0.10);
-      border: 1px solid rgba(90, 255, 200, 0.20);
-      color: #5cffc7;
-      font-size: 13px;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      font-size: 42px;
-      font-weight: 950;
-      margin-bottom: 14px;
-    }
-
-    .sub {
-      font-size: 17px;
-      opacity: 0.75;
-      max-width: 720px;
-      line-height: 1.6;
-    }
-
-    .notice {
-      margin-top: 20px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
-    .toolbar {
-      max-width: 1100px;
-      margin: auto;
-      padding: 25px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .search {
-      flex: 1;
-      min-width: 220px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: none;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .filter {
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: none;
-      outline: none;
-      font-size: 15px;
-      background: rgba(255,255,255,0.06);
       color: white;
     }
 
-    section {
-      max-width: 1100px;
+    .page {
+      max-width: 1150px;
       margin: auto;
-      padding: 15px 20px 60px;
+      padding: 60px 20px;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .title h2 {
+      font-size: 48px;
+      font-weight: 950;
+      letter-spacing: -1px;
+    }
+
+    .title p {
+      margin-top: 14px;
+      opacity: 0.7;
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .notice {
+      margin: 35px auto;
+      padding: 18px;
+      max-width: 850px;
+      border-radius: 18px;
+      background: rgba(255,200,80,0.08);
+      border: 1px solid rgba(255,200,80,0.2);
+      font-size: 14px;
+      opacity: 0.85;
+      text-align: center;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 18px;
-      margin-top: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 22px;
+      margin-top: 35px;
     }
 
-    .item {
-      padding: 18px;
-      border-radius: 18px;
+    .card {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
-      transition: 0.2s ease;
+      border-radius: 22px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+      transition: 0.25s;
     }
 
-    .item:hover {
-      transform: translateY(-4px);
-      background: rgba(255,255,255,0.07);
+    .card:hover {
+      transform: translateY(-7px);
+      border-color: rgba(56,255,195,0.35);
+    }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 850;
+      margin-bottom: 8px;
     }
 
     .tag {
       display: inline-block;
-      font-size: 12px;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 999px;
-      background: rgba(91, 140, 255, 0.12);
-      border: 1px solid rgba(91, 140, 255, 0.25);
-      color: #5b8cff;
-      margin-bottom: 10px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      background: rgba(77,141,255,0.14);
+      border: 1px solid rgba(77,141,255,0.25);
+      color: #7aa2ff;
     }
 
-    .title {
-      font-size: 16px;
+    .price {
+      margin-top: 14px;
+      font-size: 15px;
       font-weight: 800;
-      margin-bottom: 6px;
+      color: #38ffc3;
     }
 
-    .desc {
-      font-size: 14px;
-      opacity: 0.7;
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
-
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      opacity: 0.6;
-    }
-
-    .status {
-      opacity: 0.6;
-      font-size: 14px;
+    .btn {
       margin-top: 18px;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      padding: 13px;
+      border-radius: 16px;
+      font-weight: 750;
+      text-decoration: none;
+      background: linear-gradient(135deg, #4d8dff, #38ffc3);
+      color: black;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+    }
+
+    .loading {
+      text-align: center;
+      opacity: 0.65;
+      font-size: 15px;
+      margin-top: 40px;
     }
 
     footer {
-      padding: 35px 20px;
       text-align: center;
+      padding: 50px 20px;
+      opacity: 0.55;
       font-size: 13px;
-      opacity: 0.6;
-      border-top: 1px solid rgba(255,255,255,0.06);
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Header -->
+  <!-- HEADER -->
   <header>
-    <div class="brand">
-      StudentStream Studios
-    </div>
-
+    <h1>Studios Marketplace</h1>
     <nav>
-      <a href="/studios/">Home</a>
-      <a href="/studios/submit.html">Submit</a>
-      <a href="/studios/login.html">Login</a>
-      <a href="https://www.instagram.com/studentstreamhq/" target="_blank">Instagram</a>
-      <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
+      <a href="/studios/index.html">Home</a>
+      <a href="/studios/earnings.html">Earnings</a>
+      <a href="/studios/login.html" id="authLink">Login</a>
     </nav>
   </header>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="pill">Marketplace • Live Listings</div>
+  <!-- PAGE -->
+  <div class="page">
 
-    <h1>Browse the Studios Marketplace</h1>
-
-    <p class="sub">
-      Discover creative services, digital assets, filmmaking talent, and modern creators inside the StudentStream HQ ecosystem.
-    </p>
+    <div class="title">
+      <h2>Marketplace Listings</h2>
+      <p>
+        Browse licensing-ready digital inventory inside StudentStream Studios.
+        Visuals, film assets, audio packs, production-ready content — all verified through HQ review.
+      </p>
+    </div>
 
     <div class="notice">
-      ⚡ Manual Creator Payouts Active — Automated payouts are currently being finalized.
+      ⚡ Marketplace payouts are currently processed manually during early rollout.
     </div>
+
+    <!-- Listings -->
+    <div id="listings" class="grid"></div>
+
+    <div id="loading" class="loading">Loading marketplace listings…</div>
+
   </div>
 
-  <!-- Search Toolbar -->
-  <div class="toolbar">
-    <input id="searchInput" class="search" placeholder="Search listings..." />
-
-    <select id="categoryFilter" class="filter">
-      <option value="all">All Categories</option>
-      <option value="Digital Assets">Digital Assets</option>
-      <option value="Video Editing">Video Editing</option>
-      <option value="Design">Design</option>
-      <option value="Music">Music</option>
-      <option value="Film">Film</option>
-    </select>
-  </div>
-
-  <!-- Marketplace -->
-  <section>
-    <h2 style="font-size:22px;font-weight:900;">Live Marketplace Drops</h2>
-
-    <p id="status" class="status">Loading listings...</p>
-
-    <div id="marketGrid" class="grid"></div>
-  </section>
-
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer>
     © <span id="year"></span> StudentStream HQ • Studios Marketplace
   </footer>
 
-  <!-- Supabase + Marketplace Script -->
+  <!-- SCRIPT -->
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ✅ Supabase Config
+    /* ==========================
+       SUPABASE CONFIG
+    ========================== */
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = window.supabase.createClient(
       SUPABASE_URL,
-      SUPABASE_KEY
+      SUPABASE_ANON_KEY
     );
 
-    const grid = document.getElementById("marketGrid");
-    const statusText = document.getElementById("status");
+    /* ==========================
+       AUTH-AWARE NAV
+    ========================== */
+    async function authCheck() {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        document.getElementById("authLink").textContent = "Dashboard";
+        document.getElementById("authLink").href = "/studios/dashboard.html";
+      }
+    }
 
-    let listings = [];
+    authCheck();
 
-    // ✅ Load Marketplace Listings
+    /* ==========================
+       LOAD MARKETPLACE LISTINGS
+       TABLE: marketplace_listings
+    ========================== */
     async function loadMarketplace() {
-      statusText.textContent = "Loading listings...";
+      const listingsBox = document.getElementById("listings");
+      const loading = document.getElementById("loading");
 
       const { data, error } = await supabase
-        .from("studios_marketplace")
+        .from("marketplace_listings")
         .select("*")
+        .eq("status", "active")
         .order("created_at", { ascending: false });
 
+      loading.style.display = "none";
+
       if (error) {
-        statusText.textContent = "Error loading marketplace.";
+        listingsBox.innerHTML =
+          "<p style='opacity:.7;text-align:center;'>Marketplace failed to load.</p>";
         console.error(error);
         return;
       }
 
-      listings = data;
-
-      if (!listings.length) {
-        statusText.textContent = "No listings yet. Be the first to submit.";
+      if (!data || data.length === 0) {
+        listingsBox.innerHTML =
+          "<p style='opacity:.7;text-align:center;'>No listings are live yet.</p>";
         return;
       }
 
-      statusText.textContent = "";
-      renderListings(listings);
-    }
-
-    // ✅ Render Listings
-    function renderListings(items) {
-      grid.innerHTML = "";
-
-      items.forEach(item => {
+      // Render cards
+      data.forEach(item => {
         const card = document.createElement("div");
-        card.className = "item";
+        card.className = "card";
 
         card.innerHTML = `
-          <div class="tag">${item.category || "Listing"}</div>
-          <div class="title">${item.title}</div>
-          <div class="desc">${item.description || ""}</div>
-          <div class="meta">
-            <span>${item.creator_name || "Studios Creator"}</span>
-            <span>$${item.price || "0"}</span>
-          </div>
+          <span class="tag">${item.asset_type || "Listing"}</span>
+          <h3>${item.title}</h3>
+          <p style="opacity:.7;font-size:14px;line-height:1.5;">
+            ${item.description || "Verified marketplace inventory inside Studios HQ."}
+          </p>
+          <div class="price">$${item.price_usd || "0"} USD</div>
+
+          <a class="btn" href="${item.preview_link || "#"}" target="_blank">
+            View Asset
+          </a>
         `;
 
-        grid.appendChild(card);
+        listingsBox.appendChild(card);
       });
     }
 
-    // ✅ Search + Filter
-    document.getElementById("searchInput").addEventListener("input", filterListings);
-    document.getElementById("categoryFilter").addEventListener("change", filterListings);
-
-    function filterListings() {
-      const search = document.getElementById("searchInput").value.toLowerCase();
-      const category = document.getElementById("categoryFilter").value;
-
-      let filtered = listings.filter(item =>
-        item.title.toLowerCase().includes(search)
-      );
-
-      if (category !== "all") {
-        filtered = filtered.filter(item => item.category === category);
-      }
-
-      renderListings(filtered);
-    }
-
-    // ✅ Start
     loadMarketplace();
   </script>
 
