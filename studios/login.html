@@ -4,51 +4,72 @@
   <meta charset="UTF-8" />
   <title>Studios Login • StudentStream HQ</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, nofollow" />
+  <!-- Mobile Optimized -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
 
+  <!-- SEO (Private Page) -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Secure login for StudentStream Studios." />
+
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
+      background: radial-gradient(circle at top, #141a2e, #05060c);
       display: flex;
-      justify-content: center;
       align-items: center;
-      background: radial-gradient(circle at top, #151a2e, #05060c);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+      justify-content: center;
       color: white;
+      padding: 20px;
     }
 
     .card {
-      width: 92%;
-      max-width: 420px;
-      padding: 30px;
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;
       border-radius: 22px;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 25px 90px rgba(0,0,0,0.7);
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
+      margin: 0;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     p {
-      margin: 0 0 20px;
+      margin: 8px 0 24px;
       opacity: 0.7;
+      font-size: 14px;
+      line-height: 1.4;
     }
 
     input {
       width: 100%;
-      padding: 14px;
-      margin-bottom: 12px;
+      padding: 14px 16px;
       border-radius: 14px;
-      border: none;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 14px;
       font-size: 15px;
       outline: none;
+      background: rgba(255,255,255,0.04);
+      color: white;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.4);
     }
 
     button {
@@ -56,52 +77,102 @@
       padding: 14px;
       border-radius: 16px;
       border: none;
-      font-weight: 700;
       font-size: 16px;
+      font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg, #5b8cff, #5cffc7);
+      background: linear-gradient(135deg, #4d8dff, #38ffc3);
       color: black;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.02);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .error {
-      margin-top: 12px;
+      margin-top: 14px;
       color: #ff6b6b;
+      font-size: 13px;
       display: none;
-      font-size: 14px;
+    }
+
+    .footer {
+      margin-top: 22px;
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.55;
+    }
+
+    .tagline {
+      font-size: 12px;
+      opacity: 0.5;
+      margin-top: -10px;
     }
   </style>
 </head>
-
 <body>
 
   <div class="card">
-    <h1>Studios Login</h1>
-    <p>Use your StudentStream HQ account</p>
+    <h1>Studios Access</h1>
+    <p>
+      Log in to <b>StudentStream Studios</b> — the marketplace, talent, licensing,
+      and media division inside StudentStream HQ.
+    </p>
 
-    <input id="email" type="email" placeholder="Email" autocomplete="email" />
+    <!-- Inputs -->
+    <input id="email" type="email" placeholder="Email address" autocomplete="email" />
     <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
 
+    <!-- Button -->
     <button id="loginBtn">Log In</button>
 
+    <!-- Error -->
     <div id="errorBox" class="error"></div>
+
+    <div class="footer">
+      StudentStream HQ • Studios Division<br>
+      <span class="tagline">Secure internal platform • Manual payouts currently active</span>
+    </div>
   </div>
 
   <script>
+    // ✅ Supabase Config
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
     const supabase = window.supabase.createClient(
-      "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
     );
 
-    const btn = document.getElementById("loginBtn");
+    const loginBtn = document.getElementById("loginBtn");
     const errorBox = document.getElementById("errorBox");
 
     function showError(msg) {
-      errorBox.style.display = "block";
       errorBox.textContent = msg;
+      errorBox.style.display = "block";
     }
 
-    btn.addEventListener("click", async (e) => {
-      e.preventDefault(); // ✅ prevents refresh
+    // ✅ Auto Redirect if already logged in
+    async function checkSession() {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        window.location.href = "/studios/dashboard.html";
+      }
+    }
+
+    checkSession();
+
+    // ✅ Login Handler
+    loginBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
 
       errorBox.style.display = "none";
 
@@ -109,12 +180,12 @@
       const password = document.getElementById("password").value.trim();
 
       if (!email || !password) {
-        showError("Enter your email and password.");
+        showError("Enter both email and password.");
         return;
       }
 
-      btn.disabled = true;
-      btn.textContent = "Signing in...";
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Signing in…";
 
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -123,13 +194,13 @@
 
       if (error) {
         showError(error.message);
-        btn.disabled = false;
-        btn.textContent = "Log In";
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Log In";
         return;
       }
 
-      // ✅ success redirect
-      window.location.href = "/studios/";
+      // ✅ Success Redirect
+      window.location.href = "/studios/dashboard.html";
     });
   </script>
 
