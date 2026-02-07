@@ -1,209 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- =========================================
+       STUDENTSTREAM STUDIOS — CREATOR WALLET HQ
+       earnings.html (V2 REAL SYSTEM)
+       ========================================= -->
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Creator Earnings • Studios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Your Earnings • StudentStream Studios</title>
 
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui;
-      background: radial-gradient(circle at top, #101b33, #05070d);
-      color: white;
-      padding: 25px;
+    :root{
+      --bg:#070A12;
+      --panel:rgba(14,20,36,0.85);
+      --text:#EAF0FF;
+      --muted:#A9B4D0;
+      --line:rgba(255,255,255,0.10);
+
+      --accent:#5DA8FF;
+      --accent2:#7C5CFF;
+
+      --good:#31D18B;
+      --warn:#FFD35A;
+      --bad:#FF5C7A;
+
+      --radius:18px;
     }
 
-    h1 {
-      font-size: 26px;
-      margin-bottom: 5px;
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:system-ui,Segoe UI,Roboto;
+      background:
+        radial-gradient(circle at top, rgba(93,168,255,0.16), transparent 65%),
+        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 65%),
+        var(--bg);
+      color:var(--text);
+      padding:24px;
     }
 
-    .sub {
-      opacity: 0.7;
-      margin-bottom: 25px;
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-      gap: 15px;
+    h1{
+      font-size:24px;
+      font-weight:900;
     }
 
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.35);
+    a{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      text-decoration:none;
     }
 
-    .stat {
-      font-size: 22px;
-      font-weight: bold;
-      margin-top: 6px;
+    /* GRID */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:16px;
+      margin-top:22px;
     }
 
-    .btn {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 12px 15px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      background: linear-gradient(to right,#00f5ff,#3b82f6);
-      color: black;
+    .stat{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter:blur(14px);
     }
 
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-      font-size: 14px;
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:6px;
+      text-transform:uppercase;
     }
 
-    th,td {
-      padding: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      text-align: left;
+    .value{
+      font-size:28px;
+      font-weight:900;
     }
 
-    th {
-      opacity: 0.6;
-      font-weight: 500;
+    .pendingGlow{color:var(--warn);}
+
+    /* WITHDRAW BOX */
+    .withdrawBox{
+      margin-top:28px;
+      max-width:850px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.03);
     }
 
-    .badge {
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
+    .withdrawBox h2{
+      font-size:16px;
+      margin-bottom:6px;
     }
 
-    .paid {
-      background: rgba(0,255,120,0.15);
-      color: #2cff87;
+    input,select{
+      width:100%;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.05);
+      color:white;
+      margin-top:10px;
+      font-size:14px;
+      outline:none;
     }
 
-    .unpaid {
-      background: rgba(255,200,0,0.15);
-      color: gold;
+    .btn{
+      margin-top:14px;
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:999px;
+      font-weight:900;
+      cursor:pointer;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      color:white;
+      font-size:14px;
     }
+
+    .btn:hover{opacity:.92;}
+
+    .msg{
+      margin-top:12px;
+      font-weight:800;
+      display:none;
+    }
+
+    .msg.good{color:var(--good);}
+    .msg.bad{color:var(--bad);}
+
+    /* TABLE */
+    h3{
+      margin-top:34px;
+      font-size:16px;
+      font-weight:900;
+    }
+
+    table{
+      width:100%;
+      margin-top:14px;
+      border-collapse:collapse;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+    }
+
+    th,td{
+      padding:14px;
+      font-size:13px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      text-align:left;
+    }
+
+    th{
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+    }
+
+    .status{
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .paid{color:var(--good);}
+    .pending{color:var(--warn);}
+    .denied{color:var(--bad);}
   </style>
 </head>
 
 <body>
 
-  <h1>💰 Creator Earnings</h1>
-  <p class="sub">Track your Studios marketplace revenue and payouts.</p>
+<header>
+  <h1>Your Creator Wallet</h1>
+  <a href="/studios/index.html">← Back to Studios</a>
+</header>
 
-  <!-- STATS -->
-  <div class="grid">
-    <div class="card">
-      Total Earned
-      <div class="stat" id="earned">$0.00</div>
-    </div>
-
-    <div class="card">
-      Pending Balance
-      <div class="stat" id="pending">$0.00</div>
-    </div>
-
-    <div class="card">
-      Paid Out
-      <div class="stat" id="paid">$0.00</div>
-    </div>
-
-    <div class="card">
-      Withdrawals
-      <button class="btn" onclick="location.href='withdrawals.html'">
-        Request Withdrawal →
-      </button>
-    </div>
+<!-- STATS -->
+<section class="grid">
+  <div class="stat">
+    <div class="label">Total Earned</div>
+    <div class="value" id="earned">$0.00</div>
   </div>
 
-  <!-- SALES -->
-  <div class="card" style="margin-top:25px;">
-    <h2 style="margin:0 0 10px;">Recent Sales</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Asset</th>
-          <th>Amount</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="salesTable"></tbody>
-    </table>
+  <div class="stat">
+    <div class="label">Paid Out</div>
+    <div class="value" id="paid">$0.00</div>
   </div>
 
+  <div class="stat">
+    <div class="label">Available Balance</div>
+    <div class="value pendingGlow" id="balance">$0.00</div>
+  </div>
+</section>
+
+<!-- WITHDRAW REQUEST -->
+<div class="withdrawBox">
+  <h2>Request Withdrawal</h2>
+  <p style="color:var(--muted);font-size:13px;">
+    Submit a payout request to StudentStream HQ Admin.
+  </p>
+
+  <input id="amountInput" type="number" placeholder="Amount in dollars (ex: 25)" />
+
+  <select id="methodSelect">
+    <option value="manual">Manual Payout</option>
+    <option value="paypal">PayPal</option>
+  </select>
+
+  <button class="btn" onclick="submitWithdrawal()">
+    Submit Request
+  </button>
+
+  <p id="msgBox" class="msg"></p>
+</div>
+
+<!-- HISTORY -->
+<h3>Your Withdrawal History</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Method</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="historyTable">
+    <tr><td colspan="4">Loading…</td></tr>
+  </tbody>
+</table>
+
+<!-- =========================================
+     SUPABASE CREATOR WALLET SYSTEM
+     ========================================= -->
 <script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  function dollars(cents) {
-    return "$" + (cents / 100).toFixed(2);
+  const msgBox = document.getElementById("msgBox");
+  const historyTable = document.getElementById("historyTable");
+
+  function dollars(cents){
+    return "$" + (cents/100).toFixed(2);
   }
 
-  async function loadEarnings() {
-    const { data: user } = await supabase.auth.getUser();
-    const creatorId = user?.user?.id;
+  /* LOGIN REQUIRED */
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session){
+    window.location.href="/studios/login.html";
+  }
 
-    if (!creatorId) return alert("Not logged in.");
+  const user = sessionData.session.user;
 
-    // totals from view
-    const { data: totals } = await supabase
-      .from("creator_earnings_view")
+  /* LOAD CREATOR DASHBOARD */
+  async function loadWallet(){
+
+    /* VIEW earnings */
+    const { data, error } = await supabase
+      .from("creator_earnings_dashboard")
       .select("*")
-      .eq("creator_id", creatorId)
+      .eq("creator_id", user.id)
       .single();
 
-    if (totals) {
-      document.getElementById("earned").textContent =
-        dollars(totals.creator_earned_cents);
-
-      document.getElementById("pending").textContent =
-        dollars(totals.pending_balance_cents);
-
-      document.getElementById("paid").textContent =
-        dollars(totals.paid_balance_cents);
+    if (error){
+      console.log(error);
+      return;
     }
 
-    // recent sales
-    const { data: sales } = await supabase
-      .from("marketplace_sales")
-      .select("asset_title, amount_cents, payout_status, created_at")
-      .eq("creator_id", creatorId)
-      .order("created_at", { ascending: false })
-      .limit(8);
+    document.getElementById("earned").textContent =
+      dollars(data.total_earned);
 
-    const tbody = document.getElementById("salesTable");
-    tbody.innerHTML = "";
+    document.getElementById("paid").textContent =
+      dollars(data.total_withdrawn);
 
-    sales?.forEach((s) => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${s.asset_title}</td>
-          <td>${dollars(s.amount_cents)}</td>
-          <td>
-            <span class="badge ${s.payout_status}">
-              ${s.payout_status.toUpperCase()}
-            </span>
-          </td>
-          <td>${new Date(s.created_at).toLocaleDateString()}</td>
-        </tr>
-      `;
-    });
+    document.getElementById("balance").textContent =
+      dollars(data.available_balance);
+
+    window.availableBalance = data.available_balance;
   }
 
-  loadEarnings();
+  /* LOAD WITHDRAW HISTORY */
+  async function loadHistory(){
+
+    const { data } = await supabase
+      .from("creator_withdrawals")
+      .select("*")
+      .eq("creator_id", user.id)
+      .order("created_at", { ascending:false });
+
+    if (!data || data.length === 0){
+      historyTable.innerHTML =
+        `<tr><td colspan="4">No withdrawals yet.</td></tr>`;
+      return;
+    }
+
+    historyTable.innerHTML = data.map(w => `
+      <tr>
+        <td>${new Date(w.created_at).toLocaleDateString()}</td>
+        <td>${dollars(w.amount)}</td>
+        <td>${w.payout_method}</td>
+        <td class="${w.status}">
+          ${w.status.toUpperCase()}
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  /* SUBMIT WITHDRAWAL */
+  window.submitWithdrawal = async () => {
+
+    msgBox.style.display="none";
+
+    const dollarsAmount =
+      parseFloat(document.getElementById("amountInput").value);
+
+    const method =
+      document.getElementById("methodSelect").value;
+
+    if (!dollarsAmount || dollarsAmount <= 0){
+      msgBox.textContent="Enter a valid amount.";
+      msgBox.className="msg bad";
+      msgBox.style.display="block";
+      return;
+    }
+
+    const cents = Math.floor(dollarsAmount * 100);
+
+    if (cents > window.availableBalance){
+      msgBox.textContent="Not enough available balance.";
+      msgBox.className="msg bad";
+      msgBox.style.display="block";
+      return;
+    }
+
+    /* INSERT REQUEST */
+    const { error } = await supabase
+      .from("creator_withdrawals")
+      .insert([{
+        creator_id: user.id,
+        creator_name: user.email,
+        creator_email: user.email,
+        amount: cents,
+        payout_method: method,
+        status: "pending"
+      }]);
+
+    if (error){
+      msgBox.textContent="Error submitting request.";
+      msgBox.className="msg bad";
+      msgBox.style.display="block";
+      console.log(error);
+      return;
+    }
+
+    msgBox.textContent="Withdrawal request submitted ✅";
+    msgBox.className="msg good";
+    msgBox.style.display="block";
+
+    loadHistory();
+  };
+
+  loadWallet();
+  loadHistory();
 </script>
 
 </body>
