@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- =========================================
+       STUDENTSTREAM STUDIOS — CREATOR WALLET
+       earnings.html (V40 FINAL UPGRADE)
+       ========================================= -->
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Your Earnings • Studios</title>
+  <title>Your Earnings • StudentStream Studios</title>
+  <meta name="description" content="Track your Studios earnings, pending balance, and request withdrawals." />
 
   <style>
     :root{
@@ -44,7 +50,7 @@
     }
 
     h1{
-      font-size:24px;
+      font-size:26px;
       font-weight:900;
     }
 
@@ -64,7 +70,7 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.4;
-      max-width:850px;
+      max-width:900px;
     }
 
     .grid{
@@ -80,6 +86,12 @@
       border-radius:var(--radius);
       padding:18px;
       backdrop-filter:blur(14px);
+      transition:.2s;
+    }
+
+    .stat:hover{
+      transform:translateY(-4px);
+      border-color:rgba(93,168,255,0.35);
     }
 
     .label{
@@ -88,6 +100,7 @@
       font-weight:800;
       margin-bottom:6px;
       text-transform:uppercase;
+      letter-spacing:.5px;
     }
 
     .value{
@@ -109,7 +122,7 @@
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      max-width:900px;
+      max-width:950px;
     }
 
     .btn{
@@ -121,11 +134,12 @@
       background:linear-gradient(90deg,var(--accent),var(--accent2));
       color:white;
       font-size:13px;
+      transition:.2s;
     }
 
-    .btn:disabled{
-      opacity:0.4;
-      cursor:not-allowed;
+    .btn:hover{
+      transform:translateY(-2px);
+      opacity:.95;
     }
 
     h2{
@@ -178,12 +192,6 @@
       color:var(--warn);
     }
 
-    .denied{
-      background:rgba(255,92,122,0.12);
-      border:1px solid rgba(255,92,122,0.25);
-      color:var(--bad);
-    }
-
     .error{
       margin-top:18px;
       color:var(--bad);
@@ -197,12 +205,12 @@
 
 <header>
   <h1>Your Creator Wallet</h1>
-  <a href="/studios/index.html">← Back to Dashboard</a>
+  <a href="/studios/index.html">← Back Dashboard</a>
 </header>
 
 <div class="notice">
-  <b>Manual Payout System Active</b><br>
-  Creators may request withdrawals once balance is available.
+  <b>Manual Withdrawals Active</b><br>
+  Creator payouts are currently processed manually until Stripe automation is enabled.
 </div>
 
 <section class="grid">
@@ -212,8 +220,8 @@
   </div>
 
   <div class="stat">
-    <div class="label">Creator Share (70%)</div>
-    <div class="value" id="creatorShare">$0.00</div>
+    <div class="label">Creator Earned (70%)</div>
+    <div class="value" id="creatorEarned">$0.00</div>
   </div>
 
   <div class="stat">
@@ -222,20 +230,20 @@
   </div>
 
   <div class="stat">
-    <div class="label">Available to Withdraw</div>
-    <div class="value pendingGlow" id="available">$0.00</div>
+    <div class="label">Pending Balance</div>
+    <div class="value pendingGlow" id="pending">$0.00</div>
   </div>
 </section>
 
 <div class="actionBox">
   <div>
-    <b>Withdraw Available Balance</b><br>
+    <b>Withdraw your pending balance</b><br>
     <span style="color:var(--muted);font-size:13px;">
-      Requests go to Studios Admin for approval.
+      Minimum withdrawal: $10.00
     </span>
   </div>
 
-  <button class="btn" id="withdrawBtn">
+  <button class="btn" onclick="requestWithdrawal()">
     Request Withdrawal
   </button>
 </div>
@@ -255,6 +263,21 @@
   </tbody>
 </table>
 
+<h2>Payout History</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Method</th>
+    </tr>
+  </thead>
+  <tbody id="payoutTable">
+    <tr><td colspan="3">Loading payouts…</td></tr>
+  </tbody>
+</table>
+
 <p id="errorBox" class="error"></p>
 
 <script type="module">
@@ -266,97 +289,120 @@
   );
 
   const errorBox = document.getElementById("errorBox");
-  const withdrawBtn = document.getElementById("withdrawBtn");
+  const withdrawTable = document.getElementById("withdrawTable");
+  const payoutTable = document.getElementById("payoutTable");
 
+  let pendingCents = 0;
+
+  function money(cents){
+    return "$" + (cents / 100).toFixed(2);
+  }
+
+  // Require login
   const { data: sessionData } = await supabase.auth.getSession();
   if (!sessionData.session) window.location.href="/studios/login.html";
 
   const userId = sessionData.session.user.id;
-  let availableBalance = 0;
 
-  /* Load Sales */
-  const { data: sales } = await supabase
-    .from("marketplace_sales")
-    .select("amount,status")
-    .eq("seller_id", userId);
+  // ============================================
+  // LOAD TOTALS FROM VIEW
+  // ============================================
+  const { data: totals } = await supabase
+    .from("creator_payout_total")
+    .select("*")
+    .eq("creator_id", userId)
+    .single();
 
-  let totalRevenue = 0;
-  let unpaidRevenue = 0;
+  if (totals){
+    document.getElementById("totalSales").textContent =
+      money(totals.total_sales_cents);
 
-  sales?.forEach(s => {
-    totalRevenue += s.amount;
-    if (s.status !== "paid") unpaidRevenue += s.amount;
-  });
+    document.getElementById("creatorEarned").textContent =
+      money(totals.creator_earned_cents);
 
-  availableBalance = unpaidRevenue * 0.7;
+    document.getElementById("paidOut").textContent =
+      money(totals.creator_paid_cents);
 
-  document.getElementById("totalSales").textContent =
-    "$" + totalRevenue.toFixed(2);
+    document.getElementById("pending").textContent =
+      money(totals.creator_pending_cents);
 
-  document.getElementById("creatorShare").textContent =
-    "$" + (totalRevenue * 0.7).toFixed(2);
+    pendingCents = totals.creator_pending_cents;
+  }
 
-  document.getElementById("paidOut").textContent =
-    "$" + ((totalRevenue - unpaidRevenue) * 0.7).toFixed(2);
+  // ============================================
+  // LOAD WITHDRAWAL REQUESTS
+  // ============================================
+  const { data: withdrawals } = await supabase
+    .from("creator_withdrawals")
+    .select("*")
+    .eq("creator_id", userId)
+    .order("created_at", { ascending:false });
 
-  document.getElementById("available").textContent =
-    "$" + availableBalance.toFixed(2);
-
-  /* Load Withdraw Requests */
-  async function loadWithdrawals(){
-    const table = document.getElementById("withdrawTable");
-
-    const { data } = await supabase
-      .from("creator_withdrawals")
-      .select("amount,status,created_at")
-      .eq("creator_id", userId)
-      .order("created_at", { ascending:false });
-
-    if (!data || data.length===0){
-      table.innerHTML=`<tr><td colspan="3">No withdrawal requests yet.</td></tr>`;
-      return;
-    }
-
-    table.innerHTML=data.map(w=>`
+  if (!withdrawals || withdrawals.length===0){
+    withdrawTable.innerHTML =
+      `<tr><td colspan="3">No withdrawal requests yet.</td></tr>`;
+  } else {
+    withdrawTable.innerHTML = withdrawals.map(w=>`
       <tr>
         <td>${new Date(w.created_at).toLocaleDateString()}</td>
-        <td>$${(w.amount/100).toFixed(2)}</td>
-        <td><span class="status ${w.status}">${w.status.toUpperCase()}</span></td>
+        <td>${money(w.amount)}</td>
+        <td><span class="status pending">${w.status.toUpperCase()}</span></td>
       </tr>
     `).join("");
   }
 
-  loadWithdrawals();
+  // ============================================
+  // LOAD PAYOUT HISTORY
+  // ============================================
+  const { data: payouts } = await supabase
+    .from("creator_payouts")
+    .select("*")
+    .eq("creator_id", userId)
+    .order("created_at", { ascending:false });
 
-  /* Request Withdrawal */
-  withdrawBtn.onclick = async () => {
+  if (!payouts || payouts.length===0){
+    payoutTable.innerHTML =
+      `<tr><td colspan="3">No payouts recorded yet.</td></tr>`;
+  } else {
+    payoutTable.innerHTML = payouts.map(p=>`
+      <tr>
+        <td>${new Date(p.created_at).toLocaleDateString()}</td>
+        <td>${money(p.payout_amount)}</td>
+        <td>${p.payout_method}</td>
+      </tr>
+    `).join("");
+  }
 
-    if (availableBalance < 5){
-      alert("Minimum withdrawal is $5.");
+  // ============================================
+  // REQUEST WITHDRAWAL BUTTON
+  // ============================================
+  window.requestWithdrawal = async function(){
+
+    if (pendingCents < 1000){
+      alert("Minimum withdrawal is $10.00");
       return;
     }
 
-    withdrawBtn.disabled = true;
-    withdrawBtn.textContent="Submitting...";
+    const confirmIt = confirm(
+      "Request withdrawal of " + money(pendingCents) + "?"
+    );
+    if (!confirmIt) return;
 
     const { error } = await supabase
       .from("creator_withdrawals")
       .insert({
         creator_id: userId,
-        amount: Math.round(availableBalance * 100),
-        status: "pending",
-        method: "manual"
+        amount: pendingCents,
+        status: "pending"
       });
 
     if (error){
-      alert("Error submitting request: " + error.message);
-    } else {
-      alert("Withdrawal Request Submitted ✅");
-      loadWithdrawals();
+      alert("Error: " + error.message);
+      return;
     }
 
-    withdrawBtn.disabled = false;
-    withdrawBtn.textContent="Request Withdrawal";
+    alert("Withdrawal Request Submitted ✅");
+    location.reload();
   };
 
 </script>
