@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Payout Settings • Studios</title>
+
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:rgba(14,20,36,0.85);
+      --text:#EAF0FF;
+      --muted:#A9B4D0;
+      --line:rgba(255,255,255,0.10);
+
+      --accent:#5DA8FF;
+      --accent2:#7C5CFF;
+      --good:#31D18B;
+      --bad:#FF5C7A;
+
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+
+    body{
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(circle at top, rgba(93,168,255,0.16), transparent 65%),
+        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 65%),
+        var(--bg);
+      color:var(--text);
+      padding:24px;
+    }
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
+    }
+
+    h1{
+      font-size:22px;
+      font-weight:900;
+    }
+
+    a{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:700;
+      font-size:13px;
+    }
+
+    .card{
+      max-width:700px;
+      margin-top:20px;
+      padding:20px;
+      border-radius:var(--radius);
+      background:var(--panel);
+      border:1px solid var(--line);
+      backdrop-filter:blur(14px);
+    }
+
+    label{
+      display:block;
+      margin-top:14px;
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
+    }
+
+    select,input{
+      width:100%;
+      padding:12px;
+      margin-top:6px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.04);
+      color:white;
+      font-size:14px;
+      outline:none;
+    }
+
+    button{
+      margin-top:18px;
+      padding:12px 18px;
+      border:none;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:900;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      color:white;
+      font-size:14px;
+    }
+
+    .success{
+      margin-top:16px;
+      color:var(--good);
+      font-weight:800;
+      display:none;
+    }
+
+    .error{
+      margin-top:16px;
+      color:var(--bad);
+      font-weight:800;
+      display:none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Payout Settings</h1>
+  <a href="/studios/earnings.html">← Back to Wallet</a>
+</header>
+
+<div class="card">
+  <p style="color:var(--muted);font-size:13px;line-height:1.5;">
+    Set up your payout method so Studios knows where to send your withdrawals.
+    This must be completed before requesting payouts.
+  </p>
+
+  <label>Payout Method</label>
+  <select id="method">
+    <option value="paypal">PayPal</option>
+    <option value="cashapp">CashApp</option>
+    <option value="bank">Bank Transfer</option>
+  </select>
+
+  <label>Payout Account Info</label>
+  <input
+    id="account"
+    placeholder="example: paypal@email.com or $Cashtag"
+  />
+
+  <button onclick="saveSettings()">Save Payout Settings</button>
+
+  <p class="success" id="successBox">✅ Saved successfully!</p>
+  <p class="error" id="errorBox">❌ Error saving.</p>
+</div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  const methodEl = document.getElementById("method");
+  const accountEl = document.getElementById("account");
+
+  const successBox = document.getElementById("successBox");
+  const errorBox = document.getElementById("errorBox");
+
+  // Require login
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) window.location.href="/studios/login.html";
+
+  const userId = sessionData.session.user.id;
+
+  // Load existing payout settings
+  const { data: existing } = await supabase
+    .from("creator_payout_settings")
+    .select("*")
+    .eq("creator_id", userId)
+    .single();
+
+  if (existing){
+    methodEl.value = existing.method;
+    accountEl.value = existing.account;
+  }
+
+  // Save payout settings
+  window.saveSettings = async () => {
+
+    successBox.style.display="none";
+    errorBox.style.display="none";
+
+    const method = methodEl.value;
+    const account = accountEl.value.trim();
+
+    if (!account){
+      alert("Please enter payout account info.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("creator_payout_settings")
+      .upsert({
+        creator_id: userId,
+        method,
+        account
+      });
+
+    if (error){
+      errorBox.style.display="block";
+      errorBox.textContent="❌ " + error.message;
+    } else {
+      successBox.style.display="block";
+    }
+  };
+</script>
+
+</body>
+</html>
