@@ -1,27 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- =========================================
-       STUDENTSTREAM HQ — STUDIOS DASHBOARD
-       index.html (V50 CREATOR ECONOMY UPGRADE)
-       ========================================= -->
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
   <title>Studios Dashboard • StudentStream HQ</title>
 
   <style>
     :root{
       --bg:#070A12;
       --panel:#0E1424;
-      --panel2:#101A33;
       --text:#EAF0FF;
       --muted:#A9B4D0;
       --line:rgba(255,255,255,0.08);
       --glow:rgba(120,180,255,0.22);
       --accent:#5DA8FF;
-      --accent2:#7C5CFF;
       --good:#31D18B;
       --warn:#FFD35A;
       --bad:#FF5C7A;
@@ -29,60 +21,21 @@
     }
 
     *{box-sizing:border-box;margin:0;padding:0;}
-
     body{
-      font-family:system-ui,Segoe UI,Roboto;
-      background:
-        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
-        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 55%),
-        var(--bg);
+      font-family:system-ui;
+      background:radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),var(--bg);
       color:var(--text);
       min-height:100vh;
     }
 
-    a{text-decoration:none;color:inherit;}
+    .wrap{max-width:1350px;margin:auto;padding:30px 18px 80px;}
 
-    .wrap{
-      max-width:1350px;
-      margin:auto;
-      padding:30px 18px 80px;
-    }
-
-    /* TOPBAR */
     .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+      display:flex;justify-content:space-between;align-items:center;
       padding:18px 20px;
       background:rgba(14,20,36,0.72);
       border:1px solid var(--line);
       border-radius:var(--radius);
-      backdrop-filter:blur(14px);
-    }
-
-    .brand h1{
-      font-size:18px;
-      font-weight:900;
-    }
-
-    .brand p{
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .userbox{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .pill{
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,0.03);
-      font-size:13px;
-      color:var(--muted);
     }
 
     .btn{
@@ -93,16 +46,8 @@
       color:var(--text);
       cursor:pointer;
       font-weight:700;
-      transition:0.2s;
     }
 
-    .btn:hover{
-      transform:translateY(-1px);
-      border-color:rgba(93,168,255,0.35);
-      box-shadow:0 0 0 4px var(--glow);
-    }
-
-    /* GRID LAYOUT */
     .layout{
       display:grid;
       grid-template-columns:260px 1fr;
@@ -110,25 +55,11 @@
       margin-top:18px;
     }
 
-    @media(max-width:950px){
-      .layout{grid-template-columns:1fr;}
-    }
-
-    /* SIDEBAR */
-    .sidebar{
+    .sidebar,.card{
       background:rgba(14,20,36,0.75);
       border:1px solid var(--line);
       border-radius:var(--radius);
       padding:18px;
-      backdrop-filter:blur(14px);
-    }
-
-    .sidebar h3{
-      font-size:13px;
-      margin-bottom:12px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:1px;
     }
 
     .navlink{
@@ -138,31 +69,11 @@
       border-radius:14px;
       background:rgba(255,255,255,0.02);
       font-weight:600;
-      transition:0.2s;
     }
 
-    .navlink:hover{
-      border-color:rgba(93,168,255,0.35);
-      box-shadow:0 0 0 4px var(--glow);
-      transform:translateY(-2px);
-    }
-
-    .adminBadge{
-      display:inline-block;
-      font-size:12px;
-      padding:6px 12px;
-      border-radius:999px;
-      background:rgba(255,92,122,0.12);
-      border:1px solid rgba(255,92,122,0.25);
-      color:var(--bad);
-      margin-bottom:12px;
-      font-weight:800;
-    }
-
-    /* KPI STATS */
     .stats{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
       gap:14px;
       margin-top:18px;
     }
@@ -174,42 +85,8 @@
       background:linear-gradient(180deg, rgba(93,168,255,0.10), rgba(255,255,255,0.02));
     }
 
-    .stat b{
-      font-size:20px;
-      display:block;
-      margin-bottom:4px;
-    }
-
-    .stat span{
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    /* MAIN CARDS */
-    .grid{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:1.3fr 0.7fr;
-      gap:18px;
-    }
-
-    @media(max-width:900px){
-      .grid{grid-template-columns:1fr;}
-    }
-
-    .card{
-      background:rgba(14,20,36,0.75);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:18px;
-      backdrop-filter:blur(14px);
-    }
-
-    .muted{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.4;
-    }
+    .stat b{font-size:20px;display:block;}
+    .stat span{font-size:13px;color:var(--muted);}
 
     .listing{
       padding:12px;
@@ -219,49 +96,38 @@
       background:rgba(255,255,255,0.02);
       display:flex;
       justify-content:space-between;
-      gap:10px;
     }
 
-    footer{
-      margin-top:22px;
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-    }
+    .muted{color:var(--muted);font-size:13px;}
   </style>
 </head>
 
 <body>
 <div class="wrap">
 
-  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="brand">
-      <h1>StudentStream HQ • Studios</h1>
-      <p>Creator Dashboard + Withdrawals</p>
+    <div>
+      <h2>StudentStream Studios</h2>
+      <p class="muted">SS-Films Monetization Dashboard</p>
     </div>
-
-    <div class="userbox">
-      <div class="pill" id="userEmail">Loading...</div>
-      <button class="btn" id="logoutBtn">Logout</button>
-    </div>
+    <button class="btn" id="logoutBtn">Logout</button>
   </div>
 
-  <!-- KPI STATS -->
+  <!-- KPI -->
   <div class="stats">
     <div class="stat">
-      <b id="statListings">0</b>
-      <span>Active Listings</span>
+      <b id="earned">$0.00</b>
+      <span>Total Earned</span>
     </div>
 
     <div class="stat">
-      <b>$<span id="statEarnings">0.00</span></b>
-      <span>Total Creator Earnings</span>
+      <b id="available">$0.00</b>
+      <span>Available Balance</span>
     </div>
 
     <div class="stat">
-      <b id="statPending">0</b>
-      <span>Pending Withdrawals</span>
+      <b id="clubStatus">Checking...</b>
+      <span>Monetization Club</span>
     </div>
 
     <div class="stat">
@@ -270,214 +136,108 @@
     </div>
   </div>
 
-  <!-- DASHBOARD -->
   <div class="layout">
 
-    <!-- SIDEBAR -->
+    <!-- Sidebar -->
     <div class="sidebar">
-      <h3>Studios Menu</h3>
+      <h3 class="muted">Studios Menu</h3>
 
       <a class="navlink" href="/studios/index.html">🏠 Dashboard</a>
       <a class="navlink" href="/studios/marketplace.html">🛒 Marketplace</a>
-      <a class="navlink" href="/studios/submit.html">➕ Submit Listing</a>
       <a class="navlink" href="/studios/earnings.html">💰 Earnings</a>
+
+      <a class="navlink" href="/studios/join-monetization.html">
+        🎬 Join SS-Films Monetization Club
+      </a>
 
       <a class="navlink" href="/studios/request-withdrawal.html">
         🏦 Request Withdrawal
       </a>
+    </div>
 
-      <!-- ADMIN SECTION -->
-      <div id="adminSection" style="display:none;margin-top:20px;">
-        <span class="adminBadge">ADMIN ACCESS</span>
+    <!-- Main -->
+    <div class="card">
+      <h2>Creator Wallet</h2>
+      <p class="muted">Real earnings powered by SS-Films Monetization Club.</p>
 
-        <h3>Admin Panel</h3>
-
-        <a class="navlink" href="/studios/admin/payouts.html">
-          💸 Creator Payout Center
-        </a>
-
-        <a class="navlink" href="/studios/admin/withdrawals.html">
-          🏦 Withdrawal Requests
-        </a>
+      <div id="walletBox" style="margin-top:14px;">
+        Loading wallet...
       </div>
     </div>
 
-    <!-- MAIN GRID -->
-    <div class="grid">
-
-      <!-- LEFT -->
-      <div class="card">
-        <h2>Marketplace Listings</h2>
-        <p class="muted">Your latest active products inside StudentStream.</p>
-
-        <div id="listingsArea">
-          <p class="muted">Loading listings…</p>
-        </div>
-
-        <h2 style="margin-top:18px;">Recent Sales</h2>
-        <p class="muted">Latest marketplace purchases connected to your creator account.</p>
-
-        <div id="salesArea">
-          <p class="muted">Loading sales…</p>
-        </div>
-      </div>
-
-      <!-- RIGHT -->
-      <div class="card">
-        <h2>Creator Wallet</h2>
-        <p class="muted">
-          Track your earnings + request withdrawals manually.
-        </p>
-
-        <div class="listing">
-          <div>
-            <b>Available Balance</b><br/>
-            <span id="availableBalance">$0.00</span>
-          </div>
-          <span style="color:var(--good);font-weight:900;">READY</span>
-        </div>
-
-        <div style="margin-top:14px;">
-          <a href="/studios/request-withdrawal.html" class="btn" style="width:100%;text-align:center;">
-            Request Withdrawal →
-          </a>
-        </div>
-      </div>
-
-    </div>
   </div>
-
-  <footer>
-    © <span id="year"></span> StudentStream HQ — Studios Creator Network
-  </footer>
-
 </div>
 
-<!-- =========================================
-     SUPABASE CREATOR ECONOMY SYSTEM
-     ========================================= -->
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const { data: sessionData } = await supabase.auth.getSession();
+if (!sessionData.session) location.href="/studios/login.html";
 
-  document.getElementById("year").textContent = new Date().getFullYear();
+const user = sessionData.session.user;
 
-  /* SESSION CHECK */
-  const { data: sessionData } = await supabase.auth.getSession();
-  if (!sessionData.session) window.location.href="/studios/login.html";
+document.getElementById("logoutBtn").onclick = async ()=>{
+  await supabase.auth.signOut();
+  location.href="/studios/login.html";
+};
 
-  const user = sessionData.session.user;
-  document.getElementById("userEmail").textContent = user.email;
-
-  document.getElementById("logoutBtn").onclick = async () => {
-    await supabase.auth.signOut();
-    window.location.href="/studios/login.html";
-  };
-
-  /* ADMIN ROLE */
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
+/* LOAD CLUB STATUS */
+async function loadClub(){
+  const { data } = await supabase
+    .from("monetization_club")
+    .select("status")
+    .eq("user_id", user.id)
     .single();
 
-  if (profile?.role === "admin") {
-    document.getElementById("adminSection").style.display="block";
+  if (!data){
+    document.getElementById("clubStatus").innerText="NOT JOINED";
+    return;
   }
 
-  /* LOAD LISTINGS */
-  async function loadListings(){
-    const area = document.getElementById("listingsArea");
+  document.getElementById("clubStatus").innerText=data.status.toUpperCase();
+}
 
-    const { data } = await supabase
-      .from("marketplace_listings")
-      .select("title, price")
-      .eq("status","active")
-      .limit(4);
+/* LOAD WALLET */
+async function loadWallet(){
+  const { data: creator } = await supabase
+    .from("creators")
+    .select("id")
+    .eq("user_id", user.id)
+    .single();
 
-    if (!data || data.length===0){
-      area.innerHTML="<p class='muted'>No listings yet.</p>";
-      return;
-    }
-
-    document.getElementById("statListings").textContent=data.length;
-
-    area.innerHTML="";
-    data.forEach(item=>{
-      area.innerHTML += `
-        <div class="listing">
-          <div>
-            <b>${item.title}</b><br/>
-            <span>$${Number(item.price).toFixed(2)}</span>
-          </div>
-          <span style="color:var(--good);font-weight:900;">LIVE</span>
-        </div>
-      `;
-    });
+  if (!creator){
+    document.getElementById("walletBox").innerHTML =
+      "<p class='muted'>Creator profile not found.</p>";
+    return;
   }
 
-  /* LOAD SALES + EARNINGS */
-  async function loadSales(){
-    const salesBox = document.getElementById("salesArea");
+  const { data: wallet } = await supabase
+    .from("creator_wallet_v500")
+    .select("*")
+    .eq("creator_id", creator.id)
+    .single();
 
-    const { data } = await supabase
-      .from("marketplace_sales")
-      .select("product_title, creator_name, creator_payout, created_at")
-      .eq("seller_id", user.id)
-      .order("created_at",{ascending:false})
-      .limit(4);
+  document.getElementById("earned").innerText =
+    "$" + (wallet.total_earned_cents/100).toFixed(2);
 
-    if (!data || data.length===0){
-      salesBox.innerHTML="<p class='muted'>No sales yet.</p>";
-      return;
-    }
+  document.getElementById("available").innerText =
+    "$" + (wallet.available_balance_cents/100).toFixed(2);
 
-    let totalEarned=0;
-    salesBox.innerHTML="";
+  document.getElementById("walletBox").innerHTML = `
+    <div class="listing">
+      <b>Available Balance</b>
+      <span>$${(wallet.available_balance_cents/100).toFixed(2)}</span>
+    </div>
+  `;
+}
 
-    data.forEach(sale=>{
-      totalEarned += sale.creator_payout || 0;
-
-      salesBox.innerHTML += `
-        <div class="listing">
-          <div>
-            <b>${sale.product_title}</b><br/>
-            <span>${new Date(sale.created_at).toLocaleDateString()}</span>
-          </div>
-          <span style="font-weight:900;">
-            $${(sale.creator_payout/100).toFixed(2)}
-          </span>
-        </div>
-      `;
-    });
-
-    document.getElementById("statEarnings").textContent =
-      (totalEarned/100).toFixed(2);
-
-    document.getElementById("availableBalance").textContent =
-      "$" + (totalEarned/100).toFixed(2);
-  }
-
-  /* LOAD WITHDRAWALS */
-  async function loadWithdrawals(){
-    const { data } = await supabase
-      .from("creator_withdrawals")
-      .select("id")
-      .eq("creator_id", user.id)
-      .eq("status","pending");
-
-    document.getElementById("statPending").textContent =
-      data?.length || 0;
-  }
-
-  loadListings();
-  loadSales();
-  loadWithdrawals();
+loadClub();
+loadWallet();
 </script>
 
 </body>
