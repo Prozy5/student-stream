@@ -3,7 +3,7 @@
 <head>
   <!-- =========================================
        STUDIOS LOGIN • StudentStream HQ
-       login.html (V3000 LOCKDOWN)
+       login.html (V10000 MAX LOCK)
        ========================================= -->
 
   <meta charset="UTF-8" />
@@ -15,7 +15,7 @@
   <link rel="canonical" href="https://studentstream.online/studios/login.html" />
 
   <!-- =========================================
-       STYLE — HQ GLASS LOGIN UI
+       STYLE — HQ GLASS LOGIN UI (UPGRADED)
        ========================================= -->
   <style>
     :root{
@@ -55,7 +55,7 @@
       border-radius:var(--radius);
       padding:26px;
       backdrop-filter:blur(14px);
-      box-shadow:0 0 0 1px rgba(255,255,255,0.02);
+      box-shadow:0 30px 90px rgba(0,0,0,0.65);
     }
 
     h1{
@@ -113,6 +113,11 @@
       opacity:0.95;
     }
 
+    .btn:disabled{
+      opacity:0.5;
+      cursor:not-allowed;
+    }
+
     .status{
       margin-top:14px;
       font-size:13px;
@@ -135,6 +140,15 @@
       font-weight:700;
       text-decoration:none;
     }
+
+    .togglePass{
+      font-size:12px;
+      color:var(--accent);
+      cursor:pointer;
+      margin-top:-8px;
+      margin-bottom:14px;
+      display:inline-block;
+    }
   </style>
 </head>
 
@@ -155,7 +169,11 @@
       <label>Password</label>
       <input id="password" type="password" placeholder="••••••••••" required />
 
-      <button class="btn" type="submit">
+      <span class="togglePass" id="togglePass">
+        Show Password
+      </span>
+
+      <button class="btn" id="loginBtn" type="submit">
         Sign In
       </button>
     </form>
@@ -170,20 +188,31 @@
   </div>
 
   <!-- =========================================
-       SUPABASE LOGIN (SESSION SAFE)
+       SUPABASE LOGIN (SESSION FIXED + LOCKED)
        ========================================= -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    // ✅ PUT YOUR REAL PROJECT INFO
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    /* ✅ FIX: Session persistence so login doesn’t reset */
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
 
     const statusBox = document.getElementById("status");
+    const loginBtn = document.getElementById("loginBtn");
 
-    // ✅ SESSION CHECK (PREVENT RETYPING)
+    /* ✅ Redirect target */
+    const DASHBOARD_URL = "/studios/dashboard.html";
+
+    /* ✅ SESSION CHECK */
     const { data: sessionData } = await supabase.auth.getSession();
 
     if (sessionData.session) {
@@ -191,21 +220,35 @@
       statusBox.className = "status good";
 
       setTimeout(() => {
-        window.location.href = "/studios/index.html";
+        window.location.replace(DASHBOARD_URL);
       }, 800);
     }
 
-    // ✅ LOGIN SUBMIT
+    /* ✅ Password toggle */
+    document.getElementById("togglePass").onclick = () => {
+      const pass = document.getElementById("password");
+
+      if (pass.type === "password") {
+        pass.type = "text";
+        togglePass.textContent = "Hide Password";
+      } else {
+        pass.type = "password";
+        togglePass.textContent = "Show Password";
+      }
+    };
+
+    /* ✅ LOGIN SUBMIT */
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
+      loginBtn.disabled = true;
       statusBox.textContent = "Signing in…";
       statusBox.className = "status";
 
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
@@ -213,6 +256,7 @@
       if (error) {
         statusBox.textContent = "Login failed: " + error.message;
         statusBox.className = "status bad";
+        loginBtn.disabled = false;
         return;
       }
 
@@ -220,7 +264,7 @@
       statusBox.className = "status good";
 
       setTimeout(() => {
-        window.location.href = "/studios/index.html";
+        window.location.replace(DASHBOARD_URL);
       }, 700);
     });
   </script>
