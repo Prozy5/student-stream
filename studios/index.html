@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       STUDIOS PUBLIC HOMEPAGE (LOCKED v20000)
+       STUDIOS PUBLIC HOMEPAGE (LOCKED v30000)
        StudentStream HQ • Studios Marketplace
+       SS-Films Monetization Club Integrated
        ========================================= -->
 
   <meta charset="UTF-8" />
@@ -16,10 +17,10 @@
 
   <!-- SEO -->
   <meta name="description"
-    content="Studios is the official creative marketplace of StudentStream HQ — a platform for licensed digital work, production assets, and creator opportunities." />
+    content="Studios is the official creative marketplace of StudentStream HQ — licensed digital work, production assets, and creator monetization opportunities." />
 
   <meta name="keywords"
-    content="Studios marketplace, creative licensing, digital assets, production visuals, creator marketplace" />
+    content="Studios marketplace, SS-Films, creator monetization, digital assets, production visuals, creator marketplace" />
 
   <link rel="canonical" href="https://studentstream.online/studios/" />
 
@@ -30,7 +31,7 @@
   <meta property="og:url" content="https://studentstream.online/studios/" />
   <meta property="og:type" content="website" />
 
-  <!-- Favicon Support -->
+  <!-- Favicon -->
   <link rel="icon" href="/favicon.ico" />
 
   <!-- Schema.org -->
@@ -52,7 +53,7 @@
   }
   </script>
 
-  <!-- Supabase (for session-aware nav) -->
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Styling -->
@@ -323,6 +324,49 @@
     </div>
   </section>
 
+  <!-- MONETIZATION CLUB -->
+  <section class="section">
+    <h2>SS-Films Monetization Club</h2>
+
+    <p class="sub" style="margin-top:10px;">
+      The <b>SS-Films Monetization Club</b> is the official creator earning program inside Studios.
+      Members can submit film edits, production assets, visuals, and licensed media
+      while payouts are handled manually during launch.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>🎬 Earn Through SS-Films</h3>
+        <p>Upload production-ready work and get paid per sale through Studios.</p>
+      </div>
+
+      <div class="card">
+        <h3>💳 Manual Payments (Right Now)</h3>
+        <p>Payouts are tracked in your dashboard and processed manually until Stripe is added.</p>
+      </div>
+
+      <div class="card">
+        <h3>🚀 Priority Creator Access</h3>
+        <p>Club members get verified creator status, promotion, and early marketplace tools.</p>
+      </div>
+
+      <div class="card">
+        <h3>🔒 Entry Fee Required</h3>
+        <p>Joining the Monetization Club requires an access fee to unlock earning features.</p>
+      </div>
+    </div>
+
+    <div class="cta">
+      <a href="/studios/monetization-club.html">
+        <button class="btn primary">Join Monetization Club →</button>
+      </a>
+
+      <a href="/studios/submit.html">
+        <button class="btn outline">Submit Work</button>
+      </a>
+    </div>
+  </section>
+
   <!-- WHAT’S INSIDE -->
   <section class="section">
     <h2>What’s Available on Studios</h2>
@@ -330,22 +374,22 @@
     <div class="grid">
       <div class="card">
         <h3>Digital Visual Packs</h3>
-        <p>Licensed production visuals, overlays, cinematic assets, and brand-ready design work.</p>
+        <p>Licensed overlays, cinematic assets, and brand-ready design work.</p>
       </div>
 
       <div class="card">
         <h3>Photography & Media</h3>
-        <p>Editorial-quality photography, commercial imagery, and creative content licensing.</p>
+        <p>Commercial imagery, editorial photography, and creative licensing.</p>
       </div>
 
       <div class="card">
         <h3>Motion & Film Assets</h3>
-        <p>Short-form edits, motion graphics, trailers, and studio-level production elements.</p>
+        <p>Trailers, motion graphics, short edits, and studio-level production elements.</p>
       </div>
 
       <div class="card">
         <h3>Creator Services</h3>
-        <p>Commission-based work, collaborations, creative partnerships, and custom projects.</p>
+        <p>Commission work, collaborations, partnerships, and custom projects.</p>
       </div>
     </div>
   </section>
@@ -362,18 +406,43 @@
 
       <div class="card">
         <h3>2. Studios Approves</h3>
-        <p>Listings are reviewed to maintain quality, licensing, and marketplace trust.</p>
+        <p>Listings are reviewed for quality, licensing, and marketplace trust.</p>
       </div>
 
       <div class="card">
         <h3>3. Buyers Request Access</h3>
-        <p>During launch, purchases are handled manually with secure delivery + invoicing.</p>
+        <p>During launch, purchases are processed manually with secure delivery + invoicing.</p>
       </div>
 
       <div class="card">
         <h3>4. Creators Earn</h3>
-        <p>Creators earn 70% per sale, with payouts tracked through their Studios dashboard.</p>
+        <p>Creators earn per sale, with payouts tracked through their Studios dashboard.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- BUYER ACCESS FUNNEL -->
+  <section class="section">
+    <h2>Need Something Licensed?</h2>
+
+    <p class="sub">
+      Studios is currently in launch mode.  
+      Buyers can request purchase access for licensed packs, visuals, or creator work manually.
+    </p>
+
+    <div class="cta">
+      <a href="mailto:studentstreamhq@gmail.com">
+        <button class="btn primary">Request Purchase Access →</button>
+      </a>
+
+      <a href="/studios/marketplace.html">
+        <button class="btn outline">View Listings</button>
+      </a>
+    </div>
+
+    <div class="notice">
+      Purchases are processed manually right now.  
+      Buyers receive invoices + secure delivery within 24 hours.
     </div>
   </section>
 
@@ -405,11 +474,11 @@
 
     if (data.session) {
       document.getElementById("creatorLink").textContent = "Dashboard";
-      document.getElementById("creatorLink").href = "/studios/creator/dashboard.html";
+      document.getElementById("creatorLink").href = "/studios/dashboard.html";
 
       document.getElementById("creatorBtn").textContent = "Go to Dashboard";
       document.getElementById("creatorBtn").onclick = () => {
-        window.location.href = "/studios/creator/dashboard.html";
+        window.location.href = "/studios/dashboard.html";
       };
     }
   }
