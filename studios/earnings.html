@@ -2,40 +2,35 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       STUDIOS • EARNINGS DASHBOARD (LOCKED)
-       earnings.html • Manual + Stripe Ready
+       STUDIOS CREATOR EARNINGS (FINAL)
+       earnings.html • Live Supabase Creator View
        ========================================= -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Earnings • Studios</title>
-  <meta name="description" content="Studios earnings, payouts, and sales tracking inside HQ." />
+  <title>Your Earnings • Studios</title>
+  <meta name="description" content="View your Studios earnings, payout status, and balance." />
 
-  <!-- =========================================
-       STYLE — CLEAN HQ DASHBOARD
-       ========================================= -->
   <style>
     :root{
       --bg:#070A12;
       --panel:#0E1424;
       --text:#EAF0FF;
       --muted:#A9B4D0;
-      --line:rgba(255,255,255,0.10);
+      --line:rgba(255,255,255,0.12);
       --accent:#5DA8FF;
-      --accent2:#7C5CFF;
       --good:#31D18B;
       --bad:#FF5C7A;
       --radius:18px;
     }
 
-    *{margin:0;padding:0;box-sizing:border-box;}
-
     body{
+      margin:0;
       font-family:system-ui,Segoe UI,Roboto,Arial;
       background:
-        radial-gradient(circle at top, rgba(93,168,255,0.18), transparent 60%),
-        radial-gradient(circle at right, rgba(124,92,255,0.12), transparent 60%),
+        radial-gradient(circle at top, rgba(93,168,255,0.16), transparent 65%),
+        radial-gradient(circle at right, rgba(49,209,139,0.10), transparent 65%),
         var(--bg);
       color:var(--text);
       padding:24px;
@@ -45,7 +40,7 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-bottom:20px;
+      margin-bottom:18px;
     }
 
     h1{
@@ -53,89 +48,89 @@
       font-weight:900;
     }
 
-    .back{
-      text-decoration:none;
+    a{
       color:var(--muted);
-      font-weight:700;
       font-size:13px;
+      font-weight:700;
+      text-decoration:none;
+    }
+
+    .notice{
+      margin-top:14px;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.04);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.4;
     }
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:14px;
-      margin-bottom:20px;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:16px;
+      margin-top:22px;
     }
 
-    .card{
-      background:rgba(14,20,36,0.82);
+    .stat{
+      background:rgba(14,20,36,0.88);
       border:1px solid var(--line);
       border-radius:var(--radius);
-      padding:16px;
-      backdrop-filter:blur(14px);
+      padding:18px;
     }
 
     .label{
       font-size:12px;
       color:var(--muted);
+      font-weight:800;
       margin-bottom:6px;
     }
 
     .value{
-      font-size:22px;
+      font-size:26px;
       font-weight:900;
     }
 
-    .value.good{color:var(--good);}
-    .value.bad{color:var(--bad);}
-
     table{
       width:100%;
+      margin-top:28px;
       border-collapse:collapse;
-      margin-top:10px;
+      background:rgba(14,20,36,0.75);
+      border:1px solid var(--line);
+      border-radius:18px;
       overflow:hidden;
-      border-radius:16px;
     }
 
     th,td{
-      padding:12px;
-      text-align:left;
+      padding:14px;
       font-size:13px;
-      border-bottom:1px solid var(--line);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      text-align:left;
     }
 
     th{
       color:var(--muted);
-      font-weight:800;
-    }
-
-    tr:hover td{
-      background:rgba(255,255,255,0.03);
-    }
-
-    .pill{
-      padding:4px 10px;
-      border-radius:999px;
       font-size:12px;
-      font-weight:800;
-      display:inline-block;
+      font-weight:900;
+      text-transform:uppercase;
     }
 
-    .pill.pending{
-      background:rgba(255,197,92,0.15);
-      color:#FFC55C;
-    }
-
-    .pill.paid{
-      background:rgba(49,209,139,0.15);
+    .paid{
       color:var(--good);
+      font-weight:900;
     }
 
-    .note{
-      margin-top:14px;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.4;
+    .unpaid{
+      color:var(--bad);
+      font-weight:900;
+    }
+
+    .error{
+      margin-top:18px;
+      color:var(--bad);
+      font-weight:800;
+      display:none;
     }
   </style>
 </head>
@@ -144,69 +139,63 @@
 
   <!-- HEADER -->
   <header>
-    <h1>Earnings</h1>
-    <a class="back" href="/studios/index.html">← Back to Dashboard</a>
+    <h1>Your Earnings</h1>
+    <a href="/studios/index.html">← Back to Dashboard</a>
   </header>
 
-  <!-- TOP METRICS -->
-  <section class="grid">
-
-    <div class="card">
-      <div class="label">Total Revenue</div>
-      <div id="totalRevenue" class="value">$0.00</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Pending Payouts (Manual)</div>
-      <div id="pendingRevenue" class="value bad">$0.00</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Completed Payouts</div>
-      <div id="paidRevenue" class="value good">$0.00</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Stripe Status</div>
-      <div class="value" style="font-size:15px;">
-        Manual Mode (Stripe Coming Soon)
-      </div>
-    </div>
-
-  </section>
-
-  <!-- SALES TABLE -->
-  <div class="card">
-    <div class="label">Recent Sales</div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Amount</th>
-          <th>Buyer</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-
-      <tbody id="salesTable">
-        <tr>
-          <td colspan="5" style="color:var(--muted);">
-            Loading sales…
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="note">
-      ⚠️ Manual payments mean payouts are tracked internally right now.  
-      Stripe checkout + auto payouts will plug into the same system later.
-    </p>
+  <!-- Manual payout notice -->
+  <div class="notice">
+    <b>Manual Payout System Active</b><br>
+    Studios currently issues payouts manually while Stripe automation is being prepared.
+    Your unpaid balance will be processed by the Studios team once approved.
   </div>
 
+  <!-- Stats -->
+  <section class="grid">
+    <div class="stat">
+      <div class="label">Total Sales Revenue</div>
+      <div class="value" id="totalSales">$0</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">Creator Share (70%)</div>
+      <div class="value" id="creatorShare">$0</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">Paid Out</div>
+      <div class="value" id="paidOut">$0</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">Pending Balance</div>
+      <div class="value" id="pending">$0</div>
+    </div>
+  </section>
+
+  <!-- Payout History -->
+  <h2 style="margin-top:34px;font-size:16px;font-weight:900;">
+    Payout History
+  </h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="payoutTable">
+      <tr><td colspan="4">Loading payouts…</td></tr>
+    </tbody>
+  </table>
+
+  <p id="errorBox" class="error"></p>
+
   <!-- =========================================
-       SUPABASE SALES + EARNINGS LOGIC
+       SUPABASE LIVE CREATOR EARNINGS LOGIC
        ========================================= -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -216,86 +205,91 @@
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // DOM
-    const salesTable = document.getElementById("salesTable");
-    const totalRevenueBox = document.getElementById("totalRevenue");
-    const pendingRevenueBox = document.getElementById("pendingRevenue");
-    const paidRevenueBox = document.getElementById("paidRevenue");
+    const errorBox = document.getElementById("errorBox");
+    const payoutTable = document.getElementById("payoutTable");
 
-    // ✅ SESSION PROTECTION
+    // Require login
     const { data: sessionData } = await supabase.auth.getSession();
     if (!sessionData.session) {
       window.location.href = "/studios/login.html";
     }
 
-    const user = sessionData.session.user;
+    const userId = sessionData.session.user.id;
 
-    // ✅ LOAD SALES FROM SUPABASE
-    async function loadEarnings() {
+    // Load sales for this creator
+    const { data: sales, error: salesError } = await supabase
+      .from("marketplace_sales")
+      .select("*")
+      .eq("seller_id", userId);
 
-      const { data: sales, error } = await supabase
-        .from("marketplace_sales")
-        .select("*")
-        .eq("seller_id", user.id)
-        .order("created_at", { ascending: false });
+    if (salesError) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Error loading earnings: " + salesError.message;
+      throw salesError;
+    }
 
-      if (error) {
-        salesTable.innerHTML = `
-          <tr>
-            <td colspan="5" style="color:var(--bad);">
-              Failed to load sales: ${error.message}
-            </td>
-          </tr>
-        `;
-        return;
+    // Totals
+    let totalRevenue = 0;
+    let paidRevenue = 0;
+    let unpaidRevenue = 0;
+
+    sales.forEach(sale => {
+      totalRevenue += sale.amount;
+
+      if (sale.status === "paid") {
+        paidRevenue += sale.amount;
+      } else {
+        unpaidRevenue += sale.amount;
       }
+    });
 
-      if (!sales || sales.length === 0) {
-        salesTable.innerHTML = `
+    // Creator cut = 70%
+    const creatorTotal = totalRevenue * 0.7;
+    const creatorPaid = paidRevenue * 0.7;
+    const creatorPending = unpaidRevenue * 0.7;
+
+    // Update stats
+    document.getElementById("totalSales").textContent =
+      "$" + totalRevenue.toFixed(2);
+
+    document.getElementById("creatorShare").textContent =
+      "$" + creatorTotal.toFixed(2);
+
+    document.getElementById("paidOut").textContent =
+      "$" + creatorPaid.toFixed(2);
+
+    document.getElementById("pending").textContent =
+      "$" + creatorPending.toFixed(2);
+
+    // Load payout history
+    const { data: payouts, error: payoutError } = await supabase
+      .from("creator_payouts")
+      .select("*")
+      .eq("seller_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (payoutError) {
+      payoutTable.innerHTML =
+        `<tr><td colspan="4">No payouts yet.</td></tr>`;
+    }
+
+    if (!payouts || payouts.length === 0) {
+      payoutTable.innerHTML =
+        `<tr><td colspan="4">No payouts recorded yet.</td></tr>`;
+    } else {
+      payoutTable.innerHTML = "";
+
+      payouts.forEach(p => {
+        payoutTable.innerHTML += `
           <tr>
-            <td colspan="5" style="color:var(--muted);">
-              No sales yet.
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      // Totals
-      let total = 0;
-      let pending = 0;
-      let paid = 0;
-
-      salesTable.innerHTML = "";
-
-      sales.forEach((sale) => {
-        total += sale.amount;
-
-        if (sale.status === "pending") pending += sale.amount;
-        if (sale.status === "paid") paid += sale.amount;
-
-        salesTable.innerHTML += `
-          <tr>
-            <td>${sale.product_title}</td>
-            <td>$${sale.amount.toFixed(2)}</td>
-            <td>${sale.buyer_email || "Unknown"}</td>
-            <td>
-              <span class="pill ${sale.status}">
-                ${sale.status.toUpperCase()}
-              </span>
-            </td>
-            <td>${new Date(sale.created_at).toLocaleDateString()}</td>
+            <td>${new Date(p.created_at).toLocaleDateString()}</td>
+            <td>$${p.payout_amount.toFixed(2)}</td>
+            <td>${p.payout_method}</td>
+            <td class="paid">PAID</td>
           </tr>
         `;
       });
-
-      // Display totals
-      totalRevenueBox.textContent = "$" + total.toFixed(2);
-      pendingRevenueBox.textContent = "$" + pending.toFixed(2);
-      paidRevenueBox.textContent = "$" + paid.toFixed(2);
     }
-
-    loadEarnings();
   </script>
 
 </body>
