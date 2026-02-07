@@ -1,178 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Core -->
+  <!-- =========================================
+       STUDIOS PUBLIC MARKETPLACE (LIVE)
+       marketplace.html • Supabase Listings
+       Manual Purchase Requests (No Stripe Yet)
+       ========================================= -->
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Marketplace • StudentStream Studios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- SEO -->
-  <meta name="description" content="Browse the StudentStream Studios Marketplace. License digital media, visuals, music, and production-ready assets directly from Studios HQ." />
-  <meta name="keywords" content="Studios Marketplace, licensing, media assets, production content, StudentStream HQ" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://studentstreamhq.github.io/studios/marketplace.html" />
+  <title>Marketplace • Studios</title>
+  <meta name="description" content="Browse licensed creative assets, design packs, visuals, and production-ready work from Studios creators." />
 
-  <!-- OpenGraph -->
-  <meta property="og:title" content="Marketplace • StudentStream Studios" />
-  <meta property="og:description" content="Browse licensing-ready content and marketplace inventory inside Studios HQ." />
-  <meta property="og:type" content="website" />
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Styling -->
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    :root{
+      --bg:#070A12;
+      --panel:#0E1424;
+      --text:#EAF0FF;
+      --muted:#A9B4D0;
+      --line:rgba(255,255,255,0.12);
+      --accent:#5DA8FF;
+      --radius:20px;
     }
 
-    body {
-      background: radial-gradient(circle at top, #121a2f, #05060c);
-      color: white;
-      min-height: 100vh;
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 65%),
+        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 65%),
+        var(--bg);
+      color:var(--text);
+      padding:24px;
     }
 
-    header {
-      padding: 24px 50px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
     }
 
-    header h1 {
-      font-size: 20px;
-      font-weight: 900;
+    h1{
+      font-size:24px;
+      font-weight:900;
     }
 
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: rgba(255,255,255,0.7);
-      font-weight: 600;
-      transition: 0.2s;
+    a{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      text-decoration:none;
     }
 
-    nav a:hover {
-      color: white;
+    .notice{
+      margin-top:14px;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.04);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.4;
+      max-width:800px;
     }
 
-    .page {
-      max-width: 1150px;
-      margin: auto;
-      padding: 60px 20px;
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:18px;
+      margin-top:26px;
     }
 
-    .title {
-      text-align: center;
-      margin-bottom: 45px;
+    .card{
+      background:rgba(14,20,36,0.88);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      transition:.25s;
     }
 
-    .title h2 {
-      font-size: 48px;
-      font-weight: 950;
-      letter-spacing: -1px;
+    .card:hover{
+      transform:translateY(-6px);
+      border-color:rgba(93,168,255,0.4);
     }
 
-    .title p {
-      margin-top: 14px;
-      opacity: 0.7;
-      font-size: 16px;
-      line-height: 1.6;
-      max-width: 720px;
-      margin-left: auto;
-      margin-right: auto;
+    .title{
+      font-size:16px;
+      font-weight:900;
+      margin-bottom:6px;
     }
 
-    .notice {
-      margin: 35px auto;
-      padding: 18px;
-      max-width: 850px;
-      border-radius: 18px;
-      background: rgba(255,200,80,0.08);
-      border: 1px solid rgba(255,200,80,0.2);
-      font-size: 14px;
-      opacity: 0.85;
-      text-align: center;
+    .desc{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
+      margin-bottom:12px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 22px;
-      margin-top: 35px;
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:12px;
     }
 
-    .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 22px;
-      padding: 22px;
-      backdrop-filter: blur(14px);
-      transition: 0.25s;
+    .price{
+      font-size:15px;
+      font-weight:900;
+      color:var(--accent);
     }
 
-    .card:hover {
-      transform: translateY(-7px);
-      border-color: rgba(56,255,195,0.35);
+    button{
+      width:100%;
+      border:none;
+      padding:12px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      background:linear-gradient(135deg,var(--accent),#7C5CFF);
+      color:white;
+      font-size:13px;
     }
 
-    .card h3 {
-      font-size: 18px;
-      font-weight: 850;
-      margin-bottom: 8px;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      margin-bottom: 12px;
-      background: rgba(77,141,255,0.14);
-      border: 1px solid rgba(77,141,255,0.25);
-      color: #7aa2ff;
-    }
-
-    .price {
-      margin-top: 14px;
-      font-size: 15px;
-      font-weight: 800;
-      color: #38ffc3;
-    }
-
-    .btn {
-      margin-top: 18px;
-      display: inline-block;
-      width: 100%;
-      text-align: center;
-      padding: 13px;
-      border-radius: 16px;
-      font-weight: 750;
-      text-decoration: none;
-      background: linear-gradient(135deg, #4d8dff, #38ffc3);
-      color: black;
-      transition: 0.2s;
-    }
-
-    .btn:hover {
-      transform: scale(1.03);
-    }
-
-    .loading {
-      text-align: center;
-      opacity: 0.65;
-      font-size: 15px;
-      margin-top: 40px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 50px 20px;
-      opacity: 0.55;
-      font-size: 13px;
+    .empty{
+      margin-top:40px;
+      color:var(--muted);
+      font-weight:800;
     }
   </style>
 </head>
@@ -182,121 +138,84 @@
   <!-- HEADER -->
   <header>
     <h1>Studios Marketplace</h1>
-    <nav>
-      <a href="/studios/index.html">Home</a>
-      <a href="/studios/earnings.html">Earnings</a>
-      <a href="/studios/login.html" id="authLink">Login</a>
-    </nav>
+    <a href="/studios/index.html">← Back to Studios</a>
   </header>
 
-  <!-- PAGE -->
-  <div class="page">
+  <p style="color:var(--muted);max-width:780px;">
+    Browse licensed creative assets, production packs, visuals, and digital work.
+  </p>
 
-    <div class="title">
-      <h2>Marketplace Listings</h2>
-      <p>
-        Browse licensing-ready digital inventory inside StudentStream Studios.
-        Visuals, film assets, audio packs, production-ready content — all verified through HQ review.
-      </p>
-    </div>
-
-    <div class="notice">
-      ⚡ Marketplace payouts are currently processed manually during early rollout.
-    </div>
-
-    <!-- Listings -->
-    <div id="listings" class="grid"></div>
-
-    <div id="loading" class="loading">Loading marketplace listings…</div>
-
+  <!-- Manual checkout notice -->
+  <div class="notice">
+    <b>Manual Purchase Requests Active</b><br>
+    Checkout is currently handled manually while Stripe integration is being prepared.
+    Click “Request Purchase” and the Studios team will contact you.
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    © <span id="year"></span> StudentStream HQ • Studios Marketplace
-  </footer>
+  <!-- Listings Grid -->
+  <section class="grid" id="listingGrid">
+    <p class="empty">Loading marketplace…</p>
+  </section>
 
-  <!-- SCRIPT -->
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+  <!-- =========================================
+       SUPABASE LISTINGS FETCH
+       ========================================= -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    /* ==========================
-       SUPABASE CONFIG
-    ========================== */
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* ==========================
-       AUTH-AWARE NAV
-    ========================== */
-    async function authCheck() {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        document.getElementById("authLink").textContent = "Dashboard";
-        document.getElementById("authLink").href = "/studios/dashboard.html";
-      }
+    const grid = document.getElementById("listingGrid");
+
+    // Load listings
+    const { data: listings, error } = await supabase
+      .from("marketplace_listings")
+      .select("*")
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      grid.innerHTML = `<p class="empty">Error loading marketplace.</p>`;
+      console.error(error);
+      throw error;
     }
 
-    authCheck();
+    if (!listings || listings.length === 0) {
+      grid.innerHTML = `<p class="empty">No listings yet. Check back soon.</p>`;
+    } else {
+      grid.innerHTML = "";
 
-    /* ==========================
-       LOAD MARKETPLACE LISTINGS
-       TABLE: marketplace_listings
-    ========================== */
-    async function loadMarketplace() {
-      const listingsBox = document.getElementById("listings");
-      const loading = document.getElementById("loading");
+      listings.forEach(item => {
+        grid.innerHTML += `
+          <div class="card">
+            <div class="title">${item.title}</div>
+            <div class="desc">${item.description || "No description provided."}</div>
 
-      const { data, error } = await supabase
-        .from("marketplace_listings")
-        .select("*")
-        .eq("status", "active")
-        .order("created_at", { ascending: false });
+            <div class="meta">
+              <span>${item.category}</span>
+              <span class="price">$${item.price.toFixed(2)}</span>
+            </div>
 
-      loading.style.display = "none";
-
-      if (error) {
-        listingsBox.innerHTML =
-          "<p style='opacity:.7;text-align:center;'>Marketplace failed to load.</p>";
-        console.error(error);
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        listingsBox.innerHTML =
-          "<p style='opacity:.7;text-align:center;'>No listings are live yet.</p>";
-        return;
-      }
-
-      // Render cards
-      data.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <span class="tag">${item.asset_type || "Listing"}</span>
-          <h3>${item.title}</h3>
-          <p style="opacity:.7;font-size:14px;line-height:1.5;">
-            ${item.description || "Verified marketplace inventory inside Studios HQ."}
-          </p>
-          <div class="price">$${item.price_usd || "0"} USD</div>
-
-          <a class="btn" href="${item.preview_link || "#"}" target="_blank">
-            View Asset
-          </a>
+            <button onclick="requestPurchase('${item.title}', '${item.id}')">
+              Request Purchase
+            </button>
+          </div>
         `;
-
-        listingsBox.appendChild(card);
       });
     }
 
-    loadMarketplace();
+    // Manual purchase request
+    window.requestPurchase = (title, id) => {
+      alert(
+        "Purchase Request Submitted!\n\n" +
+        "Item: " + title + "\n" +
+        "Listing ID: " + id + "\n\n" +
+        "Studios will contact you manually for payment + delivery."
+      );
+    };
   </script>
 
 </body>
