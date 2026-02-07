@@ -1,238 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin Analytics — StudentStream Studios</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
+  <!-- =========================================
+       STUDIOS ADMIN HQ PANEL
+       index.html • Role Locked
+       ========================================= -->
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Admin HQ • Studios</title>
+  <meta name="description" content="Studios Admin HQ — manage creators, payouts, and marketplace sales." />
 
   <style>
-    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
-    body {
-      margin: 0;
-      background: #050507;
-      color: #fff;
+    :root{
+      --bg:#070A12;
+      --panel:#0E1424;
+      --text:#EAF0FF;
+      --muted:#A9B4D0;
+      --line:rgba(255,255,255,0.12);
+      --accent:#5DA8FF;
+      --accent2:#7C5CFF;
+      --good:#31D18B;
+      --bad:#FF5C7A;
+      --radius:18px;
     }
 
-    header {
-      padding: 22px 36px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(circle at top, rgba(93,168,255,0.15), transparent 60%),
+        radial-gradient(circle at right, rgba(124,92,255,0.12), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      padding:26px;
     }
 
-    header h1 {
-      font-size: 1.25rem;
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:24px;
     }
 
-    main {
-      max-width: 1300px;
-      margin: auto;
-      padding: 50px 20px 80px;
+    h1{
+      font-size:22px;
+      font-weight:900;
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-      gap: 24px;
-      margin-bottom: 60px;
+    .logout{
+      border:none;
+      padding:10px 16px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:800;
+      background:rgba(255,255,255,0.08);
+      color:var(--text);
     }
 
-    .stat {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      padding: 26px;
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:16px;
+      margin-top:20px;
     }
 
-    .stat span {
-      font-size: .8rem;
-      opacity: .6;
+    .card{
+      background:rgba(14,20,36,0.88);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      transition:0.25s;
+      cursor:pointer;
     }
 
-    .stat h2 {
-      margin: 10px 0 0;
-      font-size: 2rem;
+    .card:hover{
+      transform:translateY(-4px);
+      border-color:rgba(93,168,255,0.4);
     }
 
-    section {
-      margin-bottom: 70px;
+    .title{
+      font-size:15px;
+      font-weight:900;
+      margin-bottom:6px;
     }
 
-    h3 {
-      margin-bottom: 18px;
-      font-size: 1.2rem;
+    .desc{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(255,255,255,.03);
-      border-radius: 14px;
-      overflow: hidden;
+    .badge{
+      display:inline-block;
+      margin-top:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      background:rgba(255,197,92,0.15);
+      color:#FFC55C;
     }
 
-    th, td {
-      padding: 14px 16px;
-      text-align: left;
-      font-size: .9rem;
+    .statusBox{
+      margin-top:18px;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.04);
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
     }
 
-    th {
-      background: rgba(255,255,255,.06);
-      opacity: .75;
-    }
-
-    tr {
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-
-    .tag {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: .7rem;
-    }
-
-    .paid {
-      background: rgba(108,242,194,.15);
-      color: #6cf2c2;
-    }
-
-    .unpaid {
-      background: rgba(255,130,130,.15);
-      color: #ff8282;
+    .error{
+      margin-top:20px;
+      color:var(--bad);
+      font-weight:800;
+      display:none;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>StudentStream Studios — Admin Analytics</h1>
-  <a href="/studios/dashboard" style="color:#7aa2ff;text-decoration:none;">Exit Admin</a>
-</header>
+  <!-- HEADER -->
+  <header>
+    <h1>Studios Admin HQ</h1>
+    <button class="logout" id="logoutBtn">Log Out</button>
+  </header>
 
-<main>
+  <p style="color:var(--muted);max-width:720px;font-size:14px;">
+    Welcome to the internal Studios control center.  
+    Marketplace sales are currently operating in <b>manual payout mode</b> until Stripe is enabled.
+  </p>
 
-  <!-- KPI STATS -->
-  <div class="stats">
-    <div class="stat">
-      <span>Total Revenue</span>
-      <h2 id="totalRevenue">$0</h2>
+  <!-- ADMIN CARDS -->
+  <section class="grid">
+
+    <!-- Manual Sale -->
+    <div class="card" onclick="location.href='/studios/admin/manual-sale.html'">
+      <div class="title">Manual Sale Entry</div>
+      <div class="desc">
+        Log marketplace sales manually while Stripe checkout is offline.
+      </div>
+      <span class="badge">Manual Payments Active</span>
     </div>
-    <div class="stat">
-      <span>Creator Earnings Owed</span>
-      <h2 id="creatorOwed">$0</h2>
+
+    <!-- Analytics -->
+    <div class="card" onclick="location.href='/studios/admin/analytics.html'">
+      <div class="title">Revenue Analytics</div>
+      <div class="desc">
+        Track total revenue, creator owed, paid vs unpaid balances.
+      </div>
     </div>
-    <div class="stat">
-      <span>Paid Out</span>
-      <h2 id="paidOut">$0</h2>
+
+    <!-- Creator Directory -->
+    <div class="card" onclick="location.href='/studios/admin/creators.html'">
+      <div class="title">Creator Directory</div>
+      <div class="desc">
+        View creator accounts, IDs, and submission history.
+      </div>
     </div>
-    <div class="stat">
-      <span>Unpaid Balance</span>
-      <h2 id="unpaid">$0</h2>
+
+    <!-- Marketplace Listings -->
+    <div class="card" onclick="location.href='/studios/marketplace.html'">
+      <div class="title">Marketplace Listings</div>
+      <div class="desc">
+        View the public Studios marketplace as users see it.
+      </div>
     </div>
+
+  </section>
+
+  <!-- STATUS -->
+  <div class="statusBox">
+    ⚠️ Stripe checkout is not yet enabled.<br>
+    All payouts are tracked manually inside Supabase until automation goes live.
   </div>
 
-  <!-- RECENT SALES -->
-  <section>
-    <h3>Recent Sales</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Asset</th>
-          <th>Creator</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody id="salesTable"></tbody>
-    </table>
-  </section>
+  <p id="errorBox" class="error"></p>
 
-  <!-- PAYOUT STATUS -->
-  <section>
-    <h3>Creator Payouts</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Creator</th>
-          <th>Total Earned</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="payoutTable"></tbody>
-    </table>
-  </section>
+  <!-- =========================================
+       SUPABASE ADMIN ROLE LOCK
+       ========================================= -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-</main>
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-<script>
-const supabase = supabaseJs.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-function money(n){ return `$${Number(n || 0).toFixed(2)}` }
+    const errorBox = document.getElementById("errorBox");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-(async () => {
-  // AUTH CHECK (admin role expected)
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) location.href = "/studios/login";
+    // ✅ REQUIRE LOGIN
+    const { data: sessionData } = await supabase.auth.getSession();
 
-  // TOTAL REVENUE
-  const { data: sales } = await supabase.from("sales").select("*");
+    if (!sessionData.session) {
+      window.location.href = "/studios/login.html";
+    }
 
-  let totalRevenue = 0;
-  let creatorOwed = 0;
+    const user = sessionData.session.user;
 
-  sales?.forEach(s => {
-    totalRevenue += s.amount;
-    creatorOwed += s.creator_earnings;
-  });
+    // ✅ ROLE CHECK
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
 
-  // PAYOUTS
-  const { data: payouts } = await supabase.from("payouts").select("*");
+    if (error || !profile) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Profile role missing. Access denied.";
+      throw new Error("No profile role.");
+    }
 
-  let paidOut = 0;
-  payouts?.forEach(p => paidOut += p.amount);
+    if (profile.role !== "admin") {
+      // 🚫 Not admin → redirect out
+      window.location.href = "/studios/index.html";
+    }
 
-  document.getElementById("totalRevenue").textContent = money(totalRevenue);
-  document.getElementById("creatorOwed").textContent = money(creatorOwed);
-  document.getElementById("paidOut").textContent = money(paidOut);
-  document.getElementById("unpaid").textContent = money(creatorOwed - paidOut);
-
-  // SALES TABLE
-  document.getElementById("salesTable").innerHTML =
-    sales?.slice(0,10).map(s => `
-      <tr>
-        <td>${new Date(s.created_at).toLocaleDateString()}</td>
-        <td>${s.asset_title}</td>
-        <td>${s.creator_name}</td>
-        <td>${money(s.amount)}</td>
-      </tr>
-    `).join("");
-
-  // PAYOUT TABLE
-  const { data: creators } = await supabase.from("creators").select("*");
-
-  document.getElementById("payoutTable").innerHTML =
-    creators?.map(c => `
-      <tr>
-        <td>${c.name}</td>
-        <td>${money(c.total_earned)}</td>
-        <td>
-          <span class="tag ${c.paid_out ? "paid" : "unpaid"}">
-            ${c.paid_out ? "Paid" : "Unpaid"}
-          </span>
-        </td>
-      </tr>
-    `).join("");
-})();
-</script>
+    // ✅ LOGOUT
+    logoutBtn.addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "/studios/login.html";
+    });
+  </script>
 
 </body>
 </html>
