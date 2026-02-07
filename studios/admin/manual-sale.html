@@ -1,164 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Manual Sale Entry | Studios Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex,nofollow" />
+  <!-- =========================================
+       ADMIN • MANUAL SALE ENTRY
+       manual-sale.html • Manual Payments Mode
+       ========================================= -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<style>
-*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
-body{
-margin:0;
-background:#040406;
-color:#fff;
-}
-.container{
-max-width:720px;
-margin:auto;
-padding:70px 20px;
-}
-.badge{
-display:inline-block;
-background:rgba(255,82,82,.18);
-border:1px solid rgba(255,82,82,.35);
-color:#ff5252;
-padding:6px 16px;
-border-radius:999px;
-font-size:.8rem;
-margin-bottom:16px;
-}
-h1{font-size:2.6rem;margin-bottom:10px}
-p{opacity:.7}
+  <title>Admin Manual Sale • Studios</title>
+  <meta name="description" content="Admin tool for entering manual marketplace sales before Stripe is live." />
 
-.card{
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.12);
-border-radius:22px;
-padding:34px;
-margin-top:30px;
-}
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:#0E1424;
+      --text:#EAF0FF;
+      --muted:#A9B4D0;
+      --line:rgba(255,255,255,0.12);
+      --accent:#5DA8FF;
+      --good:#31D18B;
+      --bad:#FF5C7A;
+      --radius:18px;
+    }
 
-input,select{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:none;
-margin-bottom:16px;
-font-size:1rem;
-}
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      background:var(--bg);
+      color:var(--text);
+      padding:22px;
+    }
 
-.split{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:16px;
-}
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
+    }
 
-button{
-width:100%;
-padding:15px;
-border-radius:999px;
-border:none;
-font-weight:600;
-font-size:1rem;
-cursor:pointer;
-background:linear-gradient(135deg,#7aa2ff,#6cf2c2);
-color:#040406;
-}
+    h1{
+      font-size:20px;
+      font-weight:900;
+    }
 
-.note{
-margin-top:16px;
-font-size:.85rem;
-opacity:.6;
-}
-</style>
+    a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .card{
+      background:rgba(14,20,36,0.9);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      max-width:520px;
+    }
+
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:12px 0 6px;
+      font-weight:700;
+    }
+
+    input,select{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#0B1020;
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+
+    input:focus,select:focus{
+      border-color:var(--accent);
+    }
+
+    button{
+      width:100%;
+      margin-top:18px;
+      padding:14px;
+      border:none;
+      border-radius:14px;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+      background:linear-gradient(90deg,var(--accent),#7C5CFF);
+      color:white;
+    }
+
+    button:hover{
+      opacity:0.9;
+    }
+
+    .msg{
+      margin-top:14px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .good{color:var(--good);}
+    .bad{color:var(--bad);}
+
+    .note{
+      margin-top:14px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
 
-<span class="badge">Admin Only</span>
-<h1>Manual Sale Entry</h1>
-<p>
-Log a completed Studios sale. Creator payout is calculated automatically (70%).
-</p>
+  <!-- HEADER -->
+  <header>
+    <h1>Manual Sale Entry (Admin)</h1>
+    <a href="/studios/admin/index.html">← Back to Admin Panel</a>
+  </header>
 
-<div class="card">
-<form id="saleForm">
+  <!-- FORM -->
+  <div class="card">
 
-<input type="text" id="creator_name" placeholder="Creator name" required />
-<input type="text" id="asset_title" placeholder="Asset / project title" required />
+    <label>Seller ID (Creator UUID)</label>
+    <input id="sellerId" placeholder="Paste seller uuid..." />
 
-<input type="number" id="amount" placeholder="Total sale amount (USD)" required />
+    <label>Buyer Email</label>
+    <input id="buyerEmail" placeholder="buyer@email.com" />
 
-<div class="split">
-  <input type="text" id="creator_earn" placeholder="Creator earns (70%)" disabled />
-  <input type="text" id="platform_earn" placeholder="Platform earns (30%)" disabled />
-</div>
+    <label>Product Title</label>
+    <input id="productTitle" placeholder="Cinematic Visual Pack" />
 
-<select id="payment_method">
-  <option value="cashapp">Cash App</option>
-  <option value="zelle">Zelle</option>
-  <option value="paypal">PayPal</option>
-  <option value="other">Other</option>
-</select>
+    <label>Sale Amount ($)</label>
+    <input id="amount" type="number" step="0.01" placeholder="25.00" />
 
-<button type="submit">Record Sale</button>
+    <label>Status</label>
+    <select id="status">
+      <option value="pending">Pending (Not Paid Out Yet)</option>
+      <option value="paid">Paid (Completed)</option>
+    </select>
 
-<div class="note">
-Sales are saved as <strong>unpaid</strong> by default.<br>
-Mark as paid after sending creator payout.
-</div>
+    <label>Payment Method</label>
+    <select id="paymentMethod">
+      <option value="manual">Manual Payment</option>
+      <option value="stripe">Stripe (Future)</option>
+    </select>
 
-</form>
-</div>
+    <button id="submitBtn">Confirm Manual Sale</button>
 
-</div>
+    <p id="message" class="msg"></p>
 
-<script>
-const supabase = supabaseJs.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+    <p class="note">
+      ⚠️ Use this ONLY until Stripe checkout is active.  
+      This logs sales directly into <b>marketplace_sales</b>.
+    </p>
 
-const amountInput = document.getElementById("amount");
-const creatorEarn = document.getElementById("creator_earn");
-const platformEarn = document.getElementById("platform_earn");
+  </div>
 
-amountInput.addEventListener("input", () => {
-  const amt = parseFloat(amountInput.value || 0);
-  creatorEarn.value = "$" + (amt * 0.7).toFixed(2);
-  platformEarn.value = "$" + (amt * 0.3).toFixed(2);
-});
+  <!-- =========================================
+       SUPABASE ADMIN INSERT LOGIC
+       ========================================= -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-document.getElementById("saleForm").addEventListener("submit", async e => {
-  e.preventDefault();
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-  const amount = Math.round(parseFloat(amountInput.value) * 100);
-  const creatorShare = Math.round(amount * 0.7);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const { error } = await supabase
-    .from("studio_sales")
-    .insert({
-      creator_name: document.getElementById("creator_name").value,
-      asset_title: document.getElementById("asset_title").value,
-      amount_cents: amount,
-      creator_earn_cents: creatorShare,
-      payment_method: document.getElementById("payment_method").value,
-      paid: false
+    // DOM
+    const sellerId = document.getElementById("sellerId");
+    const buyerEmail = document.getElementById("buyerEmail");
+    const productTitle = document.getElementById("productTitle");
+    const amount = document.getElementById("amount");
+    const status = document.getElementById("status");
+    const paymentMethod = document.getElementById("paymentMethod");
+    const message = document.getElementById("message");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // ✅ ADMIN SESSION CHECK
+    const { data: sessionData } = await supabase.auth.getSession();
+
+    if (!sessionData.session) {
+      window.location.href = "/studios/login.html";
+    }
+
+    // ⚠️ ADMIN LOCKDOWN RULE
+    // Only YOU should access this page.
+    // Later: enforce role-based admin check in Supabase.
+
+    submitBtn.addEventListener("click", async () => {
+
+      message.textContent = "Saving sale...";
+      message.className = "msg";
+
+      // Validate
+      if (!sellerId.value || !productTitle.value || !amount.value) {
+        message.textContent = "Missing required fields.";
+        message.classList.add("bad");
+        return;
+      }
+
+      // Insert sale
+      const { error } = await supabase
+        .from("marketplace_sales")
+        .insert([
+          {
+            seller_id: sellerId.value,
+            buyer_email: buyerEmail.value,
+            product_title: productTitle.value,
+            amount: parseFloat(amount.value),
+            status: status.value,
+            payment_method: paymentMethod.value
+          }
+        ]);
+
+      if (error) {
+        message.textContent = "Error: " + error.message;
+        message.classList.add("bad");
+        return;
+      }
+
+      message.textContent = "Manual sale successfully logged.";
+      message.classList.add("good");
+
+      // Clear form
+      buyerEmail.value = "";
+      productTitle.value = "";
+      amount.value = "";
     });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  alert("Sale recorded successfully.");
-  e.target.reset();
-});
-</script>
+  </script>
 
 </body>
 </html>
