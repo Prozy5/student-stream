@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       STUDIOS PUBLIC MARKETPLACE (LIVE)
+       STUDIOS PUBLIC MARKETPLACE (LIVE v20000)
        marketplace.html • Supabase Listings
        Manual Purchase Requests (No Stripe Yet)
        ========================================= -->
@@ -40,6 +40,7 @@
       justify-content:space-between;
       align-items:center;
       margin-bottom:18px;
+      gap:14px;
     }
 
     h1{
@@ -52,6 +53,11 @@
       font-size:13px;
       font-weight:700;
       text-decoration:none;
+      transition:0.2s;
+    }
+
+    a:hover{
+      color:white;
     }
 
     .notice{
@@ -79,6 +85,7 @@
       border-radius:var(--radius);
       padding:18px;
       transition:.25s;
+      animation:fadeUp 0.4s ease;
     }
 
     .card:hover{
@@ -123,12 +130,71 @@
       background:linear-gradient(135deg,var(--accent),#7C5CFF);
       color:white;
       font-size:13px;
+      transition:0.2s;
+    }
+
+    button:hover{
+      opacity:0.92;
+      transform:translateY(-2px);
     }
 
     .empty{
       margin-top:40px;
       color:var(--muted);
       font-weight:800;
+    }
+
+    /* Modal */
+    .modalOverlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.65);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+      padding:18px;
+    }
+
+    .modal{
+      background:rgba(14,20,36,0.96);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:18px;
+      padding:20px;
+      max-width:420px;
+      width:100%;
+    }
+
+    .modal h2{
+      margin:0 0 10px;
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .modal p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .modalActions{
+      display:flex;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .modalActions button{
+      flex:1;
+    }
+
+    .secondaryBtn{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.18);
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0; transform:translateY(10px);}
+      to{opacity:1; transform:translateY(0);}
     }
   </style>
 </head>
@@ -138,7 +204,7 @@
   <!-- HEADER -->
   <header>
     <h1>Studios Marketplace</h1>
-    <a href="/studios/index.html">← Back to Studios</a>
+    <a id="backLink" href="/studios/index.html">← Back to Studios</a>
   </header>
 
   <p style="color:var(--muted);max-width:780px;">
@@ -157,14 +223,28 @@
     <p class="empty">Loading marketplace…</p>
   </section>
 
+  <!-- PURCHASE MODAL -->
+  <div class="modalOverlay" id="purchaseModal">
+    <div class="modal">
+      <h2 id="modalTitle">Request Purchase</h2>
+      <p id="modalDesc"></p>
+
+      <div class="modalActions">
+        <button id="copyBtn" class="secondaryBtn">Copy Listing ID</button>
+        <button onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- =========================================
-       SUPABASE LISTINGS FETCH
+       SUPABASE LISTINGS FETCH (UPGRADED)
        ========================================= -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -178,7 +258,7 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      grid.innerHTML = `<p class="empty">Error loading marketplace.</p>`;
+      grid.innerHTML = `<p class="empty">Error loading marketplace. Try again soon.</p>`;
       console.error(error);
       throw error;
     }
@@ -189,14 +269,16 @@
       grid.innerHTML = "";
 
       listings.forEach(item => {
+        const safePrice = item.price ? Number(item.price).toFixed(2) : "0.00";
+
         grid.innerHTML += `
           <div class="card">
             <div class="title">${item.title}</div>
             <div class="desc">${item.description || "No description provided."}</div>
 
             <div class="meta">
-              <span>${item.category}</span>
-              <span class="price">$${item.price.toFixed(2)}</span>
+              <span>${item.category || "General"}</span>
+              <span class="price">$${safePrice}</span>
             </div>
 
             <button onclick="requestPurchase('${item.title}', '${item.id}')">
@@ -207,14 +289,26 @@
       });
     }
 
-    // Manual purchase request
+    // Manual purchase request modal
     window.requestPurchase = (title, id) => {
-      alert(
-        "Purchase Request Submitted!\n\n" +
-        "Item: " + title + "\n" +
-        "Listing ID: " + id + "\n\n" +
-        "Studios will contact you manually for payment + delivery."
-      );
+      document.getElementById("purchaseModal").style.display = "flex";
+
+      document.getElementById("modalTitle").textContent =
+        "Purchase Request Submitted";
+
+      document.getElementById("modalDesc").innerHTML =
+        `<b>${title}</b><br><br>
+        Listing ID: <code>${id}</code><br><br>
+        Studios will contact you manually for payment + delivery.`;
+
+      document.getElementById("copyBtn").onclick = async () => {
+        await navigator.clipboard.writeText(id);
+        alert("Listing ID copied.");
+      };
+    };
+
+    window.closeModal = () => {
+      document.getElementById("purchaseModal").style.display = "none";
     };
   </script>
 
