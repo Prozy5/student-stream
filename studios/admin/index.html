@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- =========================================
-       STUDENTSTREAM STUDIOS — ADMIN HQ V200
-       Ultimate Owner Dashboard (Realtime + Logs)
-       ========================================= -->
-
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Studios Admin HQ • StudentStream</title>
 
   <style>
     :root{
       --bg:#070A12;
       --panel:#0E1424;
+      --card:rgba(255,255,255,0.03);
+      --line:rgba(255,255,255,0.08);
+
       --text:#EAF0FF;
       --muted:#A9B4D0;
-      --line:rgba(255,255,255,0.08);
-      --glow:rgba(120,180,255,0.22);
 
       --good:#31D18B;
       --warn:#FFD35A;
@@ -31,95 +26,129 @@
 
     body{
       font-family:system-ui,Segoe UI,Roboto;
-      background:
-        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
-        var(--bg);
+      background:radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%), var(--bg);
       color:var(--text);
       min-height:100vh;
     }
 
-    .wrap{
-      max-width:1400px;
-      margin:auto;
-      padding:30px 18px 90px;
+    .layout{
+      display:grid;
+      grid-template-columns:260px 1fr;
+      min-height:100vh;
     }
 
-    h1{font-size:30px;}
-    p{color:var(--muted);margin-top:4px;}
+    /* SIDEBAR */
+    .sidebar{
+      padding:22px;
+      border-right:1px solid var(--line);
+      background:rgba(14,20,36,0.65);
+      backdrop-filter:blur(16px);
+    }
+
+    .brand{
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:18px;
+    }
+
+    .navbtn{
+      width:100%;
+      display:block;
+      padding:12px 14px;
+      margin-bottom:10px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,0.02);
+      color:var(--text);
+      font-weight:800;
+      cursor:pointer;
+      text-align:left;
+      transition:.2s;
+    }
+
+    .navbtn:hover{
+      background:rgba(93,168,255,0.08);
+    }
+
+    .navbtn.active{
+      background:rgba(93,168,255,0.18);
+      border-color:rgba(93,168,255,0.25);
+    }
+
+    /* MAIN */
+    .main{
+      padding:28px;
+      max-width:1250px;
+    }
 
     .topbar{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      padding:18px;
-      border-radius:var(--radius);
-      background:rgba(14,20,36,0.82);
-      border:1px solid var(--line);
-      backdrop-filter:blur(18px);
+      margin-bottom:18px;
     }
 
     .btn{
-      padding:10px 15px;
+      padding:10px 14px;
       border-radius:12px;
       border:1px solid var(--line);
-      background:rgba(255,255,255,0.05);
+      background:rgba(255,255,255,0.04);
       color:var(--text);
-      cursor:pointer;
       font-weight:800;
-      transition:.2s;
+      cursor:pointer;
       text-decoration:none;
     }
 
     .btn:hover{
-      transform:translateY(-2px);
-      box-shadow:0 0 0 4px var(--glow);
+      background:rgba(255,255,255,0.07);
     }
 
+    /* KPI GRID */
     .stats{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
       gap:14px;
-      margin-top:20px;
+      margin-top:14px;
     }
 
     .stat{
-      padding:18px;
-      border-radius:18px;
+      padding:16px;
+      border-radius:var(--radius);
       border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(93,168,255,0.12), rgba(255,255,255,0.02));
+      background:linear-gradient(180deg, rgba(93,168,255,0.10), rgba(255,255,255,0.02));
     }
 
     .stat b{
       font-size:24px;
       display:block;
-      margin-bottom:5px;
+      margin-bottom:4px;
     }
 
-    .grid{
-      margin-top:25px;
-      display:grid;
-      grid-template-columns:1.25fr 0.75fr;
-      gap:18px;
+    .stat span{
+      font-size:13px;
+      color:var(--muted);
     }
 
-    @media(max-width:900px){
-      .grid{grid-template-columns:1fr;}
-    }
-
-    .card{
+    /* CONTENT BOX */
+    .section{
+      margin-top:22px;
       padding:18px;
       border-radius:var(--radius);
       border:1px solid var(--line);
-      background:rgba(14,20,36,0.82);
-      backdrop-filter:blur(16px);
+      background:rgba(14,20,36,0.70);
+      display:none;
+    }
+
+    .section.active{
+      display:block;
     }
 
     .listing{
+      margin-top:12px;
       padding:14px;
-      border-radius:15px;
+      border-radius:14px;
       border:1px solid var(--line);
       background:rgba(255,255,255,0.02);
-      margin-top:12px;
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -127,35 +156,29 @@
     }
 
     .status{
-      font-weight:900;
-      font-size:12px;
       padding:6px 10px;
       border-radius:999px;
+      font-size:12px;
+      font-weight:900;
     }
 
-    .pending{background:rgba(255,211,90,0.15);color:var(--warn);}
-    .paid{background:rgba(49,209,139,0.15);color:var(--good);}
-    .denied{background:rgba(255,92,122,0.15);color:var(--bad);}
-
-    .actions{
-      display:flex;
-      gap:8px;
-    }
+    .pending{color:var(--warn);background:rgba(255,211,90,0.12);}
+    .paid{color:var(--good);background:rgba(49,209,139,0.12);}
+    .denied{color:var(--bad);background:rgba(255,92,122,0.12);}
 
     .mini{
       padding:7px 10px;
       border-radius:10px;
-      font-size:12px;
       border:none;
-      cursor:pointer;
       font-weight:900;
+      cursor:pointer;
     }
 
-    .approveBtn{background:var(--good);color:black;}
-    .denyBtn{background:var(--bad);color:white;}
+    .approve{background:var(--good);color:black;}
+    .deny{background:var(--bad);color:white;}
 
     footer{
-      margin-top:35px;
+      margin-top:25px;
       text-align:center;
       font-size:12px;
       color:var(--muted);
@@ -164,212 +187,210 @@
 </head>
 
 <body>
-<div class="wrap">
+<div class="layout">
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div>
-      <h1>🎬 Studios Admin HQ</h1>
-      <p>Owner Dashboard — Withdrawals • Sales • Creator Earnings</p>
-    </div>
-    <a href="/studios/index.html" class="btn">← Back Studios</a>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">🎬 Studios Admin HQ</div>
+
+    <button class="navbtn active" onclick="openTab('dashboard')">📊 Dashboard</button>
+    <button class="navbtn" onclick="openTab('withdrawals')">💸 Withdrawals</button>
+    <button class="navbtn" onclick="openTab('creators')">👤 Creators</button>
+    <button class="navbtn" onclick="openTab('sales')">🛒 Marketplace Sales</button>
+
+    <a href="/studios/index.html" class="btn" style="display:block;text-align:center;margin-top:20px;">
+      ← Back Studios
+    </a>
   </div>
 
-  <!-- KPI -->
-  <div class="stats">
-    <div class="stat"><b id="statCreators">0</b><span>Total Creators</span></div>
-    <div class="stat"><b id="statSales">$0.00</b><span>Total Revenue</span></div>
-    <div class="stat"><b id="statCreatorEarn">$0.00</b><span>Total Creator Earnings</span></div>
-    <div class="stat"><b id="statPending">0</b><span>Pending Withdrawals</span></div>
-  </div>
+  <!-- MAIN -->
+  <div class="main">
 
-  <!-- MAIN GRID -->
-  <div class="grid">
-
-    <!-- WITHDRAWALS -->
-    <div class="card">
-      <h2>💸 Pending Withdrawals</h2>
-      <div id="withdrawalsBox">
-        <p style="color:var(--muted);">Loading…</p>
+    <div class="topbar">
+      <div>
+        <h1>Owner Control Center</h1>
+        <p style="color:var(--muted);margin-top:4px;">
+          Full StudentStream Studios Admin Panel v300
+        </p>
       </div>
     </div>
 
-    <!-- SALES -->
-    <div class="card">
-      <h2>📈 Recent Marketplace Sales</h2>
-      <div id="salesBox">
-        <p style="color:var(--muted);">Loading…</p>
+    <!-- DASHBOARD TAB -->
+    <div id="dashboard" class="section active">
+      <h2>📊 Overview</h2>
+
+      <div class="stats">
+        <div class="stat"><b id="statCreators">0</b><span>Total Creators</span></div>
+        <div class="stat"><b id="statRevenue">$0.00</b><span>Total Revenue</span></div>
+        <div class="stat"><b id="statCreatorEarn">$0.00</b><span>Total Creator Earnings</span></div>
+        <div class="stat"><b id="statPending">0</b><span>Pending Withdrawals</span></div>
       </div>
     </div>
 
+    <!-- WITHDRAWALS TAB -->
+    <div id="withdrawals" class="section">
+      <h2>💸 Withdrawals Manager</h2>
+      <div id="withdrawalsBox"><p style="color:var(--muted);">Loading…</p></div>
+    </div>
+
+    <!-- CREATORS TAB -->
+    <div id="creators" class="section">
+      <h2>👤 Creator Directory</h2>
+      <div id="creatorsBox"><p style="color:var(--muted);">Loading…</p></div>
+    </div>
+
+    <!-- SALES TAB -->
+    <div id="sales" class="section">
+      <h2>🛒 Marketplace Sales</h2>
+      <div id="salesBox"><p style="color:var(--muted);">Loading…</p></div>
+    </div>
+
+    <footer>
+      © <span id="year"></span> StudentStream Studios HQ
+    </footer>
+
   </div>
-
-  <footer>
-    © <span id="year"></span> StudentStream Studios Admin HQ V200
-  </footer>
-
 </div>
 
-<!-- =========================================
-     SUPABASE SYSTEM V200 (FIXED)
-     ========================================= -->
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
-document.getElementById("year").textContent = new Date().getFullYear();
+  document.getElementById("year").textContent = new Date().getFullYear();
 
-function dollars(cents){
-  return "$" + ((cents||0)/100).toFixed(2);
-}
+  function dollars(c){ return "$" + ((c||0)/100).toFixed(2); }
 
-/* LOAD KPI STATS */
-async function loadStats(){
+  /* TAB SWITCH */
+  window.openTab = function(tab){
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    document.querySelectorAll(".navbtn").forEach(b=>b.classList.remove("active"));
 
-  const creators = await supabase.from("creators").select("id");
-  document.getElementById("statCreators").textContent =
-    creators.data?.length || 0;
+    document.getElementById(tab).classList.add("active");
+    event.target.classList.add("active");
+  };
 
-  const sales = await supabase
-    .from("marketplace_sales")
-    .select("amount_cents, creator_earn_cents");
+  /* LOAD DASHBOARD STATS */
+  async function loadStats(){
+    const creators = await supabase.from("creators").select("id");
+    document.getElementById("statCreators").textContent = creators.data?.length || 0;
 
-  let rev=0, earn=0;
-  sales.data?.forEach(s=>{
-    rev += s.amount_cents||0;
-    earn += s.creator_earn_cents||0;
-  });
+    const sales = await supabase.from("marketplace_sales")
+      .select("amount_cents, creator_earn_cents");
 
-  document.getElementById("statSales").textContent = dollars(rev);
-  document.getElementById("statCreatorEarn").textContent = dollars(earn);
+    let rev=0, earn=0;
+    sales.data?.forEach(s=>{
+      rev += s.amount_cents || 0;
+      earn += s.creator_earn_cents || 0;
+    });
 
-  const pending = await supabase
-    .from("creator_withdrawals")
-    .select("id")
-    .eq("status","pending");
+    document.getElementById("statRevenue").textContent = dollars(rev);
+    document.getElementById("statCreatorEarn").textContent = dollars(earn);
 
-  document.getElementById("statPending").textContent =
-    pending.data?.length || 0;
-}
+    const pending = await supabase.from("creator_withdrawals")
+      .select("id").eq("status","pending");
 
-/* LOAD WITHDRAWALS (FIXED JOIN VIEW) */
-async function loadWithdrawals(){
-
-  const box=document.getElementById("withdrawalsBox");
-
-  const { data } = await supabase
-    .from("creator_withdrawals_admin")
-    .select("*")
-    .eq("status","pending")
-    .limit(6);
-
-  if(!data || data.length===0){
-    box.innerHTML="<p style='color:var(--muted);'>No pending withdrawals.</p>";
-    return;
+    document.getElementById("statPending").textContent = pending.data?.length || 0;
   }
 
-  box.innerHTML="";
+  /* LOAD WITHDRAWALS */
+  async function loadWithdrawals(){
+    const box=document.getElementById("withdrawalsBox");
 
-  data.forEach(req=>{
-    box.innerHTML += `
-      <div class="listing">
-        <div>
-          <b>${req.display_name || req.username}</b><br/>
-          <span>${dollars(req.amount_cents)}</span><br/>
-          <small style="color:var(--muted);">
-            Method: ${req.payout_method}
-          </small>
+    const { data } = await supabase
+      .from("creator_withdrawals")
+      .select("*")
+      .order("created_at",{ascending:false})
+      .limit(10);
+
+    if(!data?.length){
+      box.innerHTML="<p style='color:var(--muted);'>No withdrawals yet.</p>";
+      return;
+    }
+
+    box.innerHTML="";
+    data.forEach(w=>{
+      box.innerHTML += `
+        <div class="listing">
+          <div>
+            <b>${w.creator_id}</b><br/>
+            <span>${dollars(w.amount)}</span><br/>
+            <small style="color:var(--muted);">
+              Method: ${w.payout_method}
+            </small>
+          </div>
+
+          <span class="status ${w.status}">
+            ${w.status.toUpperCase()}
+          </span>
         </div>
-
-        <div class="actions">
-          <button class="mini approveBtn"
-            onclick="approve('${req.id}')">
-            Approve
-          </button>
-
-          <button class="mini denyBtn"
-            onclick="deny('${req.id}')">
-            Deny
-          </button>
-        </div>
-      </div>
-    `;
-  });
-}
-
-/* APPROVE */
-window.approve = async function(id){
-  await supabase
-    .from("creator_withdrawals")
-    .update({ status:"paid", processed_at:new Date() })
-    .eq("id",id);
-
-  alert("Marked Paid ✅");
-  loadWithdrawals();
-  loadStats();
-};
-
-/* DENY */
-window.deny = async function(id){
-  const reason = prompt("Reason for denial?");
-  await supabase
-    .from("creator_withdrawals")
-    .update({ status:"denied", note:reason, processed_at:new Date() })
-    .eq("id",id);
-
-  alert("Denied ❌");
-  loadWithdrawals();
-  loadStats();
-};
-
-/* LOAD SALES */
-async function loadSales(){
-  const box=document.getElementById("salesBox");
-
-  const { data } = await supabase
-    .from("marketplace_sales_admin")
-    .select("*")
-    .limit(6);
-
-  if(!data || data.length===0){
-    box.innerHTML="<p style='color:var(--muted);'>No sales yet.</p>";
-    return;
+      `;
+    });
   }
 
-  box.innerHTML="";
+  /* LOAD CREATORS */
+  async function loadCreators(){
+    const box=document.getElementById("creatorsBox");
 
-  data.forEach(sale=>{
-    box.innerHTML += `
-      <div class="listing">
-        <div>
-          <b>${sale.asset_title}</b><br/>
-          <span>${dollars(sale.amount_cents)}</span>
+    const { data } = await supabase.from("creators").select("*").limit(10);
+
+    if(!data?.length){
+      box.innerHTML="<p style='color:var(--muted);'>No creators found.</p>";
+      return;
+    }
+
+    box.innerHTML="";
+    data.forEach(c=>{
+      box.innerHTML += `
+        <div class="listing">
+          <div>
+            <b>${c.id}</b><br/>
+            <small style="color:var(--muted);">${c.email || "No email"}</small>
+          </div>
+          <span class="status paid">ACTIVE</span>
         </div>
-        <span class="status ${
-          sale.payout_status==="paid" ? "paid" : "pending"
-        }">
-          ${sale.payout_status.toUpperCase()}
-        </span>
-      </div>
-    `;
-  });
-}
+      `;
+    });
+  }
 
-/* REALTIME AUTO REFRESH */
-supabase.channel("admin-live")
-.on("postgres_changes",
-  { event:"*", schema:"public", table:"creator_withdrawals" },
-  ()=>loadWithdrawals()
-)
-.subscribe();
+  /* LOAD SALES */
+  async function loadSales(){
+    const box=document.getElementById("salesBox");
 
-loadStats();
-loadWithdrawals();
-loadSales();
+    const { data } = await supabase
+      .from("marketplace_sales")
+      .select("*")
+      .order("created_at",{ascending:false})
+      .limit(10);
+
+    if(!data?.length){
+      box.innerHTML="<p style='color:var(--muted);'>No marketplace sales yet.</p>";
+      return;
+    }
+
+    box.innerHTML="";
+    data.forEach(s=>{
+      box.innerHTML += `
+        <div class="listing">
+          <div>
+            <b>${s.asset_title || "Sale Item"}</b><br/>
+            <span>${dollars(s.amount_cents)}</span>
+          </div>
+          <span class="status ${s.payout_status==="paid"?"paid":"pending"}">
+            ${s.payout_status?.toUpperCase() || "UNPAID"}
+          </span>
+        </div>
+      `;
+    });
+  }
+
+  loadStats();
+  loadWithdrawals();
+  loadCreators();
+  loadSales();
 </script>
 
 </body>
