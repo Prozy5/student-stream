@@ -3,51 +3,20 @@
 <head>
   <!-- =========================================
        STUDENTSTREAM HQ — STUDIOS DASHBOARD
-       index.html (V3000)
+       index.html (V4000 UPGRADED)
        ========================================= -->
 
-  <!-- Basic Meta -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <title>Studios Dashboard • StudentStream HQ</title>
-  <meta name="description" content="StudentStream HQ Studios Dashboard — manage listings, earnings, submissions, and payouts. Manual payouts currently active with Stripe integration coming soon." />
+  <meta name="description" content="StudentStream HQ Studios Dashboard — manage listings, earnings, submissions, and payouts." />
 
-  <!-- Canonical -->
   <link rel="canonical" href="https://studentstream.online/studios/" />
-
-  <!-- Open Graph (Social Preview) -->
-  <meta property="og:title" content="Studios Dashboard • StudentStream HQ" />
-  <meta property="og:description" content="Manage your studio listings, earnings, submissions, and payouts inside StudentStream HQ." />
-  <meta property="og:url" content="https://studentstream.online/studios/" />
-  <meta property="og:type" content="website" />
-
-  <!-- Favicon (optional) -->
   <link rel="icon" href="/favicon.ico"/>
 
   <!-- =========================================
-       SCHEMA.ORG STRUCTURED DATA (GOOGLE)
-       ========================================= -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "StudentStream HQ",
-    "url": "https://studentstream.online/",
-    "sameAs": [
-      "https://www.instagram.com/studentstreamhq/",
-      "https://www.tiktok.com/@studentstreamhq"
-    ],
-    "description": "StudentStream HQ is a modern media and production marketplace platform for studios, creators, and digital businesses.",
-    "brand": {
-      "@type": "Brand",
-      "name": "StudentStream HQ"
-    }
-  }
-  </script>
-
-  <!-- =========================================
-       STYLE (MAX LEVEL HQ UI)
+       STYLE (UPGRADED HQ UI)
        ========================================= -->
   <style>
     :root{
@@ -67,23 +36,81 @@
     }
 
     *{box-sizing:border-box;margin:0;padding:0;}
+
     body{
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
-                  radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
+        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 55%),
+        var(--bg);
       color:var(--text);
       min-height:100vh;
     }
 
     a{color:inherit;text-decoration:none;}
+
     .wrap{
-      max-width:1200px;
+      max-width:1300px;
       margin:auto;
       padding:30px 18px 80px;
     }
 
-    /* Topbar */
+    /* =========================================
+       NEW: DASHBOARD LAYOUT GRID
+       ========================================= */
+    .layout{
+      display:grid;
+      grid-template-columns:260px 1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    @media(max-width:950px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+    }
+
+    /* =========================================
+       NEW: SIDEBAR
+       ========================================= */
+    .sidebar{
+      background:rgba(14,20,36,0.75);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(14px);
+      height:fit-content;
+    }
+
+    .sidebar h3{
+      font-size:14px;
+      margin-bottom:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .navlink{
+      display:block;
+      padding:12px 14px;
+      margin-bottom:10px;
+      border-radius:14px;
+      border:1px solid transparent;
+      background:rgba(255,255,255,0.02);
+      transition:0.2s;
+      font-weight:600;
+    }
+
+    .navlink:hover{
+      border-color:rgba(93,168,255,0.35);
+      box-shadow:0 0 0 4px var(--glow);
+      transform:translateY(-2px);
+    }
+
+    /* =========================================
+       TOPBAR (KEEP ORIGINAL)
+       ========================================= */
     .topbar{
       display:flex;
       justify-content:space-between;
@@ -93,19 +120,13 @@
       border:1px solid var(--line);
       border-radius:var(--radius);
       backdrop-filter: blur(14px);
-      box-shadow:0 0 0 1px rgba(255,255,255,0.02);
     }
 
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:3px;
-    }
     .brand h1{
       font-size:18px;
       font-weight:800;
-      letter-spacing:0.4px;
     }
+
     .brand p{
       font-size:13px;
       color:var(--muted);
@@ -136,10 +157,39 @@
       transition:0.2s;
       font-weight:700;
     }
+
     .btn:hover{
       transform:translateY(-1px);
       border-color:rgba(93,168,255,0.35);
       box-shadow:0 0 0 4px var(--glow);
+    }
+
+    /* =========================================
+       NEW: KPI STATS ROW
+       ========================================= */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .stat{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(93,168,255,0.10), rgba(255,255,255,0.02));
+    }
+
+    .stat b{
+      font-size:18px;
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .stat span{
+      font-size:13px;
+      color:var(--muted);
     }
 
     /* Banner */
@@ -154,19 +204,12 @@
       align-items:center;
       gap:12px;
     }
-    .banner strong{
-      color:var(--warn);
-    }
-    .banner span{
-      color:var(--muted);
-      font-size:13px;
-    }
 
-    /* Grid */
+    /* Cards */
     .grid{
-      margin-top:22px;
+      margin-top:18px;
       display:grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns:1.2fr 0.8fr;
       gap:18px;
     }
 
@@ -182,18 +225,12 @@
       backdrop-filter: blur(14px);
     }
 
-    .card h2{
-      font-size:15px;
-      margin-bottom:10px;
-    }
-
     .muted{
       color:var(--muted);
       font-size:13px;
       line-height:1.4;
     }
 
-    /* Quick Actions */
     .actions{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -208,20 +245,13 @@
       background:linear-gradient(180deg, rgba(93,168,255,0.10), rgba(255,255,255,0.02));
       transition:0.2s;
     }
+
     .action:hover{
       border-color:rgba(93,168,255,0.35);
       transform:translateY(-2px);
     }
-    .action b{
-      display:block;
-      margin-bottom:4px;
-    }
-    .action small{
-      color:var(--muted);
-      font-size:12px;
-    }
 
-    /* Listings Preview */
+    /* Listings */
     .listing{
       padding:12px;
       border-radius:14px;
@@ -232,34 +262,7 @@
       justify-content:space-between;
       gap:10px;
     }
-    .listing span{
-      color:var(--muted);
-      font-size:12px;
-    }
 
-    /* Socials */
-    .socials{
-      display:flex;
-      gap:10px;
-      margin-top:10px;
-      flex-wrap:wrap;
-    }
-    .socials a{
-      padding:9px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,0.03);
-      font-size:13px;
-      color:var(--muted);
-      transition:0.2s;
-    }
-    .socials a:hover{
-      border-color:rgba(124,92,255,0.35);
-      box-shadow:0 0 0 4px rgba(124,92,255,0.18);
-      color:var(--text);
-    }
-
-    /* Footer */
     footer{
       margin-top:22px;
       text-align:center;
@@ -285,99 +288,115 @@
       </div>
     </div>
 
+    <!-- KPI STATS (NEW UPGRADE) -->
+    <div class="stats">
+      <div class="stat">
+        <b id="statListings">0</b>
+        <span>Active Listings</span>
+      </div>
+      <div class="stat">
+        <b>$<span id="statEarnings">0</span></b>
+        <span>Total Earnings</span>
+      </div>
+      <div class="stat">
+        <b id="statPayouts">Manual</b>
+        <span>Payout Mode</span>
+      </div>
+    </div>
+
     <!-- MANUAL PAYOUTS NOTICE -->
     <div class="banner">
       <div>
         <strong>Manual Payouts Active</strong>
-        <span>Stripe automated payouts are coming soon. All earnings are processed manually for now.</span>
+        <span>Stripe automated payouts are coming soon.</span>
       </div>
       <a class="btn" href="/studios/admin/payouts.html">View Payouts</a>
     </div>
 
-    <!-- MAIN GRID -->
-    <div class="grid">
+    <!-- NEW LAYOUT -->
+    <div class="layout">
 
-      <!-- LEFT: HQ ACTIONS -->
-      <div class="card">
-        <h2>Studio Actions</h2>
-        <p class="muted">
-          Manage listings, submissions, earnings, and marketplace activity inside StudentStream HQ.
-        </p>
-
-        <div class="actions">
-          <a class="action" href="/studios/marketplace.html">
-            <b>Marketplace</b>
-            <small>Browse & manage listings</small>
-          </a>
-
-          <a class="action" href="/studios/submit.html">
-            <b>Submit Listing</b>
-            <small>Upload a new studio product</small>
-          </a>
-
-          <a class="action" href="/studios/earnings.html">
-            <b>Earnings</b>
-            <small>Track sales & payouts</small>
-          </a>
-
-          <a class="action" href="/studios/admin/manual-sale.html">
-            <b>Manual Sale</b>
-            <small>Record offline purchases</small>
-          </a>
-        </div>
-
-        <!-- Listings Preview -->
-        <h2 style="margin-top:18px;">Live Marketplace Preview</h2>
-        <p class="muted">Latest active listings pulled from Supabase.</p>
-
-        <div id="listingsArea">
-          <p class="muted" style="margin-top:10px;">Loading listings…</p>
-        </div>
+      <!-- SIDEBAR NAV -->
+      <div class="sidebar">
+        <h3>Studios Menu</h3>
+        <a class="navlink" href="/studios/index.html">🏠 Dashboard Home</a>
+        <a class="navlink" href="/studios/marketplace.html">🛒 Marketplace</a>
+        <a class="navlink" href="/studios/submit.html">➕ Submit Listing</a>
+        <a class="navlink" href="/studios/earnings.html">💰 Earnings</a>
+        <a class="navlink" href="/studios/admin/manual-sale.html">🧾 Manual Sale</a>
       </div>
 
-      <!-- RIGHT: HQ INFO -->
-      <div class="card">
-        <h2>StudentStream HQ Network</h2>
-        <p class="muted">
-          Studios is the production + marketplace division inside StudentStream HQ.
-        </p>
+      <!-- MAIN GRID -->
+      <div class="grid">
 
-        <h2 style="margin-top:14px;">Official Socials</h2>
-        <div class="socials">
-          <a href="https://www.instagram.com/studentstreamhq/" target="_blank">Instagram</a>
-          <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
-        </div>
+        <!-- LEFT -->
+        <div class="card">
+          <h2>Studio Actions</h2>
+          <p class="muted">
+            Manage listings, submissions, earnings, and marketplace activity inside StudentStream HQ.
+          </p>
 
-        <h2 style="margin-top:16px;">Platform Status</h2>
-        <div class="listing">
-          <div>
-            <b>Payments</b><br/>
-            <span>Manual payouts (Stripe soon)</span>
+          <div class="actions">
+            <a class="action" href="/studios/marketplace.html">
+              <b>Marketplace</b>
+              <small>Browse & manage listings</small>
+            </a>
+
+            <a class="action" href="/studios/submit.html">
+              <b>Submit Listing</b>
+              <small>Upload a new studio product</small>
+            </a>
+
+            <a class="action" href="/studios/earnings.html">
+              <b>Earnings</b>
+              <small>Track sales & payouts</small>
+            </a>
+
+            <a class="action" href="/studios/admin/manual-sale.html">
+              <b>Manual Sale</b>
+              <small>Record offline purchases</small>
+            </a>
           </div>
-          <span style="color:var(--warn);font-weight:800;">ACTIVE</span>
+
+          <h2 style="margin-top:18px;">Live Marketplace Preview</h2>
+          <p class="muted">Latest active listings pulled from Supabase.</p>
+
+          <div id="listingsArea">
+            <p class="muted" style="margin-top:10px;">Loading listings…</p>
+          </div>
         </div>
 
-        <div class="listing">
-          <div>
-            <b>Marketplace</b><br/>
-            <span>Supabase connected</span>
+        <!-- RIGHT -->
+        <div class="card">
+          <h2>StudentStream HQ Network</h2>
+          <p class="muted">
+            Studios is the production + marketplace division inside StudentStream HQ.
+          </p>
+
+          <h2 style="margin-top:14px;">Platform Status</h2>
+
+          <div class="listing">
+            <div>
+              <b>Payments</b><br/>
+              <span>Manual payouts (Stripe soon)</span>
+            </div>
+            <span style="color:var(--warn);font-weight:800;">ACTIVE</span>
           </div>
-          <span style="color:var(--good);font-weight:800;">LIVE</span>
+
+          <div class="listing">
+            <div>
+              <b>Marketplace</b><br/>
+              <span>Supabase connected</span>
+            </div>
+            <span style="color:var(--good);font-weight:800;">LIVE</span>
+          </div>
         </div>
 
-        <div class="listing">
-          <div>
-            <b>Studios Access</b><br/>
-            <span>Login required</span>
-          </div>
-          <span style="color:var(--accent);font-weight:800;">SECURE</span>
-        </div>
       </div>
-
     </div>
 
     <footer>
-      © <span id="year"></span> StudentStream HQ — Studios Division. All rights reserved.
+      © <span id="year"></span> StudentStream HQ — Studios Division.
     </footer>
 
   </div>
@@ -388,33 +407,27 @@
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    // ✅ PUT YOUR REAL KEYS HERE
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Year
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ✅ AUTH GUARD (LOCKDOWN)
     const { data: sessionData } = await supabase.auth.getSession();
 
     if (!sessionData.session) {
       window.location.href = "/studios/login.html";
     }
 
-    // Show Email
     document.getElementById("userEmail").textContent =
       sessionData.session.user.email;
 
-    // Logout
     document.getElementById("logoutBtn").onclick = async () => {
       await supabase.auth.signOut();
       window.location.href = "/studios/login.html";
     };
 
-    // ✅ LOAD MARKETPLACE LISTINGS
     async function loadListings() {
       const area = document.getElementById("listingsArea");
 
@@ -430,9 +443,12 @@
       }
 
       if (!data || data.length === 0) {
-        area.innerHTML = `<p class="muted">No listings yet. Submit your first one.</p>`;
+        area.innerHTML = `<p class="muted">No listings yet.</p>`;
         return;
       }
+
+      document.getElementById("statListings").textContent = data.length;
+      document.getElementById("statEarnings").textContent = "Coming Soon";
 
       area.innerHTML = "";
 
@@ -445,9 +461,7 @@
             <b>${item.title}</b><br/>
             <span>$${Number(item.price).toFixed(2)}</span>
           </div>
-          <span style="color:var(--good);font-weight:800;">
-            LIVE
-          </span>
+          <span style="color:var(--good);font-weight:800;">LIVE</span>
         `;
 
         area.appendChild(div);
