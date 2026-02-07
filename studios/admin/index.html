@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       STUDIOS ADMIN HQ PANEL
-       index.html • Role Locked
+       STUDENTSTREAM HQ — FULL ADMIN PANEL
+       admin.html (V1 MASTER CONTROL)
        ========================================= -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Admin HQ • Studios</title>
-  <meta name="description" content="Studios Admin HQ — manage creators, payouts, and marketplace sales." />
+  <title>Admin HQ Panel • StudentStream</title>
 
   <style>
     :root{
@@ -18,217 +17,337 @@
       --panel:#0E1424;
       --text:#EAF0FF;
       --muted:#A9B4D0;
-      --line:rgba(255,255,255,0.12);
-      --accent:#5DA8FF;
-      --accent2:#7C5CFF;
+      --line:rgba(255,255,255,0.08);
+      --glow:rgba(120,180,255,0.22);
       --good:#31D18B;
+      --warn:#FFD35A;
       --bad:#FF5C7A;
       --radius:18px;
     }
 
+    *{margin:0;padding:0;box-sizing:border-box;}
+
     body{
-      margin:0;
-      font-family:system-ui,Segoe UI,Roboto,Arial;
+      font-family:system-ui,Segoe UI,Roboto;
       background:
-        radial-gradient(circle at top, rgba(93,168,255,0.15), transparent 60%),
-        radial-gradient(circle at right, rgba(124,92,255,0.12), transparent 60%),
+        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
         var(--bg);
       color:var(--text);
-      padding:26px;
+      min-height:100vh;
     }
 
-    header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:24px;
+    .wrap{
+      max-width:1300px;
+      margin:auto;
+      padding:30px 18px 80px;
     }
 
     h1{
-      font-size:22px;
-      font-weight:900;
-    }
-
-    .logout{
-      border:none;
-      padding:10px 16px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:800;
-      background:rgba(255,255,255,0.08);
-      color:var(--text);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:16px;
-      margin-top:20px;
-    }
-
-    .card{
-      background:rgba(14,20,36,0.88);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:18px;
-      transition:0.25s;
-      cursor:pointer;
-    }
-
-    .card:hover{
-      transform:translateY(-4px);
-      border-color:rgba(93,168,255,0.4);
-    }
-
-    .title{
-      font-size:15px;
-      font-weight:900;
+      font-size:28px;
       margin-bottom:6px;
     }
 
-    .desc{
-      font-size:13px;
+    p{
       color:var(--muted);
-      line-height:1.4;
+      margin-bottom:18px;
     }
 
-    .badge{
-      display:inline-block;
-      margin-top:10px;
-      padding:5px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-      background:rgba(255,197,92,0.15);
-      color:#FFC55C;
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:16px 18px;
+      border-radius:var(--radius);
+      background:rgba(14,20,36,0.75);
+      border:1px solid var(--line);
+      backdrop-filter:blur(14px);
     }
 
-    .statusBox{
-      margin-top:18px;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.12);
+    .btn{
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--line);
       background:rgba(255,255,255,0.04);
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.4;
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+      transition:0.2s;
     }
 
-    .error{
+    .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 0 0 4px var(--glow);
+    }
+
+    /* KPI GRID */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
       margin-top:20px;
-      color:var(--bad);
-      font-weight:800;
-      display:none;
+    }
+
+    .stat{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(93,168,255,0.10), rgba(255,255,255,0.02));
+    }
+
+    .stat b{
+      font-size:20px;
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .stat span{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* ADMIN GRID */
+    .grid{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:18px;
+    }
+
+    @media(max-width:900px){
+      .grid{grid-template-columns:1fr;}
+    }
+
+    .card{
+      padding:18px;
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      background:rgba(14,20,36,0.75);
+      backdrop-filter:blur(14px);
+    }
+
+    .listing{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,0.02);
+      margin-top:10px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .status{
+      font-weight:900;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+    }
+
+    .pending{background:rgba(255,211,90,0.15);color:var(--warn);}
+    .approved{background:rgba(49,209,139,0.15);color:var(--good);}
+    .denied{background:rgba(255,92,122,0.15);color:var(--bad);}
+
+    footer{
+      margin-top:30px;
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
     }
   </style>
 </head>
 
 <body>
+<div class="wrap">
 
-  <!-- HEADER -->
-  <header>
-    <h1>Studios Admin HQ</h1>
-    <button class="logout" id="logoutBtn">Log Out</button>
-  </header>
-
-  <p style="color:var(--muted);max-width:720px;font-size:14px;">
-    Welcome to the internal Studios control center.  
-    Marketplace sales are currently operating in <b>manual payout mode</b> until Stripe is enabled.
-  </p>
-
-  <!-- ADMIN CARDS -->
-  <section class="grid">
-
-    <!-- Manual Sale -->
-    <div class="card" onclick="location.href='/studios/admin/manual-sale.html'">
-      <div class="title">Manual Sale Entry</div>
-      <div class="desc">
-        Log marketplace sales manually while Stripe checkout is offline.
-      </div>
-      <span class="badge">Manual Payments Active</span>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <h1>Admin HQ Panel</h1>
+      <p>StudentStream Master Control Center</p>
     </div>
 
-    <!-- Analytics -->
-    <div class="card" onclick="location.href='/studios/admin/analytics.html'">
-      <div class="title">Revenue Analytics</div>
-      <div class="desc">
-        Track total revenue, creator owed, paid vs unpaid balances.
-      </div>
+    <div>
+      <a href="/studios/index.html" class="btn">← Back Studios</a>
     </div>
-
-    <!-- Creator Directory -->
-    <div class="card" onclick="location.href='/studios/admin/creators.html'">
-      <div class="title">Creator Directory</div>
-      <div class="desc">
-        View creator accounts, IDs, and submission history.
-      </div>
-    </div>
-
-    <!-- Marketplace Listings -->
-    <div class="card" onclick="location.href='/studios/marketplace.html'">
-      <div class="title">Marketplace Listings</div>
-      <div class="desc">
-        View the public Studios marketplace as users see it.
-      </div>
-    </div>
-
-  </section>
-
-  <!-- STATUS -->
-  <div class="statusBox">
-    ⚠️ Stripe checkout is not yet enabled.<br>
-    All payouts are tracked manually inside Supabase until automation goes live.
   </div>
 
-  <p id="errorBox" class="error"></p>
+  <!-- KPI STATS -->
+  <div class="stats">
+    <div class="stat">
+      <b id="statCreators">0</b>
+      <span>Total Creators</span>
+    </div>
 
-  <!-- =========================================
-       SUPABASE ADMIN ROLE LOCK
-       ========================================= -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+    <div class="stat">
+      <b id="statSales">$0.00</b>
+      <span>Total Marketplace Revenue</span>
+    </div>
 
-    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    <div class="stat">
+      <b id="statPending">0</b>
+      <span>Pending Withdrawals</span>
+    </div>
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <div class="stat">
+      <b id="statListings">0</b>
+      <span>Active Listings</span>
+    </div>
+  </div>
 
-    const errorBox = document.getElementById("errorBox");
-    const logoutBtn = document.getElementById("logoutBtn");
+  <!-- MAIN GRID -->
+  <div class="grid">
 
-    // ✅ REQUIRE LOGIN
-    const { data: sessionData } = await supabase.auth.getSession();
+    <!-- WITHDRAWALS -->
+    <div class="card">
+      <h2>Pending Withdrawal Requests</h2>
+      <p style="color:var(--muted);font-size:13px;">
+        Approve or deny creator cashouts instantly.
+      </p>
 
-    if (!sessionData.session) {
-      window.location.href = "/studios/login.html";
+      <div id="withdrawalsBox">
+        <p style="color:var(--muted);">Loading withdrawals…</p>
+      </div>
+    </div>
+
+    <!-- SALES FEED -->
+    <div class="card">
+      <h2>Recent Marketplace Sales</h2>
+      <p style="color:var(--muted);font-size:13px;">
+        Latest purchases across StudentStream Studios.
+      </p>
+
+      <div id="salesBox">
+        <p style="color:var(--muted);">Loading sales…</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    © <span id="year"></span> StudentStream HQ — Admin Control Panel
+  </footer>
+
+</div>
+
+<!-- =========================================
+     SUPABASE ADMIN HQ SYSTEM
+     ========================================= -->
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  /* ADMIN SESSION CHECK */
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) window.location.href="/studios/login.html";
+
+  const userId = sessionData.session.user.id;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .single();
+
+  if (profile?.role !== "admin") {
+    alert("Admins only.");
+    window.location.href="/studios/index.html";
+  }
+
+  /* KPI LOADERS */
+  async function loadStats(){
+
+    const creators = await supabase.from("profiles").select("id");
+    document.getElementById("statCreators").textContent =
+      creators.data?.length || 0;
+
+    const listings = await supabase
+      .from("marketplace_listings")
+      .select("id")
+      .eq("status","active");
+
+    document.getElementById("statListings").textContent =
+      listings.data?.length || 0;
+
+    const pending = await supabase
+      .from("creator_withdrawals")
+      .select("id")
+      .eq("status","pending");
+
+    document.getElementById("statPending").textContent =
+      pending.data?.length || 0;
+  }
+
+  /* LOAD WITHDRAWALS */
+  async function loadWithdrawals(){
+    const box = document.getElementById("withdrawalsBox");
+
+    const { data } = await supabase
+      .from("creator_withdrawals")
+      .select("*")
+      .eq("status","pending")
+      .order("created_at",{ascending:false})
+      .limit(5);
+
+    if (!data || data.length===0){
+      box.innerHTML="<p style='color:var(--muted);'>No pending withdrawals.</p>";
+      return;
     }
 
-    const user = sessionData.session.user;
+    box.innerHTML="";
 
-    // ✅ ROLE CHECK
-    const { data: profile, error } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (error || !profile) {
-      errorBox.style.display = "block";
-      errorBox.textContent = "Profile role missing. Access denied.";
-      throw new Error("No profile role.");
-    }
-
-    if (profile.role !== "admin") {
-      // 🚫 Not admin → redirect out
-      window.location.href = "/studios/index.html";
-    }
-
-    // ✅ LOGOUT
-    logoutBtn.addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      window.location.href = "/studios/login.html";
+    data.forEach(req=>{
+      box.innerHTML += `
+        <div class="listing">
+          <div>
+            <b>${req.creator_name}</b><br/>
+            <span>$${(req.amount/100).toFixed(2)}</span>
+          </div>
+          <span class="status pending">PENDING</span>
+        </div>
+      `;
     });
-  </script>
+  }
+
+  /* LOAD SALES */
+  async function loadSales(){
+    const box = document.getElementById("salesBox");
+
+    const { data } = await supabase
+      .from("marketplace_sales")
+      .select("*")
+      .order("created_at",{ascending:false})
+      .limit(5);
+
+    if (!data || data.length===0){
+      box.innerHTML="<p style='color:var(--muted);'>No sales yet.</p>";
+      return;
+    }
+
+    box.innerHTML="";
+
+    data.forEach(sale=>{
+      box.innerHTML += `
+        <div class="listing">
+          <div>
+            <b>${sale.product_title || "Sale"}</b><br/>
+            <span>$${(sale.amount/100).toFixed(2)}</span>
+          </div>
+          <span class="status approved">PAID</span>
+        </div>
+      `;
+    });
+  }
+
+  loadStats();
+  loadWithdrawals();
+  loadSales();
+</script>
 
 </body>
 </html>
