@@ -1,233 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SS Films – by StudentStream</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SS Films • StudentStream</title>
 
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#05070c;color:#fff;font-family:system-ui}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-header{
-  position:fixed;top:0;width:100%;z-index:100;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:14px 20px;
-  background:linear-gradient(#05070cdd,#05070caa,transparent);
-}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
 
-.logo{font-size:22px;font-weight:900;color:#3ea6ff}
-.logo span{color:#7aa8ff;font-weight:600;font-size:13px;margin-left:6px}
+    body {
+      background: #05070d;
+      color: white;
+    }
 
-.btn{
-  padding:8px 14px;border-radius:8px;border:none;
-  cursor:pointer;font-weight:600;background:#1e90ff;color:#fff
-}
-.btn.outline{background:none;border:1px solid #1e90ff}
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+    }
 
-.hero{
-  height:65vh;
-  background:
-    linear-gradient(90deg,#05070c 30%,transparent),
-    url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4") center/cover;
-  display:flex;align-items:flex-end;padding:80px 24px
-}
+    .logo {
+      font-weight: 800;
+      font-size: 18px;
+      color: #3b82f6;
+    }
 
-.hero-box{max-width:520px}
-.hero h1{margin:0 0 10px;font-size:36px}
-.hero p{opacity:.8}
+    .logo span {
+      font-weight: 500;
+      font-size: 14px;
+      color: #94a3b8;
+      margin-left: 6px;
+    }
 
-.section{padding:30px 20px}
-.section-title{font-size:18px;font-weight:700;margin-bottom:12px}
+    nav button {
+      background: transparent;
+      border: 1px solid #334155;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 10px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
 
-.row{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px}
+    nav button:hover {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
 
-.card{
-  min-width:160px;background:#0e1522;border-radius:12px;
-  overflow:hidden;cursor:pointer;transition:.25s
-}
-.card:hover{transform:scale(1.08)}
+    .hero {
+      padding: 60px 22px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3), #05070d),
+        url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1400&q=80");
+      background-size: cover;
+      background-position: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
 
-.thumb{height:220px;background:#1a2232}
-.thumb img{width:100%;height:100%;object-fit:cover}
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      max-width: 550px;
+      line-height: 1.15;
+    }
 
-.info{padding:8px}
-.title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{font-size:12px;opacity:.6}
+    .hero p {
+      margin-top: 14px;
+      color: #cbd5e1;
+      max-width: 520px;
+      font-size: 16px;
+    }
 
-.creator-banner{
-  background:linear-gradient(90deg,#12223a,#0c1423);
-  border:1px solid #2c3f60;border-radius:14px;
-  padding:18px;display:flex;justify-content:space-between;align-items:center
-}
+    .cta {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-footer{text-align:center;padding:40px 20px;opacity:.45;font-size:13px}
-</style>
+    .btn {
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background: #2563eb;
+    }
+
+    .btn.secondary {
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .btn.secondary:hover {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+
+    section {
+      padding: 30px 22px;
+    }
+
+    section h3 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 16px;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      border-color: rgba(59,130,246,0.5);
+      transform: translateY(-3px);
+    }
+
+    .card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+    }
+
+    .watch {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255,255,255,0.06);
+      color: white;
+    }
+
+    .watch:hover {
+      background: rgba(59,130,246,0.25);
+      color: #3b82f6;
+    }
+
+    footer {
+      padding: 30px;
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 40px;
+    }
+  </style>
 </head>
+
 <body>
 
 <header>
   <div class="logo">SS Films <span>by StudentStream</span></div>
-  <div id="authArea"></div>
+
+  <nav>
+    <button onclick="location.href='/studio.html'">Studio</button>
+    <button onclick="logout()">Logout</button>
+  </nav>
 </header>
 
 <div class="hero">
-  <div class="hero-box">
-    <h1>Original films. Real creators.</h1>
-    <p>StudentStream’s official production & film division.</p>
-    <button class="btn" onclick="scrollToContent()">Browse</button>
+  <h1>Original Films. Real Creators. Paid Through Ads.</h1>
+  <p>
+    SS-Films is StudentStream’s official production division.
+    Monetization Club creators earn from ads + releases.
+  </p>
+
+  <div class="cta">
+    <button class="btn primary" onclick="joinClub()">
+      Join Monetization Club
+    </button>
+
+    <button class="btn secondary" onclick="manualPaymentRequest()">
+      Request Manual Payout Info
+    </button>
   </div>
 </div>
 
-<div id="content">
+<section>
+  <h3>Trending Now</h3>
+  <div class="grid" id="trendingGrid"></div>
+</section>
 
-  <div class="section">
-    <div id="creatorBanner" class="creator-banner" style="display:none">
-      <div>
-        <b>Become a creator</b><br>
-        Upload films. Build an audience. Earn revenue.
-      </div>
-      <button class="btn" onclick="goCreator()">Apply</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Trending</div>
-    <div id="trendingRow" class="row"></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Latest Releases</div>
-    <div id="latestRow" class="row"></div>
-  </div>
-
-</div>
+<section>
+  <h3>Latest Releases</h3>
+  <div class="grid" id="latestGrid"></div>
+</section>
 
 <footer>
-© 2026 SS Films – A StudentStream Company
+  © 2026 SS Films • StudentStream Studios
 </footer>
 
+<!-- ✅ SUPABASE CONNECT -->
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+  // 🔥 PUT YOUR SUPABASE INFO HERE
+  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-const authArea = document.getElementById("authArea");
-const creatorBanner = document.getElementById("creatorBanner");
-const trendingRow = document.getElementById("trendingRow");
-const latestRow = document.getElementById("latestRow");
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-let user = null;
-let films = [];
-
-async function init(){
-  const { data:{user:u} } = await supabase.auth.getUser();
-  user = u;
-
-  renderAuth();
-  if(user) await checkCreator();
-  await loadFilms();
-}
-
-/* ---------------- AUTH UI ---------------- */
-
-function renderAuth(){
-  if(!user){
-    authArea.innerHTML = `
-      <button class="btn outline" onclick="location.href='login.html'">Login</button>
-      <button class="btn" onclick="location.href='login.html'">Sign up</button>
-    `;
-  }else{
-    authArea.innerHTML = `
-      <button class="btn outline" id="studioBtn" style="display:none" onclick="goStudio()">Studio</button>
-      <button class="btn outline" onclick="logout()">Logout</button>
-    `;
+  // ✅ AUTH CHECK
+  async function checkAuth() {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) {
+      window.location.href = "/login.html";
+    }
   }
-}
 
-async function logout(){
-  await supabase.auth.signOut();
-  user = null;
-  renderAuth();
-  window.location.replace("login.html");
-}
+  checkAuth();
 
-/* Live auth sync */
-supabase.auth.onAuthStateChange((event, session)=>{
-  if(event==="SIGNED_OUT"){
-    user=null;
-    renderAuth();
+  // ✅ LOAD FILMS
+  async function loadFilms() {
+    const { data: films } = await supabase
+      .from("films")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!films) return;
+
+    const trendingGrid = document.getElementById("trendingGrid");
+    const latestGrid = document.getElementById("latestGrid");
+
+    trendingGrid.innerHTML = "";
+    latestGrid.innerHTML = "";
+
+    films.slice(0, 3).forEach(film => {
+      trendingGrid.innerHTML += filmCard(film);
+    });
+
+    films.slice(3, 6).forEach(film => {
+      latestGrid.innerHTML += filmCard(film);
+    });
   }
-  if(event==="SIGNED_IN"){
-    user=session.user;
-    renderAuth();
-  }
-});
 
-/* ---------------- CREATOR ---------------- */
-
-async function checkCreator(){
-  const { data } = await supabase
-    .from("creators")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if(data){
-    const btn=document.getElementById("studioBtn");
-    if(btn) btn.style.display="inline-block";
-  }else{
-    creatorBanner.style.display="flex";
-  }
-}
-
-/* ---------------- FILMS ---------------- */
-
-async function loadFilms(){
-  const { data } = await supabase
-    .from("films")
-    .select("id,title,thumbnail_url,views,created_at")
-    .eq("is_published", true);
-
-  films = data || [];
-  renderRows();
-}
-
-function renderRows(){
-  const trending=[...films].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,10);
-  const latest=[...films].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,10);
-
-  trendingRow.innerHTML = trending.map(renderCard).join("");
-  latestRow.innerHTML = latest.map(renderCard).join("");
-}
-
-function renderCard(f){
-  return `
-    <div class="card" onclick="openWatch('${f.id}')">
-      <div class="thumb"><img src="${f.thumbnail_url||''}"></div>
-      <div class="info">
-        <div class="title">${f.title}</div>
-        <div class="meta">👁 ${f.views||0}</div>
+  function filmCard(film) {
+    return `
+      <div class="card">
+        <h4>${film.title}</h4>
+        <p>${film.description}</p>
+        <button class="watch" onclick="alert('Playing: ${film.title}')">
+          Watch Preview
+        </button>
       </div>
-    </div>
-  `;
-}
+    `;
+  }
 
-/* ---------------- NAV ---------------- */
+  loadFilms();
 
-window.openWatch=(id)=>{
-  if(!user){location.href="login.html";return;}
-  location.href=`watch.html?id=${id}`;
-};
+  // ✅ JOIN MONETIZATION CLUB
+  window.joinClub = async function () {
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
 
-window.goCreator=()=>location.href="creator-apply.html";
-window.goStudio=()=>location.href="creator.html";
-window.scrollToContent=()=>document.getElementById("content").scrollIntoView({behavior:"smooth"});
+    await supabase.from("monetization_club").insert([
+      {
+        user_id: user.id,
+        status: "manual_active",
+        joined_at: new Date()
+      }
+    ]);
 
-init();
+    alert("✅ You're now in the SS-Films Monetization Club!");
+  };
+
+  // ✅ MANUAL PAYMENT REQUEST (EMAIL)
+  window.manualPaymentRequest = function () {
+    window.location.href =
+      "mailto:deondrechambers284@gmail.com?subject=SS-Films Manual Monetization Request&body=Hi SS-Films Team,%0A%0AI want to request payout + monetization details.%0A%0AMy Creator Name:%0AFilm Title:%0A%0AThanks!";
+  };
+
+  // ✅ LOGOUT
+  window.logout = async function () {
+    await supabase.auth.signOut();
+    window.location.href = "/login.html";
+  };
 </script>
 
 </body>
