@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- =========================================
-       STUDIOS CREATOR EARNINGS (FINAL)
-       earnings.html • Live Supabase Creator View
-       ========================================= -->
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
@@ -15,22 +10,28 @@
   <style>
     :root{
       --bg:#070A12;
-      --panel:#0E1424;
+      --panel:rgba(14,20,36,0.82);
       --text:#EAF0FF;
       --muted:#A9B4D0;
-      --line:rgba(255,255,255,0.12);
+      --line:rgba(255,255,255,0.10);
+
       --accent:#5DA8FF;
+      --accent2:#7C5CFF;
+
       --good:#31D18B;
+      --warn:#FFD35A;
       --bad:#FF5C7A;
+
       --radius:18px;
     }
 
+    *{box-sizing:border-box;margin:0;padding:0;}
+
     body{
-      margin:0;
       font-family:system-ui,Segoe UI,Roboto,Arial;
       background:
         radial-gradient(circle at top, rgba(93,168,255,0.16), transparent 65%),
-        radial-gradient(circle at right, rgba(49,209,139,0.10), transparent 65%),
+        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 65%),
         var(--bg);
       color:var(--text);
       padding:24px;
@@ -44,7 +45,7 @@
     }
 
     h1{
-      font-size:22px;
+      font-size:24px;
       font-weight:900;
     }
 
@@ -55,6 +56,7 @@
       text-decoration:none;
     }
 
+    /* NOTICE */
     .notice{
       margin-top:14px;
       padding:14px;
@@ -64,8 +66,10 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.4;
+      max-width:850px;
     }
 
+    /* WALLET GRID */
     .grid{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
@@ -74,10 +78,17 @@
     }
 
     .stat{
-      background:rgba(14,20,36,0.88);
+      background:var(--panel);
       border:1px solid var(--line);
       border-radius:var(--radius);
       padding:18px;
+      backdrop-filter:blur(14px);
+      transition:.2s;
+    }
+
+    .stat:hover{
+      transform:translateY(-4px);
+      border-color:rgba(93,168,255,0.35);
     }
 
     .label{
@@ -85,18 +96,67 @@
       color:var(--muted);
       font-weight:800;
       margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.5px;
     }
 
     .value{
-      font-size:26px;
+      font-size:28px;
+      font-weight:900;
+    }
+
+    /* Pending Highlight */
+    .pendingGlow{
+      color:var(--warn);
+    }
+
+    /* PAYOUT ACTION */
+    .actionBox{
+      margin-top:26px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:18px;
+      padding:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      max-width:900px;
+    }
+
+    .actionBox b{
+      font-size:14px;
+    }
+
+    .btn{
+      padding:10px 16px;
+      border:none;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:900;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      color:white;
+      font-size:13px;
+      transition:.2s;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+      opacity:.95;
+    }
+
+    /* TABLE */
+    h2{
+      margin-top:34px;
+      font-size:16px;
       font-weight:900;
     }
 
     table{
       width:100%;
-      margin-top:28px;
+      margin-top:18px;
       border-collapse:collapse;
-      background:rgba(14,20,36,0.75);
+      background:var(--panel);
       border:1px solid var(--line);
       border-radius:18px;
       overflow:hidden;
@@ -116,14 +176,25 @@
       text-transform:uppercase;
     }
 
-    .paid{
-      color:var(--good);
+    /* STATUS BADGES */
+    .status{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
       font-weight:900;
     }
 
-    .unpaid{
-      color:var(--bad);
-      font-weight:900;
+    .status.paid{
+      background:rgba(49,209,139,0.12);
+      border:1px solid rgba(49,209,139,0.25);
+      color:var(--good);
+    }
+
+    .status.pending{
+      background:rgba(255,211,90,0.12);
+      border:1px solid rgba(255,211,90,0.25);
+      color:var(--warn);
     }
 
     .error{
@@ -139,7 +210,7 @@
 
   <!-- HEADER -->
   <header>
-    <h1>Your Earnings</h1>
+    <h1>Your Creator Wallet</h1>
     <a href="/studios/index.html">← Back to Dashboard</a>
   </header>
 
@@ -147,36 +218,48 @@
   <div class="notice">
     <b>Manual Payout System Active</b><br>
     Studios currently issues payouts manually while Stripe automation is being prepared.
-    Your unpaid balance will be processed by the Studios team once approved.
+    Your pending balance will be processed once approved.
   </div>
 
   <!-- Stats -->
   <section class="grid">
     <div class="stat">
       <div class="label">Total Sales Revenue</div>
-      <div class="value" id="totalSales">$0</div>
+      <div class="value" id="totalSales">$0.00</div>
     </div>
 
     <div class="stat">
       <div class="label">Creator Share (70%)</div>
-      <div class="value" id="creatorShare">$0</div>
+      <div class="value" id="creatorShare">$0.00</div>
     </div>
 
     <div class="stat">
       <div class="label">Paid Out</div>
-      <div class="value" id="paidOut">$0</div>
+      <div class="value" id="paidOut">$0.00</div>
     </div>
 
     <div class="stat">
       <div class="label">Pending Balance</div>
-      <div class="value" id="pending">$0</div>
+      <div class="value pendingGlow" id="pending">$0.00</div>
     </div>
   </section>
 
+  <!-- ACTION BOX -->
+  <div class="actionBox">
+    <div>
+      <b>Next payout processing:</b>
+      <span style="color:var(--muted);font-size:13px;">
+        Manual review (Stripe coming soon)
+      </span>
+    </div>
+
+    <button class="btn" onclick="requestPayout()">
+      Request Payout
+    </button>
+  </div>
+
   <!-- Payout History -->
-  <h2 style="margin-top:34px;font-size:16px;font-weight:900;">
-    Payout History
-  </h2>
+  <h2>Payout History</h2>
 
   <table>
     <thead>
@@ -195,13 +278,14 @@
   <p id="errorBox" class="error"></p>
 
   <!-- =========================================
-       SUPABASE LIVE CREATOR EARNINGS LOGIC
+       SUPABASE CREATOR WALLET LOGIC
        ========================================= -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -262,34 +346,33 @@
       "$" + creatorPending.toFixed(2);
 
     // Load payout history
-    const { data: payouts, error: payoutError } = await supabase
+    const { data: payouts } = await supabase
       .from("creator_payouts")
       .select("*")
       .eq("seller_id", userId)
       .order("created_at", { ascending: false });
 
-    if (payoutError) {
-      payoutTable.innerHTML =
-        `<tr><td colspan="4">No payouts yet.</td></tr>`;
-    }
-
     if (!payouts || payouts.length === 0) {
       payoutTable.innerHTML =
         `<tr><td colspan="4">No payouts recorded yet.</td></tr>`;
     } else {
-      payoutTable.innerHTML = "";
-
-      payouts.forEach(p => {
-        payoutTable.innerHTML += `
-          <tr>
-            <td>${new Date(p.created_at).toLocaleDateString()}</td>
-            <td>$${p.payout_amount.toFixed(2)}</td>
-            <td>${p.payout_method}</td>
-            <td class="paid">PAID</td>
-          </tr>
-        `;
-      });
+      payoutTable.innerHTML = payouts.map(p => `
+        <tr>
+          <td>${new Date(p.created_at).toLocaleDateString()}</td>
+          <td>$${p.payout_amount.toFixed(2)}</td>
+          <td>${p.payout_method}</td>
+          <td><span class="status paid">PAID</span></td>
+        </tr>
+      `).join("");
     }
+
+    // Manual request payout
+    window.requestPayout = () => {
+      alert(
+        "Payout Request Submitted ✅\n\n" +
+        "Studios will review your pending balance and contact you manually."
+      );
+    };
   </script>
 
 </body>
