@@ -5,7 +5,7 @@
        STUDIOS MARKETPLACE (LOCKED v40000)
        StudentStream HQ • SS-Films Division
        Manual Monetization Club Active
-       FULL SUPABASE INTEGRATION
+       FULL SUPABASE INTEGRATION (FIXED)
        ========================================= -->
 
   <meta charset="UTF-8" />
@@ -50,7 +50,6 @@
       margin:auto;
     }
 
-    /* HEADER */
     header{
       display:flex;
       justify-content:space-between;
@@ -80,7 +79,6 @@
       color:white;
     }
 
-    /* HERO */
     h1{
       font-size:56px;
       font-weight:1000;
@@ -96,7 +94,6 @@
       margin-bottom:38px;
     }
 
-    /* NOTICE */
     .notice{
       padding:24px;
       border-radius:22px;
@@ -117,7 +114,6 @@
       line-height:1.5;
     }
 
-    /* PRODUCT CARDS */
     .grid{
       display:flex;
       flex-direction:column;
@@ -163,7 +159,6 @@
       color:var(--accent);
     }
 
-    /* BUTTON */
     button{
       width:100%;
       padding:16px;
@@ -227,49 +222,40 @@
     </p>
   </div>
 
-  <!-- MARKETPLACE PRODUCTS -->
+  <!-- PRODUCTS -->
   <div class="grid">
 
-    <!-- Product 1 -->
     <div class="card">
       <h2>Cinematic Visual Pack</h2>
       <p>HQ licensed visuals for productions, creators, and studios.</p>
-
       <div class="row">
         <span class="tag">Visual Assets</span>
         <span class="price">$25.00</span>
       </div>
-
       <button onclick="requestPurchase('Cinematic Visual Pack', 25)">
         Request Purchase
       </button>
     </div>
 
-    <!-- Product 2 -->
     <div class="card">
       <h2>SS-Films Trailer Template Pack</h2>
       <p>Professional motion intro templates built for film edits + studio trailers.</p>
-
       <div class="row">
         <span class="tag">Film Assets</span>
         <span class="price">$40.00</span>
       </div>
-
       <button onclick="requestPurchase('SS-Films Trailer Template Pack', 40)">
         Request Purchase
       </button>
     </div>
 
-    <!-- Product 3 -->
     <div class="card">
       <h2>Creator Brand Overlay Kit</h2>
       <p>Licensed overlays + lower-thirds for verified SS-Films creators.</p>
-
       <div class="row">
         <span class="tag">Creator Tools</span>
         <span class="price">$15.00</span>
       </div>
-
       <button onclick="requestPurchase('Creator Brand Overlay Kit', 15)">
         Request Purchase
       </button>
@@ -277,7 +263,6 @@
 
   </div>
 
-  <!-- FOOTER -->
   <footer>
     © 2026 StudentStream HQ — Studios Marketplace • Manual Payments Active
   </footer>
@@ -285,8 +270,8 @@
 </div>
 
 <!-- =========================================
-     SUPABASE + SESSION + PURCHASE REQUESTS
-     ========================================= -->
+     SUPABASE + PURCHASE REQUESTS (FIXED)
+========================================= -->
 <script>
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
   const SUPABASE_ANON_KEY =
@@ -297,7 +282,6 @@
     SUPABASE_ANON_KEY
   );
 
-  /* SESSION NAV FIX */
   async function checkSession(){
     const { data } = await supabase.auth.getSession();
 
@@ -310,30 +294,40 @@
 
   checkSession();
 
-  /* PURCHASE REQUEST FUNCTION */
+  // ✅ FIXED PURCHASE REQUEST FUNCTION
   window.requestPurchase = async function(productName, price){
 
     const buyerName = prompt("Enter your name:");
     const buyerEmail = prompt("Enter your email:");
 
     if(!buyerName || !buyerEmail){
-      alert("Request cancelled.");
+      alert("❌ Request cancelled.");
       return;
     }
 
-    /* SAVE INTO SUPABASE */
-    await supabase.from("purchase_requests").insert([
-      {
-        product_name: productName,
-        price_usd: price,
-        buyer_name: buyerName,
-        buyer_email: buyerEmail,
-        status: "Manual Payment Pending"
-      }
-    ]);
+    // ✅ SAVE INTO SUPABASE WITH ERROR CHECK
+    const { error } = await supabase
+      .from("purchase_requests")
+      .insert([
+        {
+          product_name: productName,
+          price_usd: price,
+          buyer_name: buyerName,
+          buyer_email: buyerEmail,
+          status: "Manual Payment Pending"
+        }
+      ]);
 
-    /* EMAIL TO OWNER */
-    window.location.href =
+    if(error){
+      alert("❌ Supabase Error:\n" + error.message);
+      return;
+    }
+
+    // ✅ SUCCESS FIRST
+    alert("✅ Request Submitted!\nStudios will contact you soon.");
+
+    // ✅ EMAIL FALLBACK (WORKS BETTER THAN location.href)
+    window.open(
       `mailto:deondrechambers284@gmail.com?subject=New Studios Purchase Request&body=
 NEW PURCHASE REQUEST
 
@@ -345,10 +339,8 @@ Buyer Email: ${buyerEmail}
 
 Status: Manual Payment Pending
 
-StudentStream Studios Marketplace
-`;
-
-    alert("✅ Request submitted! Studios will contact you soon.");
+StudentStream Studios Marketplace`
+    );
   };
 </script>
 
