@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       STUDENTSTREAM HQ — ADMIN WITHDRAWALS
-       withdrawals.html (V30 UPGRADE)
+       STUDENTSTREAM STUDIOS — WITHDRAWALS HQ
+       withdrawals.html (Admin Panel)
        ========================================= -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Withdrawal Requests • StudentStream Admin</title>
+  <title>Withdrawals • StudentStream Admin</title>
 
   <style>
     :root{
@@ -18,55 +18,47 @@
       --text:#EAF0FF;
       --muted:#A9B4D0;
       --line:rgba(255,255,255,0.08);
-      --glow:rgba(120,180,255,0.22);
+
       --good:#31D18B;
       --warn:#FFD35A;
       --bad:#FF5C7A;
-      --accent:#5DA8FF;
+
       --radius:18px;
     }
 
-    *{box-sizing:border-box;margin:0;padding:0;}
+    *{margin:0;padding:0;box-sizing:border-box;}
 
     body{
       font-family:system-ui,Segoe UI,Roboto;
-      background:
-        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
-        var(--bg);
+      background:var(--bg);
       color:var(--text);
       min-height:100vh;
     }
 
     .wrap{
-      max-width:1150px;
+      max-width:1200px;
       margin:auto;
       padding:30px 18px 80px;
     }
 
     h1{
-      font-size:32px;
+      font-size:28px;
       margin-bottom:6px;
     }
 
     p{
       color:var(--muted);
-      margin-bottom:20px;
-      line-height:1.4;
-    }
-
-    .panel{
-      background:rgba(14,20,36,0.75);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:18px;
-      backdrop-filter:blur(14px);
+      margin-bottom:18px;
     }
 
     .topbar{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-bottom:18px;
+      padding:16px 18px;
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      background:rgba(14,20,36,0.85);
     }
 
     .btn{
@@ -77,77 +69,70 @@
       color:var(--text);
       cursor:pointer;
       font-weight:700;
-      transition:0.2s;
       text-decoration:none;
+      transition:0.2s;
     }
 
     .btn:hover{
       transform:translateY(-1px);
-      box-shadow:0 0 0 4px var(--glow);
     }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:12px;
+    /* TABLE */
+    .table{
+      margin-top:20px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      overflow:hidden;
     }
 
-    th,td{
-      padding:12px;
+    .row{
+      display:grid;
+      grid-template-columns:1.4fr 0.8fr 1fr 0.8fr 1.2fr;
+      padding:14px 16px;
       border-bottom:1px solid var(--line);
-      text-align:left;
+      align-items:center;
       font-size:14px;
     }
 
-    th{
+    .row.head{
+      background:rgba(255,255,255,0.04);
+      font-weight:900;
       color:var(--muted);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:1px;
     }
 
     .status{
-      font-weight:800;
+      font-weight:900;
+      font-size:12px;
       padding:6px 10px;
       border-radius:999px;
-      font-size:11px;
       display:inline-block;
+      text-align:center;
+      width:90px;
     }
 
     .pending{background:rgba(255,211,90,0.15);color:var(--warn);}
-    .approved{background:rgba(49,209,139,0.15);color:var(--good);}
+    .paid{background:rgba(49,209,139,0.15);color:var(--good);}
     .denied{background:rgba(255,92,122,0.15);color:var(--bad);}
-    .paid{background:rgba(93,168,255,0.15);color:var(--accent);}
 
-    .actionBtn{
-      padding:8px 10px;
+    .actions{
+      display:flex;
+      gap:8px;
+    }
+
+    .mini{
+      padding:7px 10px;
       border-radius:10px;
+      font-size:12px;
       border:none;
       cursor:pointer;
-      font-weight:700;
-      margin-right:6px;
-      font-size:12px;
+      font-weight:800;
     }
 
-    .approve{
-      background:rgba(49,209,139,0.20);
-      color:var(--good);
-    }
-
-    .deny{
-      background:rgba(255,92,122,0.20);
-      color:var(--bad);
-    }
-
-    .pay{
-      background:rgba(93,168,255,0.20);
-      color:var(--accent);
-    }
-
-    .actionBtn:hover{opacity:0.85;}
+    .approveBtn{background:var(--good);color:black;}
+    .denyBtn{background:var(--bad);color:white;}
 
     footer{
-      margin-top:20px;
+      margin-top:25px;
       text-align:center;
       color:var(--muted);
       font-size:12px;
@@ -158,170 +143,161 @@
 <body>
 <div class="wrap">
 
-  <div class="panel">
-
-    <div class="topbar">
-      <div>
-        <h1>Withdrawal Requests</h1>
-        <p>Admin-only payout control panel for StudentStream creators.</p>
-      </div>
-
-      <a href="/studios/index.html" class="btn">← Back Dashboard</a>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <h1>💸 Withdrawals HQ</h1>
+      <p>Approve or deny creator payout requests</p>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Creator</th>
-          <th>Creator ID</th>
-          <th>Amount</th>
-          <th>Method</th>
-          <th>Status</th>
-          <th>Requested</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+    <a href="admin.html" class="btn">← Back Dashboard</a>
+  </div>
 
-      <tbody id="withdrawTable">
-        <tr>
-          <td colspan="7" style="color:var(--muted);padding:20px;">
-            Loading withdrawal requests...
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- TABLE -->
+  <div class="table" id="withdrawalsTable">
+    <div class="row head">
+      <div>Creator</div>
+      <div>Amount</div>
+      <div>Method</div>
+      <div>Status</div>
+      <div>Actions</div>
+    </div>
 
+    <div class="row">
+      <div style="color:var(--muted);">
+        Loading withdrawals…
+      </div>
+    </div>
   </div>
 
   <footer>
-    © <span id="year"></span> StudentStream HQ — Admin Withdrawals
+    StudentStream Studios Admin • Withdrawals System
   </footer>
 
 </div>
 
 <!-- =========================================
-     SUPABASE ADMIN WITHDRAWAL SYSTEM (V30)
+     SUPABASE WITHDRAWAL CONTROL
      ========================================= -->
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabase = createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-  document.getElementById("year").textContent = new Date().getFullYear();
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // =========================================
-  // ADMIN PROTECTION
-  // =========================================
+  function dollars(cents){
+    return "$" + (cents/100).toFixed(2);
+  }
+
+  /* SESSION CHECK */
   const { data: sessionData } = await supabase.auth.getSession();
-
-  if (!sessionData.session) {
-    window.location.href = "/studios/login.html";
+  if (!sessionData.session){
+    window.location.href="/studios/login.html";
   }
 
-  const userId = sessionData.session.user.id;
+  /* LOAD WITHDRAWALS */
+  async function loadWithdrawals(){
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", userId)
-    .single();
-
-  if (profile?.role !== "admin") {
-    alert("Access Denied — Admins Only.");
-    window.location.href = "/studios/index.html";
-  }
-
-  // =========================================
-  // LOAD WITHDRAWALS
-  // =========================================
-  async function loadWithdrawals() {
-    const table = document.getElementById("withdrawTable");
+    const table = document.getElementById("withdrawalsTable");
 
     const { data, error } = await supabase
       .from("creator_withdrawals")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("created_at",{ascending:false});
 
-    if (error) {
-      table.innerHTML = `<tr><td colspan="7">Error loading withdrawals.</td></tr>`;
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      table.innerHTML = `<tr><td colspan="7">No withdrawal requests yet.</td></tr>`;
-      return;
-    }
-
-    table.innerHTML = "";
-
-    data.forEach(req => {
+    if (error){
       table.innerHTML += `
-        <tr>
-          <td>${req.creator_name || "Unknown"}</td>
-          <td style="color:var(--muted);font-size:12px;">
-            ${req.creator_id}
-          </td>
-          <td><b>$${Number(req.amount).toFixed(2)}</b></td>
-          <td>${req.method}</td>
-          <td>
-            <span class="status ${req.status}">
+        <div class="row">
+          <div>Error loading withdrawals.</div>
+        </div>
+      `;
+      return;
+    }
+
+    if (!data || data.length===0){
+      table.innerHTML += `
+        <div class="row">
+          <div style="color:var(--muted);">
+            No withdrawal requests yet.
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    data.forEach(req=>{
+
+      let statusClass =
+        req.status==="paid" ? "paid" :
+        req.status==="denied" ? "denied" :
+        "pending";
+
+      table.innerHTML += `
+        <div class="row">
+          <div><b>${req.creator_name || "Creator"}</b></div>
+          <div>${dollars(req.amount)}</div>
+          <div>${req.payout_method || "manual"}</div>
+
+          <div>
+            <span class="status ${statusClass}">
               ${req.status.toUpperCase()}
             </span>
-          </td>
-          <td>${new Date(req.created_at).toLocaleString()}</td>
-          <td>
+          </div>
+
+          <div class="actions">
             ${
-              req.status === "pending"
+              req.status==="pending"
               ? `
-                <button class="actionBtn approve"
-                  onclick="updateStatus('${req.id}','approved')">
+                <button class="mini approveBtn"
+                  onclick="approve('${req.id}')">
                   Approve
                 </button>
 
-                <button class="actionBtn deny"
-                  onclick="updateStatus('${req.id}','denied')">
+                <button class="mini denyBtn"
+                  onclick="deny('${req.id}')">
                   Deny
                 </button>
               `
-              : req.status === "approved"
-              ? `
-                <button class="actionBtn pay"
-                  onclick="updateStatus('${req.id}','paid')">
-                  Mark Paid
-                </button>
-              `
-              : `<span style="color:var(--muted)">Complete</span>`
+              : `<span style="color:var(--muted);">Done</span>`
             }
-          </td>
-        </tr>
+          </div>
+        </div>
       `;
     });
   }
 
-  // =========================================
-  // UPDATE STATUS
-  // =========================================
-  window.updateStatus = async function(id, newStatus) {
-
-    if (!confirm(`Are you sure you want to mark this as ${newStatus}?`)) {
-      return;
-    }
-
-    const { error } = await supabase
+  /* APPROVE */
+  async function approve(id){
+    await supabase
       .from("creator_withdrawals")
-      .update({ status: newStatus })
-      .eq("id", id);
+      .update({
+        status:"paid",
+        processed_at:new Date()
+      })
+      .eq("id",id);
 
-    if (error) {
-      alert("Failed update.");
-      return;
-    }
+    alert("Marked as PAID ✅");
+    location.reload();
+  }
 
-    loadWithdrawals();
-  };
+  /* DENY */
+  async function deny(id){
+    await supabase
+      .from("creator_withdrawals")
+      .update({
+        status:"denied",
+        processed_at:new Date()
+      })
+      .eq("id",id);
+
+    alert("Denied ❌");
+    location.reload();
+  }
+
+  window.approve = approve;
+  window.deny = deny;
 
   loadWithdrawals();
 </script>
