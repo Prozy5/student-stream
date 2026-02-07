@@ -1,405 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- =========================================
-       STUDIOS MARKETPLACE • FULL MASTER FILE
-       StudentStream HQ • SS-Films Division
-       Manual Checkout + Monetization Club
-       ========================================= -->
-
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
-  <title>Studios Marketplace • StudentStream HQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Studios Marketplace | StudentStream</title>
 
   <style>
-    :root{
-      --bg:#05060C;
-      --panel:#0E1424;
-      --text:#ECF2FF;
-      --muted:#A9B4D0;
-      --line:rgba(255,255,255,0.12);
-      --accent:#5DA8FF;
-      --accent2:#31D18B;
-      --radius:22px;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #0f1d35, #05070d);
+      color: white;
+      padding: 40px 20px;
     }
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:system-ui,Segoe UI,Roboto,Arial;
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1050px;
+      margin: auto;
+      padding-bottom: 30px;
     }
 
-    body{
-      background:
-        radial-gradient(circle at top, rgba(93,168,255,0.15), transparent 70%),
-        radial-gradient(circle at bottom, rgba(49,209,139,0.10), transparent 70%),
-        var(--bg);
-      color:var(--text);
-      padding:28px;
+    header h2 {
+      font-size: 18px;
+      opacity: 0.9;
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
 
-    .wrap{
-      max-width:760px;
-      margin:auto;
+    header nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      opacity: 0.75;
+      font-weight: 500;
     }
 
-    /* Header */
-    header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:30px;
+    header nav a:hover {
+      opacity: 1;
     }
 
-    .logo{
-      font-weight:1000;
-      font-size:15px;
-      letter-spacing:0.4px;
+    .container {
+      max-width: 1050px;
+      margin: auto;
     }
 
-    nav a{
-      font-size:13px;
-      margin-left:16px;
-      font-weight:800;
-      text-decoration:none;
-      color:var(--muted);
-      transition:.2s;
+    h1 {
+      font-size: 60px;
+      margin-bottom: 10px;
     }
 
-    nav a:hover{
-      color:white;
+    p.subtitle {
+      font-size: 18px;
+      opacity: 0.7;
+      max-width: 600px;
+      margin-bottom: 40px;
     }
 
-    /* Hero */
-    h1{
-      font-size:44px;
-      font-weight:1000;
-      margin-bottom:10px;
+    .notice-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 25px;
+      border-radius: 20px;
+      margin-bottom: 35px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.3);
     }
 
-    .sub{
-      font-size:15px;
-      color:var(--muted);
-      line-height:1.6;
-      margin-bottom:26px;
+    .notice-box h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
     }
 
-    /* Notice */
-    .notice{
-      padding:18px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(255,255,255,0.04);
-      margin-bottom:28px;
+    .market-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
     }
 
-    .notice h3{
-      font-size:15px;
-      font-weight:1000;
-      margin-bottom:6px;
+    .product-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 25px;
+      padding: 28px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.35);
     }
 
-    .notice p{
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.5;
+    .product-card h2 {
+      margin: 0;
+      font-size: 26px;
     }
 
-    /* Listing Cards */
-    .card{
-      background:rgba(14,20,36,0.82);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:22px;
-      margin-bottom:22px;
-      transition:.25s;
+    .product-card p {
+      opacity: 0.7;
+      margin: 10px 0 25px;
+      font-size: 15px;
     }
 
-    .card:hover{
-      transform:translateY(-4px);
-      border-color:rgba(93,168,255,0.35);
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
-    .card h2{
-      font-size:18px;
-      font-weight:1000;
-      margin-bottom:6px;
+    .category {
+      opacity: 0.55;
+      font-size: 14px;
     }
 
-    .card p{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:16px;
-      line-height:1.4;
+    .price {
+      font-size: 26px;
+      font-weight: bold;
+      color: #4aa3ff;
     }
 
-    .meta{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:14px;
-      font-size:13px;
-      color:var(--muted);
+    button {
+      width: 100%;
+      padding: 16px;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(to right, #3b82f6, #8b5cf6);
+      transition: 0.25s ease;
     }
 
-    .price{
-      font-size:18px;
-      font-weight:1000;
-      color:var(--accent);
+    button:hover {
+      transform: scale(1.02);
+      opacity: 0.95;
     }
 
-    /* Buttons */
-    .btn{
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:999px;
-      font-weight:1000;
-      font-size:14px;
-      cursor:pointer;
-      background:linear-gradient(135deg,var(--accent),#7C5CFF);
-      color:white;
-      transition:.25s;
-    }
-
-    .btn:hover{
-      opacity:0.92;
-      transform:translateY(-2px);
-    }
-
-    /* Monetization Club Box */
-    .clubBox{
-      margin-top:40px;
-      padding:22px;
-      border-radius:22px;
-      border:1px solid rgba(49,209,139,0.25);
-      background:rgba(49,209,139,0.06);
-    }
-
-    .clubBox h2{
-      font-size:18px;
-      font-weight:1000;
-      margin-bottom:8px;
-    }
-
-    .clubBox p{
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.5;
-    }
-
-    .clubBtn{
-      margin-top:16px;
-      background:linear-gradient(135deg,var(--accent2),#2CA6FF);
-    }
-
-    /* Modal */
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.70);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      z-index:999;
-      padding:20px;
-    }
-
-    .modalBox{
-      background:var(--panel);
-      border-radius:22px;
-      padding:22px;
-      width:100%;
-      max-width:420px;
-      border:1px solid rgba(255,255,255,0.15);
-    }
-
-    .modalBox h3{
-      font-size:18px;
-      font-weight:1000;
-      margin-bottom:14px;
-    }
-
-    input{
-      width:100%;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.15);
-      background:rgba(255,255,255,0.05);
-      color:white;
-      margin-bottom:12px;
-      outline:none;
-    }
-
-    .close{
-      margin-top:10px;
-      background:transparent;
-      border:1px solid rgba(255,255,255,0.20);
-    }
-
-    footer{
-      margin-top:60px;
-      font-size:13px;
-      color:var(--muted);
-      text-align:center;
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      opacity: 0.4;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
-<div class="wrap">
 
   <!-- HEADER -->
   <header>
-    <div class="logo">🎬 StudentStream Studios</div>
+    <h2>🎬 StudentStream Studios</h2>
     <nav>
-      <a href="/studios/index.html">Home</a>
-      <a href="/studios/login.html">Creator Login</a>
+      <a href="studios.html">Home</a>
+      <a href="creator-login.html">Creator Login</a>
     </nav>
   </header>
 
-  <!-- HERO -->
-  <h1>Studios Marketplace</h1>
-  <p class="sub">
-    Browse licensed creative assets, production packs, visuals, and SS-Films digital work.
-  </p>
+  <!-- MAIN -->
+  <div class="container">
 
-  <!-- NOTICE -->
-  <div class="notice">
-    <h3>Manual Purchase Requests Active</h3>
-    <p>
-      Checkout is currently handled manually while Stripe integration is being prepared.
-      Click <b>Request Purchase</b> and our Studios team will contact you.
-    </p>
-  </div>
-
-  <!-- LISTING 1 -->
-  <div class="card">
-    <h2>Cinematic Visual Pack</h2>
-    <p>HQ licensed visuals for productions, creators, and studios.</p>
-
-    <div class="meta">
-      <span>Visual Assets</span>
-      <span class="price">$25.00</span>
-    </div>
-
-    <button class="btn" onclick="openModal('Cinematic Visual Pack • $25')">
-      Request Purchase
-    </button>
-  </div>
-
-  <!-- LISTING 2 -->
-  <div class="card">
-    <h2>SS-Films Trailer Template Pack</h2>
-    <p>Professional motion intro templates built for film edits + studio trailers.</p>
-
-    <div class="meta">
-      <span>Film Assets</span>
-      <span class="price">$40.00</span>
-    </div>
-
-    <button class="btn" onclick="openModal('SS-Films Trailer Template Pack • $40')">
-      Request Purchase
-    </button>
-  </div>
-
-  <!-- LISTING 3 -->
-  <div class="card">
-    <h2>Creator Brand Overlay Kit</h2>
-    <p>Licensed overlays + lower-thirds for creators inside StudentStream HQ.</p>
-
-    <div class="meta">
-      <span>Brand Pack</span>
-      <span class="price">$15.00</span>
-    </div>
-
-    <button class="btn" onclick="openModal('Creator Brand Overlay Kit • $15')">
-      Request Purchase
-    </button>
-  </div>
-
-  <!-- MONETIZATION CLUB -->
-  <div class="clubBox">
-    <h2>🚀 SS-Films Monetization Club</h2>
-    <p>
-      The Monetization Club is the official earning program inside SS-Films.
-      Members can upload film edits, production assets, and licensed media.
-      <br><br>
-      <b>Payouts are manual during launch.</b><br>
-      Entry requires an access fee.
+    <h1>Studios Marketplace</h1>
+    <p class="subtitle">
+      Browse licensed creative assets, production packs, visuals, and SS-Films digital work.
     </p>
 
-    <a href="/studios/monetization-club.html">
-      <button class="btn clubBtn">Join Monetization Club →</button>
-    </a>
+    <!-- Manual Notice -->
+    <div class="notice-box">
+      <h3>Manual Purchase Requests Active</h3>
+      <p>
+        Checkout is currently handled manually while Stripe integration is being prepared.
+        Click <b>Request Purchase</b> and our Studios team will contact you.
+      </p>
+    </div>
+
+    <!-- Marketplace Products -->
+    <div class="market-grid">
+
+      <!-- Product 1 -->
+      <div class="product-card">
+        <h2>Cinematic Visual Pack</h2>
+        <p>HQ licensed visuals for productions, creators, and studios.</p>
+
+        <div class="row">
+          <span class="category">Visual Assets</span>
+          <span class="price">$25.00</span>
+        </div>
+
+        <button onclick="requestPurchase('Cinematic Visual Pack', 25)">
+          Request Purchase
+        </button>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card">
+        <h2>SS-Films Trailer Template Pack</h2>
+        <p>Professional motion intro templates built for film edits + studio trailers.</p>
+
+        <div class="row">
+          <span class="category">Film Assets</span>
+          <span class="price">$40.00</span>
+        </div>
+
+        <button onclick="requestPurchase('SS-Films Trailer Template Pack', 40)">
+          Request Purchase
+        </button>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card">
+        <h2>Creator Brand Overlay Kit</h2>
+        <p>Licensed overlays + lower-thirds for creators inside StudentStream Studios.</p>
+
+        <div class="row">
+          <span class="category">Creator Tools</span>
+          <span class="price">$18.00</span>
+        </div>
+
+        <button onclick="requestPurchase('Creator Brand Overlay Kit', 18)">
+          Request Purchase
+        </button>
+      </div>
+
+    </div>
+
+    <footer>
+      StudentStream Studios Marketplace © 2026 — Manual Payments Active
+    </footer>
+
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    © 2026 StudentStream HQ • Studios Marketplace Division
-  </footer>
+  <!-- ✅ SUPABASE + REQUEST SYSTEM -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-</div>
+    // 🔥 YOUR SUPABASE PROJECT INFO (PASTE YOURS HERE)
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-<!-- MODAL -->
-<div class="modal" id="purchaseModal">
-  <div class="modalBox">
-    <h3 id="productTitle">Request Purchase</h3>
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    <input id="buyerName" placeholder="Your Name" />
-    <input id="buyerEmail" placeholder="Your Email" />
+    // Purchase Request Function
+    window.requestPurchase = async function(product, price) {
 
-    <button class="btn" onclick="sendRequest()">Send Request</button>
-    <button class="btn close" onclick="closeModal()">Cancel</button>
-  </div>
-</div>
+      const buyerName = prompt("Enter your name:");
+      const buyerEmail = prompt("Enter your email:");
 
-<script>
-  let selectedProduct = "";
+      if (!buyerName || !buyerEmail) {
+        alert("Request cancelled.");
+        return;
+      }
 
-  function openModal(product){
-    selectedProduct = product;
-    document.getElementById("productTitle").textContent =
-      "Request Purchase • " + product;
+      // Save Request to Supabase
+      const { error } = await supabase
+        .from("purchase_requests")
+        .insert([
+          {
+            product_name: product,
+            price: price,
+            buyer_name: buyerName,
+            buyer_email: buyerEmail,
+            notify_email: "deondrechambers284@gmail.com",
+            status: "Pending Manual Payment"
+          }
+        ]);
 
-    document.getElementById("purchaseModal").style.display = "flex";
-  }
+      if (error) {
+        alert("❌ Error sending request.");
+        console.log(error);
+        return;
+      }
 
-  function closeModal(){
-    document.getElementById("purchaseModal").style.display = "none";
-  }
-
-  function sendRequest(){
-    const name = document.getElementById("buyerName").value;
-    const email = document.getElementById("buyerEmail").value;
-
-    if(!name || !email){
-      alert("Please enter your name + email.");
-      return;
-    }
-
-    const subject = encodeURIComponent(
-      "Studios Purchase Request: " + selectedProduct
-    );
-
-    const body = encodeURIComponent(
-      "New Manual Purchase Request\n\n" +
-      "Product: " + selectedProduct + "\n" +
-      "Buyer Name: " + name + "\n" +
-      "Buyer Email: " + email + "\n\n" +
-      "Please contact this buyer to complete checkout manually.\n\n" +
-      "StudentStream HQ • Studios Division"
-    );
-
-    window.location.href =
-      "mailto:deondrechambers284@gmail.com?subject=" +
-      subject + "&body=" + body;
-
-    closeModal();
-  }
-</script>
+      alert(
+        "✅ Request Sent!\n\nStudios will contact you soon at:\n" +
+        buyerEmail +
+        "\n\nManual checkout is active."
+      );
+    };
+  </script>
 
 </body>
 </html>
