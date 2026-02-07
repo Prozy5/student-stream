@@ -1,222 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Studios Admin Analytics | StudentStream HQ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- =========================================
+       STUDIOS ADMIN ANALYTICS DASHBOARD
+       analytics.html • Live Supabase Data
+       ========================================= -->
 
-<meta name="robots" content="noindex,nofollow" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Admin Analytics • Studios</title>
+  <meta name="description" content="Studios Admin Analytics — revenue, payouts, and creator balances." />
 
-<style>
-*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
-body{
-margin:0;
-background:#040406;
-color:#fff;
-}
-.container{
-max-width:1300px;
-margin:auto;
-padding:60px 20px;
-}
-h1{font-size:3rem;margin-bottom:10px}
-p{opacity:.75}
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:#0E1424;
+      --text:#EAF0FF;
+      --muted:#A9B4D0;
+      --line:rgba(255,255,255,0.12);
+      --accent:#5DA8FF;
+      --good:#31D18B;
+      --bad:#FF5C7A;
+      --radius:18px;
+    }
 
-.badge{
-display:inline-block;
-background:rgba(255,82,82,.18);
-border:1px solid rgba(255,82,82,.35);
-color:#ff5252;
-padding:6px 16px;
-border-radius:999px;
-font-size:.8rem;
-margin-bottom:16px;
-}
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 65%),
+        radial-gradient(circle at right, rgba(49,209,139,0.10), transparent 65%),
+        var(--bg);
+      color:var(--text);
+      padding:24px;
+    }
 
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:22px;
-margin-top:40px;
-}
-.stat{
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.12);
-border-radius:22px;
-padding:28px;
-}
-.stat h2{
-margin:0;
-font-size:2.3rem;
-}
-.stat span{
-opacity:.65;
-font-size:.9rem;
-}
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
+    }
 
-.section{
-margin-top:70px;
-}
-.card{
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.12);
-border-radius:22px;
-padding:28px;
-margin-top:20px;
-}
+    h1{
+      font-size:22px;
+      font-weight:900;
+    }
 
-table{
-width:100%;
-border-collapse:collapse;
-}
-th,td{
-padding:14px;
-border-bottom:1px solid rgba(255,255,255,.12);
-text-align:left;
-font-size:.95rem;
-}
-th{opacity:.6}
+    a{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      text-decoration:none;
+    }
 
-.paid{color:#4caf50}
-.unpaid{color:#ff9800}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:16px;
+      margin-top:18px;
+    }
 
-.footer{
-margin-top:80px;
-opacity:.6;
-font-size:.85rem;
-}
-</style>
+    .stat{
+      background:rgba(14,20,36,0.88);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+    }
+
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .value{
+      font-size:26px;
+      font-weight:900;
+    }
+
+    .sub{
+      font-size:12px;
+      margin-top:6px;
+      color:var(--muted);
+    }
+
+    table{
+      width:100%;
+      margin-top:26px;
+      border-collapse:collapse;
+      background:rgba(14,20,36,0.75);
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+    }
+
+    th,td{
+      padding:14px;
+      font-size:13px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      text-align:left;
+    }
+
+    th{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .paid{
+      color:var(--good);
+      font-weight:800;
+    }
+
+    .unpaid{
+      color:var(--bad);
+      font-weight:800;
+    }
+
+    .error{
+      margin-top:20px;
+      color:var(--bad);
+      font-weight:800;
+      display:none;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
 
-<span class="badge">Admin Only</span>
-<h1>Studios Revenue Analytics</h1>
-<p>
-Manual sales & payouts dashboard for StudentStream Studios.
-</p>
+  <!-- HEADER -->
+  <header>
+    <h1>Marketplace Analytics</h1>
+    <a href="/studios/admin/index.html">← Back to Admin HQ</a>
+  </header>
 
-<!-- SUMMARY STATS -->
-<div class="stats">
-  <div class="stat">
-    <h2 id="totalRevenue">$0.00</h2>
-    <span>Total Marketplace Revenue</span>
-  </div>
-  <div class="stat">
-    <h2 id="creatorOwed">$0.00</h2>
-    <span>Creators Owed (70%)</span>
-  </div>
-  <div class="stat">
-    <h2 id="platformEarned">$0.00</h2>
-    <span>Platform Share (30%)</span>
-  </div>
-  <div class="stat">
-    <h2 id="paidOut">$0.00</h2>
-    <span>Total Paid Out</span>
-  </div>
-</div>
+  <p style="color:var(--muted);max-width:720px;font-size:14px;">
+    This dashboard tracks all marketplace sales and creator payout balances.  
+    Studios is currently running in <b>manual payout mode</b> until Stripe automation is enabled.
+  </p>
 
-<!-- CREATOR BREAKDOWN -->
-<div class="section">
-<h2>Creator Breakdown</h2>
+  <!-- STATS -->
+  <section class="grid">
 
-<div class="card">
-<table>
-<thead>
-<tr>
-  <th>Creator</th>
-  <th>Total Earned</th>
-  <th>Paid</th>
-  <th>Outstanding</th>
-</tr>
-</thead>
-<tbody id="creatorTable">
-<tr><td colspan="4">Loading…</td></tr>
-</tbody>
-</table>
-</div>
-</div>
+    <div class="stat">
+      <div class="label">Total Marketplace Revenue</div>
+      <div class="value" id="totalRevenue">$0</div>
+      <div class="sub">All sales recorded</div>
+    </div>
 
-<div class="footer">
-⚠️ This dashboard reflects manually entered sales and payouts.
-</div>
+    <div class="stat">
+      <div class="label">Creator Owed (70%)</div>
+      <div class="value" id="creatorOwed">$0</div>
+      <div class="sub">Total unpaid creator earnings</div>
+    </div>
 
-</div>
+    <div class="stat">
+      <div class="label">Paid Out</div>
+      <div class="value" id="paidOut">$0</div>
+      <div class="sub">Completed payouts</div>
+    </div>
 
-<script>
-const supabase = supabaseJs.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+    <div class="stat">
+      <div class="label">Unpaid Balance</div>
+      <div class="value" id="unpaid">$0</div>
+      <div class="sub">Pending payouts</div>
+    </div>
 
-function money(cents){
-  return "$" + (cents/100).toFixed(2);
-}
+  </section>
 
-(async () => {
-  // AUTH CHECK
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return window.location.href = "/studios/login";
+  <!-- TABLE -->
+  <h2 style="margin-top:34px;font-size:16px;font-weight:900;">
+    Recent Sales
+  </h2>
 
-  const { data: admin } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Seller</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Method</th>
+      </tr>
+    </thead>
+    <tbody id="salesTable">
+      <tr><td colspan="5">Loading sales…</td></tr>
+    </tbody>
+  </table>
 
-  if (admin?.role !== "admin") {
-    document.body.innerHTML = "Access denied.";
-    return;
-  }
+  <p id="errorBox" class="error"></p>
 
-  // LOAD SALES
-  const { data: sales } = await supabase
-    .from("studio_sales")
-    .select("*");
+  <!-- =========================================
+       SUPABASE LIVE ANALYTICS LOGIC
+       ========================================= -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  if (!sales) return;
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-  let totalRevenue = 0;
-  let creatorOwed = 0;
-  let paidOut = 0;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const creators = {};
+    const errorBox = document.getElementById("errorBox");
 
-  sales.forEach(s => {
-    totalRevenue += s.amount_cents;
-    creatorOwed += s.creator_earn_cents;
-    if (s.paid) paidOut += s.creator_earn_cents;
-
-    if (!creators[s.creator_name]) {
-      creators[s.creator_name] = {
-        earned: 0,
-        paid: 0
-      };
+    // Require login
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      window.location.href = "/studios/login.html";
     }
 
-    creators[s.creator_name].earned += s.creator_earn_cents;
-    if (s.paid) creators[s.creator_name].paid += s.creator_earn_cents;
-  });
+    // Load all sales
+    const { data: sales, error } = await supabase
+      .from("marketplace_sales")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  document.getElementById("totalRevenue").textContent = money(totalRevenue);
-  document.getElementById("creatorOwed").textContent = money(creatorOwed);
-  document.getElementById("platformEarned").textContent = money(totalRevenue - creatorOwed);
-  document.getElementById("paidOut").textContent = money(paidOut);
+    if (error) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Error loading sales: " + error.message;
+      throw error;
+    }
 
-  const table = document.getElementById("creatorTable");
-  table.innerHTML = Object.entries(creators).map(([name, c]) => `
-    <tr>
-      <td>${name}</td>
-      <td>${money(c.earned)}</td>
-      <td class="paid">${money(c.paid)}</td>
-      <td class="unpaid">${money(c.earned - c.paid)}</td>
-    </tr>
-  `).join("");
-})();
-</script>
+    // Totals
+    let totalRevenue = 0;
+    let totalPaid = 0;
+    let totalUnpaid = 0;
+
+    sales.forEach(sale => {
+      totalRevenue += sale.amount;
+
+      if (sale.status === "paid") {
+        totalPaid += sale.amount;
+      } else {
+        totalUnpaid += sale.amount;
+      }
+    });
+
+    // Creator owed = 70% of unpaid
+    const creatorOwed = totalUnpaid * 0.7;
+
+    // Update UI
+    document.getElementById("totalRevenue").textContent =
+      "$" + totalRevenue.toFixed(2);
+
+    document.getElementById("paidOut").textContent =
+      "$" + totalPaid.toFixed(2);
+
+    document.getElementById("unpaid").textContent =
+      "$" + totalUnpaid.toFixed(2);
+
+    document.getElementById("creatorOwed").textContent =
+      "$" + creatorOwed.toFixed(2);
+
+    // Render Table
+    const table = document.getElementById("salesTable");
+
+    if (!sales.length) {
+      table.innerHTML = `<tr><td colspan="5">No sales yet.</td></tr>`;
+    } else {
+      table.innerHTML = "";
+
+      sales.slice(0, 10).forEach(sale => {
+        table.innerHTML += `
+          <tr>
+            <td>${sale.product_title}</td>
+            <td>${sale.seller_id.slice(0,8)}…</td>
+            <td>$${sale.amount.toFixed(2)}</td>
+            <td class="${sale.status === "paid" ? "paid" : "unpaid"}">
+              ${sale.status.toUpperCase()}
+            </td>
+            <td>${sale.payment_method}</td>
+          </tr>
+        `;
+      });
+    }
+  </script>
 
 </body>
 </html>
