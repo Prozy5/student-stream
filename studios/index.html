@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       STUDIOS PUBLIC HOMEPAGE (v10000)
+       STUDIOS PUBLIC HOMEPAGE (LOCKED v20000)
        StudentStream HQ • Studios Marketplace
        ========================================= -->
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Mobile / iOS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
 
   <title>Studios Marketplace • StudentStream HQ</title>
 
@@ -16,7 +19,7 @@
     content="Studios is the official creative marketplace of StudentStream HQ — a platform for licensed digital work, production assets, and creator opportunities." />
 
   <meta name="keywords"
-    content="Studios marketplace, StudentStream HQ, creative licensing, digital assets, production visuals, creator marketplace" />
+    content="Studios marketplace, creative licensing, digital assets, production visuals, creator marketplace" />
 
   <link rel="canonical" href="https://studentstream.online/studios/" />
 
@@ -26,6 +29,9 @@
     content="Browse licensed creative assets, visuals, design packs, and production-ready work through Studios." />
   <meta property="og:url" content="https://studentstream.online/studios/" />
   <meta property="og:type" content="website" />
+
+  <!-- Favicon Support -->
+  <link rel="icon" href="/favicon.ico" />
 
   <!-- Schema.org -->
   <script type="application/ld+json">
@@ -45,6 +51,9 @@
     }
   }
   </script>
+
+  <!-- Supabase (for session-aware nav) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Styling -->
   <style>
@@ -73,6 +82,7 @@
         var(--bg);
       color:var(--text);
       padding:28px;
+      overflow-x:hidden;
     }
 
     .wrap{
@@ -85,12 +95,18 @@
       justify-content:space-between;
       align-items:center;
       margin-bottom:40px;
+      position:sticky;
+      top:0;
+      padding:18px 0;
+      backdrop-filter:blur(14px);
+      z-index:20;
     }
 
     .logo{
       font-weight:900;
-      font-size:16px;
+      font-size:15px;
       letter-spacing:0.4px;
+      opacity:0.95;
     }
 
     nav a{
@@ -99,6 +115,7 @@
       color:var(--muted);
       font-weight:700;
       text-decoration:none;
+      transition:0.2s;
     }
 
     nav a:hover{
@@ -108,6 +125,7 @@
     /* HERO */
     .hero{
       padding:70px 0 60px;
+      animation:fadeUp 0.8s ease;
     }
 
     .badge{
@@ -126,13 +144,14 @@
       line-height:1.05;
       margin:20px 0;
       font-weight:1000;
+      letter-spacing:-1px;
     }
 
     .sub{
       font-size:16px;
       max-width:780px;
       color:var(--muted);
-      line-height:1.5;
+      line-height:1.6;
     }
 
     .cta{
@@ -149,11 +168,18 @@
       font-weight:900;
       cursor:pointer;
       font-size:14px;
+      transition:0.25s;
+    }
+
+    .btn:hover{
+      transform:translateY(-3px);
+      opacity:0.95;
     }
 
     .primary{
       background:linear-gradient(135deg,var(--accent),#7C5CFF);
       color:white;
+      box-shadow:0 0 22px rgba(93,168,255,0.25);
     }
 
     .outline{
@@ -241,6 +267,11 @@
       color:white;
     }
 
+    @keyframes fadeUp{
+      from{opacity:0; transform:translateY(18px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+
     @media(max-width:800px){
       h1{font-size:40px;}
     }
@@ -256,7 +287,7 @@
 
     <nav>
       <a href="/studios/marketplace.html">Marketplace</a>
-      <a href="/studios/login.html">Creator Login</a>
+      <a id="creatorLink" href="/studios/login.html">Creator Login</a>
     </nav>
   </header>
 
@@ -281,7 +312,7 @@
       </a>
 
       <a href="/studios/login.html">
-        <button class="btn outline">Creator Login</button>
+        <button class="btn outline" id="creatorBtn">Creator Login</button>
       </a>
     </div>
 
@@ -357,5 +388,34 @@
   </footer>
 
 </div>
+
+<!-- SESSION-AWARE CREATOR NAV -->
+<script>
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  async function checkSession() {
+    const { data } = await supabase.auth.getSession();
+
+    if (data.session) {
+      document.getElementById("creatorLink").textContent = "Dashboard";
+      document.getElementById("creatorLink").href = "/studios/creator/dashboard.html";
+
+      document.getElementById("creatorBtn").textContent = "Go to Dashboard";
+      document.getElementById("creatorBtn").onclick = () => {
+        window.location.href = "/studios/creator/dashboard.html";
+      };
+    }
+  }
+
+  checkSession();
+</script>
+
 </body>
 </html>
