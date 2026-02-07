@@ -3,7 +3,7 @@
 <head>
   <!-- =========================================
        STUDENTSTREAM HQ — ADMIN WITHDRAWALS
-       withdrawls.html (V1)
+       withdrawals.html (V30 UPGRADE)
        ========================================= -->
 
   <meta charset="UTF-8" />
@@ -22,6 +22,7 @@
       --good:#31D18B;
       --warn:#FFD35A;
       --bad:#FF5C7A;
+      --accent:#5DA8FF;
       --radius:18px;
     }
 
@@ -37,13 +38,13 @@
     }
 
     .wrap{
-      max-width:1100px;
+      max-width:1150px;
       margin:auto;
       padding:30px 18px 80px;
     }
 
     h1{
-      font-size:34px;
+      font-size:32px;
       margin-bottom:6px;
     }
 
@@ -77,6 +78,7 @@
       cursor:pointer;
       font-weight:700;
       transition:0.2s;
+      text-decoration:none;
     }
 
     .btn:hover{
@@ -99,7 +101,7 @@
 
     th{
       color:var(--muted);
-      font-size:13px;
+      font-size:12px;
       text-transform:uppercase;
       letter-spacing:1px;
     }
@@ -108,13 +110,14 @@
       font-weight:800;
       padding:6px 10px;
       border-radius:999px;
-      font-size:12px;
+      font-size:11px;
       display:inline-block;
     }
 
     .pending{background:rgba(255,211,90,0.15);color:var(--warn);}
     .approved{background:rgba(49,209,139,0.15);color:var(--good);}
     .denied{background:rgba(255,92,122,0.15);color:var(--bad);}
+    .paid{background:rgba(93,168,255,0.15);color:var(--accent);}
 
     .actionBtn{
       padding:8px 10px;
@@ -123,6 +126,7 @@
       cursor:pointer;
       font-weight:700;
       margin-right:6px;
+      font-size:12px;
     }
 
     .approve{
@@ -135,8 +139,12 @@
       color:var(--bad);
     }
 
-    .approve:hover{opacity:0.85;}
-    .deny:hover{opacity:0.85;}
+    .pay{
+      background:rgba(93,168,255,0.20);
+      color:var(--accent);
+    }
+
+    .actionBtn:hover{opacity:0.85;}
 
     footer{
       margin-top:20px;
@@ -155,7 +163,7 @@
     <div class="topbar">
       <div>
         <h1>Withdrawal Requests</h1>
-        <p>Admin-only panel. Approve or deny creator cashout requests.</p>
+        <p>Admin-only payout control panel for StudentStream creators.</p>
       </div>
 
       <a href="/studios/index.html" class="btn">← Back Dashboard</a>
@@ -165,6 +173,7 @@
       <thead>
         <tr>
           <th>Creator</th>
+          <th>Creator ID</th>
           <th>Amount</th>
           <th>Method</th>
           <th>Status</th>
@@ -175,7 +184,7 @@
 
       <tbody id="withdrawTable">
         <tr>
-          <td colspan="6" style="color:var(--muted);padding:20px;">
+          <td colspan="7" style="color:var(--muted);padding:20px;">
             Loading withdrawal requests...
           </td>
         </tr>
@@ -191,21 +200,20 @@
 </div>
 
 <!-- =========================================
-     SUPABASE ADMIN WITHDRAWAL SYSTEM
+     SUPABASE ADMIN WITHDRAWAL SYSTEM (V30)
      ========================================= -->
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
   // =========================================
-  // ADMIN ROLE PROTECTION
+  // ADMIN PROTECTION
   // =========================================
   const { data: sessionData } = await supabase.auth.getSession();
 
@@ -227,7 +235,7 @@
   }
 
   // =========================================
-  // LOAD WITHDRAWAL REQUESTS
+  // LOAD WITHDRAWALS
   // =========================================
   async function loadWithdrawals() {
     const table = document.getElementById("withdrawTable");
@@ -238,16 +246,12 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      table.innerHTML = `
-        <tr><td colspan="6">Error loading withdrawals.</td></tr>
-      `;
+      table.innerHTML = `<tr><td colspan="7">Error loading withdrawals.</td></tr>`;
       return;
     }
 
     if (!data || data.length === 0) {
-      table.innerHTML = `
-        <tr><td colspan="6">No withdrawal requests yet.</td></tr>
-      `;
+      table.innerHTML = `<tr><td colspan="7">No withdrawal requests yet.</td></tr>`;
       return;
     }
 
@@ -257,8 +261,11 @@
       table.innerHTML += `
         <tr>
           <td>${req.creator_name || "Unknown"}</td>
-          <td>$${(req.amount / 100).toFixed(2)}</td>
-          <td>${req.method || "Manual"}</td>
+          <td style="color:var(--muted);font-size:12px;">
+            ${req.creator_id}
+          </td>
+          <td><b>$${Number(req.amount).toFixed(2)}</b></td>
+          <td>${req.method}</td>
           <td>
             <span class="status ${req.status}">
               ${req.status.toUpperCase()}
@@ -273,9 +280,17 @@
                   onclick="updateStatus('${req.id}','approved')">
                   Approve
                 </button>
+
                 <button class="actionBtn deny"
                   onclick="updateStatus('${req.id}','denied')">
                   Deny
+                </button>
+              `
+              : req.status === "approved"
+              ? `
+                <button class="actionBtn pay"
+                  onclick="updateStatus('${req.id}','paid')">
+                  Mark Paid
                 </button>
               `
               : `<span style="color:var(--muted)">Complete</span>`
@@ -287,9 +302,13 @@
   }
 
   // =========================================
-  // APPROVE / DENY FUNCTION
+  // UPDATE STATUS
   // =========================================
   window.updateStatus = async function(id, newStatus) {
+
+    if (!confirm(`Are you sure you want to mark this as ${newStatus}?`)) {
+      return;
+    }
 
     const { error } = await supabase
       .from("creator_withdrawals")
@@ -305,7 +324,6 @@
   };
 
   loadWithdrawals();
-
 </script>
 
 </body>
