@@ -1,290 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Studios Admin · Creator Payouts (V5)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex,nofollow"/>
+  <meta charset="UTF-8">
+  <title>Creator Payout Center • Studios Admin (V5)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-:root{
-  --bg:#070A12;
-  --panel:rgba(14,20,36,0.88);
-  --text:#EAF0FF;
-  --muted:#A9B4D0;
-  --line:rgba(255,255,255,0.10);
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:rgba(14,20,36,0.88);
+      --text:#EAF0FF;
+      --muted:#A9B4D0;
+      --line:rgba(255,255,255,0.10);
 
-  --accent:#5DA8FF;
-  --accent2:#7C5CFF;
+      --accent:#5DA8FF;
+      --accent2:#7C5CFF;
 
-  --good:#31D18B;
-  --warn:#FFD35A;
-  --bad:#FF5C7A;
+      --good:#31D18B;
+      --warn:#FFD35A;
+      --bad:#FF5C7A;
 
-  --radius:18px;
-}
+      --radius:18px;
+    }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Inter,system-ui,Arial;
-}
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Inter,system-ui,Arial,sans-serif;
+    }
 
-body{
-  background:
-    radial-gradient(circle at top, rgba(93,168,255,0.15), transparent 55%),
-    radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 55%),
-    var(--bg);
-  color:var(--text);
-}
+    body{
+      background:
+        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 60%),
+        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
 
-.container{
-  max-width:1250px;
-  margin:auto;
-  padding:70px 20px;
-}
+    .container{
+      max-width:1150px;
+      margin:auto;
+      padding:65px 18px;
+    }
 
-.badge{
-  display:inline-block;
-  padding:7px 18px;
-  border-radius:999px;
-  font-size:.82rem;
-  font-weight:800;
-  margin-bottom:16px;
-  background:rgba(255,92,122,.12);
-  border:1px solid rgba(255,92,122,.35);
-  color:var(--bad);
-}
+    .badge{
+      display:inline-block;
+      padding:7px 16px;
+      border-radius:999px;
+      font-size:.82rem;
+      font-weight:800;
+      color:var(--bad);
+      background:rgba(255,92,122,0.12);
+      border:1px solid rgba(255,92,122,0.25);
+      margin-bottom:18px;
+    }
 
-h1{
-  font-size:3rem;
-  font-weight:900;
-}
+    h1{
+      font-size:3.1rem;
+      font-weight:950;
+      letter-spacing:-1px;
+    }
 
-p{
-  color:var(--muted);
-  margin-top:10px;
-  max-width:750px;
-  line-height:1.5;
-}
+    p{
+      margin-top:14px;
+      color:var(--muted);
+      line-height:1.55;
+      max-width:720px;
+    }
 
-/* KPI GRID */
-.kpis{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:14px;
-  margin-top:28px;
-}
+    /* KPI GRID */
+    .kpis{
+      margin-top:28px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+    }
 
-.kpi{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:18px;
-  backdrop-filter:blur(14px);
-}
+    .kpi{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter:blur(14px);
+    }
 
-.kpi span{
-  font-size:12px;
-  color:var(--muted);
-  font-weight:700;
-}
+    .kpi span{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
 
-.kpi b{
-  display:block;
-  margin-top:8px;
-  font-size:22px;
-  font-weight:900;
-}
+    .kpi b{
+      display:block;
+      margin-top:6px;
+      font-size:22px;
+      font-weight:950;
+    }
 
-.kpi b.good{color:var(--good);}
-.kpi b.warn{color:var(--warn);}
-.kpi b.accent{color:var(--accent);}
+    /* Controls */
+    .controls{
+      margin-top:26px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
 
-/* CONTROLS */
-.controls{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:26px;
-}
+    input{
+      flex:1;
+      min-width:200px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,0.03);
+      color:var(--text);
+      outline:none;
+    }
 
-input{
-  flex:1;
-  min-width:220px;
-  padding:12px 14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  color:var(--text);
-  outline:none;
-}
+    input:focus{
+      border-color:rgba(93,168,255,0.45);
+      box-shadow:0 0 0 4px rgba(93,168,255,0.15);
+    }
 
-input:focus{
-  border-color:rgba(93,168,255,0.45);
-  box-shadow:0 0 0 4px rgba(93,168,255,0.15);
-}
+    .toggle{
+      padding:13px 15px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      cursor:pointer;
+      font-weight:800;
+      background:rgba(255,255,255,0.04);
+      color:var(--muted);
+      transition:.2s;
+    }
 
-.toggle, .exportBtn{
-  padding:12px 16px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  cursor:pointer;
-  background:rgba(255,255,255,0.04);
-  color:var(--muted);
-  font-weight:800;
-}
+    .toggle.active{
+      color:white;
+      border-color:rgba(93,168,255,0.35);
+      box-shadow:0 0 0 4px rgba(93,168,255,0.10);
+    }
 
-.toggle.active{
-  border-color:rgba(93,168,255,0.35);
-  color:white;
-}
+    .exportBtn{
+      padding:13px 16px;
+      border-radius:14px;
+      font-weight:900;
+      cursor:pointer;
+      border:none;
+      color:white;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      transition:.2s;
+    }
 
-.exportBtn{
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border:none;
-  color:white;
-}
+    .exportBtn:hover{
+      transform:translateY(-2px);
+      opacity:.95;
+    }
 
-/* TABLE */
-.tableWrap{
-  margin-top:24px;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  overflow:hidden;
-}
+    /* Table */
+    .tableWrap{
+      margin-top:24px;
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:var(--panel);
+      backdrop-filter:blur(14px);
+    }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-}
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
 
-th,td{
-  padding:16px;
-  border-bottom:1px solid rgba(255,255,255,.07);
-  text-align:left;
-  font-size:.92rem;
-}
+    th,td{
+      padding:16px;
+      text-align:left;
+      font-size:.92rem;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
 
-th{
-  color:var(--muted);
-  font-weight:800;
-  font-size:.8rem;
-  text-transform:uppercase;
-}
+    th{
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      font-weight:900;
+      background:rgba(255,255,255,0.02);
+    }
 
-.amount{
-  font-weight:900;
-  color:var(--good);
-}
+    .amount{
+      font-weight:950;
+      color:var(--good);
+    }
 
-/* STATUS */
-.status{
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-}
+    .status{
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      display:inline-block;
+    }
 
-.status.unpaid{
-  background:rgba(255,211,90,0.12);
-  border:1px solid rgba(255,211,90,0.25);
-  color:var(--warn);
-}
+    .status.unpaid{
+      background:rgba(255,211,90,0.12);
+      border:1px solid rgba(255,211,90,0.25);
+      color:var(--warn);
+    }
 
-.status.paid{
-  background:rgba(49,209,139,0.12);
-  border:1px solid rgba(49,209,139,0.25);
-  color:var(--good);
-}
+    .status.paid{
+      background:rgba(49,209,139,0.12);
+      border:1px solid rgba(49,209,139,0.25);
+      color:var(--good);
+    }
 
-button{
-  padding:9px 16px;
-  border-radius:999px;
-  border:none;
-  cursor:pointer;
-  font-weight:900;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:white;
-}
+    button.payBtn{
+      padding:9px 14px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-weight:900;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      color:white;
+    }
 
-button:hover{
-  transform:translateY(-2px);
-  opacity:.95;
-}
+    button.payBtn:hover{
+      transform:translateY(-2px);
+      opacity:.95;
+    }
 
-.empty{
-  padding:22px;
-  text-align:center;
-  color:var(--muted);
-  font-weight:800;
-}
-</style>
+    .empty{
+      padding:20px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:900;
+    }
+  </style>
 </head>
 
 <body>
 <div class="container">
 
-<span class="badge">Admin · Creator Payouts (V5)</span>
-<h1>Creator Payout Center</h1>
-<p>
-Manual payout system is active. Stripe automation will be connected soon.
-Only Studios admins can access this panel.
-</p>
+  <span class="badge">Admin · Creator Payouts (V5)</span>
 
-<!-- KPI SUMMARY -->
-<div class="kpis">
-  <div class="kpi">
-    <span>Unpaid Sales</span>
-    <b id="kpiUnpaid" class="warn">—</b>
+  <h1>Creator Payout Center</h1>
+  <p>
+    Manual payout system is active. Stripe automation will connect soon.
+    Only Studios admins can access this panel.
+  </p>
+
+  <!-- KPI ROW -->
+  <div class="kpis">
+    <div class="kpi">
+      <span>Unpaid Sales</span>
+      <b id="kpiUnpaid">—</b>
+    </div>
+
+    <div class="kpi">
+      <span>Total Creator Owed</span>
+      <b id="kpiOwed" style="color:var(--good)">$0.00</b>
+    </div>
+
+    <div class="kpi">
+      <span>Total Paid Out</span>
+      <b id="kpiPaid" style="color:var(--accent)">$0.00</b>
+    </div>
+
+    <div class="kpi">
+      <span>Payout Mode</span>
+      <b style="color:var(--warn)">MANUAL</b>
+    </div>
   </div>
 
-  <div class="kpi">
-    <span>Total Creator Owed</span>
-    <b id="kpiOwed" class="good">$0.00</b>
+  <!-- Controls -->
+  <div class="controls">
+    <input id="searchBox" placeholder="Search creator or asset…">
+    <div class="toggle active" id="filterToggle">Unpaid Only</div>
+    <button class="exportBtn" onclick="exportCSV()">Export CSV</button>
   </div>
 
-  <div class="kpi">
-    <span>Total Paid Out</span>
-    <b id="kpiPaid" class="accent">$0.00</b>
+  <!-- Table -->
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Creator</th>
+          <th>Asset</th>
+          <th>Sale</th>
+          <th>Creator Owed</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="payoutTable">
+        <tr><td colspan="6" class="empty">Loading payouts…</td></tr>
+      </tbody>
+    </table>
   </div>
-
-  <div class="kpi">
-    <span>Payout Mode</span>
-    <b class="warn">MANUAL</b>
-  </div>
-</div>
-
-<!-- Controls -->
-<div class="controls">
-  <input id="searchBox" placeholder="Search creator or asset..." />
-  <div class="toggle active" id="toggleUnpaid">Unpaid Only</div>
-  <div class="exportBtn" id="exportBtn">Export CSV</div>
-</div>
-
-<!-- Table -->
-<div class="tableWrap">
-<table>
-<thead>
-<tr>
-  <th>Creator</th>
-  <th>Asset</th>
-  <th>Sale</th>
-  <th>Creator Owed</th>
-  <th>Status</th>
-  <th>Action</th>
-</tr>
-</thead>
-
-<tbody id="payoutTable">
-<tr><td colspan="6" class="empty">Loading payouts…</td></tr>
-</tbody>
-</table>
-</div>
 
 </div>
 
@@ -294,78 +308,74 @@ const supabase = supabaseJs.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-function money(amount){
-  return "$" + Number(amount).toFixed(2);
+function dollars(cents){
+  return "$" + (cents/100).toFixed(2);
 }
 
-let sales = [];
+let allSales = [];
 let unpaidOnly = true;
 
-/* AUTH + ADMIN CHECK */
-(async ()=>{
+/* ADMIN GUARD */
+(async()=>{
   const { data:{ user } } = await supabase.auth.getUser();
   if(!user) return location.href="/studios/login.html";
 
-  const { data: profile } = await supabase
+  const { data:profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", user.id)
     .single();
 
   if(profile?.role !== "admin"){
-    document.body.innerHTML="<h2 style='padding:50px'>Unauthorized</h2>";
+    document.body.innerHTML="<h2 style='padding:60px'>Unauthorized</h2>";
     return;
   }
 
-  loadSales();
+  loadPayouts();
 })();
 
 /* LOAD SALES */
-async function loadSales(){
+async function loadPayouts(){
   const { data } = await supabase
     .from("marketplace_sales")
     .select("*")
     .order("created_at",{ascending:false});
 
-  sales = data || [];
+  allSales = data || [];
   render();
 }
 
-/* RENDER TABLE */
+/* RENDER */
 function render(){
   const table = document.getElementById("payoutTable");
   const search = document.getElementById("searchBox").value.toLowerCase();
 
-  let filtered = sales;
+  let filtered = allSales;
 
   if(unpaidOnly){
-    filtered = filtered.filter(s=>s.payout_status==="unpaid");
+    filtered = filtered.filter(x => x.status !== "paid");
   }
 
   if(search){
-    filtered = filtered.filter(s =>
-      (s.creator_name||"").toLowerCase().includes(search) ||
-      (s.asset_title||"").toLowerCase().includes(search)
+    filtered = filtered.filter(x =>
+      (x.creator_name||"").toLowerCase().includes(search) ||
+      (x.asset_title||"").toLowerCase().includes(search)
     );
   }
 
-  // KPI Totals
-  let owed = 0;
-  let paid = 0;
-  let unpaidCount = 0;
+  // KPI totals
+  document.getElementById("kpiUnpaid").textContent = filtered.length;
 
-  sales.forEach(s=>{
-    if(s.payout_status==="unpaid"){
-      unpaidCount++;
-      owed += s.creator_cut;
-    } else {
-      paid += s.creator_cut;
-    }
+  let owed = 0;
+  let paidOut = 0;
+
+  allSales.forEach(x=>{
+    if(x.status === "paid") paidOut += x.creator_earn_cents;
+    else owed += x.creator_earn_cents;
   });
 
-  document.getElementById("kpiUnpaid").textContent = unpaidCount;
-  document.getElementById("kpiOwed").textContent = money(owed);
-  document.getElementById("kpiPaid").textContent = money(paid);
+  document.getElementById("kpiOwed").textContent = dollars(owed);
+  document.getElementById("kpiPaid").textContent = dollars(paidOut);
 
   if(filtered.length===0){
     table.innerHTML=`<tr><td colspan="6" class="empty">No payouts found 🎉</td></tr>`;
@@ -376,18 +386,17 @@ function render(){
     <tr>
       <td>${s.creator_name}</td>
       <td>${s.asset_title}</td>
-      <td>${money(s.amount)}</td>
-      <td class="amount">${money(s.creator_cut)}</td>
+      <td>${dollars(s.amount_cents)}</td>
+      <td class="amount">${dollars(s.creator_earn_cents)}</td>
       <td>
-        <span class="status ${s.payout_status}">
-          ${s.payout_status.toUpperCase()}
+        <span class="status ${s.status==="paid"?"paid":"unpaid"}">
+          ${s.status==="paid"?"PAID":"UNPAID"}
         </span>
       </td>
       <td>
-        ${
-          s.payout_status==="paid"
+        ${s.status==="paid"
           ? "—"
-          : `<button onclick="markPaid('${s.id}')">Mark Paid</button>`
+          : `<button class="payBtn" onclick="markPaid('${s.id}')">Mark Paid</button>`
         }
       </td>
     </tr>
@@ -396,43 +405,39 @@ function render(){
 
 /* MARK PAID */
 async function markPaid(id){
-  if(!confirm("Confirm payout sent manually?")) return;
+  if(!confirm("Confirm payout has been sent manually?")) return;
 
   await supabase
     .from("marketplace_sales")
-    .update({
-      payout_status:"paid",
-      paid_at:new Date().toISOString()
-    })
+    .update({ status:"paid", paid_at:new Date().toISOString() })
     .eq("id",id);
 
-  loadSales();
+  loadPayouts();
 }
 
 /* EXPORT CSV */
-document.getElementById("exportBtn").onclick = ()=>{
-  let csv="Creator,Asset,Sale,Owed,Status\n";
+function exportCSV(){
+  let csv = "Creator,Asset,Sale,Owed,Status\n";
 
-  sales.forEach(s=>{
-    csv += `${s.creator_name},${s.asset_title},${s.amount},${s.creator_cut},${s.payout_status}\n`;
+  allSales.forEach(s=>{
+    csv += `${s.creator_name},${s.asset_title},${dollars(s.amount_cents)},${dollars(s.creator_earn_cents)},${s.status}\n`;
   });
 
-  const blob = new Blob([csv],{type:"text/csv"});
-  const url = URL.createObjectURL(blob);
+  const blob = new Blob([csv], {type:"text/csv"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "studios_payouts.csv";
+  link.click();
+}
 
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="studios_payouts.csv";
-  a.click();
-};
-
-/* SEARCH + FILTER */
+/* LIVE SEARCH */
 document.getElementById("searchBox").addEventListener("input",render);
 
-document.getElementById("toggleUnpaid").onclick=()=>{
+/* FILTER TOGGLE */
+document.getElementById("filterToggle").onclick=()=>{
   unpaidOnly=!unpaidOnly;
-  document.getElementById("toggleUnpaid").classList.toggle("active");
-  document.getElementById("toggleUnpaid").textContent =
+  document.getElementById("filterToggle").classList.toggle("active");
+  document.getElementById("filterToggle").textContent =
     unpaidOnly ? "Unpaid Only" : "Showing All";
   render();
 };
