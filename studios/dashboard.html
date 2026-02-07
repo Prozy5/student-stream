@@ -1,475 +1,381 @@
+<!-- =========================================
+     STUDENTSTREAM HQ — STUDIOS DASHBOARD
+     index.html (V5000 FINANCE UPGRADE)
+     + Creator Wallet + Withdraw Requests
+     ========================================= -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- =========================================
-       STUDENTSTREAM HQ — STUDIOS DASHBOARD
-       index.html (V4000 UPGRADED)
-       ========================================= -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Studios Dashboard • StudentStream HQ</title>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+  :root{
+    --bg:#070A12;
+    --panel:#0E1424;
+    --text:#EAF0FF;
+    --muted:#A9B4D0;
+    --line:rgba(255,255,255,0.08);
+    --glow:rgba(120,180,255,0.22);
+    --accent:#5DA8FF;
+    --accent2:#7C5CFF;
+    --good:#31D18B;
+    --warn:#FFD35A;
+    --bad:#FF5C7A;
+    --radius:18px;
+  }
 
-  <title>Studios Dashboard • StudentStream HQ</title>
-  <meta name="description" content="StudentStream HQ Studios Dashboard — manage listings, earnings, submissions, and payouts." />
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:system-ui;
+    background:
+      radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
+      radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    min-height:100vh;
+  }
 
-  <link rel="canonical" href="https://studentstream.online/studios/" />
-  <link rel="icon" href="/favicon.ico"/>
+  .wrap{
+    max-width:1300px;
+    margin:auto;
+    padding:30px 18px 80px;
+  }
 
-  <!-- =========================================
-       STYLE (UPGRADED HQ UI)
-       ========================================= -->
-  <style>
-    :root{
-      --bg:#070A12;
-      --panel:#0E1424;
-      --panel2:#101A33;
-      --text:#EAF0FF;
-      --muted:#A9B4D0;
-      --line:rgba(255,255,255,0.08);
-      --glow:rgba(120,180,255,0.22);
-      --accent:#5DA8FF;
-      --accent2:#7C5CFF;
-      --good:#31D18B;
-      --warn:#FFD35A;
-      --bad:#FF5C7A;
-      --radius:18px;
-    }
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 20px;
+    background:rgba(14,20,36,0.72);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    backdrop-filter:blur(14px);
+  }
 
-    *{box-sizing:border-box;margin:0;padding:0;}
+  .pill{
+    padding:8px 12px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.03);
+    font-size:13px;
+    color:var(--muted);
+  }
 
-    body{
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:
-        radial-gradient(circle at top, rgba(93,168,255,0.14), transparent 55%),
-        radial-gradient(circle at right, rgba(124,92,255,0.10), transparent 55%),
-        var(--bg);
-      color:var(--text);
-      min-height:100vh;
-    }
+  .btn{
+    padding:10px 14px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.04);
+    color:var(--text);
+    cursor:pointer;
+    font-weight:700;
+    transition:.2s;
+  }
 
-    a{color:inherit;text-decoration:none;}
+  .btn:hover{
+    transform:translateY(-1px);
+    border-color:rgba(93,168,255,0.35);
+    box-shadow:0 0 0 4px var(--glow);
+  }
 
-    .wrap{
-      max-width:1300px;
-      margin:auto;
-      padding:30px 18px 80px;
-    }
+  .layout{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:18px;
+    margin-top:18px;
+  }
 
-    /* =========================================
-       NEW: DASHBOARD LAYOUT GRID
-       ========================================= */
-    .layout{
-      display:grid;
-      grid-template-columns:260px 1fr;
-      gap:18px;
-      margin-top:18px;
-    }
+  @media(max-width:950px){
+    .layout{grid-template-columns:1fr;}
+  }
 
-    @media(max-width:950px){
-      .layout{
-        grid-template-columns:1fr;
-      }
-    }
+  .sidebar{
+    background:rgba(14,20,36,0.75);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+  }
 
-    /* =========================================
-       NEW: SIDEBAR
-       ========================================= */
-    .sidebar{
-      background:rgba(14,20,36,0.75);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:18px;
-      backdrop-filter: blur(14px);
-      height:fit-content;
-    }
+  .navlink{
+    display:block;
+    padding:12px 14px;
+    margin-bottom:10px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.02);
+    font-weight:600;
+  }
 
-    .sidebar h3{
-      font-size:14px;
-      margin-bottom:12px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:1px;
-    }
+  .navlink:hover{
+    border:1px solid rgba(93,168,255,0.35);
+    box-shadow:0 0 0 4px var(--glow);
+  }
 
-    .navlink{
-      display:block;
-      padding:12px 14px;
-      margin-bottom:10px;
-      border-radius:14px;
-      border:1px solid transparent;
-      background:rgba(255,255,255,0.02);
-      transition:0.2s;
-      font-weight:600;
-    }
+  .grid{
+    display:grid;
+    grid-template-columns:1.2fr 0.8fr;
+    gap:18px;
+  }
 
-    .navlink:hover{
-      border-color:rgba(93,168,255,0.35);
-      box-shadow:0 0 0 4px var(--glow);
-      transform:translateY(-2px);
-    }
+  @media(max-width:900px){
+    .grid{grid-template-columns:1fr;}
+  }
 
-    /* =========================================
-       TOPBAR (KEEP ORIGINAL)
-       ========================================= */
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:18px 20px;
-      background:rgba(14,20,36,0.72);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      backdrop-filter: blur(14px);
-    }
+  .card{
+    background:rgba(14,20,36,0.75);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    backdrop-filter:blur(14px);
+  }
 
-    .brand h1{
-      font-size:18px;
-      font-weight:800;
-    }
+  .muted{color:var(--muted);font-size:13px;}
 
-    .brand p{
-      font-size:13px;
-      color:var(--muted);
-    }
+  .walletBox{
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    border:1px solid rgba(93,168,255,0.25);
+    background:linear-gradient(90deg, rgba(93,168,255,0.10), rgba(124,92,255,0.06));
+  }
 
-    .userbox{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
+  .walletBox h3{
+    font-size:14px;
+    margin-bottom:10px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
 
-    .pill{
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,0.03);
-      font-size:13px;
-      color:var(--muted);
-    }
+  .walletStat{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-weight:700;
+  }
 
-    .btn{
-      padding:10px 14px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,0.04);
-      color:var(--text);
-      cursor:pointer;
-      transition:0.2s;
-      font-weight:700;
-    }
+  .walletStat span{
+    color:var(--muted);
+    font-weight:600;
+  }
 
-    .btn:hover{
-      transform:translateY(-1px);
-      border-color:rgba(93,168,255,0.35);
-      box-shadow:0 0 0 4px var(--glow);
-    }
+  .requestBtn{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    border-radius:14px;
+    border:none;
+    font-weight:900;
+    cursor:pointer;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:white;
+  }
 
-    /* =========================================
-       NEW: KPI STATS ROW
-       ========================================= */
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:14px;
-      margin-top:18px;
-    }
+  table{
+    width:100%;
+    margin-top:14px;
+    border-collapse:collapse;
+  }
 
-    .stat{
-      padding:16px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(93,168,255,0.10), rgba(255,255,255,0.02));
-    }
+  th,td{
+    padding:10px;
+    font-size:13px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
 
-    .stat b{
-      font-size:18px;
-      display:block;
-      margin-bottom:4px;
-    }
+  th{
+    color:var(--muted);
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:11px;
+  }
 
-    .stat span{
-      font-size:13px;
-      color:var(--muted);
-    }
+  .status{
+    font-weight:900;
+    font-size:12px;
+  }
 
-    /* Banner */
-    .banner{
-      margin-top:18px;
-      padding:16px 18px;
-      border-radius:var(--radius);
-      border:1px solid rgba(255,211,90,0.25);
-      background:linear-gradient(90deg, rgba(255,211,90,0.12), rgba(93,168,255,0.06));
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-    }
-
-    /* Cards */
-    .grid{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:1.2fr 0.8fr;
-      gap:18px;
-    }
-
-    @media(max-width:900px){
-      .grid{grid-template-columns:1fr;}
-    }
-
-    .card{
-      background:rgba(14,20,36,0.75);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:18px;
-      backdrop-filter: blur(14px);
-    }
-
-    .muted{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.4;
-    }
-
-    .actions{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-top:12px;
-    }
-
-    .action{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(93,168,255,0.10), rgba(255,255,255,0.02));
-      transition:0.2s;
-    }
-
-    .action:hover{
-      border-color:rgba(93,168,255,0.35);
-      transform:translateY(-2px);
-    }
-
-    /* Listings */
-    .listing{
-      padding:12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      margin-top:10px;
-      background:rgba(255,255,255,0.02);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-    }
-
-    footer{
-      margin-top:22px;
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-    }
-  </style>
+  .pending{color:var(--warn);}
+  .approved{color:var(--good);}
+  .denied{color:var(--bad);}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div class="brand">
-        <h1>StudentStream HQ • Studios</h1>
-        <p>Dashboard Control Center</p>
-      </div>
-
-      <div class="userbox">
-        <div class="pill" id="userEmail">Loading...</div>
-        <button class="btn" id="logoutBtn">Logout</button>
-      </div>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <h2>Studios Dashboard</h2>
+      <p class="muted">Creator Wallet + Withdrawals</p>
     </div>
 
-    <!-- KPI STATS (NEW UPGRADE) -->
-    <div class="stats">
-      <div class="stat">
-        <b id="statListings">0</b>
-        <span>Active Listings</span>
-      </div>
-      <div class="stat">
-        <b>$<span id="statEarnings">0</span></b>
-        <span>Total Earnings</span>
-      </div>
-      <div class="stat">
-        <b id="statPayouts">Manual</b>
-        <span>Payout Mode</span>
-      </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <div class="pill" id="userEmail">Loading...</div>
+      <button class="btn" id="logoutBtn">Logout</button>
     </div>
-
-    <!-- MANUAL PAYOUTS NOTICE -->
-    <div class="banner">
-      <div>
-        <strong>Manual Payouts Active</strong>
-        <span>Stripe automated payouts are coming soon.</span>
-      </div>
-      <a class="btn" href="/studios/admin/payouts.html">View Payouts</a>
-    </div>
-
-    <!-- NEW LAYOUT -->
-    <div class="layout">
-
-      <!-- SIDEBAR NAV -->
-      <div class="sidebar">
-        <h3>Studios Menu</h3>
-        <a class="navlink" href="/studios/index.html">🏠 Dashboard Home</a>
-        <a class="navlink" href="/studios/marketplace.html">🛒 Marketplace</a>
-        <a class="navlink" href="/studios/submit.html">➕ Submit Listing</a>
-        <a class="navlink" href="/studios/earnings.html">💰 Earnings</a>
-        <a class="navlink" href="/studios/admin/manual-sale.html">🧾 Manual Sale</a>
-      </div>
-
-      <!-- MAIN GRID -->
-      <div class="grid">
-
-        <!-- LEFT -->
-        <div class="card">
-          <h2>Studio Actions</h2>
-          <p class="muted">
-            Manage listings, submissions, earnings, and marketplace activity inside StudentStream HQ.
-          </p>
-
-          <div class="actions">
-            <a class="action" href="/studios/marketplace.html">
-              <b>Marketplace</b>
-              <small>Browse & manage listings</small>
-            </a>
-
-            <a class="action" href="/studios/submit.html">
-              <b>Submit Listing</b>
-              <small>Upload a new studio product</small>
-            </a>
-
-            <a class="action" href="/studios/earnings.html">
-              <b>Earnings</b>
-              <small>Track sales & payouts</small>
-            </a>
-
-            <a class="action" href="/studios/admin/manual-sale.html">
-              <b>Manual Sale</b>
-              <small>Record offline purchases</small>
-            </a>
-          </div>
-
-          <h2 style="margin-top:18px;">Live Marketplace Preview</h2>
-          <p class="muted">Latest active listings pulled from Supabase.</p>
-
-          <div id="listingsArea">
-            <p class="muted" style="margin-top:10px;">Loading listings…</p>
-          </div>
-        </div>
-
-        <!-- RIGHT -->
-        <div class="card">
-          <h2>StudentStream HQ Network</h2>
-          <p class="muted">
-            Studios is the production + marketplace division inside StudentStream HQ.
-          </p>
-
-          <h2 style="margin-top:14px;">Platform Status</h2>
-
-          <div class="listing">
-            <div>
-              <b>Payments</b><br/>
-              <span>Manual payouts (Stripe soon)</span>
-            </div>
-            <span style="color:var(--warn);font-weight:800;">ACTIVE</span>
-          </div>
-
-          <div class="listing">
-            <div>
-              <b>Marketplace</b><br/>
-              <span>Supabase connected</span>
-            </div>
-            <span style="color:var(--good);font-weight:800;">LIVE</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <footer>
-      © <span id="year"></span> StudentStream HQ — Studios Division.
-    </footer>
-
   </div>
 
-  <!-- =========================================
-       SUPABASE AUTH + LISTINGS LOADER
-       ========================================= -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <div class="layout">
 
-    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <a class="navlink" href="/studios/index.html">🏠 Dashboard</a>
+      <a class="navlink" href="/studios/marketplace.html">🛒 Marketplace</a>
+      <a class="navlink" href="/studios/submit.html">➕ Submit Listing</a>
+      <a class="navlink" href="/studios/earnings.html">💰 Earnings</a>
+    </div>
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <!-- MAIN -->
+    <div class="grid">
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+      <!-- LEFT -->
+      <div class="card">
+        <h2>Creator Wallet</h2>
+        <p class="muted">
+          Your Studios earnings are tracked here. Withdrawals are processed manually for now.
+        </p>
 
-    const { data: sessionData } = await supabase.auth.getSession();
+        <div class="walletBox">
+          <h3>Wallet Overview</h3>
 
-    if (!sessionData.session) {
-      window.location.href = "/studios/login.html";
-    }
-
-    document.getElementById("userEmail").textContent =
-      sessionData.session.user.email;
-
-    document.getElementById("logoutBtn").onclick = async () => {
-      await supabase.auth.signOut();
-      window.location.href = "/studios/login.html";
-    };
-
-    async function loadListings() {
-      const area = document.getElementById("listingsArea");
-
-      const { data, error } = await supabase
-        .from("marketplace_listings")
-        .select("title, price, status")
-        .eq("status", "active")
-        .limit(4);
-
-      if (error) {
-        area.innerHTML = `<p class="muted">Error loading listings.</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        area.innerHTML = `<p class="muted">No listings yet.</p>`;
-        return;
-      }
-
-      document.getElementById("statListings").textContent = data.length;
-      document.getElementById("statEarnings").textContent = "Coming Soon";
-
-      area.innerHTML = "";
-
-      data.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "listing";
-
-        div.innerHTML = `
-          <div>
-            <b>${item.title}</b><br/>
-            <span>$${Number(item.price).toFixed(2)}</span>
+          <div class="walletStat">
+            <span>Available Balance</span>
+            <b id="availableBal">$0.00</b>
           </div>
-          <span style="color:var(--good);font-weight:800;">LIVE</span>
-        `;
 
-        area.appendChild(div);
-      });
-    }
+          <div class="walletStat">
+            <span>Pending Balance</span>
+            <b id="pendingBal">$0.00</b>
+          </div>
 
-    loadListings();
-  </script>
+          <button class="requestBtn" id="withdrawBtn">
+            Request Withdrawal
+          </button>
+        </div>
+
+        <h3 style="margin-top:20px;">Withdrawal Requests</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="withdrawTable">
+            <tr><td colspan="3">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="card">
+        <h2>Platform Status</h2>
+        <p class="muted">
+          Withdrawals will become instant once Stripe Connect is enabled.
+        </p>
+
+        <div style="margin-top:14px;">
+          <b style="color:var(--warn);">Manual Payout Mode Active</b>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- =========================================
+     SUPABASE CREATOR WALLET LOGIC
+     ========================================= -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const { data: sessionData } = await supabase.auth.getSession();
+if (!sessionData.session) location.href="/studios/login.html";
+
+const user = sessionData.session.user;
+document.getElementById("userEmail").textContent = user.email;
+
+document.getElementById("logoutBtn").onclick = async () => {
+  await supabase.auth.signOut();
+  location.href="/studios/login.html";
+};
+
+const withdrawTable = document.getElementById("withdrawTable");
+
+async function loadWallet(){
+  // Load creator sales
+  const { data: sales } = await supabase
+    .from("marketplace_sales")
+    .select("*")
+    .eq("seller_id", user.id);
+
+  let available = 0;
+  let pending = 0;
+
+  sales?.forEach(s=>{
+    if(s.status==="paid") available += s.creator_earn_cents;
+    if(s.status==="unpaid") pending += s.creator_earn_cents;
+  });
+
+  document.getElementById("availableBal").textContent =
+    "$" + (available/100).toFixed(2);
+
+  document.getElementById("pendingBal").textContent =
+    "$" + (pending/100).toFixed(2);
+}
+
+async function loadWithdrawals(){
+  const { data } = await supabase
+    .from("withdraw_requests")
+    .select("*")
+    .eq("seller_id", user.id)
+    .order("created_at",{ascending:false});
+
+  if(!data || data.length===0){
+    withdrawTable.innerHTML =
+      `<tr><td colspan="3">No requests yet.</td></tr>`;
+    return;
+  }
+
+  withdrawTable.innerHTML = data.map(w=>`
+    <tr>
+      <td>${new Date(w.created_at).toLocaleDateString()}</td>
+      <td>$${(w.amount_cents/100).toFixed(2)}</td>
+      <td class="status ${w.status}">${w.status.toUpperCase()}</td>
+    </tr>
+  `).join("");
+}
+
+document.getElementById("withdrawBtn").onclick = async ()=>{
+  const amt = prompt("Enter withdrawal amount in dollars:");
+  if(!amt) return;
+
+  const cents = Math.round(Number(amt)*100);
+
+  await supabase.from("withdraw_requests").insert({
+    seller_id:user.id,
+    amount_cents:cents,
+    status:"pending"
+  });
+
+  alert("Withdrawal Request Submitted ✅");
+  loadWithdrawals();
+};
+
+loadWallet();
+loadWithdrawals();
+</script>
 
 </body>
 </html>
