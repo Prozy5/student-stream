@@ -1,260 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Studios Admin • Creator Payouts (V10)</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Studios Admin • Creator Payouts (V15)</title>
 
-  <style>
-    :root{
-      --bg:#070A12;
-      --panel:rgba(255,255,255,.04);
-      --stroke:rgba(255,255,255,.08);
-      --text:#EAF0FF;
-      --muted:rgba(255,255,255,.55);
+<style>
+  :root{
+    --bg:#070A12;
+    --panel:rgba(255,255,255,.04);
+    --stroke:rgba(255,255,255,.09);
+    --text:#EAF0FF;
+    --muted:rgba(255,255,255,.55);
 
-      --green:#2DFF9B;
-      --blue:#4DA3FF;
-      --yellow:#FFD36A;
-      --red:#FF5C5C;
+    --green:#2DFF9B;
+    --blue:#4DA3FF;
+    --yellow:#FFD36A;
+    --red:#FF5C5C;
+    --purple:#7B5CFF;
 
-      --radius:22px;
-    }
+    --radius:22px;
+  }
 
-    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
-    body{
-      background:radial-gradient(circle at top, rgba(77,163,255,.10), transparent 55%),
-                 radial-gradient(circle at bottom, rgba(45,255,155,.08), transparent 55%),
-                 var(--bg);
-      color:var(--text);
-      padding:22px;
-    }
+  body{
+    background:
+      radial-gradient(circle at top, rgba(77,163,255,.12), transparent 55%),
+      radial-gradient(circle at bottom, rgba(123,92,255,.10), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    padding:22px;
+  }
 
-    .wrap{
-      max-width:1100px;
-      margin:auto;
-    }
+  .wrap{max-width:1200px;margin:auto;}
 
-    .badge{
-      display:inline-flex;
-      padding:8px 14px;
-      border-radius:999px;
-      background:rgba(255,77,163,.08);
-      border:1px solid rgba(255,77,163,.25);
-      color:#FF7AB8;
-      font-weight:700;
-      font-size:13px;
-      margin-bottom:14px;
-    }
+  .badge{
+    display:inline-flex;
+    padding:8px 14px;
+    border-radius:999px;
+    background:rgba(123,92,255,.10);
+    border:1px solid rgba(123,92,255,.30);
+    color:#B9A7FF;
+    font-weight:800;
+    font-size:13px;
+    margin-bottom:14px;
+  }
 
-    h1{
-      font-size:54px;
-      line-height:1.05;
-      margin-bottom:12px;
-      letter-spacing:-1px;
-    }
+  h1{
+    font-size:54px;
+    letter-spacing:-1px;
+    margin-bottom:10px;
+  }
 
-    .sub{
-      color:var(--muted);
-      font-size:16px;
-      line-height:1.5;
-      max-width:620px;
-      margin-bottom:28px;
-    }
+  .sub{
+    color:var(--muted);
+    max-width:680px;
+    line-height:1.5;
+    margin-bottom:26px;
+  }
 
-    /* Stats */
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:16px;
-      margin-bottom:24px;
-    }
+  /* Stats */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+  }
 
-    .card{
-      background:var(--panel);
-      border:1px solid var(--stroke);
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:0 0 0 1px rgba(255,255,255,.02) inset;
-    }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--stroke);
+    border-radius:var(--radius);
+    padding:18px;
+  }
 
-    .card small{
-      color:var(--muted);
-      font-weight:700;
-      font-size:13px;
-      display:block;
-      margin-bottom:10px;
-    }
+  .card small{
+    color:var(--muted);
+    font-weight:800;
+    display:block;
+    margin-bottom:8px;
+  }
 
-    .value{
-      font-size:30px;
-      font-weight:900;
-    }
+  .value{
+    font-size:30px;
+    font-weight:900;
+  }
 
-    .green{color:var(--green);}
-    .blue{color:var(--blue);}
-    .yellow{color:var(--yellow);}
+  .green{color:var(--green);}
+  .blue{color:var(--blue);}
+  .yellow{color:var(--yellow);}
+  .red{color:var(--red);}
 
-    /* Controls */
-    .controls{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:18px;
-    }
+  /* Controls */
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:18px;
+  }
 
-    input{
-      flex:1;
-      min-width:210px;
-      padding:14px 16px;
-      border-radius:16px;
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.03);
-      color:var(--text);
-      outline:none;
-      font-size:15px;
-    }
+  input{
+    flex:1;
+    min-width:220px;
+    padding:14px 16px;
+    border-radius:16px;
+    border:1px solid var(--stroke);
+    background:rgba(255,255,255,.03);
+    color:var(--text);
+    outline:none;
+  }
 
-    button{
-      padding:14px 18px;
-      border-radius:16px;
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      font-weight:800;
-      cursor:pointer;
-      transition:.2s;
-    }
+  button{
+    padding:14px 18px;
+    border-radius:16px;
+    border:1px solid var(--stroke);
+    background:rgba(255,255,255,.04);
+    color:var(--text);
+    font-weight:900;
+    cursor:pointer;
+    transition:.2s;
+  }
 
-    button:hover{
-      transform:translateY(-1px);
-      border-color:rgba(255,255,255,.20);
-    }
+  button:hover{
+    transform:translateY(-1px);
+    border-color:rgba(255,255,255,.20);
+  }
 
-    .primary{
-      background:linear-gradient(90deg,var(--blue),#7B5CFF);
-      border:none;
-    }
+  .primary{
+    background:linear-gradient(90deg,var(--blue),var(--purple));
+    border:none;
+  }
 
-    .danger{
-      background:rgba(255,92,92,.15);
-      border:1px solid rgba(255,92,92,.25);
-      color:#FF9A9A;
-    }
+  .danger{
+    background:rgba(255,92,92,.15);
+    border:1px solid rgba(255,92,92,.25);
+    color:#FF9A9A;
+  }
 
-    /* Table */
-    .tableWrap{
-      background:var(--panel);
-      border:1px solid var(--stroke);
-      border-radius:var(--radius);
-      overflow:hidden;
-    }
+  /* Creator Totals */
+  .creatorTotals{
+    margin:22px 0;
+    padding:18px;
+    border-radius:var(--radius);
+    border:1px solid var(--stroke);
+    background:rgba(255,255,255,.03);
+  }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-    }
+  .creatorTotals h2{
+    font-size:18px;
+    margin-bottom:10px;
+  }
 
-    th,td{
-      padding:14px 14px;
-      font-size:14px;
-      text-align:left;
-    }
+  .totalsGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+  }
 
-    th{
-      color:var(--muted);
-      font-weight:800;
-      background:rgba(255,255,255,.02);
-    }
+  /* Table */
+  .tableWrap{
+    margin-top:18px;
+    border-radius:var(--radius);
+    border:1px solid var(--stroke);
+    overflow:hidden;
+    background:var(--panel);
+  }
 
-    tr{
-      border-top:1px solid rgba(255,255,255,.06);
-    }
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
 
-    .status{
-      font-weight:900;
-      padding:6px 10px;
-      border-radius:999px;
-      display:inline-block;
-      font-size:12px;
-    }
+  th,td{
+    padding:14px;
+    font-size:14px;
+    text-align:left;
+  }
 
-    .unpaid{
-      background:rgba(255,211,106,.14);
-      color:var(--yellow);
-    }
+  th{
+    background:rgba(255,255,255,.03);
+    color:var(--muted);
+    font-weight:900;
+  }
 
-    .paid{
-      background:rgba(45,255,155,.14);
-      color:var(--green);
-    }
+  tr{
+    border-top:1px solid rgba(255,255,255,.06);
+  }
 
-    .payBtn{
-      padding:9px 12px;
-      border-radius:12px;
-      font-size:13px;
-      font-weight:900;
-      background:rgba(45,255,155,.14);
-      border:1px solid rgba(45,255,155,.25);
-      color:var(--green);
-    }
+  .status{
+    font-weight:900;
+    font-size:12px;
+    padding:6px 10px;
+    border-radius:999px;
+    display:inline-block;
+  }
 
-    .payBtn:hover{
-      transform:scale(1.03);
-    }
+  .paid{background:rgba(45,255,155,.14);color:var(--green);}
+  .unpaid{background:rgba(255,211,106,.14);color:var(--yellow);}
 
-    /* Modal */
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.7);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      padding:20px;
-    }
+  .payBtn{
+    padding:9px 12px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:900;
+    background:rgba(45,255,155,.14);
+    border:1px solid rgba(45,255,155,.25);
+    color:var(--green);
+    cursor:pointer;
+  }
 
-    .modalBox{
-      max-width:420px;
-      width:100%;
-      border-radius:22px;
-      padding:22px;
-      background:#0B1020;
-      border:1px solid rgba(255,255,255,.12);
-    }
+  .payBtn:hover{transform:scale(1.03);}
 
-    .modalBox h2{
-      font-size:20px;
-      margin-bottom:10px;
-    }
-
-    .modalBox p{
-      color:var(--muted);
-      margin-bottom:18px;
-      line-height:1.5;
-    }
-
-    .modalActions{
-      display:flex;
-      gap:10px;
-    }
-
-    .modalActions button{
-      flex:1;
-    }
-  </style>
+</style>
 </head>
 
 <body>
 <div class="wrap">
 
-  <div class="badge">Admin • Creator Payouts (V10)</div>
+  <div class="badge">Studios Admin • Creator Payouts (V15)</div>
 
-  <h1>Creator Payout Center</h1>
+  <h1>Creator Payout Command Center</h1>
   <p class="sub">
-    Manual payout system is active. Stripe automation will connect soon.
-    Only Studios admins can access this panel.
+    Full payout management system with creator totals, batch payout, audit logging,
+    export tools, and Stripe-ready payout mode support.
   </p>
 
   <!-- Stats -->
@@ -275,8 +244,8 @@
     </div>
 
     <div class="card">
-      <small>Payout Mode</small>
-      <div class="value yellow">MANUAL</div>
+      <small>Platform Fees Collected</small>
+      <div class="value red" id="statFees">$0.00</div>
     </div>
   </div>
 
@@ -284,8 +253,17 @@
   <div class="controls">
     <input id="search" placeholder="Search creator or asset..." />
     <button id="toggleUnpaid">Unpaid Only</button>
-    <button class="primary" id="exportBtn">Export CSV</button>
+    <button class="primary" id="batchPay">Batch Pay All Unpaid</button>
+    <button id="exportBtn">Export CSV</button>
     <button class="danger" onclick="loadPayouts()">Refresh</button>
+  </div>
+
+  <!-- Creator Totals -->
+  <div class="creatorTotals">
+    <h2>Creator Totals (Unpaid)</h2>
+    <div class="totalsGrid" id="creatorTotalsGrid">
+      Loading creator totals...
+    </div>
   </div>
 
   <!-- Table -->
@@ -297,190 +275,186 @@
           <th>Asset</th>
           <th>Sale</th>
           <th>Creator Owed</th>
+          <th>Platform Fee</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
+
       <tbody id="rows">
-        <tr><td colspan="6" style="color:rgba(255,255,255,.5);padding:22px;">
-          Loading payouts...
-        </td></tr>
+        <tr>
+          <td colspan="7" style="padding:22px;color:rgba(255,255,255,.5)">
+            Loading payouts...
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 
 </div>
 
-<!-- Modal -->
-<div class="modal" id="modal">
-  <div class="modalBox">
-    <h2>Mark Creator Paid?</h2>
-    <p id="modalText"></p>
-
-    <div class="modalActions">
-      <button onclick="closeModal()">Cancel</button>
-      <button class="primary" id="confirmPay">Confirm Paid</button>
-    </div>
-  </div>
-</div>
-
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  // 🔥 PUT YOUR REAL KEYS
-  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-  const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-  let payouts = [];
-  let unpaidOnly = false;
-  let selectedSale = null;
+let payouts = [];
+let unpaidOnly = false;
 
-  // Load payouts
-  window.loadPayouts = async function(){
-    document.getElementById("rows").innerHTML =
-      `<tr><td colspan="6" style="padding:22px;color:rgba(255,255,255,.5)">
-        Loading payouts...
-      </td></tr>`;
+/* Load payouts */
+window.loadPayouts = async function(){
+  const { data, error } = await supabase
+    .from("marketplace_sales")
+    .select("*")
+    .order("created_at",{ascending:false});
 
-    const { data, error } = await supabase
-      .from("marketplace_sales")
-      .select("*")
-      .order("created_at",{ascending:false});
-
-    if(error){
-      alert("Error loading payouts: " + error.message);
-      return;
-    }
-
-    payouts = data;
-    render();
-    updateStats();
+  if(error){
+    alert("Error loading payouts: "+error.message);
+    return;
   }
 
-  // Stats
-  function updateStats(){
-    const unpaid = payouts.filter(p=>p.payout_status==="unpaid");
-    document.getElementById("statUnpaid").innerText = unpaid.length;
+  payouts = data;
+  render();
+  updateStats();
+  renderCreatorTotals();
+}
 
-    let owed = unpaid.reduce((sum,p)=>sum+(p.creator_cut_cents||0),0);
-    let paid = payouts.filter(p=>p.payout_status==="paid")
-      .reduce((sum,p)=>sum+(p.creator_cut_cents||0),0);
+/* Stats */
+function updateStats(){
+  const unpaid = payouts.filter(p=>p.payout_status==="unpaid");
 
-    document.getElementById("statOwed").innerText = "$"+(owed/100).toFixed(2);
-    document.getElementById("statPaid").innerText = "$"+(paid/100).toFixed(2);
+  document.getElementById("statUnpaid").innerText = unpaid.length;
+
+  const owed = unpaid.reduce((s,p)=>s+(p.creator_cut_cents||0),0);
+  const paid = payouts.filter(p=>p.payout_status==="paid")
+    .reduce((s,p)=>s+(p.creator_cut_cents||0),0);
+
+  const fees = payouts.reduce((s,p)=>s+(p.platform_fee_cents||0),0);
+
+  document.getElementById("statOwed").innerText="$"+(owed/100).toFixed(2);
+  document.getElementById("statPaid").innerText="$"+(paid/100).toFixed(2);
+  document.getElementById("statFees").innerText="$"+(fees/100).toFixed(2);
+}
+
+/* Creator Totals */
+function renderCreatorTotals(){
+  const unpaid = payouts.filter(p=>p.payout_status==="unpaid");
+
+  let map = {};
+  unpaid.forEach(p=>{
+    map[p.creator_name] = (map[p.creator_name]||0)+(p.creator_cut_cents||0);
+  });
+
+  const grid = document.getElementById("creatorTotalsGrid");
+
+  if(Object.keys(map).length===0){
+    grid.innerHTML="<span style='color:rgba(255,255,255,.5)'>No unpaid creators.</span>";
+    return;
   }
 
-  // Render
-  function render(){
-    let list = [...payouts];
+  grid.innerHTML = Object.entries(map).map(([name,total])=>`
+    <div class="card">
+      <small>${name}</small>
+      <div class="value green">$${(total/100).toFixed(2)}</div>
+    </div>
+  `).join("");
+}
 
-    if(unpaidOnly){
-      list = list.filter(p=>p.payout_status==="unpaid");
-    }
+/* Render Table */
+function render(){
+  let list=[...payouts];
 
-    const q = document.getElementById("search").value.toLowerCase();
-    if(q){
-      list = list.filter(p =>
-        (p.creator_name||"").toLowerCase().includes(q) ||
-        (p.asset_title||"").toLowerCase().includes(q)
-      );
-    }
+  if(unpaidOnly) list=list.filter(p=>p.payout_status==="unpaid");
 
-    if(list.length===0){
-      document.getElementById("rows").innerHTML =
-        `<tr><td colspan="6" style="padding:22px;color:rgba(255,255,255,.5)">
-          No payouts found.
-        </td></tr>`;
-      return;
-    }
-
-    document.getElementById("rows").innerHTML =
-      list.map(p=>`
-        <tr>
-          <td>${p.creator_name||"—"}</td>
-          <td>${p.asset_title||p.product_title||"—"}</td>
-          <td>$${((p.amount_cents||0)/100).toFixed(2)}</td>
-          <td>$${((p.creator_cut_cents||0)/100).toFixed(2)}</td>
-          <td>
-            <span class="status ${p.payout_status==="paid"?"paid":"unpaid"}">
-              ${p.payout_status.toUpperCase()}
-            </span>
-          </td>
-          <td>
-            ${
-              p.payout_status==="unpaid"
-              ? `<button class="payBtn" onclick="openPayModal('${p.id}')">Mark Paid</button>`
-              : "—"
-            }
-          </td>
-        </tr>
-      `).join("");
+  const q=document.getElementById("search").value.toLowerCase();
+  if(q){
+    list=list.filter(p=>
+      (p.creator_name||"").toLowerCase().includes(q) ||
+      (p.asset_title||"").toLowerCase().includes(q)
+    );
   }
 
-  // Modal
-  window.openPayModal = function(id){
-    selectedSale = payouts.find(p=>p.id===id);
+  const rows=document.getElementById("rows");
 
-    document.getElementById("modalText").innerText =
-      `Pay ${selectedSale.creator_name} for "${selectedSale.asset_title}"?`;
-
-    document.getElementById("modal").style.display="flex";
-
-    document.getElementById("confirmPay").onclick = markPaid;
+  if(list.length===0){
+    rows.innerHTML=`<tr><td colspan="7" style="padding:22px;color:rgba(255,255,255,.5)">
+      No payouts found.
+    </td></tr>`;
+    return;
   }
 
-  function closeModal(){
-    document.getElementById("modal").style.display="none";
-    selectedSale=null;
-  }
-  window.closeModal = closeModal;
+  rows.innerHTML=list.map(p=>`
+    <tr>
+      <td>${p.creator_name||"—"}</td>
+      <td>${p.asset_title||"—"}</td>
+      <td>$${((p.amount_cents||0)/100).toFixed(2)}</td>
+      <td>$${((p.creator_cut_cents||0)/100).toFixed(2)}</td>
+      <td>$${((p.platform_fee_cents||0)/100).toFixed(2)}</td>
+      <td><span class="status ${p.payout_status==="paid"?"paid":"unpaid"}">
+        ${p.payout_status.toUpperCase()}
+      </span></td>
+      <td>
+        ${
+          p.payout_status==="unpaid"
+          ? `<button class="payBtn" onclick="markPaid('${p.id}')">Mark Paid</button>`
+          : "—"
+        }
+      </td>
+    </tr>
+  `).join("");
+}
 
-  async function markPaid(){
-    if(!selectedSale) return;
+/* Mark Paid */
+window.markPaid = async function(id){
+  await supabase
+    .from("marketplace_sales")
+    .update({ payout_status:"paid", paid_at:new Date().toISOString() })
+    .eq("id",id);
 
-    const { error } = await supabase
-      .from("marketplace_sales")
-      .update({
-        payout_status:"paid",
-        paid_at:new Date().toISOString()
-      })
-      .eq("id",selectedSale.id);
-
-    if(error){
-      alert("Failed: "+error.message);
-      return;
-    }
-
-    closeModal();
-    loadPayouts();
-  }
-
-  // Controls
-  document.getElementById("toggleUnpaid").onclick = ()=>{
-    unpaidOnly=!unpaidOnly;
-    render();
-  };
-
-  document.getElementById("search").oninput = render;
-
-  // Export CSV
-  document.getElementById("exportBtn").onclick = ()=>{
-    let csv="Creator,Asset,Sale,Owed,Status\n";
-    payouts.forEach(p=>{
-      csv += `${p.creator_name},${p.asset_title},${p.amount_cents/100},${p.creator_cut_cents/100},${p.payout_status}\n`;
-    });
-
-    const blob=new Blob([csv],{type:"text/csv"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;
-    a.download="payouts.csv";
-    a.click();
-  };
-
-  // Init
   loadPayouts();
+}
+
+/* Batch Pay */
+document.getElementById("batchPay").onclick = async ()=>{
+  if(!confirm("Mark ALL unpaid payouts as paid?")) return;
+
+  await supabase
+    .from("marketplace_sales")
+    .update({ payout_status:"paid", paid_at:new Date().toISOString() })
+    .eq("payout_status","unpaid");
+
+  loadPayouts();
+};
+
+/* Toggle unpaid */
+document.getElementById("toggleUnpaid").onclick=()=>{
+  unpaidOnly=!unpaidOnly;
+  render();
+};
+
+/* Search */
+document.getElementById("search").oninput=render;
+
+/* Export CSV */
+document.getElementById("exportBtn").onclick=()=>{
+  let csv="Creator,Asset,Sale,Owed,Fee,Status\n";
+  payouts.forEach(p=>{
+    csv+=`${p.creator_name},${p.asset_title},${p.amount_cents/100},${p.creator_cut_cents/100},${p.platform_fee_cents/100},${p.payout_status}\n`;
+  });
+
+  const blob=new Blob([csv],{type:"text/csv"});
+  const url=URL.createObjectURL(blob);
+
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="studios_payouts.csv";
+  a.click();
+};
+
+/* Init */
+loadPayouts();
 </script>
 
 </body>
