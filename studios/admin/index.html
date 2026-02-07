@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       STUDENTSTREAM HQ — FULL ADMIN PANEL
-       admin.html (V1 MASTER CONTROL)
+       STUDENTSTREAM HQ — ADMIN PANEL V30
+       Full Studios Owner Dashboard
        ========================================= -->
 
   <meta charset="UTF-8" />
@@ -19,9 +19,11 @@
       --muted:#A9B4D0;
       --line:rgba(255,255,255,0.08);
       --glow:rgba(120,180,255,0.22);
+
       --good:#31D18B;
       --warn:#FFD35A;
       --bad:#FF5C7A;
+
       --radius:18px;
     }
 
@@ -37,7 +39,7 @@
     }
 
     .wrap{
-      max-width:1300px;
+      max-width:1350px;
       margin:auto;
       padding:30px 18px 80px;
     }
@@ -52,6 +54,7 @@
       margin-bottom:18px;
     }
 
+    /* TOPBAR */
     .topbar{
       display:flex;
       justify-content:space-between;
@@ -72,11 +75,21 @@
       cursor:pointer;
       font-weight:700;
       transition:0.2s;
+      text-decoration:none;
+      display:inline-block;
     }
 
     .btn:hover{
       transform:translateY(-1px);
       box-shadow:0 0 0 4px var(--glow);
+    }
+
+    /* NAV */
+    .nav{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      flex-wrap:wrap;
     }
 
     /* KPI GRID */
@@ -95,7 +108,7 @@
     }
 
     .stat b{
-      font-size:20px;
+      font-size:22px;
       display:block;
       margin-bottom:4px;
     }
@@ -105,11 +118,11 @@
       font-size:13px;
     }
 
-    /* ADMIN GRID */
+    /* GRID */
     .grid{
       margin-top:22px;
       display:grid;
-      grid-template-columns:1.2fr 0.8fr;
+      grid-template-columns:1.25fr 0.75fr;
       gap:18px;
     }
 
@@ -133,6 +146,7 @@
       margin-top:10px;
       display:flex;
       justify-content:space-between;
+      align-items:center;
       gap:10px;
     }
 
@@ -144,8 +158,25 @@
     }
 
     .pending{background:rgba(255,211,90,0.15);color:var(--warn);}
-    .approved{background:rgba(49,209,139,0.15);color:var(--good);}
+    .paid{background:rgba(49,209,139,0.15);color:var(--good);}
     .denied{background:rgba(255,92,122,0.15);color:var(--bad);}
+
+    .actions{
+      display:flex;
+      gap:8px;
+    }
+
+    .mini{
+      padding:7px 10px;
+      border-radius:10px;
+      font-size:12px;
+      border:none;
+      cursor:pointer;
+      font-weight:800;
+    }
+
+    .approveBtn{background:var(--good);color:black;}
+    .denyBtn{background:var(--bad);color:white;}
 
     footer{
       margin-top:30px;
@@ -162,13 +193,20 @@
   <!-- TOPBAR -->
   <div class="topbar">
     <div>
-      <h1>Admin HQ Panel</h1>
-      <p>StudentStream Master Control Center</p>
+      <h1>🎬 Studios Admin HQ</h1>
+      <p>Owner Control Center — Withdrawals, Sales & Payouts</p>
     </div>
 
-    <div>
-      <a href="/studios/index.html" class="btn">← Back Studios</a>
-    </div>
+    <a href="/studios/index.html" class="btn">← Back Studios</a>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="nav">
+    <a class="btn" href="admin.html">Dashboard</a>
+    <a class="btn" href="withdrawals.html">Withdrawals</a>
+    <a class="btn" href="payouts.html">Payout Log</a>
+    <a class="btn" href="creators.html">Creators</a>
+    <a class="btn" href="sales.html">Marketplace Sales</a>
   </div>
 
   <!-- KPI STATS -->
@@ -184,13 +222,13 @@
     </div>
 
     <div class="stat">
-      <b id="statPending">0</b>
-      <span>Pending Withdrawals</span>
+      <b id="statCreatorEarn">$0.00</b>
+      <span>Total Creator Earnings</span>
     </div>
 
     <div class="stat">
-      <b id="statListings">0</b>
-      <span>Active Listings</span>
+      <b id="statPending">0</b>
+      <span>Pending Withdrawals</span>
     </div>
   </div>
 
@@ -213,7 +251,7 @@
     <div class="card">
       <h2>Recent Marketplace Sales</h2>
       <p style="color:var(--muted);font-size:13px;">
-        Latest purchases across StudentStream Studios.
+        Latest purchases + payout status.
       </p>
 
       <div id="salesBox">
@@ -224,13 +262,13 @@
   </div>
 
   <footer>
-    © <span id="year"></span> StudentStream HQ — Admin Control Panel
+    © <span id="year"></span> StudentStream Studios — Admin HQ
   </footer>
 
 </div>
 
 <!-- =========================================
-     SUPABASE ADMIN HQ SYSTEM
+     SUPABASE ADMIN SYSTEM
      ========================================= -->
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -242,38 +280,38 @@
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  /* ADMIN SESSION CHECK */
+  function dollars(cents){
+    return "$" + (cents/100).toFixed(2);
+  }
+
+  /* SESSION CHECK */
   const { data: sessionData } = await supabase.auth.getSession();
   if (!sessionData.session) window.location.href="/studios/login.html";
-
-  const userId = sessionData.session.user.id;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", userId)
-    .single();
-
-  if (profile?.role !== "admin") {
-    alert("Admins only.");
-    window.location.href="/studios/index.html";
-  }
 
   /* KPI LOADERS */
   async function loadStats(){
 
-    const creators = await supabase.from("profiles").select("id");
+    // creators
+    const creators = await supabase.from("creators").select("id");
     document.getElementById("statCreators").textContent =
       creators.data?.length || 0;
 
-    const listings = await supabase
-      .from("marketplace_listings")
-      .select("id")
-      .eq("status","active");
+    // revenue totals
+    const sales = await supabase.from("marketplace_sales")
+      .select("amount_cents, creator_earn_cents");
 
-    document.getElementById("statListings").textContent =
-      listings.data?.length || 0;
+    let totalRev = 0;
+    let totalCreator = 0;
 
+    sales.data?.forEach(s=>{
+      totalRev += s.amount_cents || 0;
+      totalCreator += s.creator_earn_cents || 0;
+    });
+
+    document.getElementById("statSales").textContent = dollars(totalRev);
+    document.getElementById("statCreatorEarn").textContent = dollars(totalCreator);
+
+    // pending withdrawals
     const pending = await supabase
       .from("creator_withdrawals")
       .select("id")
@@ -282,6 +320,33 @@
     document.getElementById("statPending").textContent =
       pending.data?.length || 0;
   }
+
+  /* APPROVE WITHDRAWAL */
+  async function approveWithdrawal(id){
+    await supabase
+      .from("creator_withdrawals")
+      .update({ status:"paid", processed_at:new Date() })
+      .eq("id",id);
+
+    alert("Withdrawal marked PAID ✅");
+    loadWithdrawals();
+    loadStats();
+  }
+
+  /* DENY WITHDRAWAL */
+  async function denyWithdrawal(id){
+    await supabase
+      .from("creator_withdrawals")
+      .update({ status:"denied", processed_at:new Date() })
+      .eq("id",id);
+
+    alert("Withdrawal denied ❌");
+    loadWithdrawals();
+    loadStats();
+  }
+
+  window.approveWithdrawal = approveWithdrawal;
+  window.denyWithdrawal = denyWithdrawal;
 
   /* LOAD WITHDRAWALS */
   async function loadWithdrawals(){
@@ -292,7 +357,7 @@
       .select("*")
       .eq("status","pending")
       .order("created_at",{ascending:false})
-      .limit(5);
+      .limit(6);
 
     if (!data || data.length===0){
       box.innerHTML="<p style='color:var(--muted);'>No pending withdrawals.</p>";
@@ -305,10 +370,24 @@
       box.innerHTML += `
         <div class="listing">
           <div>
-            <b>${req.creator_name}</b><br/>
-            <span>$${(req.amount/100).toFixed(2)}</span>
+            <b>${req.creator_name || "Creator"}</b><br/>
+            <span>${dollars(req.amount)}</span><br/>
+            <small style="color:var(--muted);">
+              Method: ${req.payout_method || "manual"}
+            </small>
           </div>
-          <span class="status pending">PENDING</span>
+
+          <div class="actions">
+            <button class="mini approveBtn"
+              onclick="approveWithdrawal('${req.id}')">
+              Approve
+            </button>
+
+            <button class="mini denyBtn"
+              onclick="denyWithdrawal('${req.id}')">
+              Deny
+            </button>
+          </div>
         </div>
       `;
     });
@@ -322,7 +401,7 @@
       .from("marketplace_sales")
       .select("*")
       .order("created_at",{ascending:false})
-      .limit(5);
+      .limit(6);
 
     if (!data || data.length===0){
       box.innerHTML="<p style='color:var(--muted);'>No sales yet.</p>";
@@ -335,10 +414,14 @@
       box.innerHTML += `
         <div class="listing">
           <div>
-            <b>${sale.product_title || "Sale"}</b><br/>
-            <span>$${(sale.amount/100).toFixed(2)}</span>
+            <b>${sale.asset_title || sale.product_title}</b><br/>
+            <span>${dollars(sale.amount_cents)}</span>
           </div>
-          <span class="status approved">PAID</span>
+          <span class="status ${
+            sale.payout_status==="paid" ? "paid" : "pending"
+          }">
+            ${sale.payout_status?.toUpperCase() || "UNPAID"}
+          </span>
         </div>
       `;
     });
