@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ==========================================
-     SS FILMS • STUDENTSTREAM HQ v600
-     Netflix-Inspired Homepage Upgrade
-     Supabase Connected • Manual Monetization Club
-  =========================================== -->
+  <!-- ============================================
+     SS FILMS • STUDENTSTREAM HQ v1000
+     Netflix-Level Streaming Homepage
+     Supabase Connected • Admin + Creator System
+     Monetization Club + Manual Payments Active
+  ============================================= -->
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>SS Films • StudentStream HQ</title>
 
   <!-- Supabase -->
@@ -18,8 +18,12 @@
   <style>
     :root {
       --bg: #05060c;
+      --panel: rgba(255,255,255,0.04);
+      --line: rgba(255,255,255,0.10);
+
       --text: #f5f7ff;
       --muted: rgba(255,255,255,0.55);
+
       --accent: #2f8cff;
       --radius: 18px;
     }
@@ -34,164 +38,185 @@
     body {
       background: var(--bg);
       color: var(--text);
+      overflow-x: hidden;
     }
 
-    /* HEADER */
+    /* =========================
+       HEADER (Netflix Style)
+    ========================= */
     header {
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 50;
+      z-index: 100;
+      padding: 18px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 18px 22px;
       background: rgba(0,0,0,0.55);
       backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
     .brand {
-      font-weight: 900;
       font-size: 18px;
+      font-weight: 1000;
       color: var(--accent);
     }
 
     .brand span {
-      color: white;
-      opacity: 0.65;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.55);
       margin-left: 6px;
-      font-weight: 600;
     }
 
-    .nav-btns {
+    .nav {
       display: flex;
       gap: 10px;
+      align-items: center;
     }
 
-    .btn {
+    .nav button {
       padding: 10px 16px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.15);
       background: transparent;
       color: white;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .btn:hover {
+    .nav button:hover {
       background: rgba(255,255,255,0.08);
     }
 
-    /* HERO */
+    /* =========================
+       HERO CINEMATIC
+    ========================= */
     .hero {
       margin-top: 80px;
-      padding: 70px 22px;
-      min-height: 78vh;
+      min-height: 85vh;
+      padding: 70px 24px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+
       background:
-        linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.35)),
-        url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1400&q=80");
+        linear-gradient(to top, rgba(5,6,12,1), rgba(5,6,12,0.3)),
+        url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1800&q=80");
       background-size: cover;
       background-position: center;
     }
 
     .hero h1 {
-      font-size: 52px;
+      font-size: 58px;
       font-weight: 1000;
-      max-width: 620px;
+      max-width: 720px;
       line-height: 1.05;
       letter-spacing: -1px;
     }
 
     .hero p {
-      margin-top: 14px;
+      margin-top: 18px;
+      max-width: 560px;
       font-size: 17px;
-      max-width: 520px;
-      color: var(--muted);
       line-height: 1.6;
+      color: var(--muted);
     }
 
     .hero-actions {
       display: flex;
-      gap: 12px;
-      margin-top: 24px;
+      gap: 14px;
       flex-wrap: wrap;
+      margin-top: 28px;
     }
 
     .primary {
-      padding: 14px 20px;
-      border-radius: 999px;
-      border: none;
-      font-weight: 900;
-      cursor: pointer;
       background: var(--accent);
-      color: white;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-weight: 900;
       font-size: 15px;
+      cursor: pointer;
+      color: white;
     }
 
     .secondary {
-      padding: 14px 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 14px 22px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.35);
-      color: white;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
+      color: white;
     }
 
-    /* SECTION */
+    /* =========================
+       ROW SECTIONS
+    ========================= */
     section {
-      padding: 35px 22px;
+      padding: 40px 24px;
     }
 
     section h2 {
       font-size: 20px;
-      font-weight: 900;
+      font-weight: 1000;
       margin-bottom: 18px;
     }
 
-    /* FILM ROW */
     .row {
       display: flex;
       gap: 14px;
       overflow-x: auto;
-      padding-bottom: 10px;
+      padding-bottom: 12px;
     }
 
     .poster {
-      min-width: 150px;
-      height: 220px;
+      min-width: 160px;
+      height: 240px;
       border-radius: var(--radius);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--panel);
+      border: 1px solid var(--line);
       overflow: hidden;
       cursor: pointer;
       transition: 0.25s;
-      display: flex;
-      align-items: flex-end;
-      padding: 12px;
+      position: relative;
     }
 
     .poster:hover {
-      transform: scale(1.06);
+      transform: scale(1.08);
       border-color: rgba(47,140,255,0.6);
     }
 
-    .poster-title {
-      font-size: 14px;
-      font-weight: 800;
-      text-shadow: 0 0 12px black;
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
+    .poster-title {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
     footer {
       text-align: center;
-      padding: 35px;
-      color: rgba(255,255,255,0.35);
+      padding: 40px;
       font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
   </style>
 </head>
@@ -201,43 +226,52 @@
 <!-- HEADER -->
 <header>
   <div class="brand">
-    SS Films <span>by StudentStream</span>
+    SS Films <span>by StudentStream HQ</span>
   </div>
 
-  <div class="nav-btns">
-    <button class="btn" id="studioBtn" style="display:none;">Studio</button>
-    <button class="btn" id="logoutBtn" style="display:none;">Logout</button>
-    <button class="btn" id="loginBtn">Login</button>
+  <div class="nav">
+    <button id="adminBtn" style="display:none;">Admin</button>
+    <button id="studioBtn" style="display:none;">Studio</button>
+    <button id="logoutBtn" style="display:none;">Logout</button>
+    <button id="loginBtn">Login</button>
   </div>
 </header>
 
 <!-- HERO -->
 <div class="hero">
-  <h1>Original Films. Real Creators.</h1>
+  <h1>Original Films.<br>Powered by Creators.</h1>
 
   <p>
-    SS Films is StudentStream HQ’s official film & production division.
-    Watch new releases, trending creator projects, and studio originals.
+    SS Films is StudentStream HQ’s official production division —
+    streaming creator originals, studio projects, and monetized releases.
   </p>
 
   <div class="hero-actions">
-    <button class="primary" onclick="scrollToTrending()">Browse</button>
-    <button class="secondary" onclick="openMonetizationClub()">
-      Monetization Club
-    </button>
+    <button class="primary" onclick="scrollToRow('trending')">Browse</button>
+    <button class="secondary" onclick="openClub()">Monetization Club</button>
+    <button class="secondary" onclick="manualPayout()">Request Manual Payout Info</button>
   </div>
 </div>
 
 <!-- TRENDING -->
 <section id="trending">
-  <h2>Trending Now</h2>
+  <h2>🔥 Trending Now</h2>
   <div class="row" id="trendingRow"></div>
 </section>
 
 <!-- LATEST -->
 <section>
-  <h2>Latest Releases</h2>
+  <h2>🎬 Latest Releases</h2>
   <div class="row" id="latestRow"></div>
+</section>
+
+<!-- CLUB -->
+<section>
+  <h2>💠 Monetization Club</h2>
+  <p style="color:var(--muted);max-width:600px;line-height:1.6;">
+    Monetization Club creators unlock ad-based payouts, verified releases,
+    and access to SS Films Studios. Payments are currently handled manually.
+  </p>
 </section>
 
 <footer>
@@ -245,9 +279,9 @@
 </footer>
 
 <script>
-/* ============================================
+/* ==============================
    SUPABASE CONFIG
-============================================ */
+============================== */
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_ANON_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
@@ -257,44 +291,36 @@ const supabase = window.supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
-/* ============================================
-   SESSION UI
-============================================ */
-async function checkUser() {
+/* ==============================
+   SESSION + ADMIN CHECK
+============================== */
+async function checkSession() {
   const { data } = await supabase.auth.getSession();
-
   if (!data.session) return;
 
   document.getElementById("loginBtn").style.display = "none";
   document.getElementById("logoutBtn").style.display = "block";
   document.getElementById("studioBtn").style.display = "block";
+
+  // Admin role check (email-based for now)
+  const email = data.session.user.email;
+  if (email === "deondrechambers284@gmail.com") {
+    document.getElementById("adminBtn").style.display = "block";
+  }
 }
+checkSession();
 
-checkUser();
+/* Buttons */
+loginBtn.onclick = () => location.href="/studios/login.html";
+logoutBtn.onclick = async () => { await supabase.auth.signOut(); location.reload(); };
 
-/* BUTTONS */
-document.getElementById("loginBtn").onclick = () => {
-  window.location.href = "/studios/login.html";
-};
+studioBtn.onclick = () => location.href="/studios/dashboard.html";
+adminBtn.onclick = () => location.href="/studios/admin.html";
 
-document.getElementById("logoutBtn").onclick = async () => {
-  await supabase.auth.signOut();
-  location.reload();
-};
-
-document.getElementById("studioBtn").onclick = () => {
-  window.location.href = "/studios/dashboard.html";
-};
-
-/* MONETIZATION CLUB */
-function openMonetizationClub() {
-  window.location.href = "/studios/monetization-club.html";
-}
-
-/* ============================================
-   LOAD FILMS (Posters)
-   Table: films(title, category)
-============================================ */
+/* ==============================
+   LOAD FILMS FROM SUPABASE
+   Table: films(title, thumbnail_url)
+============================== */
 async function loadFilms() {
   const { data: films } = await supabase
     .from("films")
@@ -303,33 +329,43 @@ async function loadFilms() {
 
   if (!films) return;
 
-  const trending = films.slice(0, 6);
-  const latest = films.slice(0, 6);
+  const trending = films.slice(0, 8);
+  const latest = films.slice(0, 8);
 
   trending.forEach(film => {
-    document.getElementById("trendingRow").innerHTML += `
+    trendingRow.innerHTML += `
       <div class="poster">
+        <img src="${film.thumbnail_url || 'https://via.placeholder.com/300'}"/>
         <div class="poster-title">${film.title}</div>
       </div>
     `;
   });
 
   latest.forEach(film => {
-    document.getElementById("latestRow").innerHTML += `
+    latestRow.innerHTML += `
       <div class="poster">
+        <img src="${film.thumbnail_url || 'https://via.placeholder.com/300'}"/>
         <div class="poster-title">${film.title}</div>
       </div>
     `;
   });
 }
-
 loadFilms();
 
-/* SCROLL */
-function scrollToTrending() {
-  document.getElementById("trending").scrollIntoView({
-    behavior: "smooth"
-  });
+/* ==============================
+   HQ ACTIONS
+============================== */
+function openClub() {
+  window.location.href="/studios/monetization-club.html";
+}
+
+function manualPayout() {
+  window.location.href =
+    "mailto:deondrechambers284@gmail.com?subject=SS Films Manual Payout Request&body=Hello SS Films,%0A%0AI want info about manual payouts inside Monetization Club.%0A%0AThank you.";
+}
+
+function scrollToRow(id) {
+  document.getElementById(id).scrollIntoView({ behavior:"smooth" });
 }
 </script>
 
