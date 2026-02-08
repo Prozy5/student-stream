@@ -1,489 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- =========================================
-       STUDIOS PUBLIC HOMEPAGE (LOCKED v30000)
-       StudentStream HQ • Studios Marketplace
-       SS-Films Monetization Club Integrated
-       ========================================= -->
+  <!-- ==========================================
+     SS FILMS • STUDENTSTREAM HQ v500
+     Netflix-Style Upgrade + Supabase Connected
+     Manual Monetization Club Active
+     Admin Panel Enabled
+  =========================================== -->
 
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Mobile / iOS -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-
-  <title>Studios Marketplace • StudentStream HQ</title>
-
-  <!-- SEO -->
-  <meta name="description"
-    content="Studios is the official creative marketplace of StudentStream HQ — licensed digital work, production assets, and creator monetization opportunities." />
-
-  <meta name="keywords"
-    content="Studios marketplace, SS-Films, creator monetization, digital assets, production visuals, creator marketplace" />
-
-  <link rel="canonical" href="https://studentstream.online/studios/" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Studios Marketplace • StudentStream HQ" />
-  <meta property="og:description"
-    content="Browse licensed creative assets, visuals, design packs, and production-ready work through Studios." />
-  <meta property="og:url" content="https://studentstream.online/studios/" />
-  <meta property="og:type" content="website" />
-
-  <!-- Favicon -->
-  <link rel="icon" href="/favicon.ico" />
-
-  <!-- Schema.org -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Studios Marketplace",
-    "url": "https://studentstream.online/studios/",
-    "publisher": {
-      "@type": "Organization",
-      "name": "StudentStream HQ",
-      "url": "https://studentstream.online",
-      "sameAs": [
-        "https://www.instagram.com/studentstreamhq",
-        "https://www.tiktok.com/@studentstreamhq"
-      ]
-    }
-  }
-  </script>
+  <title>SS Films • StudentStream HQ</title>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Styling -->
   <style>
-    :root{
-      --bg:#05060C;
-      --panel:#0E1424;
-      --text:#ECF2FF;
-      --muted:#A9B4D0;
-      --line:rgba(255,255,255,0.12);
-      --accent:#5DA8FF;
-      --accent2:#31D18B;
-      --radius:22px;
+    :root {
+      --bg: #05060c;
+      --panel: rgba(255,255,255,0.05);
+      --text: #f5f7ff;
+      --muted: rgba(255,255,255,0.55);
+      --accent: #2f8cff;
+      --radius: 22px;
     }
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:system-ui,Segoe UI,Roboto,Arial;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, sans-serif;
     }
 
-    body{
-      background:
-        radial-gradient(circle at top, rgba(93,168,255,0.16), transparent 70%),
-        radial-gradient(circle at right, rgba(49,209,139,0.10), transparent 70%),
-        var(--bg);
-      color:var(--text);
-      padding:28px;
-      overflow-x:hidden;
+    body {
+      background: var(--bg);
+      color: var(--text);
     }
 
-    .wrap{
-      max-width:1200px;
-      margin:auto;
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 50;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(18px);
     }
 
-    header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:40px;
-      position:sticky;
-      top:0;
-      padding:18px 0;
-      backdrop-filter:blur(14px);
-      z-index:20;
+    .brand {
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--accent);
     }
 
-    .logo{
-      font-weight:900;
-      font-size:15px;
-      letter-spacing:0.4px;
-      opacity:0.95;
+    .brand span {
+      color: white;
+      font-weight: 600;
+      opacity: 0.7;
+      margin-left: 6px;
+      font-size: 14px;
     }
 
-    nav a{
-      margin-left:18px;
-      font-size:13px;
-      color:var(--muted);
-      font-weight:700;
-      text-decoration:none;
-      transition:0.2s;
+    .nav-btns {
+      display: flex;
+      gap: 10px;
     }
 
-    nav a:hover{
-      color:white;
+    .btn {
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.08);
     }
 
     /* HERO */
-    .hero{
-      padding:70px 0 60px;
-      animation:fadeUp 0.8s ease;
+    .hero {
+      margin-top: 85px;
+      padding: 50px 22px;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background:
+        linear-gradient(to top, rgba(0,0,0,0.95), transparent),
+        url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1400&q=80");
+      background-size: cover;
+      background-position: center;
     }
 
-    .badge{
-      display:inline-block;
-      padding:8px 16px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-      background:rgba(93,168,255,0.14);
-      border:1px solid rgba(93,168,255,0.30);
-      color:var(--accent);
+    .hero h1 {
+      font-size: 52px;
+      font-weight: 1000;
+      max-width: 520px;
+      line-height: 1.05;
     }
 
-    h1{
-      font-size:54px;
-      line-height:1.05;
-      margin:20px 0;
-      font-weight:1000;
-      letter-spacing:-1px;
+    .hero p {
+      margin-top: 15px;
+      font-size: 17px;
+      max-width: 500px;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
-    .sub{
-      font-size:16px;
-      max-width:780px;
-      color:var(--muted);
-      line-height:1.6;
+    .hero button {
+      margin-top: 22px;
+      width: 160px;
+      padding: 14px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 900;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      font-size: 15px;
     }
 
-    .cta{
-      margin-top:32px;
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
+    /* SECTIONS */
+    section {
+      padding: 35px 22px;
     }
 
-    .btn{
-      padding:14px 26px;
-      border-radius:999px;
-      border:none;
-      font-weight:900;
-      cursor:pointer;
-      font-size:14px;
-      transition:0.25s;
+    section h2 {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 18px;
     }
 
-    .btn:hover{
-      transform:translateY(-3px);
-      opacity:0.95;
+    .row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 10px;
     }
 
-    .primary{
-      background:linear-gradient(135deg,var(--accent),#7C5CFF);
-      color:white;
-      box-shadow:0 0 22px rgba(93,168,255,0.25);
+    .card {
+      min-width: 180px;
+      height: 110px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 14px;
+      cursor: pointer;
+      transition: 0.25s;
     }
 
-    .outline{
-      background:transparent;
-      border:1px solid rgba(255,255,255,0.20);
-      color:white;
+    .card:hover {
+      transform: scale(1.05);
+      border-color: rgba(47,140,255,0.6);
     }
 
-    /* Notice */
-    .notice{
-      margin-top:34px;
-      padding:18px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,0.10);
-      background:rgba(255,255,255,0.04);
-      color:var(--muted);
-      line-height:1.5;
-      font-size:13px;
-      max-width:820px;
+    .card h3 {
+      font-size: 15px;
+      font-weight: 800;
     }
 
-    /* Sections */
-    .section{
-      margin-top:90px;
+    .card p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
     }
 
-    .section h2{
-      font-size:28px;
-      margin-bottom:14px;
-      font-weight:1000;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:18px;
-      margin-top:26px;
-    }
-
-    .card{
-      padding:22px;
-      border-radius:var(--radius);
-      border:1px solid var(--line);
-      background:rgba(14,20,36,0.75);
-      transition:.25s;
-    }
-
-    .card:hover{
-      transform:translateY(-6px);
-      border-color:rgba(93,168,255,0.40);
-    }
-
-    .card h3{
-      font-size:15px;
-      margin-bottom:8px;
-      font-weight:900;
-    }
-
-    .card p{
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.4;
-    }
-
-    footer{
-      margin-top:100px;
-      padding-top:30px;
-      border-top:1px solid rgba(255,255,255,0.10);
-      display:flex;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:14px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    footer a{
-      color:var(--accent);
-      font-weight:800;
-      text-decoration:none;
-      margin-left:12px;
-    }
-
-    footer a:hover{
-      color:white;
-    }
-
-    @keyframes fadeUp{
-      from{opacity:0; transform:translateY(18px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-
-    @media(max-width:800px){
-      h1{font-size:40px;}
+    footer {
+      text-align: center;
+      padding: 35px;
+      color: rgba(255,255,255,0.35);
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
-<div class="wrap">
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo">StudentStream HQ • Studios</div>
+<header>
+  <div class="brand">
+    SS Films <span>by StudentStream</span>
+  </div>
 
-    <nav>
-      <a href="/studios/marketplace.html">Marketplace</a>
-      <a id="creatorLink" href="/studios/login.html">Creator Login</a>
-    </nav>
-  </header>
+  <div class="nav-btns">
+    <button class="btn" id="adminBtn" style="display:none;">Admin</button>
+    <button class="btn" id="clubBtn" style="display:none;">Monetization Club</button>
+    <button class="btn" id="logoutBtn" style="display:none;">Logout</button>
+    <button class="btn" id="loginBtn">Login</button>
+  </div>
+</header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <span class="badge">Official Marketplace Division</span>
+<!-- HERO -->
+<div class="hero">
+  <h1>Original films. Real creators.</h1>
+  <p>
+    StudentStream’s official production & film division.
+    Creators earn through ads + Monetization Club payouts.
+  </p>
 
-    <h1>
-      Licensed creative work,<br>
-      built for real productions.
-    </h1>
-
-    <p class="sub">
-      Studios is the creative marketplace of <b>StudentStream HQ</b>.
-      Discover production-ready digital assets, licensed visuals, design packs,
-      and creator-driven work — curated for modern media, brands, and studios.
-    </p>
-
-    <div class="cta">
-      <a href="/studios/marketplace.html">
-        <button class="btn primary">Browse Marketplace</button>
-      </a>
-
-      <a href="/studios/login.html">
-        <button class="btn outline" id="creatorBtn">Creator Login</button>
-      </a>
-    </div>
-
-    <div class="notice">
-      <b>Manual Payout System (Launch Phase)</b><br>
-      Studios currently processes creator payouts manually while Stripe automation is being prepared.
-      All earnings, balances, and payout status are tracked securely through Studios.
-    </div>
-  </section>
-
-  <!-- MONETIZATION CLUB -->
-  <section class="section">
-    <h2>SS-Films Monetization Club</h2>
-
-    <p class="sub" style="margin-top:10px;">
-      The <b>SS-Films Monetization Club</b> is the official creator earning program inside Studios.
-      Members can submit film edits, production assets, visuals, and licensed media
-      while payouts are handled manually during launch.
-    </p>
-
-    <div class="grid">
-      <div class="card">
-        <h3>🎬 Earn Through SS-Films</h3>
-        <p>Upload production-ready work and get paid per sale through Studios.</p>
-      </div>
-
-      <div class="card">
-        <h3>💳 Manual Payments (Right Now)</h3>
-        <p>Payouts are tracked in your dashboard and processed manually until Stripe is added.</p>
-      </div>
-
-      <div class="card">
-        <h3>🚀 Priority Creator Access</h3>
-        <p>Club members get verified creator status, promotion, and early marketplace tools.</p>
-      </div>
-
-      <div class="card">
-        <h3>🔒 Entry Fee Required</h3>
-        <p>Joining the Monetization Club requires an access fee to unlock earning features.</p>
-      </div>
-    </div>
-
-    <div class="cta">
-      <a href="/studios/monetization-club.html">
-        <button class="btn primary">Join Monetization Club →</button>
-      </a>
-
-      <a href="/studios/submit.html">
-        <button class="btn outline">Submit Work</button>
-      </a>
-    </div>
-  </section>
-
-  <!-- WHAT’S INSIDE -->
-  <section class="section">
-    <h2>What’s Available on Studios</h2>
-
-    <div class="grid">
-      <div class="card">
-        <h3>Digital Visual Packs</h3>
-        <p>Licensed overlays, cinematic assets, and brand-ready design work.</p>
-      </div>
-
-      <div class="card">
-        <h3>Photography & Media</h3>
-        <p>Commercial imagery, editorial photography, and creative licensing.</p>
-      </div>
-
-      <div class="card">
-        <h3>Motion & Film Assets</h3>
-        <p>Trailers, motion graphics, short edits, and studio-level production elements.</p>
-      </div>
-
-      <div class="card">
-        <h3>Creator Services</h3>
-        <p>Commission work, collaborations, partnerships, and custom projects.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section class="section">
-    <h2>How Studios Works</h2>
-
-    <div class="grid">
-      <div class="card">
-        <h3>1. Creators Submit</h3>
-        <p>Verified creators upload licensed work and production-ready assets.</p>
-      </div>
-
-      <div class="card">
-        <h3>2. Studios Approves</h3>
-        <p>Listings are reviewed for quality, licensing, and marketplace trust.</p>
-      </div>
-
-      <div class="card">
-        <h3>3. Buyers Request Access</h3>
-        <p>During launch, purchases are processed manually with secure delivery + invoicing.</p>
-      </div>
-
-      <div class="card">
-        <h3>4. Creators Earn</h3>
-        <p>Creators earn per sale, with payouts tracked through their Studios dashboard.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- BUYER ACCESS FUNNEL -->
-  <section class="section">
-    <h2>Need Something Licensed?</h2>
-
-    <p class="sub">
-      Studios is currently in launch mode.  
-      Buyers can request purchase access for licensed packs, visuals, or creator work manually.
-    </p>
-
-    <div class="cta">
-      <a href="mailto:deondrechambers284@gmail.com">
-        <button class="btn primary">Request Purchase Access →</button>
-      </a>
-
-      <a href="/studios/marketplace.html">
-        <button class="btn outline">View Listings</button>
-      </a>
-    </div>
-
-    <div class="notice">
-      Purchases are processed manually right now.  
-      Buyers receive invoices + secure delivery within 24 hours.
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div>© 2026 StudentStream HQ — Studios Division</div>
-
-    <div>
-      <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
-      <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
-    </div>
-  </footer>
-
+  <button onclick="scrollToTrending()">Browse</button>
 </div>
 
-<!-- SESSION-AWARE CREATOR NAV -->
+<!-- TRENDING -->
+<section id="trending">
+  <h2>Trending</h2>
+  <div class="row" id="trendingRow"></div>
+</section>
+
+<!-- LATEST -->
+<section>
+  <h2>Latest Releases</h2>
+  <div class="row" id="latestRow"></div>
+</section>
+
+<footer>
+  © 2026 StudentStream HQ • SS Films Division • Manual Monetization Active
+</footer>
+
 <script>
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+/* ============================================
+   SUPABASE CONFIG
+============================================ */
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-  async function checkSession() {
-    const { data } = await supabase.auth.getSession();
+/* ============================================
+   SESSION + ROLE DETECTION
+============================================ */
+async function checkUser() {
+  const { data } = await supabase.auth.getSession();
 
-    if (data.session) {
-      document.getElementById("creatorLink").textContent = "Dashboard";
-      document.getElementById("creatorLink").href = "/studios/dashboard.html";
+  if (!data.session) return;
 
-      document.getElementById("creatorBtn").textContent = "Go to Dashboard";
-      document.getElementById("creatorBtn").onclick = () => {
-        window.location.href = "/studios/dashboard.html";
-      };
-    }
+  const user = data.session.user;
+
+  document.getElementById("loginBtn").style.display = "none";
+  document.getElementById("logoutBtn").style.display = "block";
+  document.getElementById("clubBtn").style.display = "block";
+
+  // ADMIN CHECK (email-based for now)
+  if (user.email === "deondrechambers284@gmail.com") {
+    document.getElementById("adminBtn").style.display = "block";
   }
+}
 
-  checkSession();
+checkUser();
+
+/* ============================================
+   NAV BUTTONS
+============================================ */
+document.getElementById("loginBtn").onclick = () => {
+  window.location.href = "/studios/login.html";
+};
+
+document.getElementById("logoutBtn").onclick = async () => {
+  await supabase.auth.signOut();
+  location.reload();
+};
+
+document.getElementById("adminBtn").onclick = () => {
+  window.location.href = "/studios/admin.html";
+};
+
+document.getElementById("clubBtn").onclick = () => {
+  window.location.href = "/studios/monetization-club.html";
+};
+
+/* ============================================
+   LOAD FILMS FROM SUPABASE
+   Tables Needed:
+   - films(title, category, created_at)
+============================================ */
+async function loadFilms() {
+  const { data: films } = await supabase
+    .from("films")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (!films) return;
+
+  let trending = films.slice(0, 5);
+  let latest = films.slice(0, 5);
+
+  trending.forEach(film => {
+    document.getElementById("trendingRow").innerHTML += `
+      <div class="card">
+        <h3>${film.title}</h3>
+        <p>${film.category}</p>
+      </div>
+    `;
+  });
+
+  latest.forEach(film => {
+    document.getElementById("latestRow").innerHTML += `
+      <div class="card">
+        <h3>${film.title}</h3>
+        <p>${film.category}</p>
+      </div>
+    `;
+  });
+}
+
+loadFilms();
+
+/* ============================================
+   SCROLL
+============================================ */
+function scrollToTrending() {
+  document.getElementById("trending").scrollIntoView({
+    behavior: "smooth"
+  });
+}
 </script>
 
 </body>
