@@ -2,249 +2,238 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SS: Watch • StudentStream HQ</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <title>SS: Watch — StudentStreamHQ</title>
   <style>
     body {
       margin: 0;
-      font-family: system-ui, Arial;
-      background: #0b0b10;
+      font-family: Arial;
+      background: #070b14;
       color: white;
     }
 
-    /* TOP BAR */
     header {
-      height: 65px;
-      background: #11121a;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 25px;
+      align-items: center;
+      padding: 18px 30px;
+      background: #0d1220;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
 
-    .logo {
-      font-weight: 900;
+    header h1 {
       font-size: 20px;
-      letter-spacing: 0.5px;
-    }
-
-    .search {
-      flex: 1;
-      max-width: 500px;
-      margin: 0 30px;
-    }
-
-    .search input {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: none;
-      outline: none;
-      background: #1c1f2b;
-      color: white;
-    }
-
-    .uploadBtn {
-      background: linear-gradient(135deg,#00c6ff,#7c5cff);
-      border: none;
-      padding: 10px 18px;
-      border-radius: 999px;
-      color: white;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    /* LAYOUT */
-    .layout {
-      display: flex;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      width: 220px;
-      padding: 20px;
-      border-right: 1px solid rgba(255,255,255,0.08);
-      min-height: 100vh;
-      background: #0f1018;
-    }
-
-    .sideLink {
-      display: block;
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 10px;
       font-weight: 700;
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      transition: 0.2s;
+      margin: 0;
+      color: #3b82f6;
     }
 
-    .sideLink:hover {
-      background: rgba(255,255,255,0.06);
+    .btn {
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      padding: 10px 16px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
       color: white;
+      text-decoration: none;
     }
 
-    /* FEED GRID */
-    .feed {
-      flex: 1;
+    main {
       padding: 25px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 28px;
     }
 
     .grid {
       display: grid;
+      gap: 18px;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 22px;
+      margin-top: 20px;
     }
 
     .card {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
+      padding: 16px;
       border-radius: 18px;
-      overflow: hidden;
-      cursor: pointer;
       transition: 0.2s;
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,255,255,0.18);
+      transform: scale(1.02);
+      border-color: rgba(59,130,246,0.6);
     }
 
-    .thumb {
-      height: 150px;
-      background: #222;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      color: rgba(255,255,255,0.3);
-    }
-
-    .info {
-      padding: 14px;
-    }
-
-    .info h2 {
-      font-size: 15px;
+    .card h3 {
       margin: 0;
-      font-weight: 900;
+      font-size: 16px;
     }
 
-    .info p {
-      margin: 6px 0 0;
+    .card p {
       font-size: 13px;
-      color: rgba(255,255,255,0.55);
+      opacity: 0.7;
     }
 
-    footer {
-      padding: 25px;
-      text-align: center;
+    video {
+      width: 100%;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+
+    .uploadBox {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    input, textarea {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.06);
+      color: white;
+    }
+
+    textarea {
+      resize: none;
+      height: 70px;
+    }
+
+    #status {
+      margin-top: 10px;
       font-size: 13px;
-      opacity: 0.25;
+      opacity: 0.7;
     }
   </style>
 </head>
 
 <body>
 
-<!-- TOP NAV -->
 <header>
-  <div class="logo">📺 SS: Watch</div>
-
-  <div class="search">
-    <input placeholder="Search StudentStream videos...">
-  </div>
-
-  <button class="uploadBtn" onclick="goUpload()">
+  <h1>📺 SS: Watch</h1>
+  <button class="btn" onclick="document.getElementById('uploadSection').scrollIntoView()">
     ⬆ Upload
   </button>
 </header>
 
-<!-- MAIN LAYOUT -->
-<div class="layout">
+<main>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <a class="sideLink" href="index.html">🏠 Home</a>
-    <a class="sideLink" href="#">🔥 Trending</a>
-    <a class="sideLink" href="#">🎬 SS Films Originals</a>
-    <a class="sideLink" href="#">💸 Monetization Club</a>
-    <a class="sideLink" href="#">⚙ Settings</a>
+  <h2>Latest Uploads</h2>
+  <div class="grid" id="videoGrid"></div>
+
+  <!-- Upload Section -->
+  <div class="uploadBox" id="uploadSection">
+    <h2>Upload Video</h2>
+
+    <input id="title" placeholder="Video title..." />
+    <textarea id="desc" placeholder="Description..."></textarea>
+    <input type="file" id="fileInput" accept="video/*" />
+
+    <button class="btn" onclick="uploadVideo()">Upload Now</button>
+
+    <div id="status"></div>
   </div>
 
-  <!-- FEED -->
-  <div class="feed">
-    <h1 style="margin-bottom:20px;">Latest Uploads</h1>
+</main>
 
-    <div class="grid" id="videoGrid"></div>
+<!-- Supabase -->
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-    <footer>
-      © 2026 StudentStream HQ • SS: Watch Division
-    </footer>
-  </div>
+  // ✅ PUT YOUR INFO HERE
+  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-</div>
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-<script>
-/* ✅ SUPABASE CONNECT */
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+  // Load videos
+  async function loadVideos() {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+    if (error) {
+      console.log(error);
+      return;
+    }
 
-/* Upload Redirect */
-function goUpload() {
-  window.location.href = "upload.html";
-}
+    const grid = document.getElementById("videoGrid");
+    grid.innerHTML = "";
 
-/* Load Feed */
-async function loadVideos() {
-  const grid = document.getElementById("videoGrid");
+    data.forEach(video => {
+      const card = document.createElement("div");
+      card.className = "card";
 
-  const { data, error } = await supabase
-    .from("sswatch_videos")
-    .select("*")
-    .order("created_at", { ascending: false });
+      card.innerHTML = `
+        <h3>${video.title}</h3>
+        <p>${video.description || ""}</p>
+        <video controls>
+          <source src="${video.video_url}" type="video/mp4">
+        </video>
+      `;
 
-  if (error) {
-    grid.innerHTML = "<p>❌ Error loading videos.</p>";
-    return;
+      grid.appendChild(card);
+    });
   }
 
-  if (data.length === 0) {
-    grid.innerHTML = "<p>No videos yet. Upload the first one.</p>";
-    return;
-  }
+  loadVideos();
 
-  data.forEach(video => {
-    grid.innerHTML += `
-      <div class="card" onclick="watchVideo('${video.id}')">
-        <div class="thumb">SS WATCH</div>
-        <div class="info">
-          <h2>${video.title}</h2>
-          <p>${video.description || ""}</p>
-        </div>
-      </div>
-    `;
-  });
-}
+  // Upload video
+  window.uploadVideo = async function () {
+    const title = document.getElementById("title").value;
+    const desc = document.getElementById("desc").value;
+    const file = document.getElementById("fileInput").files[0];
 
-/* Watch Redirect */
-function watchVideo(id) {
-  window.location.href = "watch.html?id=" + id;
-}
+    if (!title || !file) {
+      alert("Title + video file required.");
+      return;
+    }
 
-loadVideos();
+    document.getElementById("status").innerText = "Uploading...";
+
+    const fileName = `${Date.now()}-${file.name}`;
+
+    // Upload to bucket
+    const { error: uploadError } = await supabase.storage
+      .from("videos")
+      .upload(fileName, file);
+
+    if (uploadError) {
+      console.log(uploadError);
+      document.getElementById("status").innerText = "Upload failed.";
+      return;
+    }
+
+    // Public URL
+    const { data } = supabase.storage
+      .from("videos")
+      .getPublicUrl(fileName);
+
+    const videoUrl = data.publicUrl;
+
+    // Save into table
+    await supabase.from("videos").insert([
+      {
+        title: title,
+        description: desc,
+        video_url: videoUrl
+      }
+    ]);
+
+    document.getElementById("status").innerText = "Uploaded successfully ✅";
+
+    // Refresh feed
+    loadVideos();
+  };
 </script>
 
 </body>
