@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload • SS: Watch</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0b0b0f;
+      color: white;
+      padding: 30px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 14px;
+      width: 100%;
+      border-radius: 12px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>⬆ Upload to SS: Watch</h1>
+
+<input id="title" placeholder="Video Title">
+<textarea id="desc" placeholder="Description"></textarea>
+
+<input type="file" id="file">
+
+<button onclick="uploadVideo()">Upload Video</button>
+
+<p id="status"></p>
+
+<script>
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function uploadVideo() {
+  const title = document.getElementById("title").value;
+  const desc = document.getElementById("desc").value;
+  const file = document.getElementById("file").files[0];
+  const status = document.getElementById("status");
+
+  if (!title || !file) {
+    alert("Enter title + select video file.");
+    return;
+  }
+
+  status.innerText = "Uploading...";
+
+  const fileName = `${Date.now()}-${file.name}`;
+
+  // Upload file to storage
+  const { data: uploadData, error: uploadError } =
+    await supabase.storage
+      .from("sswatch-videos")
+      .upload(fileName, file);
+
+  if (uploadError) {
+    status.innerText = "❌ Upload failed.";
+    return;
+  }
+
+  // Get public URL
+  const { data: urlData } =
+    supabase.storage
+      .from("sswatch-videos")
+      .getPublicUrl(fileName);
+
+  const videoURL = urlData.publicUrl;
+
+  // Save into database
+  await supabase.from("sswatch_videos").insert([
+    {
+      title: title,
+      description: desc,
+      video_url: videoURL
+    }
+  ]);
+
+  status.innerText = "✅ Upload complete!";
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
