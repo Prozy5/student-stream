@@ -2,96 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SS: Watch — StudentStreamHQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SS: Watch</title>
+
   <style>
     body {
       margin: 0;
       font-family: Arial;
       background: #070b14;
       color: white;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background: #0c1220;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      padding: 20px;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 18px;
+      color: #3b82f6;
+      margin-bottom: 30px;
+    }
+
+    .navItem {
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      opacity: 0.85;
+    }
+
+    .navItem:hover {
+      background: rgba(59,130,246,0.15);
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 20px;
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 18px 30px;
-      background: #0d1220;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 25px;
     }
 
-    header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      margin: 0;
-      color: #3b82f6;
+    header input {
+      width: 60%;
+      padding: 12px;
+      border-radius: 14px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.06);
+      color: white;
     }
 
     .btn {
-      background: linear-gradient(90deg, #2563eb, #3b82f6);
-      padding: 10px 16px;
+      background: linear-gradient(90deg,#2563eb,#3b82f6);
       border: none;
-      border-radius: 12px;
-      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 14px;
       cursor: pointer;
+      font-weight: 700;
       color: white;
-      text-decoration: none;
-    }
-
-    main {
-      padding: 25px;
     }
 
     h2 {
-      margin-top: 0;
-      font-size: 28px;
+      margin: 0;
+      font-size: 26px;
     }
 
+    /* Video Grid */
     .grid {
       display: grid;
       gap: 18px;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       margin-top: 20px;
+      grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
     }
 
     .card {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
-      padding: 16px;
       border-radius: 18px;
+      overflow: hidden;
       transition: 0.2s;
     }
 
     .card:hover {
-      transform: scale(1.02);
-      border-color: rgba(59,130,246,0.6);
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .card p {
-      font-size: 13px;
-      opacity: 0.7;
+      transform: scale(1.03);
+      border-color: rgba(59,130,246,0.5);
     }
 
     video {
       width: 100%;
-      border-radius: 14px;
-      margin-top: 10px;
+      height: 180px;
+      object-fit: cover;
+      background: black;
     }
 
-    .uploadBox {
-      margin-top: 25px;
-      background: rgba(255,255,255,0.03);
-      padding: 18px;
+    .cardInfo {
+      padding: 12px;
+    }
+
+    .cardInfo h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .cardInfo p {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 6px;
+    }
+
+    /* Upload Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modalBox {
+      width: 400px;
+      background: #0c1220;
+      padding: 20px;
       border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
-    input, textarea {
+    .modalBox input,
+    .modalBox textarea {
       width: 100%;
       margin-top: 10px;
       padding: 10px;
@@ -117,68 +168,88 @@
 
 <body>
 
-<header>
-  <h1>📺 SS: Watch</h1>
-  <button class="btn" onclick="document.getElementById('uploadSection').scrollIntoView()">
-    ⬆ Upload
-  </button>
-</header>
-
-<main>
-
-  <h2>Latest Uploads</h2>
-  <div class="grid" id="videoGrid"></div>
-
-  <!-- Upload Section -->
-  <div class="uploadBox" id="uploadSection">
-    <h2>Upload Video</h2>
-
-    <input id="title" placeholder="Video title..." />
-    <textarea id="desc" placeholder="Description..."></textarea>
-    <input type="file" id="fileInput" accept="video/*" />
-
-    <button class="btn" onclick="uploadVideo()">Upload Now</button>
-
-    <div id="status"></div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">📺 SS: Watch</div>
+    <div class="navItem">🏠 Home</div>
+    <div class="navItem">🔥 Trending</div>
+    <div class="navItem">🎬 Originals</div>
+    <div class="navItem">💰 Monetization</div>
+    <div class="navItem">⚙ Settings</div>
   </div>
 
-</main>
+  <!-- Main -->
+  <div class="main">
+    <header>
+      <input placeholder="Search StudentStream..." />
+      <button class="btn" onclick="openUpload()">⬆ Upload</button>
+    </header>
 
-<!-- Supabase -->
+    <h2>Latest Uploads</h2>
+    <div class="grid" id="videoGrid"></div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div class="modal" id="uploadModal">
+    <div class="modalBox">
+      <h2>Upload Video</h2>
+
+      <input id="title" placeholder="Video title..." />
+      <textarea id="desc" placeholder="Description..."></textarea>
+      <input type="file" id="fileInput" accept="video/*"/>
+
+      <button class="btn" onclick="uploadVideo()">Upload Now</button>
+      <button class="btn" style="margin-top:10px;background:#222;" onclick="closeUpload()">Cancel</button>
+
+      <div id="status"></div>
+    </div>
+  </div>
+
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-  // ✅ PUT YOUR INFO HERE
   const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  // Load videos
+  // Modal Controls
+  window.openUpload = () => {
+    document.getElementById("uploadModal").style.display = "flex";
+  };
+
+  window.closeUpload = () => {
+    document.getElementById("uploadModal").style.display = "none";
+  };
+
+  // Load Videos
   async function loadVideos() {
     const { data, error } = await supabase
       .from("videos")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.log(error);
-      return;
-    }
+    if (error) console.log(error);
 
     const grid = document.getElementById("videoGrid");
     grid.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      grid.innerHTML = "<p style='opacity:0.6'>No uploads yet.</p>";
+      return;
+    }
 
     data.forEach(video => {
       const card = document.createElement("div");
       card.className = "card";
 
       card.innerHTML = `
-        <h3>${video.title}</h3>
-        <p>${video.description || ""}</p>
         <video controls>
           <source src="${video.video_url}" type="video/mp4">
         </video>
+        <div class="cardInfo">
+          <h3>${video.title}</h3>
+          <p>${video.description || ""}</p>
+        </div>
       `;
 
       grid.appendChild(card);
@@ -187,51 +258,38 @@
 
   loadVideos();
 
-  // Upload video
+  // Upload Video
   window.uploadVideo = async function () {
     const title = document.getElementById("title").value;
     const desc = document.getElementById("desc").value;
     const file = document.getElementById("fileInput").files[0];
 
-    if (!title || !file) {
-      alert("Title + video file required.");
-      return;
-    }
+    if (!title || !file) return alert("Need title + file");
 
     document.getElementById("status").innerText = "Uploading...";
 
     const fileName = `${Date.now()}-${file.name}`;
 
-    // Upload to bucket
-    const { error: uploadError } = await supabase.storage
+    const { error } = await supabase.storage
       .from("videos")
       .upload(fileName, file);
 
-    if (uploadError) {
-      console.log(uploadError);
-      document.getElementById("status").innerText = "Upload failed.";
+    if (error) {
+      document.getElementById("status").innerText = "Upload failed ❌";
       return;
     }
 
-    // Public URL
     const { data } = supabase.storage
       .from("videos")
       .getPublicUrl(fileName);
 
-    const videoUrl = data.publicUrl;
-
-    // Save into table
     await supabase.from("videos").insert([
-      {
-        title: title,
-        description: desc,
-        video_url: videoUrl
-      }
+      { title, description: desc, video_url: data.publicUrl }
     ]);
 
-    document.getElementById("status").innerText = "Uploaded successfully ✅";
+    document.getElementById("status").innerText = "Uploaded ✅";
 
-    // Refresh feed
+    closeUpload();
     loadVideos();
   };
 </script>
