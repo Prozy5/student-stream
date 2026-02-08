@@ -8,7 +8,7 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #070b14;
       color: white;
       display: flex;
@@ -16,30 +16,38 @@
 
     /* Sidebar */
     .sidebar {
-      width: 220px;
+      width: 230px;
       height: 100vh;
       background: #0c1220;
-      border-right: 1px solid rgba(255,255,255,0.08);
       padding: 20px;
+      border-right: 1px solid rgba(255,255,255,0.08);
     }
 
     .logo {
+      font-size: 20px;
       font-weight: 800;
-      font-size: 18px;
       color: #3b82f6;
       margin-bottom: 30px;
     }
 
-    .navItem {
-      padding: 12px;
-      margin-bottom: 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      opacity: 0.85;
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .navItem:hover {
+    .nav a {
+      text-decoration: none;
+      color: white;
+      opacity: 0.8;
+      padding: 12px;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
+
+    .nav a:hover {
       background: rgba(59,130,246,0.15);
+      opacity: 1;
     }
 
     /* Main */
@@ -66,12 +74,12 @@
     }
 
     .btn {
-      background: linear-gradient(90deg,#2563eb,#3b82f6);
-      border: none;
       padding: 10px 16px;
+      border: none;
       border-radius: 14px;
       cursor: pointer;
-      font-weight: 700;
+      font-weight: bold;
+      background: linear-gradient(90deg,#2563eb,#3b82f6);
       color: white;
     }
 
@@ -82,9 +90,9 @@
 
     /* Video Grid */
     .grid {
+      margin-top: 20px;
       display: grid;
       gap: 18px;
-      margin-top: 20px;
       grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
     }
 
@@ -101,43 +109,42 @@
       border-color: rgba(59,130,246,0.5);
     }
 
-    video {
+    .thumb {
       width: 100%;
-      height: 180px;
-      object-fit: cover;
+      height: 170px;
       background: black;
     }
 
-    .cardInfo {
+    .info {
       padding: 12px;
     }
 
-    .cardInfo h3 {
+    .info h3 {
       margin: 0;
       font-size: 15px;
     }
 
-    .cardInfo p {
+    .info p {
+      margin-top: 6px;
       font-size: 12px;
       opacity: 0.6;
-      margin-top: 6px;
     }
 
     /* Upload Modal */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.75);
+      background: rgba(0,0,0,0.8);
       display: none;
       justify-content: center;
       align-items: center;
     }
 
     .modalBox {
-      width: 400px;
-      background: #0c1220;
+      width: 420px;
       padding: 20px;
       border-radius: 18px;
+      background: #0c1220;
       border: 1px solid rgba(255,255,255,0.1);
     }
 
@@ -154,8 +161,8 @@
     }
 
     textarea {
+      height: 80px;
       resize: none;
-      height: 70px;
     }
 
     #status {
@@ -171,15 +178,18 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">📺 SS: Watch</div>
-    <div class="navItem">🏠 Home</div>
-    <div class="navItem">🔥 Trending</div>
-    <div class="navItem">🎬 Originals</div>
-    <div class="navItem">💰 Monetization</div>
-    <div class="navItem">⚙ Settings</div>
+    <div class="nav">
+      <a href="#">🏠 Home</a>
+      <a href="#">🔥 Trending</a>
+      <a href="#">🎬 Originals</a>
+      <a href="#">💰 Monetization</a>
+      <a href="#">⚙ Settings</a>
+    </div>
   </div>
 
   <!-- Main -->
   <div class="main">
+
     <header>
       <input placeholder="Search StudentStream..." />
       <button class="btn" onclick="openUpload()">⬆ Upload</button>
@@ -187,6 +197,7 @@
 
     <h2>Latest Uploads</h2>
     <div class="grid" id="videoGrid"></div>
+
   </div>
 
   <!-- Upload Modal -->
@@ -199,100 +210,119 @@
       <input type="file" id="fileInput" accept="video/*"/>
 
       <button class="btn" onclick="uploadVideo()">Upload Now</button>
-      <button class="btn" style="margin-top:10px;background:#222;" onclick="closeUpload()">Cancel</button>
+      <button class="btn" style="margin-top:10px;background:#222;"
+        onclick="closeUpload()">Cancel</button>
 
       <div id="status"></div>
     </div>
   </div>
 
-<script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js";
+  <!-- Supabase -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-  const supabase = createClient(supabaseUrl, supabaseKey);
+    /* 🔥 PUT YOUR REAL INFO */
+    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-  // Modal Controls
-  window.openUpload = () => {
-    document.getElementById("uploadModal").style.display = "flex";
-  };
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-  window.closeUpload = () => {
-    document.getElementById("uploadModal").style.display = "none";
-  };
+    /* Modal */
+    window.openUpload = () => {
+      document.getElementById("uploadModal").style.display = "flex";
+    };
 
-  // Load Videos
-  async function loadVideos() {
-    const { data, error } = await supabase
-      .from("videos")
-      .select("*")
-      .order("created_at", { ascending: false });
+    window.closeUpload = () => {
+      document.getElementById("uploadModal").style.display = "none";
+    };
 
-    if (error) console.log(error);
+    /* Load Videos */
+    async function loadVideos() {
+      const { data, error } = await supabase
+        .from("videos")
+        .select("*")
+        .order("id", { ascending: false });
 
-    const grid = document.getElementById("videoGrid");
-    grid.innerHTML = "";
+      const grid = document.getElementById("videoGrid");
+      grid.innerHTML = "";
 
-    if (!data || data.length === 0) {
-      grid.innerHTML = "<p style='opacity:0.6'>No uploads yet.</p>";
-      return;
+      if (error) {
+        grid.innerHTML = "<p>Error loading videos.</p>";
+        console.log(error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        grid.innerHTML = "<p style='opacity:0.6'>No videos uploaded yet.</p>";
+        return;
+      }
+
+      data.forEach(video => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <video class="thumb" controls>
+            <source src="${video.url}" type="video/mp4">
+          </video>
+          <div class="info">
+            <h3>${video.title}</h3>
+            <p>${video.description || ""}</p>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
     }
 
-    data.forEach(video => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      card.innerHTML = `
-        <video controls>
-          <source src="${video.video_url}" type="video/mp4">
-        </video>
-        <div class="cardInfo">
-          <h3>${video.title}</h3>
-          <p>${video.description || ""}</p>
-        </div>
-      `;
-
-      grid.appendChild(card);
-    });
-  }
-
-  loadVideos();
-
-  // Upload Video
-  window.uploadVideo = async function () {
-    const title = document.getElementById("title").value;
-    const desc = document.getElementById("desc").value;
-    const file = document.getElementById("fileInput").files[0];
-
-    if (!title || !file) return alert("Need title + file");
-
-    document.getElementById("status").innerText = "Uploading...";
-
-    const fileName = `${Date.now()}-${file.name}`;
-
-    const { error } = await supabase.storage
-      .from("videos")
-      .upload(fileName, file);
-
-    if (error) {
-      document.getElementById("status").innerText = "Upload failed ❌";
-      return;
-    }
-
-    const { data } = supabase.storage
-      .from("videos")
-      .getPublicUrl(fileName);
-
-    await supabase.from("videos").insert([
-      { title, description: desc, video_url: data.publicUrl }
-    ]);
-
-    document.getElementById("status").innerText = "Uploaded ✅";
-
-    closeUpload();
     loadVideos();
-  };
-</script>
+
+    /* Upload */
+    window.uploadVideo = async function () {
+      const title = document.getElementById("title").value;
+      const desc = document.getElementById("desc").value;
+      const file = document.getElementById("fileInput").files[0];
+
+      if (!title || !file) {
+        alert("Title + video required.");
+        return;
+      }
+
+      document.getElementById("status").innerText = "Uploading...";
+
+      const fileName = `${Date.now()}-${file.name}`;
+
+      /* Upload to bucket */
+      const { error: uploadError } = await supabase.storage
+        .from("videos")
+        .upload(fileName, file);
+
+      if (uploadError) {
+        document.getElementById("status").innerText = "Upload failed ❌";
+        console.log(uploadError);
+        return;
+      }
+
+      /* Get URL */
+      const { data } = supabase.storage
+        .from("videos")
+        .getPublicUrl(fileName);
+
+      /* Insert into table */
+      await supabase.from("videos").insert([
+        {
+          title: title,
+          description: desc,
+          url: data.publicUrl
+        }
+      ]);
+
+      document.getElementById("status").innerText = "Uploaded ✅";
+
+      closeUpload();
+      loadVideos();
+    };
+  </script>
 
 </body>
 </html>
