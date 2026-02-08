@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SS: Watch</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0b0b0f;
+      color: white;
+      padding: 25px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 34px;
+      font-weight: 900;
+    }
+
+    a {
+      color: cyan;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .video {
+      border: 1px solid #333;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>📺 SS: Watch</h1>
+  <a href="upload.html">⬆ Upload</a>
+</header>
+
+<div id="feed"></div>
+
+<script>
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function loadFeed() {
+  const { data, error } = await supabase
+    .from("sswatch_videos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const feed = document.getElementById("feed");
+
+  if (error) {
+    feed.innerHTML = "❌ Error loading feed.";
+    return;
+  }
+
+  if (data.length === 0) {
+    feed.innerHTML = "<p>No videos yet. Upload the first one.</p>";
+    return;
+  }
+
+  data.forEach(video => {
+    feed.innerHTML += `
+      <div class="video">
+        <h2>${video.title}</h2>
+        <p>${video.description || ""}</p>
+        <a href="watch.html?id=${video.id}">▶ Watch Video</a>
+      </div>
+    `;
+  });
+}
+
+loadFeed();
+</script>
+
+</body>
+</html>
