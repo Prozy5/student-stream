@@ -2,347 +2,313 @@
 <html lang="en">
 <head>
   <!-- =========================================
-       SS FILMS INDEX (LOCKED v20000)
-       StudentStream HQ • Studios Division
-       Monetization Club • Manual Payments Active
-       FULL SUPABASE + WORKING BUTTONS
-  ========================================= -->
+       SS FILMS HOMEPAGE (LOCKED v19999)
+       StudentStream HQ • Netflix Style
+       GitHub Pages Compatible + Supabase Live
+       Manual Monetization Club Active
+       ========================================= -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>SS Films • StudentStream HQ</title>
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --bg:#05060c;
+      --panel:#0e1424;
+      --text:#f5f7ff;
+      --muted:#a9b4d0;
+      --line:rgba(255,255,255,0.12);
+      --accent:#3b82f6;
+      --radius:18px;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+    }
+
     body{
-      font-family:Inter,sans-serif;
-      background:#05070c;
-      color:white;
-      overflow-x:hidden;
+      background:var(--bg);
+      color:var(--text);
     }
 
     header{
-      position:fixed;
+      position:sticky;
       top:0;
-      width:100%;
-      padding:18px 26px;
+      z-index:50;
+      padding:18px 30px;
+      background:rgba(5,6,12,0.92);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+
       display:flex;
       justify-content:space-between;
       align-items:center;
-      background:rgba(0,0,0,0.72);
-      backdrop-filter:blur(18px);
-      z-index:999;
     }
 
     .logo{
-      font-size:18px;
+      font-weight:1000;
+      font-size:15px;
+      letter-spacing:0.5px;
+    }
+
+    nav a{
+      margin-left:18px;
+      text-decoration:none;
+      font-size:13px;
       font-weight:800;
-      letter-spacing:0.4px;
-    }
-    .logo span{color:#3b82f6;}
-
-    nav{
-      display:flex;
-      gap:12px;
-    }
-
-    .nav-btn{
-      padding:10px 18px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.15);
-      background:rgba(255,255,255,0.06);
-      color:white;
-      font-weight:600;
-      cursor:pointer;
+      color:var(--muted);
       transition:0.2s;
     }
-    .nav-btn:hover{
-      background:rgba(255,255,255,0.14);
+
+    nav a:hover{
+      color:white;
     }
 
     /* HERO */
     .hero{
-      height:92vh;
-      display:flex;
-      align-items:center;
-      padding:0 26px;
-      background:
-        linear-gradient(to top, rgba(5,7,12,1), rgba(5,7,12,0.25)),
-        url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4")
-        center/cover no-repeat;
-    }
-
-    .hero-content{
-      max-width:650px;
-      margin-top:60px;
+      padding:90px 30px 60px;
+      max-width:1100px;
+      margin:auto;
     }
 
     .hero h1{
-      font-size:56px;
-      font-weight:800;
+      font-size:60px;
+      font-weight:1000;
       line-height:1.05;
       margin-bottom:18px;
     }
 
     .hero p{
-      font-size:16px;
-      color:rgba(255,255,255,0.72);
+      color:var(--muted);
+      max-width:650px;
+      font-size:17px;
       line-height:1.6;
-      margin-bottom:26px;
+      margin-bottom:30px;
     }
 
-    .hero-actions{
+    .actions{
       display:flex;
-      gap:12px;
+      gap:14px;
       flex-wrap:wrap;
     }
 
-    .btn-main{
-      background:#3b82f6;
-      border:none;
-      padding:12px 22px;
+    .btn{
+      display:inline-block;
+      padding:14px 26px;
       border-radius:999px;
-      font-weight:700;
-      cursor:pointer;
-      transition:0.2s;
-    }
-    .btn-main:hover{transform:scale(1.05);}
-
-    .btn-alt{
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.16);
-      padding:12px 22px;
-      border-radius:999px;
-      font-weight:600;
-      cursor:pointer;
-    }
-
-    /* SECTIONS */
-    section{
-      padding:40px 26px;
-    }
-
-    section h2{
-      font-size:22px;
-      font-weight:800;
-      margin-bottom:18px;
-    }
-
-    /* FILM GRID */
-    .film-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-      gap:16px;
-    }
-
-    .film{
-      border-radius:14px;
-      overflow:hidden;
-      background:rgba(255,255,255,0.04);
+      font-weight:900;
+      text-decoration:none;
       cursor:pointer;
       transition:0.25s;
     }
 
-    .film:hover{
-      transform:scale(1.06);
-      outline:2px solid rgba(59,130,246,0.55);
+    .btn:hover{
+      transform:translateY(-3px);
     }
 
-    .film img{
+    .primary{
+      background:var(--accent);
+      color:white;
+    }
+
+    .secondary{
+      border:1px solid rgba(255,255,255,0.20);
+      background:rgba(255,255,255,0.06);
+      color:white;
+    }
+
+    /* FILMS */
+    .section{
+      padding:40px 30px;
+      max-width:1200px;
+      margin:auto;
+    }
+
+    .section h2{
+      font-size:22px;
+      font-weight:1000;
+      margin-bottom:18px;
+    }
+
+    .film-row{
+      display:flex;
+      gap:18px;
+      overflow-x:auto;
+      padding-bottom:10px;
+    }
+
+    .film-card{
+      min-width:240px;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:rgba(14,20,36,0.85);
+      cursor:pointer;
+      transition:0.25s;
+    }
+
+    .film-card:hover{
+      transform:scale(1.05);
+      border-color:rgba(59,130,246,0.5);
+    }
+
+    .film-card img{
       width:100%;
-      height:220px;
+      height:140px;
       object-fit:cover;
-      display:block;
     }
 
-    .film-title{
-      padding:10px;
-      font-size:14px;
-      font-weight:600;
-      color:rgba(255,255,255,0.85);
+    .film-info{
+      padding:14px;
     }
 
-    .empty{
-      opacity:0.6;
+    .film-info h3{
       font-size:14px;
-      padding:12px 0;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .film-info p{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
     }
 
     footer{
       text-align:center;
-      padding:50px 20px;
+      padding:40px;
       font-size:13px;
       color:rgba(255,255,255,0.35);
+      border-top:1px solid var(--line);
+      margin-top:60px;
     }
   </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<header>
-  <div class="logo"><span>SS</span> Films • StudentStream HQ</div>
+  <!-- NAV -->
+  <header>
+    <div class="logo">🎬 SS Films • StudentStream HQ</div>
 
-  <nav>
-    <button class="nav-btn" onclick="browseScroll()">Browse</button>
-    <button class="nav-btn" id="authBtn">Login</button>
-  </nav>
-</header>
+    <nav>
+      <a href="../studios/index.html">Studios</a>
+      <a href="./monetization.html">Monetization Club</a>
+      <a id="creatorLink" href="./login.html">Creator Login</a>
+    </nav>
+  </header>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-content">
-    <h1>SS Films Originals.<br>Creator Powered.</h1>
+  <!-- HERO -->
+  <section class="hero">
+    <h1>SS Films Originals.</h1>
 
     <p>
-      SS Films is the official streaming + production division of StudentStream HQ.
-      Creators earn through ads + Monetization Club payouts (manual system active).
+      A new streaming division of StudentStream HQ.
+      Built for creators, studios, and monetized film drops —
+      with manual payouts active during launch.
     </p>
 
-    <div class="hero-actions">
-      <button class="btn-main" onclick="browseScroll()">Browse Films</button>
-      <button class="btn-alt" onclick="openMonetization()">Join Monetization Club</button>
-      <button class="btn-alt" onclick="manualPayment()">Manual Payment Request</button>
+    <div class="actions">
+      <a href="#films" class="btn primary">Browse Films</a>
+      <a href="./monetization.html" class="btn secondary">Join Monetization Club</a>
+      <a href="mailto:deondrechambers284@gmail.com?subject=SS%20Films%20Manual%20Payment"
+         class="btn secondary">
+        Request Payment
+      </a>
     </div>
-  </div>
-</div>
+  </section>
 
-<!-- TRENDING -->
-<section>
-  <h2>🔥 Trending Now</h2>
-  <div id="trendingGrid" class="film-grid"></div>
-</section>
+  <!-- FILM ROW -->
+  <section class="section" id="films">
+    <h2>Trending on SS Films</h2>
 
-<!-- LATEST -->
-<section id="browse">
-  <h2>🎬 Latest Uploads</h2>
-  <div id="latestGrid" class="film-grid"></div>
-</section>
+    <div class="film-row" id="filmRow">
+      <p style="color:var(--muted)">Loading films...</p>
+    </div>
+  </section>
 
-<footer>
-  © 2026 SS Films • StudentStream HQ Studios Division — Manual Monetization Active
-</footer>
+  <!-- FOOTER -->
+  <footer>
+    © 2026 StudentStream HQ — SS Films Division • Manual Monetization Active
+  </footer>
 
-<!-- =========================================
-     SUPABASE + FILM LOAD + BUTTON FIXES
-========================================= -->
-<script>
-  /* ✅ PUT YOUR REAL SUPABASE INFO */
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  <!-- =====================================
+       SUPABASE FILM LOADER (WORKING)
+       ===================================== -->
+  <script>
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-  const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+    async function loadFilms(){
+      const filmRow = document.getElementById("filmRow");
 
-  /* ===============================
-     SESSION-AWARE LOGIN BUTTON
-  =============================== */
-  async function checkSession(){
-    const { data } = await supabase.auth.getSession();
+      const { data: films, error } = await supabase
+        .from("films")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    const authBtn = document.getElementById("authBtn");
+      if(error){
+        filmRow.innerHTML =
+          `<p style="color:red;">Error loading films: ${error.message}</p>`;
+        return;
+      }
 
-    if(data.session){
-      authBtn.textContent = "Dashboard";
-      authBtn.onclick = () => {
-        window.location.href = "/ss-films/creator/dashboard.html";
-      };
-    } else {
-      authBtn.textContent = "Login";
-      authBtn.onclick = () => {
-        window.location.href = "/ss-films/login.html";
-      };
-    }
-  }
+      if(!films || films.length === 0){
+        filmRow.innerHTML =
+          `<p style="color:var(--muted)">No films uploaded yet.</p>`;
+        return;
+      }
 
-  checkSession();
+      filmRow.innerHTML = "";
 
-  /* ===============================
-     LOAD FILMS SAFELY
-  =============================== */
-  async function loadFilms(){
+      films.forEach(film => {
+        const card = document.createElement("div");
+        card.className = "film-card";
 
-    // Trending
-    const trending = await supabase
-      .from("films")
-      .select("*")
-      .order("views", { ascending:false })
-      .limit(8);
+        card.innerHTML = `
+          <img src="${film.thumbnail_url}" alt="thumb"/>
+          <div class="film-info">
+            <h3>${film.title}</h3>
+            <p>${film.description}</p>
+          </div>
+        `;
 
-    renderFilms("trendingGrid", trending.data);
+        card.onclick = () => {
+          window.location.href =
+            "./watch.html?id=" + film.id;
+        };
 
-    // Latest
-    const latest = await supabase
-      .from("films")
-      .select("*")
-      .order("created_at", { ascending:false })
-      .limit(12);
-
-    renderFilms("latestGrid", latest.data);
-  }
-
-  function renderFilms(gridId, films){
-    const grid = document.getElementById(gridId);
-    grid.innerHTML = "";
-
-    if(!films || films.length === 0){
-      grid.innerHTML = `<div class="empty">No films uploaded yet.</div>`;
-      return;
+        filmRow.appendChild(card);
+      });
     }
 
-    films.forEach(film => {
+    loadFilms();
 
-      const thumb =
-        film.thumbnail_url ||
-        "https://via.placeholder.com/400x600?text=SS+Films";
+    /* Session nav */
+    async function checkSession(){
+      const { data } = await supabase.auth.getSession();
+      if(data.session){
+        document.getElementById("creatorLink").textContent = "Dashboard";
+        document.getElementById("creatorLink").href = "./dashboard.html";
+      }
+    }
 
-      const div = document.createElement("div");
-      div.className = "film";
-
-      div.innerHTML = `
-        <img src="${thumb}" />
-        <div class="film-title">${film.title}</div>
-      `;
-
-      div.onclick = () => {
-        window.location.href =
-          "/ss-films/watch.html?id=" + film.id;
-      };
-
-      grid.appendChild(div);
-    });
-  }
-
-  loadFilms();
-
-  /* ===============================
-     BUTTONS WORKING
-  =============================== */
-  function browseScroll(){
-    document.getElementById("browse")
-      .scrollIntoView({ behavior:"smooth" });
-  }
-
-  function openMonetization(){
-    window.location.href = "/ss-films/monetization.html";
-  }
-
-  function manualPayment(){
-    window.location.href =
-      "mailto:deondrechambers284@gmail.com?subject=SS%20Films%20Manual%20Payment%20Request";
-  }
-</script>
+    checkSession();
+  </script>
 
 </body>
 </html>
