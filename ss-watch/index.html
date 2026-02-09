@@ -9,320 +9,342 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #070b14;
+      background: #0b0f1a;
       color: white;
+    }
+
+    /* Layout */
+    .app {
       display: flex;
     }
 
     /* Sidebar */
     .sidebar {
-      width: 230px;
+      width: 220px;
       height: 100vh;
-      background: #0c1220;
+      background: #070a12;
       padding: 20px;
-      border-right: 1px solid rgba(255,255,255,0.08);
+      box-sizing: border-box;
+      position: fixed;
     }
 
-    .logo {
+    .sidebar h2 {
       font-size: 20px;
-      font-weight: 800;
-      color: #3b82f6;
       margin-bottom: 30px;
+      color: #3b82f6;
     }
 
-    .nav {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .nav a {
-      text-decoration: none;
-      color: white;
-      opacity: 0.8;
+    .nav-item {
       padding: 12px;
-      border-radius: 12px;
-      transition: 0.2s;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #ddd;
     }
 
-    .nav a:hover {
-      background: rgba(59,130,246,0.15);
-      opacity: 1;
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
     }
 
     /* Main */
     .main {
-      flex: 1;
+      margin-left: 220px;
       padding: 20px;
+      width: 100%;
     }
 
-    header {
+    /* Topbar */
+    .topbar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       margin-bottom: 25px;
     }
 
-    header input {
+    .search {
       width: 60%;
       padding: 12px;
-      border-radius: 14px;
+      border-radius: 30px;
       border: none;
       outline: none;
-      background: rgba(255,255,255,0.06);
+      font-size: 15px;
+      background: #151a2b;
       color: white;
     }
 
-    .btn {
-      padding: 10px 16px;
+    .upload-btn {
+      background: #2563eb;
       border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: bold;
-      background: linear-gradient(90deg,#2563eb,#3b82f6);
+      padding: 12px 18px;
+      border-radius: 12px;
       color: white;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     /* Video Grid */
     .grid {
-      margin-top: 20px;
       display: grid;
-      gap: 18px;
-      grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
     }
 
     .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
+      background: #11162a;
+      border-radius: 14px;
       overflow: hidden;
+      cursor: pointer;
       transition: 0.2s;
     }
 
     .card:hover {
       transform: scale(1.03);
-      border-color: rgba(59,130,246,0.5);
     }
 
-    .thumb {
+    video {
       width: 100%;
-      height: 170px;
+      height: 140px;
+      object-fit: cover;
       background: black;
     }
 
     .info {
-      padding: 12px;
+      padding: 10px;
     }
 
-    .info h3 {
-      margin: 0;
+    .title {
       font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 6px;
     }
 
-    .info p {
-      margin-top: 6px;
+    .desc {
       font-size: 12px;
-      opacity: 0.6;
+      opacity: 0.7;
     }
 
     /* Upload Modal */
     .modal {
+      display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.8);
-      display: none;
+      background: rgba(0,0,0,0.7);
       justify-content: center;
       align-items: center;
     }
 
-    .modalBox {
-      width: 420px;
-      padding: 20px;
+    .modal-box {
+      width: 90%;
+      max-width: 420px;
+      background: #0f172a;
+      padding: 25px;
       border-radius: 18px;
-      background: #0c1220;
-      border: 1px solid rgba(255,255,255,0.1);
     }
 
-    .modalBox input,
-    .modalBox textarea {
+    .modal-box h2 {
+      margin-top: 0;
+    }
+
+    input, textarea {
       width: 100%;
       margin-top: 10px;
-      padding: 10px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
       border: none;
+      background: #1e293b;
+      color: white;
       outline: none;
-      background: rgba(255,255,255,0.06);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .close-btn {
+      background: #333;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
       color: white;
     }
 
-    textarea {
-      height: 80px;
-      resize: none;
-    }
-
-    #status {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.7;
+    .submit-btn {
+      background: #2563eb;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
+<div class="app">
+
   <!-- Sidebar -->
   <div class="sidebar">
-    <div class="logo">📺 SS: Watch</div>
-    <div class="nav">
-      <a href="#">🏠 Home</a>
-      <a href="#">🔥 Trending</a>
-      <a href="#">🎬 Originals</a>
-      <a href="#">💰 Monetization</a>
-      <a href="#">⚙ Settings</a>
-    </div>
+    <h2>📺 SS: Watch</h2>
+    <div class="nav-item">🏠 Home</div>
+    <div class="nav-item">🔥 Trending</div>
+    <div class="nav-item">🎬 Originals</div>
   </div>
 
   <!-- Main -->
   <div class="main">
 
-    <header>
-      <input placeholder="Search StudentStream..." />
-      <button class="btn" onclick="openUpload()">⬆ Upload</button>
-    </header>
-
-    <h2>Latest Uploads</h2>
-    <div class="grid" id="videoGrid"></div>
-
-  </div>
-
-  <!-- Upload Modal -->
-  <div class="modal" id="uploadModal">
-    <div class="modalBox">
-      <h2>Upload Video</h2>
-
-      <input id="title" placeholder="Video title..." />
-      <textarea id="desc" placeholder="Description..."></textarea>
-      <input type="file" id="fileInput" accept="video/*"/>
-
-      <button class="btn" onclick="uploadVideo()">Upload Now</button>
-      <button class="btn" style="margin-top:10px;background:#222;"
-        onclick="closeUpload()">Cancel</button>
-
-      <div id="status"></div>
+    <!-- Topbar -->
+    <div class="topbar">
+      <input class="search" placeholder="Search StudentStream..." />
+      <button class="upload-btn" onclick="openModal()">⬆ Upload</button>
     </div>
+
+    <h1>Latest Uploads</h1>
+
+    <!-- Video Grid -->
+    <div class="grid" id="videoGrid">
+      <p>Loading videos...</p>
+    </div>
+
   </div>
+</div>
 
-  <!-- Supabase -->
-  <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js";
+<!-- Upload Modal -->
+<div class="modal" id="uploadModal">
+  <div class="modal-box">
+    <h2>Upload Video</h2>
 
-    /* 🔥 PUT YOUR REAL INFO */
-    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    <input id="title" placeholder="Video title..." />
+    <textarea id="desc" placeholder="Description..."></textarea>
+    <input type="file" id="file" accept="video/*" />
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    <div class="modal-actions">
+      <button class="close-btn" onclick="closeModal()">Cancel</button>
+      <button class="submit-btn" onclick="uploadVideo()">Upload</button>
+    </div>
 
-    /* Modal */
-    window.openUpload = () => {
-      document.getElementById("uploadModal").style.display = "flex";
-    };
+    <p id="status"></p>
+  </div>
+</div>
 
-    window.closeUpload = () => {
-      document.getElementById("uploadModal").style.display = "none";
-    };
+<script>
+  // 🔥 PUT YOUR SUPABASE INFO HERE
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+  const BUCKET = "sswatch-videos";
 
-    /* Load Videos */
-    async function loadVideos() {
-      const { data, error } = await supabase
-        .from("videos")
-        .select("*")
-        .order("id", { ascending: false });
+  // Modal controls
+  function openModal() {
+    document.getElementById("uploadModal").style.display = "flex";
+  }
 
-      const grid = document.getElementById("videoGrid");
-      grid.innerHTML = "";
+  function closeModal() {
+    document.getElementById("uploadModal").style.display = "none";
+  }
 
-      if (error) {
-        grid.innerHTML = "<p>Error loading videos.</p>";
-        console.log(error);
-        return;
+  // Load Videos
+  async function loadVideos() {
+    const grid = document.getElementById("videoGrid");
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/videos?select=*`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
       }
+    });
 
-      if (!data || data.length === 0) {
-        grid.innerHTML = "<p style='opacity:0.6'>No videos uploaded yet.</p>";
-        return;
-      }
+    const videos = await res.json();
 
-      data.forEach(video => {
-        const card = document.createElement("div");
-        card.className = "card";
+    grid.innerHTML = "";
 
-        card.innerHTML = `
-          <video class="thumb" controls>
-            <source src="${video.url}" type="video/mp4">
-          </video>
-          <div class="info">
-            <h3>${video.title}</h3>
-            <p>${video.description || ""}</p>
-          </div>
-        `;
-
-        grid.appendChild(card);
-      });
+    if (videos.length === 0) {
+      grid.innerHTML = "<p>No videos uploaded yet.</p>";
+      return;
     }
 
+    videos.reverse().forEach(v => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <video src="${v.file_url}" controls></video>
+        <div class="info">
+          <div class="title">${v.title}</div>
+          <div class="desc">${v.description || ""}</div>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+  }
+
+  // Upload Video
+  async function uploadVideo() {
+    const title = document.getElementById("title").value;
+    const desc = document.getElementById("desc").value;
+    const file = document.getElementById("file").files[0];
+    const status = document.getElementById("status");
+
+    if (!file) {
+      alert("Pick a video first.");
+      return;
+    }
+
+    status.innerText = "Uploading...";
+
+    const filePath = `${Date.now()}-${file.name}`;
+
+    // Upload to Supabase Storage
+    const uploadRes = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filePath}`,
+      {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": file.type
+        },
+        body: file
+      }
+    );
+
+    if (!uploadRes.ok) {
+      status.innerText = "Upload failed.";
+      return;
+    }
+
+    // Public URL
+    const fileUrl =
+      `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filePath}`;
+
+    // Insert into videos table
+    await fetch(`${SUPABASE_URL}/rest/v1/videos`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title,
+        description: desc,
+        file_url: fileUrl
+      })
+    });
+
+    status.innerText = "Uploaded successfully ✅";
+    closeModal();
     loadVideos();
+  }
 
-    /* Upload */
-    window.uploadVideo = async function () {
-      const title = document.getElementById("title").value;
-      const desc = document.getElementById("desc").value;
-      const file = document.getElementById("fileInput").files[0];
-
-      if (!title || !file) {
-        alert("Title + video required.");
-        return;
-      }
-
-      document.getElementById("status").innerText = "Uploading...";
-
-      const fileName = `${Date.now()}-${file.name}`;
-
-      /* Upload to bucket */
-      const { error: uploadError } = await supabase.storage
-        .from("videos")
-        .upload(fileName, file);
-
-      if (uploadError) {
-        document.getElementById("status").innerText = "Upload failed ❌";
-        console.log(uploadError);
-        return;
-      }
-
-      /* Get URL */
-      const { data } = supabase.storage
-        .from("videos")
-        .getPublicUrl(fileName);
-
-      /* Insert into table */
-      await supabase.from("videos").insert([
-        {
-          title: title,
-          description: desc,
-          url: data.publicUrl
-        }
-      ]);
-
-      document.getElementById("status").innerText = "Uploaded ✅";
-
-      closeUpload();
-      loadVideos();
-    };
-  </script>
+  // Run
+  loadVideos();
+</script>
 
 </body>
 </html>
