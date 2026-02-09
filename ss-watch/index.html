@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SS: Watch</title>
 
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #0b0f1a;
+      background: #05070f;
       color: white;
+      overflow-x: hidden;
     }
 
     /* Layout */
@@ -20,96 +22,119 @@
 
     /* Sidebar */
     .sidebar {
-      width: 220px;
+      width: 250px;
+      background: #070a14;
       height: 100vh;
-      background: #070a12;
       padding: 20px;
-      box-sizing: border-box;
       position: fixed;
+      border-right: 1px solid rgba(255,255,255,0.08);
     }
 
-    .sidebar h2 {
-      font-size: 20px;
-      margin-bottom: 30px;
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
       color: #3b82f6;
+      margin-bottom: 30px;
     }
 
     .nav-item {
-      padding: 12px;
+      padding: 12px 14px;
       margin-bottom: 10px;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
-      color: #ddd;
+      transition: 0.2s;
+      font-size: 15px;
+      opacity: 0.85;
     }
 
     .nav-item:hover {
       background: rgba(255,255,255,0.05);
+      opacity: 1;
     }
 
     /* Main */
     .main {
-      margin-left: 220px;
-      padding: 20px;
+      margin-left: 250px;
       width: 100%;
+      padding: 25px;
     }
 
     /* Topbar */
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(5,7,15,0.9);
+      backdrop-filter: blur(12px);
+      padding: 15px 0;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 25px;
+      align-items: center;
     }
 
     .search {
-      width: 60%;
-      padding: 12px;
+      width: 65%;
+      padding: 14px 18px;
       border-radius: 30px;
       border: none;
       outline: none;
-      font-size: 15px;
-      background: #151a2b;
+      background: #141a2b;
       color: white;
+      font-size: 15px;
     }
 
     .upload-btn {
-      background: #2563eb;
+      background: linear-gradient(135deg,#2563eb,#3b82f6);
       border: none;
-      padding: 12px 18px;
-      border-radius: 12px;
-      color: white;
-      font-weight: bold;
+      padding: 13px 18px;
+      border-radius: 14px;
       cursor: pointer;
+      font-weight: bold;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .upload-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Section */
+    h1 {
+      margin: 20px 0;
+      font-size: 22px;
     }
 
     /* Video Grid */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 22px;
+      padding-bottom: 50px;
     }
 
     .card {
-      background: #11162a;
-      border-radius: 14px;
+      background: #0d1224;
+      border-radius: 18px;
       overflow: hidden;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.25s;
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .card:hover {
-      transform: scale(1.03);
+      transform: translateY(-6px);
+      border-color: rgba(59,130,246,0.6);
     }
 
-    video {
+    .thumb {
       width: 100%;
-      height: 140px;
+      height: 160px;
       object-fit: cover;
       background: black;
     }
 
     .info {
-      padding: 10px;
+      padding: 14px;
     }
 
     .title {
@@ -120,7 +145,49 @@
 
     .desc {
       font-size: 12px;
+      opacity: 0.65;
+      line-height: 1.4;
+    }
+
+    /* Watch Modal */
+    .watchModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .watchBox {
+      width: 90%;
+      max-width: 900px;
+      background: #05070f;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .watchVideo {
+      width: 100%;
+      height: 480px;
+      background: black;
+    }
+
+    .watchInfo {
+      padding: 18px;
+    }
+
+    .closeWatch {
+      float: right;
+      cursor: pointer;
+      font-size: 18px;
       opacity: 0.7;
+    }
+
+    .closeWatch:hover {
+      opacity: 1;
     }
 
     /* Upload Modal */
@@ -128,58 +195,58 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.75);
       justify-content: center;
       align-items: center;
+      z-index: 9999;
     }
 
     .modal-box {
       width: 90%;
-      max-width: 420px;
-      background: #0f172a;
+      max-width: 450px;
+      background: #0d1224;
       padding: 25px;
       border-radius: 18px;
-    }
-
-    .modal-box h2 {
-      margin-top: 0;
     }
 
     input, textarea {
       width: 100%;
       margin-top: 10px;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 12px;
       border: none;
-      background: #1e293b;
-      color: white;
       outline: none;
+      background: #141a2b;
+      color: white;
     }
 
-    .modal-actions {
+    textarea { resize: none; height: 90px; }
+
+    .actions {
       display: flex;
       justify-content: space-between;
       margin-top: 15px;
     }
 
-    .close-btn {
-      background: #333;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
+    .btn {
+      padding: 11px 14px;
+      border-radius: 12px;
       cursor: pointer;
-      color: white;
-    }
-
-    .submit-btn {
-      background: #2563eb;
       border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      color: white;
       font-weight: bold;
     }
+
+    .cancel { background: #222; color: white; }
+    .submit { background: #2563eb; color: white; }
+
+    /* Responsive */
+    @media(max-width: 800px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .search { width: 55%; }
+      .watchVideo { height: 250px; }
+    }
+
   </style>
 </head>
 
@@ -189,10 +256,11 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>📺 SS: Watch</h2>
+    <div class="logo">📺 SS: Watch</div>
     <div class="nav-item">🏠 Home</div>
     <div class="nav-item">🔥 Trending</div>
     <div class="nav-item">🎬 Originals</div>
+    <div class="nav-item">⭐ Subscriptions</div>
   </div>
 
   <!-- Main -->
@@ -200,13 +268,12 @@
 
     <!-- Topbar -->
     <div class="topbar">
-      <input class="search" placeholder="Search StudentStream..." />
-      <button class="upload-btn" onclick="openModal()">⬆ Upload</button>
+      <input id="search" class="search" placeholder="Search StudentStream..." />
+      <button class="upload-btn" onclick="openUpload()">⬆ Upload</button>
     </div>
 
     <h1>Latest Uploads</h1>
 
-    <!-- Video Grid -->
     <div class="grid" id="videoGrid">
       <p>Loading videos...</p>
     </div>
@@ -214,38 +281,42 @@
   </div>
 </div>
 
-<!-- Upload Modal -->
+<!-- WATCH MODAL -->
+<div class="watchModal" id="watchModal">
+  <div class="watchBox">
+    <video id="watchPlayer" class="watchVideo" controls></video>
+    <div class="watchInfo">
+      <span class="closeWatch" onclick="closeWatch()">✖</span>
+      <h2 id="watchTitle"></h2>
+      <p id="watchDesc" style="opacity:0.7;"></p>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD MODAL -->
 <div class="modal" id="uploadModal">
   <div class="modal-box">
-    <h2>Upload Video</h2>
-
+    <h2>Upload to SS: Watch</h2>
     <input id="title" placeholder="Video title..." />
     <textarea id="desc" placeholder="Description..."></textarea>
-    <input type="file" id="file" accept="video/*" />
+    <input type="file" id="file" accept="video/*"/>
 
-    <div class="modal-actions">
-      <button class="close-btn" onclick="closeModal()">Cancel</button>
-      <button class="submit-btn" onclick="uploadVideo()">Upload</button>
+    <div class="actions">
+      <button class="btn cancel" onclick="closeUpload()">Cancel</button>
+      <button class="btn submit" onclick="uploadVideo()">Upload</button>
     </div>
 
-    <p id="status"></p>
+    <p id="status" style="margin-top:10px;"></p>
   </div>
 </div>
 
 <script>
-  // 🔥 PUT YOUR SUPABASE INFO HERE
+  // 🔥 PUT YOUR SUPABASE INFO
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
   const BUCKET = "sswatch-videos";
 
-  // Modal controls
-  function openModal() {
-    document.getElementById("uploadModal").style.display = "flex";
-  }
-
-  function closeModal() {
-    document.getElementById("uploadModal").style.display = "none";
-  }
+  let allVideos = [];
 
   // Load Videos
   async function loadVideos() {
@@ -258,29 +329,66 @@
       }
     });
 
-    const videos = await res.json();
+    allVideos = await res.json();
+    renderVideos(allVideos.reverse());
+  }
 
+  // Render Videos
+  function renderVideos(videos) {
+    const grid = document.getElementById("videoGrid");
     grid.innerHTML = "";
 
     if (videos.length === 0) {
-      grid.innerHTML = "<p>No videos uploaded yet.</p>";
+      grid.innerHTML = "<p>No videos found.</p>";
       return;
     }
 
-    videos.reverse().forEach(v => {
+    videos.forEach(v => {
       const card = document.createElement("div");
       card.className = "card";
 
       card.innerHTML = `
-        <video src="${v.file_url}" controls></video>
+        <video class="thumb" src="${v.file_url}"></video>
         <div class="info">
           <div class="title">${v.title}</div>
           <div class="desc">${v.description || ""}</div>
         </div>
       `;
 
+      card.onclick = () => openWatch(v);
       grid.appendChild(card);
     });
+  }
+
+  // Search Filter
+  document.getElementById("search").addEventListener("input", e => {
+    const q = e.target.value.toLowerCase();
+    const filtered = allVideos.filter(v =>
+      v.title.toLowerCase().includes(q)
+    );
+    renderVideos(filtered);
+  });
+
+  // Watch Modal
+  function openWatch(video) {
+    document.getElementById("watchModal").style.display = "flex";
+    document.getElementById("watchPlayer").src = video.file_url;
+    document.getElementById("watchTitle").innerText = video.title;
+    document.getElementById("watchDesc").innerText = video.description || "";
+  }
+
+  function closeWatch() {
+    document.getElementById("watchModal").style.display = "none";
+    document.getElementById("watchPlayer").pause();
+  }
+
+  // Upload Modal
+  function openUpload() {
+    document.getElementById("uploadModal").style.display = "flex";
+  }
+
+  function closeUpload() {
+    document.getElementById("uploadModal").style.display = "none";
   }
 
   // Upload Video
@@ -290,16 +398,12 @@
     const file = document.getElementById("file").files[0];
     const status = document.getElementById("status");
 
-    if (!file) {
-      alert("Pick a video first.");
-      return;
-    }
+    if (!file) return alert("Pick a video first.");
 
     status.innerText = "Uploading...";
 
     const filePath = `${Date.now()}-${file.name}`;
 
-    // Upload to Supabase Storage
     const uploadRes = await fetch(
       `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filePath}`,
       {
@@ -314,15 +418,13 @@
     );
 
     if (!uploadRes.ok) {
-      status.innerText = "Upload failed.";
+      status.innerText = "Upload failed ❌";
       return;
     }
 
-    // Public URL
     const fileUrl =
       `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filePath}`;
 
-    // Insert into videos table
     await fetch(`${SUPABASE_URL}/rest/v1/videos`, {
       method: "POST",
       headers: {
@@ -337,12 +439,12 @@
       })
     });
 
-    status.innerText = "Uploaded successfully ✅";
-    closeModal();
+    status.innerText = "Uploaded ✅";
+
+    closeUpload();
     loadVideos();
   }
 
-  // Run
   loadVideos();
 </script>
 
