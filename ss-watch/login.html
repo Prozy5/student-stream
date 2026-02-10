@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — SS:Watch</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    body {
+      background: #050508;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ============================= */
+    /* LEFT SIDE — BRAND PANEL */
+    /* ============================= */
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(
+        135deg,
+        rgba(255,45,85,0.18),
+        rgba(0,0,0,0.95)
+      ),
+      url("https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1400&q=80");
+      background-size: cover;
+      background-position: center;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .left-panel h1 {
+      font-size: 52px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .left-panel h1 span {
+      color: #ff2d55;
+    }
+
+    .left-panel p {
+      margin-top: 20px;
+      font-size: 18px;
+      max-width: 520px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+    }
+
+    .tagline {
+      margin-top: 35px;
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      width: fit-content;
+    }
+
+    /* ============================= */
+    /* RIGHT SIDE — LOGIN FORM */
+    /* ============================= */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 40px;
+      border-radius: 22px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 45px rgba(0,0,0,0.65);
+    }
+
+    .login-box h2 {
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .login-box h2 span {
+      color: #ff2d55;
+    }
+
+    .login-box p {
+      font-size: 14px;
+      margin-bottom: 25px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: rgba(255,255,255,0.07);
+      color: white;
+    }
+
+    input:focus {
+      border: 1px solid rgba(255,45,85,0.7);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff2d55, #ff004c);
+      color: white;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+    }
+
+    #msg {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .extra {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .extra a {
+      color: #ff2d55;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media(max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .left-panel {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LEFT BRAND SIDE -->
+  <div class="left-panel">
+    <h1>SS:<span>Watch</span></h1>
+
+    <p>
+      The video-sharing division of StudentStream HQ.  
+      Built for creators, originals, community, and next-generation media.
+    </p>
+
+    <div class="tagline">
+      Creator Distribution • Originals • Monetization
+    </div>
+  </div>
+
+  <!-- RIGHT LOGIN SIDE -->
+  <div class="right-panel">
+    <div class="login-box">
+
+      <h2>Sign in to <span>SS:Watch</span></h2>
+      <p>Access the creator ecosystem and start publishing.</p>
+
+      <form onsubmit="login(event)">
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@email.com" required>
+
+        <label>Password</label>
+        <input id="password" type="password" placeholder="••••••••••" required>
+
+        <button class="btn" type="submit">Sign In</button>
+
+        <div id="msg"></div>
+      </form>
+
+      <div class="extra">
+        No account yet? <a href="signup.html">Create one</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- SUPABASE AUTH CONNECTION -->
+  <!-- ============================= -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    async function login(e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const msg = document.getElementById("msg");
+      msg.style.color = "white";
+      msg.innerText = "Signing in...";
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        msg.style.color = "red";
+        msg.innerText = error.message;
+        return;
+      }
+
+      msg.style.color = "#00ff99";
+      msg.innerText = "Success. Redirecting 🚀";
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1200);
+    }
+  </script>
+
+</body>
+</html>
