@@ -6,94 +6,126 @@
   <title>Login — SS:Watch</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Inter, Arial, sans-serif;
-    }
-
     body {
-      background: #050508;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #141421, #07070c);
       color: white;
-      min-height: 100vh;
-      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    /* ============================= */
-    /* LEFT SIDE — BRAND PANEL */
-    /* ============================= */
-    .left-panel {
+    /* Background Shapes */
+    .bg-shapes {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+    }
+
+    .shape.one {
+      width: 300px;
+      height: 300px;
+      background: #ff2d55;
+      top: -80px;
+      left: -80px;
+    }
+
+    .shape.two {
+      width: 400px;
+      height: 400px;
+      background: #4f8cff;
+      bottom: -120px;
+      right: -120px;
+    }
+
+    .shape.three {
+      width: 250px;
+      height: 250px;
+      background: #7dffb2;
+      top: 40%;
+      left: 40%;
+      opacity: 0.15;
+    }
+
+    /* Layout */
+    .wrapper {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Left Branding */
+    .left {
       flex: 1;
-      background: linear-gradient(
-        135deg,
-        rgba(255,45,85,0.18),
-        rgba(0,0,0,0.95)
-      ),
-      url("https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1400&q=80");
-      background-size: cover;
-      background-position: center;
-      padding: 60px;
+      padding: 80px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .left-panel h1 {
-      font-size: 52px;
-      font-weight: 900;
-      line-height: 1.1;
+    .brand-title {
+      font-size: 60px;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
 
-    .left-panel h1 span {
+    .brand-title span {
       color: #ff2d55;
     }
 
-    .left-panel p {
-      margin-top: 20px;
+    .tagline {
       font-size: 18px;
-      max-width: 520px;
-      color: rgba(255,255,255,0.75);
+      max-width: 420px;
+      color: #bbb;
       line-height: 1.5;
     }
 
-    .tagline {
-      margin-top: 35px;
-      font-size: 15px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.85);
-      padding: 12px 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.06);
-      width: fit-content;
+    .pill-row {
+      margin-top: 25px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    /* ============================= */
-    /* RIGHT SIDE — LOGIN FORM */
-    /* ============================= */
-    .right-panel {
+    .pill {
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #eee;
+    }
+
+    /* Right Login Box */
+    .right {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 50px;
     }
 
     .login-box {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 40px;
-      border-radius: 22px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 0 45px rgba(0,0,0,0.65);
+      width: 380px;
+      background: rgba(20,20,30,0.85);
+      padding: 35px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 40px rgba(0,0,0,0.55);
     }
 
     .login-box h2 {
-      font-size: 26px;
-      font-weight: 900;
-      margin-bottom: 8px;
+      margin: 0;
+      font-size: 28px;
     }
 
     .login-box h2 span {
@@ -101,79 +133,72 @@
     }
 
     .login-box p {
+      margin-top: 8px;
       font-size: 14px;
-      margin-bottom: 25px;
-      color: rgba(255,255,255,0.55);
+      color: #aaa;
     }
 
     label {
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.7);
       display: block;
-      margin-bottom: 7px;
+      margin-top: 18px;
+      font-size: 13px;
+      color: #ccc;
     }
 
     input {
       width: 100%;
-      padding: 14px;
-      margin-bottom: 18px;
-      border-radius: 14px;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 10px;
       border: none;
       outline: none;
-      font-size: 14px;
-      background: rgba(255,255,255,0.07);
+      background: #1d1d26;
       color: white;
+      font-size: 14px;
     }
 
-    input:focus {
-      border: 1px solid rgba(255,45,85,0.7);
-    }
-
-    .btn {
+    button {
       width: 100%;
+      margin-top: 25px;
       padding: 14px;
       border: none;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #ff2d55, #ff004c);
-      color: white;
-      font-weight: 800;
-      font-size: 15px;
+      border-radius: 12px;
+      background: linear-gradient(to right, #ff2d55, #ff4f87);
+      font-weight: bold;
       cursor: pointer;
-      transition: 0.25s;
+      font-size: 15px;
+      color: white;
+      transition: 0.2s;
     }
 
-    .btn:hover {
-      transform: scale(1.03);
+    button:hover {
+      transform: scale(1.02);
     }
 
-    #msg {
-      margin-top: 14px;
+    .link {
+      margin-top: 15px;
       text-align: center;
       font-size: 13px;
-      font-weight: 600;
+      color: #aaa;
     }
 
-    .extra {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 13px;
-      color: rgba(255,255,255,0.55);
-    }
-
-    .extra a {
+    .link a {
       color: #ff2d55;
-      font-weight: 700;
       text-decoration: none;
+      font-weight: bold;
     }
 
-    /* Responsive */
+    /* Mobile */
     @media(max-width: 900px) {
-      body {
+      .wrapper {
         flex-direction: column;
       }
-      .left-panel {
-        display: none;
+      .left {
+        padding: 50px;
+        text-align: center;
+      }
+      .right {
+        padding-bottom: 40px;
       }
     }
   </style>
@@ -181,50 +206,56 @@
 
 <body>
 
-  <!-- LEFT BRAND SIDE -->
-  <div class="left-panel">
-    <h1>SS:<span>Watch</span></h1>
-
-    <p>
-      The video-sharing division of StudentStream HQ.  
-      Built for creators, originals, community, and next-generation media.
-    </p>
-
-    <div class="tagline">
-      Creator Distribution • Originals • Monetization
-    </div>
+  <!-- Background -->
+  <div class="bg-shapes">
+    <div class="shape one"></div>
+    <div class="shape two"></div>
+    <div class="shape three"></div>
   </div>
 
-  <!-- RIGHT LOGIN SIDE -->
-  <div class="right-panel">
-    <div class="login-box">
+  <!-- Main Layout -->
+  <div class="wrapper">
 
-      <h2>Sign in to <span>SS:Watch</span></h2>
-      <p>Access the creator ecosystem and start publishing.</p>
-
-      <form onsubmit="login(event)">
-        <label>Email</label>
-        <input id="email" type="email" placeholder="you@email.com" required>
-
-        <label>Password</label>
-        <input id="password" type="password" placeholder="••••••••••" required>
-
-        <button class="btn" type="submit">Sign In</button>
-
-        <div id="msg"></div>
-      </form>
-
-      <div class="extra">
-        No account yet? <a href="signup.html">Create one</a>
+    <!-- Left Side -->
+    <div class="left">
+      <div class="brand-title">SS:<span>Watch</span></div>
+      <div class="tagline">
+        The video-sharing division of StudentStreamHQ.  
+        Built for creators, originals, community, and next-generation media.
       </div>
 
+      <div class="pill-row">
+        <div class="pill">Creator Distribution</div>
+        <div class="pill">Original Series</div>
+        <div class="pill">Monetization</div>
+        <div class="pill">StudentStream Ecosystem</div>
+      </div>
     </div>
+
+    <!-- Right Side Login -->
+    <div class="right">
+      <div class="login-box">
+        <h2>Sign in to <span>SS:Watch</span></h2>
+        <p>Access your creator dashboard and upload instantly.</p>
+
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@email.com"/>
+
+        <label>Password</label>
+        <input id="password" type="password" placeholder="••••••••"/>
+
+        <button onclick="login()">Sign In</button>
+
+        <div class="link">
+          No account yet? <a href="signup.html">Create one</a>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ============================= -->
-  <!-- SUPABASE AUTH CONNECTION -->
-  <!-- ============================= -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase Login Script -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
@@ -236,33 +267,24 @@
       SUPABASE_KEY
     );
 
-    async function login(e) {
-      e.preventDefault();
-
+    async function login() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      const msg = document.getElementById("msg");
-      msg.style.color = "white";
-      msg.innerText = "Signing in...";
-
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
 
       if (error) {
-        msg.style.color = "red";
-        msg.innerText = error.message;
+        alert("Login failed: " + error.message);
         return;
       }
 
-      msg.style.color = "#00ff99";
-      msg.innerText = "Success. Redirecting 🚀";
+      alert("Welcome back to SS:Watch 🔥");
 
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 1200);
+      // Redirect to main feed
+      window.location.href = "index.html";
     }
   </script>
 
