@@ -3,202 +3,172 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login — SS:Watch</title>
+  <title>SS:Watch — Home</title>
 
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #141421, #07070c);
+      background: #0b0b12;
       color: white;
-      height: 100vh;
-      overflow: hidden;
     }
 
-    /* Background Shapes */
-    .bg-shapes {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .shape {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.35;
-    }
-
-    .shape.one {
-      width: 300px;
-      height: 300px;
-      background: #ff2d55;
-      top: -80px;
-      left: -80px;
-    }
-
-    .shape.two {
-      width: 400px;
-      height: 400px;
-      background: #4f8cff;
-      bottom: -120px;
-      right: -120px;
-    }
-
-    .shape.three {
-      width: 250px;
-      height: 250px;
-      background: #7dffb2;
-      top: 40%;
-      left: 40%;
-      opacity: 0.15;
-    }
-
-    /* Layout */
-    .wrapper {
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
       display: flex;
-      height: 100vh;
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Left Branding */
-    .left {
-      flex: 1;
-      padding: 80px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .brand-title {
-      font-size: 60px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .brand-title span {
-      color: #ff2d55;
-    }
-
-    .tagline {
-      font-size: 18px;
-      max-width: 420px;
-      color: #bbb;
-      line-height: 1.5;
-    }
-
-    .pill-row {
-      margin-top: 25px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #eee;
-    }
-
-    /* Right Login Box */
-    .right {
-      flex: 1;
-      display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-    }
-
-    .login-box {
-      width: 380px;
-      background: rgba(20,20,30,0.85);
-      padding: 35px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.12);
+      padding: 16px 25px;
+      background: rgba(15,15,22,0.92);
       backdrop-filter: blur(12px);
-      box-shadow: 0 0 40px rgba(0,0,0,0.55);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    .login-box h2 {
+    header h1 {
+      font-size: 22px;
       margin: 0;
-      font-size: 28px;
+      font-weight: bold;
     }
 
-    .login-box h2 span {
+    header h1 span {
       color: #ff2d55;
     }
 
-    .login-box p {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #aaa;
-    }
-
-    label {
-      display: block;
-      margin-top: 18px;
-      font-size: 13px;
-      color: #ccc;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 6px;
+    .search-bar input {
+      width: 320px;
+      padding: 11px;
       border-radius: 10px;
       border: none;
       outline: none;
-      background: #1d1d26;
+      background: #1b1b25;
       color: white;
       font-size: 14px;
     }
 
-    button {
-      width: 100%;
-      margin-top: 25px;
-      padding: 14px;
+    .header-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 14px;
       border: none;
-      border-radius: 12px;
-      background: linear-gradient(to right, #ff2d55, #ff4f87);
+      border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
+    }
+
+    .upload-btn {
+      background: linear-gradient(to right, #ff2d55, #ff4f87);
       color: white;
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.08);
+      color: white;
+    }
+
+    /* FEED */
+    .container {
+      padding: 25px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .video-card {
+      background: rgba(25,25,35,0.9);
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
       transition: 0.2s;
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
-    button:hover {
-      transform: scale(1.02);
+    .video-card:hover {
+      transform: scale(1.03);
+      border-color: rgba(255,45,85,0.5);
     }
 
-    .link {
-      margin-top: 15px;
-      text-align: center;
+    .thumb {
+      height: 170px;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .video-info {
+      padding: 14px;
+    }
+
+    .video-info h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .video-info p {
+      margin: 6px 0 0;
       font-size: 13px;
       color: #aaa;
     }
 
-    .link a {
-      color: #ff2d55;
-      text-decoration: none;
-      font-weight: bold;
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
     }
 
-    /* Mobile */
-    @media(max-width: 900px) {
-      .wrapper {
-        flex-direction: column;
-      }
-      .left {
-        padding: 50px;
-        text-align: center;
-      }
-      .right {
-        padding-bottom: 40px;
+    .modal-content {
+      width: 85%;
+      max-width: 950px;
+      background: #111;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 14px;
+      margin-top: 12px;
+      background: black;
+    }
+
+    .close-btn {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: #ff2d55;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* MOBILE */
+    @media(max-width: 700px) {
+      .search-bar input {
+        width: 160px;
       }
     }
   </style>
@@ -206,86 +176,157 @@
 
 <body>
 
-  <!-- Background -->
-  <div class="bg-shapes">
-    <div class="shape one"></div>
-    <div class="shape two"></div>
-    <div class="shape three"></div>
-  </div>
+  <!-- HEADER -->
+  <header>
+    <h1>SS:<span>Watch</span></h1>
 
-  <!-- Main Layout -->
-  <div class="wrapper">
-
-    <!-- Left Side -->
-    <div class="left">
-      <div class="brand-title">SS:<span>Watch</span></div>
-      <div class="tagline">
-        The video-sharing division of StudentStreamHQ.  
-        Built for creators, originals, community, and next-generation media.
-      </div>
-
-      <div class="pill-row">
-        <div class="pill">Creator Distribution</div>
-        <div class="pill">Original Series</div>
-        <div class="pill">Monetization</div>
-        <div class="pill">StudentStream Ecosystem</div>
-      </div>
+    <div class="search-bar">
+      <input id="searchInput" placeholder="Search videos..." />
     </div>
 
-    <!-- Right Side Login -->
-    <div class="right">
-      <div class="login-box">
-        <h2>Sign in to <span>SS:Watch</span></h2>
-        <p>Access your creator dashboard and upload instantly.</p>
-
-        <label>Email</label>
-        <input id="email" type="email" placeholder="you@email.com"/>
-
-        <label>Password</label>
-        <input id="password" type="password" placeholder="••••••••"/>
-
-        <button onclick="login()">Sign In</button>
-
-        <div class="link">
-          No account yet? <a href="signup.html">Create one</a>
-        </div>
-      </div>
+    <div class="header-btns">
+      <button class="btn upload-btn" onclick="goUpload()">Upload</button>
+      <button class="btn logout-btn" onclick="logout()">Logout</button>
     </div>
+  </header>
 
+  <!-- FEED -->
+  <main class="container">
+    <h2>Latest Uploads</h2>
+    <div class="video-grid" id="videoFeed">
+      <p style="color:#888;">Loading videos...</p>
+    </div>
+  </main>
+
+  <!-- MODAL PLAYER -->
+  <div class="modal" id="videoModal">
+    <div class="modal-content">
+      <h2 id="modalTitle"></h2>
+      <p id="modalCreator" style="color:#aaa;"></p>
+
+      <video id="modalVideo" controls></video>
+
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
   </div>
 
-  <!-- Supabase Login Script -->
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
+    // ===============================
+    // SUPABASE CONFIG
+    // ===============================
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
-    async function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    const TABLE = "sswatch_videos";
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    // ===============================
+    // AUTH PROTECT
+    // ===============================
+    async function checkAuth() {
+      const { data } = await supabase.auth.getUser();
+
+      if (!data.user) {
+        window.location.href = "login.html";
+      }
+    }
+
+    // ===============================
+    // LOAD VIDEOS
+    // ===============================
+    async function loadVideos() {
+      const feed = document.getElementById("videoFeed");
+
+      const { data: videos, error } = await supabase
+        .from(TABLE)
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) {
-        alert("Login failed: " + error.message);
+        feed.innerHTML = "<p style='color:red;'>Error loading videos.</p>";
+        console.log(error);
         return;
       }
 
-      alert("Welcome back to SS:Watch 🔥");
+      if (!videos.length) {
+        feed.innerHTML = "<p style='color:#aaa;'>No videos uploaded yet.</p>";
+        return;
+      }
 
-      // Redirect to main feed
-      window.location.href = "index.html";
+      feed.innerHTML = "";
+
+      videos.forEach(video => {
+        const card = document.createElement("div");
+        card.className = "video-card";
+
+        card.innerHTML = `
+          <div class="thumb">▶ Preview</div>
+          <div class="video-info">
+            <h3>${video.title}</h3>
+            <p>@${video.username}</p>
+          </div>
+        `;
+
+        card.onclick = () => openModal(video);
+
+        feed.appendChild(card);
+      });
     }
+
+    // ===============================
+    // MODAL PLAYER
+    // ===============================
+    function openModal(video) {
+      document.getElementById("videoModal").style.display = "flex";
+
+      document.getElementById("modalTitle").innerText = video.title;
+      document.getElementById("modalCreator").innerText =
+        `Uploaded by @${video.username}`;
+
+      document.getElementById("modalVideo").src = video.video_url;
+    }
+
+    function closeModal() {
+      document.getElementById("videoModal").style.display = "none";
+      document.getElementById("modalVideo").pause();
+    }
+
+    // ===============================
+    // SEARCH FILTER
+    // ===============================
+    document.getElementById("searchInput").addEventListener("input", e => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll(".video-card").forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(term)
+          ? "block"
+          : "none";
+      });
+    });
+
+    // ===============================
+    // BUTTONS
+    // ===============================
+    function goUpload() {
+      window.location.href = "upload.html";
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    }
+
+    // ===============================
+    // START APP
+    // ===============================
+    checkAuth();
+    loadVideos();
   </script>
 
 </body>
