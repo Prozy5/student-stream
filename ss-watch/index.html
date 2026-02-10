@@ -3,394 +3,289 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SS:Watch — StudentStreamHQ</title>
+  <title>Login — SS:Watch</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Inter, Arial, sans-serif;
-    }
-
     body {
-      background: #050508;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #141421, #07070c);
       color: white;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    /* ============================= */
-    /* HEADER */
-    /* ============================= */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 99;
-      background: rgba(15,15,20,0.95);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding: 16px 30px;
+    /* Background Shapes */
+    .bg-shapes {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+    }
+
+    .shape.one {
+      width: 300px;
+      height: 300px;
+      background: #ff2d55;
+      top: -80px;
+      left: -80px;
+    }
+
+    .shape.two {
+      width: 400px;
+      height: 400px;
+      background: #4f8cff;
+      bottom: -120px;
+      right: -120px;
+    }
+
+    .shape.three {
+      width: 250px;
+      height: 250px;
+      background: #7dffb2;
+      top: 40%;
+      left: 40%;
+      opacity: 0.15;
+    }
+
+    /* Layout */
+    .wrapper {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(14px);
+      height: 100vh;
+      position: relative;
+      z-index: 2;
     }
 
-    header h1 {
-      font-size: 22px;
-      font-weight: 900;
+    /* Left Branding */
+    .left {
+      flex: 1;
+      padding: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    header h1 span {
+    .brand-title {
+      font-size: 60px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .brand-title span {
       color: #ff2d55;
     }
 
-    .search {
-      flex: 1;
+    .tagline {
+      font-size: 18px;
       max-width: 420px;
-      margin: 0 25px;
+      color: #bbb;
+      line-height: 1.5;
     }
 
-    .search input {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 14px;
-      border: none;
-      outline: none;
-      background: rgba(255,255,255,0.06);
-      color: white;
+    .pill-row {
+      margin-top: 25px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .actions button {
-      margin-left: 10px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      color: white;
+    .pill {
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #eee;
     }
 
-    .upload-btn {
-      background: linear-gradient(135deg, #ff2d55, #ff004c);
-    }
-
-    .logout-btn {
-      background: rgba(255,255,255,0.08);
-    }
-
-    /* ============================= */
-    /* VIDEO GRID */
-    /* ============================= */
-    .feed {
-      padding: 30px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 22px;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 18px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .card:hover {
-      transform: scale(1.03);
-      border-color: rgba(255,45,85,0.4);
-    }
-
-    .thumb {
-      height: 170px;
-      background: #111;
+    /* Right Login Box */
+    .right {
+      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-weight: 700;
-      color: rgba(255,255,255,0.5);
     }
 
-    .info {
-      padding: 14px;
+    .login-box {
+      width: 380px;
+      background: rgba(20,20,30,0.85);
+      padding: 35px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 40px rgba(0,0,0,0.55);
     }
 
-    .info h3 {
-      font-size: 16px;
-      font-weight: 900;
-      margin-bottom: 6px;
+    .login-box h2 {
+      margin: 0;
+      font-size: 28px;
     }
 
-    .info p {
+    .login-box h2 span {
+      color: #ff2d55;
+    }
+
+    .login-box p {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
       font-size: 13px;
-      color: rgba(255,255,255,0.55);
+      color: #ccc;
     }
 
-    /* ============================= */
-    /* MODAL PLAYER */
-    /* ============================= */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .modal-box {
-      width: 90%;
-      max-width: 900px;
-      background: #0f0f14;
-      padding: 22px;
-      border-radius: 20px;
-    }
-
-    video {
+    input {
       width: 100%;
-      border-radius: 14px;
-      margin-top: 10px;
-    }
-
-    .close-btn {
-      margin-top: 12px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 12px;
-      background: #ff2d55;
-      font-weight: 800;
-      cursor: pointer;
-      color: white;
-    }
-
-    /* Upload Modal */
-    #uploadModal input {
-      width: 100%;
-      margin: 12px 0;
       padding: 12px;
-      border-radius: 12px;
+      margin-top: 6px;
+      border-radius: 10px;
       border: none;
       outline: none;
-      background: rgba(255,255,255,0.06);
+      background: #1d1d26;
       color: white;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(to right, #ff2d55, #ff4f87);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+      color: white;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.02);
+    }
+
+    .link {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .link a {
+      color: #ff2d55;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Mobile */
+    @media(max-width: 900px) {
+      .wrapper {
+        flex-direction: column;
+      }
+      .left {
+        padding: 50px;
+        text-align: center;
+      }
+      .right {
+        padding-bottom: 40px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <h1>SS:<span>Watch</span></h1>
-
-    <div class="search">
-      <input id="searchInput" placeholder="Search videos..." />
-    </div>
-
-    <div class="actions">
-      <button class="upload-btn" onclick="openUpload()">Upload</button>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-  </header>
-
-  <!-- FEED -->
-  <main class="feed" id="videoFeed">
-    <p style="color:gray;">Loading videos...</p>
-  </main>
-
-  <!-- VIDEO MODAL -->
-  <div class="modal" id="playerModal">
-    <div class="modal-box">
-      <h2 id="playerTitle"></h2>
-      <p id="playerDesc" style="color:gray;"></p>
-      <video id="playerVideo" controls></video>
-      <button class="close-btn" onclick="closePlayer()">Close</button>
-    </div>
+  <!-- Background -->
+  <div class="bg-shapes">
+    <div class="shape one"></div>
+    <div class="shape two"></div>
+    <div class="shape three"></div>
   </div>
 
-  <!-- UPLOAD MODAL -->
-  <div class="modal" id="uploadModal">
-    <div class="modal-box">
-      <h2>Upload to SS:Watch</h2>
+  <!-- Main Layout -->
+  <div class="wrapper">
 
-      <input id="uploadTitle" placeholder="Video title..." />
-      <input id="uploadDesc" placeholder="Description..." />
-      <input id="uploadFile" type="file" accept="video/*" />
+    <!-- Left Side -->
+    <div class="left">
+      <div class="brand-title">SS:<span>Watch</span></div>
+      <div class="tagline">
+        The video-sharing division of StudentStreamHQ.  
+        Built for creators, originals, community, and next-generation media.
+      </div>
 
-      <button class="close-btn" onclick="uploadVideo()">Upload</button>
-      <button class="close-btn" style="background:#222;" onclick="closeUpload()">Cancel</button>
-
-      <p id="uploadMsg" style="margin-top:10px;color:gray;"></p>
+      <div class="pill-row">
+        <div class="pill">Creator Distribution</div>
+        <div class="pill">Original Series</div>
+        <div class="pill">Monetization</div>
+        <div class="pill">StudentStream Ecosystem</div>
+      </div>
     </div>
+
+    <!-- Right Side Login -->
+    <div class="right">
+      <div class="login-box">
+        <h2>Sign in to <span>SS:Watch</span></h2>
+        <p>Access your creator dashboard and upload instantly.</p>
+
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@email.com"/>
+
+        <label>Password</label>
+        <input id="password" type="password" placeholder="••••••••"/>
+
+        <button onclick="login()">Sign In</button>
+
+        <div class="link">
+          No account yet? <a href="signup.html">Create one</a>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- SUPABASE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase Login Script -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
-    const TABLE = "sswatch_videos";
-    const BUCKET = "videos";
+    async function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    /* ============================= */
-    /* AUTH PROTECT */
-    /* ============================= */
-    async function checkAuth() {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) {
-        window.location.href = "login.html";
-      }
-    }
-
-    /* ============================= */
-    /* LOAD VIDEOS */
-    /* ============================= */
-    async function loadVideos() {
-      const feed = document.getElementById("videoFeed");
-
-      const { data, error } = await supabase
-        .from(TABLE)
-        .select("*")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
       if (error) {
-        feed.innerHTML = "<p>Error loading videos.</p>";
+        alert("Login failed: " + error.message);
         return;
       }
 
-      if (!data.length) {
-        feed.innerHTML = "<p style='color:gray;'>No videos uploaded yet.</p>";
-        return;
-      }
+      alert("Welcome back to SS:Watch 🔥");
 
-      feed.innerHTML = "";
-
-      data.forEach(video => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <div class="thumb">▶ Play</div>
-          <div class="info">
-            <h3>${video.title}</h3>
-            <p>${video.description || "No description"}</p>
-          </div>
-        `;
-
-        card.onclick = () => openPlayer(video);
-        feed.appendChild(card);
-      });
+      // Redirect to main feed
+      window.location.href = "index.html";
     }
-
-    /* ============================= */
-    /* PLAYER */
-    /* ============================= */
-    function openPlayer(video) {
-      document.getElementById("playerModal").style.display = "flex";
-
-      document.getElementById("playerTitle").innerText = video.title;
-      document.getElementById("playerDesc").innerText = video.description;
-
-      const publicURL =
-        `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${video.video_path}`;
-
-      document.getElementById("playerVideo").src = publicURL;
-    }
-
-    function closePlayer() {
-      document.getElementById("playerModal").style.display = "none";
-      document.getElementById("playerVideo").pause();
-    }
-
-    /* ============================= */
-    /* UPLOAD */
-    /* ============================= */
-    function openUpload() {
-      document.getElementById("uploadModal").style.display = "flex";
-    }
-
-    function closeUpload() {
-      document.getElementById("uploadModal").style.display = "none";
-    }
-
-    async function uploadVideo() {
-      const title = document.getElementById("uploadTitle").value;
-      const desc = document.getElementById("uploadDesc").value;
-      const file = document.getElementById("uploadFile").files[0];
-
-      const msg = document.getElementById("uploadMsg");
-
-      if (!file || !title) {
-        msg.innerText = "Title + file required.";
-        return;
-      }
-
-      msg.innerText = "Uploading...";
-
-      const filePath = `${Date.now()}-${file.name}`;
-
-      // Upload file to bucket
-      const { error: uploadError } = await supabase.storage
-        .from(BUCKET)
-        .upload(filePath, file);
-
-      if (uploadError) {
-        msg.innerText = uploadError.message;
-        return;
-      }
-
-      // Insert into table
-      const { error: dbError } = await supabase.from(TABLE).insert([
-        {
-          title: title,
-          description: desc,
-          video_path: filePath
-        }
-      ]);
-
-      if (dbError) {
-        msg.innerText = dbError.message;
-        return;
-      }
-
-      msg.innerText = "Upload complete 🚀";
-
-      closeUpload();
-      loadVideos();
-    }
-
-    /* ============================= */
-    /* LOGOUT */
-    /* ============================= */
-    async function logout() {
-      await supabase.auth.signOut();
-      window.location.href = "login.html";
-    }
-
-    /* ============================= */
-    /* SEARCH */
-    /* ============================= */
-    document.getElementById("searchInput").addEventListener("input", e => {
-      const term = e.target.value.toLowerCase();
-      document.querySelectorAll(".card").forEach(card => {
-        card.style.display =
-          card.innerText.toLowerCase().includes(term)
-            ? "block"
-            : "none";
-      });
-    });
-
-    /* INIT */
-    checkAuth();
-    loadVideos();
   </script>
 
 </body>
