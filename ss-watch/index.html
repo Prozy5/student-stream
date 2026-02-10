@@ -6,102 +6,156 @@
   <title>SS: Watch — StudentStreamHQ</title>
 
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b0b0f;
-      color: white;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
     }
 
+    body {
+      background: radial-gradient(circle at top, #14141d, #050509);
+      color: white;
+      min-height: 100vh;
+    }
+
+    /* ========================= */
+    /* HEADER */
+    /* ========================= */
     header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      padding: 18px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 25px;
-      background: #111;
-      border-bottom: 1px solid #222;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      background: rgba(15, 15, 20, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    header h1 {
-      font-size: 20px;
-      font-weight: bold;
-      color: #fff;
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
-    header h1 span {
+    .logo span {
       color: #ff2d55;
     }
 
+    /* Search */
+    .search-bar {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 0 20px;
+    }
+
     .search-bar input {
-      width: 300px;
-      padding: 10px;
-      border-radius: 8px;
+      width: 100%;
+      max-width: 520px;
+      padding: 12px 16px;
+      border-radius: 14px;
       border: none;
       outline: none;
-      background: #1c1c22;
+      background: rgba(255,255,255,0.06);
       color: white;
-    }
-
-    .upload-btn {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 8px;
-      background: #ff2d55;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 25px;
-    }
-
-    .video-card {
-      background: #14141b;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
+      font-size: 14px;
       transition: 0.2s;
     }
 
-    .video-card:hover {
-      transform: scale(1.03);
+    .search-bar input:focus {
+      border: 1px solid rgba(255,45,85,0.6);
+      background: rgba(255,255,255,0.09);
     }
 
+    /* Upload Button */
+    .upload-btn {
+      padding: 11px 18px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff2d55, #ff0050);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .upload-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.95;
+    }
+
+    /* ========================= */
+    /* MAIN FEED */
+    /* ========================= */
+    main {
+      padding: 35px;
+      max-width: 1300px;
+      margin: auto;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+
+    #videoFeed {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 22px;
+    }
+
+    /* Video Card */
+    .video-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: 0.25s;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .video-card:hover {
+      transform: translateY(-6px);
+      border: 1px solid rgba(255,45,85,0.4);
+    }
+
+    /* Thumbnail */
     .thumb {
-      width: 100%;
       height: 160px;
-      background: #222;
+      background: linear-gradient(135deg, #222, #111);
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #aaa;
-      font-size: 14px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
     }
 
+    /* Video Info */
     .video-info {
-      padding: 12px;
+      padding: 14px;
     }
 
     .video-info h3 {
-      margin: 0;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 750;
+      margin-bottom: 6px;
     }
 
     .video-info p {
-      margin: 5px 0;
       font-size: 13px;
-      color: #aaa;
+      color: rgba(255,255,255,0.55);
     }
 
-    /* Modal Player */
+    /* ========================= */
+    /* MODAL PLAYER */
+    /* ========================= */
     .modal {
       display: none;
       position: fixed;
@@ -109,31 +163,71 @@
       background: rgba(0,0,0,0.85);
       justify-content: center;
       align-items: center;
-      z-index: 99;
+      z-index: 999;
+      padding: 20px;
     }
 
     .modal-content {
-      width: 80%;
-      max-width: 900px;
-      background: #111;
-      padding: 20px;
-      border-radius: 12px;
+      width: 95%;
+      max-width: 880px;
+      background: rgba(15,15,20,0.96);
+      border-radius: 20px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: pop 0.2s ease;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.96); opacity: 0.6; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-content h2 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .modal-content p {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 14px;
     }
 
     video {
       width: 100%;
-      border-radius: 10px;
+      border-radius: 14px;
+      background: black;
     }
 
     .close-btn {
-      margin-top: 10px;
-      padding: 10px 14px;
+      margin-top: 16px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 8px;
+      border-radius: 14px;
       background: #ff2d55;
-      cursor: pointer;
-      font-weight: bold;
+      font-weight: 700;
       color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .close-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* Mobile Fix */
+    @media(max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .search-bar {
+        width: 100%;
+      }
+
+      .upload-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -142,114 +236,140 @@
 
   <!-- HEADER -->
   <header>
-    <h1>SS:<span>Watch</span></h1>
+    <div class="logo">SS:<span>Watch</span></div>
 
     <div class="search-bar">
       <input id="searchInput" placeholder="Search videos..." />
     </div>
 
-    <button class="upload-btn" onclick="alert('Upload system next 🔥')">
-      Upload
+    <button class="upload-btn" onclick="alert('Upload system coming next 🔥')">
+      ⬆ Upload
     </button>
   </header>
 
-  <!-- VIDEO FEED -->
-  <main class="container" id="videoFeed">
-    <p style="color:#aaa;">Loading videos...</p>
+  <!-- MAIN FEED -->
+  <main>
+    <h2>Latest Uploads</h2>
+    <section id="videoFeed">
+      <p style="color:rgba(255,255,255,0.55)">Loading videos...</p>
+    </section>
   </main>
 
   <!-- MODAL PLAYER -->
   <div class="modal" id="videoModal">
     <div class="modal-content">
       <h2 id="modalTitle"></h2>
-      <p id="modalCreator" style="color:#aaa;"></p>
+      <p id="modalCreator"></p>
 
-      <video id="modalVideo" controls></video>
+      <video id="modalVideo" controls autoplay></video>
 
       <button class="close-btn" onclick="closeModal()">Close</button>
     </div>
   </div>
 
   <script>
-    // ===============================
-    // 🔥 SUPABASE CONFIG (PUT YOUR KEYS)
-    // ===============================
+    /* ===============================
+       SUPABASE CONFIG
+    =============================== */
     const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
     const TABLE = "sswatch_videos";
 
-    // ===============================
-    // FETCH VIDEOS
-    // ===============================
+    /* ===============================
+       LOAD VIDEOS
+    =============================== */
     async function loadVideos() {
       const feed = document.getElementById("videoFeed");
 
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*`, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/${TABLE}?select=*`,
+          {
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: `Bearer ${SUPABASE_KEY}`,
+            },
+          }
+        );
+
+        const videos = await res.json();
+
+        if (!videos.length) {
+          feed.innerHTML =
+            "<p style='color:rgba(255,255,255,0.55)'>No videos found yet.</p>";
+          return;
         }
-      });
 
-      const videos = await res.json();
+        feed.innerHTML = "";
 
-      if (!videos.length) {
-        feed.innerHTML = "<p style='color:#aaa;'>No videos uploaded yet.</p>";
-        return;
+        videos.forEach((video) => {
+          const card = document.createElement("div");
+          card.className = "video-card";
+
+          card.innerHTML = `
+            <div class="thumb">▶ Preview</div>
+            <div class="video-info">
+              <h3>${video.title}</h3>
+              <p>Uploaded by @${video.username}</p>
+            </div>
+          `;
+
+          card.onclick = () => openModal(video);
+
+          feed.appendChild(card);
+        });
+
+      } catch (err) {
+        feed.innerHTML =
+          "<p style='color:red'>Error loading videos.</p>";
+        console.error(err);
       }
-
-      feed.innerHTML = "";
-
-      videos.forEach(video => {
-        const card = document.createElement("div");
-        card.className = "video-card";
-
-        card.innerHTML = `
-          <div class="thumb">▶ Preview</div>
-          <div class="video-info">
-            <h3>${video.title}</h3>
-            <p>@${video.username}</p>
-          </div>
-        `;
-
-        card.onclick = () => openModal(video);
-
-        feed.appendChild(card);
-      });
     }
 
-    // ===============================
-    // OPEN MODAL PLAYER
-    // ===============================
+    /* ===============================
+       MODAL PLAYER
+    =============================== */
     function openModal(video) {
-      document.getElementById("videoModal").style.display = "flex";
+      const modal = document.getElementById("videoModal");
+      modal.style.display = "flex";
 
       document.getElementById("modalTitle").innerText = video.title;
-      document.getElementById("modalCreator").innerText = `Uploaded by @${video.username}`;
+      document.getElementById("modalCreator").innerText =
+        `Uploaded by @${video.username}`;
 
-      document.getElementById("modalVideo").src = video.video_url;
+      const player = document.getElementById("modalVideo");
+      player.src = video.video_url;
+      player.load();
+      player.play();
     }
 
     function closeModal() {
-      document.getElementById("videoModal").style.display = "none";
-      document.getElementById("modalVideo").pause();
+      const modal = document.getElementById("videoModal");
+      modal.style.display = "none";
+
+      const player = document.getElementById("modalVideo");
+      player.pause();
+      player.src = "";
     }
 
-    // ===============================
-    // SEARCH FEATURE
-    // ===============================
-    document.getElementById("searchInput").addEventListener("input", function(e) {
-      const term = e.target.value.toLowerCase();
-      const cards = document.querySelectorAll(".video-card");
+    /* ===============================
+       SEARCH FILTER
+    =============================== */
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", function (e) {
+        const term = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll(".video-card");
 
-      cards.forEach(card => {
-        const title = card.innerText.toLowerCase();
-        card.style.display = title.includes(term) ? "block" : "none";
+        cards.forEach((card) => {
+          const text = card.innerText.toLowerCase();
+          card.style.display = text.includes(term) ? "block" : "none";
+        });
       });
-    });
 
-    // Load videos on start
+    /* ===============================
+       START
+    =============================== */
     loadVideos();
   </script>
 
