@@ -1,28 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Watch • SS: Watch</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch — SS:Watch</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
     body {
-      font-family: Arial;
-      background: #0b0b0f;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0b10;
       color: white;
-      padding: 25px;
+    }
+
+    header {
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
     }
 
     video {
       width: 100%;
-      max-width: 900px;
-      border-radius: 14px;
+      border-radius: 12px;
+      background: black;
+    }
+
+    h1 {
       margin-top: 20px;
+      font-size: 26px;
+    }
+
+    .meta {
+      opacity: 0.7;
+      margin-bottom: 20px;
     }
 
     a {
-      color: cyan;
-      font-weight: bold;
+      color: hotpink;
       text-decoration: none;
     }
   </style>
@@ -30,39 +53,62 @@
 
 <body>
 
-<a href="index.html">⬅ Back to Feed</a>
+  <header>
+    <a href="index.html">← Back</a> &nbsp; SS:Watch
+  </header>
 
-<h1 id="title">Loading...</h1>
-<p id="desc"></p>
+  <div class="container">
+    <video id="player" controls preload="metadata"></video>
 
-<video id="player" controls></video>
+    <h1 id="title">Loading...</h1>
+    <p class="meta" id="uploader"></p>
+  </div>
 
-<script>
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+  <script>
+    // ✅ Supabase Setup
+    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+    const supabase = window.supabase.createClient(
+      supabaseUrl,
+      supabaseKey
+    );
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+    // ✅ Get Video ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const videoId = params.get("id");
 
-async function loadVideo() {
-  const { data } = await supabase
-    .from("sswatch_videos")
-    .select("*")
-    .eq("id", id)
-    .single();
+    async function loadVideo() {
+      if (!videoId) {
+        alert("No video selected.");
+        return;
+      }
 
-  document.getElementById("title").innerText = data.title;
-  document.getElementById("desc").innerText = data.description;
-  document.getElementById("player").src = data.video_url;
-}
+      // ✅ Fetch Video Row
+      const { data, error } = await supabase
+        .from("sswatch_videos")
+        .select("*")
+        .eq("id", videoId)
+        .single();
 
-loadVideo();
-</script>
+      if (error) {
+        console.log(error);
+        alert("Video not found.");
+        return;
+      }
+
+      // ✅ Set Page Info
+      document.getElementById("title").textContent = data.title;
+      document.getElementById("uploader").textContent =
+        "Uploaded by @" + data.username;
+
+      // ✅ Load Video URL into Player
+      const player = document.getElementById("player");
+      player.src = data.video_url;
+    }
+
+    loadVideo();
+  </script>
 
 </body>
 </html>
