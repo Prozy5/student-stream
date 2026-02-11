@@ -9,46 +9,41 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #0b0b12;
+      background: #0b0b0f;
       color: white;
     }
 
-    /* HEADER */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 16px 25px;
-      background: rgba(15,15,22,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,15,20,0.95);
+      border-bottom: 1px solid #222;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     header h1 {
-      font-size: 22px;
-      margin: 0;
+      font-size: 20px;
       font-weight: bold;
     }
 
-    header h1 span {
+    header span {
       color: #ff2d55;
     }
 
     .search-bar input {
-      width: 320px;
-      padding: 11px;
+      width: 280px;
+      padding: 10px;
       border-radius: 10px;
       border: none;
-      outline: none;
-      background: #1b1b25;
+      background: #1c1c22;
       color: white;
-      font-size: 14px;
     }
 
-    .header-btns {
+    .actions {
       display: flex;
       gap: 10px;
     }
@@ -57,63 +52,62 @@
       padding: 10px 14px;
       border: none;
       border-radius: 10px;
-      font-weight: bold;
       cursor: pointer;
-      font-size: 14px;
+      font-weight: bold;
+      color: white;
     }
 
     .upload-btn {
-      background: linear-gradient(to right, #ff2d55, #ff4f87);
-      color: white;
+      background: #ff2d55;
     }
 
     .logout-btn {
-      background: rgba(255,255,255,0.08);
-      color: white;
-    }
-
-    /* FEED */
-    .container {
-      padding: 25px;
+      background: #333;
     }
 
     h2 {
+      padding: 20px 25px 5px;
+      margin: 0;
       font-size: 22px;
-      margin-bottom: 18px;
     }
 
-    .video-grid {
+    #statusMsg {
+      padding: 0 25px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 20px;
+      padding: 25px;
     }
 
     .video-card {
-      background: rgba(25,25,35,0.9);
-      border-radius: 15px;
+      background: #14141b;
+      border-radius: 14px;
       overflow: hidden;
       cursor: pointer;
       transition: 0.2s;
-      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .video-card:hover {
       transform: scale(1.03);
-      border-color: rgba(255,45,85,0.5);
     }
 
     .thumb {
-      height: 170px;
-      background: #222;
+      height: 160px;
+      background: linear-gradient(120deg,#222,#111);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 14px;
+      font-size: 15px;
       color: #aaa;
     }
 
     .video-info {
-      padding: 14px;
+      padding: 12px;
     }
 
     .video-info h3 {
@@ -124,7 +118,7 @@
     .video-info p {
       margin: 6px 0 0;
       font-size: 13px;
-      color: #aaa;
+      color: #888;
     }
 
     /* MODAL */
@@ -132,31 +126,30 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.88);
       justify-content: center;
       align-items: center;
-      z-index: 999;
+      z-index: 99;
     }
 
     .modal-content {
-      width: 85%;
-      max-width: 950px;
+      width: 92%;
+      max-width: 850px;
       background: #111;
-      border-radius: 16px;
       padding: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
     }
 
     video {
       width: 100%;
-      border-radius: 14px;
-      margin-top: 12px;
-      background: black;
+      border-radius: 12px;
+      margin-top: 10px;
     }
 
     .close-btn {
-      margin-top: 14px;
-      padding: 10px 14px;
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
       border: none;
       border-radius: 10px;
       background: #ff2d55;
@@ -164,101 +157,80 @@
       font-weight: bold;
       cursor: pointer;
     }
-
-    /* MOBILE */
-    @media(max-width: 700px) {
-      .search-bar input {
-        width: 160px;
-      }
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <h1>SS:<span>Watch</span></h1>
+<header>
+  <h1>SS:<span>Watch</span></h1>
 
-    <div class="search-bar">
-      <input id="searchInput" placeholder="Search videos..." />
-    </div>
-
-    <div class="header-btns">
-      <button class="btn upload-btn" onclick="goUpload()">Upload</button>
-      <button class="btn logout-btn" onclick="logout()">Logout</button>
-    </div>
-  </header>
-
-  <!-- FEED -->
-  <main class="container">
-    <h2>Latest Uploads</h2>
-    <div class="video-grid" id="videoFeed">
-      <p style="color:#888;">Loading videos...</p>
-    </div>
-  </main>
-
-  <!-- MODAL PLAYER -->
-  <div class="modal" id="videoModal">
-    <div class="modal-content">
-      <h2 id="modalTitle"></h2>
-      <p id="modalCreator" style="color:#aaa;"></p>
-
-      <video id="modalVideo" controls></video>
-
-      <button class="close-btn" onclick="closeModal()">Close</button>
-    </div>
+  <div class="search-bar">
+    <input id="searchInput" placeholder="Search videos..." />
   </div>
 
-  <!-- SUPABASE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <div class="actions">
+    <button class="btn upload-btn" onclick="alert('Upload page next 🔥')">
+      Upload
+    </button>
+    <button class="btn logout-btn" onclick="logout()">
+      Logout
+    </button>
+  </div>
+</header>
 
-  <script>
-    // ===============================
-    // SUPABASE CONFIG
-    // ===============================
-    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+<h2>Latest Uploads</h2>
+<p id="statusMsg">Loading videos...</p>
 
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+<main class="container" id="videoFeed"></main>
 
-    const TABLE = "sswatch_videos";
+<!-- MODAL -->
+<div class="modal" id="videoModal">
+  <div class="modal-content">
+    <h2 id="modalTitle"></h2>
+    <p id="modalCreator" style="color:#aaa;"></p>
 
-    // ===============================
-    // AUTH PROTECT
-    // ===============================
-    async function checkAuth() {
-      const { data } = await supabase.auth.getUser();
+    <video id="modalVideo" controls autoplay></video>
 
-      if (!data.user) {
-        window.location.href = "login.html";
-      }
-    }
+    <button class="close-btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
 
-    // ===============================
-    // LOAD VIDEOS
-    // ===============================
-    async function loadVideos() {
-      const feed = document.getElementById("videoFeed");
+<script>
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-      const { data: videos, error } = await supabase
-        .from(TABLE)
-        .select("*")
-        .order("created_at", { ascending: false });
+  const TABLE = "sswatch_videos";
 
-      if (error) {
-        feed.innerHTML = "<p style='color:red;'>Error loading videos.</p>";
-        console.log(error);
+  async function loadVideos() {
+    const feed = document.getElementById("videoFeed");
+    const status = document.getElementById("statusMsg");
+
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/${TABLE}?select=*`,
+        {
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`
+          }
+        }
+      );
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        status.innerText = "❌ Supabase Error: " + errorText;
         return;
       }
+
+      const videos = await res.json();
 
       if (!videos.length) {
-        feed.innerHTML = "<p style='color:#aaa;'>No videos uploaded yet.</p>";
+        status.innerText = "No videos uploaded yet.";
         return;
       }
+
+      status.innerText = "";
 
       feed.innerHTML = "";
 
@@ -269,8 +241,8 @@
         card.innerHTML = `
           <div class="thumb">▶ Preview</div>
           <div class="video-info">
-            <h3>${video.title}</h3>
-            <p>@${video.username}</p>
+            <h3>${video.title || "Untitled Video"}</h3>
+            <p>@${video.username || "StudentStreamHQ"}</p>
           </div>
         `;
 
@@ -278,56 +250,45 @@
 
         feed.appendChild(card);
       });
+
+    } catch (err) {
+      status.innerText = "❌ Connection failed: " + err.message;
     }
+  }
 
-    // ===============================
-    // MODAL PLAYER
-    // ===============================
-    function openModal(video) {
-      document.getElementById("videoModal").style.display = "flex";
+  function openModal(video) {
+    document.getElementById("videoModal").style.display = "flex";
 
-      document.getElementById("modalTitle").innerText = video.title;
-      document.getElementById("modalCreator").innerText =
-        `Uploaded by @${video.username}`;
+    document.getElementById("modalTitle").innerText = video.title;
+    document.getElementById("modalCreator").innerText =
+      "Uploaded by @" + video.username;
 
-      document.getElementById("modalVideo").src = video.video_url;
-    }
+    document.getElementById("modalVideo").src = video.video_url;
+  }
 
-    function closeModal() {
-      document.getElementById("videoModal").style.display = "none";
-      document.getElementById("modalVideo").pause();
-    }
+  function closeModal() {
+    document.getElementById("videoModal").style.display = "none";
+    document.getElementById("modalVideo").pause();
+  }
 
-    // ===============================
-    // SEARCH FILTER
-    // ===============================
-    document.getElementById("searchInput").addEventListener("input", e => {
-      const term = e.target.value.toLowerCase();
-      document.querySelectorAll(".video-card").forEach(card => {
-        card.style.display = card.innerText.toLowerCase().includes(term)
+  function logout() {
+    window.location.href = "/ss-watch/login.html";
+  }
+
+  document.getElementById("searchInput").addEventListener("input", function(e) {
+    const term = e.target.value.toLowerCase();
+    const cards = document.querySelectorAll(".video-card");
+
+    cards.forEach(card => {
+      card.style.display =
+        card.innerText.toLowerCase().includes(term)
           ? "block"
           : "none";
-      });
     });
+  });
 
-    // ===============================
-    // BUTTONS
-    // ===============================
-    function goUpload() {
-      window.location.href = "upload.html";
-    }
-
-    async function logout() {
-      await supabase.auth.signOut();
-      window.location.href = "login.html";
-    }
-
-    // ===============================
-    // START APP
-    // ===============================
-    checkAuth();
-    loadVideos();
-  </script>
+  loadVideos();
+</script>
 
 </body>
 </html>
