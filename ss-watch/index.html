@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SS:Watch — Home</title>
 
+  <!-- SEO / Social Preview -->
+  <meta name="description" content="SS:Watch is the creator-first video platform inside StudentStreamHQ." />
+  <meta property="og:title" content="SS:Watch" />
+  <meta property="og:description" content="Next-generation creator distribution + originals." />
+  <meta property="og:type" content="website" />
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #0b0b0f;
+      background: radial-gradient(circle at top, #15151f, #07070b);
       color: white;
     }
 
@@ -18,16 +24,18 @@
       justify-content: space-between;
       align-items: center;
       padding: 16px 25px;
-      background: rgba(15,15,20,0.95);
-      border-bottom: 1px solid #222;
+      background: rgba(10,10,15,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 50;
+      backdrop-filter: blur(12px);
     }
 
     header h1 {
       font-size: 20px;
       font-weight: bold;
+      letter-spacing: 0.5px;
     }
 
     header span {
@@ -35,12 +43,14 @@
     }
 
     .search-bar input {
-      width: 280px;
-      padding: 10px;
-      border-radius: 10px;
+      width: 320px;
+      padding: 11px;
+      border-radius: 12px;
       border: none;
-      background: #1c1c22;
+      outline: none;
+      background: rgba(255,255,255,0.08);
       color: white;
+      font-size: 14px;
     }
 
     .actions {
@@ -49,20 +59,25 @@
     }
 
     .btn {
-      padding: 10px 14px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       font-weight: bold;
       color: white;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
     }
 
     .upload-btn {
-      background: #ff2d55;
+      background: linear-gradient(90deg,#ff2d55,#ff5f7a);
     }
 
     .logout-btn {
-      background: #333;
+      background: rgba(255,255,255,0.12);
     }
 
     h2 {
@@ -73,89 +88,87 @@
 
     #statusMsg {
       padding: 0 25px;
-      color: #aaa;
+      color: rgba(255,255,255,0.55);
       font-size: 14px;
     }
 
+    /* GRID FEED */
     .container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 22px;
       padding: 25px;
     }
 
     .video-card {
-      background: #14141b;
-      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
       overflow: hidden;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.25s;
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .video-card:hover {
-      transform: scale(1.03);
+      transform: translateY(-6px) scale(1.02);
+      border-color: rgba(255,45,85,0.5);
     }
 
     .thumb {
-      height: 160px;
-      background: linear-gradient(120deg,#222,#111);
+      height: 165px;
+      background: linear-gradient(120deg,#1c1c25,#0a0a0f);
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 15px;
-      color: #aaa;
+      color: rgba(255,255,255,0.4);
+      position: relative;
+    }
+
+    .play-icon {
+      position: absolute;
+      font-size: 40px;
+      opacity: 0.9;
+      color: #ff2d55;
     }
 
     .video-info {
-      padding: 12px;
+      padding: 14px;
     }
 
     .video-info h3 {
       margin: 0;
       font-size: 16px;
+      font-weight: bold;
     }
 
     .video-info p {
       margin: 6px 0 0;
       font-size: 13px;
-      color: #888;
+      color: rgba(255,255,255,0.55);
     }
 
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.88);
-      justify-content: center;
-      align-items: center;
-      z-index: 99;
+    .badge {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(255,45,85,0.25);
+      color: #ff2d55;
     }
 
-    .modal-content {
-      width: 92%;
-      max-width: 850px;
-      background: #111;
-      padding: 20px;
-      border-radius: 14px;
+    .views {
+      font-size: 12px;
+      margin-top: 8px;
+      opacity: 0.45;
     }
 
-    video {
-      width: 100%;
-      border-radius: 12px;
-      margin-top: 10px;
-    }
-
-    .close-btn {
-      margin-top: 12px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: #ff2d55;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+    /* MOBILE */
+    @media(max-width: 700px) {
+      .search-bar input {
+        width: 150px;
+      }
     }
   </style>
 </head>
@@ -166,16 +179,12 @@
   <h1>SS:<span>Watch</span></h1>
 
   <div class="search-bar">
-    <input id="searchInput" placeholder="Search videos..." />
+    <input id="searchInput" placeholder="Search creators, videos..." />
   </div>
 
   <div class="actions">
-    <button class="btn upload-btn" onclick="alert('Upload page next 🔥')">
-      Upload
-    </button>
-    <button class="btn logout-btn" onclick="logout()">
-      Logout
-    </button>
+    <button class="btn upload-btn" onclick="goUpload()">Upload</button>
+    <button class="btn logout-btn" onclick="logout()">Logout</button>
   </div>
 </header>
 
@@ -184,23 +193,18 @@
 
 <main class="container" id="videoFeed"></main>
 
-<!-- MODAL -->
-<div class="modal" id="videoModal">
-  <div class="modal-content">
-    <h2 id="modalTitle"></h2>
-    <p id="modalCreator" style="color:#aaa;"></p>
-
-    <video id="modalVideo" controls autoplay></video>
-
-    <button class="close-btn" onclick="closeModal()">Close</button>
-  </div>
-</div>
-
 <script>
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+  const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
   const TABLE = "sswatch_videos";
+
+  // ✅ Fix playback: always use direct public storage link
+  function fixVideoURL(url) {
+    if (!url) return "";
+    return url.replace("/object/public/", "/object/public/");
+  }
 
   async function loadVideos() {
     const feed = document.getElementById("videoFeed");
@@ -208,7 +212,7 @@
 
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/${TABLE}?select=*`,
+        `${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.desc`,
         {
           headers: {
             apikey: SUPABASE_KEY,
@@ -218,20 +222,18 @@
       );
 
       if (!res.ok) {
-        const errorText = await res.text();
-        status.innerText = "❌ Supabase Error: " + errorText;
+        status.innerText = "❌ Database Error";
         return;
       }
 
       const videos = await res.json();
 
       if (!videos.length) {
-        status.innerText = "No videos uploaded yet.";
+        status.innerText = "No uploads yet. Be the first creator on SS:Watch.";
         return;
       }
 
       status.innerText = "";
-
       feed.innerHTML = "";
 
       videos.forEach(video => {
@@ -239,14 +241,31 @@
         card.className = "video-card";
 
         card.innerHTML = `
-          <div class="thumb">▶ Preview</div>
+          <div class="thumb">
+            <div class="play-icon">▶</div>
+          </div>
+
           <div class="video-info">
-            <h3>${video.title || "Untitled Video"}</h3>
-            <p>@${video.username || "StudentStreamHQ"}</p>
+            <h3>
+              ${video.title || "Untitled"}
+            </h3>
+
+            <p>
+              @${video.username || "studentstreamhq"}
+              <span class="badge">SS Creator</span>
+            </p>
+
+            <div class="views">
+              ${(video.views || 0)} views • SS:Watch Originals Ready
+            </div>
           </div>
         `;
 
-        card.onclick = () => openModal(video);
+        // ✅ REAL WATCH PAGE ROUTING
+        card.onclick = () => {
+          window.location.href =
+            `watch.html?id=${video.id}`;
+        };
 
         feed.appendChild(card);
       });
@@ -256,36 +275,27 @@
     }
   }
 
-  function openModal(video) {
-    document.getElementById("videoModal").style.display = "flex";
-
-    document.getElementById("modalTitle").innerText = video.title;
-    document.getElementById("modalCreator").innerText =
-      "Uploaded by @" + video.username;
-
-    document.getElementById("modalVideo").src = video.video_url;
-  }
-
-  function closeModal() {
-    document.getElementById("videoModal").style.display = "none";
-    document.getElementById("modalVideo").pause();
-  }
-
   function logout() {
     window.location.href = "/ss-watch/login.html";
   }
 
-  document.getElementById("searchInput").addEventListener("input", function(e) {
-    const term = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll(".video-card");
+  function goUpload() {
+    window.location.href = "/ss-watch/upload.html";
+  }
 
-    cards.forEach(card => {
-      card.style.display =
-        card.innerText.toLowerCase().includes(term)
-          ? "block"
-          : "none";
+  document.getElementById("searchInput")
+    .addEventListener("input", function(e) {
+
+      const term = e.target.value.toLowerCase();
+      const cards = document.querySelectorAll(".video-card");
+
+      cards.forEach(card => {
+        card.style.display =
+          card.innerText.toLowerCase().includes(term)
+            ? "block"
+            : "none";
+      });
     });
-  });
 
   loadVideos();
 </script>
