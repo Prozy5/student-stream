@@ -15,9 +15,15 @@
       min-height:100vh;
     }
 
+    /* HEADER */
     header{
-      padding:22px 26px;
+      position:sticky;
+      top:0;
+      z-index:100;
+      padding:20px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(18px);
+      background:rgba(5,7,12,.75);
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -36,78 +42,121 @@
       font-size:14px;
       opacity:.7;
       cursor:pointer;
+      font-weight:600;
     }
 
     .back:hover{opacity:1;}
 
+    /* PAGE */
     .container{
-      max-width:950px;
+      max-width:1000px;
       margin:55px auto;
       padding:0 20px;
     }
 
-    /* TOPIC BOX */
-    .topicBox{
+    /* THREAD BOX */
+    .threadBox{
+      border-radius:20px;
+      padding:26px;
+      border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.09);
-      border-radius:18px;
-      padding:24px;
     }
 
-    .topicBox h1{
-      font-size:24px;
-      font-weight:900;
+    .threadBox h1{
+      font-size:28px;
+      font-weight:950;
       margin-bottom:10px;
+      line-height:1.2;
     }
 
-    .topicMeta{
+    .threadMeta{
       font-size:13px;
       opacity:.6;
       margin-bottom:18px;
     }
 
-    .topicMessage{
+    .originalPostTag{
+      display:inline-block;
+      font-size:12px;
+      font-weight:800;
+      padding:6px 10px;
+      border-radius:999px;
+      margin-bottom:14px;
+      background:rgba(77,163,255,.15);
+      color:#4da3ff;
+    }
+
+    .threadMessage{
       font-size:15px;
-      line-height:1.7;
+      line-height:1.75;
       opacity:.92;
       white-space:pre-wrap;
     }
 
-    /* REPLY SECTION */
-    .replySection{
-      margin-top:40px;
+    /* REPLY HEADER */
+    .replyHeader{
+      margin-top:45px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:12px;
     }
 
-    .replySection h2{
+    .replyHeader h2{
       font-size:18px;
-      font-weight:800;
-      margin-bottom:14px;
+      font-weight:850;
+    }
+
+    .replyCount{
+      font-size:13px;
+      opacity:.55;
     }
 
     /* REPLY CARD */
     .replyCard{
-      padding:16px;
-      border-radius:14px;
+      padding:18px;
+      border-radius:18px;
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.06);
-      margin-top:12px;
+      margin-top:14px;
+      transition:.2s;
     }
 
-    .replyCard b{
+    .replyCard:hover{
+      border-color:rgba(77,163,255,.35);
+    }
+
+    .replyTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    .replyAuthor{
+      font-weight:850;
       font-size:14px;
       color:#4da3ff;
     }
 
-    .replyCard small{
-      display:block;
-      opacity:.5;
-      font-size:12px;
-      margin-top:4px;
+    .badge{
+      font-size:11px;
+      font-weight:800;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(60,255,122,.12);
+      color:#3cff7a;
+      margin-left:8px;
     }
 
-    .replyCard p{
-      margin-top:10px;
-      line-height:1.5;
+    .replyTime{
+      font-size:12px;
+      opacity:.45;
+    }
+
+    .replyText{
+      line-height:1.55;
       font-size:14px;
       opacity:.9;
       white-space:pre-wrap;
@@ -116,8 +165,8 @@
     /* REPLY FORM */
     .replyForm{
       margin-top:25px;
-      padding:18px;
-      border-radius:16px;
+      padding:20px;
+      border-radius:18px;
       border:1px solid rgba(255,255,255,.09);
       background:rgba(255,255,255,.02);
     }
@@ -125,7 +174,7 @@
     textarea{
       width:100%;
       padding:14px;
-      border-radius:14px;
+      border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.02);
       color:white;
@@ -139,32 +188,43 @@
       margin-top:14px;
       width:100%;
       padding:14px;
-      border-radius:14px;
+      border-radius:16px;
       border:none;
       cursor:pointer;
-      font-weight:900;
+      font-weight:950;
       font-size:15px;
       background:linear-gradient(90deg,#4da3ff,#3cff7a);
       color:black;
+      transition:.2s;
     }
 
     button:hover{
-      opacity:.95;
+      opacity:.92;
+      transform:scale(1.01);
     }
 
     .status{
       text-align:center;
       margin-top:12px;
-      opacity:.7;
+      opacity:.65;
       font-size:14px;
+    }
+
+    .empty{
+      text-align:center;
+      opacity:.55;
+      padding:35px;
+      border:1px dashed rgba(255,255,255,.14);
+      border-radius:18px;
+      margin-top:18px;
     }
 
     footer{
       text-align:center;
-      padding:30px;
+      padding:35px;
       opacity:.4;
       font-size:13px;
-      margin-top:80px;
+      margin-top:85px;
       border-top:1px solid rgba(255,255,255,.08);
     }
   </style>
@@ -179,36 +239,38 @@
 
 <div class="container">
 
-  <!-- TOPIC -->
-  <div class="topicBox">
+  <!-- ORIGINAL POST -->
+  <div class="threadBox">
+    <div class="originalPostTag">Original Post</div>
     <h1 id="topicTitle">Loading topic...</h1>
-    <div class="topicMeta" id="topicMeta"></div>
-    <div class="topicMessage" id="topicMessage"></div>
+    <div class="threadMeta" id="topicMeta"></div>
+    <div class="threadMessage" id="topicMessage"></div>
   </div>
 
   <!-- REPLIES -->
-  <div class="replySection">
+  <div class="replyHeader">
     <h2>Replies</h2>
+    <div class="replyCount" id="replyCount">Loading…</div>
+  </div>
 
-    <div id="replyList">Loading replies...</div>
+  <div id="replyList">Loading replies...</div>
 
-    <!-- REPLY FORM -->
-    <div class="replyForm">
-      <textarea
-        id="replyInput"
-        placeholder="Write a reply... (Login required soon)"
-      ></textarea>
+  <!-- REPLY FORM -->
+  <div class="replyForm">
+    <textarea
+      id="replyInput"
+      placeholder="Write a reply… (Login + Accounts coming soon)"
+    ></textarea>
 
-      <button onclick="postReply()">💬 Post Reply</button>
+    <button onclick="postReply()">💬 Post Reply</button>
 
-      <div class="status" id="statusText"></div>
-    </div>
+    <div class="status" id="statusText"></div>
   </div>
 
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • DevForum Topic Thread V2
+  © 2026 StudentStreamHQ • Topic Thread V3
 </footer>
 
 <script type="module">
@@ -231,6 +293,7 @@
   const replyList = document.getElementById("replyList");
   const replyInput = document.getElementById("replyInput");
   const statusText = document.getElementById("statusText");
+  const replyCount = document.getElementById("replyCount");
 
   /* LOAD TOPIC */
   async function loadTopic(){
@@ -240,14 +303,14 @@
       .eq("id", topicId)
       .single();
 
-    if(error){
+    if(error || !data){
       topicTitle.textContent = "Topic not found.";
       return;
     }
 
     topicTitle.textContent = data.title;
     topicMeta.textContent =
-      `Posted by ${data.author} • ${new Date(data.created_at).toLocaleString()}`;
+      `Posted by ${data.author || "Anonymous"} • ${new Date(data.created_at).toLocaleString()}`;
 
     topicMessage.textContent = data.message;
   }
@@ -262,23 +325,42 @@
       .order("created_at");
 
     if(error){
-      replyList.innerHTML = "Failed to load replies.";
+      replyList.innerHTML = `<div class="empty">Failed to load replies.</div>`;
       return;
     }
 
+    replyCount.textContent = `${data.length || 0} replies`;
+
     if(!data || data.length === 0){
-      replyList.innerHTML = "No replies yet. Be the first 🎉";
+      replyList.innerHTML = `
+        <div class="empty">
+          No replies yet.<br><br>
+          Be the first to respond 🎉
+        </div>
+      `;
       return;
     }
 
     replyList.innerHTML = "";
 
     data.forEach(r=>{
+
+      const staffBadge =
+        (r.author && r.author.toLowerCase().includes("studentstream"))
+        ? `<span class="badge">Staff</span>`
+        : "";
+
       replyList.innerHTML += `
         <div class="replyCard">
-          <b>${r.author}</b>
-          <small>${new Date(r.created_at).toLocaleString()}</small>
-          <p>${r.message}</p>
+          <div class="replyTop">
+            <div class="replyAuthor">
+              ${r.author || "Guest"} ${staffBadge}
+            </div>
+            <div class="replyTime">
+              ${new Date(r.created_at).toLocaleString()}
+            </div>
+          </div>
+          <div class="replyText">${r.message}</div>
         </div>
       `;
     });
@@ -321,7 +403,7 @@
   loadTopic();
   loadReplies();
 
-  /* AUTO REFRESH */
+  /* LIVE REFRESH */
   setInterval(loadReplies, 15000);
 </script>
 
