@@ -1,223 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>StudentStream System Status</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StudentStreamHQ Status</title>
 
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont;
-  background:#070b12;
-  color:#fff;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-header{
-  padding:20px 24px;
-  border-bottom:1px solid #1c2533;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      background: radial-gradient(circle at top, #0a1628, #05070c);
+      color: white;
+      min-height: 100vh;
+    }
 
-.logo{
-  font-size:20px;
-  font-weight:900;
-  color:#4da3ff;
-}
+    header {
+      padding: 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.container{
-  max-width:1100px;
-  margin:40px auto;
-  padding:0 24px;
-}
+    header h1 {
+      font-size: 20px;
+      font-weight: 900;
+      color: #4da3ff;
+    }
 
-.overall{
-  background:#0e1522;
-  border:1px solid #1f2a3a;
-  border-radius:14px;
-  padding:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:30px;
-}
+    header span {
+      font-size: 13px;
+      opacity: 0.6;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;
-}
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 28px;
+    }
 
-.card{
-  background:#0e1522;
-  border:1px solid #1f2a3a;
-  border-radius:14px;
-  padding:18px;
-}
+    /* Overall Banner */
+    .overall {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 26px;
+    }
 
-.card b{
-  font-size:16px;
-}
+    .overall h2 {
+      font-size: 18px;
+      font-weight: 800;
+    }
 
-.service{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:12px;
-  font-size:14px;
-}
+    .overall p {
+      font-size: 13px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
 
-.dot{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  margin-right:6px;
-}
+    .badge {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+    }
 
-.up{background:#3cff7a}
-.down{background:#ff4d4d}
-.degraded{background:#ffb84d}
+    .ok { background: rgba(60,255,122,0.15); color: #3cff7a; }
+    .warn { background: rgba(255,184,77,0.15); color: #ffb84d; }
+    .bad { background: rgba(255,77,77,0.15); color: #ff4d4d; }
 
-.status-good{color:#3cff7a}
-.status-bad{color:#ff4d4d}
-.status-warn{color:#ffb84d}
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 16px;
+    }
 
-footer{
-  border-top:1px solid #1c2533;
-  margin-top:60px;
-  padding:30px;
-  text-align:center;
-  font-size:13px;
-  opacity:.6;
-}
-</style>
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .service {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      font-size: 14px;
+    }
+
+    .service:first-of-type {
+      border-top: none;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .operational { background: #3cff7a; }
+    .degraded { background: #ffb84d; }
+    .down { background: #ff4d4d; }
+    .maintenance { background: #4da3ff; }
+
+    /* Updates */
+    .updates {
+      margin-top: 40px;
+    }
+
+    .updates h2 {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .update-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .update-box b {
+      font-size: 14px;
+    }
+
+    .update-box p {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-top: 6px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      font-size: 13px;
+      opacity: 0.5;
+      margin-top: 60px;
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <div class="logo">StudentStream Status</div>
-  <div style="opacity:.6;font-size:14px">Live System Health</div>
-</header>
+  <header>
+    <h1>StudentStreamHQ Status</h1>
+    <span>Live Infrastructure Health</span>
+  </header>
 
-<div class="container">
+  <div class="container">
 
-  <div class="overall">
-    <div>
-      <b id="overallText">Loading...</b>
-      <div style="font-size:13px;opacity:.6">Real-time platform status</div>
+    <!-- Overall -->
+    <div class="overall">
+      <div>
+        <h2 id="overallText">Loading system health...</h2>
+        <p>Real-time platform status across StudentStreamHQ</p>
+      </div>
+      <div id="overallBadge" class="badge ok">Checking...</div>
     </div>
-    <div id="overallDot">●</div>
+
+    <!-- Status Grid -->
+    <div class="grid" id="grid"></div>
+
+    <!-- Updates -->
+    <div class="updates">
+      <h2>Platform Updates</h2>
+      <div id="updates"></div>
+    </div>
+
   </div>
 
-  <div class="grid"></div>
+  <footer>
+    © 2026 StudentStreamHQ · Official Public Status Network
+  </footer>
 
-</div>
+  <!-- Supabase -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-<footer>
-  © 2026 StudentStream · Infrastructure Status
-</footer>
+    const supabase = createClient(
+      "https://iabzmoxzbqzcqgypxctr.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+    );
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+    const grid = document.getElementById("grid");
+    const updatesBox = document.getElementById("updates");
 
-const supabase = createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+    const overallText = document.getElementById("overallText");
+    const overallBadge = document.getElementById("overallBadge");
 
-const grid = document.querySelector(".grid");
-const overallText = document.getElementById("overallText");
-const overallDot = document.getElementById("overallDot");
+    function formatStatus(status) {
+      return status.charAt(0).toUpperCase() + status.slice(1);
+    }
 
-async function loadStatus(){
-  const { data, error } = await supabase
-    .from("system_status")
-    .select("*")
-    .order("division");
+    async function loadStatus() {
+      const { data } = await supabase
+        .from("system_status")
+        .select("*")
+        .order("division");
 
-  if(error){
-    console.error(error);
-    overallText.textContent = "Unable to load system status";
-    return;
-  }
+      if (!data) return;
 
-  renderStatus(data);
-}
+      let hasDown = false;
+      let hasWarn = false;
 
-function renderStatus(rows){
-  const divisions = {};
-  let hasDown = false;
-  let hasDegraded = false;
+      const grouped = {};
 
-  rows.forEach(r=>{
-    if(!divisions[r.division]) divisions[r.division]=[];
-    divisions[r.division].push(r);
+      data.forEach((row) => {
+        if (!grouped[row.division]) grouped[row.division] = [];
+        grouped[row.division].push(row);
 
-    if(r.status === "down") hasDown = true;
-    if(r.status === "degraded") hasDegraded = true;
-  });
+        if (row.status === "down") hasDown = true;
+        if (row.status === "degraded" || row.status === "maintenance") hasWarn = true;
+      });
 
-  grid.innerHTML = "";
+      grid.innerHTML = "";
 
-  Object.entries(divisions).forEach(([division, services])=>{
-    const card = document.createElement("div");
-    card.className = "card";
+      Object.entries(grouped).forEach(([division, services]) => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-    let html = `<b>${division}</b>`;
+        let html = `<h3>${division}</h3>`;
 
-    services.forEach(s=>{
-      let dotClass = "up";
-      let statusClass = "status-good";
+        services.forEach((s) => {
+          html += `
+            <div class="service">
+              <span>
+                <span class="dot ${s.status}"></span>
+                ${s.service}
+              </span>
+              <span>${formatStatus(s.status)}</span>
+            </div>
+          `;
+        });
 
-      if(s.status === "down"){
-        dotClass = "down";
-        statusClass = "status-bad";
+        card.innerHTML = html;
+        grid.appendChild(card);
+      });
+
+      if (hasDown) {
+        overallText.textContent = "Major System Outage";
+        overallBadge.className = "badge bad";
+        overallBadge.textContent = "Outage";
+      } else if (hasWarn) {
+        overallText.textContent = "Partial Maintenance / Degraded Systems";
+        overallBadge.className = "badge warn";
+        overallBadge.textContent = "Degraded";
+      } else {
+        overallText.textContent = "All Systems Operational";
+        overallBadge.className = "badge ok";
+        overallBadge.textContent = "Operational";
       }
-      if(s.status === "degraded"){
-        dotClass = "degraded";
-        statusClass = "status-warn";
-      }
+    }
 
-      html += `
-        <div class="service">
-          <span><span class="dot ${dotClass}"></span>${s.service}</span>
-          <span class="${statusClass}">${capitalize(s.status)}</span>
-        </div>
-      `;
-    });
+    async function loadUpdates() {
+      const { data } = await supabase
+        .from("status_updates")
+        .select("*")
+        .order("posted_at", { ascending: false })
+        .limit(3);
 
-    card.innerHTML = html;
-    grid.appendChild(card);
-  });
+      updatesBox.innerHTML = "";
 
-  if(hasDown){
-    overallText.textContent = "Major System Outage";
-    overallDot.textContent = "● Down";
-    overallDot.className = "status-bad";
-  } else if(hasDegraded){
-    overallText.textContent = "Partial System Degradation";
-    overallDot.textContent = "● Degraded";
-    overallDot.className = "status-warn";
-  } else {
-    overallText.textContent = "All Systems Operational";
-    overallDot.textContent = "● Operational";
-    overallDot.className = "status-good";
-  }
-}
+      data.forEach((u) => {
+        updatesBox.innerHTML += `
+          <div class="update-box">
+            <b>${u.headline}</b>
+            <p>${u.body}</p>
+          </div>
+        `;
+      });
+    }
 
-function capitalize(s){
-  return s.charAt(0).toUpperCase()+s.slice(1);
-}
+    loadStatus();
+    loadUpdates();
 
-loadStatus();
-
-// auto refresh every 30 seconds
-setInterval(loadStatus, 30000);
-</script>
+    setInterval(loadStatus, 30000);
+  </script>
 
 </body>
 </html>
