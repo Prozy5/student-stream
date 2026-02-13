@@ -2,114 +2,145 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>StudentStream DevForum</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>DevForum Category</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    :root {
-      --bg: #0b1220;
-      --panel: #111a2e;
-      --panel-hover: #162447;
-      --border: #1f2c4d;
-      --text: #e6ebff;
-      --muted: #9aa7d9;
-      --accent: #3b82f6;
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      background:radial-gradient(circle at top,#0d1b3a,#05070c);
+      color:white;
+      min-height:100vh;
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    header{
+      padding:22px 26px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
 
-    body {
-      margin: 0;
-      background: radial-gradient(1200px 600px at top, #0f1b33, #070b15);
-      color: var(--text);
+    .logo{
+      font-size:20px;
+      font-weight:900;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
+    .logo span{
+      color:#4da3ff;
     }
 
-    header h1 {
-      font-size: 18px;
-      margin: 0;
-      cursor: pointer;
+    .back{
+      font-size:14px;
+      opacity:.7;
+      cursor:pointer;
+      transition:.2s;
     }
 
-    header button {
-      background: var(--accent);
-      border: none;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
+    .back:hover{
+      opacity:1;
     }
 
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
+    .container{
+      max-width:950px;
+      margin:40px auto;
+      padding:0 20px;
     }
 
-    .category-header {
-      margin-bottom: 24px;
+    h1{
+      font-size:30px;
+      margin-bottom:8px;
     }
 
-    .category-header h2 {
-      margin: 0;
-      font-size: 26px;
+    .desc{
+      opacity:.65;
+      font-size:15px;
+      margin-bottom:25px;
     }
 
-    .category-header p {
-      color: var(--muted);
-      margin-top: 6px;
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:25px;
+      gap:15px;
     }
 
-    .thread {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: background .15s ease;
+    .btn{
+      background:#2f6fff;
+      border:none;
+      padding:10px 16px;
+      border-radius:12px;
+      font-weight:700;
+      color:white;
+      cursor:pointer;
+      font-size:14px;
     }
 
-    .thread:hover {
-      background: var(--panel-hover);
+    .btn:disabled{
+      opacity:.4;
+      cursor:not-allowed;
     }
 
-    .thread-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 6px;
+    .topic{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:18px;
+      margin-top:15px;
+      cursor:pointer;
+      transition:.2s;
     }
 
-    .thread-meta {
-      font-size: 13px;
-      color: var(--muted);
+    .topic:hover{
+      transform:scale(1.01);
+      border-color:rgba(77,163,255,.35);
     }
 
-    .state {
-      text-align: center;
-      color: var(--muted);
-      margin-top: 60px;
+    .topic-title{
+      font-size:17px;
+      font-weight:800;
     }
 
-    footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      padding: 40px 0;
+    .topic-meta{
+      margin-top:6px;
+      font-size:13px;
+      opacity:.55;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .badge{
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .open{background:rgba(60,255,122,.12);color:#3cff7a;}
+    .locked{background:rgba(255,77,77,.12);color:#ff4d4d;}
+    .resolved{background:rgba(77,163,255,.12);color:#4da3ff;}
+
+    .empty{
+      text-align:center;
+      opacity:.5;
+      padding:35px;
+      border:1px dashed rgba(255,255,255,.15);
+      border-radius:18px;
+      margin-top:25px;
+    }
+
+    footer{
+      text-align:center;
+      padding:30px;
+      opacity:.4;
+      font-size:13px;
+      margin-top:70px;
+      border-top:1px solid rgba(255,255,255,.08);
     }
   </style>
 </head>
@@ -117,128 +148,121 @@
 <body>
 
 <header>
-  <h1 onclick="location.href='index.html'">StudentStream DevForum</h1>
-  <button id="actionBtn">Sign In</button>
+  <div class="logo">StudentStream <span>DevForum</span></div>
+  <div class="back" onclick="history.back()">← Back</div>
 </header>
 
-<main>
-  <div class="category-header">
-    <h2 id="categoryName">Loading…</h2>
-    <p id="categoryDesc"></p>
+<div class="container">
+
+  <div class="topbar">
+    <div>
+      <h1 id="catName">Loading...</h1>
+      <div class="desc" id="catDesc">Please wait</div>
+    </div>
+
+    <!-- Posting later -->
+    <button class="btn" disabled>
+      + New Topic (Login Required)
+    </button>
   </div>
 
-  <div id="threads">
-    <div class="state">Loading threads…</div>
+  <div id="topicList"></div>
+
+  <div id="emptyState" class="empty" style="display:none;">
+    No topics yet in this category.
   </div>
-</main>
+
+</div>
 
 <footer>
-  © 2026 StudentStream · Developer Forum
+  © 2026 StudentStream • Developer Forum Category View
 </footer>
 
-<script>
-  /* ===============================
-     CONFIG (USE SAME AS index.html)
-  =============================== */
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+  /* SUPABASE CONNECT */
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicmFsb2UiOiJhbm9uIiwiaWF0IjoxNzY3MTA4MzcwLCJleHAiOjIwODI2ODQzNzB9.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  /* ===============================
-     PARAMS
-  =============================== */
+  const catName = document.getElementById("catName");
+  const catDesc = document.getElementById("catDesc");
+  const topicList = document.getElementById("topicList");
+  const emptyState = document.getElementById("emptyState");
+
+  /* GET CATEGORY ID */
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get("slug");
+  const categoryId = params.get("id");
 
-  if (!slug) {
-    alert("Missing category slug");
-    location.href = "index.html";
-  }
+  async function loadCategory() {
 
-  /* ===============================
-     AUTH BUTTON
-  =============================== */
-  const actionBtn = document.getElementById("actionBtn");
-
-  supabase.auth.getUser().then(({ data }) => {
-    if (data?.user) {
-      actionBtn.textContent = "New Thread";
-      actionBtn.onclick = () =>
-        location.href = `new.html?category=${slug}`;
-    } else {
-      actionBtn.onclick = () =>
-        location.href = "login.html";
-    }
-  });
-
-  /* ===============================
-     LOAD CATEGORY + THREADS
-  =============================== */
-  async function loadPage() {
-    const threadsContainer = document.getElementById("threads");
-
-    // 1️⃣ Get category
-    const { data: category, error: catErr } = await supabase
+    /* CATEGORY INFO */
+    const { data: category } = await supabase
       .from("forum_categories")
       .select("*")
-      .eq("slug", slug)
+      .eq("id", categoryId)
       .single();
 
-    if (catErr || !category) {
-      console.error(catErr);
-      threadsContainer.innerHTML =
-        "<div class='state'>Category not found.</div>";
+    if (!category) {
+      catName.textContent = "Category Not Found";
       return;
     }
 
-    document.getElementById("categoryName").textContent = category.name;
-    document.getElementById("categoryDesc").textContent =
-      category.description || "";
+    catName.textContent = category.icon + " " + category.name;
+    catDesc.textContent = category.description;
 
-    // 2️⃣ Get threads
-    const { data: threads, error: threadErr } = await supabase
-      .from("forum_threads")
-      .select("id, title, slug, created_at")
-      .eq("category_id", category.id)
+    /* TOPICS */
+    const { data: topics } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .eq("category_id", categoryId)
       .order("created_at", { ascending: false });
 
-    if (threadErr) {
-      console.error(threadErr);
-      threadsContainer.innerHTML =
-        "<div class='state'>Failed to load threads.</div>";
+    if (!topics || topics.length === 0) {
+      emptyState.style.display = "block";
       return;
     }
 
-    if (!threads || threads.length === 0) {
-      threadsContainer.innerHTML =
-        "<div class='state'>No threads yet.</div>";
-      return;
-    }
+    topicList.innerHTML = "";
 
-    threadsContainer.innerHTML = "";
+    topics.forEach(t => {
 
-    threads.forEach(thread => {
-      const el = document.createElement("div");
-      el.className = "thread";
-      el.onclick = () =>
-        location.href = `thread.html?slug=${thread.slug}`;
+      let statusClass = "open";
+      let statusText = "Open";
 
-      el.innerHTML = `
-        <div class="thread-title">${thread.title}</div>
-        <div class="thread-meta">
-          ${new Date(thread.created_at).toLocaleString()}
+      if (t.status === "locked") {
+        statusClass = "locked";
+        statusText = "Locked";
+      }
+
+      if (t.status === "resolved") {
+        statusClass = "resolved";
+        statusText = "Resolved";
+      }
+
+      const div = document.createElement("div");
+      div.className = "topic";
+
+      div.innerHTML = `
+        <div class="topic-title">${t.title}</div>
+        <div class="topic-meta">
+          <span>${t.author || "StudentStream Team"}</span>
+          <span class="badge ${statusClass}">${statusText}</span>
         </div>
       `;
 
-      threadsContainer.appendChild(el);
+      /* CLICK → OPEN TOPIC PAGE (NEXT FILE) */
+      div.onclick = () => {
+        window.location.href = `topic.html?id=${t.id}`;
+      };
+
+      topicList.appendChild(div);
     });
   }
 
-  loadPage();
+  loadCategory();
 </script>
 
 </body>
