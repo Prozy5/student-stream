@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Topic • StudentStream DevForum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      background:radial-gradient(circle at top,#0d1b3a,#05070c);
+      color:white;
+      min-height:100vh;
+    }
+
+    header{
+      padding:22px 26px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .logo{
+      font-size:20px;
+      font-weight:900;
+    }
+
+    .logo span{
+      color:#4da3ff;
+    }
+
+    .back{
+      font-size:14px;
+      opacity:.7;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .back:hover{opacity:1;}
+
+    .container{
+      max-width:950px;
+      margin:45px auto;
+      padding:0 20px;
+    }
+
+    .topicBox{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:24px;
+    }
+
+    h1{
+      font-size:26px;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .meta{
+      opacity:.55;
+      font-size:13px;
+      margin-bottom:18px;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .message{
+      font-size:15px;
+      line-height:1.6;
+      opacity:.9;
+      white-space:pre-line;
+    }
+
+    .badge{
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .open{background:rgba(60,255,122,.12);color:#3cff7a;}
+    .locked{background:rgba(255,77,77,.12);color:#ff4d4d;}
+    .resolved{background:rgba(77,163,255,.12);color:#4da3ff;}
+
+    /* REPLIES */
+    .sectionTitle{
+      margin-top:35px;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .reply{
+      margin-top:14px;
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .reply small{
+      opacity:.55;
+      font-size:12px;
+      display:block;
+      margin-bottom:6px;
+    }
+
+    .reply p{
+      font-size:14px;
+      opacity:.9;
+      line-height:1.5;
+      white-space:pre-line;
+    }
+
+    /* REPLY BOX */
+    .replyBox{
+      margin-top:25px;
+      padding:18px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.15);
+      opacity:.5;
+      text-align:center;
+    }
+
+    footer{
+      text-align:center;
+      padding:30px;
+      opacity:.4;
+      font-size:13px;
+      margin-top:70px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">StudentStream <span>DevForum</span></div>
+  <div class="back" onclick="history.back()">← Back</div>
+</header>
+
+<div class="container">
+
+  <!-- TOPIC MAIN -->
+  <div class="topicBox">
+    <h1 id="topicTitle">Loading...</h1>
+
+    <div class="meta">
+      <span id="topicAuthor">—</span>
+      <span id="topicStatus" class="badge open">Open</span>
+    </div>
+
+    <div class="message" id="topicMessage">
+      Please wait...
+    </div>
+  </div>
+
+  <!-- REPLIES -->
+  <div class="sectionTitle">Replies</div>
+  <div id="replyList"></div>
+
+  <!-- LOGIN REQUIRED BOX -->
+  <div class="replyBox">
+    🔒 Replying is disabled until StudentStream login is enabled.
+  </div>
+
+</div>
+
+<footer>
+  © 2026 StudentStreamHQ • Topic View • DevForum
+</footer>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  /* SUPABASE CONNECT */
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  const topicTitle = document.getElementById("topicTitle");
+  const topicAuthor = document.getElementById("topicAuthor");
+  const topicMessage = document.getElementById("topicMessage");
+  const topicStatus = document.getElementById("topicStatus");
+
+  const replyList = document.getElementById("replyList");
+
+  /* GET TOPIC ID */
+  const params = new URLSearchParams(window.location.search);
+  const topicId = params.get("id");
+
+  async function loadTopic(){
+
+    /* LOAD TOPIC */
+    const { data: topic } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .eq("id", topicId)
+      .single();
+
+    if(!topic){
+      topicTitle.textContent = "Topic Not Found";
+      topicMessage.textContent = "This topic may have been removed.";
+      return;
+    }
+
+    topicTitle.textContent = topic.title;
+    topicAuthor.textContent =
+      "Posted by " + (topic.author || "StudentStream Team");
+
+    topicMessage.textContent = topic.message;
+
+    /* STATUS BADGE */
+    let cls="open", txt="Open";
+
+    if(topic.status==="locked"){cls="locked";txt="Locked";}
+    if(topic.status==="resolved"){cls="resolved";txt="Resolved";}
+
+    topicStatus.className = "badge " + cls;
+    topicStatus.textContent = txt;
+
+    /* LOAD REPLIES */
+    const { data: replies } = await supabase
+      .from("forum_replies")
+      .select("*")
+      .eq("topic_id", topicId)
+      .order("created_at", { ascending:true });
+
+    renderReplies(replies);
+  }
+
+  function renderReplies(list){
+
+    if(!list || list.length===0){
+      replyList.innerHTML =
+        `<div style="opacity:.5;margin-top:15px;">
+          No replies yet. Be the first once login is enabled.
+        </div>`;
+      return;
+    }
+
+    replyList.innerHTML="";
+
+    list.forEach(r=>{
+      const div=document.createElement("div");
+      div.className="reply";
+
+      div.innerHTML=`
+        <small>
+          ${r.author || "Anonymous"} •
+          ${new Date(r.created_at).toLocaleString()}
+        </small>
+        <p>${r.message}</p>
+      `;
+
+      replyList.appendChild(div);
+    });
+  }
+
+  loadTopic();
+</script>
+
+</body>
+</html>
