@@ -1,231 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ============================
-       STUDENTSTREAM DEVFORUM V3
-  ============================ -->
-
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>StudentStream DevForum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="description"
-    content="StudentStream DevForum is the official developer forum for announcements, updates, support, and StudentStreamHQ discussions." />
-
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#050B1A" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="StudentStream DevForum" />
-  <meta property="og:description"
-    content="Discuss features, report bugs, request help, and build StudentStreamHQ together." />
-  <meta property="og:type" content="website" />
-
-  <!-- Google Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "DiscussionForumPosting",
-    "name": "StudentStream DevForum",
-    "description": "Official developer forum for StudentStreamHQ announcements, updates, support, and bug reporting.",
-    "publisher": {
-      "@type": "Organization",
-      "name": "StudentStreamHQ"
-    }
-  }
-  </script>
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Styling -->
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at top, #0c1633, #05060d);
-      color: white;
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      background:radial-gradient(circle at top,#0d1b3a,#05070c);
+      color:white;
+      min-height:100vh;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px;
+    header{
+      padding:22px 26px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
 
-    .logo {
-      font-size: 22px;
-      font-weight: 800;
+    .logo{
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:.4px;
     }
 
-    .logo span {
-      color: #3b82ff;
-      font-weight: 900;
+    .logo span{
+      color:#4da3ff;
     }
 
-    .account-btn {
-      padding: 10px 16px;
-      border-radius: 14px;
-      background: rgba(59, 130, 255, 0.2);
-      border: 1px solid rgba(59, 130, 255, 0.35);
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
+    .btn{
+      background:#2f6fff;
+      border:none;
+      padding:10px 16px;
+      border-radius:12px;
+      font-weight:700;
+      color:white;
+      cursor:pointer;
+      font-size:14px;
     }
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
+    .container{
+      max-width:950px;
+      margin:40px auto;
+      padding:0 20px;
     }
 
-    h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
+    h1{
+      font-size:32px;
+      margin-bottom:10px;
     }
 
-    p {
-      color: rgba(255, 255, 255, 0.65);
-      line-height: 1.5;
-      margin-bottom: 25px;
+    p{
+      opacity:.65;
+      font-size:15px;
+      margin-bottom:25px;
+      line-height:1.4;
     }
 
-    .category-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 15px;
+    .card{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:18px;
+      margin-top:15px;
+      transition:.2s;
+      cursor:pointer;
     }
 
-    .category-item {
-      padding: 18px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      cursor: pointer;
-      transition: 0.2s;
+    .card:hover{
+      transform:scale(1.01);
+      border-color:rgba(77,163,255,.35);
     }
 
-    .category-item:hover {
-      background: rgba(59, 130, 255, 0.10);
-      border-color: rgba(59, 130, 255, 0.30);
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
     }
 
-    .category-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 4px;
+    .left{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
     }
 
-    .category-desc {
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.55);
+    .icon{
+      font-size:22px;
+      margin-top:2px;
     }
 
-    .status {
-      margin-top: 25px;
-      font-size: 15px;
-      opacity: 0.7;
+    .name{
+      font-size:18px;
+      font-weight:800;
     }
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      opacity: 0.4;
-      font-size: 14px;
-      margin-top: 60px;
+    .desc{
+      opacity:.55;
+      font-size:13px;
+      margin-top:3px;
+    }
+
+    .count{
+      font-size:13px;
+      opacity:.6;
+      background:rgba(255,255,255,.06);
+      padding:7px 12px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+
+    .empty{
+      text-align:center;
+      opacity:.5;
+      padding:35px;
+      border:1px dashed rgba(255,255,255,.15);
+      border-radius:18px;
+      margin-top:25px;
+    }
+
+    footer{
+      text-align:center;
+      padding:30px;
+      opacity:.4;
+      font-size:13px;
+      margin-top:60px;
+      border-top:1px solid rgba(255,255,255,.08);
     }
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo">StudentStream <span>DevForum</span></div>
-    <button class="account-btn" onclick="location.href='account.html'">
-      Account
-    </button>
-  </header>
+<header>
+  <div class="logo">StudentStream <span>DevForum</span></div>
+  <button class="btn">Account</button>
+</header>
 
-  <!-- MAIN -->
-  <div class="container">
-    <h1>Developer Forums</h1>
+<div class="container">
+  <h1>Developer Forums</h1>
+  <p>
+    Discuss features, report bugs, and build StudentStream together.<br>
+    <b>Public Read Mode:</b> Anyone can view — posting will require login.
+  </p>
 
-    <p>
-      Discuss features, report bugs, request help, and build
-      StudentStreamHQ together. Posting is limited to development +
-      support topics only.
-    </p>
+  <div id="categoryList"></div>
 
-    <!-- CATEGORY LIST -->
-    <div class="category-list" id="categoryList">
-      <div class="status">Loading categories...</div>
-    </div>
+  <div id="emptyState" class="empty" style="display:none;">
+    No categories yet.
   </div>
+</div>
 
-  <!-- FOOTER -->
-  <footer>
-    © 2026 StudentStreamHQ • DevForum Homepage V3
-  </footer>
+<footer>
+  © 2026 StudentStream • Developer Forum
+</footer>
 
-  <!-- SCRIPT -->
-  <script>
-    // ✅ SUPABASE CONFIG
-    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    const supabaseClient = supabase.createClient(
-      supabaseUrl,
-      supabaseKey
-    );
+  /* SUPABASE CONNECT */
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
-    const categoryList = document.getElementById("categoryList");
+  const categoryList = document.getElementById("categoryList");
+  const emptyState = document.getElementById("emptyState");
 
-    async function loadCategories() {
-      categoryList.innerHTML = "<div class='status'>Loading categories...</div>";
+  /* LOAD CATEGORIES */
+  async function loadCategories() {
 
-      const { data, error } = await supabaseClient
-        .from("forum_categories")
-        .select("*")
-        .order("created_at");
+    const { data: categories, error } = await supabase
+      .from("forum_categories")
+      .select("*")
+      .order("created_at");
 
-      if (error) {
-        categoryList.innerHTML =
-          "<div class='status'>❌ Failed to load categories.</div>";
-        console.error(error);
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        categoryList.innerHTML =
-          "<div class='status'>No categories yet.</div>";
-        return;
-      }
-
-      categoryList.innerHTML = "";
-
-      data.forEach(cat => {
-        const div = document.createElement("div");
-        div.className = "category-item";
-
-        div.onclick = () => {
-          window.location.href = `category.html?slug=${cat.slug}`;
-        };
-
-        div.innerHTML = `
-          <div class="category-title">${cat.title}</div>
-          <div class="category-desc">${cat.description || ""}</div>
-        `;
-
-        categoryList.appendChild(div);
-      });
+    if (error) {
+      categoryList.innerHTML = `<div class="empty">Error loading forum.</div>`;
+      return;
     }
 
-    loadCategories();
-  </script>
+    if (!categories || categories.length === 0) {
+      emptyState.style.display = "block";
+      return;
+    }
+
+    categoryList.innerHTML = "";
+
+    for (let cat of categories) {
+
+      /* Count topics inside category */
+      const { count } = await supabase
+        .from("forum_topics")
+        .select("*", { count: "exact", head: true })
+        .eq("category_id", cat.id);
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="row">
+          <div class="left">
+            <div class="icon">${cat.icon}</div>
+            <div>
+              <div class="name">${cat.name}</div>
+              <div class="desc">${cat.description}</div>
+            </div>
+          </div>
+          <div class="count">${count || 0} Topics</div>
+        </div>
+      `;
+
+      /* CLICK → OPEN CATEGORY PAGE */
+      card.onclick = () => {
+        window.location.href = `category.html?id=${cat.id}`;
+      };
+
+      categoryList.appendChild(card);
+    }
+  }
+
+  loadCategories();
+</script>
 
 </body>
 </html>
