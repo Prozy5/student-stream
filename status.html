@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
   font-family:system-ui,-apple-system,BlinkMacSystemFont;
@@ -16,7 +16,7 @@ body{
 
 /* HEADER */
 header{
-  padding:24px 28px;
+  padding:26px 32px;
   border-bottom:1px solid #1c2533;
   display:flex;
   justify-content:space-between;
@@ -24,91 +24,97 @@ header{
 }
 
 .logo{
-  font-size:24px;
+  font-size:26px;
   font-weight:900;
   color:#4da3ff;
 }
 
 .sub{
-  opacity:.6;
+  opacity:.55;
   font-size:14px;
   margin-top:4px;
 }
 
 .updated{
-  opacity:.6;
+  opacity:.55;
   font-size:13px;
 }
 
-/* PAGE */
+/* WRAPPER */
 .container{
-  max-width:1050px;
-  margin:40px auto;
-  padding:0 20px;
+  max-width:1150px;
+  margin:auto;
+  padding:55px 22px 90px;
 }
 
-/* TOP BANNER */
+/* HERO */
+.hero{
+  display:flex;
+  justify-content:center;
+  margin-bottom:60px;
+}
+
 .banner{
+  width:100%;
+  max-width:900px;
   background:#0e1522;
   border:1px solid #1f2a3a;
-  border-radius:20px;
-  padding:26px;
+  border-radius:22px;
+  padding:34px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:35px;
 }
 
 .banner-title{
-  font-size:22px;
-  font-weight:800;
+  font-size:26px;
+  font-weight:850;
 }
 
 .badge{
-  padding:9px 18px;
+  padding:10px 20px;
   border-radius:999px;
-  font-weight:700;
+  font-weight:750;
   font-size:14px;
 }
 
-/* COLORS */
+/* STATUS COLORS */
 .good{background:rgba(60,255,122,.15);color:#3cff7a;}
 .warn{background:rgba(255,184,77,.15);color:#ffb84d;}
 .bad{background:rgba(255,77,77,.15);color:#ff4d4d;}
-.maint{background:rgba(77,163,255,.15);color:#4da3ff;}
+.maint{background:rgba(77,163,255,.18);color:#4da3ff;}
 
-/* SECTIONS */
+/* SECTION */
 .section{
-  margin-top:45px;
+  margin-top:65px;
 }
 
 .section h2{
-  font-size:21px;
+  font-size:22px;
   margin-bottom:8px;
 }
 
 .section p{
-  opacity:.6;
+  opacity:.55;
   font-size:14px;
 }
 
-/* CARDS */
-.card{
-  background:#0e1522;
-  border:1px solid #1f2a3a;
-  border-radius:18px;
-  padding:20px;
-  margin-top:18px;
-}
-
-/* GRID */
+/* SERVICES GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
   gap:18px;
+  margin-top:25px;
 }
 
-/* SERVICE */
+/* CARD */
+.card{
+  background:#0e1522;
+  border:1px solid #1f2a3a;
+  border-radius:18px;
+  padding:26px;
+}
+
 .service{
   display:flex;
   justify-content:space-between;
@@ -118,13 +124,10 @@ header{
   border-bottom:1px solid rgba(255,255,255,.06);
 }
 
-.service:last-child{
-  border-bottom:none;
-}
+.service:last-child{border-bottom:none;}
 
 .dot{
-  width:9px;
-  height:9px;
+  width:9px;height:9px;
   border-radius:50%;
   display:inline-block;
   margin-right:8px;
@@ -140,12 +143,12 @@ header{
 .status-warn{color:#ffb84d;}
 .status-maint{color:#4da3ff;}
 
-/* INCIDENT DROPDOWN */
+/* INCIDENT */
 .incident{
-  padding:14px;
+  padding:15px;
   border-radius:14px;
   background:rgba(255,255,255,0.03);
-  margin-top:12px;
+  margin-top:14px;
 }
 
 .incident b{
@@ -158,26 +161,13 @@ header{
   margin-top:6px;
 }
 
-/* BUTTON */
-.btn{
-  margin-top:18px;
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:none;
-  font-weight:800;
-  cursor:pointer;
-  font-size:15px;
-  background:linear-gradient(90deg,#4da3ff,#3cff7a);
-}
-
 /* FOOTER */
 footer{
-  margin-top:70px;
+  margin-top:90px;
   border-top:1px solid #1c2533;
   padding:35px;
   text-align:center;
-  opacity:.6;
+  opacity:.55;
   font-size:13px;
 }
 </style>
@@ -188,41 +178,28 @@ footer{
 <header>
   <div>
     <div class="logo">StudentStream Status</div>
-    <div class="sub">System Health • Live Infrastructure Updates</div>
+    <div class="sub">Live Infrastructure Monitoring</div>
   </div>
   <div class="updated" id="lastUpdated">Updated: --</div>
 </header>
 
 <div class="container">
 
-  <!-- OVERALL -->
-  <div class="banner">
-    <div>
-      <div class="banner-title" id="overallText">Loading...</div>
-      <div class="sub">Real-time platform availability</div>
-    </div>
-    <div class="badge good" id="overallBadge">...</div>
-  </div>
-
-  <!-- UPTIME -->
-  <div class="section">
-    <h2>Uptime (Last 30 Days)</h2>
-    <p>StudentStreamHQ reliability performance</p>
-
-    <div class="card">
-      <h1 id="uptimeValue" style="font-size:40px;margin-top:10px;">
-        --%
-      </h1>
-      <p style="opacity:.6;margin-top:6px;">
-        Auto-calculated from incidents + maintenance logs
-      </p>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="banner">
+      <div>
+        <div class="banner-title" id="overallText">Loading...</div>
+        <div class="sub">Real-time platform availability</div>
+      </div>
+      <div class="badge good" id="overallBadge">...</div>
     </div>
   </div>
 
-  <!-- INCIDENTS -->
+  <!-- ACTIVE INCIDENTS -->
   <div class="section">
     <h2>Active Incidents</h2>
-    <p>Current system events impacting services</p>
+    <p>Current platform disruptions</p>
 
     <div class="card" id="incidentBox">
       Loading incidents...
@@ -232,9 +209,9 @@ footer{
   <!-- MAINTENANCE -->
   <div class="section">
     <h2>Scheduled Maintenance</h2>
-    <p>Upcoming planned service updates</p>
+    <p>Upcoming planned updates</p>
 
-    <div class="card" id="maintBox">
+    <div class="card" id="maintenanceBox">
       Loading maintenance...
     </div>
   </div>
@@ -244,102 +221,85 @@ footer{
     <h2>Service Status</h2>
     <p>Divisions across StudentStreamHQ infrastructure</p>
 
-    <div class="grid" id="serviceGrid"></div>
-
-    <button class="btn">🔔 Subscribe to Updates</button>
+    <div class="grid" id="serviceGrid">
+      Loading services...
+    </div>
   </div>
 
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • Status Page V4.4 • Infrastructure
+  © 2026 StudentStreamHQ • Status Page V4.9 • Powered by Supabase
 </footer>
 
+<!-- SUPABASE LIVE SCRIPT -->
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* CONNECT SUPABASE */
+/* ✅ YOUR SUPABASE PROJECT */
 const supabase = createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
+/* ELEMENTS */
 const overallText = document.getElementById("overallText");
 const overallBadge = document.getElementById("overallBadge");
-const lastUpdated = document.getElementById("lastUpdated");
 
-const uptimeValue = document.getElementById("uptimeValue");
-
-const incidentBox = document.getElementById("incidentBox");
-const maintBox = document.getElementById("maintBox");
 const serviceGrid = document.getElementById("serviceGrid");
+const incidentBox = document.getElementById("incidentBox");
+const maintenanceBox = document.getElementById("maintenanceBox");
 
-/* LOAD EVERYTHING */
-async function loadAll(){
+/* TIME */
+document.getElementById("lastUpdated").textContent =
+  "Updated: " + new Date().toLocaleTimeString();
 
-  /* SERVICES */
-  const { data: services } = await supabase
-    .from("system_status")
+/* LOAD SERVICES */
+async function loadServices(){
+  const { data, error } = await supabase
+    .from("status_services")
     .select("*")
     .order("division");
 
-  renderServices(services);
+  if(error){
+    serviceGrid.innerHTML = "Unable to load services.";
+    return;
+  }
 
-  /* INCIDENTS */
-  const { data: incidents } = await supabase
-    .from("status_incidents")
-    .select("*")
-    .eq("active", true)
-    .order("created_at", { ascending:false });
-
-  renderIncidents(incidents);
-
-  /* MAINTENANCE */
-  const { data: maintenance } = await supabase
-    .from("status_maintenance")
-    .select("*")
-    .eq("active", true)
-    .order("scheduled_for");
-
-  renderMaintenance(maintenance);
-
-  /* UPTIME */
-  uptimeValue.textContent = "99.99%";
-
-  lastUpdated.textContent =
-    "Updated: " + new Date().toLocaleTimeString();
+  renderServices(data);
 }
 
-/* SERVICES RENDER */
+/* RENDER SERVICES */
 function renderServices(rows){
+  serviceGrid.innerHTML = "";
+
   let divisions = {};
-  let hasDown=false, hasDegraded=false, hasMaint=false;
+  let hasDown = false;
+  let hasDegraded = false;
 
   rows.forEach(r=>{
     if(!divisions[r.division]) divisions[r.division]=[];
     divisions[r.division].push(r);
 
-    if(r.status==="down") hasDown=true;
-    if(r.status==="degraded") hasDegraded=true;
-    if(r.status==="maintenance") hasMaint=true;
+    if(r.status === "down") hasDown = true;
+    if(r.status === "degraded") hasDegraded = true;
   });
 
-  serviceGrid.innerHTML="";
+  Object.entries(divisions).forEach(([division, services])=>{
+    const card = document.createElement("div");
+    card.className = "card";
 
-  Object.entries(divisions).forEach(([division, items])=>{
-    const card=document.createElement("div");
-    card.className="card";
+    let html = `<b style="font-size:18px;">${division}</b>`;
 
-    let html=`<b style="font-size:17px">${division}</b>`;
-
-    items.forEach(s=>{
-      let dot="dot-up", cls="status-good";
+    services.forEach(s=>{
+      let dot = "dot-up";
+      let cls = "status-good";
 
       if(s.status==="down"){dot="dot-down";cls="status-bad";}
       if(s.status==="degraded"){dot="dot-degraded";cls="status-warn";}
       if(s.status==="maintenance"){dot="dot-maint";cls="status-maint";}
 
-      html+=`
+      html += `
         <div class="service">
           <span><span class="dot ${dot}"></span>${s.service}</span>
           <span class="${cls}">${s.status}</span>
@@ -347,39 +307,43 @@ function renderServices(rows){
       `;
     });
 
-    card.innerHTML=html;
+    card.innerHTML = html;
     serviceGrid.appendChild(card);
   });
 
-  /* OVERALL */
+  /* OVERALL STATUS */
   if(hasDown){
     overallText.textContent="Major System Outage";
-    overallBadge.textContent="Down";
     overallBadge.className="badge bad";
-  } else if(hasDegraded){
-    overallText.textContent="Partial Degradation";
-    overallBadge.textContent="Degraded";
+    overallBadge.textContent="Down";
+  }
+  else if(hasDegraded){
+    overallText.textContent="Partial System Degradation";
     overallBadge.className="badge warn";
-  } else if(hasMaint){
-    overallText.textContent="Maintenance Active";
-    overallBadge.textContent="Maintenance";
-    overallBadge.className="badge maint";
-  } else {
+    overallBadge.textContent="Degraded";
+  }
+  else{
     overallText.textContent="All Systems Operational";
-    overallBadge.textContent="Operational";
     overallBadge.className="badge good";
+    overallBadge.textContent="Operational";
   }
 }
 
-/* INCIDENTS */
-function renderIncidents(list){
-  if(!list || list.length===0){
+/* LOAD INCIDENTS */
+async function loadIncidents(){
+  const { data } = await supabase
+    .from("status_incidents")
+    .select("*")
+    .eq("incident_status","active")
+    .order("created_at",{ascending:false});
+
+  if(!data || data.length===0){
     incidentBox.innerHTML="No active incidents 🎉";
     return;
   }
 
   incidentBox.innerHTML="";
-  list.forEach(i=>{
+  data.forEach(i=>{
     incidentBox.innerHTML += `
       <div class="incident">
         <b>${i.title}</b>
@@ -389,26 +353,42 @@ function renderIncidents(list){
   });
 }
 
-/* MAINTENANCE */
-function renderMaintenance(list){
-  if(!list || list.length===0){
-    maintBox.innerHTML="No scheduled maintenance.";
+/* LOAD MAINTENANCE */
+async function loadMaintenance(){
+  const { data } = await supabase
+    .from("status_maintenance")
+    .select("*")
+    .eq("status","scheduled")
+    .order("start_time");
+
+  if(!data || data.length===0){
+    maintenanceBox.innerHTML="No maintenance scheduled.";
     return;
   }
 
-  maintBox.innerHTML="";
-  list.forEach(m=>{
-    maintBox.innerHTML += `
+  maintenanceBox.innerHTML="";
+  data.forEach(m=>{
+    maintenanceBox.innerHTML += `
       <div class="incident">
         <b>${m.title}</b>
-        <small>Scheduled: ${new Date(m.scheduled_for).toLocaleString()}</small>
+        <small>${new Date(m.start_time).toLocaleString()}</small>
       </div>
     `;
   });
 }
 
-loadAll();
-setInterval(loadAll, 30000);
+/* INITIAL LOAD */
+loadServices();
+loadIncidents();
+loadMaintenance();
+
+/* AUTO REFRESH */
+setInterval(()=>{
+  loadServices();
+  loadIncidents();
+  loadMaintenance();
+},30000);
+
 </script>
 
 </body>
