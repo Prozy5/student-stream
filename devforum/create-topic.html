@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Topic • StudentStream DevForum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      background:radial-gradient(circle at top,#0d1b3a,#05070c);
+      color:white;
+      min-height:100vh;
+    }
+
+    header{
+      padding:22px 26px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .logo{
+      font-size:20px;
+      font-weight:900;
+    }
+
+    .logo span{
+      color:#4da3ff;
+    }
+
+    .back{
+      font-size:14px;
+      opacity:.7;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .back:hover{opacity:1;}
+
+    .container{
+      max-width:850px;
+      margin:55px auto;
+      padding:0 20px;
+    }
+
+    h1{
+      font-size:28px;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    p{
+      opacity:.6;
+      margin-bottom:25px;
+      font-size:14px;
+    }
+
+    .formBox{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:25px;
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:8px;
+      margin-top:18px;
+      opacity:.8;
+    }
+
+    select,input,textarea{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.02);
+      color:white;
+      font-size:14px;
+      outline:none;
+    }
+
+    textarea{
+      resize:none;
+      min-height:160px;
+      line-height:1.5;
+    }
+
+    button{
+      margin-top:22px;
+      width:100%;
+      padding:15px;
+      border-radius:14px;
+      border:none;
+      cursor:pointer;
+      font-weight:900;
+      font-size:15px;
+      background:linear-gradient(90deg,#4da3ff,#3cff7a);
+      color:black;
+      transition:.2s;
+    }
+
+    button:hover{
+      transform:scale(1.01);
+      opacity:.95;
+    }
+
+    .status{
+      margin-top:16px;
+      font-size:14px;
+      opacity:.7;
+      text-align:center;
+    }
+
+    footer{
+      text-align:center;
+      padding:30px;
+      opacity:.4;
+      font-size:13px;
+      margin-top:70px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">StudentStream <span>DevForum</span></div>
+  <div class="back" onclick="history.back()">← Cancel</div>
+</header>
+
+<div class="container">
+
+  <h1>Create a New Topic</h1>
+  <p>
+    Ask questions, report bugs, or start a discussion inside StudentStreamHQ.
+  </p>
+
+  <div class="formBox">
+
+    <label>Category</label>
+    <select id="categorySelect">
+      <option value="">Loading categories...</option>
+    </select>
+
+    <label>Topic Title</label>
+    <input
+      id="titleInput"
+      placeholder="Example: Login not working on mobile"
+    />
+
+    <label>Message</label>
+    <textarea
+      id="messageInput"
+      placeholder="Explain your issue or discussion clearly..."
+    ></textarea>
+
+    <button onclick="submitTopic()">🚀 Post Topic</button>
+
+    <div class="status" id="statusText"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  © 2026 StudentStreamHQ • DevForum Topic Creator
+</footer>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  /* CONNECT SUPABASE */
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  const categorySelect = document.getElementById("categorySelect");
+  const titleInput = document.getElementById("titleInput");
+  const messageInput = document.getElementById("messageInput");
+  const statusText = document.getElementById("statusText");
+
+  /* LOAD CATEGORIES */
+  async function loadCategories(){
+
+    const { data, error } = await supabase
+      .from("forum_categories")
+      .select("*")
+      .order("name");
+
+    if(error){
+      categorySelect.innerHTML =
+        `<option>Error loading categories</option>`;
+      return;
+    }
+
+    categorySelect.innerHTML =
+      `<option value="">Select category...</option>`;
+
+    data.forEach(cat=>{
+      categorySelect.innerHTML += `
+        <option value="${cat.id}">
+          ${cat.name}
+        </option>
+      `;
+    });
+  }
+
+  /* SUBMIT TOPIC */
+  window.submitTopic = async function(){
+
+    const categoryId = categorySelect.value;
+    const title = titleInput.value.trim();
+    const message = messageInput.value.trim();
+
+    if(!categoryId || !title || !message){
+      statusText.textContent = "⚠️ Fill in all fields.";
+      return;
+    }
+
+    statusText.textContent = "Posting topic...";
+
+    const { data, error } = await supabase
+      .from("forum_topics")
+      .insert([
+        {
+          category_id: categoryId,
+          title: title,
+          message: message,
+          author: "Guest User",
+          status: "open"
+        }
+      ])
+      .select()
+      .single();
+
+    if(error){
+      console.error(error);
+      statusText.textContent = "❌ Failed to post topic.";
+      return;
+    }
+
+    statusText.textContent = "✅ Topic posted! Redirecting...";
+
+    setTimeout(()=>{
+      window.location.href =
+        `category.html?id=${categoryId}`;
+    }, 1200);
+  }
+
+  loadCategories();
+</script>
+
+</body>
+</html>
