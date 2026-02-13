@@ -97,6 +97,7 @@
       display:flex;
       gap:10px;
       margin:25px 0 35px;
+      flex-wrap:wrap;
     }
 
     .tab{
@@ -117,7 +118,7 @@
       background:rgba(77,163,255,.12);
     }
 
-    /* CATEGORY CARD */
+    /* CARDS */
     .card{
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
@@ -162,7 +163,7 @@
       opacity:.55;
       font-size:13px;
       margin-top:4px;
-      max-width:500px;
+      max-width:520px;
       line-height:1.4;
     }
 
@@ -233,23 +234,18 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <div class="tab active">Categories</div>
-    <div class="tab">Latest</div>
-    <div class="tab">Support</div>
+    <div class="tab active" data-tab="categories">Categories</div>
+    <div class="tab" data-tab="latest">Latest</div>
+    <div class="tab" data-tab="support">Support</div>
   </div>
 
   <!-- Loading -->
   <div id="loadingState" class="loading">
-    Loading forum categories…
+    Loading DevForum…
   </div>
 
-  <!-- Category List -->
-  <div id="categoryList"></div>
-
-  <!-- Empty -->
-  <div id="emptyState" class="empty" style="display:none;">
-    No categories have been created yet.
-  </div>
+  <!-- Dynamic Content -->
+  <div id="mainContent"></div>
 
 </div>
 
@@ -270,12 +266,27 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  const categoryList = document.getElementById("categoryList");
-  const emptyState = document.getElementById("emptyState");
+  const mainContent = document.getElementById("mainContent");
   const loadingState = document.getElementById("loadingState");
+  const tabs = document.querySelectorAll(".tab");
 
-  /* LOAD CATEGORIES */
+  /* SWITCH TAB UI */
+  tabs.forEach(tab => {
+    tab.onclick = () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      const mode = tab.dataset.tab;
+      if (mode === "categories") loadCategories();
+      if (mode === "latest") loadLatestTopics();
+      if (mode === "support") loadSupportTopics();
+    };
+  });
+
+  /* CATEGORY VIEW */
   async function loadCategories() {
+    loadingState.style.display = "block";
+    mainContent.innerHTML = "";
 
     const { data: categories, error } = await supabase
       .from("forum_categories")
@@ -284,21 +295,17 @@
 
     loadingState.style.display = "none";
 
-    if (error) {
-      categoryList.innerHTML = `<div class="empty">⚠️ Failed to load forum categories.</div>`;
+    if (error || !categories) {
+      mainContent.innerHTML = `<div class="empty">⚠️ Failed to load categories.</div>`;
       return;
     }
 
-    if (!categories || categories.length === 0) {
-      emptyState.style.display = "block";
+    if (categories.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No categories created yet.</div>`;
       return;
     }
-
-    categoryList.innerHTML = "";
 
     for (let cat of categories) {
-
-      /* Count topics */
       const { count } = await supabase
         .from("forum_topics")
         .select("*", { count: "exact", head: true })
@@ -324,10 +331,103 @@
         window.location.href = `category.html?id=${cat.id}`;
       };
 
-      categoryList.appendChild(card);
+      mainContent.appendChild(card);
     }
   }
 
+  /* LATEST TOPICS VIEW */
+  async function loadLatestTopics() {
+    loadingState.style.display = "block";
+    mainContent.innerHTML = "";
+
+    const { data: topics, error } = await supabase
+      .from("forum_topics")
+      .select("id,title,created_at,category_id")
+      .order("created_at", { ascending: false })
+      .limit(8);
+
+    loadingState.style.display = "none";
+
+    if (error || !topics) {
+      mainContent.innerHTML = `<div class="empty">⚠️ Failed to load latest discussions.</div>`;
+      return;
+    }
+
+    if (topics.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No discussions yet.</div>`;
+      return;
+    }
+
+    topics.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="name">${topic.title}</div>
+        <div class="desc">
+          Posted ${new Date(topic.created_at).toLocaleString()}
+        </div>
+      `;
+
+      card.onclick = () => {
+        window.location.href = `topic.html?id=${topic.id}`;
+      };
+
+      mainContent.appendChild(card);
+    });
+  }
+
+  /* SUPPORT TOPICS VIEW */
+  async function loadSupportTopics() {
+    loadingState.style.display = "block";
+    mainContent.innerHTML = "";
+
+    const { data: supportCats } = await supabase
+      .from("forum_categories")
+      .select("*")
+      .ilike("name", "%Support%");
+
+    if (!supportCats || supportCats.length === 0) {
+      loadingState.style.display = "none";
+      mainContent.innerHTML = `<div class="empty">No Support category found.</div>`;
+      return;
+    }
+
+    const supportID = supportCats[0].id;
+
+    const { data: topics } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .eq("category_id", supportID)
+      .order("created_at", { ascending: false });
+
+    loadingState.style.display = "none";
+
+    if (!topics || topics.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No support topics yet.</div>`;
+      return;
+    }
+
+    topics.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="name">${topic.title}</div>
+        <div class="desc">
+          Support thread • ${new Date(topic.created_at).toLocaleDateString()}
+        </div>
+      `;
+
+      card.onclick = () => {
+        window.location.href = `topic.html?id=${topic.id}`;
+      };
+
+      mainContent.appendChild(card);
+    });
+  }
+
+  /* DEFAULT LOAD */
   loadCategories();
 </script>
 
