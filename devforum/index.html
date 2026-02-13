@@ -1,246 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ===================================== -->
-  <!-- ✅ StudentStream DevForum Homepage V2 -->
-  <!-- ===================================== -->
+  <!-- ============================
+       STUDENTSTREAM DEVFORUM V3
+  ============================ -->
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>StudentStream DevForum • Developer Community</title>
+  <title>StudentStream DevForum</title>
 
-  <!-- ✅ SEO Meta -->
   <meta name="description"
-    content="StudentStream DevForum is the official developer space for announcements, updates, bug reports, support, and StudentStreamHQ discussions." />
+    content="StudentStream DevForum is the official developer forum for announcements, updates, support, and StudentStreamHQ discussions." />
 
-  <meta name="keywords"
-    content="StudentStream, DevForum, StudentStreamHQ, Support, Bugs, Developer Updates, Student Platform" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#050B1A" />
 
-  <meta name="author" content="StudentStreamHQ" />
-
-  <!-- ✅ OpenGraph -->
+  <!-- Open Graph -->
   <meta property="og:title" content="StudentStream DevForum" />
   <meta property="og:description"
-    content="Discuss features, report bugs, and build StudentStream together." />
+    content="Discuss features, report bugs, request help, and build StudentStreamHQ together." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://studentstream.online/devforum" />
 
-  <!-- ✅ Google Site Verification -->
-  <!-- Paste your real verification meta below -->
-  <!-- <meta name="google-site-verification" content="YOUR_CODE_HERE" /> -->
-
-  <!-- ✅ Schema.org JSON-LD -->
+  <!-- Google Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "DiscussionForumPosting",
     "name": "StudentStream DevForum",
-    "description": "Official StudentStream developer forum for announcements, updates, support, and bug reporting.",
+    "description": "Official developer forum for StudentStreamHQ announcements, updates, support, and bug reporting.",
     "publisher": {
       "@type": "Organization",
-      "name": "StudentStreamHQ",
-      "url": "https://studentstream.online"
+      "name": "StudentStreamHQ"
     }
   }
   </script>
 
-  <!-- ===================================== -->
-  <!-- ✅ Styling -->
-  <!-- ===================================== -->
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Styling -->
+  <style>
     body {
-      font-family: system-ui, sans-serif;
-      background: radial-gradient(circle at top, #0d1b3a, #05070c);
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top, #0c1633, #05060d);
       color: white;
-      min-height: 100vh;
     }
 
     header {
-      padding: 22px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 22px;
     }
 
     .logo {
       font-size: 22px;
-      font-weight: 900;
+      font-weight: 800;
     }
 
     .logo span {
-      color: #4da3ff;
+      color: #3b82ff;
+      font-weight: 900;
     }
 
-    .accountBtn {
-      padding: 10px 18px;
+    .account-btn {
+      padding: 10px 16px;
       border-radius: 14px;
-      border: none;
-      background: rgba(77, 163, 255, 0.18);
+      background: rgba(59, 130, 255, 0.2);
+      border: 1px solid rgba(59, 130, 255, 0.35);
       color: white;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .accountBtn:hover {
-      background: rgba(77, 163, 255, 0.35);
     }
 
     .container {
-      max-width: 950px;
-      margin: 60px auto;
-      padding: 0 20px;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
     }
 
     h1 {
       font-size: 42px;
-      font-weight: 900;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     p {
-      opacity: 0.65;
-      font-size: 16px;
+      color: rgba(255, 255, 255, 0.65);
       line-height: 1.5;
+      margin-bottom: 25px;
     }
 
-    .categoryGrid {
-      margin-top: 35px;
-      display: grid;
-      gap: 18px;
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 15px;
     }
 
-    .categoryCard {
-      padding: 20px;
-      border-radius: 18px;
+    .category-item {
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.03);
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .categoryCard:hover {
-      border-color: #4da3ff;
-      transform: translateY(-2px);
+    .category-item:hover {
+      background: rgba(59, 130, 255, 0.10);
+      border-color: rgba(59, 130, 255, 0.30);
     }
 
-    .categoryCard b {
+    .category-title {
       font-size: 18px;
-      display: block;
-      margin-bottom: 6px;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
 
-    .categoryCard small {
-      opacity: 0.55;
+    .category-desc {
       font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .status {
+      margin-top: 25px;
+      font-size: 15px;
+      opacity: 0.7;
     }
 
     footer {
       text-align: center;
-      padding: 30px;
+      padding: 25px;
       opacity: 0.4;
-      font-size: 13px;
-      margin-top: 90px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 14px;
+      margin-top: 60px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ===================================== -->
-  <!-- Header -->
-  <!-- ===================================== -->
+  <!-- HEADER -->
   <header>
     <div class="logo">StudentStream <span>DevForum</span></div>
-
-    <button class="accountBtn" onclick="goAccount()">
+    <button class="account-btn" onclick="location.href='account.html'">
       Account
     </button>
   </header>
 
-  <!-- ===================================== -->
-  <!-- Main -->
-  <!-- ===================================== -->
+  <!-- MAIN -->
   <div class="container">
-
     <h1>Developer Forums</h1>
+
     <p>
-      Discuss features, report bugs, request help, and build StudentStreamHQ together.
-      Posting is limited to support + development topics only.
+      Discuss features, report bugs, request help, and build
+      StudentStreamHQ together. Posting is limited to development +
+      support topics only.
     </p>
 
-    <!-- Categories -->
-    <div class="categoryGrid" id="categoryGrid">
-      Loading categories...
+    <!-- CATEGORY LIST -->
+    <div class="category-list" id="categoryList">
+      <div class="status">Loading categories...</div>
     </div>
-
   </div>
 
-  <!-- ===================================== -->
-  <!-- Footer -->
-  <!-- ===================================== -->
+  <!-- FOOTER -->
   <footer>
-    © 2026 StudentStreamHQ • DevForum Homepage V2
+    © 2026 StudentStreamHQ • DevForum Homepage V3
   </footer>
 
-  <!-- ===================================== -->
-  <!-- Supabase Forum Script -->
-  <!-- ===================================== -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <!-- SCRIPT -->
+  <script>
+    // ✅ SUPABASE CONFIG
+    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-    const supabase = createClient(
-      "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+    const supabaseClient = supabase.createClient(
+      supabaseUrl,
+      supabaseKey
     );
 
-    const categoryGrid = document.getElementById("categoryGrid");
+    const categoryList = document.getElementById("categoryList");
 
     async function loadCategories() {
+      categoryList.innerHTML = "<div class='status'>Loading categories...</div>";
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("forum_categories")
         .select("*")
-        .order("position", { ascending: true });
+        .order("created_at");
 
       if (error) {
-        categoryGrid.innerHTML = "Failed to load categories.";
+        categoryList.innerHTML =
+          "<div class='status'>❌ Failed to load categories.</div>";
+        console.error(error);
         return;
       }
 
       if (!data || data.length === 0) {
-        categoryGrid.innerHTML = "No categories yet.";
+        categoryList.innerHTML =
+          "<div class='status'>No categories yet.</div>";
         return;
       }
 
-      categoryGrid.innerHTML = "";
+      categoryList.innerHTML = "";
 
       data.forEach(cat => {
-        categoryGrid.innerHTML += `
-          <div class="categoryCard" onclick="openCategory('${cat.id}')">
-            <b>${cat.name}</b>
-            <small>${cat.description || "No description yet."}</small>
-          </div>
+        const div = document.createElement("div");
+        div.className = "category-item";
+
+        div.onclick = () => {
+          window.location.href = `category.html?slug=${cat.slug}`;
+        };
+
+        div.innerHTML = `
+          <div class="category-title">${cat.title}</div>
+          <div class="category-desc">${cat.description || ""}</div>
         `;
+
+        categoryList.appendChild(div);
       });
     }
-
-    window.openCategory = function (id) {
-      window.location.href = `category.html?id=${id}`;
-    };
-
-    window.goAccount = function () {
-      alert("Account system will be inside the unified StudentStream Admin Panel later.");
-    };
 
     loadCategories();
   </script>
