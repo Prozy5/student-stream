@@ -1,100 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>StudentStreamHQ Status</title>
+  <meta charset="UTF-8">
+  <title>StudentStream Status — V3.0</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+      font-family: Inter, system-ui, sans-serif;
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont;
-      background: radial-gradient(circle at top, #0a1628, #05070c);
+      margin: 0;
+      background: #070b12;
       color: white;
-      min-height: 100vh;
     }
 
     header {
-      padding: 22px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 22px 26px;
+      border-bottom: 1px solid #1c2533;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    header h1 {
+    .logo {
       font-size: 20px;
       font-weight: 900;
       color: #4da3ff;
     }
 
-    header span {
-      font-size: 13px;
+    .sub {
+      font-size: 14px;
       opacity: 0.6;
     }
 
     .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 28px;
+      max-width: 1150px;
+      margin: 40px auto;
+      padding: 0 24px;
     }
 
-    /* Overall Banner */
+    /* OVERALL STATUS */
     .overall {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
+      background: #0e1522;
+      border: 1px solid #1f2a3a;
+      border-radius: 16px;
       padding: 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 26px;
+      margin-bottom: 25px;
     }
 
-    .overall h2 {
+    .overall b {
       font-size: 18px;
-      font-weight: 800;
     }
 
-    .overall p {
-      font-size: 13px;
-      opacity: 0.6;
-      margin-top: 4px;
-    }
-
-    .badge {
-      font-size: 14px;
-      font-weight: 700;
+    .pill {
       padding: 8px 14px;
       border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
     }
 
-    .ok { background: rgba(60,255,122,0.15); color: #3cff7a; }
-    .warn { background: rgba(255,184,77,0.15); color: #ffb84d; }
-    .bad { background: rgba(255,77,77,0.15); color: #ff4d4d; }
+    .pill.good {
+      background: rgba(60,255,122,0.15);
+      color: #3cff7a;
+    }
 
-    /* Grid */
+    .pill.warn {
+      background: rgba(255,184,77,0.15);
+      color: #ffb84d;
+    }
+
+    .pill.bad {
+      background: rgba(255,77,77,0.15);
+      color: #ff4d4d;
+    }
+
+    /* MAINTENANCE */
+    .maintenance-box {
+      background: rgba(255,184,77,0.12);
+      border: 1px solid rgba(255,184,77,0.25);
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 25px;
+      display: none;
+    }
+
+    .maintenance-box b {
+      color: #ffb84d;
+    }
+
+    /* INCIDENTS */
+    .incidents {
+      margin-bottom: 35px;
+    }
+
+    .incident-card {
+      background: rgba(255,77,77,0.08);
+      border: 1px solid rgba(255,77,77,0.25);
+      padding: 18px;
+      border-radius: 14px;
+      margin-top: 12px;
+    }
+
+    .incident-card small {
+      opacity: 0.7;
+      display: block;
+      margin-top: 6px;
+    }
+
+    /* SERVICES GRID */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
     }
 
     .card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
+      background: #0e1522;
+      border: 1px solid #1f2a3a;
+      border-radius: 16px;
       padding: 18px;
     }
 
-    .card h3 {
+    .card b {
       font-size: 16px;
-      font-weight: 800;
+      display: block;
       margin-bottom: 10px;
     }
 
@@ -102,13 +137,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 9px 0;
       font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .service:first-of-type {
-      border-top: none;
+    .service:last-child {
+      border-bottom: none;
     }
 
     .dot {
@@ -116,7 +151,7 @@
       height: 9px;
       border-radius: 50%;
       display: inline-block;
-      margin-right: 8px;
+      margin-right: 7px;
     }
 
     .operational { background: #3cff7a; }
@@ -124,181 +159,221 @@
     .down { background: #ff4d4d; }
     .maintenance { background: #4da3ff; }
 
-    /* Updates */
-    .updates {
-      margin-top: 40px;
-    }
-
-    .updates h2 {
-      font-size: 18px;
-      font-weight: 900;
-      margin-bottom: 14px;
-    }
-
-    .update-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .update-box b {
-      font-size: 14px;
-    }
-
-    .update-box p {
-      font-size: 13px;
-      opacity: 0.7;
-      margin-top: 6px;
-    }
-
     footer {
+      margin-top: 70px;
+      border-top: 1px solid #1c2533;
+      padding: 35px;
       text-align: center;
-      padding: 40px 0;
       font-size: 13px;
-      opacity: 0.5;
-      margin-top: 60px;
+      opacity: 0.55;
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <h1>StudentStreamHQ Status</h1>
-    <span>Live Infrastructure Health</span>
-  </header>
+<header>
+  <div class="logo">StudentStream Status</div>
+  <div class="sub">System Health • Live Updates</div>
+</header>
 
-  <div class="container">
+<div class="container">
 
-    <!-- Overall -->
-    <div class="overall">
-      <div>
-        <h2 id="overallText">Loading system health...</h2>
-        <p>Real-time platform status across StudentStreamHQ</p>
-      </div>
-      <div id="overallBadge" class="badge ok">Checking...</div>
+  <!-- OVERALL STATUS -->
+  <div class="overall">
+    <div>
+      <b id="overallText">Loading system health...</b>
+      <div class="sub">Real-time platform availability</div>
     </div>
-
-    <!-- Status Grid -->
-    <div class="grid" id="grid"></div>
-
-    <!-- Updates -->
-    <div class="updates">
-      <h2>Platform Updates</h2>
-      <div id="updates"></div>
-    </div>
-
+    <div id="overallPill" class="pill good">Checking...</div>
   </div>
 
-  <footer>
-    © 2026 StudentStreamHQ · Official Public Status Network
-  </footer>
+  <!-- MAINTENANCE -->
+  <div class="maintenance-box" id="maintenanceBox">
+    <b>Scheduled Maintenance:</b>
+    <span id="maintenanceText"></span>
+  </div>
 
-  <!-- Supabase -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <!-- INCIDENTS -->
+  <div class="incidents">
+    <h2 style="margin:0;font-size:18px;">Active Incidents</h2>
+    <div id="incidentList" class="sub">Loading...</div>
+  </div>
 
-    const supabase = createClient(
-      "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-    );
+  <!-- SERVICES -->
+  <h2 style="margin:0;font-size:18px;">Service Status</h2>
+  <p class="sub">Divisions across StudentStreamHQ infrastructure</p>
 
-    const grid = document.getElementById("grid");
-    const updatesBox = document.getElementById("updates");
+  <div class="grid" id="servicesGrid"></div>
 
-    const overallText = document.getElementById("overallText");
-    const overallBadge = document.getElementById("overallBadge");
+</div>
 
-    function formatStatus(status) {
-      return status.charAt(0).toUpperCase() + status.slice(1);
+<footer>
+  © 2026 StudentStreamHQ • Status Page V3.0 • Infrastructure Monitoring
+</footer>
+
+<!-- SUPABASE -->
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  const overallText = document.getElementById("overallText");
+  const overallPill = document.getElementById("overallPill");
+
+  const servicesGrid = document.getElementById("servicesGrid");
+  const incidentList = document.getElementById("incidentList");
+
+  const maintenanceBox = document.getElementById("maintenanceBox");
+  const maintenanceText = document.getElementById("maintenanceText");
+
+  // ===============================
+  // LOAD STATUS SERVICES
+  // ===============================
+  async function loadServices() {
+    const { data, error } = await supabase
+      .from("status_services")
+      .select("*")
+      .order("division");
+
+    if (error) {
+      overallText.textContent = "Unable to load services.";
+      return;
     }
 
-    async function loadStatus() {
-      const { data } = await supabase
-        .from("system_status")
-        .select("*")
-        .order("division");
+    renderServices(data);
+  }
 
-      if (!data) return;
+  function renderServices(rows) {
+    servicesGrid.innerHTML = "";
 
-      let hasDown = false;
-      let hasWarn = false;
+    let hasDown = false;
+    let hasDegraded = false;
 
-      const grouped = {};
+    const grouped = {};
 
-      data.forEach((row) => {
-        if (!grouped[row.division]) grouped[row.division] = [];
-        grouped[row.division].push(row);
+    rows.forEach((s) => {
+      if (!grouped[s.division]) grouped[s.division] = [];
+      grouped[s.division].push(s);
 
-        if (row.status === "down") hasDown = true;
-        if (row.status === "degraded" || row.status === "maintenance") hasWarn = true;
-      });
+      if (s.current_status === "down") hasDown = true;
+      if (s.current_status === "degraded") hasDegraded = true;
+    });
 
-      grid.innerHTML = "";
-
-      Object.entries(grouped).forEach(([division, services]) => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        let html = `<h3>${division}</h3>`;
-
-        services.forEach((s) => {
-          html += `
-            <div class="service">
-              <span>
-                <span class="dot ${s.status}"></span>
-                ${s.service}
-              </span>
-              <span>${formatStatus(s.status)}</span>
-            </div>
-          `;
-        });
-
-        card.innerHTML = html;
-        grid.appendChild(card);
-      });
-
-      if (hasDown) {
-        overallText.textContent = "Major System Outage";
-        overallBadge.className = "badge bad";
-        overallBadge.textContent = "Outage";
-      } else if (hasWarn) {
-        overallText.textContent = "Partial Maintenance / Degraded Systems";
-        overallBadge.className = "badge warn";
-        overallBadge.textContent = "Degraded";
-      } else {
-        overallText.textContent = "All Systems Operational";
-        overallBadge.className = "badge ok";
-        overallBadge.textContent = "Operational";
-      }
+    // OVERALL SYSTEM
+    if (hasDown) {
+      overallText.textContent = "Major System Outage";
+      overallPill.className = "pill bad";
+      overallPill.textContent = "Outage";
+    } else if (hasDegraded) {
+      overallText.textContent = "Partial Service Disruption";
+      overallPill.className = "pill warn";
+      overallPill.textContent = "Degraded";
+    } else {
+      overallText.textContent = "All Systems Operational";
+      overallPill.className = "pill good";
+      overallPill.textContent = "Operational";
     }
 
-    async function loadUpdates() {
-      const { data } = await supabase
-        .from("status_updates")
-        .select("*")
-        .order("posted_at", { ascending: false })
-        .limit(3);
+    // BUILD CARDS
+    Object.entries(grouped).forEach(([division, services]) => {
+      const card = document.createElement("div");
+      card.className = "card";
 
-      updatesBox.innerHTML = "";
+      let html = `<b>${division}</b>`;
 
-      data.forEach((u) => {
-        updatesBox.innerHTML += `
-          <div class="update-box">
-            <b>${u.headline}</b>
-            <p>${u.body}</p>
+      services.forEach((s) => {
+        html += `
+          <div class="service">
+            <span>
+              <span class="dot ${s.current_status}"></span>
+              ${s.service_name}
+            </span>
+            <span style="opacity:.75">${s.current_status}</span>
           </div>
         `;
       });
+
+      card.innerHTML = html;
+      servicesGrid.appendChild(card);
+    });
+  }
+
+  // ===============================
+  // LOAD INCIDENTS
+  // ===============================
+  async function loadIncidents() {
+    const { data, error } = await supabase
+      .from("status_incidents")
+      .select("*")
+      .neq("status", "resolved")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      incidentList.textContent = "Unable to load incidents.";
+      return;
     }
 
-    loadStatus();
-    loadUpdates();
+    if (!data.length) {
+      incidentList.textContent = "No active incidents 🎉";
+      return;
+    }
 
-    setInterval(loadStatus, 30000);
-  </script>
+    incidentList.innerHTML = "";
+
+    data.forEach((i) => {
+      const div = document.createElement("div");
+      div.className = "incident-card";
+
+      div.innerHTML = `
+        <b>${i.title}</b>
+        <p style="margin:8px 0;opacity:.8">${i.description}</p>
+        <small>Status: ${i.status} • Severity: ${i.severity}</small>
+      `;
+
+      incidentList.appendChild(div);
+    });
+  }
+
+  // ===============================
+  // LOAD MAINTENANCE
+  // ===============================
+  async function loadMaintenance() {
+    const { data } = await supabase
+      .from("status_maintenance")
+      .select("*")
+      .eq("active", true)
+      .order("scheduled_start");
+
+    if (!data || !data.length) {
+      maintenanceBox.style.display = "none";
+      return;
+    }
+
+    const m = data[0];
+
+    maintenanceBox.style.display = "block";
+    maintenanceText.textContent =
+      `${m.title} (Starts: ${new Date(m.scheduled_start).toLocaleString()})`;
+  }
+
+  // ===============================
+  // INIT LOAD
+  // ===============================
+  async function refreshAll() {
+    await loadServices();
+    await loadIncidents();
+    await loadMaintenance();
+  }
+
+  refreshAll();
+
+  // Auto refresh every 20 seconds
+  setInterval(refreshAll, 20000);
+</script>
 
 </body>
 </html>
