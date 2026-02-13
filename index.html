@@ -2,176 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
-  <meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8">
-
-  <title>StudentStream — A New Media Platform</title>
+  <title>StudentStream HQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- SEO -->
-  <meta name="description" content="StudentStream is a next-generation media platform and creative ecosystem. Our first division, StudentStream Productions, is now live. Platform launching April 4, 2026." />
-  <meta name="keywords" content="StudentStream, media platform, StudentStream Productions, creators, digital media, production company" />
-  <meta name="author" content="StudentStream" />
-
-  <!-- CANONICAL -->
-  <link rel="canonical" href="https://studentstream.online/" />
-
-  <!-- OPEN GRAPH -->
-  <meta property="og:title" content="StudentStream" />
-  <meta property="og:description" content="A next-generation media platform. StudentStream Productions is now live. Platform launching April 4, 2026." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://studentstream.online/" />
-
-  <!-- SCHEMA -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "StudentStream",
-    "alternateName": "StudentStream HQ",
-    "url": "https://studentstream.online",
-    "description": "StudentStream is a next-generation media platform and creative ecosystem. Its first public division, StudentStream Productions, develops original films and digital content.",
-    "founder": {
-      "@type": "Person",
-      "name": "Deondre Chambers"
-    },
-    "sameAs": [
-      "https://www.instagram.com/studentstreamhq",
-      "https://www.tiktok.com/@studentstreamhq"
-    ]
-  }
-  </script>
-
 <style>
-*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial}
 body{
-margin:0;
-min-height:100vh;
-background:radial-gradient(circle at top,#10101c,#040406);
-color:#fff;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#10101c,#040406);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
 }
 
 .container{
-max-width:1200px;
-width:100%;
-display:grid;
-grid-template-columns:1.1fr .9fr;
-gap:50px;
-align-items:center;
+  max-width:1200px;
+  width:100%;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:55px;
 }
 
-h1{
-font-size:3.3rem;
-margin:0 0 18px;
-line-height:1.1;
-}
-
-h2{margin-top:0}
-
-p{
-opacity:.85;
-max-width:560px;
-}
-
-.badge{
-display:inline-block;
-background:rgba(108,242,194,.15);
-color:#6cf2c2;
-padding:7px 16px;
-border-radius:999px;
-font-size:.85rem;
-margin-bottom:22px;
-border:1px solid rgba(108,242,194,.25);
-}
-
-.countdown{
-display:flex;
-gap:12px;
-margin:28px 0;
-}
-
-.time-box{
-background:rgba(255,255,255,.08);
-padding:14px 18px;
-border-radius:14px;
-min-width:70px;
-text-align:center;
-backdrop-filter:blur(8px);
-}
-
-.time-box b{
-display:block;
-font-size:1.5rem;
-}
+h1{font-size:3.2rem;margin:0 0 15px;}
+p{opacity:.8;line-height:1.5;}
 
 .panel{
-background:rgba(255,255,255,.07);
-border:1px solid rgba(255,255,255,.12);
-border-radius:24px;
-padding:36px;
-box-shadow:0 0 50px rgba(0,0,0,.45);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:26px;
+  padding:38px;
 }
 
-form input, form select{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:none;
-margin-bottom:12px;
-background:rgba(255,255,255,.95);
-font-size:1rem;
+input{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:14px;
+  border:none;
 }
 
-form button{
-width:100%;
-padding:15px;
-border-radius:999px;
-border:none;
-font-weight:600;
-font-size:1rem;
-cursor:pointer;
-background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
-color:#040406;
-transition:.2s;
-}
-
-form button:hover{
-transform:translateY(-1px);
-box-shadow:0 12px 28px rgba(0,0,0,.45);
+button{
+  width:100%;
+  padding:15px;
+  border-radius:999px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(135deg,#6cf2c2,#7aa2ff);
 }
 
 .small{
-font-size:.8rem;
-opacity:.65;
-margin-top:10px;
-text-align:center;
+  text-align:center;
+  opacity:.65;
+  font-size:.85rem;
+  margin-top:10px;
 }
 
-.actions{
-display:flex;
-gap:14px;
-flex-wrap:wrap;
-margin-top:28px;
+.countdown{
+  display:flex;
+  gap:12px;
+  margin:25px 0;
 }
 
-.btn-outline{
-background:transparent;
-border:1px solid rgba(255,255,255,.25);
-color:#fff;
-padding:14px 26px;
-border-radius:999px;
-cursor:pointer;
+.time-box{
+  background:rgba(255,255,255,.08);
+  padding:14px;
+  border-radius:14px;
+  min-width:70px;
+  text-align:center;
 }
-
-@media(max-width:900px){
-.container{grid-template-columns:1fr}
-h1{font-size:2.6rem}
-}
+.time-box b{font-size:1.4rem;display:block;}
 </style>
 </head>
 
@@ -181,20 +84,13 @@ h1{font-size:2.6rem}
 
   <!-- LEFT -->
   <div>
-    <span class="badge">StudentStream Platform</span>
-
-    <h1>The future of media is being built.</h1>
-
+    <h1>StudentStream HQ</h1>
     <p>
-      StudentStream is a next-generation media platform and creative ecosystem
-      designed to empower creators, productions, and brands.
+      A next-generation media ecosystem connecting creators,
+      productions, and digital platforms.
     </p>
 
-    <p style="opacity:.65;margin-top:12px">
-      Our first public division, <strong>StudentStream Productions</strong>,
-      is now live — developing original films, series, and digital content.
-    </p>
-
+    <!-- Countdown -->
     <div class="countdown">
       <div class="time-box"><b id="d">--</b>Days</div>
       <div class="time-box"><b id="h">--</b>Hours</div>
@@ -203,81 +99,86 @@ h1{font-size:2.6rem}
     </div>
 
     <p style="opacity:.6">
-      Full StudentStream platform launches April 4, 2026
+      Full Platform Launch — April 4, 2026
     </p>
-
-    <div class="actions">
-      <a href="/ss-productions">
-        <button class="btn-outline">Explore Productions</button>
-      </a>
-      <a href="https://www.instagram.com/studentstreamhq" target="_blank">
-        <button class="btn-outline">Follow @studentstreamhq</button>
-      </a>
-    </div>
   </div>
 
   <!-- RIGHT -->
   <div class="panel">
-    <h2>Join the Platform Waitlist</h2>
 
-    <p style="opacity:.75">
-      Get early access to the full StudentStream platform,
-      creator tools, and future opportunities.
-    </p>
+    <h2 id="title">Login</h2>
 
-    <form id="waitlistForm">
-      <input type="text" id="firstName" placeholder="First name" required>
-      <input type="text" id="lastName" placeholder="Last name" required>
-      <input type="email" id="emailField" placeholder="Email address" required>
+    <form id="authForm">
+      <input id="email" type="email" placeholder="Email" required>
+      <input id="password" type="password" placeholder="Password" required>
 
-      <select id="roleSelect" required>
-        <option value="">I am a...</option>
-        <option value="Creator">🎥 Creator</option>
-        <option value="Actor">🎭 Actor</option>
-        <option value="Entrepreneur">🚀 Entrepreneur</option>
-        <option value="Brand">🏷 Brand / Business</option>
-        <option value="Developer">🛠 Developer</option>
-      </select>
-
-      <button type="submit">Join the Waitlist</button>
-      <div class="small">Platform access • No spam • Limited rollout</div>
+      <button type="submit" id="btn">Login</button>
     </form>
+
+    <div class="small">
+      <span id="switchText">No account?</span>
+      <a href="#" onclick="toggleMode()" style="color:#6cf2c2;">
+        Sign Up
+      </a>
+    </div>
+
   </div>
 
 </div>
 
-<script>
-// Countdown
+<script type="module">
+import { supabase } from "./supabase.js";
+
+/* Countdown */
 const launchDate = new Date("2026-04-04T00:00:00").getTime();
 setInterval(()=>{
-  const now = new Date().getTime();
+  const now = Date.now();
   const diff = launchDate - now;
-  if(diff <= 0) return;
+  if(diff<=0) return;
 
-  d.textContent = Math.floor(diff / (1000*60*60*24));
-  h.textContent = Math.floor((diff / (1000*60*60)) % 24);
-  m.textContent = Math.floor((diff / (1000*60)) % 60);
-  s.textContent = Math.floor((diff / 1000) % 60);
+  d.textContent=Math.floor(diff/(1000*60*60*24));
+  h.textContent=Math.floor((diff/(1000*60*60))%24);
+  m.textContent=Math.floor((diff/(1000*60))%60);
+  s.textContent=Math.floor((diff/1000)%60);
 },1000);
 
-// Waitlist submit
-document.getElementById("waitlistForm").addEventListener("submit", async e=>{
+/* Auth */
+let signup=false;
+
+window.toggleMode=()=>{
+  signup=!signup;
+  title.innerText=signup?"Sign Up":"Login";
+  btn.innerText=signup?"Create Account":"Login";
+  switchText.innerText=signup?"Already have one?":"No account?";
+};
+
+authForm.addEventListener("submit", async (e)=>{
   e.preventDefault();
 
-  await fetch("https://formspree.io/f/xojqgpan",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      first_name:firstName.value,
-      last_name:lastName.value,
-      email:emailField.value,
-      role:roleSelect.value,
-      source:"Platform Waitlist"
-    })
-  });
+  const emailVal=email.value;
+  const passVal=password.value;
 
-  alert("You're on the StudentStream waitlist 🚀");
-  e.target.reset();
+  if(signup){
+    const { error } = await supabase.auth.signUp({
+      email: emailVal,
+      password: passVal
+    });
+
+    if(error) return alert(error.message);
+
+    alert("Account created. Check email confirmation.");
+  }
+
+  else{
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: emailVal,
+      password: passVal
+    });
+
+    if(error) return alert(error.message);
+
+    window.location.href="dashboard.html";
+  }
 });
 </script>
 
