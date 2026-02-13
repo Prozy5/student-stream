@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>DevForum Category</title>
+  <title>Category • StudentStream DevForum</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
 
     body{
-      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      font-family:system-ui;
       background:radial-gradient(circle at top,#0d1b3a,#05070c);
       color:white;
       min-height:100vh;
@@ -33,105 +33,55 @@
     }
 
     .back{
-      font-size:14px;
       opacity:.7;
       cursor:pointer;
-      transition:.2s;
     }
 
-    .back:hover{
-      opacity:1;
-    }
+    .back:hover{opacity:1;}
 
     .container{
       max-width:950px;
-      margin:40px auto;
+      margin:55px auto;
       padding:0 20px;
     }
 
     h1{
-      font-size:30px;
-      margin-bottom:8px;
+      font-size:34px;
+      font-weight:900;
     }
 
-    .desc{
-      opacity:.65;
-      font-size:15px;
-      margin-bottom:25px;
+    p{
+      margin-top:8px;
+      opacity:.6;
     }
 
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:25px;
-      gap:15px;
+    .topicList{
+      margin-top:30px;
     }
 
-    .btn{
-      background:#2f6fff;
-      border:none;
-      padding:10px 16px;
-      border-radius:12px;
-      font-weight:700;
-      color:white;
-      cursor:pointer;
-      font-size:14px;
-    }
-
-    .btn:disabled{
-      opacity:.4;
-      cursor:not-allowed;
-    }
-
-    .topic{
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;
+    .topicCard{
       padding:18px;
-      margin-top:15px;
+      border-radius:16px;
+      margin-bottom:14px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
       cursor:pointer;
       transition:.2s;
     }
 
-    .topic:hover{
-      transform:scale(1.01);
-      border-color:rgba(77,163,255,.35);
+    .topicCard:hover{
+      border-color:#4da3ff;
     }
 
-    .topic-title{
-      font-size:17px;
-      font-weight:800;
+    .topicCard b{
+      font-size:16px;
+      display:block;
+      margin-bottom:6px;
     }
 
-    .topic-meta{
-      margin-top:6px;
-      font-size:13px;
-      opacity:.55;
-      display:flex;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    .badge{
-      padding:5px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-    }
-
-    .open{background:rgba(60,255,122,.12);color:#3cff7a;}
-    .locked{background:rgba(255,77,77,.12);color:#ff4d4d;}
-    .resolved{background:rgba(77,163,255,.12);color:#4da3ff;}
-
-    .empty{
-      text-align:center;
+    .topicCard small{
       opacity:.5;
-      padding:35px;
-      border:1px dashed rgba(255,255,255,.15);
-      border-radius:18px;
-      margin-top:25px;
+      font-size:13px;
     }
 
     footer{
@@ -139,7 +89,7 @@
       padding:30px;
       opacity:.4;
       font-size:13px;
-      margin-top:70px;
+      margin-top:90px;
       border-top:1px solid rgba(255,255,255,.08);
     }
   </style>
@@ -154,115 +104,101 @@
 
 <div class="container">
 
-  <div class="topbar">
-    <div>
-      <h1 id="catName">Loading...</h1>
-      <div class="desc" id="catDesc">Please wait</div>
-    </div>
+  <h1 id="catTitle">Loading...</h1>
+  <p id="catDesc"></p>
 
-    <!-- Posting later -->
-    <button class="btn" disabled>
-      + New Topic (Login Required)
-    </button>
-  </div>
-
-  <div id="topicList"></div>
-
-  <div id="emptyState" class="empty" style="display:none;">
-    No topics yet in this category.
+  <div class="topicList" id="topicList">
+    Loading topics...
   </div>
 
 </div>
 
 <footer>
-  © 2026 StudentStream • Developer Forum Category View
+  © 2026 StudentStreamHQ • Category View V2
 </footer>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* SUPABASE CONNECT */
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicmFsb2UiOiJhbm9uIiwiaWF0IjoxNzY3MTA4MzcwLCJleHAiOjIwODI2ODQzNzB9.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  const catName = document.getElementById("catName");
-  const catDesc = document.getElementById("catDesc");
-  const topicList = document.getElementById("topicList");
-  const emptyState = document.getElementById("emptyState");
-
-  /* GET CATEGORY ID */
   const params = new URLSearchParams(window.location.search);
   const categoryId = params.get("id");
 
-  async function loadCategory() {
+  const catTitle = document.getElementById("catTitle");
+  const catDesc = document.getElementById("catDesc");
+  const topicList = document.getElementById("topicList");
 
-    /* CATEGORY INFO */
-    const { data: category } = await supabase
+  /* ✅ IF NO ID */
+  if(!categoryId){
+    catTitle.textContent = "Category Not Found";
+    catDesc.textContent = "Missing category ID in URL.";
+    topicList.innerHTML = "";
+    throw new Error("No category id provided.");
+  }
+
+  /* LOAD CATEGORY */
+  async function loadCategory(){
+
+    const { data, error } = await supabase
       .from("forum_categories")
       .select("*")
       .eq("id", categoryId)
       .single();
 
-    if (!category) {
-      catName.textContent = "Category Not Found";
+    if(error || !data){
+      catTitle.textContent = "Category Not Found";
+      catDesc.textContent = "This category does not exist anymore.";
+      topicList.innerHTML = "";
       return;
     }
 
-    catName.textContent = category.icon + " " + category.name;
-    catDesc.textContent = category.description;
+    catTitle.textContent = data.name;
+    catDesc.textContent = data.description || "";
+  }
 
-    /* TOPICS */
-    const { data: topics } = await supabase
+  /* LOAD TOPICS */
+  async function loadTopics(){
+
+    const { data, error } = await supabase
       .from("forum_topics")
       .select("*")
       .eq("category_id", categoryId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending:false });
 
-    if (!topics || topics.length === 0) {
-      emptyState.style.display = "block";
+    if(error){
+      topicList.innerHTML = "Failed to load topics.";
+      return;
+    }
+
+    if(!data || data.length === 0){
+      topicList.innerHTML = "No topics yet in this category.";
       return;
     }
 
     topicList.innerHTML = "";
 
-    topics.forEach(t => {
-
-      let statusClass = "open";
-      let statusText = "Open";
-
-      if (t.status === "locked") {
-        statusClass = "locked";
-        statusText = "Locked";
-      }
-
-      if (t.status === "resolved") {
-        statusClass = "resolved";
-        statusText = "Resolved";
-      }
-
-      const div = document.createElement("div");
-      div.className = "topic";
-
-      div.innerHTML = `
-        <div class="topic-title">${t.title}</div>
-        <div class="topic-meta">
-          <span>${t.author || "StudentStream Team"}</span>
-          <span class="badge ${statusClass}">${statusText}</span>
+    data.forEach(topic=>{
+      topicList.innerHTML += `
+        <div class="topicCard" onclick="openTopic('${topic.id}')">
+          <b>${topic.title}</b>
+          <small>By ${topic.author} • ${new Date(topic.created_at).toLocaleString()}</small>
         </div>
       `;
-
-      /* CLICK → OPEN TOPIC PAGE (NEXT FILE) */
-      div.onclick = () => {
-        window.location.href = `topic.html?id=${t.id}`;
-      };
-
-      topicList.appendChild(div);
     });
   }
 
+  /* OPEN TOPIC */
+  window.openTopic = function(id){
+    window.location.href = `topic.html?id=${id}`;
+  }
+
   loadCategory();
+  loadTopics();
+
 </script>
 
 </body>
