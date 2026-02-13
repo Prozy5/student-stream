@@ -15,9 +15,15 @@
       min-height:100vh;
     }
 
+    /* HEADER */
     header{
-      padding:22px 26px;
+      position:sticky;
+      top:0;
+      z-index:100;
+      padding:20px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(18px);
+      background:rgba(5,7,12,.75);
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -35,58 +41,137 @@
     .back{
       opacity:.7;
       cursor:pointer;
+      font-weight:600;
     }
 
     .back:hover{opacity:1;}
 
+    /* PAGE */
     .container{
-      max-width:950px;
+      max-width:1000px;
       margin:55px auto;
       padding:0 20px;
     }
 
-    h1{
-      font-size:34px;
+    /* CATEGORY HERO */
+    .categoryHero{
+      padding:28px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      margin-bottom:30px;
+    }
+
+    .categoryHero h1{
+      font-size:36px;
       font-weight:900;
     }
 
-    p{
-      margin-top:8px;
-      opacity:.6;
+    .categoryHero p{
+      margin-top:10px;
+      opacity:.65;
+      font-size:14px;
+      line-height:1.4;
+      max-width:650px;
     }
 
+    /* ACTION BAR */
+    .actionBar{
+      margin-top:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .meta{
+      font-size:13px;
+      opacity:.55;
+    }
+
+    .newBtn{
+      border:none;
+      cursor:pointer;
+      padding:10px 16px;
+      border-radius:14px;
+      font-weight:800;
+      font-size:13px;
+      color:white;
+      background:linear-gradient(135deg,#2f6fff,#4da3ff);
+      transition:.2s;
+    }
+
+    .newBtn:hover{
+      transform:scale(1.03);
+      opacity:.95;
+    }
+
+    /* TOPIC LIST */
     .topicList{
-      margin-top:30px;
+      margin-top:25px;
     }
 
     .topicCard{
-      padding:18px;
-      border-radius:16px;
+      padding:18px 20px;
+      border-radius:18px;
       margin-bottom:14px;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.03);
       cursor:pointer;
       transition:.2s;
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
     }
 
     .topicCard:hover{
-      border-color:#4da3ff;
+      border-color:rgba(77,163,255,.45);
+      transform:translateY(-2px);
     }
 
-    .topicCard b{
+    .topicMain{
+      flex:1;
+    }
+
+    .topicTitle{
       font-size:16px;
-      display:block;
+      font-weight:850;
       margin-bottom:6px;
     }
 
-    .topicCard small{
-      opacity:.5;
+    .topicInfo{
+      opacity:.55;
       font-size:13px;
+      line-height:1.4;
+    }
+
+    /* RIGHT STATS */
+    .topicStats{
+      text-align:right;
+      min-width:120px;
+      font-size:13px;
+      opacity:.6;
+    }
+
+    .statNum{
+      font-weight:800;
+      opacity:.9;
+    }
+
+    /* EMPTY */
+    .empty{
+      text-align:center;
+      opacity:.55;
+      padding:45px;
+      border:1px dashed rgba(255,255,255,.15);
+      border-radius:18px;
+      margin-top:25px;
     }
 
     footer{
       text-align:center;
-      padding:30px;
+      padding:35px;
       opacity:.4;
       font-size:13px;
       margin-top:90px;
@@ -104,17 +189,29 @@
 
 <div class="container">
 
-  <h1 id="catTitle">Loading...</h1>
-  <p id="catDesc"></p>
+  <!-- CATEGORY HEADER -->
+  <div class="categoryHero">
+    <h1 id="catTitle">Loading...</h1>
+    <p id="catDesc"></p>
 
+    <div class="actionBar">
+      <div class="meta" id="topicCount">Loading topics…</div>
+
+      <button class="newBtn" onclick="createTopic()">
+        + New Topic
+      </button>
+    </div>
+  </div>
+
+  <!-- TOPICS -->
   <div class="topicList" id="topicList">
-    Loading topics...
+    Loading discussions…
   </div>
 
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • Category View V2
+  © 2026 StudentStreamHQ • Category View V3
 </footer>
 
 <script type="module">
@@ -131,18 +228,18 @@
   const catTitle = document.getElementById("catTitle");
   const catDesc = document.getElementById("catDesc");
   const topicList = document.getElementById("topicList");
+  const topicCount = document.getElementById("topicCount");
 
-  /* ✅ IF NO ID */
+  /* SAFETY */
   if(!categoryId){
     catTitle.textContent = "Category Not Found";
-    catDesc.textContent = "Missing category ID in URL.";
+    catDesc.textContent = "Missing category ID.";
     topicList.innerHTML = "";
     throw new Error("No category id provided.");
   }
 
   /* LOAD CATEGORY */
   async function loadCategory(){
-
     const { data, error } = await supabase
       .from("forum_categories")
       .select("*")
@@ -151,7 +248,7 @@
 
     if(error || !data){
       catTitle.textContent = "Category Not Found";
-      catDesc.textContent = "This category does not exist anymore.";
+      catDesc.textContent = "This category no longer exists.";
       topicList.innerHTML = "";
       return;
     }
@@ -162,43 +259,72 @@
 
   /* LOAD TOPICS */
   async function loadTopics(){
-
-    const { data, error } = await supabase
+    const { data: topics, error } = await supabase
       .from("forum_topics")
       .select("*")
       .eq("category_id", categoryId)
       .order("created_at", { ascending:false });
 
     if(error){
-      topicList.innerHTML = "Failed to load topics.";
+      topicList.innerHTML = `<div class="empty">⚠️ Failed to load topics.</div>`;
       return;
     }
 
-    if(!data || data.length === 0){
-      topicList.innerHTML = "No topics yet in this category.";
+    if(!topics || topics.length === 0){
+      topicCount.textContent = "0 discussions";
+      topicList.innerHTML = `
+        <div class="empty">
+          No discussions yet.<br><br>
+          Be the first to start a topic in this category.
+        </div>
+      `;
       return;
     }
+
+    topicCount.textContent = `${topics.length} discussions`;
 
     topicList.innerHTML = "";
 
-    data.forEach(topic=>{
-      topicList.innerHTML += `
-        <div class="topicCard" onclick="openTopic('${topic.id}')">
-          <b>${topic.title}</b>
-          <small>By ${topic.author} • ${new Date(topic.created_at).toLocaleString()}</small>
+    for (let topic of topics){
+
+      /* Reply Count */
+      const { count } = await supabase
+        .from("forum_replies")
+        .select("*", { count:"exact", head:true })
+        .eq("topic_id", topic.id);
+
+      const card = document.createElement("div");
+      card.className = "topicCard";
+
+      card.innerHTML = `
+        <div class="topicMain">
+          <div class="topicTitle">${topic.title}</div>
+          <div class="topicInfo">
+            Started by <b>${topic.author || "Anonymous"}</b>
+            • ${new Date(topic.created_at).toLocaleString()}
+          </div>
+        </div>
+
+        <div class="topicStats">
+          <div><span class="statNum">${count || 0}</span> replies</div>
         </div>
       `;
-    });
+
+      card.onclick = () => {
+        window.location.href = `topic.html?id=${topic.id}`;
+      };
+
+      topicList.appendChild(card);
+    }
   }
 
-  /* OPEN TOPIC */
-  window.openTopic = function(id){
-    window.location.href = `topic.html?id=${id}`;
-  }
+  /* NEW TOPIC (Future Login Gate) */
+  window.createTopic = function(){
+    alert("Posting requires login. Admin panel coming soon.");
+  };
 
   loadCategory();
   loadTopics();
-
 </script>
 
 </body>
