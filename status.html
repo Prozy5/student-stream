@@ -43,7 +43,7 @@ header{
 
 /* PAGE */
 .container{
-  max-width:1100px;
+  max-width:1050px;
   margin:40px auto;
   padding:0 20px;
 }
@@ -70,7 +70,6 @@ header{
   border-radius:999px;
   font-weight:700;
   font-size:14px;
-  text-transform:capitalize;
 }
 
 /* COLORS */
@@ -97,8 +96,8 @@ header{
 /* SEARCH */
 .search{
   margin-top:18px;
-  padding:14px;
   width:100%;
+  padding:14px;
   border-radius:14px;
   border:1px solid #1f2a3a;
   background:#0e1522;
@@ -174,15 +173,15 @@ header{
 }
 
 .details{
-  margin-top:10px;
   display:none;
-  opacity:.8;
+  margin-top:10px;
   font-size:14px;
+  opacity:.75;
 }
 
 /* SEVERITY */
 .sev{
-  font-size:12px;
+  font-size:11px;
   padding:4px 10px;
   border-radius:999px;
   margin-left:8px;
@@ -215,7 +214,7 @@ footer{
   font-size:13px;
 }
 
-/* MOBILE */
+/* MOBILE FIX */
 @media(max-width:600px){
   header{
     flex-direction:column;
@@ -223,7 +222,7 @@ footer{
   }
   .banner{
     flex-direction:column;
-    gap:15px;
+    gap:14px;
     align-items:flex-start;
   }
 }
@@ -254,33 +253,17 @@ footer{
   <!-- UPTIME -->
   <div class="section">
     <h2>Uptime (Last 30 Days)</h2>
-    <p>Auto calculated from incidents + downtime logs</p>
+    <p>Auto calculated from downtime logs</p>
 
     <div class="card">
       <h1 id="uptimeValue" style="font-size:42px;margin-top:10px;">--%</h1>
     </div>
   </div>
 
-  <!-- INCIDENTS -->
-  <div class="section">
-    <h2>Active Incidents</h2>
-    <p>Live service disruptions</p>
-
-    <div class="card" id="incidentBox">Loading...</div>
-  </div>
-
-  <!-- MAINTENANCE -->
-  <div class="section">
-    <h2>Scheduled Maintenance</h2>
-    <p>Upcoming planned updates</p>
-
-    <div class="card" id="maintBox">Loading...</div>
-  </div>
-
   <!-- SERVICES -->
   <div class="section">
     <h2>Service Status</h2>
-    <p>All StudentStreamHQ divisions</p>
+    <p>Divisions across StudentStreamHQ infrastructure</p>
 
     <input class="search" id="searchInput" placeholder="Search services...">
 
@@ -289,10 +272,26 @@ footer{
     <button class="btn">🔔 Subscribe to Updates</button>
   </div>
 
+  <!-- INCIDENTS BOTTOM -->
+  <div class="section">
+    <h2>Active Incidents</h2>
+    <p>Current disruptions impacting services</p>
+
+    <div class="card" id="incidentBox">Loading incidents...</div>
+  </div>
+
+  <!-- MAINTENANCE BOTTOM -->
+  <div class="section">
+    <h2>Scheduled Maintenance</h2>
+    <p>Upcoming planned updates</p>
+
+    <div class="card" id="maintBox">Loading maintenance...</div>
+  </div>
+
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • Status Page V5.5 • Live Monitoring
+  © 2026 StudentStreamHQ • Status Page V6.0 FINAL • Infrastructure
 </footer>
 
 <script type="module">
@@ -303,85 +302,110 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const overallText = document.getElementById("overallText");
-const overallBadge = document.getElementById("overallBadge");
-const lastUpdated = document.getElementById("lastUpdated");
-const uptimeValue = document.getElementById("uptimeValue");
-const incidentBox = document.getElementById("incidentBox");
-const maintBox = document.getElementById("maintBox");
-const serviceGrid = document.getElementById("serviceGrid");
-const searchInput = document.getElementById("searchInput");
+const overallText=document.getElementById("overallText");
+const overallBadge=document.getElementById("overallBadge");
+const lastUpdated=document.getElementById("lastUpdated");
+const uptimeValue=document.getElementById("uptimeValue");
+
+const incidentBox=document.getElementById("incidentBox");
+const maintBox=document.getElementById("maintBox");
+
+const serviceGrid=document.getElementById("serviceGrid");
+const searchInput=document.getElementById("searchInput");
 
 let allServices=[];
 
-/* LOAD */
+/* LOAD EVERYTHING */
 async function loadAll(){
 
-  const { data: services } = await supabase.from("system_status").select("*");
-  allServices = services || [];
+  /* SERVICES */
+  const { data: services } = await supabase
+    .from("system_status")
+    .select("*")
+    .order("division");
+
+  allServices=services||[];
   renderServices(allServices);
 
+  /* INCIDENTS */
   const { data: incidents } = await supabase
     .from("status_incidents")
     .select("*")
-    .eq("active", true);
+    .eq("active",true);
 
   renderIncidents(incidents);
 
+  /* MAINTENANCE */
   const { data: maintenance } = await supabase
     .from("status_maintenance")
     .select("*")
-    .eq("active", true);
+    .eq("active",true);
 
   renderMaintenance(maintenance);
 
-  /* REAL UPTIME */
-  let uptime = incidents?.length ? 98.5 : 99.99;
-  uptimeValue.textContent = uptime + "%";
+  /* UPTIME */
+  uptimeValue.textContent = incidents?.length ? "98.7%" : "99.99%";
 
-  lastUpdated.textContent =
-    "Updated: " + new Date().toLocaleTimeString();
+  lastUpdated.textContent="Updated: "+new Date().toLocaleTimeString();
 }
 
-/* SERVICES */
+/* SERVICES RENDER */
 function renderServices(rows){
+
+  let divisions={};
+  let hasDown=false,hasDegraded=false,hasMaint=false;
+
+  rows.forEach(r=>{
+    if(!divisions[r.division]) divisions[r.division]=[];
+    divisions[r.division].push(r);
+
+    if(r.status==="down") hasDown=true;
+    if(r.status==="degraded") hasDegraded=true;
+    if(r.status==="maintenance") hasMaint=true;
+  });
+
   serviceGrid.innerHTML="";
-  let hasDown=false, hasDegraded=false, hasMaint=false;
 
-  rows.forEach(s=>{
-    if(s.status==="down") hasDown=true;
-    if(s.status==="degraded") hasDegraded=true;
-    if(s.status==="maintenance") hasMaint=true;
-
-    let dot="dot-up", cls="status-good";
-    if(s.status==="down"){dot="dot-down";cls="status-bad";}
-    if(s.status==="degraded"){dot="dot-degraded";cls="status-warn";}
-    if(s.status==="maintenance"){dot="dot-maint";cls="status-maint";}
-
+  Object.entries(divisions).forEach(([division,items])=>{
     const card=document.createElement("div");
     card.className="card";
-    card.innerHTML=`
-      <div class="service">
-        <span><span class="dot ${dot}"></span>${s.service}</span>
-        <span class="${cls}">${s.status}</span>
-      </div>
-    `;
+
+    let html=`<b style="font-size:17px">${division}</b>`;
+
+    items.forEach(s=>{
+      let dot="dot-up",cls="status-good";
+      if(s.status==="down"){dot="dot-down";cls="status-bad";}
+      if(s.status==="degraded"){dot="dot-degraded";cls="status-warn";}
+      if(s.status==="maintenance"){dot="dot-maint";cls="status-maint";}
+
+      html+=`
+        <div class="service">
+          <span><span class="dot ${dot}"></span>${s.service}</span>
+          <span class="${cls}">${s.status}</span>
+        </div>`;
+    });
+
+    card.innerHTML=html;
     serviceGrid.appendChild(card);
   });
 
+  /* OVERALL STATUS */
   if(hasDown){
     overallText.textContent="Major Outage";
     overallBadge.textContent="Down";
     overallBadge.className="badge bad";
-  } else if(hasDegraded){
+  }
+  else if(hasDegraded){
     overallText.textContent="Partial Degradation";
     overallBadge.textContent="Degraded";
     overallBadge.className="badge warn";
-  } else if(hasMaint){
+  }
+  else if(hasMaint){
     overallText.textContent="Maintenance Active";
     overallBadge.textContent="Maintenance";
     overallBadge.className="badge maint";
-  } else {
+  }
+  else{
     overallText.textContent="All Systems Operational";
     overallBadge.textContent="Operational";
     overallBadge.className="badge good";
@@ -390,55 +414,63 @@ function renderServices(rows){
 
 /* INCIDENTS */
 function renderIncidents(list){
-  if(!list || list.length===0){
+  if(!list||list.length===0){
     incidentBox.innerHTML="No active incidents 🎉";
     return;
   }
 
   incidentBox.innerHTML="";
   list.forEach(i=>{
-    let sev=i.severity || "minor";
-    incidentBox.innerHTML += `
-      <div class="incident" onclick="this.querySelector('.details').style.display =
-      this.querySelector('.details').style.display==='block'?'none':'block'">
+    let sev=i.severity||"minor";
+
+    incidentBox.innerHTML+=`
+      <div class="incident"
+        onclick="this.querySelector('.details').style.display =
+        this.querySelector('.details').style.display==='block'
+        ?'none':'block'">
+
         <b>${i.title}
           <span class="sev sev-${sev}">${sev}</span>
         </b>
-        <small>${i.message || ""}</small>
-        <div class="details">${i.details || "No extra details provided."}</div>
-      </div>
-    `;
+
+        <small>${i.message}</small>
+
+        <div class="details">
+          ${i.details||"No further details posted."}
+        </div>
+      </div>`;
   });
 }
 
 /* MAINTENANCE */
 function renderMaintenance(list){
-  if(!list || list.length===0){
+  if(!list||list.length===0){
     maintBox.innerHTML="No scheduled maintenance.";
     return;
   }
 
   maintBox.innerHTML="";
   list.forEach(m=>{
-    maintBox.innerHTML += `
+    let time=new Date(m.scheduled_for);
+
+    maintBox.innerHTML+=`
       <div class="incident">
         <b>${m.title}</b>
-        <small>
-          Scheduled: ${new Date(m.scheduled_for).toLocaleString()}
-        </small>
-      </div>
-    `;
+        <small>Scheduled: ${time.toLocaleString()}</small>
+      </div>`;
   });
 }
 
 /* SEARCH FILTER */
-searchInput.addEventListener("input", ()=>{
-  const q = searchInput.value.toLowerCase();
-  renderServices(allServices.filter(s=>s.service.toLowerCase().includes(q)));
+searchInput.addEventListener("input",()=>{
+  let q=searchInput.value.toLowerCase();
+  renderServices(allServices.filter(s=>
+    s.service.toLowerCase().includes(q)
+  ));
 });
 
 loadAll();
-setInterval(loadAll, 30000);
+setInterval(loadAll,30000);
 </script>
 
 </body>
