@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login • StudentStream DevForum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:system-ui;
+      background:radial-gradient(circle at top,#0d1b3a,#05070c);
+      color:white;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .card{
+      width:100%;
+      max-width:420px;
+      padding:30px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.03);
+      text-align:center;
+    }
+
+    h1{
+      font-size:28px;
+      font-weight:950;
+    }
+
+    p{
+      opacity:.6;
+      margin-top:8px;
+      margin-bottom:25px;
+    }
+
+    input{
+      width:100%;
+      padding:14px;
+      margin-top:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.02);
+      color:white;
+      font-size:14px;
+      outline:none;
+    }
+
+    button{
+      margin-top:18px;
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:none;
+      font-weight:900;
+      cursor:pointer;
+      background:linear-gradient(90deg,#4da3ff,#3cff7a);
+      color:black;
+    }
+
+    .status{
+      margin-top:14px;
+      font-size:14px;
+      opacity:.7;
+    }
+
+    a{
+      color:#4da3ff;
+      text-decoration:none;
+      font-weight:700;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>DevForum Login</h1>
+  <p>Sign into your StudentStreamHQ account</p>
+
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="login()">Login</button>
+
+  <div class="status" id="statusText"></div>
+
+  <p style="margin-top:18px;">
+    No account? <a href="signup.html">Sign Up</a>
+  </p>
+</div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  const statusText = document.getElementById("statusText");
+
+  window.login = async function(){
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    statusText.textContent = "Logging in...";
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if(error){
+      statusText.textContent = "❌ " + error.message;
+      return;
+    }
+
+    statusText.textContent = "✅ Logged in! Redirecting...";
+
+    setTimeout(()=>{
+      window.location.href = "index.html";
+    },1000);
+  };
+</script>
+
+</body>
+</html>
