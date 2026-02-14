@@ -2,221 +2,312 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StudentStreamHQ Dashboard</title>
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <title>Dashboard • StudentStreamHQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: system-ui, sans-serif;
-      background: radial-gradient(circle at top, #081a33, #04070e);
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #081428, #05070c);
       color: white;
-      padding: 22px;
+      min-height: 100vh;
     }
 
     header {
+      padding: 22px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
 
     header h1 {
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 900;
     }
 
     header h1 span {
-      color: #3aa6ff;
+      color: #4da3ff;
     }
 
-    .logout-btn {
+    .logoutBtn {
       padding: 10px 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.05);
       color: white;
-      font-weight: 600;
       cursor: pointer;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 25px;
-      padding: 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 35px rgba(0,0,0,0.45);
-    }
-
-    .title {
-      font-size: 24px;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-
-    .muted {
-      opacity: 0.7;
-      font-size: 15px;
-      line-height: 1.4;
-    }
-
-    .btn {
-      margin-top: 15px;
-      padding: 12px 18px;
-      border-radius: 18px;
-      border: none;
       font-weight: 700;
-      cursor: pointer;
-      background: rgba(58,166,255,0.25);
-      color: white;
-      width: 100%;
-      max-width: 250px;
+      transition: .2s;
     }
 
-    .btn:hover {
-      background: rgba(58,166,255,0.4);
+    .logoutBtn:hover {
+      border-color: rgba(77,163,255,.4);
     }
 
-    .hidden {
-      display: none;
+    .wrap {
+      max-width: 980px;
+      margin: auto;
+      padding: 35px 22px;
+    }
+
+    /* PROFILE HEADER */
+    .profileHero {
+      padding: 34px;
+      border-radius: 26px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 28px;
+      box-shadow: 0 0 60px rgba(0,0,0,.25);
+    }
+
+    .profileHero h2 {
+      font-size: 36px;
+      font-weight: 950;
     }
 
     .badge {
       display: inline-block;
       margin-left: 10px;
-      padding: 6px 12px;
-      border-radius: 14px;
-      font-size: 12px;
-      font-weight: 800;
-      background: rgba(58,166,255,0.15);
-      border: 1px solid rgba(58,166,255,0.4);
-      color: #3aa6ff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      background: rgba(77,163,255,.14);
+      border: 1px solid rgba(77,163,255,.25);
+    }
+
+    .profileHero p {
+      margin-top: 10px;
+      opacity: .7;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .card {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      transition: .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(77,163,255,.35);
+    }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      opacity: .65;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* STAFF PANEL */
+    .staffPanel {
+      margin-top: 30px;
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255,215,0,.08);
+      border: 1px solid rgba(255,215,0,.18);
+      display: none;
+    }
+
+    .staffPanel h3 {
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .staffPanel p {
+      margin-top: 6px;
+      opacity: .75;
+    }
+
+    /* LOADING */
+    .loading {
+      opacity: .6;
+      font-size: 15px;
+      margin-top: 10px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <h1>StudentStream<span>HQ</span> Creator Hub</h1>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-  </header>
+<header>
+  <h1>StudentStream<span>HQ</span></h1>
+  <button class="logoutBtn" onclick="logout()">Logout</button>
+</header>
 
-  <!-- LOADING -->
-  <div class="card" id="loadingCard">
-    <div class="title">Loading your Creator Hub...</div>
-    <p class="muted">Fetching your profile...</p>
+<div class="wrap">
+
+  <!-- PROFILE HERO -->
+  <div class="profileHero">
+    <h2>
+      <span id="username">Loading...</span>
+      <span class="badge" id="roleBadge">...</span>
+    </h2>
+
+    <p id="memberLine" class="loading">
+      Fetching your account details...
+    </p>
   </div>
 
-  <!-- WELCOME -->
-  <div class="card hidden" id="welcomeCard">
-    <div class="title">
-      Welcome, <span id="userName"></span>
-      <span class="badge" id="roleBadge"></span>
+  <!-- DASHBOARD GRID -->
+  <div class="grid">
+
+    <!-- Earnings -->
+    <div class="card">
+      <h3>💰 Earnings Overview</h3>
+      <p>
+        Total Earnings: <b>$0.00</b><br>
+        Monetization Status: Pending Activation<br>
+        Creator Payouts launch soon.
+      </p>
     </div>
-    <p class="muted">
-      This is your official StudentStreamHQ Creator Dashboard.
-    </p>
-  </div>
 
-  <!-- DASHBOARD MODULES -->
-  <div class="card hidden" id="dashboardModules">
+    <!-- Divisions -->
+    <div class="card">
+      <h3>🏢 Platform Divisions</h3>
+      <p>
+        Access connected systems like:<br>
+        DevForum • SS:Watch • Originals • Monetization Club • More.
+      </p>
+    </div>
 
-    <div class="title">💰 Earnings Center</div>
-    <p class="muted">
-      Monetization and payouts will appear here once enabled.
-    </p>
-    <button class="btn">Open Earnings</button>
+    <!-- Analytics -->
+    <div class="card">
+      <h3>📊 Creator Analytics</h3>
+      <p>
+        Views, engagement, creator growth tracking will appear here
+        once uploads + releases are active.
+      </p>
+    </div>
 
-    <hr style="margin:25px 0; opacity:0.15;">
+    <!-- Account Settings -->
+    <div class="card">
+      <h3>⚙️ Account Settings</h3>
+      <p>
+        Manage username, password, profile info,
+        and connected creator tools.
+      </p>
+    </div>
 
-    <div class="title">🎬 Creator Studio</div>
-    <p class="muted">
-      Upload content, manage videos, and access creator tools.
-    </p>
-    <button class="btn">Open Studio</button>
+    <!-- Quick Links -->
+    <div class="card" onclick="location.href='/devforum/'" style="cursor:pointer;">
+      <h3>💬 Open DevForum</h3>
+      <p>
+        Talk with StudentStream staff + community.
+      </p>
+    </div>
 
-    <hr style="margin:25px 0; opacity:0.15;">
-
-    <div class="title">📊 Analytics</div>
-    <p class="muted">
-      View performance insights, growth, and engagement.
-    </p>
-    <button class="btn">View Analytics</button>
-
-    <hr style="margin:25px 0; opacity:0.15;">
-
-    <div class="title">⚙️ Account Settings</div>
-    <p class="muted">
-      Update profile, username, preferences, and identity.
-    </p>
-    <button class="btn">Manage Settings</button>
-
-    <hr style="margin:25px 0; opacity:0.15;">
-
-    <div class="title">🔒 Security</div>
-    <p class="muted">
-      Password updates, login activity, and account protection.
-    </p>
-    <button class="btn">Open Security</button>
+    <div class="card" onclick="location.href='/sswatch/'" style="cursor:pointer;">
+      <h3>🎥 Open SS:Watch</h3>
+      <p>
+        Stream Originals and creator content.
+      </p>
+    </div>
 
   </div>
 
-  <script>
-    // ✅ PUT YOUR REAL KEYS HERE
-    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+  <!-- STAFF PANEL -->
+  <div class="staffPanel" id="staffPanel">
+    <h3>👑 Staff Control Panel</h3>
+    <p>
+      Leadership access unlocked.<br>
+      Manage divisions, moderation tools, and platform operations.
+    </p>
+  </div>
 
-    const supabase = window.supabase.createClient(
-      supabaseUrl,
-      supabaseKey
-    );
+</div>
 
-    async function loadDashboard() {
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-      // ✅ AUTH CHECK
-      const { data: authData } = await supabase.auth.getUser();
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
-      if (!authData.user) {
-        window.location.href = "login.html";
-        return;
-      }
+  async function loadDashboard() {
 
-      // ✅ FETCH PROFILE
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("username, full_name, role")
-        .eq("id", authData.user.id)
-        .single();
+    /* SESSION CHECK */
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData.session?.user;
 
-      // ✅ DEFAULT ROLE
-      const role = profile?.role || "member";
-
-      // ✅ SHOW DASHBOARD
-      document.getElementById("loadingCard").classList.add("hidden");
-      document.getElementById("welcomeCard").classList.remove("hidden");
-      document.getElementById("dashboardModules").classList.remove("hidden");
-
-      // ✅ DISPLAY USER
-      document.getElementById("userName").innerText =
-        profile?.full_name || profile?.username || "Creator";
-
-      document.getElementById("roleBadge").innerText =
-        role.toUpperCase();
+    if (!user) {
+      location.href = "/login.html";
+      return;
     }
 
-    async function logout() {
-      await supabase.auth.signOut();
-      window.location.href = "login.html";
+    /* LOAD PROFILE */
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (error || !profile) {
+      alert("Profile not found. Please contact support.");
+      return;
     }
 
-    loadDashboard();
-  </script>
+    /* DISPLAY NAME */
+    document.getElementById("username").textContent =
+      profile.username;
+
+    /* ROLE BADGE */
+    let badgeText = "👤 Member";
+
+    if (profile.role === "owner") badgeText = "👑 Owner";
+    if (profile.role === "admin") badgeText = "🛡 Admin";
+    if (profile.role === "staff") badgeText = "⭐ Staff";
+
+    document.getElementById("roleBadge").textContent = badgeText;
+
+    document.getElementById("memberLine").textContent =
+      `Role: ${profile.role.toUpperCase()} • Member since ${new Date(profile.created_at).toLocaleDateString()}`;
+
+    /* STAFF PANEL PERMISSION CHECK */
+    const { data: perm } = await supabase
+      .from("staff_permissions")
+      .select("*")
+      .eq("role", profile.role)
+      .single();
+
+    if (perm?.can_access_staff_panel) {
+      document.getElementById("staffPanel").style.display = "block";
+    }
+  }
+
+  loadDashboard();
+
+  /* LOGOUT */
+  window.logout = async function () {
+    await supabase.auth.signOut();
+    location.href = "/login.html";
+  };
+</script>
 
 </body>
 </html>
