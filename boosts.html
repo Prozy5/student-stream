@@ -2,101 +2,174 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Boost a Creator • StudentStreamHQ</title>
+  <title>StudentStream Boosts • Promote Your Work</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui;
+    }
+
     body {
       background: radial-gradient(circle at top, #081428, #05070c);
       color: white;
-      font-family: system-ui;
-      padding: 40px;
+      min-height: 100vh;
+      padding: 50px 20px;
       text-align: center;
     }
 
     h1 {
-      font-size: 42px;
-      font-weight: 900;
+      font-size: 46px;
+      font-weight: 950;
     }
 
     p {
-      opacity: .7;
-      margin-top: 10px;
+      opacity: .75;
+      margin-top: 12px;
       font-size: 16px;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
     }
 
     .boostGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 18px;
-      margin-top: 40px;
-      max-width: 800px;
+      margin-top: 50px;
+      max-width: 900px;
       margin-left: auto;
       margin-right: auto;
     }
 
     .boostCard {
-      padding: 24px;
+      padding: 26px;
       border-radius: 22px;
-      background: rgba(255,255,255,.05);
+      background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.10);
-      transition: .2s;
+      transition: .25s;
+      box-shadow: 0 0 60px rgba(0,0,0,.35);
     }
 
     .boostCard:hover {
-      transform: translateY(-4px);
-      border-color: rgba(77,163,255,.4);
+      transform: translateY(-6px);
+      border-color: rgba(77,163,255,.45);
     }
 
     .boostCard h2 {
-      font-size: 26px;
-      margin-bottom: 8px;
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .boostCard .tag {
+      margin-top: 8px;
+      font-size: 14px;
+      opacity: .7;
+    }
+
+    .boostCard ul {
+      margin-top: 16px;
+      text-align: left;
+      font-size: 14px;
+      opacity: .8;
+      line-height: 1.6;
+      padding-left: 18px;
     }
 
     .boostCard a {
       display: block;
-      margin-top: 14px;
-      padding: 12px;
+      margin-top: 18px;
+      padding: 13px;
       border-radius: 14px;
-      font-weight: 800;
+      font-weight: 850;
       text-decoration: none;
       background: rgba(77,163,255,.18);
       border: 1px solid rgba(77,163,255,.35);
       color: white;
+      transition: .2s;
     }
 
     .boostCard a:hover {
-      background: rgba(77,163,255,.28);
+      background: rgba(77,163,255,.30);
+    }
+
+    .note {
+      margin-top: 55px;
+      font-size: 13px;
+      opacity: .55;
     }
   </style>
 </head>
 
 <body>
 
-<h1>⚡ Boost a Creator</h1>
-<p>Support StudentStream creators instantly through Stripe.</p>
+  <h1>⚡ StudentStream Boosts</h1>
 
-<div class="boostGrid">
+  <p>
+    Boosts are paid promotions that help your work get discovered across the
+    StudentStream platform — through featured placement, banners, and visibility
+    upgrades.
+  </p>
 
-  <div class="boostCard">
-    <h2>$5 Boost</h2>
-    <p>Quick support</p>
-    <a href="https://buy.stripe.com/14A7sLfbk3xQapB9vQ8Ra00">Send $5 →</a>
+  <div class="boostGrid">
+
+    <!-- BOOST 1 -->
+    <div class="boostCard">
+      <h2>$5 Starter Boost</h2>
+      <div class="tag">Quick platform visibility</div>
+
+      <ul>
+        <li>Featured creator highlight</li>
+        <li>Boosted discovery placement</li>
+        <li>Perfect for new uploads</li>
+      </ul>
+
+      <a href="https://buy.stripe.com/14A7sLfbk3xQapB9vQ8Ra00">
+        Activate $5 Boost →
+      </a>
+    </div>
+
+    <!-- BOOST 2 -->
+    <div class="boostCard">
+      <h2>$10 Growth Boost</h2>
+      <div class="tag">More reach + featured exposure</div>
+
+      <ul>
+        <li>Priority placement on popular pages</li>
+        <li>Boosted platform impressions</li>
+        <li>Best for serious creators</li>
+      </ul>
+
+      <a href="https://buy.stripe.com/bJe00jaV46K255h5fA8Ra03">
+        Activate $10 Boost →
+      </a>
+    </div>
+
+    <!-- BOOST 3 -->
+    <div class="boostCard">
+      <h2>$25 Platform Mega Boost</h2>
+      <div class="tag">Maximum exposure upgrade</div>
+
+      <ul>
+        <li>Top-level feature banners</li>
+        <li>Strongest reach across StudentStream</li>
+        <li>Ideal for launches + brands</li>
+      </ul>
+
+      <a href="https://buy.stripe.com/bJe00jaV46K255h5fA8Ra03">
+        Activate $25 Mega Boost →
+      </a>
+    </div>
+
   </div>
 
-  <div class="boostCard">
-    <h2>$10 Super Boost</h2>
-    <p>Big love</p>
-    <a href="https://buy.stripe.com/bJe00jaV46K255h5fA8Ra03">Send $10 →</a>
+  <div class="note">
+    Boosts are promotional services for creators and brands. No physical goods are sold.
   </div>
-
-  <div class="boostCard">
-    <h2>$25 Mega Boost</h2>
-    <p>Serious supporter</p>
-    <a href="https://buy.stripe.com/bJe00jaV46K255h5fA8Ra03">Send $25 →</a>
-  </div>
-
-</div>
 
 </body>
 </html>
