@@ -6,150 +6,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont;
-      background: radial-gradient(circle at top, #0d1b3a, #05070c);
+      margin: 0;
+      font-family: system-ui;
+      background: radial-gradient(circle at top, #081428, #05070c);
       color: white;
-      min-height: 100vh;
     }
 
-    /* HEADER */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 20px 28px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(18px);
-      background: rgba(5,7,12,.75);
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .logo {
+    header h1 {
       font-size: 20px;
-      font-weight: 950;
-    }
-
-    .logo span {
-      color: #4da3ff;
+      font-weight: 800;
     }
 
     .logoutBtn {
-      font-size: 13px;
-      font-weight: 800;
-      padding: 10px 16px;
+      padding: 10px 18px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.15);
       background: rgba(255,255,255,.05);
+      color: white;
       cursor: pointer;
-      opacity: .75;
-      transition: .2s;
     }
 
-    .logoutBtn:hover {
-      opacity: 1;
-      border-color: rgba(77,163,255,.5);
+    .wrap {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
     }
 
-    /* PAGE */
-    .container {
-      max-width: 1100px;
-      margin: 55px auto;
-      padding: 0 20px;
-    }
-
-    /* USER CARD */
-    .userCard {
-      padding: 26px;
+    .profileCard {
+      padding: 28px;
       border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
-      margin-bottom: 30px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 25px;
     }
 
-    .userTop {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .userName {
-      font-size: 26px;
-      font-weight: 950;
+    .profileCard h2 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 900;
     }
 
     .badge {
       display: inline-block;
-      margin-left: 10px;
+      margin-left: 8px;
       padding: 5px 12px;
       border-radius: 999px;
-      font-size: 12px;
-      font-weight: 900;
+      font-size: 13px;
+      font-weight: 800;
       background: rgba(77,163,255,.15);
-      color: #4da3ff;
+      border: 1px solid rgba(77,163,255,.25);
     }
 
-    .staffBadge {
-      background: rgba(60,255,122,.14);
-      color: #3cff7a;
-    }
-
-    .rankLine {
-      margin-top: 10px;
-      font-size: 14px;
+    .profileCard p {
       opacity: .7;
+      margin-top: 8px;
     }
 
-    /* HUB GRID */
-    .hubGrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-    }
-
-    .hubCard {
+    .card {
       padding: 22px;
       border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.08);
       background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      margin-bottom: 18px;
       cursor: pointer;
       transition: .2s;
     }
 
-    .hubCard:hover {
-      border-color: rgba(77,163,255,.55);
-      transform: scale(1.015);
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(77,163,255,.3);
     }
 
-    .hubCard h3 {
-      font-size: 16px;
-      font-weight: 900;
-      margin-bottom: 6px;
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
     }
 
-    .hubCard p {
-      font-size: 13px;
+    .card p {
+      margin-top: 6px;
       opacity: .65;
-      line-height: 1.4;
+      font-size: 14px;
     }
 
-    footer {
-      text-align: center;
-      padding: 35px;
-      opacity: .4;
-      font-size: 13px;
-      margin-top: 80px;
-      border-top: 1px solid rgba(255,255,255,.08);
+    .staffPanel {
+      margin-top: 25px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,215,0,.08);
+      border: 1px solid rgba(255,215,0,.18);
+      display: none;
     }
   </style>
 </head>
@@ -157,66 +111,53 @@
 <body>
 
 <header>
-  <div class="logo">StudentStream<span>HQ</span></div>
-  <div class="logoutBtn" onclick="logoutUser()">Logout</div>
+  <h1>StudentStream<span style="color:#4da3ff">HQ</span></h1>
+  <button class="logoutBtn" onclick="logout()">Logout</button>
 </header>
 
-<div class="container">
+<div class="wrap">
 
-  <!-- USER INFO -->
-  <div class="userCard">
-    <div class="userTop">
-      <div>
-        <div class="userName" id="displayName">
-          Loading...
-        </div>
-        <div class="rankLine" id="rankLine">
-          Fetching rank...
-        </div>
-      </div>
-    </div>
+  <!-- PROFILE -->
+  <div class="profileCard">
+    <h2>
+      <span id="username">Loading...</span>
+      <span class="badge" id="roleBadge">...</span>
+    </h2>
+    <p id="rankLine">Fetching profile...</p>
   </div>
 
-  <!-- CREATOR HUB -->
-  <div class="hubGrid">
+  <!-- HUB LINKS -->
+  <div class="card" onclick="location.href='/devforum/'">
+    <h3>💬 DevForum</h3>
+    <p>Ask questions, post updates, and talk with StudentStream staff.</p>
+  </div>
 
-    <div class="hubCard" onclick="go('/devforum')">
-      <h3>💬 DevForum</h3>
-      <p>Ask questions, post updates, and talk with StudentStream staff.</p>
-    </div>
+  <div class="card" onclick="location.href='/sswatch/'">
+    <h3>🎥 SS:Watch</h3>
+    <p>Stream student originals, creator shows, and exclusive content.</p>
+  </div>
 
-    <div class="hubCard" onclick="go('/sswatch')">
-      <h3>🎥 SS:Watch</h3>
-      <p>Stream student originals, creator shows, and exclusive content.</p>
-    </div>
+  <div class="card">
+    <h3>💰 Monetization Club</h3>
+    <p>Access creator earnings, payments, and monetization programs.</p>
+  </div>
 
-    <div class="hubCard" onclick="go('/monetization')">
-      <h3>💰 Monetization Club</h3>
-      <p>Access payments, creator earnings, and monetization programs.</p>
-    </div>
+  <div class="card">
+    <h3>⭐ StudentStream Originals</h3>
+    <p>Official productions, featured creators, and SS Films projects.</p>
+  </div>
 
-    <div class="hubCard" onclick="go('/originals')">
-      <h3>⭐ StudentStream Originals</h3>
-      <p>Official productions, featured creators, and SS Films projects.</p>
-    </div>
+  <div class="card">
+    <h3>⚙️ Account Settings</h3>
+    <p>Edit your profile, username, password, and platform preferences.</p>
+  </div>
 
-    <div class="hubCard" onclick="go('/settings')">
-      <h3>⚙️ Account Settings</h3>
-      <p>Edit your profile, username, password, and platform preferences.</p>
-    </div>
-
-    <div class="hubCard" onclick="go('/staff')">
-      <h3>🛡 Staff Panel</h3>
-      <p>Only visible for verified StudentStream staff accounts.</p>
-    </div>
-
+  <!-- STAFF PANEL -->
+  <div class="staffPanel" id="staffPanel">
+    👑 Staff Panel Unlocked — Welcome back, leadership.
   </div>
 
 </div>
-
-<footer>
-  © 2026 StudentStreamHQ • Creator Dashboard V1
-</footer>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -226,64 +167,46 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  const displayName = document.getElementById("displayName");
-  const rankLine = document.getElementById("rankLine");
-
-  /* ✅ PROTECT DASHBOARD */
-  const { data: sessionData } = await supabase.auth.getSession();
-
-  if (!sessionData.session) {
-    window.location.href = "/login.html?next=/dashboard.html";
-  }
-
-  const user = sessionData.session.user;
-
-  /* ✅ LOAD PROFILE DATA */
   async function loadProfile() {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData.session?.user;
 
-    const { data, error } = await supabase
+    if (!user) {
+      location.href = "/login.html";
+      return;
+    }
+
+    const { data: profile } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", user.id)
       .single();
 
-    if (error || !data) {
-      displayName.textContent = "Unknown User";
-      rankLine.textContent = "Profile missing.";
-      return;
+    document.getElementById("username").textContent =
+      profile.username;
+
+    // ROLE SYSTEM
+    let badge = "👤 Member";
+
+    if (profile.role === "owner") badge = "👑 Owner";
+    if (profile.role === "admin") badge = "🛡 Admin";
+    if (profile.role === "staff") badge = "⭐ Staff";
+
+    document.getElementById("roleBadge").textContent = badge;
+    document.getElementById("rankLine").textContent =
+      `Rank: ${badge} • Member since ${new Date(profile.created_at).toLocaleDateString()}`;
+
+    // STAFF PANEL UNLOCK
+    if (profile.role !== "member") {
+      document.getElementById("staffPanel").style.display = "block";
     }
-
-    /* NAME */
-    let nameHTML = data.username || "Student";
-
-    /* STAFF BADGE */
-    if (data.role === "staff") {
-      nameHTML += `<span class="badge staffBadge">Staff</span>`;
-    }
-
-    /* VERIFIED BADGE */
-    if (data.verified === true) {
-      nameHTML += `<span class="badge">Verified</span>`;
-    }
-
-    displayName.innerHTML = nameHTML;
-
-    /* RANK */
-    rankLine.textContent =
-      `Rank: ${data.rank || "New Creator"} • Member since ${new Date(data.created_at).toLocaleDateString()}`;
   }
 
   loadProfile();
 
-  /* NAV */
-  window.go = function (path) {
-    window.location.href = path;
-  };
-
-  /* LOGOUT */
-  window.logoutUser = async function () {
+  window.logout = async function () {
     await supabase.auth.signOut();
-    window.location.href = "/login.html";
+    location.href = "/login.html";
   };
 </script>
 
