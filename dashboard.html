@@ -52,28 +52,29 @@
     }
 
     .wrap {
-      max-width: 980px;
+      max-width: 1100px;
       margin: auto;
       padding: 35px 22px;
     }
 
-    .profileHero {
+    /* HERO */
+    .hero {
       padding: 34px;
-      border-radius: 26px;
+      border-radius: 28px;
       background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      margin-bottom: 28px;
-      box-shadow: 0 0 60px rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.09);
+      margin-bottom: 30px;
+      box-shadow: 0 0 80px rgba(0,0,0,.35);
     }
 
-    .profileHero h2 {
-      font-size: 36px;
+    .hero h2 {
+      font-size: 38px;
       font-weight: 950;
     }
 
     .badge {
       display: inline-block;
-      margin-left: 10px;
+      margin-left: 12px;
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 13px;
@@ -82,18 +83,18 @@
       border: 1px solid rgba(77,163,255,.25);
     }
 
-    .profileHero p {
+    .hero p {
       margin-top: 10px;
       opacity: .7;
       font-size: 15px;
       line-height: 1.5;
     }
 
+    /* GRID */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 18px;
-      margin-top: 22px;
     }
 
     .card {
@@ -102,7 +103,6 @@
       background: rgba(255,255,255,.03);
       border: 1px solid rgba(255,255,255,.07);
       transition: .2s;
-      cursor: pointer;
     }
 
     .card:hover {
@@ -117,17 +117,42 @@
     }
 
     .card p {
-      opacity: .65;
+      opacity: .7;
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
+    .bigStat {
+      font-size: 32px;
+      font-weight: 950;
+      margin-top: 10px;
+    }
+
+    /* BUTTON */
+    .actionBtn {
+      margin-top: 14px;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+      display: inline-block;
+    }
+
+    .actionBtn:hover {
+      border-color: rgba(77,163,255,.35);
+    }
+
+    /* STAFF PANEL */
     .staffPanel {
-      margin-top: 30px;
-      padding: 22px;
+      margin-top: 35px;
+      padding: 24px;
       border-radius: 22px;
       background: rgba(255,215,0,.08);
-      border: 1px solid rgba(255,215,0,.18);
+      border: 1px solid rgba(255,215,0,.20);
       display: none;
     }
 
@@ -136,51 +161,14 @@
       font-weight: 950;
     }
 
-    /* MODAL */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.65);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 99;
+    .staffPanel p {
+      margin-top: 6px;
+      opacity: .75;
     }
 
-    .modalBox {
-      width: 90%;
-      max-width: 420px;
-      padding: 25px;
-      border-radius: 20px;
-      background: #0c1628;
-      border: 1px solid rgba(255,255,255,.12);
-    }
-
-    .modalBox h2 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    .closeBtn {
-      margin-top: 18px;
-      width: 100%;
-      padding: 12px;
-      border-radius: 14px;
-      border: none;
-      background: rgba(77,163,255,.25);
-      color: white;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .closeBtn:hover {
-      background: rgba(77,163,255,.35);
-    }
-
-    .miniText {
-      opacity: .7;
-      font-size: 14px;
-      margin-top: 8px;
+    /* LOADING */
+    .loading {
+      opacity: .6;
     }
   </style>
 </head>
@@ -194,100 +182,118 @@
 
 <div class="wrap">
 
-  <!-- PROFILE HERO -->
-  <div class="profileHero">
+  <!-- HERO PROFILE -->
+  <div class="hero">
     <h2>
-      <span id="username">Loading...</span>
+      Welcome, <span id="username">Loading...</span>
       <span class="badge" id="roleBadge">...</span>
     </h2>
-    <p id="memberLine">Connecting to your Creator Hub...</p>
+
+    <p id="memberLine" class="loading">
+      Loading your Creator Dashboard...
+    </p>
   </div>
 
-  <!-- DASHBOARD GRID -->
+  <!-- MAIN GRID -->
   <div class="grid">
 
-    <div class="card" onclick="openModal('earningsModal')">
-      <h3>💰 Earnings Center</h3>
-      <p id="earningsText">Loading earnings...</p>
-    </div>
-
-    <div class="card" onclick="openModal('divisionsModal')">
-      <h3>🏢 Your Divisions</h3>
-      <p id="divisionText">Loading divisions...</p>
-    </div>
-
+    <!-- Earnings -->
     <div class="card">
-      <h3>📊 Creator Analytics</h3>
-      <p>Advanced tracking will appear once uploads go live.</p>
+      <h3>💰 Creator Earnings</h3>
+      <p>Your Boost earnings update live.</p>
+      <div class="bigStat" id="earningsTotal">$0.00</div>
+
+      <button class="actionBtn" onclick="location.href='/boosts.html'">
+        Enable Boost Donations →
+      </button>
     </div>
 
-    <div class="card" onclick="openModal('settingsModal')">
-      <h3>⚙️ Account Settings</h3>
-      <p>Edit your profile, password, preferences, identity.</p>
+    <!-- Monetization Status -->
+    <div class="card">
+      <h3>⚡ Monetization Status</h3>
+      <p id="monetizationStatus">
+        Checking monetization access...
+      </p>
+
+      <button class="actionBtn">
+        View Monetization Programs →
+      </button>
     </div>
 
-    <div class="card" onclick="location.href='/devforum/'">
-      <h3>💬 Open DevForum</h3>
-      <p>Talk with StudentStream staff + community.</p>
+    <!-- Divisions -->
+    <div class="card">
+      <h3>🏢 Your Divisions</h3>
+      <p id="divisionList">
+        Loading connected divisions...
+      </p>
+
+      <button class="actionBtn" onclick="location.href='/platform.html'">
+        Explore Platform →
+      </button>
     </div>
 
-    <div class="card" onclick="location.href='/sswatch/'">
-      <h3>🎥 Open SS:Watch</h3>
-      <p>Stream Originals + creator releases.</p>
+    <!-- Account Manager -->
+    <div class="card">
+      <h3>⚙️ Account Manager</h3>
+      <p>
+        Edit profile, password, payout settings,
+        and platform preferences.
+      </p>
+
+      <button class="actionBtn" onclick="location.href='/settings.html'">
+        Open Settings →
+      </button>
+    </div>
+
+    <!-- DevForum -->
+    <div class="card">
+      <h3>💬 DevForum</h3>
+      <p>Talk with the community + staff updates.</p>
+
+      <button class="actionBtn" onclick="location.href='/devforum/'">
+        Open DevForum →
+      </button>
+    </div>
+
+    <!-- SS Watch -->
+    <div class="card">
+      <h3>🎥 SS:Watch</h3>
+      <p>Creator streaming + Originals division.</p>
+
+      <button class="actionBtn" onclick="location.href='/sswatch/'">
+        Open SS:Watch →
+      </button>
     </div>
 
   </div>
 
   <!-- STAFF PANEL -->
   <div class="staffPanel" id="staffPanel">
-    <h3>👑 Staff Admin Panel</h3>
-    <p>Only ranks with permission can access this system.</p>
-  </div>
-
-</div>
-
-<!-- MODALS -->
-<div class="modal" id="earningsModal">
-  <div class="modalBox">
-    <h2>💰 Earnings Center</h2>
-    <p class="miniText">
-      Monetization is still in setup. Creator payouts will appear here soon.
+    <h3>👑 Staff Control Panel</h3>
+    <p>
+      Leadership access unlocked.<br>
+      Moderation tools + platform operations enabled.
     </p>
-    <button class="closeBtn" onclick="closeModal('earningsModal')">Close</button>
+
+    <button class="actionBtn" onclick="location.href='/staff/'">
+      Enter Staff Panel →
+    </button>
   </div>
+
 </div>
 
-<div class="modal" id="divisionsModal">
-  <div class="modalBox">
-    <h2>🏢 Your Divisions</h2>
-    <p id="divisionList" class="miniText">Loading...</p>
-    <button class="closeBtn" onclick="closeModal('divisionsModal')">Close</button>
-  </div>
-</div>
-
-<div class="modal" id="settingsModal">
-  <div class="modalBox">
-    <h2>⚙️ Account Settings</h2>
-    <p class="miniText">
-      Settings Manager coming next:<br>
-      • Username update<br>
-      • Password reset<br>
-      • Creator identity<br>
-      • Division membership
-    </p>
-    <button class="closeBtn" onclick="closeModal('settingsModal')">Close</button>
-  </div>
-</div>
-
+<!-- SUPABASE SCRIPT -->
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+    "YOUR_ANON_KEY_HERE"
   );
 
   async function loadDashboard() {
+
+    /* SESSION */
     const { data: sessionData } = await supabase.auth.getSession();
     const user = sessionData.session?.user;
 
@@ -296,19 +302,17 @@
       return;
     }
 
+    /* PROFILE */
     const { data: profile } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", user.id)
       .single();
 
-    if (!profile) {
-      alert("Profile missing. Run the profile trigger SQL.");
-      return;
-    }
+    document.getElementById("username").textContent =
+      profile.username;
 
-    document.getElementById("username").textContent = profile.username;
-
+    /* ROLE */
     let badgeText = "👤 Member";
     if (profile.role === "owner") badgeText = "👑 Owner";
     if (profile.role === "admin") badgeText = "🛡 Admin";
@@ -319,19 +323,32 @@
     document.getElementById("memberLine").textContent =
       `Role: ${profile.role.toUpperCase()} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
 
-    /* Divisions */
-    document.getElementById("divisionText").textContent =
-      "SS Films • HQ Staff • Monetization Club";
+    /* EARNINGS */
+    const { data: earnings } = await supabase
+      .from("creator_earnings")
+      .select("*")
+      .eq("creator_id", user.id)
+      .single();
 
-    document.getElementById("divisionList").textContent =
-      "• SS Films\n• HQ Staff\n• Monetization Club";
+    if (earnings) {
+      document.getElementById("earningsTotal").textContent =
+        "$" + earnings.total_boost_earnings;
+    }
 
-    /* Earnings */
-    document.getElementById("earningsText").textContent =
-      "Total Earnings: $0.00 (Pending Launch)";
+    /* DIVISIONS */
+    document.getElementById("divisionList").innerHTML = `
+      ✅ DevForum Access<br>
+      ✅ SS:Watch Division<br>
+      ✅ Monetization Club<br>
+      🔒 Commerce Tools (coming soon)
+    `;
 
-    /* Staff Panel Permission */
-    if (["owner","admin","staff"].includes(profile.role)) {
+    /* MONETIZATION STATUS */
+    document.getElementById("monetizationStatus").innerHTML =
+      `Boosts Enabled ✅<br>Stripe Connected ✅`;
+
+    /* STAFF PANEL */
+    if (profile.role === "owner" || profile.role === "admin") {
       document.getElementById("staffPanel").style.display = "block";
     }
   }
@@ -341,14 +358,6 @@
   window.logout = async function () {
     await supabase.auth.signOut();
     location.href = "/login.html";
-  };
-
-  window.openModal = function(id) {
-    document.getElementById(id).style.display = "flex";
-  };
-
-  window.closeModal = function(id) {
-    document.getElementById(id).style.display = "none";
   };
 </script>
 
