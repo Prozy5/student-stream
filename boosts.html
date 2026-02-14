@@ -1,26 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Send a Boost ⚡</title>
+  <meta charset="UTF-8">
+  <title>Boost a Creator • StudentStreamHQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, #081428, #05070c);
+      color: white;
+      font-family: system-ui;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 900;
+    }
+
+    p {
+      opacity: .7;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .boostGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 40px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .boostCard {
+      padding: 24px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      transition: .2s;
+    }
+
+    .boostCard:hover {
+      transform: translateY(-4px);
+      border-color: rgba(77,163,255,.4);
+    }
+
+    .boostCard h2 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .boostCard a {
+      display: block;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      background: rgba(77,163,255,.18);
+      border: 1px solid rgba(77,163,255,.35);
+      color: white;
+    }
+
+    .boostCard a:hover {
+      background: rgba(77,163,255,.28);
+    }
+  </style>
 </head>
-<body style="background:#05070c;color:white;font-family:system-ui;text-align:center;padding:60px;">
 
-  <h1>⚡ Send a Boost</h1>
-  <p>Support your favorite creator on StudentStreamHQ.</p>
+<body>
 
-  <form action="boost-checkout.php" method="POST">
-    <input type="hidden" name="creator_id" value="CREATOR_UUID_HERE">
+<h1>⚡ Boost a Creator</h1>
+<p>Support StudentStream creators instantly through Stripe.</p>
 
-    <label>Your name:</label><br>
-    <input name="supporter" required><br><br>
+<div class="boostGrid">
 
-    <label>Boost Amount ($):</label><br>
-    <input name="amount" type="number" min="1" value="5"><br><br>
+  <div class="boostCard">
+    <h2>$5 Boost</h2>
+    <p>Quick support</p>
+    <a href="https://buy.stripe.com/14A7sLfbk3xQapB9vQ8Ra00">Send $5 →</a>
+  </div>
 
-    <button type="submit">
-      Send Boost ⚡
-    </button>
-  </form>
+  <div class="boostCard">
+    <h2>$10 Super Boost</h2>
+    <p>Big love</p>
+    <a href="YOUR_STRIPE_LINK_HERE">Send $10 →</a>
+  </div>
+
+  <div class="boostCard">
+    <h2>$25 Mega Boost</h2>
+    <p>Serious supporter</p>
+    <a href="YOUR_STRIPE_LINK_HERE">Send $25 →</a>
+  </div>
+
+</div>
 
 </body>
 </html>
