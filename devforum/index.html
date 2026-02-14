@@ -221,7 +221,9 @@
 
 <header>
   <div class="logo">StudentStream <span>DevForum</span></div>
-  <button class="btn">Account</button>
+
+  <!-- ✅ LOGIN BUTTON -->
+  <button class="btn" id="accountBtn">Login</button>
 </header>
 
 <div class="container">
@@ -269,6 +271,34 @@
   const mainContent = document.getElementById("mainContent");
   const loadingState = document.getElementById("loadingState");
   const tabs = document.querySelectorAll(".tab");
+
+  /* ✅ LOGIN BUTTON SYSTEM */
+  const accountBtn = document.getElementById("accountBtn");
+
+  async function updateLoginButton() {
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
+
+    if (user) {
+      accountBtn.textContent = "Account";
+
+      accountBtn.onclick = async () => {
+        const confirmLogout = confirm("Logout of StudentStream?");
+        if (confirmLogout) {
+          await supabase.auth.signOut();
+          location.reload();
+        }
+      };
+    } else {
+      accountBtn.textContent = "Login";
+
+      accountBtn.onclick = () => {
+        window.location.href = "https://studentstream.online/login";
+      };
+    }
+  }
+
+  updateLoginButton();
 
   /* SWITCH TAB UI */
   tabs.forEach(tab => {
