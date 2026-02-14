@@ -1,108 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>StudentStream Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Dashboard • StudentStreamHQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<script type="module">
-import { platformGuard } from "/js/platform-guard.js";
-await platformGuard();
-</script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<style>
-:root{
-  --bg:#05080f;
-  --panel:#0c1626;
-  --accent:#4da3ff;
-  --text:#eaf1ff;
-  --muted:#9fb0cc;
-  --border:rgba(255,255,255,0.08);
-}
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      background: radial-gradient(circle at top, #0d1b3a, #05070c);
+      color: white;
+      min-height: 100vh;
+    }
 
-body{
-  margin:0;
-  font-family:system-ui;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
-  color:var(--text);
-}
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 20px 28px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(18px);
+      background: rgba(5,7,12,.75);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-nav{
-  display:flex;
-  justify-content:space-between;
-  padding:16px 22px;
-  background:rgba(10,20,40,.7);
-  border-bottom:1px solid var(--border);
-}
+    .logo {
+      font-size: 20px;
+      font-weight: 950;
+    }
 
-.main{max-width:1000px;margin:auto;padding:28px}
+    .logo span {
+      color: #4da3ff;
+    }
 
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:18px;
-}
+    .logoutBtn {
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.05);
+      cursor: pointer;
+      opacity: .75;
+      transition: .2s;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:16px;
-}
+    .logoutBtn:hover {
+      opacity: 1;
+      border-color: rgba(77,163,255,.5);
+    }
 
-button{
-  background:#1b2a44;
-  border:1px solid var(--border);
-  color:white;
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-}
-</style>
+    /* PAGE */
+    .container {
+      max-width: 1100px;
+      margin: 55px auto;
+      padding: 0 20px;
+    }
+
+    /* USER CARD */
+    .userCard {
+      padding: 26px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      margin-bottom: 30px;
+    }
+
+    .userTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .userName {
+      font-size: 26px;
+      font-weight: 950;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      background: rgba(77,163,255,.15);
+      color: #4da3ff;
+    }
+
+    .staffBadge {
+      background: rgba(60,255,122,.14);
+      color: #3cff7a;
+    }
+
+    .rankLine {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: .7;
+    }
+
+    /* HUB GRID */
+    .hubGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .hubCard {
+      padding: 22px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .hubCard:hover {
+      border-color: rgba(77,163,255,.55);
+      transform: scale(1.015);
+    }
+
+    .hubCard h3 {
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .hubCard p {
+      font-size: 13px;
+      opacity: .65;
+      line-height: 1.4;
+    }
+
+    footer {
+      text-align: center;
+      padding: 35px;
+      opacity: .4;
+      font-size: 13px;
+      margin-top: 80px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+  </style>
 </head>
 
 <body>
 
-<nav>
-  <strong>StudentStream</strong>
-  <button id="logoutBtn">Logout</button>
-</nav>
+<header>
+  <div class="logo">StudentStream<span>HQ</span></div>
+  <div class="logoutBtn" onclick="logoutUser()">Logout</div>
+</header>
 
-<div class="main">
-  <h1>Dashboard</h1>
-  <p id="email"></p>
-  <div id="role"></div>
+<div class="container">
 
-  <div class="grid" style="margin-top:20px">
+  <!-- USER INFO -->
+  <div class="userCard">
+    <div class="userTop">
+      <div>
+        <div class="userName" id="displayName">
+          Loading...
+        </div>
+        <div class="rankLine" id="rankLine">
+          Fetching rank...
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <div class="card">
-      <h3>Studios</h3>
-      <a href="/studios/">Open →</a>
+  <!-- CREATOR HUB -->
+  <div class="hubGrid">
+
+    <div class="hubCard" onclick="go('/devforum')">
+      <h3>💬 DevForum</h3>
+      <p>Ask questions, post updates, and talk with StudentStream staff.</p>
     </div>
 
-    <div class="card">
-      <h3>Law</h3>
-      <a href="/law/">Open →</a>
+    <div class="hubCard" onclick="go('/sswatch')">
+      <h3>🎥 SS:Watch</h3>
+      <p>Stream student originals, creator shows, and exclusive content.</p>
     </div>
 
-    <div class="card">
-      <h3>SS:I</h3>
-      <a href="/ssi/">Open →</a>
+    <div class="hubCard" onclick="go('/monetization')">
+      <h3>💰 Monetization Club</h3>
+      <p>Access payments, creator earnings, and monetization programs.</p>
+    </div>
+
+    <div class="hubCard" onclick="go('/originals')">
+      <h3>⭐ StudentStream Originals</h3>
+      <p>Official productions, featured creators, and SS Films projects.</p>
+    </div>
+
+    <div class="hubCard" onclick="go('/settings')">
+      <h3>⚙️ Account Settings</h3>
+      <p>Edit your profile, username, password, and platform preferences.</p>
+    </div>
+
+    <div class="hubCard" onclick="go('/staff')">
+      <h3>🛡 Staff Panel</h3>
+      <p>Only visible for verified StudentStream staff accounts.</p>
     </div>
 
   </div>
+
 </div>
 
+<footer>
+  © 2026 StudentStreamHQ • Creator Dashboard V1
+</footer>
+
 <script type="module">
-import { logout } from "/js/auth.js";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-document.getElementById("email").textContent = window.currentUser.email;
-document.getElementById("role").textContent = "Role: " + window.currentUser.role;
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
-document.getElementById("logoutBtn").onclick = async () => {
-  await logout();
-  location.replace("/auth/login.html");
-};
+  const displayName = document.getElementById("displayName");
+  const rankLine = document.getElementById("rankLine");
+
+  /* ✅ PROTECT DASHBOARD */
+  const { data: sessionData } = await supabase.auth.getSession();
+
+  if (!sessionData.session) {
+    window.location.href = "/login.html?next=/dashboard.html";
+  }
+
+  const user = sessionData.session.user;
+
+  /* ✅ LOAD PROFILE DATA */
+  async function loadProfile() {
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (error || !data) {
+      displayName.textContent = "Unknown User";
+      rankLine.textContent = "Profile missing.";
+      return;
+    }
+
+    /* NAME */
+    let nameHTML = data.username || "Student";
+
+    /* STAFF BADGE */
+    if (data.role === "staff") {
+      nameHTML += `<span class="badge staffBadge">Staff</span>`;
+    }
+
+    /* VERIFIED BADGE */
+    if (data.verified === true) {
+      nameHTML += `<span class="badge">Verified</span>`;
+    }
+
+    displayName.innerHTML = nameHTML;
+
+    /* RANK */
+    rankLine.textContent =
+      `Rank: ${data.rank || "New Creator"} • Member since ${new Date(data.created_at).toLocaleDateString()}`;
+  }
+
+  loadProfile();
+
+  /* NAV */
+  window.go = function (path) {
+    window.location.href = path;
+  };
+
+  /* LOGOUT */
+  window.logoutUser = async function () {
+    await supabase.auth.signOut();
+    window.location.href = "/login.html";
+  };
 </script>
 
 </body>
