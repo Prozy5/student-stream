@@ -10,16 +10,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- SEO -->
-  <meta name="description" content="StudentStream is currently under maintenance while we upgrade the platform with login, creator tools, and AI features. Full launch April 4, 2026." />
-  <meta name="keywords" content="StudentStream, media platform, creators, StudentStream Productions, streaming, AI assistant" />
-  <meta name="author" content="StudentStream" />
+  <meta name="description" content="StudentStream is currently under maintenance while we upgrade the platform with login, creator tools, and community features. Full launch April 4, 2026." />
+  <meta name="keywords" content="StudentStream, creator platform, students, streaming, StudentStreamHQ, Student Originals" />
+  <meta name="author" content="StudentStreamHQ" />
 
   <!-- CANONICAL -->
   <link rel="canonical" href="https://studentstream.online/" />
 
   <!-- OPEN GRAPH -->
   <meta property="og:title" content="StudentStream — Under Maintenance" />
-  <meta property="og:description" content="StudentStream is being upgraded. Full platform launch April 4, 2026." />
+  <meta property="og:description" content="StudentStreamHQ is being upgraded. Full platform launch April 4, 2026." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://studentstream.online/" />
 
@@ -28,10 +28,10 @@
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "StudentStream",
-    "alternateName": "StudentStream HQ",
+    "name": "StudentStreamHQ",
+    "alternateName": "StudentStream",
     "url": "https://studentstream.online",
-    "description": "StudentStream is a next-generation media platform and creative ecosystem. Launching April 4, 2026.",
+    "description": "StudentStreamHQ is a next-generation creator platform and media ecosystem for students. Launching April 4, 2026.",
     "sameAs": [
       "https://www.instagram.com/studentstreamhq",
       "https://www.tiktok.com/@studentstreamhq"
@@ -58,20 +58,20 @@
     }
 
     .wrap {
-      max-width: 700px;
+      max-width: 720px;
       width: 100%;
     }
 
     .logo {
-      font-size: 2.7rem;
-      font-weight: 800;
+      font-size: 2.9rem;
+      font-weight: 900;
       letter-spacing: -1px;
       margin-bottom: 10px;
     }
 
     .badge {
       display: inline-block;
-      background: rgba(108, 242, 194, 0.12);
+      background: rgba(108, 242, 194, 0.10);
       color: #6cf2c2;
       padding: 8px 18px;
       border-radius: 999px;
@@ -81,18 +81,19 @@
     }
 
     h1 {
-      font-size: 2.7rem;
+      font-size: 2.6rem;
       margin-bottom: 12px;
       line-height: 1.1;
     }
 
     p {
-      opacity: 0.8;
-      font-size: 1.1rem;
-      line-height: 1.5;
+      opacity: 0.82;
+      font-size: 1.08rem;
+      line-height: 1.55;
       margin-bottom: 30px;
     }
 
+    /* Countdown */
     .countdown {
       display: flex;
       justify-content: center;
@@ -102,17 +103,19 @@
     }
 
     .time-box {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.07);
       padding: 16px 20px;
       border-radius: 18px;
-      min-width: 85px;
-      backdrop-filter: blur(8px);
+      min-width: 90px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     .time-box b {
       display: block;
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       margin-bottom: 4px;
+      font-weight: 900;
     }
 
     .note {
@@ -121,21 +124,42 @@
       margin-top: 20px;
     }
 
+    /* Buttons */
+    .btnRow {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .btn {
-      margin-top: 25px;
       padding: 14px 26px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      background: rgba(255,255,255,0.03);
       color: white;
       cursor: pointer;
       font-size: 1rem;
+      font-weight: 700;
       transition: 0.2s;
     }
 
     .btn:hover {
       transform: translateY(-2px);
+      border-color: rgba(108,242,194,0.45);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    }
+
+    .btnPrimary {
+      background: linear-gradient(90deg,#4da3ff,#6cf2c2);
+      color: black;
+      border: none;
+      font-weight: 900;
+    }
+
+    .btnPrimary:hover {
+      opacity: 0.92;
     }
   </style>
 </head>
@@ -143,15 +167,15 @@
 <body>
   <div class="wrap">
 
-    <div class="logo">StudentStream</div>
+    <div class="logo">StudentStreamHQ</div>
     <span class="badge">🚧 Platform Under Maintenance</span>
 
-    <h1>We’re building something big.</h1>
+    <h1>We’re upgrading the platform.</h1>
 
     <p>
-      StudentStream is currently being upgraded with login, creator tools,
-      and the official AI assistant.<br />
-      We’ll be back online very soon.
+      StudentStreamHQ is currently being rebuilt with login, creator tools,
+      streaming upgrades, and official community systems.<br />
+      Full launch is coming soon.
     </p>
 
     <!-- Countdown -->
@@ -166,9 +190,21 @@
       Full platform launch: <strong>April 4, 2026</strong>
     </p>
 
-    <a href="https://www.instagram.com/studentstreamhq" target="_blank">
-      <button class="btn">Follow Updates @studentstreamhq</button>
-    </a>
+    <!-- Platform Buttons -->
+    <div class="btnRow">
+      <button class="btn btnPrimary" onclick="location.href='/login.html'">
+        Login
+      </button>
+
+      <button class="btn" onclick="location.href='/devforum/'">
+        DevForum
+      </button>
+
+      <button class="btn" onclick="window.open('https://www.instagram.com/studentstreamhq')">
+        Instagram Updates
+      </button>
+    </div>
+
   </div>
 
   <script>
@@ -194,5 +230,6 @@
         Math.floor((diff / 1000) % 60);
     }, 1000);
   </script>
+
 </body>
 </html>
