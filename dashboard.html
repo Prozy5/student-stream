@@ -11,8 +11,8 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #081a2f, #020814);
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, #0a1a2f, #050b14);
       color: white;
       padding: 25px;
     }
@@ -24,68 +24,86 @@
       margin-bottom: 25px;
     }
 
-    h1 {
-      font-size: 26px;
-      font-weight: 700;
+    header h1 {
+      font-size: 28px;
+      font-weight: 800;
     }
 
-    h1 span {
-      color: #3fa9ff;
+    header h1 span {
+      color: #3aa6ff;
     }
 
     .logout-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
       padding: 10px 18px;
-      border-radius: 14px;
-      cursor: pointer;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
       color: white;
+      cursor: pointer;
       font-weight: 600;
     }
 
     .card {
-      background: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 25px;
       padding: 25px;
-      border-radius: 22px;
       margin-bottom: 22px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.35);
+      box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    }
+
+    .big-title {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .muted {
+      opacity: 0.7;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(58,166,255,0.2);
+      border: 1px solid rgba(58,166,255,0.4);
+      color: #3aa6ff;
+    }
+
+    .btn {
+      margin-top: 18px;
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 18px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      background: rgba(58,166,255,0.25);
+      color: white;
+    }
+
+    .btn:hover {
+      background: rgba(58,166,255,0.4);
     }
 
     .hidden {
       display: none;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 15px;
-      font-size: 13px;
-      font-weight: 700;
-      margin-top: 8px;
-      background: rgba(63,169,255,0.25);
-      border: 1px solid rgba(63,169,255,0.4);
-    }
-
-    .btn {
+    .error-box {
+      background: rgba(255,0,0,0.12);
+      border: 1px solid rgba(255,0,0,0.3);
+      padding: 14px;
+      border-radius: 14px;
       margin-top: 15px;
-      background: rgba(63,169,255,0.25);
-      border: 1px solid rgba(63,169,255,0.4);
-      padding: 12px 18px;
-      border-radius: 16px;
-      cursor: pointer;
-      color: white;
-      font-weight: 650;
       font-size: 14px;
-    }
-
-    .btn:hover {
-      opacity: 0.85;
-    }
-
-    .small {
-      opacity: 0.75;
-      line-height: 1.4;
+      color: #ffbaba;
     }
   </style>
 </head>
@@ -98,130 +116,144 @@
     <button class="logout-btn" onclick="logout()">Logout</button>
   </header>
 
-  <!-- LOADING -->
-  <div id="loadingCard" class="card">
-    <h2>Loading your Creator Hub...</h2>
-    <p class="small" id="loadingText">
-      Fetching your profile, rank, and permissions...
+  <!-- LOADING CARD -->
+  <div class="card" id="loadingCard">
+    <div class="big-title">Loading your Creator Hub...</div>
+    <p class="muted">Fetching your profile, rank, and permissions...</p>
+    <div id="errorBox" class="error-box hidden"></div>
+  </div>
+
+  <!-- PROFILE CARD -->
+  <div class="card hidden" id="profileCard">
+    <div class="big-title">
+      Welcome, <span id="userName"></span>
+      <span class="badge" id="rankBadge"></span>
+    </div>
+    <p class="muted">
+      Your StudentStreamHQ account is active. This is your creator dashboard.
     </p>
   </div>
 
-  <!-- PROFILE -->
-  <div id="profileCard" class="card hidden">
-    <h2>Welcome, <span id="username">User</span></h2>
-    <div class="badge" id="roleBadge">MEMBER</div>
-    <p class="small" id="joinedDate"></p>
-  </div>
-
-  <!-- MAIN CARDS -->
-  <div class="card">
-    <h2>💰 Earnings Center</h2>
-    <p class="small">Track monetization, payouts, and revenue splits.</p>
+  <!-- EARNINGS -->
+  <div class="card hidden" id="earningsCard">
+    <div class="big-title">💰 Earnings Center</div>
+    <p class="muted">
+      Track monetization, payouts, and revenue splits across StudentStream divisions.
+    </p>
     <button class="btn">Open Earnings</button>
   </div>
 
-  <div class="card">
-    <h2>🏢 Your Divisions</h2>
-    <p class="small">View SS Films, HQ Staff, Monetization Club.</p>
+  <!-- DIVISIONS -->
+  <div class="card hidden" id="divisionCard">
+    <div class="big-title">🏢 Your Divisions</div>
+    <p class="muted">
+      View teams and programs you belong to (SS Films, HQ Staff, Monetization Club).
+    </p>
     <button class="btn">Manage Divisions</button>
   </div>
 
-  <div class="card">
-    <h2>⚙️ Account Settings</h2>
-    <p class="small">Edit profile, username, preferences.</p>
+  <!-- SETTINGS -->
+  <div class="card hidden" id="settingsCard">
+    <div class="big-title">⚙️ Account Settings</div>
+    <p class="muted">
+      Edit your profile, username, preferences, and platform identity.
+    </p>
     <button class="btn">Manage Settings</button>
   </div>
 
-  <div class="card">
-    <h2>🔒 Security</h2>
-    <p class="small">Password updates, login activity.</p>
+  <!-- SECURITY -->
+  <div class="card hidden" id="securityCard">
+    <div class="big-title">🔒 Security</div>
+    <p class="muted">
+      Password updates, login activity, and account protection tools.
+    </p>
     <button class="btn">Open Security</button>
   </div>
 
   <!-- STAFF PANEL -->
-  <div id="staffPanel" class="card hidden">
-    <h2>🛡️ Staff Admin Panel</h2>
-    <p class="small">Visible only to staff/admin/owner ranks.</p>
-    <button class="btn">Enter Staff Panel</button>
+  <div class="card hidden" id="staffPanel">
+    <div class="big-title">🛡️ Staff Admin Panel</div>
+    <p class="muted">
+      This panel is only visible to Staff, Admin, and Owner ranks.
+    </p>
+    <button class="btn">Open Staff Tools</button>
   </div>
 
-  <!-- SCRIPT -->
   <script>
-    const loadingText = document.getElementById("loadingText");
+    /* =======================================
+       STUDENTSTREAMHQ SUPABASE CONNECTION
+    ======================================= */
 
-    // ✅ SAFETY CHECK: Supabase loaded?
-    if (!window.supabase) {
-      loadingText.innerText =
-        "❌ Supabase library failed to load. Check your CDN script.";
-      throw new Error("Supabase missing.");
-    }
-
-    // ✅ PUT YOUR REAL KEYS HERE
     const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+    const errorBox = document.getElementById("errorBox");
+
+    function showError(msg) {
+      errorBox.classList.remove("hidden");
+      errorBox.innerText = msg;
+    }
+
     async function loadDashboard() {
-      try {
-        loadingText.innerText = "Checking login session...";
+      console.log("Loading dashboard...");
 
-        const { data: authData, error: authError } =
-          await supabase.auth.getUser();
+      // 1. Get logged in user
+      const { data: authData, error: authError } = await supabase.auth.getUser();
 
-        if (authError || !authData?.user) {
-          loadingText.innerText =
-            "❌ Not logged in. Redirecting...";
-          setTimeout(() => {
-            window.location.href = "login.html";
-          }, 1500);
-          return;
-        }
+      if (authError || !authData.user) {
+        window.location.href = "login.html";
+        return;
+      }
 
-        const userId = authData.user.id;
+      const userId = authData.user.id;
 
-        loadingText.innerText = "Fetching your profile...";
+      // 2. Fetch profile
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
 
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userId)
-          .single();
+      if (profileError) {
+        showError("Profile fetch failed: " + profileError.message);
+        return;
+      }
 
-        if (error || !profile) {
-          loadingText.innerText =
-            "❌ Profile missing. Run profile auto-create SQL.";
-          return;
-        }
+      // 3. Fetch permission from staff_permissions
+      const { data: perm, error: permError } = await supabase
+        .from("staff_permissions")
+        .select("can_access_staff_panel")
+        .eq("role", profile.role)
+        .single();
 
-        // ✅ Show Profile
-        document.getElementById("loadingCard").classList.add("hidden");
-        document.getElementById("profileCard").classList.remove("hidden");
+      if (permError) {
+        showError("Permission fetch failed: " + permError.message);
+        return;
+      }
 
-        document.getElementById("username").innerText = profile.username;
-        document.getElementById("roleBadge").innerText =
-          profile.role.toUpperCase();
+      /* =======================================
+         SUCCESS → SHOW DASHBOARD
+      ======================================= */
 
-        document.getElementById("joinedDate").innerText =
-          "Joined: " + new Date(profile.created_at).toLocaleDateString();
+      document.getElementById("loadingCard").classList.add("hidden");
 
-        // ✅ Permission Check
-        loadingText.innerText = "Checking staff permissions...";
+      document.getElementById("profileCard").classList.remove("hidden");
+      document.getElementById("earningsCard").classList.remove("hidden");
+      document.getElementById("divisionCard").classList.remove("hidden");
+      document.getElementById("settingsCard").classList.remove("hidden");
+      document.getElementById("securityCard").classList.remove("hidden");
 
-        const { data: perm } = await supabase
-          .from("staff_permissions")
-          .select("*")
-          .eq("role", profile.role)
-          .single();
+      document.getElementById("userName").innerText =
+        profile.full_name || profile.username;
 
-        if (perm?.can_access_staff_panel) {
-          document.getElementById("staffPanel").classList.remove("hidden");
-        }
+      document.getElementById("rankBadge").innerText =
+        profile.role.toUpperCase();
 
-      } catch (err) {
-        console.error(err);
-        loadingText.innerText =
-          "❌ Script crashed: " + err.message;
+      // Staff Panel only if allowed
+      if (perm.can_access_staff_panel) {
+        document.getElementById("staffPanel").classList.remove("hidden");
       }
     }
 
