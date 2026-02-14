@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard • StudentStreamHQ</title>
+  <title>Creator Dashboard • StudentStreamHQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
@@ -14,15 +14,15 @@
     }
 
     header {
-      padding: 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     header h1 {
-      font-size: 20px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
     }
 
     .logoutBtn {
@@ -35,74 +35,88 @@
     }
 
     .wrap {
-      max-width: 700px;
+      max-width: 950px;
       margin: auto;
       padding: 20px;
     }
 
     .profileCard {
-      padding: 28px;
+      padding: 26px;
       border-radius: 22px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.08);
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
 
     .profileCard h2 {
       margin: 0;
-      font-size: 30px;
+      font-size: 28px;
       font-weight: 900;
     }
 
     .badge {
       display: inline-block;
-      margin-left: 8px;
-      padding: 5px 12px;
+      margin-left: 10px;
+      padding: 6px 14px;
       border-radius: 999px;
       font-size: 13px;
       font-weight: 800;
-      background: rgba(77,163,255,.15);
+      background: rgba(77,163,255,.14);
       border: 1px solid rgba(77,163,255,.25);
     }
 
-    .profileCard p {
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .statBox {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .statBox h3 {
+      margin: 0;
+      font-size: 14px;
       opacity: .7;
+    }
+
+    .statBox b {
+      font-size: 28px;
+      display: block;
       margin-top: 8px;
     }
 
-    .card {
+    .studio {
+      margin-top: 30px;
       padding: 22px;
       border-radius: 20px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.07);
-      margin-bottom: 18px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+
+    .studio button {
+      margin-top: 12px;
+      width: 100%;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
       cursor: pointer;
-      transition: .2s;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(77,163,255,.3);
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .card p {
-      margin-top: 6px;
-      opacity: .65;
-      font-size: 14px;
+      font-weight: 900;
+      background: linear-gradient(90deg,#4da3ff,#3cff7a);
+      color: black;
     }
 
     .staffPanel {
-      margin-top: 25px;
-      padding: 18px;
+      margin-top: 28px;
+      padding: 20px;
       border-radius: 18px;
-      background: rgba(255,215,0,.08);
-      border: 1px solid rgba(255,215,0,.18);
+      background: rgba(255,215,0,.10);
+      border: 1px solid rgba(255,215,0,.20);
       display: none;
     }
   </style>
@@ -111,7 +125,7 @@
 <body>
 
 <header>
-  <h1>StudentStream<span style="color:#4da3ff">HQ</span></h1>
+  <h1>StudentStream<span style="color:#4da3ff">HQ</span> Creator Hub</h1>
   <button class="logoutBtn" onclick="logout()">Logout</button>
 </header>
 
@@ -123,38 +137,56 @@
       <span id="username">Loading...</span>
       <span class="badge" id="roleBadge">...</span>
     </h2>
-    <p id="rankLine">Fetching profile...</p>
+    <p id="rankLine" style="opacity:.7;margin-top:6px;"></p>
   </div>
 
-  <!-- HUB LINKS -->
-  <div class="card" onclick="location.href='/devforum/'">
-    <h3>💬 DevForum</h3>
-    <p>Ask questions, post updates, and talk with StudentStream staff.</p>
+  <!-- ANALYTICS GRID -->
+  <div class="grid">
+
+    <div class="statBox">
+      <h3>Total Uploads</h3>
+      <b id="uploadCount">--</b>
+    </div>
+
+    <div class="statBox">
+      <h3>Total Views</h3>
+      <b id="viewCount">--</b>
+    </div>
+
+    <div class="statBox">
+      <h3>Likes Received</h3>
+      <b id="likeCount">--</b>
+    </div>
+
+    <div class="statBox">
+      <h3>Creator Rank</h3>
+      <b id="rankStatus">Active</b>
+    </div>
+
   </div>
 
-  <div class="card" onclick="location.href='/sswatch/'">
-    <h3>🎥 SS:Watch</h3>
-    <p>Stream student originals, creator shows, and exclusive content.</p>
+  <!-- CREATOR STUDIO -->
+  <div class="studio">
+    <h2 style="margin:0;font-weight:900;">🎥 Creator Studio</h2>
+    <p style="opacity:.7;margin-top:8px;">
+      Upload new content, track performance, and manage your creator profile.
+    </p>
+
+    <button onclick="location.href='/upload.html'">
+      Upload New Content
+    </button>
   </div>
 
-  <div class="card">
-    <h3>💰 Monetization Club</h3>
-    <p>Access creator earnings, payments, and monetization programs.</p>
-  </div>
-
-  <div class="card">
-    <h3>⭐ StudentStream Originals</h3>
-    <p>Official productions, featured creators, and SS Films projects.</p>
-  </div>
-
-  <div class="card">
-    <h3>⚙️ Account Settings</h3>
-    <p>Edit your profile, username, password, and platform preferences.</p>
-  </div>
-
-  <!-- STAFF PANEL -->
+  <!-- STAFF PANEL (OWNER + ADMIN ONLY) -->
   <div class="staffPanel" id="staffPanel">
-    👑 Staff Panel Unlocked — Welcome back, leadership.
+    <h2 style="margin:0;font-weight:900;">👑 Staff Admin Panel</h2>
+    <p style="opacity:.8;margin-top:8px;">
+      Platform tools unlocked for leadership roles.
+    </p>
+
+    <button onclick="location.href='/staff/'">
+      Open Staff Tools
+    </button>
   </div>
 
 </div>
@@ -167,7 +199,7 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  async function loadProfile() {
+  async function loadDashboard() {
     const { data: sessionData } = await supabase.auth.getSession();
     const user = sessionData.session?.user;
 
@@ -182,27 +214,43 @@
       .eq("id", user.id)
       .single();
 
-    document.getElementById("username").textContent =
-      profile.username;
+    document.getElementById("username").textContent = profile.username;
 
-    // ROLE SYSTEM
     let badge = "👤 Member";
-
     if (profile.role === "owner") badge = "👑 Owner";
     if (profile.role === "admin") badge = "🛡 Admin";
     if (profile.role === "staff") badge = "⭐ Staff";
 
     document.getElementById("roleBadge").textContent = badge;
     document.getElementById("rankLine").textContent =
-      `Rank: ${badge} • Member since ${new Date(profile.created_at).toLocaleDateString()}`;
+      `Rank: ${badge} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
 
-    // STAFF PANEL UNLOCK
-    if (profile.role !== "member") {
+    // Upload Stats
+    const { data: uploads } = await supabase
+      .from("creator_uploads")
+      .select("*")
+      .eq("user_id", user.id);
+
+    document.getElementById("uploadCount").textContent = uploads.length;
+
+    let totalViews = 0;
+    let totalLikes = 0;
+
+    uploads.forEach(u => {
+      totalViews += u.views;
+      totalLikes += u.likes;
+    });
+
+    document.getElementById("viewCount").textContent = totalViews;
+    document.getElementById("likeCount").textContent = totalLikes;
+
+    // Staff Panel Unlock
+    if (profile.role === "owner" || profile.role === "admin") {
       document.getElementById("staffPanel").style.display = "block";
     }
   }
 
-  loadProfile();
+  loadDashboard();
 
   window.logout = async function () {
     await supabase.auth.signOut();
