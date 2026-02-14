@@ -57,7 +57,6 @@
       padding: 35px 22px;
     }
 
-    /* PROFILE HEADER */
     .profileHero {
       padding: 34px;
       border-radius: 26px;
@@ -90,7 +89,6 @@
       line-height: 1.5;
     }
 
-    /* GRID */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -104,6 +102,7 @@
       background: rgba(255,255,255,.03);
       border: 1px solid rgba(255,255,255,.07);
       transition: .2s;
+      cursor: pointer;
     }
 
     .card:hover {
@@ -123,7 +122,6 @@
       line-height: 1.4;
     }
 
-    /* STAFF PANEL */
     .staffPanel {
       margin-top: 30px;
       padding: 22px;
@@ -138,16 +136,51 @@
       font-weight: 950;
     }
 
-    .staffPanel p {
-      margin-top: 6px;
-      opacity: .75;
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 99;
     }
 
-    /* LOADING */
-    .loading {
-      opacity: .6;
-      font-size: 15px;
-      margin-top: 10px;
+    .modalBox {
+      width: 90%;
+      max-width: 420px;
+      padding: 25px;
+      border-radius: 20px;
+      background: #0c1628;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .modalBox h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .closeBtn {
+      margin-top: 18px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: none;
+      background: rgba(77,163,255,.25);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .closeBtn:hover {
+      background: rgba(77,163,255,.35);
+    }
+
+    .miniText {
+      opacity: .7;
+      font-size: 14px;
+      margin-top: 8px;
     }
   </style>
 </head>
@@ -167,78 +200,83 @@
       <span id="username">Loading...</span>
       <span class="badge" id="roleBadge">...</span>
     </h2>
-
-    <p id="memberLine" class="loading">
-      Fetching your account details...
-    </p>
+    <p id="memberLine">Connecting to your Creator Hub...</p>
   </div>
 
   <!-- DASHBOARD GRID -->
   <div class="grid">
 
-    <!-- Earnings -->
-    <div class="card">
-      <h3>💰 Earnings Overview</h3>
-      <p>
-        Total Earnings: <b>$0.00</b><br>
-        Monetization Status: Pending Activation<br>
-        Creator Payouts launch soon.
-      </p>
+    <div class="card" onclick="openModal('earningsModal')">
+      <h3>💰 Earnings Center</h3>
+      <p id="earningsText">Loading earnings...</p>
     </div>
 
-    <!-- Divisions -->
-    <div class="card">
-      <h3>🏢 Platform Divisions</h3>
-      <p>
-        Access connected systems like:<br>
-        DevForum • SS:Watch • Originals • Monetization Club • More.
-      </p>
+    <div class="card" onclick="openModal('divisionsModal')">
+      <h3>🏢 Your Divisions</h3>
+      <p id="divisionText">Loading divisions...</p>
     </div>
 
-    <!-- Analytics -->
     <div class="card">
       <h3>📊 Creator Analytics</h3>
-      <p>
-        Views, engagement, creator growth tracking will appear here
-        once uploads + releases are active.
-      </p>
+      <p>Advanced tracking will appear once uploads go live.</p>
     </div>
 
-    <!-- Account Settings -->
-    <div class="card">
+    <div class="card" onclick="openModal('settingsModal')">
       <h3>⚙️ Account Settings</h3>
-      <p>
-        Manage username, password, profile info,
-        and connected creator tools.
-      </p>
+      <p>Edit your profile, password, preferences, identity.</p>
     </div>
 
-    <!-- Quick Links -->
-    <div class="card" onclick="location.href='/devforum/'" style="cursor:pointer;">
+    <div class="card" onclick="location.href='/devforum/'">
       <h3>💬 Open DevForum</h3>
-      <p>
-        Talk with StudentStream staff + community.
-      </p>
+      <p>Talk with StudentStream staff + community.</p>
     </div>
 
-    <div class="card" onclick="location.href='/sswatch/'" style="cursor:pointer;">
+    <div class="card" onclick="location.href='/sswatch/'">
       <h3>🎥 Open SS:Watch</h3>
-      <p>
-        Stream Originals and creator content.
-      </p>
+      <p>Stream Originals + creator releases.</p>
     </div>
 
   </div>
 
   <!-- STAFF PANEL -->
   <div class="staffPanel" id="staffPanel">
-    <h3>👑 Staff Control Panel</h3>
-    <p>
-      Leadership access unlocked.<br>
-      Manage divisions, moderation tools, and platform operations.
-    </p>
+    <h3>👑 Staff Admin Panel</h3>
+    <p>Only ranks with permission can access this system.</p>
   </div>
 
+</div>
+
+<!-- MODALS -->
+<div class="modal" id="earningsModal">
+  <div class="modalBox">
+    <h2>💰 Earnings Center</h2>
+    <p class="miniText">
+      Monetization is still in setup. Creator payouts will appear here soon.
+    </p>
+    <button class="closeBtn" onclick="closeModal('earningsModal')">Close</button>
+  </div>
+</div>
+
+<div class="modal" id="divisionsModal">
+  <div class="modalBox">
+    <h2>🏢 Your Divisions</h2>
+    <p id="divisionList" class="miniText">Loading...</p>
+    <button class="closeBtn" onclick="closeModal('divisionsModal')">Close</button>
+  </div>
+</div>
+
+<div class="modal" id="settingsModal">
+  <div class="modalBox">
+    <h2>⚙️ Account Settings</h2>
+    <p class="miniText">
+      Settings Manager coming next:<br>
+      • Username update<br>
+      • Password reset<br>
+      • Creator identity<br>
+      • Division membership
+    </p>
+    <button class="closeBtn" onclick="closeModal('settingsModal')">Close</button>
+  </div>
 </div>
 
 <script type="module">
@@ -250,8 +288,6 @@
   );
 
   async function loadDashboard() {
-
-    /* SESSION CHECK */
     const { data: sessionData } = await supabase.auth.getSession();
     const user = sessionData.session?.user;
 
@@ -260,25 +296,20 @@
       return;
     }
 
-    /* LOAD PROFILE */
-    const { data: profile, error } = await supabase
+    const { data: profile } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", user.id)
       .single();
 
-    if (error || !profile) {
-      alert("Profile not found. Please contact support.");
+    if (!profile) {
+      alert("Profile missing. Run the profile trigger SQL.");
       return;
     }
 
-    /* DISPLAY NAME */
-    document.getElementById("username").textContent =
-      profile.username;
+    document.getElementById("username").textContent = profile.username;
 
-    /* ROLE BADGE */
     let badgeText = "👤 Member";
-
     if (profile.role === "owner") badgeText = "👑 Owner";
     if (profile.role === "admin") badgeText = "🛡 Admin";
     if (profile.role === "staff") badgeText = "⭐ Staff";
@@ -286,26 +317,38 @@
     document.getElementById("roleBadge").textContent = badgeText;
 
     document.getElementById("memberLine").textContent =
-      `Role: ${profile.role.toUpperCase()} • Member since ${new Date(profile.created_at).toLocaleDateString()}`;
+      `Role: ${profile.role.toUpperCase()} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
 
-    /* STAFF PANEL PERMISSION CHECK */
-    const { data: perm } = await supabase
-      .from("staff_permissions")
-      .select("*")
-      .eq("role", profile.role)
-      .single();
+    /* Divisions */
+    document.getElementById("divisionText").textContent =
+      "SS Films • HQ Staff • Monetization Club";
 
-    if (perm?.can_access_staff_panel) {
+    document.getElementById("divisionList").textContent =
+      "• SS Films\n• HQ Staff\n• Monetization Club";
+
+    /* Earnings */
+    document.getElementById("earningsText").textContent =
+      "Total Earnings: $0.00 (Pending Launch)";
+
+    /* Staff Panel Permission */
+    if (["owner","admin","staff"].includes(profile.role)) {
       document.getElementById("staffPanel").style.display = "block";
     }
   }
 
   loadDashboard();
 
-  /* LOGOUT */
   window.logout = async function () {
     await supabase.auth.signOut();
     location.href = "/login.html";
+  };
+
+  window.openModal = function(id) {
+    document.getElementById(id).style.display = "flex";
+  };
+
+  window.closeModal = function(id) {
+    document.getElementById(id).style.display = "none";
   };
 </script>
 
