@@ -12,9 +12,9 @@
     body {
       margin: 0;
       font-family: system-ui, sans-serif;
-      background: radial-gradient(circle at top, #0a1a2f, #050b14);
+      background: radial-gradient(circle at top, #081a33, #04070e);
       color: white;
-      padding: 25px;
+      padding: 22px;
     }
 
     header {
@@ -26,7 +26,7 @@
 
     header h1 {
       font-size: 28px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     header h1 span {
@@ -36,11 +36,11 @@
     .logout-btn {
       padding: 10px 18px;
       border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
       color: white;
-      cursor: pointer;
       font-weight: 600;
+      cursor: pointer;
     }
 
     .card {
@@ -48,13 +48,13 @@
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 25px;
       padding: 25px;
-      margin-bottom: 22px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+      box-shadow: 0 0 35px rgba(0,0,0,0.45);
     }
 
-    .big-title {
-      font-size: 26px;
-      font-weight: 800;
+    .title {
+      font-size: 24px;
+      font-weight: 900;
       margin-bottom: 10px;
     }
 
@@ -64,21 +64,8 @@
       line-height: 1.4;
     }
 
-    .badge {
-      display: inline-block;
-      margin-left: 10px;
-      padding: 5px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-      background: rgba(58,166,255,0.2);
-      border: 1px solid rgba(58,166,255,0.4);
-      color: #3aa6ff;
-    }
-
     .btn {
-      margin-top: 18px;
-      display: inline-block;
+      margin-top: 15px;
       padding: 12px 18px;
       border-radius: 18px;
       border: none;
@@ -86,6 +73,8 @@
       cursor: pointer;
       background: rgba(58,166,255,0.25);
       color: white;
+      width: 100%;
+      max-width: 250px;
     }
 
     .btn:hover {
@@ -96,14 +85,16 @@
       display: none;
     }
 
-    .error-box {
-      background: rgba(255,0,0,0.12);
-      border: 1px solid rgba(255,0,0,0.3);
-      padding: 14px;
+    .badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 6px 12px;
       border-radius: 14px;
-      margin-top: 15px;
-      font-size: 14px;
-      color: #ffbaba;
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(58,166,255,0.15);
+      border: 1px solid rgba(58,166,255,0.4);
+      color: #3aa6ff;
     }
   </style>
 </head>
@@ -116,145 +107,107 @@
     <button class="logout-btn" onclick="logout()">Logout</button>
   </header>
 
-  <!-- LOADING CARD -->
+  <!-- LOADING -->
   <div class="card" id="loadingCard">
-    <div class="big-title">Loading your Creator Hub...</div>
-    <p class="muted">Fetching your profile, rank, and permissions...</p>
-    <div id="errorBox" class="error-box hidden"></div>
+    <div class="title">Loading your Creator Hub...</div>
+    <p class="muted">Fetching your profile...</p>
   </div>
 
-  <!-- PROFILE CARD -->
-  <div class="card hidden" id="profileCard">
-    <div class="big-title">
+  <!-- WELCOME -->
+  <div class="card hidden" id="welcomeCard">
+    <div class="title">
       Welcome, <span id="userName"></span>
-      <span class="badge" id="rankBadge"></span>
+      <span class="badge" id="roleBadge"></span>
     </div>
     <p class="muted">
-      Your StudentStreamHQ account is active. This is your creator dashboard.
+      This is your official StudentStreamHQ Creator Dashboard.
     </p>
   </div>
 
-  <!-- EARNINGS -->
-  <div class="card hidden" id="earningsCard">
-    <div class="big-title">💰 Earnings Center</div>
+  <!-- DASHBOARD MODULES -->
+  <div class="card hidden" id="dashboardModules">
+
+    <div class="title">💰 Earnings Center</div>
     <p class="muted">
-      Track monetization, payouts, and revenue splits across StudentStream divisions.
+      Monetization and payouts will appear here once enabled.
     </p>
     <button class="btn">Open Earnings</button>
-  </div>
 
-  <!-- DIVISIONS -->
-  <div class="card hidden" id="divisionCard">
-    <div class="big-title">🏢 Your Divisions</div>
+    <hr style="margin:25px 0; opacity:0.15;">
+
+    <div class="title">🎬 Creator Studio</div>
     <p class="muted">
-      View teams and programs you belong to (SS Films, HQ Staff, Monetization Club).
+      Upload content, manage videos, and access creator tools.
     </p>
-    <button class="btn">Manage Divisions</button>
-  </div>
+    <button class="btn">Open Studio</button>
 
-  <!-- SETTINGS -->
-  <div class="card hidden" id="settingsCard">
-    <div class="big-title">⚙️ Account Settings</div>
+    <hr style="margin:25px 0; opacity:0.15;">
+
+    <div class="title">📊 Analytics</div>
     <p class="muted">
-      Edit your profile, username, preferences, and platform identity.
+      View performance insights, growth, and engagement.
+    </p>
+    <button class="btn">View Analytics</button>
+
+    <hr style="margin:25px 0; opacity:0.15;">
+
+    <div class="title">⚙️ Account Settings</div>
+    <p class="muted">
+      Update profile, username, preferences, and identity.
     </p>
     <button class="btn">Manage Settings</button>
-  </div>
 
-  <!-- SECURITY -->
-  <div class="card hidden" id="securityCard">
-    <div class="big-title">🔒 Security</div>
+    <hr style="margin:25px 0; opacity:0.15;">
+
+    <div class="title">🔒 Security</div>
     <p class="muted">
-      Password updates, login activity, and account protection tools.
+      Password updates, login activity, and account protection.
     </p>
     <button class="btn">Open Security</button>
-  </div>
 
-  <!-- STAFF PANEL -->
-  <div class="card hidden" id="staffPanel">
-    <div class="big-title">🛡️ Staff Admin Panel</div>
-    <p class="muted">
-      This panel is only visible to Staff, Admin, and Owner ranks.
-    </p>
-    <button class="btn">Open Staff Tools</button>
   </div>
 
   <script>
-    /* =======================================
-       STUDENTSTREAMHQ SUPABASE CONNECTION
-    ======================================= */
-
+    // ✅ PUT YOUR REAL KEYS HERE
     const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-    const errorBox = document.getElementById("errorBox");
-
-    function showError(msg) {
-      errorBox.classList.remove("hidden");
-      errorBox.innerText = msg;
-    }
+    const supabase = window.supabase.createClient(
+      supabaseUrl,
+      supabaseKey
+    );
 
     async function loadDashboard() {
-      console.log("Loading dashboard...");
 
-      // 1. Get logged in user
-      const { data: authData, error: authError } = await supabase.auth.getUser();
+      // ✅ AUTH CHECK
+      const { data: authData } = await supabase.auth.getUser();
 
-      if (authError || !authData.user) {
+      if (!authData.user) {
         window.location.href = "login.html";
         return;
       }
 
-      const userId = authData.user.id;
-
-      // 2. Fetch profile
-      const { data: profile, error: profileError } = await supabase
+      // ✅ FETCH PROFILE
+      const { data: profile } = await supabase
         .from("profiles")
-        .select("*")
-        .eq("id", userId)
+        .select("username, full_name, role")
+        .eq("id", authData.user.id)
         .single();
 
-      if (profileError) {
-        showError("Profile fetch failed: " + profileError.message);
-        return;
-      }
+      // ✅ DEFAULT ROLE
+      const role = profile?.role || "member";
 
-      // 3. Fetch permission from staff_permissions
-      const { data: perm, error: permError } = await supabase
-        .from("staff_permissions")
-        .select("can_access_staff_panel")
-        .eq("role", profile.role)
-        .single();
-
-      if (permError) {
-        showError("Permission fetch failed: " + permError.message);
-        return;
-      }
-
-      /* =======================================
-         SUCCESS → SHOW DASHBOARD
-      ======================================= */
-
+      // ✅ SHOW DASHBOARD
       document.getElementById("loadingCard").classList.add("hidden");
+      document.getElementById("welcomeCard").classList.remove("hidden");
+      document.getElementById("dashboardModules").classList.remove("hidden");
 
-      document.getElementById("profileCard").classList.remove("hidden");
-      document.getElementById("earningsCard").classList.remove("hidden");
-      document.getElementById("divisionCard").classList.remove("hidden");
-      document.getElementById("settingsCard").classList.remove("hidden");
-      document.getElementById("securityCard").classList.remove("hidden");
-
+      // ✅ DISPLAY USER
       document.getElementById("userName").innerText =
-        profile.full_name || profile.username;
+        profile?.full_name || profile?.username || "Creator";
 
-      document.getElementById("rankBadge").innerText =
-        profile.role.toUpperCase();
-
-      // Staff Panel only if allowed
-      if (perm.can_access_staff_panel) {
-        document.getElementById("staffPanel").classList.remove("hidden");
-      }
+      document.getElementById("roleBadge").innerText =
+        role.toUpperCase();
     }
 
     async function logout() {
