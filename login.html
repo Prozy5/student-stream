@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login • StudentStreamHQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- SEO -->
+  <meta name="description" content="Login to StudentStreamHQ — the creator platform for students, media, and next-gen communities." />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0d1b3a, #05070c);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      overflow: hidden;
+    }
+
+    /* BACKGROUND GLOW */
+    .glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(77,163,255,.25), transparent 70%);
+      filter: blur(80px);
+      top: -200px;
+      left: -200px;
+    }
+
+    .glow2 {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(60,255,122,.18), transparent 70%);
+      filter: blur(90px);
+      bottom: -250px;
+      right: -250px;
+    }
+
+    /* LOGIN WRAPPER */
+    .loginWrap {
+      width: 100%;
+      max-width: 430px;
+      padding: 40px;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(22px);
+      z-index: 10;
+      box-shadow: 0 0 60px rgba(0,0,0,.35);
+    }
+
+    /* TITLE */
+    .brand {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .brand h1 {
+      font-size: 46px;
+      font-weight: 950;
+      letter-spacing: -.5px;
+    }
+
+    .brand h1 span {
+      color: #4da3ff;
+    }
+
+    .brand p {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: .65;
+      line-height: 1.5;
+    }
+
+    /* FORM */
+    label {
+      display: block;
+      margin-top: 18px;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: .75;
+    }
+
+    input {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      color: white;
+      outline: none;
+      font-size: 14px;
+      transition: .2s;
+    }
+
+    input:focus {
+      border-color: rgba(77,163,255,.55);
+      box-shadow: 0 0 0 2px rgba(77,163,255,.15);
+    }
+
+    /* BUTTON */
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 15px;
+      background: linear-gradient(90deg,#4da3ff,#3cff7a);
+      color: black;
+      transition: .2s;
+    }
+
+    button:hover {
+      opacity: .92;
+      transform: scale(1.01);
+    }
+
+    /* EXTRA LINKS */
+    .extras {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      opacity: .6;
+    }
+
+    .extras a {
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      opacity: .75;
+    }
+
+    .extras a:hover {
+      opacity: 1;
+    }
+
+    /* STATUS */
+    .status {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 14px;
+      opacity: .75;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Glow Background -->
+  <div class="glow"></div>
+  <div class="glow2"></div>
+
+  <!-- Login Box -->
+  <div class="loginWrap">
+
+    <div class="brand">
+      <h1>StudentStream<span>HQ</span></h1>
+      <p>
+        Login to your creator platform.<br>
+        DevForum, SS:Watch, Originals, Monetization — all in one account.
+      </p>
+    </div>
+
+    <!-- Login Form -->
+    <label>Email</label>
+    <input id="email" type="email" placeholder="you@studentstream.com">
+
+    <label>Password</label>
+    <input id="password" type="password" placeholder="••••••••">
+
+    <button onclick="loginUser()">Login</button>
+
+    <div class="status" id="statusText"></div>
+
+    <div class="extras">
+      <br>
+      New here? <a href="#">Create Account</a><br><br>
+      <a href="/devforum">Back to DevForum</a>
+    </div>
+
+  </div>
+
+  <!-- Supabase Login Script -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+    const supabase = createClient(
+      "https://iabzmoxzbqzcqgypxctr.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+    );
+
+    window.loginUser = async function () {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const status = document.getElementById("statusText");
+
+      if (!email || !password) {
+        status.textContent = "⚠️ Please enter email + password.";
+        return;
+      }
+
+      status.textContent = "Logging in...";
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        status.textContent = "❌ Login failed: " + error.message;
+        return;
+      }
+
+      status.textContent = "✅ Welcome back.";
+
+      setTimeout(() => {
+        window.location.href = "/devforum";
+      }, 1000);
+    };
+  </script>
+
+</body>
+</html>
