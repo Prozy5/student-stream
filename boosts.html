@@ -17,88 +17,179 @@
       background: radial-gradient(circle at top, #081428, #05070c);
       color: white;
       min-height: 100vh;
-      padding: 50px 20px;
+      padding: 60px 20px;
       text-align: center;
     }
 
-    h1 {
-      font-size: 46px;
-      font-weight: 950;
+    /* HERO */
+    .hero {
+      max-width: 850px;
+      margin: auto;
+      padding: 45px 25px;
+      border-radius: 28px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 0 90px rgba(0,0,0,.40);
     }
 
-    p {
+    h1 {
+      font-size: 52px;
+      font-weight: 950;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
       opacity: .75;
-      margin-top: 12px;
-      font-size: 16px;
-      max-width: 650px;
+      margin-top: 14px;
+      font-size: 17px;
+      line-height: 1.7;
+      max-width: 700px;
       margin-left: auto;
       margin-right: auto;
-      line-height: 1.6;
     }
 
+    .highlight {
+      color: #4da3ff;
+      font-weight: 850;
+    }
+
+    /* HOW IT WORKS */
+    .steps {
+      margin-top: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .step {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      width: 220px;
+      text-align: left;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .step span {
+      font-size: 13px;
+      opacity: .7;
+      line-height: 1.4;
+    }
+
+    /* BOOST GRID */
     .boostGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-      margin-top: 50px;
-      max-width: 900px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 60px;
+      max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
     }
 
     .boostCard {
-      padding: 26px;
-      border-radius: 22px;
+      padding: 30px;
+      border-radius: 24px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.10);
       transition: .25s;
       box-shadow: 0 0 60px rgba(0,0,0,.35);
+      text-align: left;
+      position: relative;
     }
 
     .boostCard:hover {
-      transform: translateY(-6px);
-      border-color: rgba(77,163,255,.45);
+      transform: translateY(-7px);
+      border-color: rgba(77,163,255,.50);
     }
 
     .boostCard h2 {
       font-size: 28px;
-      font-weight: 900;
+      font-weight: 950;
     }
 
-    .boostCard .tag {
-      margin-top: 8px;
+    .tag {
+      margin-top: 6px;
       font-size: 14px;
-      opacity: .7;
+      opacity: .75;
     }
 
     .boostCard ul {
       margin-top: 16px;
-      text-align: left;
       font-size: 14px;
-      opacity: .8;
-      line-height: 1.6;
+      opacity: .85;
+      line-height: 1.7;
       padding-left: 18px;
     }
 
     .boostCard a {
       display: block;
-      margin-top: 18px;
-      padding: 13px;
-      border-radius: 14px;
-      font-weight: 850;
+      margin-top: 22px;
+      padding: 14px;
+      border-radius: 16px;
+      font-weight: 900;
       text-decoration: none;
-      background: rgba(77,163,255,.18);
-      border: 1px solid rgba(77,163,255,.35);
+      text-align: center;
+      background: rgba(77,163,255,.20);
+      border: 1px solid rgba(77,163,255,.40);
       color: white;
       transition: .2s;
     }
 
     .boostCard a:hover {
-      background: rgba(77,163,255,.30);
+      background: rgba(77,163,255,.35);
     }
 
+    /* POPULAR BADGE */
+    .badge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255,215,0,.18);
+      border: 1px solid rgba(255,215,0,.40);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+      color: gold;
+    }
+
+    /* FAQ */
+    .faq {
+      margin-top: 80px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      padding: 35px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .faq h3 {
+      font-size: 22px;
+      font-weight: 950;
+      margin-bottom: 18px;
+    }
+
+    .faq p {
+      margin-bottom: 14px;
+      font-size: 14px;
+      opacity: .75;
+      line-height: 1.6;
+    }
+
+    /* FOOTER NOTE */
     .note {
-      margin-top: 55px;
+      margin-top: 50px;
       font-size: 13px;
       opacity: .55;
     }
@@ -107,68 +198,112 @@
 
 <body>
 
-  <h1>⚡ StudentStream Boosts</h1>
+  <!-- HERO -->
+  <div class="hero">
+    <h1>⚡ StudentStream Boosts</h1>
 
-  <p>
-    Boosts are paid promotions that help your work get discovered across the
-    StudentStream platform — through featured placement, banners, and visibility
-    upgrades.
-  </p>
+    <p class="subtitle">
+      Boosts are paid promotions that help your work get discovered across the
+      <span class="highlight">StudentStream platform</span> through featured placement,
+      banners, and visibility upgrades.
+    </p>
 
+    <!-- HOW IT WORKS -->
+    <div class="steps">
+      <div class="step">
+        <strong>1. Choose a Boost</strong>
+        <span>Select the promotion tier that fits your goal.</span>
+      </div>
+
+      <div class="step">
+        <strong>2. Checkout Securely</strong>
+        <span>Payments are processed safely through Stripe.</span>
+      </div>
+
+      <div class="step">
+        <strong>3. Get Featured</strong>
+        <span>Your work becomes more visible across StudentStream.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOST PACKAGES -->
   <div class="boostGrid">
 
     <!-- BOOST 1 -->
     <div class="boostCard">
       <h2>$5 Starter Boost</h2>
-      <div class="tag">Quick platform visibility</div>
+      <div class="tag">Quick platform exposure</div>
 
       <ul>
-        <li>Featured creator highlight</li>
-        <li>Boosted discovery placement</li>
-        <li>Perfect for new uploads</li>
+        <li>Creator highlight placement</li>
+        <li>Boosted discovery visibility</li>
+        <li>Best for new uploads</li>
       </ul>
 
       <a href="https://buy.stripe.com/14A7sLfbk3xQapB9vQ8Ra00">
-        Activate $5 Boost →
+        Activate Starter Boost →
       </a>
     </div>
 
     <!-- BOOST 2 -->
     <div class="boostCard">
+      <span class="badge">Most Popular</span>
       <h2>$10 Growth Boost</h2>
       <div class="tag">More reach + featured exposure</div>
 
       <ul>
         <li>Priority placement on popular pages</li>
-        <li>Boosted platform impressions</li>
-        <li>Best for serious creators</li>
+        <li>Higher impressions across the platform</li>
+        <li>Perfect for creators & brands</li>
       </ul>
 
       <a href="https://buy.stripe.com/bJe00jaV46K255h5fA8Ra03">
-        Activate $10 Boost →
+        Activate Growth Boost →
       </a>
     </div>
 
     <!-- BOOST 3 -->
     <div class="boostCard">
-      <h2>$25 Platform Mega Boost</h2>
-      <div class="tag">Maximum exposure upgrade</div>
+      <h2>$25 Mega Boost</h2>
+      <div class="tag">Maximum visibility upgrade</div>
 
       <ul>
         <li>Top-level feature banners</li>
         <li>Strongest reach across StudentStream</li>
-        <li>Ideal for launches + brands</li>
+        <li>Ideal for launches + serious promotion</li>
       </ul>
 
       <a href="https://buy.stripe.com/bJe00jaV46K255h5fA8Ra03">
-        Activate $25 Mega Boost →
+        Activate Mega Boost →
       </a>
     </div>
 
   </div>
 
+  <!-- FAQ -->
+  <div class="faq">
+    <h3>Boosts FAQ</h3>
+
+    <p><b>What am I paying for?</b><br>
+      Boosts are promotional services that increase visibility for your work across StudentStream.
+    </p>
+
+    <p><b>Is this a donation?</b><br>
+      No — Boosts are paid marketing placements, similar to promoted posts or ads.
+    </p>
+
+    <p><b>How long does it take to activate?</b><br>
+      Most Boosts activate shortly after checkout while the platform is expanding.
+    </p>
+
+    <p><b>Do I need Stripe?</b><br>
+      No — payments are handled directly through Stripe Checkout.
+    </p>
+  </div>
+
   <div class="note">
-    Boosts are promotional services for creators and brands. No physical goods are sold.
+    Boosts are promotional services for creators, brands, and businesses. No physical goods are sold.
   </div>
 
 </body>
