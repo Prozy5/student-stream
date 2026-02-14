@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>StudentStreamHQ Creator Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudentStreamHQ Dashboard</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #0c1a2d, #05070c);
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, #0b1c35, #05080f);
       color: white;
       padding: 25px;
     }
@@ -29,66 +30,97 @@
     }
 
     header h1 span {
-      color: #3fa9ff;
+      color: #4aa3ff;
     }
 
-    .logout-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
+    .logout {
       padding: 10px 18px;
-      border-radius: 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
       color: white;
       cursor: pointer;
     }
 
     .card {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 22px;
+      border-radius: 25px;
       padding: 22px;
       margin-bottom: 18px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.35);
+      box-shadow: 0 0 40px rgba(0,0,0,0.35);
     }
 
-    .profile-name {
-      font-size: 34px;
+    .profileTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .username {
+      font-size: 32px;
       font-weight: 900;
     }
 
-    .rank-badge {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 6px 14px;
+    .badge {
+      padding: 8px 14px;
       border-radius: 18px;
+      font-weight: 700;
       font-size: 14px;
-      background: rgba(63,169,255,0.2);
-      border: 1px solid rgba(63,169,255,0.35);
+      background: rgba(74,163,255,0.15);
+      border: 1px solid rgba(74,163,255,0.35);
+      color: #4aa3ff;
     }
 
-    .subtitle {
+    .subtext {
+      margin-top: 8px;
       opacity: 0.7;
-      margin-top: 6px;
-      font-size: 15px;
+      font-size: 14px;
+    }
+
+    .sectionTitle {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .desc {
+      opacity: 0.65;
+      font-size: 14px;
+      line-height: 1.4;
     }
 
     .btn {
-      margin-top: 15px;
+      margin-top: 14px;
       display: inline-block;
-      padding: 10px 18px;
+      padding: 10px 16px;
       border-radius: 18px;
       border: none;
       cursor: pointer;
-      font-weight: bold;
-      background: rgba(63,169,255,0.25);
+      font-weight: 700;
+      background: rgba(74,163,255,0.22);
       color: white;
     }
 
     .btn:hover {
-      background: rgba(63,169,255,0.4);
+      background: rgba(74,163,255,0.35);
     }
 
     .hidden {
       display: none;
+    }
+
+    .loadingText {
+      font-size: 22px;
+      font-weight: 800;
+      opacity: 0.7;
+    }
+
+    footer {
+      margin-top: 25px;
+      opacity: 0.3;
+      font-size: 12px;
+      text-align: center;
     }
   </style>
 </head>
@@ -98,61 +130,89 @@
   <!-- HEADER -->
   <header>
     <h1>StudentStream<span>HQ</span> Creator Hub</h1>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <button class="logout" onclick="logout()">Logout</button>
   </header>
 
   <!-- PROFILE CARD -->
-  <div class="card">
-    <div class="profile-name" id="username">Loading...</div>
-    <div class="rank-badge" id="roleBadge">Fetching rank...</div>
-    <div class="subtitle" id="joinedDate">Loading profile...</div>
+  <div class="card" id="profileCard">
+    <div class="loadingText" id="loadingState">
+      Loading your Creator Hub...
+    </div>
+
+    <div id="profileInfo" class="hidden">
+      <div class="profileTop">
+        <div>
+          <div class="username" id="username">---</div>
+          <div class="subtext" id="joinedDate">Joined: ---</div>
+        </div>
+
+        <div class="badge" id="roleBadge">---</div>
+      </div>
+
+      <div class="subtext" style="margin-top:14px;">
+        Welcome back to StudentStreamHQ. This is your creator management dashboard.
+      </div>
+    </div>
   </div>
 
   <!-- EARNINGS -->
   <div class="card">
-    <h2>💰 Earnings Center</h2>
-    <p class="subtitle">
-      Monetization is not active yet. Creator payouts will appear here once enabled.
-    </p>
-    <button class="btn">Open Earnings</button>
+    <div class="sectionTitle">💰 Earnings Center</div>
+    <div class="desc">
+      Track monetization, payouts, and revenue splits across StudentStream divisions.
+    </div>
+    <button class="btn" onclick="alert('Earnings page coming next')">
+      Open Earnings
+    </button>
   </div>
 
   <!-- DIVISIONS -->
   <div class="card">
-    <h2>🏢 Your Divisions</h2>
-    <p class="subtitle">
-      Teams, programs, and memberships connected to your account.
-    </p>
-    <button class="btn">Manage Divisions</button>
+    <div class="sectionTitle">🏢 Your Divisions</div>
+    <div class="desc">
+      View what teams and programs you belong to (SS Films, HQ Staff, Monetization Club).
+    </div>
+    <button class="btn" onclick="alert('Divisions page coming next')">
+      Manage Divisions
+    </button>
   </div>
 
-  <!-- ACCOUNT SETTINGS -->
+  <!-- SETTINGS -->
   <div class="card">
-    <h2>⚙️ Account Settings</h2>
-    <p class="subtitle">
+    <div class="sectionTitle">⚙️ Account Settings</div>
+    <div class="desc">
       Edit your profile, username, preferences, and platform identity.
-    </p>
-    <button class="btn">Manage Settings</button>
+    </div>
+    <button class="btn" onclick="alert('Settings page coming next')">
+      Manage Settings
+    </button>
   </div>
 
   <!-- SECURITY -->
   <div class="card">
-    <h2>🔒 Security</h2>
-    <p class="subtitle">
-      Password, login protection, connected devices, and recovery options.
-    </p>
-    <button class="btn">Open Security</button>
+    <div class="sectionTitle">🔒 Security</div>
+    <div class="desc">
+      Password updates, login activity, and account protection tools.
+    </div>
+    <button class="btn" onclick="alert('Security page coming next')">
+      Open Security
+    </button>
   </div>
 
-  <!-- STAFF PANEL (ONLY IF PERMITTED) -->
+  <!-- STAFF PANEL -->
   <div class="card hidden" id="staffPanel">
-    <h2>🛡 Staff Admin Panel</h2>
-    <p class="subtitle">
-      This panel is only visible to Staff, Admins, and Owners.
-    </p>
-    <button class="btn">Enter Staff Panel</button>
+    <div class="sectionTitle">🛡 Staff Admin Panel</div>
+    <div class="desc">
+      Restricted access. Manage users, divisions, reports, and platform moderation.
+    </div>
+    <button class="btn" onclick="alert('Staff panel page coming next')">
+      Enter Staff Panel
+    </button>
   </div>
 
+  <footer>
+    StudentStreamHQ Platform • Creator Hub Dashboard v2
+  </footer>
 
   <script>
     // ✅ Supabase Config
@@ -161,12 +221,8 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
     );
 
-    // Load Dashboard Profile
     async function loadDashboard() {
-
-      // 1. Get Logged In User
-      const { data: authData, error: authError } =
-        await supabase.auth.getUser();
+      const { data: authData } = await supabase.auth.getUser();
 
       if (!authData?.user) {
         window.location.href = "login.html";
@@ -175,40 +231,42 @@
 
       const userId = authData.user.id;
 
-      // 2. Get Profile Info
-      const { data: profile, error: profileError } =
-        await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userId)
-          .single();
+      // Fetch Profile
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
 
-      if (profileError) {
-        alert("Profile failed: " + profileError.message);
+      if (error || !profile) {
+        document.getElementById("loadingState").innerText =
+          "Profile missing. Run SQL fix.";
         return;
       }
 
+      // Show Profile UI
+      document.getElementById("loadingState").classList.add("hidden");
+      document.getElementById("profileInfo").classList.remove("hidden");
+
       document.getElementById("username").innerText = profile.username;
       document.getElementById("roleBadge").innerText =
-        "Rank: " + profile.role.toUpperCase();
+        "👑 " + profile.role.toUpperCase();
 
       document.getElementById("joinedDate").innerText =
         "Joined: " + new Date(profile.created_at).toLocaleDateString();
 
-      // 3. Check Staff Permissions
-      const { data: permission, error: permError } =
-        await supabase
-          .from("staff_permissions")
-          .select("can_access_staff_panel")
-          .eq("role", profile.role)
-          .single();
+      // Staff Permission Check
+      const { data: perm } = await supabase
+        .from("staff_permissions")
+        .select("*")
+        .eq("role", profile.role)
+        .single();
 
-      if (!permError && permission?.can_access_staff_panel) {
+      if (perm?.can_access_staff_panel) {
         document.getElementById("staffPanel").classList.remove("hidden");
       }
     }
 
-    // Logout
     async function logout() {
       await supabase.auth.signOut();
       window.location.href = "login.html";
