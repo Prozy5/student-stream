@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Account Settings • StudentStreamHQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui;
+      background: radial-gradient(circle at top, #081428, #05070c);
+      color: white;
+    }
+
+    header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .backBtn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.05);
+      color: white;
+      cursor: pointer;
+    }
+
+    .wrap {
+      max-width: 650px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      padding: 26px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-size: 13px;
+      opacity: .75;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: white;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: rgba(77,163,255,.5);
+      box-shadow: 0 0 0 2px rgba(77,163,255,.15);
+    }
+
+    .saveBtn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 15px;
+      background: linear-gradient(90deg,#4da3ff,#3cff7a);
+      color: black;
+    }
+
+    .saveBtn:hover {
+      opacity: .92;
+    }
+
+    .status {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 14px;
+      opacity: .75;
+    }
+
+    .roleTag {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      margin-top: 8px;
+    }
+
+    .dangerBtn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 13px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,0,0,.25);
+      background: rgba(255,0,0,.08);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>⚙️ Account Settings</h1>
+  <button class="backBtn" onclick="location.href='/dashboard.html'">
+    ← Dashboard
+  </button>
+</header>
+
+<div class="wrap">
+
+  <!-- PROFILE SETTINGS -->
+  <div class="card">
+    <h2>Profile Info</h2>
+
+    <label>Email (locked)</label>
+    <input id="email" disabled />
+
+    <label>Username</label>
+    <input id="username" placeholder="yourusername" />
+
+    <label>Display Name</label>
+    <input id="displayName" placeholder="Your Name" />
+
+    <label>Your Role</label>
+    <div class="roleTag" id="roleTag">Loading...</div>
+
+    <button class="saveBtn" onclick="saveProfile()">
+      Save Changes
+    </button>
+
+    <div class="status" id="statusText"></div>
+  </div>
+
+  <!-- PASSWORD RESET -->
+  <div class="card">
+    <h2>Password</h2>
+
+    <p style="opacity:.7;font-size:14px;line-height:1.4;">
+      Want to change your password? We'll send you a secure reset email.
+    </p>
+
+    <button class="dangerBtn" onclick="resetPassword()">
+      Send Password Reset Email
+    </button>
+  </div>
+
+</div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  let currentUser;
+
+  async function loadSettings() {
+    const { data: sessionData } = await supabase.auth.getSession();
+    currentUser = sessionData.session?.user;
+
+    if (!currentUser) {
+      location.href = "/login.html";
+      return;
+    }
+
+    document.getElementById("email").value = currentUser.email;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", currentUser.id)
+      .single();
+
+    document.getElementById("username").value = profile.username;
+    document.getElementById("displayName").value = profile.display_name;
+    document.getElementById("roleTag").textContent =
+      profile.role.toUpperCase();
+  }
+
+  loadSettings();
+
+  // SAVE PROFILE
+  window.saveProfile = async function () {
+    const status = document.getElementById("statusText");
+
+    const username = document.getElementById("username").value.trim();
+    const displayName = document.getElementById("displayName").value.trim();
+
+    if (!username) {
+      status.textContent = "⚠️ Username cannot be empty.";
+      return;
+    }
+
+    status.textContent = "Saving...";
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        username,
+        display_name: displayName
+      })
+      .eq("id", currentUser.id);
+
+    if (error) {
+      status.textContent = "❌ Error: " + error.message;
+      return;
+    }
+
+    status.textContent = "✅ Profile updated successfully.";
+  };
+
+  // PASSWORD RESET
+  window.resetPassword = async function () {
+    const status = document.getElementById("statusText");
+
+    status.textContent = "Sending reset email...";
+
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      currentUser.email,
+      {
+        redirectTo: "https://studentstream.online/update-password.html"
+      }
+    );
+
+    if (error) {
+      status.textContent = "❌ Error: " + error.message;
+      return;
+    }
+
+    status.textContent =
+      "✅ Password reset email sent. Check your inbox.";
+  };
+</script>
+
+</body>
+</html>
