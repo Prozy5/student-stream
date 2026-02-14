@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- SEO -->
-  <meta name="description" content="Login to StudentStreamHQ — the creator platform for students, media, and next-gen communities." />
+  <meta name="description"
+    content="Login to StudentStreamHQ — DevForum, SS:Watch, Originals, Monetization, and your full creator dashboard." />
 
   <style>
     * {
@@ -26,48 +27,48 @@
       overflow: hidden;
     }
 
-    /* BACKGROUND GLOW */
+    /* BACKGROUND GLOWS */
     .glow {
       position: absolute;
-      width: 700px;
-      height: 700px;
+      width: 750px;
+      height: 750px;
       background: radial-gradient(circle, rgba(77,163,255,.25), transparent 70%);
-      filter: blur(80px);
-      top: -200px;
-      left: -200px;
+      filter: blur(90px);
+      top: -250px;
+      left: -250px;
     }
 
     .glow2 {
       position: absolute;
-      width: 700px;
-      height: 700px;
+      width: 750px;
+      height: 750px;
       background: radial-gradient(circle, rgba(60,255,122,.18), transparent 70%);
-      filter: blur(90px);
+      filter: blur(95px);
       bottom: -250px;
       right: -250px;
     }
 
-    /* LOGIN WRAPPER */
+    /* LOGIN BOX */
     .loginWrap {
       width: 100%;
-      max-width: 430px;
-      padding: 40px;
-      border-radius: 26px;
+      max-width: 440px;
+      padding: 42px;
+      border-radius: 28px;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
       backdrop-filter: blur(22px);
       z-index: 10;
-      box-shadow: 0 0 60px rgba(0,0,0,.35);
+      box-shadow: 0 0 70px rgba(0,0,0,.45);
     }
 
-    /* TITLE */
+    /* BRAND */
     .brand {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 28px;
     }
 
     .brand h1 {
-      font-size: 46px;
+      font-size: 48px;
       font-weight: 950;
       letter-spacing: -.5px;
     }
@@ -88,7 +89,7 @@
       display: block;
       margin-top: 18px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 750;
       opacity: .75;
     }
 
@@ -106,19 +107,19 @@
     }
 
     input:focus {
-      border-color: rgba(77,163,255,.55);
+      border-color: rgba(77,163,255,.60);
       box-shadow: 0 0 0 2px rgba(77,163,255,.15);
     }
 
     /* BUTTON */
     button {
       width: 100%;
-      margin-top: 24px;
+      margin-top: 26px;
       padding: 14px;
       border-radius: 16px;
       border: none;
       cursor: pointer;
-      font-weight: 900;
+      font-weight: 950;
       font-size: 15px;
       background: linear-gradient(90deg,#4da3ff,#3cff7a);
       color: black;
@@ -130,7 +131,15 @@
       transform: scale(1.01);
     }
 
-    /* EXTRA LINKS */
+    /* STATUS */
+    .status {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 14px;
+      opacity: .75;
+    }
+
+    /* LINKS */
     .extras {
       text-align: center;
       margin-top: 20px;
@@ -141,20 +150,12 @@
     .extras a {
       color: white;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 750;
       opacity: .75;
     }
 
     .extras a:hover {
       opacity: 1;
-    }
-
-    /* STATUS */
-    .status {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 14px;
-      opacity: .75;
     }
   </style>
 </head>
@@ -168,11 +169,12 @@
   <!-- Login Box -->
   <div class="loginWrap">
 
+    <!-- Brand -->
     <div class="brand">
       <h1>StudentStream<span>HQ</span></h1>
       <p>
-        Login to your creator platform.<br>
-        DevForum, SS:Watch, Originals, Monetization — all in one account.
+        One login for everything.<br>
+        DevForum • SS:Watch • Originals • Monetization • Dashboard
       </p>
     </div>
 
@@ -189,21 +191,41 @@
 
     <div class="extras">
       <br>
-      New here? <a href="#">Create Account</a><br><br>
-      <a href="/devforum">Back to DevForum</a>
+      New here? <a href="/signup.html">Create Account</a><br><br>
+      <a href="/devforum">← Back to DevForum</a>
     </div>
 
   </div>
 
-  <!-- Supabase Login Script -->
+  <!-- Supabase Auth Script -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     const supabase = createClient(
       "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
     );
 
+    /* ✅ Redirect System */
+    const params = new URLSearchParams(window.location.search);
+
+    /* If user came from somewhere */
+    const nextPage = params.get("next");
+
+    /* Default destination */
+    const defaultDashboard = "/dashboard.html";
+
+    /* Final redirect target */
+    const redirectTo = nextPage || defaultDashboard;
+
+    /* ✅ Auto-skip login if already signed in */
+    const { data: sessionData } = await supabase.auth.getSession();
+
+    if (sessionData.session) {
+      window.location.href = redirectTo;
+    }
+
+    /* ✅ Login Function */
     window.loginUser = async function () {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
@@ -216,7 +238,7 @@
 
       status.textContent = "Logging in...";
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
@@ -226,11 +248,11 @@
         return;
       }
 
-      status.textContent = "✅ Welcome back.";
+      status.textContent = "✅ Welcome back to StudentStreamHQ.";
 
       setTimeout(() => {
-        window.location.href = "/devforum";
-      }, 1000);
+        window.location.href = redirectTo;
+      }, 900);
     };
   </script>
 
