@@ -1,185 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Boosts • StudentStreamHQ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui;
-    }
-
-    body {
-      background: radial-gradient(circle at top, #081428, #05070c);
-      color: white;
-      min-height: 100vh;
-    }
-
-    header {
-      padding: 22px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    header h1 {
-      font-size: 20px;
-      font-weight: 900;
-    }
-
-    header h1 span {
-      color: #4da3ff;
-    }
-
-    .wrap {
-      max-width: 850px;
-      margin: auto;
-      padding: 45px 22px;
-    }
-
-    .hero {
-      padding: 35px;
-      border-radius: 26px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 0 80px rgba(0,0,0,.35);
-      text-align: center;
-    }
-
-    .hero h2 {
-      font-size: 38px;
-      font-weight: 950;
-    }
-
-    .hero p {
-      margin-top: 12px;
-      opacity: .7;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .boostGrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 30px;
-    }
-
-    .boostBtn {
-      padding: 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: white;
-      font-weight: 800;
-      cursor: pointer;
-      transition: .2s;
-      font-size: 16px;
-    }
-
-    .boostBtn:hover {
-      transform: translateY(-4px);
-      border-color: rgba(77,163,255,.45);
-    }
-
-    .customBox {
-      margin-top: 25px;
-      padding: 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      outline: none;
-      margin-top: 10px;
-      font-size: 15px;
-    }
-
-    .sendBtn {
-      margin-top: 15px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      background: #4da3ff;
-      font-weight: 900;
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    .sendBtn:hover {
-      opacity: .85;
-    }
-
-    .back {
-      display: inline-block;
-      margin-top: 22px;
-      opacity: .6;
-      text-decoration: none;
-      color: white;
-    }
-  </style>
+  <title>Send a Boost ⚡</title>
 </head>
+<body style="background:#05070c;color:white;font-family:system-ui;text-align:center;padding:60px;">
 
-<body>
+  <h1>⚡ Send a Boost</h1>
+  <p>Support your favorite creator on StudentStreamHQ.</p>
 
-<header>
-  <h1>StudentStream<span>HQ</span></h1>
-</header>
+  <form action="boost-checkout.php" method="POST">
+    <input type="hidden" name="creator_id" value="CREATOR_UUID_HERE">
 
-<div class="wrap">
+    <label>Your name:</label><br>
+    <input name="supporter" required><br><br>
 
-  <div class="hero">
-    <h2>⚡ Boost a Creator</h2>
-    <p>
-      Boosts are instant donations that support creators, brands, artists,
-      and upcoming entrepreneurs inside StudentStreamHQ.
-    </p>
+    <label>Boost Amount ($):</label><br>
+    <input name="amount" type="number" min="1" value="5"><br><br>
 
-    <!-- Boost Buttons -->
-    <div class="boostGrid">
-      <button class="boostBtn" onclick="boost(5)">🔥 $5 Boost</button>
-      <button class="boostBtn" onclick="boost(10)">🚀 $10 Boost</button>
-      <button class="boostBtn" onclick="boost(25)">💎 $25 Boost</button>
-      <button class="boostBtn" onclick="boost(50)">👑 $50 Boost</button>
-    </div>
-
-    <!-- Custom Boost -->
-    <div class="customBox">
-      <h3 style="font-weight:900;">Custom Boost</h3>
-      <input id="customAmount" type="number" placeholder="Enter amount (ex: 15)" />
-      <button class="sendBtn" onclick="customBoost()">Send Boost →</button>
-    </div>
-
-    <a class="back" href="/dashboard.html">← Back to Dashboard</a>
-  </div>
-
-</div>
-
-<script>
-  function boost(amount) {
-    window.location.href = "/boost-checkout.php?amount=" + amount;
-  }
-
-  function customBoost() {
-    const amt = document.getElementById("customAmount").value;
-    if (!amt || amt < 1) {
-      alert("Enter a valid amount.");
-      return;
-    }
-    boost(amt);
-  }
-</script>
+    <button type="submit">
+      Send Boost ⚡
+    </button>
+  </form>
 
 </body>
 </html>
