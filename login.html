@@ -5,156 +5,154 @@
   <title>Login • StudentStreamHQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- SEO -->
-  <meta name="description"
-    content="Login to StudentStreamHQ — DevForum, SS:Watch, Originals, Monetization, and your full creator dashboard." />
-
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #0d1b3a, #05070c);
+      background: radial-gradient(circle at top, #08142c, #02030a);
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       color: white;
       overflow: hidden;
     }
 
-    /* BACKGROUND GLOWS */
-    .glow {
+    /* Cinematic glow background */
+    .blurOrb {
       position: absolute;
-      width: 750px;
-      height: 750px;
-      background: radial-gradient(circle, rgba(77,163,255,.25), transparent 70%);
-      filter: blur(90px);
-      top: -250px;
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(60,140,255,0.25), transparent 70%);
+      filter: blur(120px);
+      top: -300px;
       left: -250px;
     }
 
-    .glow2 {
+    .blurOrb2 {
       position: absolute;
-      width: 750px;
-      height: 750px;
-      background: radial-gradient(circle, rgba(60,255,122,.18), transparent 70%);
-      filter: blur(95px);
-      bottom: -250px;
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(0,255,170,0.18), transparent 70%);
+      filter: blur(130px);
+      bottom: -320px;
       right: -250px;
     }
 
-    /* LOGIN BOX */
-    .loginWrap {
+    /* Login Card */
+    .loginBox {
       width: 100%;
-      max-width: 440px;
-      padding: 42px;
+      max-width: 470px;
+      padding: 50px 45px;
       border-radius: 28px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      backdrop-filter: blur(22px);
-      z-index: 10;
-      box-shadow: 0 0 70px rgba(0,0,0,.45);
-    }
-
-    /* BRAND */
-    .brand {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(25px);
+      box-shadow: 0 0 80px rgba(0,0,0,0.55);
+      z-index: 5;
       text-align: center;
-      margin-bottom: 28px;
     }
 
-    .brand h1 {
-      font-size: 48px;
+    .logoTitle {
+      font-size: 52px;
       font-weight: 950;
-      letter-spacing: -.5px;
+      letter-spacing: -1px;
     }
 
-    .brand h1 span {
-      color: #4da3ff;
+    .logoTitle span {
+      color: #3c8cff;
     }
 
-    .brand p {
+    .subtitle {
       margin-top: 10px;
-      font-size: 14px;
-      opacity: .65;
-      line-height: 1.5;
+      font-size: 15px;
+      opacity: 0.7;
+      line-height: 1.6;
     }
 
-    /* FORM */
+    .subtitle strong {
+      opacity: 0.95;
+    }
+
+    /* Form Inputs */
+    .field {
+      text-align: left;
+      margin-top: 22px;
+    }
+
     label {
-      display: block;
-      margin-top: 18px;
       font-size: 13px;
-      font-weight: 750;
-      opacity: .75;
+      font-weight: 700;
+      opacity: 0.75;
     }
 
     input {
       width: 100%;
-      margin-top: 8px;
-      padding: 14px;
+      margin-top: 9px;
+      padding: 15px;
       border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.03);
       color: white;
+      font-size: 15px;
       outline: none;
-      font-size: 14px;
-      transition: .2s;
+      transition: 0.25s;
     }
 
     input:focus {
-      border-color: rgba(77,163,255,.60);
-      box-shadow: 0 0 0 2px rgba(77,163,255,.15);
+      border-color: rgba(60,140,255,0.65);
+      box-shadow: 0 0 0 3px rgba(60,140,255,0.18);
     }
 
-    /* BUTTON */
-    button {
+    /* Button */
+    .loginBtn {
       width: 100%;
-      margin-top: 26px;
-      padding: 14px;
-      border-radius: 16px;
+      margin-top: 30px;
+      padding: 15px;
+      border-radius: 18px;
       border: none;
       cursor: pointer;
-      font-weight: 950;
-      font-size: 15px;
-      background: linear-gradient(90deg,#4da3ff,#3cff7a);
+      font-weight: 900;
+      font-size: 16px;
+      background: linear-gradient(90deg, #3c8cff, #00ffae);
       color: black;
-      transition: .2s;
+      transition: 0.25s;
     }
 
-    button:hover {
-      opacity: .92;
-      transform: scale(1.01);
+    .loginBtn:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.55);
     }
 
-    /* STATUS */
+    /* Status Text */
     .status {
-      margin-top: 14px;
-      text-align: center;
+      margin-top: 16px;
       font-size: 14px;
-      opacity: .75;
+      opacity: 0.8;
+      min-height: 20px;
     }
 
-    /* LINKS */
-    .extras {
-      text-align: center;
-      margin-top: 20px;
+    /* Links */
+    .links {
+      margin-top: 28px;
       font-size: 13px;
-      opacity: .6;
+      opacity: 0.65;
     }
 
-    .extras a {
+    .links a {
       color: white;
+      font-weight: 700;
       text-decoration: none;
-      font-weight: 750;
-      opacity: .75;
+      opacity: 0.75;
     }
 
-    .extras a:hover {
+    .links a:hover {
       opacity: 1;
     }
   </style>
@@ -162,77 +160,74 @@
 
 <body>
 
-  <!-- Glow Background -->
-  <div class="glow"></div>
-  <div class="glow2"></div>
+  <div class="blurOrb"></div>
+  <div class="blurOrb2"></div>
 
-  <!-- Login Box -->
-  <div class="loginWrap">
+  <div class="loginBox">
 
-    <!-- Brand -->
-    <div class="brand">
-      <h1>StudentStream<span>HQ</span></h1>
-      <p>
-        One login for everything.<br>
-        DevForum • SS:Watch • Originals • Monetization • Dashboard
-      </p>
+    <div class="logoTitle">
+      StudentStream<span>HQ</span>
     </div>
 
-    <!-- Login Form -->
-    <label>Email</label>
-    <input id="email" type="email" placeholder="you@studentstream.com">
+    <div class="subtitle">
+      One account for the entire platform.<br>
+      <strong>SS:Watch • DevForum • Studio • Creator Hub • More</strong>
+    </div>
 
-    <label>Password</label>
-    <input id="password" type="password" placeholder="••••••••">
+    <!-- Email -->
+    <div class="field">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="you@studentstream.com">
+    </div>
 
-    <button onclick="loginUser()">Login</button>
+    <!-- Password -->
+    <div class="field">
+      <label>Password</label>
+      <input id="password" type="password" placeholder="••••••••••••">
+    </div>
+
+    <!-- Login Button -->
+    <button class="loginBtn" onclick="loginUser()">
+      Login to StudentStreamHQ
+    </button>
 
     <div class="status" id="statusText"></div>
 
-    <div class="extras">
-      <br>
-      New here? <a href="/signup.html">Create Account</a><br><br>
-      <a href="/devforum">← Back to DevForum</a>
+    <div class="links">
+      New here? <a href="/signup.html">Create Account</a>
     </div>
 
   </div>
 
-  <!-- Supabase Auth Script -->
+  <!-- Supabase Auth -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     const supabase = createClient(
       "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+      "PASTE_YOUR_ANON_KEY_HERE"
     );
 
-    /* ✅ Redirect System */
+    const status = document.getElementById("statusText");
+
+    // ✅ Smart redirect system
     const params = new URLSearchParams(window.location.search);
+    const nextPage = params.get("next") || "/dashboard.html";
 
-    /* If user came from somewhere */
-    const nextPage = params.get("next");
-
-    /* Default destination */
-    const defaultDashboard = "/dashboard.html";
-
-    /* Final redirect target */
-    const redirectTo = nextPage || defaultDashboard;
-
-    /* ✅ Auto-skip login if already signed in */
+    // ✅ If already logged in, go dashboard
     const { data: sessionData } = await supabase.auth.getSession();
-
     if (sessionData.session) {
-      window.location.href = redirectTo;
+      window.location.href = nextPage;
     }
 
-    /* ✅ Login Function */
+    // Login Function
     window.loginUser = async function () {
+
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const status = document.getElementById("statusText");
 
       if (!email || !password) {
-        status.textContent = "⚠️ Please enter email + password.";
+        status.textContent = "⚠️ Enter your email and password.";
         return;
       }
 
@@ -244,15 +239,15 @@
       });
 
       if (error) {
-        status.textContent = "❌ Login failed: " + error.message;
+        status.textContent = "❌ " + error.message;
         return;
       }
 
-      status.textContent = "✅ Welcome back to StudentStreamHQ.";
+      status.textContent = "✅ Welcome back.";
 
       setTimeout(() => {
-        window.location.href = redirectTo;
-      }, 900);
+        window.location.href = nextPage;
+      }, 700);
     };
   </script>
 
