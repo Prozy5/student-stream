@@ -2,187 +2,298 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>StudentStream Productions — Creative Infrastructure</title>
+  <title>StudentStream Productions — Originals. Spotlight. Legacy.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO -->
-  <meta name="description" content="StudentStream Productions is the production and creative infrastructure division of StudentStream. Home to SS Clips and Studios — powering creators, artists, and brands." />
-  <meta name="keywords" content="StudentStream Productions, creative studio, art marketplace, digital media, SS Clips, Studios" />
+  <meta name="description" content="StudentStream Productions is the creative infrastructure division of StudentStream — home to Studios, SS Clips, and original creator-powered media systems." />
+  <meta name="keywords" content="StudentStream Productions, creator studio, SS Clips, Studios marketplace, digital production" />
 
-  <link rel="canonical" href="https://studentstream.online/ss-productions" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, system-ui, sans-serif;
+    }
 
-  <!-- SCHEMA -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Organization",
-    "name":"StudentStream Productions",
-    "parentOrganization":{
-      "@type":"Organization",
-      "name":"StudentStream",
-      "url":"https://studentstream.online"
-    },
-    "description":"The production and creative infrastructure division of StudentStream."
-  }
-  </script>
+    body {
+      background: radial-gradient(circle at top, #0c1024, #040406);
+      color: white;
+      padding: 24px;
+    }
 
-<style>
-*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
-body{
-margin:0;
-background:radial-gradient(circle at top,#0d0f1f,#040406);
-color:#fff;
-padding:20px;
-}
-.wrapper{max-width:1280px;margin:0 auto;}
-.badge{
-display:inline-block;padding:7px 18px;border-radius:999px;
-font-size:.8rem;background:rgba(122,162,255,.15);
-border:1px solid rgba(122,162,255,.3);color:#7aa2ff;
-}
-.hero{padding:90px 0 60px;}
-.hero h1{font-size:3.4rem;margin:20px 0 18px;line-height:1.05;}
-.hero p{max-width:780px;opacity:.85;font-size:1.05rem;}
-.cta-row{display:flex;gap:16px;margin-top:32px;flex-wrap:wrap;}
-.btn{
-padding:15px 28px;border-radius:999px;font-weight:600;
-border:none;cursor:pointer;font-size:.95rem;
-}
-.btn-primary{
-background:linear-gradient(135deg,#7aa2ff,#6cf2c2);
-color:#040406;
-}
-.btn-outline{
-background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;
-}
-.section{margin-top:90px;}
-.section h2{font-size:2.2rem;margin-bottom:12px;}
-.section p{opacity:.75;max-width:760px;}
-.divisions{
-display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:28px;margin-top:42px;
-}
-.card{
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.12);
-border-radius:26px;padding:34px;
-box-shadow:0 0 50px rgba(0,0,0,.55);
-transition:.3s;
-}
-.card:hover{
-transform:translateY(-6px);
-box-shadow:0 24px 70px rgba(0,0,0,.7);
-}
-.card h3{margin-top:0;font-size:1.6rem;}
-.card p{opacity:.75;}
-.card a{
-display:inline-block;margin-top:22px;
-color:#7aa2ff;font-weight:600;text-decoration:none;
-}
-.pipeline{
-display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:24px;margin-top:36px;
-}
-.step{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.1);
-border-radius:20px;padding:26px;
-}
-.step b{display:block;font-size:1.1rem;margin-bottom:8px;}
-.divider{
-margin:100px 0 70px;height:1px;
-background:linear-gradient(to right,transparent,rgba(255,255,255,.25),transparent);
-}
-.footer{
-margin-top:80px;opacity:.6;font-size:.85rem;
-display:flex;flex-wrap:wrap;gap:16px;
-}
-.footer a{color:#7aa2ff;text-decoration:none;}
-@media(max-width:800px){
-.hero h1{font-size:2.6rem}
-}
-</style>
+    .wrapper {
+      max-width: 1250px;
+      margin: auto;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 100px 0 70px;
+      text-align: left;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: .85rem;
+      background: rgba(122,162,255,.15);
+      border: 1px solid rgba(122,162,255,.3);
+      color: #7aa2ff;
+      font-weight: 700;
+    }
+
+    .hero h1 {
+      font-size: 3.8rem;
+      font-weight: 950;
+      margin: 22px 0 18px;
+      line-height: 1.05;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #7aa2ff, #6cf2c2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      max-width: 780px;
+      font-size: 1.1rem;
+      opacity: .82;
+      line-height: 1.6;
+    }
+
+    .tagline подчерк {
+      margin-top: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      opacity: .7;
+      letter-spacing: .6px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 38px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      border-radius: 999px;
+      font-weight: 750;
+      border: none;
+      cursor: pointer;
+      font-size: .95rem;
+      transition: .25s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7aa2ff, #6cf2c2);
+      color: #040406;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      opacity: .92;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.22);
+      color: white;
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(122,162,255,.6);
+    }
+
+    /* SECTIONS */
+    .section {
+      margin-top: 95px;
+    }
+
+    .section h2 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .section p {
+      opacity: .75;
+      max-width: 760px;
+      line-height: 1.6;
+    }
+
+    /* CARDS */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-top: 45px;
+    }
+
+    .card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 26px;
+      padding: 36px;
+      box-shadow: 0 0 70px rgba(0,0,0,.55);
+      transition: .3s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(122,162,255,.45);
+    }
+
+    .card h3 {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+      font-weight: 900;
+    }
+
+    .card p {
+      opacity: .75;
+      line-height: 1.6;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 22px;
+      color: #7aa2ff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* PIPELINE */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+      margin-top: 40px;
+    }
+
+    .step {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 20px;
+      padding: 26px;
+    }
+
+    .step b {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #6cf2c2;
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 90px;
+      opacity: .55;
+      font-size: .85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer a {
+      color: #7aa2ff;
+      text-decoration: none;
+    }
+
+    @media(max-width: 800px) {
+      .hero h1 {
+        font-size: 2.7rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
 <div class="wrapper">
 
-<!-- HERO -->
-<section class="hero">
-  <span class="badge">Production Division</span>
-  <h1>Creative infrastructure<br>for the next generation.</h1>
-  <p>
-    StudentStream Productions is the production and creative infrastructure
-    division of StudentStream — built to power creators, artists, and brands
-    through content, studios, and scalable systems.
-  </p>
+  <!-- HERO -->
+  <section class="hero">
+    <span class="badge">StudentStream Division</span>
 
-  <div class="cta-row">
-    <a href="/studios"><button class="btn btn-primary">Enter Studios</button></a>
-    <a href="/ss-clips"><button class="btn btn-outline">Explore SS Clips</button></a>
-    <a href="/studios/creators/submit"><button class="btn btn-outline">Submit Your Work</button></a>
-  </div>
-</section>
+    <h1>
+      <span>Originals.</span> Spotlight. Legacy.
+    </h1>
 
-<!-- DIVISIONS -->
-<section class="section">
-  <h2>Our Divisions</h2>
-  <p>
-    StudentStream Productions operates through focused creative verticals —
-    each designed to solve a specific problem in the creator economy.
-  </p>
+    <p>
+      StudentStream Productions is the creative infrastructure division of StudentStream —
+      built to power the next generation of creators through studios, media systems,
+      distribution pipelines, and platform-wide exposure.
+    </p>
 
-  <div class="divisions">
-
-    <div class="card">
-      <h3>SS Clips</h3>
-      <p>
-        A short-form content engine built for speed, reach, and distribution.
-        SS Clips produces and distributes edits, highlights, and viral-ready
-        media across modern platforms.
-      </p>
-      <a href="/ss-clips">Visit SS Clips →</a>
+    <div class="cta-row">
+      <a href="/studios"><button class="btn btn-primary">Enter Studios</button></a>
+      <a href="/ss-clips"><button class="btn btn-outline">Explore SS Clips</button></a>
+      <a href="/boosts.html"><button class="btn btn-outline">Promote Your Work</button></a>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>Studios</h3>
-      <p>
-        A creative studios hub and art marketplace.
-        Studios connects artists, designers, and creators with tools,
-        opportunities, and a place to showcase and monetize work.
-      </p>
-      <a href="/studios">Visit Studios →</a>
+  <!-- DIVISIONS -->
+  <section class="section">
+    <h2>Our Creative Divisions</h2>
+    <p>
+      StudentStream Productions operates through focused verticals —
+      each designed to build opportunity, visibility, and creative legacy.
+    </p>
+
+    <div class="grid">
+
+      <div class="card">
+        <h3>SS Clips</h3>
+        <p>
+          A short-form content engine built for viral speed, reach,
+          and modern creator distribution.  
+          Highlights, edits, promotion-ready media — everywhere.
+        </p>
+        <a href="/ss-clips">Visit SS Clips →</a>
+      </div>
+
+      <div class="card">
+        <h3>Studios</h3>
+        <p>
+          The creator marketplace and showcase hub.  
+          Studios connects artists, designers, editors, and brands
+          through tools, exposure, and monetization infrastructure.
+        </p>
+        <a href="/studios">Visit Studios →</a>
+      </div>
+
     </div>
+  </section>
 
+  <!-- CORE FOCUS -->
+  <section class="section">
+    <h2>What We Build</h2>
+    <p>
+      We don’t just make content.  
+      We build systems that turn creativity into careers.
+    </p>
+
+    <div class="pipeline">
+      <div class="step"><b>Discovery</b>Creators get found through Studios + platform placement.</div>
+      <div class="step"><b>Production</b>Original media is created under StudentStream infrastructure.</div>
+      <div class="step"><b>Distribution</b>SS Clips pushes content across high-traffic networks.</div>
+      <div class="step"><b>Legacy</b>Creators build visibility, reputation, and long-term growth.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    © 2026 StudentStream Productions  
+    <a href="/">StudentStream</a>
+    <a href="/studios/brands/request">Work With Us</a>
+    <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
+    <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
   </div>
-</section>
-
-<!-- PIPELINE -->
-<div class="divider"></div>
-
-<section class="section">
-  <h2>How It Works</h2>
-  <p>
-    We don’t just create content — we build pipelines that turn creativity
-    into real opportunities.
-  </p>
-
-  <div class="pipeline">
-    <div class="step"><b>Discover</b>Talent is discovered through Studios and SS Clips.</div>
-    <div class="step"><b>Create</b>Creators produce content, art, and media with support.</div>
-    <div class="step"><b>Distribute</b>SS Clips pushes content across high-reach platforms.</div>
-    <div class="step"><b>Monetize</b>Opportunities, deals, and marketplace sales follow.</div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<div class="footer">
-  © 2026 StudentStream Productions
-  <a href="/">StudentStream</a>
-  <a href="/studios/brands/request">Work With Us</a>
-  <a href="https://www.instagram.com/studentstreamhq" target="_blank">Instagram</a>
-  <a href="https://www.tiktok.com/@studentstreamhq" target="_blank">TikTok</a>
-</div>
 
 </div>
 </body>
