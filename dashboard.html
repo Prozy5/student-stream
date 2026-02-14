@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StudentStreamHQ Dashboard</title>
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
@@ -82,14 +83,8 @@
       opacity: 0.85;
     }
 
-    .section-title {
-      font-size: 20px;
-      font-weight: 750;
-      margin-bottom: 8px;
-    }
-
     .small {
-      opacity: 0.7;
+      opacity: 0.75;
       line-height: 1.4;
     }
   </style>
@@ -103,120 +98,130 @@
     <button class="logout-btn" onclick="logout()">Logout</button>
   </header>
 
-  <!-- LOADING STATE -->
+  <!-- LOADING -->
   <div id="loadingCard" class="card">
     <h2>Loading your Creator Hub...</h2>
-    <p class="small">Fetching your profile, rank, and permissions...</p>
+    <p class="small" id="loadingText">
+      Fetching your profile, rank, and permissions...
+    </p>
   </div>
 
-  <!-- PROFILE CARD -->
+  <!-- PROFILE -->
   <div id="profileCard" class="card hidden">
     <h2>Welcome, <span id="username">User</span></h2>
     <div class="badge" id="roleBadge">MEMBER</div>
     <p class="small" id="joinedDate"></p>
   </div>
 
-  <!-- EARNINGS -->
+  <!-- MAIN CARDS -->
   <div class="card">
-    <div class="section-title">💰 Earnings Center</div>
-    <p class="small">
-      Track monetization, payouts, and revenue splits across StudentStream divisions.
-    </p>
+    <h2>💰 Earnings Center</h2>
+    <p class="small">Track monetization, payouts, and revenue splits.</p>
     <button class="btn">Open Earnings</button>
   </div>
 
-  <!-- DIVISIONS -->
   <div class="card">
-    <div class="section-title">🏢 Your Divisions</div>
-    <p class="small">
-      View teams and programs you belong to (SS Films, HQ Staff, Monetization Club).
-    </p>
+    <h2>🏢 Your Divisions</h2>
+    <p class="small">View SS Films, HQ Staff, Monetization Club.</p>
     <button class="btn">Manage Divisions</button>
   </div>
 
-  <!-- SETTINGS -->
   <div class="card">
-    <div class="section-title">⚙️ Account Settings</div>
-    <p class="small">
-      Edit your profile, username, platform identity, and preferences.
-    </p>
+    <h2>⚙️ Account Settings</h2>
+    <p class="small">Edit profile, username, preferences.</p>
     <button class="btn">Manage Settings</button>
   </div>
 
-  <!-- SECURITY -->
   <div class="card">
-    <div class="section-title">🔒 Security</div>
-    <p class="small">
-      Password updates, login activity, and account protection tools.
-    </p>
+    <h2>🔒 Security</h2>
+    <p class="small">Password updates, login activity.</p>
     <button class="btn">Open Security</button>
   </div>
 
-  <!-- STAFF PANEL (ONLY IF ALLOWED) -->
+  <!-- STAFF PANEL -->
   <div id="staffPanel" class="card hidden">
-    <div class="section-title">🛡️ Staff Admin Panel</div>
-    <p class="small">
-      You have staff permissions. Manage creators, reports, platform tools, and moderation.
-    </p>
+    <h2>🛡️ Staff Admin Panel</h2>
+    <p class="small">Visible only to staff/admin/owner ranks.</p>
     <button class="btn">Enter Staff Panel</button>
   </div>
 
   <!-- SCRIPT -->
   <script>
+    const loadingText = document.getElementById("loadingText");
+
+    // ✅ SAFETY CHECK: Supabase loaded?
+    if (!window.supabase) {
+      loadingText.innerText =
+        "❌ Supabase library failed to load. Check your CDN script.";
+      throw new Error("Supabase missing.");
+    }
+
+    // ✅ PUT YOUR REAL KEYS HERE
     const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     async function loadDashboard() {
-      const { data: authData } = await supabase.auth.getUser();
+      try {
+        loadingText.innerText = "Checking login session...";
 
-      if (!authData?.user) {
-        window.location.href = "login.html";
-        return;
-      }
+        const { data: authData, error: authError } =
+          await supabase.auth.getUser();
 
-      const userId = authData.user.id;
+        if (authError || !authData?.user) {
+          loadingText.innerText =
+            "❌ Not logged in. Redirecting...";
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+          return;
+        }
 
-      // Fetch profile
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
+        const userId = authData.user.id;
 
-      if (error || !profile) {
-        document.getElementById("loadingCard").innerHTML = `
-          <h2>⚠️ Profile Missing</h2>
-          <p class="small">
-            Your account profile was not found.<br>
-            Run the SQL setup fix to auto-create profiles.
-          </p>
-        `;
-        console.log("Profile fetch error:", error);
-        return;
-      }
+        loadingText.innerText = "Fetching your profile...";
 
-      // Show profile card
-      document.getElementById("loadingCard").classList.add("hidden");
-      document.getElementById("profileCard").classList.remove("hidden");
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
 
-      document.getElementById("username").innerText = profile.username;
-      document.getElementById("roleBadge").innerText =
-        profile.role.toUpperCase();
+        if (error || !profile) {
+          loadingText.innerText =
+            "❌ Profile missing. Run profile auto-create SQL.";
+          return;
+        }
 
-      document.getElementById("joinedDate").innerText =
-        "Joined: " + new Date(profile.created_at).toLocaleDateString();
+        // ✅ Show Profile
+        document.getElementById("loadingCard").classList.add("hidden");
+        document.getElementById("profileCard").classList.remove("hidden");
 
-      // Fetch staff permission
-      const { data: perm } = await supabase
-        .from("staff_permissions")
-        .select("*")
-        .eq("role", profile.role)
-        .single();
+        document.getElementById("username").innerText = profile.username;
+        document.getElementById("roleBadge").innerText =
+          profile.role.toUpperCase();
 
-      if (perm?.can_access_staff_panel) {
-        document.getElementById("staffPanel").classList.remove("hidden");
+        document.getElementById("joinedDate").innerText =
+          "Joined: " + new Date(profile.created_at).toLocaleDateString();
+
+        // ✅ Permission Check
+        loadingText.innerText = "Checking staff permissions...";
+
+        const { data: perm } = await supabase
+          .from("staff_permissions")
+          .select("*")
+          .eq("role", profile.role)
+          .single();
+
+        if (perm?.can_access_staff_panel) {
+          document.getElementById("staffPanel").classList.remove("hidden");
+        }
+
+      } catch (err) {
+        console.error(err);
+        loadingText.innerText =
+          "❌ Script crashed: " + err.message;
       }
     }
 
