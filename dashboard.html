@@ -40,10 +40,9 @@
       padding: 20px;
     }
 
-    /* PROFILE CARD */
     .profileCard {
-      padding: 28px;
-      border-radius: 22px;
+      padding: 30px;
+      border-radius: 24px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.08);
       margin-bottom: 25px;
@@ -51,48 +50,42 @@
 
     .profileCard h2 {
       margin: 0;
-      font-size: 32px;
-      font-weight: 900;
+      font-size: 34px;
+      font-weight: 950;
     }
 
-    .badge {
+    .roleBadge {
       display: inline-block;
       margin-left: 10px;
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 900;
       background: rgba(77,163,255,.15);
       border: 1px solid rgba(77,163,255,.25);
     }
 
     .profileCard p {
-      opacity: .7;
-      margin-top: 8px;
+      opacity: .75;
+      margin-top: 10px;
+      font-size: 14px;
     }
 
-    /* SECTION CARDS */
-    .sectionCard {
+    .section {
       padding: 22px;
-      border-radius: 20px;
+      border-radius: 22px;
       background: rgba(255,255,255,.03);
       border: 1px solid rgba(255,255,255,.07);
       margin-bottom: 18px;
-      transition: .2s;
     }
 
-    .sectionCard:hover {
-      transform: translateY(-2px);
-      border-color: rgba(77,163,255,.25);
-    }
-
-    .sectionCard h3 {
+    .section h3 {
       margin: 0;
       font-size: 18px;
-      font-weight: 850;
+      font-weight: 900;
     }
 
-    .sectionCard p {
+    .section p {
       margin-top: 6px;
       opacity: .65;
       font-size: 14px;
@@ -100,48 +93,36 @@
     }
 
     .btn {
-      margin-top: 12px;
-      display: inline-block;
-      padding: 10px 16px;
+      margin-top: 14px;
+      padding: 12px 18px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      font-weight: 700;
-      background: rgba(77,163,255,.18);
-      color: white;
+      font-weight: 900;
+      background: linear-gradient(90deg,#4da3ff,#3cff7a);
+      color: black;
+      font-size: 14px;
     }
 
-    .btn:hover {
-      background: rgba(77,163,255,.28);
-    }
-
-    /* STAFF PANEL */
-    .staffOnly {
-      display: none;
-      background: rgba(255,215,0,.07);
+    .staffPanel {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,215,0,.08);
       border: 1px solid rgba(255,215,0,.18);
+      display: none;
     }
 
-    .staffOnly h3 {
-      color: gold;
-    }
-
-    /* DIVISION TAGS */
-    .tagWrap {
+    .miniTag {
+      display: inline-block;
       margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tag {
       padding: 6px 12px;
       border-radius: 999px;
       font-size: 13px;
-      font-weight: 700;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      opacity: .9;
+      font-weight: 800;
+      opacity: .85;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
     }
   </style>
 </head>
@@ -155,79 +136,71 @@
 
 <div class="wrap">
 
-  <!-- PROFILE HEADER -->
+  <!-- PROFILE CARD -->
   <div class="profileCard">
     <h2>
       <span id="username">Loading...</span>
-      <span class="badge" id="roleBadge">...</span>
+      <span class="roleBadge" id="roleBadge">...</span>
     </h2>
+
     <p id="rankLine">Fetching profile...</p>
   </div>
 
   <!-- EARNINGS CENTER -->
-  <div class="sectionCard">
+  <div class="section">
     <h3>💰 Earnings Center</h3>
-    <p id="earningsLine">
-      Monetization is not active yet. Creator payouts will appear here once enabled.
+    <p>
+      Monetization is not active yet. Creator payouts, revenue sharing,
+      and club earnings will appear here once enabled.
     </p>
-    <button class="btn" onclick="location.href='/monetization/'">
+    <button class="btn" onclick="alert('Earnings launching soon.')">
       Open Earnings
     </button>
   </div>
 
   <!-- DIVISIONS -->
-  <div class="sectionCard">
-    <h3>🏢 Your Divisions</h3>
-    <p>Teams, programs, and memberships connected to your account.</p>
+  <div class="section">
+    <h3>🏛 Your Divisions</h3>
+    <p>Teams, programs, and memberships connected to your StudentStream account.</p>
 
-    <div class="tagWrap" id="divisionTags">
-      <span class="tag">Loading...</span>
+    <div id="divisionTags">
+      <span class="miniTag">Loading...</span>
     </div>
 
-    <button class="btn" onclick="location.href='/divisions/'">
+    <button class="btn" onclick="alert('Division manager coming soon.')">
       Manage Divisions
     </button>
   </div>
 
   <!-- ACCOUNT SETTINGS -->
-  <div class="sectionCard">
+  <div class="section">
     <h3>⚙️ Account Settings</h3>
-    <p>Edit your profile, username, preferences, and platform identity.</p>
-    <button class="btn" onclick="location.href='/settings/'">
+    <p>
+      Edit your username, profile identity, password, and platform preferences.
+    </p>
+    <button class="btn" onclick="alert('Account settings page soon.')">
       Manage Settings
     </button>
   </div>
 
   <!-- SECURITY -->
-  <div class="sectionCard">
-    <h3>🔐 Security</h3>
-    <p>Password reset, login protection, and account safety tools.</p>
-    <button class="btn" onclick="location.href='/security/'">
-      Open Security Center
-    </button>
-  </div>
-
-  <!-- DEVFORUM -->
-  <div class="sectionCard">
-    <h3>💬 DevForum Access</h3>
-    <p>Post updates, ask questions, and connect with StudentStream staff.</p>
-    <button class="btn" onclick="location.href='/devforum/'">
-      Enter DevForum
-    </button>
+  <div class="section">
+    <h3>🔒 Security</h3>
+    <p>
+      StudentStreamHQ uses secure authentication powered by Supabase.
+      More security tools will appear here soon.
+    </p>
   </div>
 
   <!-- STAFF PANEL -->
-  <div class="sectionCard staffOnly" id="staffPanel">
-    <h3>👑 Staff Admin Panel</h3>
-    <p>Restricted tools for leadership and verified platform staff.</p>
-    <button class="btn" onclick="location.href='/staff/'">
-      Open Staff Tools
-    </button>
+  <div class="staffPanel" id="staffPanel">
+    👑 Staff Panel Access Enabled<br>
+    Welcome back, leadership. Admin tools will appear here soon.
   </div>
 
 </div>
 
-<!-- SUPABASE DASHBOARD LOGIC -->
+<!-- SUPABASE DASHBOARD SCRIPT -->
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -237,6 +210,8 @@
   );
 
   async function loadDashboard() {
+
+    /* CHECK SESSION */
     const { data: sessionData } = await supabase.auth.getSession();
     const user = sessionData.session?.user;
 
@@ -246,53 +221,65 @@
     }
 
     /* LOAD PROFILE */
-    const { data: profile } = await supabase
+    let { data: profile } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", user.id)
       .single();
 
-    document.getElementById("username").textContent = profile.username;
+    /* AUTO-CREATE PROFILE IF MISSING */
+    if (!profile) {
 
-    /* ROLE BADGE */
-    let badge = "👤 Member";
-    if (profile.role === "owner") badge = "👑 Owner";
-    if (profile.role === "admin") badge = "🛡 Admin";
-    if (profile.role === "staff") badge = "⭐ Staff";
+      await supabase.from("profiles").insert([
+        {
+          id: user.id,
+          username: user.email.split("@")[0],
+          display_name: "New Member",
+          role: "member"
+        }
+      ]);
 
-    document.getElementById("roleBadge").textContent = badge;
+      const reload = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
 
-    document.getElementById("rankLine").textContent =
-      `Rank: ${badge} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
-
-    /* STAFF PANEL ONLY */
-    if (profile.role === "owner" || profile.role === "admin") {
-      document.getElementById("staffPanel").style.display = "block";
+      profile = reload.data;
     }
 
-    /* LOAD DIVISIONS */
-    const { data: divisions } = await supabase
-      .from("division_members")
-      .select("divisions(name)")
-      .eq("user_id", user.id);
+    /* DISPLAY NAME */
+    document.getElementById("username").textContent =
+      profile.username || profile.display_name;
 
-    const tagBox = document.getElementById("divisionTags");
-    tagBox.innerHTML = "";
+    /* ROLE BADGE */
+    let badgeText = "👤 Member";
 
-    if (!divisions || divisions.length === 0) {
-      tagBox.innerHTML = `<span class="tag">No divisions yet</span>`;
-    } else {
-      divisions.forEach((d) => {
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = d.divisions.name;
-        tagBox.appendChild(tag);
-      });
+    if (profile.role === "owner") badgeText = "👑 Owner";
+    if (profile.role === "admin") badgeText = "🛡 Admin";
+    if (profile.role === "staff") badgeText = "⭐ Staff";
+
+    document.getElementById("roleBadge").textContent = badgeText;
+
+    /* RANK LINE */
+    document.getElementById("rankLine").textContent =
+      `Rank: ${badgeText} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
+
+    /* DIVISIONS */
+    const divisions = ["DevForum", "SS:Watch", "Creator Hub", "Originals"];
+
+    document.getElementById("divisionTags").innerHTML =
+      divisions.map(d => `<span class="miniTag">${d}</span>`).join("");
+
+    /* STAFF PANEL ONLY FOR STAFF+ */
+    if (profile.role !== "member") {
+      document.getElementById("staffPanel").style.display = "block";
     }
   }
 
   loadDashboard();
 
+  /* LOGOUT */
   window.logout = async function () {
     await supabase.auth.signOut();
     location.href = "/login.html";
