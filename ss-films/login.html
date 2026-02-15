@@ -15,13 +15,13 @@
       overflow: hidden;
     }
 
-    /* 🎥 Animated Cinematic Background */
     .bg {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at top, #00ff9950, transparent 70%),
-                  radial-gradient(circle at bottom, #ffffff10, transparent 70%),
-                  linear-gradient(to bottom, #050507, black);
+      background:
+        radial-gradient(circle at top, #00ff9950, transparent 70%),
+        radial-gradient(circle at bottom, #ffffff10, transparent 70%),
+        linear-gradient(to bottom, #050507, black);
       animation: pulse 6s infinite alternate;
       z-index: 0;
     }
@@ -31,7 +31,6 @@
       to { filter: brightness(1.25); }
     }
 
-    /* Floating Glow Orbs */
     .orb {
       position: absolute;
       width: 220px;
@@ -42,12 +41,12 @@
       animation: float 8s infinite ease-in-out;
     }
 
-    .orb:nth-child(1) {
+    .orb:nth-child(2) {
       top: 15%;
       left: 10%;
     }
 
-    .orb:nth-child(2) {
+    .orb:nth-child(3) {
       bottom: 15%;
       right: 10%;
       animation-delay: 2s;
@@ -59,7 +58,6 @@
       100% { transform: translateY(0px); }
     }
 
-    /* Center Login Box */
     .wrap {
       position: relative;
       z-index: 2;
@@ -139,7 +137,17 @@
       box-shadow: 0 0 25px rgba(0,255,153,0.35);
     }
 
-    /* Extra Buttons */
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #msg {
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
     .extra {
       margin-top: 18px;
       display: flex;
@@ -157,13 +165,6 @@
       color: #00ff99;
     }
 
-    #msg {
-      margin-top: 16px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    /* Footer Tag */
     .tag {
       margin-top: 26px;
       font-size: 12px;
@@ -174,18 +175,16 @@
 
 <body>
 
-  <!-- Background Effects -->
   <div class="bg"></div>
   <div class="orb"></div>
   <div class="orb"></div>
 
-  <!-- Login Box -->
   <div class="wrap">
     <div class="box">
       <h1>🎬 SS Films</h1>
       <p>
         Sign in with your StudentStream account<br>
-        to access exclusive films + dashboard.
+        to access films + creator dashboard.
       </p>
 
       <input id="email" type="email" placeholder="Email address" />
@@ -206,27 +205,29 @@
     </div>
   </div>
 
-  <!-- ✅ SUPABASE UNIVERSAL LOGIN SCRIPT -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(
+      "https://iabzmoxzbqzcqgypxctr.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ",
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
 
     const loginBtn = document.getElementById("loginBtn");
     const msg = document.getElementById("msg");
 
-    /* ✅ Redirect Support */
     const params = new URLSearchParams(window.location.search);
 
-    // Default = SS Films Dashboard
     const redirectTo =
       params.get("redirect") || "dashboard.html";
 
-    /* ✅ Auto Redirect if Already Logged In */
     async function autoRedirect() {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
@@ -235,36 +236,48 @@
     }
     autoRedirect();
 
-    /* ✅ Login */
-    loginBtn.onclick = async () => {
-      msg.style.color = "#ff5555";
+    async function login() {
       msg.innerText = "";
+      loginBtn.disabled = true;
+      loginBtn.innerText = "Signing in...";
 
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
       if (!email || !password) {
+        msg.style.color = "#ff5555";
         msg.innerText = "Enter your email + password.";
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Login";
         return;
       }
 
       const { error } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password
       });
 
       if (error) {
+        msg.style.color = "#ff5555";
         msg.innerText = "❌ " + error.message;
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Login";
         return;
       }
 
       msg.style.color = "#00ff99";
-      msg.innerText = "✅ Login successful... redirecting";
+      msg.innerText = "✅ Welcome back... redirecting";
 
       setTimeout(() => {
         window.location.href = redirectTo;
       }, 900);
-    };
+    }
+
+    loginBtn.addEventListener("click", login);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") login();
+    });
   </script>
 
 </body>
