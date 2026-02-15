@@ -6,7 +6,6 @@
 
   <title>SS Films Login • StudentStreamHQ</title>
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -14,69 +13,65 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family:system-ui,Segoe UI,Roboto,Arial;
+      font-family:system-ui;
     }
 
     body{
+      background:radial-gradient(circle at top,#0b1020,#05060c);
+      color:white;
       min-height:100vh;
       display:flex;
       justify-content:center;
       align-items:center;
-      background:radial-gradient(circle at top,#0b1020,#05060c);
-      color:white;
-      padding:20px;
+      padding:30px;
     }
 
     .box{
       width:100%;
       max-width:420px;
-      padding:38px;
+      padding:34px;
       border-radius:22px;
+      border:1px solid rgba(255,255,255,0.12);
       background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.10);
-      box-shadow:0 0 80px rgba(0,0,0,0.55);
+      box-shadow:0 0 80px rgba(0,0,0,0.6);
       text-align:center;
     }
 
     h1{
       font-size:26px;
       font-weight:1000;
-      margin-bottom:6px;
+      margin-bottom:10px;
     }
 
     p{
-      color:rgba(255,255,255,0.65);
+      opacity:.7;
+      margin-bottom:24px;
       font-size:14px;
       line-height:1.5;
-      margin-bottom:28px;
     }
 
     input{
       width:100%;
       padding:14px;
+      margin-top:12px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,0.15);
+      border:1px solid rgba(255,255,255,0.14);
       background:rgba(255,255,255,0.06);
       color:white;
-      margin-bottom:14px;
-      font-size:14px;
       outline:none;
-    }
-
-    input:focus{
-      border-color:rgba(59,130,246,0.6);
     }
 
     button{
       width:100%;
+      margin-top:18px;
       padding:14px;
-      border-radius:999px;
       border:none;
-      font-weight:900;
+      border-radius:999px;
+      font-weight:950;
+      font-size:15px;
       cursor:pointer;
       background:linear-gradient(135deg,#3b82f6,#6cf2c2);
       color:#05060c;
-      font-size:15px;
       transition:.2s;
     }
 
@@ -85,94 +80,85 @@
     }
 
     .msg{
-      margin-top:18px;
+      margin-top:16px;
       font-size:13px;
-      opacity:.8;
+      opacity:.75;
     }
 
-    .back{
-      margin-top:24px;
-      display:block;
-      font-size:13px;
+    a{
+      color:#7aa2ff;
       text-decoration:none;
-      color:rgba(255,255,255,0.55);
-    }
-
-    .back:hover{
-      color:white;
+      font-weight:700;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
-    <h1>🎬 SS Films Login</h1>
-    <p>
-      Sign in with your StudentStreamHQ account<br>
-      to access your creator dashboard.
-    </p>
+<div class="box">
+  <h1>🎬 SS Films Login</h1>
+  <p>
+    Sign in with your StudentStreamHQ creator account<br>
+    to upload Originals instantly.
+  </p>
 
-    <input id="email" type="email" placeholder="Email address" />
-    <input id="password" type="password" placeholder="Password" />
+  <input id="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
 
-    <button onclick="login()">Login</button>
+  <button onclick="login()">Login →</button>
 
-    <div class="msg" id="msg"></div>
+  <div class="msg" id="msg"></div>
 
-    <a class="back" href="../dashboard.html">← Back to StudentStreamHQ</a>
-  </div>
+  <p style="margin-top:20px; font-size:13px;">
+    New creator? <a href="../signup.html">Join StudentStreamHQ</a>
+  </p>
+</div>
 
-  <script>
-    /* SUPABASE CONFIG (same as HQ) */
-    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+<script>
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
-    /* LOGIN FUNCTION */
-    async function login(){
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const msg = document.getElementById("msg");
+  async function login(){
+    const msg = document.getElementById("msg");
 
-      msg.style.color = "white";
-      msg.textContent = "Signing in...";
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+    msg.textContent = "Signing in...";
 
-      if(error){
-        msg.style.color = "red";
-        msg.textContent = error.message;
-        return;
-      }
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-      msg.style.color = "#6cf2c2";
-      msg.textContent = "Login successful. Redirecting...";
-
-      /* Redirect into SS Films Dashboard */
-      setTimeout(() => {
-        window.location.href = "./dashboard.html";
-      }, 900);
+    if(error){
+      msg.style.color = "red";
+      msg.textContent = error.message;
+      return;
     }
 
-    /* AUTO SESSION CHECK */
-    async function checkSession(){
-      const { data } = await supabase.auth.getSession();
-      if(data.session){
-        window.location.href = "./dashboard.html";
-      }
-    }
+    msg.style.color = "#6cf2c2";
+    msg.textContent = "Success. Redirecting...";
 
-    checkSession();
-  </script>
+    window.location.href = "./dashboard.html";
+  }
+
+  /* Auto redirect if already logged in */
+  async function check(){
+    const { data } = await supabase.auth.getSession();
+    if(data.session){
+      window.location.href = "./dashboard.html";
+    }
+  }
+
+  check();
+</script>
 
 </body>
 </html>
