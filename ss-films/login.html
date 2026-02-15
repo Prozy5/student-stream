@@ -1,138 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SS Films – Sign in</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body{
-  margin:0;
-  background:linear-gradient(135deg,#0b0f14,#101826);
-  color:#fff;
-  font-family:system-ui;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.box{
-  width:100%;
-  max-width:380px;
-  background:#0f1522;
-  padding:26px;
-  border-radius:14px;
-  box-shadow:0 20px 50px #0006;
-}
-.logo{
-  text-align:center;
-  font-size:26px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-.sub{
-  text-align:center;
-  opacity:.7;
-  margin-bottom:18px;
-}
-input{
-  width:100%;
-  padding:12px;
-  margin-bottom:12px;
-  border-radius:8px;
-  border:none;
-  background:#1a2236;
-  color:#fff;
-  font-size:15px;
-}
-button{
-  width:100%;
-  padding:12px;
-  background:#1e90ff;
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  font-weight:700;
-  font-size:15px;
-}
-.toggle{
-  text-align:center;
-  margin-top:14px;
-  color:#7aa8ff;
-  cursor:pointer;
-}
-.msg{margin-bottom:10px;font-size:14px}
-.err{color:#ff6b6b}
-.ok{color:#5cff9d}
-</style>
+  <title>SS Films Login • StudentStreamHQ</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:radial-gradient(circle at top,#0b1020,#05060c);
+      color:white;
+      padding:20px;
+    }
+
+    .box{
+      width:100%;
+      max-width:420px;
+      padding:38px;
+      border-radius:22px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.10);
+      box-shadow:0 0 80px rgba(0,0,0,0.55);
+      text-align:center;
+    }
+
+    h1{
+      font-size:26px;
+      font-weight:1000;
+      margin-bottom:6px;
+    }
+
+    p{
+      color:rgba(255,255,255,0.65);
+      font-size:14px;
+      line-height:1.5;
+      margin-bottom:28px;
+    }
+
+    input{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.15);
+      background:rgba(255,255,255,0.06);
+      color:white;
+      margin-bottom:14px;
+      font-size:14px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:rgba(59,130,246,0.6);
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border-radius:999px;
+      border:none;
+      font-weight:900;
+      cursor:pointer;
+      background:linear-gradient(135deg,#3b82f6,#6cf2c2);
+      color:#05060c;
+      font-size:15px;
+      transition:.2s;
+    }
+
+    button:hover{
+      transform:translateY(-2px);
+    }
+
+    .msg{
+      margin-top:18px;
+      font-size:13px;
+      opacity:.8;
+    }
+
+    .back{
+      margin-top:24px;
+      display:block;
+      font-size:13px;
+      text-decoration:none;
+      color:rgba(255,255,255,0.55);
+    }
+
+    .back:hover{
+      color:white;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="box">
-  <div class="logo">SS Films</div>
-  <div class="sub" id="subtitle">Sign in to continue</div>
+  <div class="box">
+    <h1>🎬 SS Films Login</h1>
+    <p>
+      Sign in with your StudentStreamHQ account<br>
+      to access your creator dashboard.
+    </p>
 
-  <div id="msg" class="msg"></div>
+    <input id="email" type="email" placeholder="Email address" />
+    <input id="password" type="password" placeholder="Password" />
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
 
-  <button onclick="submitAuth()">Continue</button>
+    <div class="msg" id="msg"></div>
 
-  <div class="toggle" onclick="toggleMode()" id="toggleText">
-    Create new account
+    <a class="back" href="../dashboard.html">← Back to StudentStreamHQ</a>
   </div>
-</div>
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <script>
+    /* SUPABASE CONFIG (same as HQ) */
+    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-const supabase = createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
-let mode="login";
+    /* LOGIN FUNCTION */
+    async function login(){
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
 
-window.toggleMode=()=>{
-  mode=mode==="login"?"signup":"login";
-  document.getElementById("subtitle").innerText =
-    mode==="login"?"Sign in to continue":"Create your SS Films account";
-  document.getElementById("toggleText").innerText =
-    mode==="login"?"Create new account":"Back to login";
-};
+      msg.style.color = "white";
+      msg.textContent = "Signing in...";
 
-window.submitAuth=async()=>{
-  const msg=document.getElementById("msg");
-  msg.innerHTML="";
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-  const e=email.value.trim();
-  const p=password.value.trim();
-  if(!e||!p){
-    msg.innerHTML='<div class="err">Fill all fields</div>';return;
-  }
+      if(error){
+        msg.style.color = "red";
+        msg.textContent = error.message;
+        return;
+      }
 
-  let res;
-  if(mode==="login"){
-    res=await supabase.auth.signInWithPassword({email:e,password:p});
-  }else{
-    res=await supabase.auth.signUp({email:e,password:p});
-  }
+      msg.style.color = "#6cf2c2";
+      msg.textContent = "Login successful. Redirecting...";
 
-  if(res.error){
-    msg.innerHTML=`<div class="err">${res.error.message}</div>`;
-  }else{
-    msg.innerHTML='<div class="ok">Success. Redirecting…</div>';
-    setTimeout(()=>location.href="index.html",700);
-  }
-};
+      /* Redirect into SS Films Dashboard */
+      setTimeout(() => {
+        window.location.href = "./dashboard.html";
+      }, 900);
+    }
 
-// Auto redirect if logged in
-(async()=>{
-  const {data:{user}}=await supabase.auth.getUser();
-  if(user) location.href="index.html";
-})();
-</script>
+    /* AUTO SESSION CHECK */
+    async function checkSession(){
+      const { data } = await supabase.auth.getSession();
+      if(data.session){
+        window.location.href = "./dashboard.html";
+      }
+    }
+
+    checkSession();
+  </script>
 
 </body>
 </html>
