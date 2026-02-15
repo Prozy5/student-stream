@@ -80,22 +80,46 @@
     };
 
     /* ================================
-       ✅ SHOW USER STATUS
+       ✅ SHOW USER STATUS + ROLE CHECK
     ================================ */
     async function checkUser() {
       const { data } = await supabase.auth.getSession();
 
-      if (data.session) {
-        logoutBtn.style.display = "block";
-        dashboardBtn.style.display = "block";
-
-        userStatus.innerText =
-          "Signed in as " + data.session.user.email;
-      } else {
+      if (!data.session) {
         logoutBtn.style.display = "none";
         dashboardBtn.style.display = "none";
+        userStatus.innerText =
+          "Guest Mode (Login required to watch)";
+        return;
+      }
 
-        userStatus.innerText = "Guest Mode (Login required to watch)";
+      // ✅ Logged in
+      logoutBtn.style.display = "block";
+      userStatus.innerText =
+        "Signed in as " + data.session.user.email;
+
+      // ✅ Get Profile Role
+      const userId = data.session.user.id;
+
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.log("Profile fetch error:", error);
+        dashboardBtn.style.display = "none";
+        return;
+      }
+
+      // ✅ Only show dashboard if creator OR owner
+      const allowedRoles = ["creator", "owner"];
+
+      if (allowedRoles.includes(profile.role)) {
+        dashboardBtn.style.display = "block";
+      } else {
+        dashboardBtn.style.display = "none";
       }
     }
 
@@ -243,17 +267,7 @@
       margin-top: 4px;
     }
 
-    #logoutBtn {
-      display: none;
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
+    #logoutBtn,
     #dashboardBtn {
       display: none;
       background: rgba(255,255,255,0.1);
