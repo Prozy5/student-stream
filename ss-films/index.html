@@ -26,16 +26,18 @@
     const docRow = document.getElementById("docRow");
     const trendingRow = document.getElementById("trendingRow");
 
-    const modal = document.getElementById("modal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalDesc = document.getElementById("modalDesc");
-    const player = document.getElementById("player");
-
     const searchInput = document.getElementById("searchInput");
     const filterSelect = document.getElementById("filterSelect");
 
     let spotlightFilm = null;
     let allFilms = [];
+
+    /* ================================
+       ✅ GO TO WATCH PAGE
+    ================================ */
+    function goWatch(film) {
+      window.location.href = `watch.html?id=${film.id}`;
+    }
 
     /* ================================
        LOAD FILMS
@@ -66,6 +68,8 @@
       docRow.innerHTML = "";
       trendingRow.innerHTML = "";
 
+      spotlightFilm = null;
+
       films.forEach((film, index) => {
         const card = document.createElement("div");
         card.className = "card";
@@ -78,11 +82,12 @@
           </div>
         `;
 
-        card.onclick = () => openFilm(film);
+        /* ✅ CLICK → WATCH.HTML */
+        card.onclick = () => goWatch(film);
 
         const cat = film.category?.toLowerCase();
 
-        if (film.featured) spotlightFilm = film;
+        if (film.featured && !spotlightFilm) spotlightFilm = film;
 
         if (index < 6) trendingRow.appendChild(card);
 
@@ -128,25 +133,12 @@
     filterSelect.addEventListener("change", applyFilters);
 
     /* ================================
-       MODAL PLAYER
+       SPOTLIGHT CLICK
     ================================ */
-    function openFilm(film) {
-      modal.style.display = "flex";
-
-      modalTitle.innerText = film.title;
-      modalDesc.innerText = film.description;
-
-      player.src = film.video_url;
-      player.play();
-    }
-
-    window.closeModal = function () {
-      modal.style.display = "none";
-      player.pause();
-    };
-
     window.openSpotlight = function () {
-      if (spotlightFilm) openFilm(spotlightFilm);
+      if (spotlightFilm) {
+        goWatch(spotlightFilm);
+      }
     };
 
     loadFilms();
@@ -160,7 +152,6 @@
       color: white;
     }
 
-    /* ✅ Header */
     header {
       padding: 18px 20px;
       position: fixed;
@@ -178,7 +169,6 @@
       font-weight: 800;
     }
 
-    /* ✅ Search Glass Bar */
     .controls {
       display: flex;
       gap: 10px;
@@ -200,7 +190,7 @@
       color: rgba(255,255,255,0.4);
     }
 
-    /* ✅ HERO Spotlight */
+    /* HERO Spotlight */
     .hero {
       height: 70vh;
       display: flex;
@@ -219,11 +209,11 @@
     .hero-content {
       position: relative;
       z-index: 2;
-      max-width: 500px;
+      max-width: 520px;
     }
 
     .hero h2 {
-      font-size: 42px;
+      font-size: 44px;
       margin: 0;
       font-weight: 900;
     }
@@ -231,6 +221,7 @@
     .hero p {
       opacity: 0.8;
       line-height: 1.4;
+      font-size: 15px;
     }
 
     .hero button {
@@ -243,7 +234,7 @@
       background: #00ff99;
     }
 
-    /* ✅ Sections */
+    /* Sections */
     .section {
       padding: 25px 20px;
     }
@@ -253,7 +244,6 @@
       margin-bottom: 12px;
     }
 
-    /* ✅ Netflix Row Scroll */
     .row {
       display: flex;
       gap: 14px;
@@ -266,7 +256,7 @@
       display: none;
     }
 
-    /* ✅ Premium Cards */
+    /* Cards */
     .card {
       min-width: 170px;
       height: 240px;
@@ -307,39 +297,6 @@
       font-size: 12px;
       opacity: 0.7;
     }
-
-    /* ✅ Modal */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .modal-content {
-      width: 92%;
-      max-width: 800px;
-      background: #111;
-      padding: 25px;
-      border-radius: 18px;
-      text-align: center;
-    }
-
-    video {
-      width: 100%;
-      border-radius: 14px;
-      margin-top: 15px;
-    }
-
-    .close {
-      float: right;
-      font-size: 20px;
-      cursor: pointer;
-      opacity: 0.7;
-    }
   </style>
 </head>
 
@@ -359,7 +316,7 @@
   </div>
 </header>
 
-<!-- ✅ HERO -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-content">
     <h2 id="spotlightTitle">Spotlight Premiere</h2>
@@ -388,16 +345,6 @@
   <h3>🎥 Documentary</h3>
   <div class="row" id="docRow"></div>
 </section>
-
-<!-- Modal -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">✖</span>
-    <h2 id="modalTitle"></h2>
-    <p id="modalDesc"></p>
-    <video id="player" controls></video>
-  </div>
-</div>
 
 </body>
 </html>
