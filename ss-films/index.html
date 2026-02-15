@@ -13,7 +13,8 @@
        ✅ SUPABASE CONFIG
     ================================ */
     const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"; // keep private
+    const supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -30,6 +31,8 @@
 
     const logoutBtn = document.getElementById("logoutBtn");
     const userStatus = document.getElementById("userStatus");
+
+    const dashboardBtn = document.getElementById("dashboardBtn");
 
     let spotlightFilm = null;
     let allFilms = [];
@@ -62,6 +65,13 @@
     }
 
     /* ================================
+       ✅ CREATOR DASHBOARD BUTTON
+    ================================ */
+    dashboardBtn.onclick = () => {
+      window.location.href = "dashboard.html";
+    };
+
+    /* ================================
        ✅ LOGOUT SUPPORT
     ================================ */
     logoutBtn.onclick = async () => {
@@ -77,10 +87,14 @@
 
       if (data.session) {
         logoutBtn.style.display = "block";
+        dashboardBtn.style.display = "block";
+
         userStatus.innerText =
           "Signed in as " + data.session.user.email;
       } else {
         logoutBtn.style.display = "none";
+        dashboardBtn.style.display = "none";
+
         userStatus.innerText = "Guest Mode (Login required to watch)";
       }
     }
@@ -216,12 +230,6 @@
       backdrop-filter: blur(12px);
     }
 
-    header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
     header h1 {
       margin: 0;
       font-size: 20px;
@@ -236,6 +244,17 @@
     }
 
     #logoutBtn {
+      display: none;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #dashboardBtn {
       display: none;
       background: rgba(255,255,255,0.1);
       border: none;
@@ -363,7 +382,11 @@
       <div id="userStatus">Loading...</div>
     </div>
 
-    <button id="logoutBtn">Logout</button>
+    <!-- ✅ Creator Dashboard + Logout -->
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button id="dashboardBtn">Creator Dashboard</button>
+      <button id="logoutBtn">Logout</button>
+    </div>
   </div>
 
   <div class="controls">
