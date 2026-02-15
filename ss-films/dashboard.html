@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SS Films Creator Dashboard</title>
+  <title>SS Films Creator Dashboard V9</title>
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -31,7 +31,8 @@
       document.getElementById("userEmail").innerText =
         data.session.user.email;
 
-      loadMyUploads();
+      loadTrending();
+      loadCreatorUploads();
     }
 
     /* ================================
@@ -43,93 +44,144 @@
     };
 
     /* ================================
-       ✅ UPLOAD THUMBNAIL TO STORAGE
+       ✅ UPLOAD FILE TO STORAGE
     ================================ */
-    async function uploadThumbnail(file, userId) {
+    async function uploadFile(bucket, file, userId) {
       const filePath = `${userId}/${Date.now()}-${file.name}`;
 
       const { error } = await supabase.storage
-        .from("thumbnails")
+        .from(bucket)
         .upload(filePath, file);
 
       if (error) {
-        alert("Thumbnail upload failed.");
+        alert("Upload failed: " + error.message);
         console.log(error);
         return null;
       }
 
       const { data } = supabase.storage
-        .from("thumbnails")
+        .from(bucket)
         .getPublicUrl(filePath);
 
       return data.publicUrl;
     }
 
     /* ================================
-       ✅ SUBMIT FILM UPLOAD
+       ✅ PUBLISH FILM (VIDEO + THUMB)
     ================================ */
     window.publishFilm = async function () {
       const title = document.getElementById("title").value.trim();
       const desc = document.getElementById("desc").value.trim();
       const category = document.getElementById("category").value;
-      const videoUrl = document.getElementById("videoUrl").value.trim();
-      const thumbFile = document.getElementById("thumbnail").files[0];
 
-      if (!title || !videoUrl || !thumbFile) {
-        alert("Title, Video URL, and Thumbnail are required.");
+      const thumbFile = document.getElementById("thumbnail").files[0];
+      const videoFile = document.getElementById("videoFile").files[0];
+
+      if (!title || !thumbFile || !videoFile) {
+        alert("Title, Thumbnail, and Video File are required.");
         return;
       }
 
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData.session.user;
 
-      document.getElementById("statusMsg").innerText =
-        "Uploading thumbnail...";
+      const msg = document.getElementById("statusMsg");
+      msg.style.color = "#ffcc00";
+      msg.innerText = "Uploading thumbnail...";
 
-      // ✅ Upload thumbnail to Supabase Storage
-      const thumbnailUrl = await uploadThumbnail(thumbFile, user.id);
+      /* ✅ Upload Thumbnail */
+      const thumbUrl = await uploadFile("thumbnails", thumbFile, user.id);
+      if (!thumbUrl) return;
 
-      if (!thumbnailUrl) return;
+      msg.innerText = "Uploading video file...";
 
-      document.getElementById("statusMsg").innerText =
-        "Publishing film...";
+      /* ✅ Upload Video */
+      const videoUrl = await uploadFile("videos", videoFile, user.id);
+      if (!videoUrl) return;
 
-      // ✅ Insert into films table
+      msg.innerText = "Publishing film instantly...";
+
+      /* ✅ Insert Film */
       const { error } = await supabase.from("films").insert([
         {
           title: title,
           description: desc,
           category: category,
+
+          thumbnail_url: thumbUrl,
           video_url: videoUrl,
-          thumbnail_url: thumbnailUrl,
 
           visibility: "public",
           status: "approved",
-
           creator_id: user.id
         }
       ]);
 
       if (error) {
-        alert("Upload failed: " + error.message);
-        console.log(error);
+        msg.style.color = "red";
+        msg.innerText = "❌ Upload failed: " + error.message;
         return;
       }
 
-      document.getElementById("statusMsg").style.color = "#00ff99";
-      document.getElementById("statusMsg").innerText =
-        "✅ Film published instantly!";
+      msg.style.color = "#00ff99";
+      msg.innerText = "✅ Film published instantly!";
 
       document.getElementById("uploadForm").reset();
 
-      loadMyUploads();
+      loadTrending();
+      loadCreatorUploads();
     };
+
+    /* ================================
+       ✅ LOAD TRENDING FILMS
+    ================================ */
+    async function loadTrending() {
+      const row = document.getElementById("trendingRow");
+
+      const { data, error } = await supabase
+        .from("films")
+        .select("*")
+        .eq("visibility", "public")
+        .order("created_at", { ascending: false });
+
+      row.innerHTML = "";
+
+      if (error) {
+        row.innerHTML = "<p>Error loading films.</p>";
+        return;
+      }
+
+      if (!data.length) {
+        row.innerHTML = "<p style='opacity:0.6'>No films yet...</p>";
+        return;
+      }
+
+      data.forEach(film => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.onclick = () => {
+          window.location.href =
+            `watch.html?id=${film.id}`;
+        };
+
+        card.innerHTML = `
+          <img src="${film.thumbnail_url}" />
+          <div class="overlay">
+            <h4>${film.title}</h4>
+            <p>${film.category}</p>
+          </div>
+        `;
+
+        row.appendChild(card);
+      });
+    }
 
     /* ================================
        ✅ LOAD CREATOR UPLOADS
     ================================ */
-    async function loadMyUploads() {
-      const uploadsRow = document.getElementById("uploadsRow");
+    async function loadCreatorUploads() {
+      const row = document.getElementById("uploadsRow");
 
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData.session.user;
@@ -140,32 +192,31 @@
         .eq("creator_id", user.id)
         .order("created_at", { ascending: false });
 
-      uploadsRow.innerHTML = "";
+      row.innerHTML = "";
 
       if (error) {
-        uploadsRow.innerHTML = "<p>Error loading uploads.</p>";
+        row.innerHTML = "<p>Error loading uploads.</p>";
         return;
       }
 
       if (!data.length) {
-        uploadsRow.innerHTML =
+        row.innerHTML =
           "<p style='opacity:0.6'>No uploads yet...</p>";
         return;
       }
 
       data.forEach(film => {
         const card = document.createElement("div");
-        card.className = "card";
+        card.className = "card small";
 
         card.innerHTML = `
           <img src="${film.thumbnail_url}" />
           <div class="overlay">
             <h4>${film.title}</h4>
-            <p>${film.category}</p>
           </div>
         `;
 
-        uploadsRow.appendChild(card);
+        row.appendChild(card);
       });
     }
 
@@ -211,7 +262,7 @@
 
     .wrap {
       padding: 20px;
-      max-width: 900px;
+      max-width: 950px;
       margin: auto;
     }
 
@@ -247,11 +298,22 @@
     }
 
     .card {
-      min-width: 170px;
-      height: 240px;
+      min-width: 180px;
+      height: 250px;
       border-radius: 16px;
       overflow: hidden;
       position: relative;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.04);
+    }
+
+    .card.small {
+      min-width: 140px;
+      height: 190px;
     }
 
     .card img {
@@ -273,16 +335,9 @@
       font-size: 14px;
     }
 
-    .overlay p {
-      margin: 3px 0 0;
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
     #statusMsg {
       margin-top: 12px;
       font-size: 14px;
-      color: #ff5555;
     }
   </style>
 </head>
@@ -290,10 +345,10 @@
 <body>
 
 <header>
-  <h1>🎬 SS Films Creator Dashboard</h1>
+  <h1>🎬 SS Films Creator Dashboard V9</h1>
 
   <div class="userBox">
-    Logged in as: <br>
+    Logged in as:<br>
     <b id="userEmail"></b><br>
     <button onclick="logout()">Logout</button>
   </div>
@@ -301,9 +356,9 @@
 
 <div class="wrap">
 
-  <!-- ✅ Upload Panel -->
+  <!-- Upload Panel -->
   <div class="panel">
-    <h2>📤 Upload a Film</h2>
+    <h2>📤 Upload + Publish Instantly</h2>
 
     <form id="uploadForm" onsubmit="event.preventDefault(); publishFilm();">
 
@@ -317,19 +372,24 @@
         <option value="documentary">Documentary</option>
       </select>
 
-      <input id="videoUrl" placeholder="Video URL (MP4 or Stream Link)" required />
-
       <input id="thumbnail" type="file" accept="image/*" required />
+      <input id="videoFile" type="file" accept="video/*" required />
 
-      <button type="submit">🚀 Publish Instantly</button>
+      <button type="submit">🚀 Publish Film</button>
 
       <div id="statusMsg"></div>
     </form>
   </div>
 
-  <!-- ✅ Creator Uploads -->
+  <!-- Trending -->
   <div class="panel">
-    <h2>🎞 Your Published Films</h2>
+    <h2>🔥 Trending Now (Live)</h2>
+    <div class="row" id="trendingRow"></div>
+  </div>
+
+  <!-- Creator Uploads -->
+  <div class="panel">
+    <h2>🎞 Your Uploads</h2>
     <div class="row" id="uploadsRow"></div>
   </div>
 
