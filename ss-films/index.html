@@ -13,8 +13,7 @@
        ✅ SUPABASE CONFIG
     ================================ */
     const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"; // keep private
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -29,6 +28,9 @@
     const searchInput = document.getElementById("searchInput");
     const filterSelect = document.getElementById("filterSelect");
 
+    const logoutBtn = document.getElementById("logoutBtn");
+    const userStatus = document.getElementById("userStatus");
+
     let spotlightFilm = null;
     let allFilms = [];
 
@@ -38,29 +40,49 @@
     async function requireLogin(destination) {
       const { data } = await supabase.auth.getSession();
 
-      // ❌ No user logged in → redirect to login page
       if (!data.session) {
         window.location.href =
           `login.html?redirect=${encodeURIComponent(destination)}`;
         return false;
       }
 
-      // ✅ Logged in → allow access
       return true;
     }
 
     /* ================================
-       ✅ GO TO WATCH PAGE (WITH LOGIN GATE)
+       ✅ GO TO WATCH PAGE (LOGIN GATE)
     ================================ */
     async function goWatch(film) {
       const target = `watch.html?id=${film.id}`;
 
-      // Require login first
       const allowed = await requireLogin(target);
       if (!allowed) return;
 
-      // Continue to watch
       window.location.href = target;
+    }
+
+    /* ================================
+       ✅ LOGOUT SUPPORT
+    ================================ */
+    logoutBtn.onclick = async () => {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    };
+
+    /* ================================
+       ✅ SHOW USER STATUS
+    ================================ */
+    async function checkUser() {
+      const { data } = await supabase.auth.getSession();
+
+      if (data.session) {
+        logoutBtn.style.display = "block";
+        userStatus.innerText =
+          "Signed in as " + data.session.user.email;
+      } else {
+        logoutBtn.style.display = "none";
+        userStatus.innerText = "Guest Mode (Login required to watch)";
+      }
     }
 
     /* ================================
@@ -106,7 +128,6 @@
           </div>
         `;
 
-        /* ✅ CLICK → LOGIN REQUIRED → WATCH */
         card.onclick = () => goWatch(film);
 
         const cat = film.category?.toLowerCase();
@@ -157,7 +178,7 @@
     filterSelect.addEventListener("change", applyFilters);
 
     /* ================================
-       SPOTLIGHT CLICK (LOGIN REQUIRED)
+       SPOTLIGHT CLICK (LOGIN GATE)
     ================================ */
     window.openSpotlight = async function () {
       if (!spotlightFilm) return;
@@ -170,6 +191,10 @@
       window.location.href = target;
     };
 
+    /* ================================
+       INIT LOAD
+    ================================ */
+    checkUser();
     loadFilms();
   </script>
 
@@ -191,17 +216,40 @@
       backdrop-filter: blur(12px);
     }
 
+    header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     header h1 {
       margin: 0;
       font-size: 20px;
       color: #00ff99;
-      font-weight: 800;
+      font-weight: 900;
+    }
+
+    #userStatus {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    #logoutBtn {
+      display: none;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .controls {
       display: flex;
       gap: 10px;
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
     input, select {
@@ -215,16 +263,12 @@
       font-size: 14px;
     }
 
-    input::placeholder {
-      color: rgba(255,255,255,0.4);
-    }
-
     /* HERO Spotlight */
     .hero {
       height: 70vh;
       display: flex;
       align-items: flex-end;
-      padding: 90px 20px 40px;
+      padding: 110px 20px 40px;
       position: relative;
     }
 
@@ -268,17 +312,11 @@
       padding: 25px 20px;
     }
 
-    .section h3 {
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-
     .row {
       display: flex;
       gap: 14px;
       overflow-x: auto;
       padding-bottom: 10px;
-      scroll-snap-type: x mandatory;
     }
 
     .row::-webkit-scrollbar {
@@ -293,7 +331,6 @@
       overflow: hidden;
       position: relative;
       cursor: pointer;
-      scroll-snap-align: start;
       transition: 0.25s;
     }
 
@@ -314,25 +351,20 @@
       padding: 12px;
       background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
     }
-
-    .overlay h4 {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .overlay p {
-      margin: 3px 0 0;
-      font-size: 12px;
-      opacity: 0.7;
-    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <h1>🎬 SS Films</h1>
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <h1>🎬 SS Films</h1>
+      <div id="userStatus">Loading...</div>
+    </div>
+
+    <button id="logoutBtn">Logout</button>
+  </div>
 
   <div class="controls">
     <input id="searchInput" placeholder="Search SS Films..." />
