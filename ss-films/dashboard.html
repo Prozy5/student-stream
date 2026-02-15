@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SS Films Dashboard • Upload</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+    }
+
+    body{
+      background:radial-gradient(circle at top,#0b1020,#05060c);
+      color:white;
+      min-height:100vh;
+    }
+
+    header{
+      padding:18px 26px;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:rgba(0,0,0,0.55);
+      backdrop-filter:blur(12px);
+    }
+
+    header h1{
+      font-size:15px;
+      font-weight:950;
+      letter-spacing:.4px;
+    }
+
+    .logout{
+      padding:10px 16px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.06);
+      color:white;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .wrap{
+      max-width:900px;
+      margin:auto;
+      padding:40px 20px;
+    }
+
+    h2{
+      font-size:34px;
+      font-weight:1000;
+      margin-bottom:10px;
+    }
+
+    p{
+      opacity:.7;
+      margin-bottom:30px;
+      line-height:1.5;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:22px;
+      padding:28px;
+      box-shadow:0 0 70px rgba(0,0,0,0.55);
+    }
+
+    input, textarea{
+      width:100%;
+      padding:14px;
+      margin-top:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(255,255,255,0.06);
+      color:white;
+      font-size:14px;
+      outline:none;
+    }
+
+    textarea{
+      min-height:90px;
+      resize:none;
+    }
+
+    button{
+      margin-top:18px;
+      width:100%;
+      padding:14px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-weight:950;
+      font-size:15px;
+      background:linear-gradient(135deg,#3b82f6,#6cf2c2);
+      color:#05060c;
+      transition:.2s;
+    }
+
+    button:hover{
+      transform:translateY(-2px);
+    }
+
+    .msg{
+      margin-top:18px;
+      font-size:13px;
+      opacity:.8;
+    }
+
+    .filmsList{
+      margin-top:50px;
+    }
+
+    .filmItem{
+      padding:16px;
+      margin-top:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.03);
+    }
+
+    .filmItem b{
+      font-size:15px;
+    }
+
+    .filmItem span{
+      display:block;
+      opacity:.6;
+      margin-top:4px;
+      font-size:13px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎬 SS Films Creator Dashboard</h1>
+  <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="wrap">
+
+  <h2>Upload a Film</h2>
+  <p>
+    Welcome to SS Films Originals. Upload your film and publish instantly
+    to the StudentStream platform.
+  </p>
+
+  <div class="card">
+
+    <input id="title" placeholder="Film Title" />
+    <textarea id="description" placeholder="Short description..."></textarea>
+
+    <input id="thumbnail" placeholder="Thumbnail Image URL" />
+    <input id="video" placeholder="Film Video URL (MP4 / YouTube / Stream Link)" />
+
+    <button onclick="uploadFilm()">Publish Film →</button>
+
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <!-- MY FILMS -->
+  <div class="filmsList">
+    <h2 style="font-size:24px;">Your Uploaded Films</h2>
+    <div id="myFilms"></div>
+  </div>
+
+</div>
+
+<script>
+  /* SUPABASE CONFIG */
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  let currentUser = null;
+
+  /* CHECK LOGIN */
+  async function loadSession(){
+    const { data } = await supabase.auth.getSession();
+
+    if(!data.session){
+      window.location.href = "./login.html";
+      return;
+    }
+
+    currentUser = data.session.user;
+    loadMyFilms();
+  }
+
+  /* UPLOAD FILM */
+  async function uploadFilm(){
+    const msg = document.getElementById("msg");
+
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+    const thumbnail = document.getElementById("thumbnail").value;
+    const video = document.getElementById("video").value;
+
+    msg.style.color = "white";
+    msg.textContent = "Publishing film...";
+
+    const { error } = await supabase
+      .from("films")
+      .insert([
+        {
+          creator_id: currentUser.id,
+          title: title,
+          description: description,
+          thumbnail_url: thumbnail,
+          video_url: video
+        }
+      ]);
+
+    if(error){
+      msg.style.color = "red";
+      msg.textContent = error.message;
+      return;
+    }
+
+    msg.style.color = "#6cf2c2";
+    msg.textContent = "Film uploaded successfully 🎬";
+
+    loadMyFilms();
+  }
+
+  /* LOAD MY FILMS */
+  async function loadMyFilms(){
+    const box = document.getElementById("myFilms");
+
+    const { data, error } = await supabase
+      .from("films")
+      .select("*")
+      .eq("creator_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    if(error){
+      box.innerHTML = "<p style='color:red;'>Error loading films.</p>";
+      return;
+    }
+
+    if(!data || data.length === 0){
+      box.innerHTML = "<p style='opacity:.6;'>No uploads yet.</p>";
+      return;
+    }
+
+    box.innerHTML = "";
+
+    data.forEach(film => {
+      box.innerHTML += `
+        <div class="filmItem">
+          <b>${film.title}</b>
+          <span>${film.description}</span>
+        </div>
+      `;
+    });
+  }
+
+  /* LOGOUT */
+  async function logout(){
+    await supabase.auth.signOut();
+    window.location.href = "./login.html";
+  }
+
+  loadSession();
+</script>
+
+</body>
+</html>
