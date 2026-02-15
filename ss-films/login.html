@@ -125,26 +125,35 @@
 
 <script>
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
   const supabase = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
 
-  // Read redirect params
+  // ✅ FULL REDIRECT SUPPORT
   const params = new URLSearchParams(window.location.search);
-  const redirectType = params.get("redirect");
-  const filmId = params.get("id");
+
+  // Default fallback is SS Films dashboard
+  const redirectTarget =
+    params.get("redirect") || "/ss-films/dashboard.html";
 
   async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
     const errorBox = document.getElementById("errorMsg");
     errorBox.style.display = "none";
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    if (!email || !password) {
+      errorBox.textContent = "Please enter your email and password.";
+      errorBox.style.display = "block";
+      return;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
@@ -155,29 +164,18 @@
       return;
     }
 
-    // ✅ Redirect back correctly
-    if (redirectType === "watch" && filmId) {
-      window.location.href = `/watch.html?id=${filmId}`;
-    } else {
-      window.location.href = `/dashboard.html`;
-    }
+    // ✅ Send user back where they came from
+    window.location.href = redirectTarget;
   }
 
-  // Auto redirect if already logged in
+  // ✅ AUTO REDIRECT IF ALREADY LOGGED IN
   async function checkSession() {
     const { data } = await supabase.auth.getSession();
 
     if (data.session) {
-      if (redirectType === "watch" && filmId) {
-        window.location.href = `/watch.html?id=${filmId}`;
-      } else {
-        window.location.href = `/dashboard.html`;
-      }
+      window.location.href = redirectTarget;
     }
   }
 
   checkSession();
 </script>
-
-</body>
-</html>
