@@ -33,10 +33,34 @@
     let allFilms = [];
 
     /* ================================
-       ✅ GO TO WATCH PAGE
+       ✅ REQUIRE LOGIN BEFORE WATCHING
     ================================ */
-    function goWatch(film) {
-      window.location.href = `watch.html?id=${film.id}`;
+    async function requireLogin(destination) {
+      const { data } = await supabase.auth.getSession();
+
+      // ❌ No user logged in → redirect to login page
+      if (!data.session) {
+        window.location.href =
+          `login.html?redirect=${encodeURIComponent(destination)}`;
+        return false;
+      }
+
+      // ✅ Logged in → allow access
+      return true;
+    }
+
+    /* ================================
+       ✅ GO TO WATCH PAGE (WITH LOGIN GATE)
+    ================================ */
+    async function goWatch(film) {
+      const target = `watch.html?id=${film.id}`;
+
+      // Require login first
+      const allowed = await requireLogin(target);
+      if (!allowed) return;
+
+      // Continue to watch
+      window.location.href = target;
     }
 
     /* ================================
@@ -82,7 +106,7 @@
           </div>
         `;
 
-        /* ✅ CLICK → WATCH.HTML */
+        /* ✅ CLICK → LOGIN REQUIRED → WATCH */
         card.onclick = () => goWatch(film);
 
         const cat = film.category?.toLowerCase();
@@ -133,12 +157,17 @@
     filterSelect.addEventListener("change", applyFilters);
 
     /* ================================
-       SPOTLIGHT CLICK
+       SPOTLIGHT CLICK (LOGIN REQUIRED)
     ================================ */
-    window.openSpotlight = function () {
-      if (spotlightFilm) {
-        goWatch(spotlightFilm);
-      }
+    window.openSpotlight = async function () {
+      if (!spotlightFilm) return;
+
+      const target = `watch.html?id=${spotlightFilm.id}`;
+
+      const allowed = await requireLogin(target);
+      if (!allowed) return;
+
+      window.location.href = target;
     };
 
     loadFilms();
