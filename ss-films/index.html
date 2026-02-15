@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SS Films</title>
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -16,11 +17,11 @@
     }
 
     header {
-      padding: 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.9);
       position: sticky;
       top: 0;
       z-index: 99;
@@ -29,77 +30,85 @@
     header h1 {
       font-size: 22px;
       color: #00ff99;
+      margin: 0;
     }
 
     nav button {
       background: #00ff99;
       border: none;
       padding: 10px 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 14px;
     }
 
+    /* Spotlight */
     .spotlight {
-      padding: 50px 20px;
+      padding: 60px 22px;
       background: linear-gradient(to right, black, transparent),
-        url("https://picsum.photos/1200/500");
+        url("https://picsum.photos/1400/600");
       background-size: cover;
       background-position: center;
     }
 
     .spotlight h2 {
-      font-size: 40px;
+      font-size: 42px;
       margin: 0;
     }
 
     .spotlight p {
-      max-width: 500px;
+      max-width: 520px;
       opacity: 0.85;
+      font-size: 16px;
+      margin-top: 12px;
     }
 
     .spotlight button {
-      margin-top: 20px;
+      margin-top: 22px;
       background: #00ff99;
       border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
+      padding: 13px 22px;
+      border-radius: 12px;
       font-weight: bold;
       cursor: pointer;
+      font-size: 15px;
     }
 
+    /* Sections */
     .section {
-      padding: 25px 20px;
+      padding: 25px 22px;
     }
 
     .section h3 {
       font-size: 20px;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
     .row {
       display: flex;
       gap: 15px;
       overflow-x: auto;
-      padding-bottom: 10px;
+      padding-bottom: 12px;
     }
 
     .card {
-      min-width: 220px;
-      background: #14141c;
-      border-radius: 12px;
+      min-width: 230px;
+      background: #15151f;
+      border-radius: 14px;
       overflow: hidden;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.25s;
+      flex-shrink: 0;
     }
 
     .card:hover {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
 
     .card img {
       width: 100%;
-      height: 130px;
+      height: 135px;
       object-fit: cover;
     }
 
@@ -113,7 +122,7 @@
     }
 
     .card .info p {
-      margin: 5px 0 0;
+      margin: 6px 0 0;
       font-size: 13px;
       opacity: 0.7;
     }
@@ -122,7 +131,7 @@
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.92);
       display: none;
       justify-content: center;
       align-items: center;
@@ -132,35 +141,50 @@
     .modal-content {
       background: #15151f;
       padding: 25px;
-      width: 90%;
-      max-width: 600px;
-      border-radius: 15px;
+      width: 92%;
+      max-width: 650px;
+      border-radius: 18px;
       text-align: center;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 18px;
+      top: 15px;
+      cursor: pointer;
+      font-size: 22px;
+      opacity: 0.7;
     }
 
     video {
       width: 100%;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-top: 15px;
-    }
-
-    .close {
-      float: right;
-      cursor: pointer;
-      font-size: 20px;
-      opacity: 0.7;
     }
 
     .locked {
-      color: red;
+      color: #ff4444;
       font-weight: bold;
-      margin-top: 15px;
+      margin-top: 18px;
+      font-size: 15px;
+    }
+
+    .loginBtn {
+      margin-top: 12px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: #00ff99;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header>
   <h1>🎬 SS Films</h1>
   <nav>
@@ -168,63 +192,65 @@
   </nav>
 </header>
 
-<!-- Spotlight -->
-<section class="spotlight" id="spotlight">
-  <h2>Spotlight Premiere</h2>
-  <p>The newest featured original from SS Films creators.</p>
+<!-- SPOTLIGHT -->
+<section class="spotlight">
+  <h2 id="spotlightTitle">Spotlight Premiere</h2>
+  <p id="spotlightDesc">
+    The newest featured original from SS Films creators.
+  </p>
   <button onclick="openSpotlight()">▶ Watch Spotlight</button>
 </section>
 
-<!-- Movies -->
+<!-- MOVIES -->
 <section class="section">
   <h3>🍿 Movies</h3>
   <div class="row" id="moviesRow"></div>
 </section>
 
-<!-- Series -->
+<!-- SERIES -->
 <section class="section">
   <h3>📺 Series</h3>
   <div class="row" id="seriesRow"></div>
 </section>
 
-<!-- Documentary -->
+<!-- DOCUMENTARY -->
 <section class="section">
   <h3>🎥 Documentary</h3>
   <div class="row" id="docRow"></div>
 </section>
 
-<!-- Modal -->
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">✖</span>
+
     <h2 id="modalTitle"></h2>
     <p id="modalDesc"></p>
 
     <p class="locked" id="lockedText"></p>
+    <button class="loginBtn" id="loginNowBtn" style="display:none;" onclick="goLogin()">
+      Login to Watch
+    </button>
 
     <video id="player" controls></video>
   </div>
 </div>
 
 <script>
-/* ================================
-   ✅ SUPABASE CONFIG (REAL)
-================================ */
-
+/* ============================
+   ✅ SUPABASE CONFIG
+============================ */
 const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-const supabase = window.supabase.createClient(
-  supabaseUrl,
-  supabaseKey
-);
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 let currentUser = null;
 
-/* ================================
+/* ============================
    ELEMENTS
-================================ */
-
+============================ */
 const moviesRow = document.getElementById("moviesRow");
 const seriesRow = document.getElementById("seriesRow");
 const docRow = document.getElementById("docRow");
@@ -233,18 +259,18 @@ const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
 const modalDesc = document.getElementById("modalDesc");
 const lockedText = document.getElementById("lockedText");
+
+const loginNowBtn = document.getElementById("loginNowBtn");
 const player = document.getElementById("player");
 
 const authBtn = document.getElementById("authBtn");
 
-/* ================================
-   AUTH CHECK
-================================ */
-
+/* ============================
+   AUTH
+============================ */
 async function checkUser() {
   const { data } = await supabase.auth.getUser();
   currentUser = data.user;
-
   authBtn.innerText = currentUser ? "Logout" : "Login";
 }
 
@@ -257,10 +283,13 @@ async function handleAuth() {
   }
 }
 
-/* ================================
-   LOAD FILMS (FIXED)
-================================ */
+function goLogin() {
+  window.location.href = "/login.html";
+}
 
+/* ============================
+   LOAD FILMS ✅ FIXED
+============================ */
 async function loadFilms() {
   moviesRow.innerHTML = "<p>Loading...</p>";
   seriesRow.innerHTML = "<p>Loading...</p>";
@@ -269,11 +298,12 @@ async function loadFilms() {
   const { data, error } = await supabase
     .from("films")
     .select("*")
-    .eq("visibility", "public")
     .order("created_at", { ascending: false });
 
+  console.log("FILMS DATA:", data);
+  console.log("FILMS ERROR:", error);
+
   if (error) {
-    console.log("SUPABASE ERROR:", error);
     alert("Error loading films.");
     return;
   }
@@ -292,7 +322,7 @@ async function loadFilms() {
     card.className = "card";
 
     card.innerHTML = `
-      <img src="${film.thumbnail_url}" />
+      <img src="${film.thumbnail_url || "https://picsum.photos/400/200"}" />
       <div class="info">
         <h4>${film.title}</h4>
         <p>${film.genre || "SS Films Original"}</p>
@@ -306,14 +336,13 @@ async function loadFilms() {
     if (cat === "movie") moviesRow.appendChild(card);
     else if (cat === "series") seriesRow.appendChild(card);
     else if (cat === "documentary") docRow.appendChild(card);
-    else moviesRow.appendChild(card); // fallback
+    else moviesRow.appendChild(card);
   });
 }
 
-/* ================================
-   OPEN MODAL
-================================ */
-
+/* ============================
+   MODAL WATCH LOCK
+============================ */
 function openFilm(film) {
   modal.style.display = "flex";
   modalTitle.innerText = film.title;
@@ -322,8 +351,10 @@ function openFilm(film) {
   if (!currentUser) {
     lockedText.innerText = "🔒 Login required to watch.";
     player.style.display = "none";
+    loginNowBtn.style.display = "inline-block";
   } else {
     lockedText.innerText = "";
+    loginNowBtn.style.display = "none";
     player.style.display = "block";
     player.src = film.video_url;
   }
@@ -334,10 +365,9 @@ function closeModal() {
   player.pause();
 }
 
-/* ================================
-   SPOTLIGHT (DB FEATURED)
-================================ */
-
+/* ============================
+   SPOTLIGHT FEATURED FILM
+============================ */
 async function openSpotlight() {
   const { data } = await supabase
     .from("films")
@@ -350,10 +380,12 @@ async function openSpotlight() {
   else alert("No featured film set yet.");
 }
 
-/* ================================
+/* ============================
    INIT
-================================ */
-
+============================ */
 checkUser();
 loadFilms();
 </script>
+
+</body>
+</html>
