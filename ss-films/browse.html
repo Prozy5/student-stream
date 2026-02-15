@@ -1,194 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Browse – SS Films</title>
+  <meta charset="UTF-8" />
+  <title>Browse • SS Films</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<style>
-body{
-  margin:0;
-  background:#070b10;
-  color:#fff;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-}
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-header{
-  position:sticky;
-  top:0;
-  z-index:10;
-  background:#070b10cc;
-  backdrop-filter:blur(10px);
-  padding:12px;
-}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui;
+    }
 
-.top{
-  display:flex;
-  gap:10px;
-}
+    body {
+      background: radial-gradient(circle at top, #0b1022, #05060c);
+      color: white;
+      min-height: 100vh;
+    }
 
-input{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:#141a22;
-  color:white;
-}
+    header {
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
 
-select{
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:#141a22;
-  color:white;
-}
+    header h1 {
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: .5px;
+    }
 
-.categories{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  margin-top:10px;
-}
+    header h1 span {
+      color: #4da3ff;
+    }
 
-.cat{
-  padding:6px 12px;
-  background:#141a22;
-  border-radius:20px;
-  font-size:13px;
-  cursor:pointer;
-  white-space:nowrap;
-}
+    .loginBtn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.05);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+      text-decoration: none;
+    }
 
-.cat.active{
-  background:#4da3ff;
-  color:black;
-}
+    .loginBtn:hover {
+      border-color: rgba(77,163,255,.5);
+    }
 
-.grid{
-  padding:12px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:12px;
-}
+    .hero {
+      padding: 60px 25px 30px;
+      max-width: 1100px;
+      margin: auto;
+    }
 
-.card img{
-  width:100%;
-  height:200px;
-  object-fit:cover;
-  border-radius:12px;
-}
+    .hero h2 {
+      font-size: 46px;
+      font-weight: 1000;
+    }
 
-.title{
-  font-size:13px;
-  margin-top:5px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
+    .hero p {
+      margin-top: 12px;
+      opacity: .75;
+      font-size: 16px;
+      max-width: 650px;
+      line-height: 1.6;
+    }
 
-.meta{
-  font-size:11px;
-  opacity:.7;
-}
-</style>
+    .grid {
+      max-width: 1150px;
+      margin: auto;
+      padding: 30px 25px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .filmCard {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: .25s;
+    }
+
+    .filmCard:hover {
+      transform: translateY(-6px);
+      border-color: rgba(77,163,255,.45);
+    }
+
+    .filmCard img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .filmInfo {
+      padding: 16px;
+    }
+
+    .filmInfo h3 {
+      font-size: 15px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .filmInfo p {
+      font-size: 13px;
+      opacity: .7;
+      line-height: 1.4;
+    }
+
+    .tag {
+      margin-top: 10px;
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(77,163,255,.12);
+      border: 1px solid rgba(77,163,255,.25);
+      color: #4da3ff;
+    }
+
+    footer {
+      text-align: center;
+      padding: 35px;
+      opacity: .4;
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+  </style>
 </head>
+
 <body>
 
 <header>
-  <div class="top">
-    <input id="search" placeholder="Search films...">
-    <select id="sort">
-      <option value="new">Newest</option>
-      <option value="views">Trending</option>
-      <option value="likes">Popular</option>
-    </select>
-  </div>
-  <div class="categories" id="categories"></div>
+  <h1>🎬 SS Films<span>Browse</span></h1>
+  <a href="/login.html" class="loginBtn">Login to Watch →</a>
 </header>
 
-<div class="grid" id="grid"></div>
+<section class="hero">
+  <h2>Originals. Spotlight. Legacy.</h2>
+  <p>
+    Explore creator-made films, documentary stories, episodic series,
+    and StudentStream Originals.
+    <br><br>
+    Browsing is public — watching requires login.
+  </p>
+</section>
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+<section class="grid" id="filmGrid">
+  <p style="opacity:.6;">Loading films...</p>
+</section>
 
-const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
+<footer>
+  © 2026 StudentStreamHQ • SS Films Division
+</footer>
 
-const grid = document.getElementById("grid");
-const searchInput = document.getElementById("search");
-const sortSelect = document.getElementById("sort");
-const categoriesDiv = document.getElementById("categories");
+<script>
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-let films=[];
-let categories=[];
-let selectedCategory=null;
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
-function card(f){
-  return `
-  <div class="card" onclick="location.href='watch.html?id=${f.id}'">
-    <img src="${f.thumbnail_url}">
-    <div class="title">${f.title}</div>
-    <div class="meta">👁 ${f.views||0}</div>
-  </div>`;
-}
+  async function loadBrowseFilms() {
+    const grid = document.getElementById("filmGrid");
 
-async function loadFilms(){
-  const {data}=await supabase
-    .from("films")
-    .select("*")
-    .eq("is_published",true);
+    const { data: films, error } = await supabase
+      .from("films")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  films=data||[];
-  render();
-}
+    if (error) {
+      grid.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+      return;
+    }
 
-async function loadCategories(){
-  const {data}=await supabase.from("film_categories").select("*");
-  categories=data||[];
+    if (!films || films.length === 0) {
+      grid.innerHTML = `<p style="opacity:.6;">No films uploaded yet.</p>`;
+      return;
+    }
 
-  categoriesDiv.innerHTML=`<div class="cat active" onclick="selectCat(null,this)">All</div>`;
+    grid.innerHTML = "";
 
-  categories.forEach(c=>{
-    const el=document.createElement("div");
-    el.className="cat";
-    el.innerText=c.name;
-    el.onclick=()=>selectCat(c.id,el);
-    categoriesDiv.appendChild(el);
-  });
-}
+    films.forEach(film => {
+      const card = document.createElement("div");
+      card.className = "filmCard";
 
-window.selectCat=(id,el)=>{
-  selectedCategory=id;
-  document.querySelectorAll(".cat").forEach(c=>c.classList.remove("active"));
-  el.classList.add("active");
-  render();
-}
+      card.innerHTML = `
+        <img src="${film.thumbnail_url}" alt="thumbnail">
+        <div class="filmInfo">
+          <h3>${film.title}</h3>
+          <p>${film.description.substring(0, 90)}...</p>
+          <div class="tag">${film.film_type}</div>
+        </div>
+      `;
 
-function render(){
-  let list=[...films];
+      card.onclick = () => {
+        window.location.href = `/watch.html?id=${film.id}`;
+      };
 
-  const q=searchInput.value.toLowerCase();
-  if(q){
-    list=list.filter(f=>f.title.toLowerCase().includes(q));
+      grid.appendChild(card);
+    });
   }
 
-  if(selectedCategory){
-    list=list.filter(f=>f.category_id===selectedCategory);
-  }
-
-  const sort=sortSelect.value;
-  if(sort==="views") list.sort((a,b)=>(b.views||0)-(a.views||0));
-  if(sort==="likes") list.sort((a,b)=>(b.likes||0)-(a.likes||0));
-  if(sort==="new") list.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-
-  grid.innerHTML=list.map(card).join("");
-}
-
-searchInput.oninput=render;
-sortSelect.onchange=render;
-
-loadFilms();
-loadCategories();
+  loadBrowseFilms();
 </script>
 
 </body>
