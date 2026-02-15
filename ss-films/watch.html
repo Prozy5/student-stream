@@ -5,237 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Watch | SS Films V3</title>
 
-  <!-- ✅ Supabase -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    /* ================================
-       SUPABASE CONFIG
-    ================================ */
-    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    /* ================================
-       GET FILM ID
-    ================================ */
-    const params = new URLSearchParams(window.location.search);
-    const filmId = params.get("id");
-
-    /* ================================
-       ELEMENTS
-    ================================ */
-    const titleEl = document.getElementById("filmTitle");
-    const descEl = document.getElementById("filmDesc");
-    const player = document.getElementById("player");
-
-    const likeBtn = document.getElementById("likeBtn");
-    const likeCountEl = document.getElementById("likeCount");
-
-    const commentBox = document.getElementById("commentText");
-    const commentBtn = document.getElementById("commentBtn");
-    const commentsList = document.getElementById("commentsList");
-
-    const suggestionsRow = document.getElementById("suggestionsRow");
-
-    let currentUser = null;
-    let currentFilm = null;
-
-    /* ================================
-       AUTH CHECK
-    ================================ */
-    async function checkAuth() {
-      const { data } = await supabase.auth.getSession();
-
-      if (!data.session) {
-        window.location.href = `login.html?redirect=watch.html?id=${filmId}`;
-        return;
-      }
-
-      currentUser = data.session.user;
-    }
-
-    /* ================================
-       LOAD FILM
-    ================================ */
-    async function loadFilm() {
-      const { data, error } = await supabase
-        .from("films")
-        .select("*")
-        .eq("id", filmId)
-        .single();
-
-      if (error) return alert("Film not found.");
-
-      currentFilm = data;
-
-      titleEl.innerText = data.title;
-      descEl.innerText = data.description;
-
-      player.src = data.video_url;
-    }
-
-    /* ================================
-       ❤️ LIKE SYSTEM
-    ================================ */
-    async function loadLikes() {
-      const { data } = await supabase
-        .from("likes")
-        .select("*")
-        .eq("film_id", filmId);
-
-      likeCountEl.innerText = data.length;
-
-      const liked = data.some(l => l.user_id === currentUser.id);
-
-      likeBtn.innerText = liked ? "❤️ Liked" : "🤍 Like";
-      likeBtn.dataset.liked = liked;
-    }
-
-    likeBtn.onclick = async () => {
-      const liked = likeBtn.dataset.liked === "true";
-
-      if (!liked) {
-        await supabase.from("likes").insert([
-          { film_id: filmId, user_id: currentUser.id }
-        ]);
-      } else {
-        await supabase
-          .from("likes")
-          .delete()
-          .eq("film_id", filmId)
-          .eq("user_id", currentUser.id);
-      }
-
-      loadLikes();
-    };
-
-    /* ================================
-       💬 COMMENTS SYSTEM
-    ================================ */
-    async function loadComments() {
-      const { data } = await supabase
-        .from("comments")
-        .select("*")
-        .eq("film_id", filmId)
-        .order("created_at", { ascending: false });
-
-      commentsList.innerHTML = "";
-
-      if (!data.length) {
-        commentsList.innerHTML =
-          "<p style='opacity:0.6'>No comments yet...</p>";
-        return;
-      }
-
-      data.forEach(c => {
-        const div = document.createElement("div");
-        div.className = "comment";
-
-        div.innerHTML = `
-          <b>${c.user_email || "User"}</b>
-          <p>${c.text}</p>
-        `;
-
-        commentsList.appendChild(div);
-      });
-    }
-
-    commentBtn.onclick = async () => {
-      const text = commentBox.value.trim();
-      if (!text) return;
-
-      await supabase.from("comments").insert([
-        {
-          film_id: filmId,
-          user_id: currentUser.id,
-          user_email: currentUser.email,
-          text: text
-        }
-      ]);
-
-      commentBox.value = "";
-      loadComments();
-    };
-
-    /* ================================
-       ⏯ WATCH PROGRESS SAVE + RESUME
-    ================================ */
-    async function loadProgress() {
-      const { data } = await supabase
-        .from("watch_progress")
-        .select("*")
-        .eq("film_id", filmId)
-        .eq("user_id", currentUser.id)
-        .single();
-
-      if (data) {
-        player.currentTime = data.progress;
-      }
-    }
-
-    async function saveProgress() {
-      await supabase.from("watch_progress").upsert([
-        {
-          film_id: filmId,
-          user_id: currentUser.id,
-          progress: player.currentTime
-        }
-      ]);
-    }
-
-    setInterval(() => {
-      if (!player.paused) saveProgress();
-    }, 5000);
-
-    /* ================================
-       🎥 SUGGESTIONS
-    ================================ */
-    async function loadSuggestions() {
-      const { data } = await supabase
-        .from("films")
-        .select("*")
-        .eq("visibility", "public")
-        .limit(8);
-
-      suggestionsRow.innerHTML = "";
-
-      data.forEach(film => {
-        if (film.id === filmId) return;
-
-        const card = document.createElement("div");
-        card.className = "suggest-card";
-
-        card.innerHTML = `
-          <img src="${film.thumbnail_url}" />
-          <p>${film.title}</p>
-        `;
-
-        card.onclick = () => {
-          window.location.href = `watch.html?id=${film.id}`;
-        };
-
-        suggestionsRow.appendChild(card);
-      });
-    }
-
-    /* ================================
-       INIT
-    ================================ */
-    async function init() {
-      await checkAuth();
-      await loadFilm();
-      await loadProgress();
-      await loadLikes();
-      await loadComments();
-      await loadSuggestions();
-    }
-
-    init();
-  </script>
-
   <style>
     body {
       margin: 0;
@@ -273,11 +42,16 @@
       font-weight: bold;
     }
 
-    video {
+    video, iframe {
       width: 100%;
       height: 70vh;
       margin-top: 75px;
       background: black;
+      border: none;
+    }
+
+    iframe {
+      display: none;
     }
 
     .info {
@@ -298,7 +72,6 @@
       line-height: 1.5;
     }
 
-    /* Like Button */
     .like-area {
       margin-top: 20px;
       display: flex;
@@ -321,7 +94,6 @@
       transform: scale(1.05);
     }
 
-    /* Comments */
     .comments {
       margin-top: 35px;
     }
@@ -359,7 +131,6 @@
       color: #00ff99;
     }
 
-    /* Suggestions */
     .suggest-row {
       display: flex;
       gap: 14px;
@@ -395,7 +166,9 @@
   </button>
 </header>
 
+<!-- 🎥 Player -->
 <video id="player" controls></video>
+<iframe id="youtubeFrame" allowfullscreen></iframe>
 
 <div class="info">
   <h2 id="filmTitle"></h2>
@@ -423,6 +196,166 @@
     <div class="suggest-row" id="suggestionsRow"></div>
   </div>
 </div>
+
+<!-- ✅ SCRIPT GOES AT BOTTOM -->
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const supabaseKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const params = new URLSearchParams(window.location.search);
+  const filmId = params.get("id");
+
+  const titleEl = document.getElementById("filmTitle");
+  const descEl = document.getElementById("filmDesc");
+  const player = document.getElementById("player");
+  const youtubeFrame = document.getElementById("youtubeFrame");
+
+  const likeBtn = document.getElementById("likeBtn");
+  const likeCountEl = document.getElementById("likeCount");
+
+  const commentBox = document.getElementById("commentText");
+  const commentBtn = document.getElementById("commentBtn");
+  const commentsList = document.getElementById("commentsList");
+
+  const suggestionsRow = document.getElementById("suggestionsRow");
+
+  let currentUser = null;
+
+  /* ✅ FIX DRIVE LINKS */
+  function fixDrive(url) {
+    if (!url.includes("drive.google.com/file/d/")) return url;
+    const fileId = url.split("/d/")[1].split("/")[0];
+    return `https://drive.google.com/uc?export=download&id=${fileId}`;
+  }
+
+  /* ✅ FIX YOUTUBE LINKS */
+  function getYoutubeEmbed(url) {
+    if (!url.includes("youtu")) return null;
+
+    let id = null;
+
+    if (url.includes("youtu.be/")) {
+      id = url.split("youtu.be/")[1].split("?")[0];
+    }
+
+    if (url.includes("watch?v=")) {
+      id = url.split("watch?v=")[1].split("&")[0];
+    }
+
+    if (!id) return null;
+
+    return `https://www.youtube.com/embed/${id}?autoplay=1`;
+  }
+
+  async function checkAuth() {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      window.location.href = `login.html?redirect=watch.html?id=${filmId}`;
+      return;
+    }
+    currentUser = data.session.user;
+  }
+
+  async function loadFilm() {
+    const { data } = await supabase
+      .from("films")
+      .select("*")
+      .eq("id", filmId)
+      .single();
+
+    titleEl.innerText = data.title;
+    descEl.innerText = data.description;
+
+    const yt = getYoutubeEmbed(data.video_url);
+
+    if (yt) {
+      player.style.display = "none";
+      youtubeFrame.style.display = "block";
+      youtubeFrame.src = yt;
+      return;
+    }
+
+    player.src = fixDrive(data.video_url);
+  }
+
+  async function loadLikes() {
+    const { data } = await supabase
+      .from("likes")
+      .select("*")
+      .eq("film_id", filmId);
+
+    likeCountEl.innerText = data.length;
+
+    const liked = data.some(l => l.user_id === currentUser.id);
+    likeBtn.innerText = liked ? "❤️ Liked" : "🤍 Like";
+    likeBtn.dataset.liked = liked;
+  }
+
+  likeBtn.onclick = async () => {
+    const liked = likeBtn.dataset.liked === "true";
+
+    if (!liked) {
+      await supabase.from("likes").insert([
+        { film_id: filmId, user_id: currentUser.id }
+      ]);
+    } else {
+      await supabase.from("likes")
+        .delete()
+        .eq("film_id", filmId)
+        .eq("user_id", currentUser.id);
+    }
+
+    loadLikes();
+  };
+
+  async function loadComments() {
+    const { data } = await supabase
+      .from("comments")
+      .select("*")
+      .eq("film_id", filmId)
+      .order("created_at", { ascending: false });
+
+    commentsList.innerHTML = "";
+
+    data.forEach(c => {
+      const div = document.createElement("div");
+      div.className = "comment";
+      div.innerHTML = `<b>${c.user_email}</b><p>${c.text}</p>`;
+      commentsList.appendChild(div);
+    });
+  }
+
+  commentBtn.onclick = async () => {
+    const text = commentBox.value.trim();
+    if (!text) return;
+
+    await supabase.from("comments").insert([
+      {
+        film_id: filmId,
+        user_id: currentUser.id,
+        user_email: currentUser.email,
+        text
+      }
+    ]);
+
+    commentBox.value = "";
+    loadComments();
+  };
+
+  async function init() {
+    await checkAuth();
+    await loadFilm();
+    await loadLikes();
+    await loadComments();
+  }
+
+  init();
+</script>
 
 </body>
 </html>
