@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SS Films Dashboard</title>
+  <title>SS Films Dashboard V6</title>
 
   <!-- ✅ SUPABASE -->
   <script type="module">
@@ -19,7 +19,7 @@
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     let user = null;
-    let allFilms = [];
+    let isAdmin = false;
 
     /* ===========================
        REQUIRE LOGIN
@@ -34,6 +34,12 @@
 
       user = data.session.user;
       document.getElementById("userEmail").innerText = user.email;
+
+      // ✅ ADMIN CHECK (your email)
+      if (user.email === "deondrestreams1@gmail.com") {
+        isAdmin = true;
+        document.getElementById("adminPanel").style.display = "block";
+      }
     }
 
     /* ===========================
@@ -45,40 +51,40 @@
     };
 
     /* ===========================
-       LOAD FILMS
+       LOAD FILMS (APPROVED ONLY)
     =========================== */
-    async function loadDashboard() {
-      const { data, error } = await supabase
+    async function loadApproved() {
+      const { data } = await supabase
         .from("films")
         .select("*")
-        .eq("visibility", "public")
+        .eq("status", "approved")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        alert("Error loading dashboard films.");
-        return;
-      }
-
-      allFilms = data;
-
-      renderRow("trendingRow", data.slice(0, 6));
-      renderRow("continueRow", []); // Placeholder
-      renderRow("watchlistRow", []); // Placeholder
-
-      // Premium Row (locked content)
-      const premium = data.filter(f => f.premium === true);
-      renderPremiumRow(premium);
+      renderRow("approvedRow", data);
     }
 
     /* ===========================
-       RENDER NORMAL ROW
+       LOAD PENDING FILMS
+    =========================== */
+    async function loadPending() {
+      const { data } = await supabase
+        .from("films")
+        .select("*")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      renderPending(data);
+    }
+
+    /* ===========================
+       RENDER APPROVED FILMS
     =========================== */
     function renderRow(rowId, films) {
       const row = document.getElementById(rowId);
       row.innerHTML = "";
 
-      if (films.length === 0) {
-        row.innerHTML = `<p class="empty">Nothing here yet...</p>`;
+      if (!films || films.length === 0) {
+        row.innerHTML = `<p class="empty">Nothing approved yet...</p>`;
         return;
       }
 
@@ -93,69 +99,144 @@
           </div>
         `;
 
-        card.onclick = () => {
-          window.location.href = `watch.html?id=${film.id}`;
-        };
-
         row.appendChild(card);
       });
     }
 
     /* ===========================
-       PREMIUM ROW (LOCKED 🔒)
+       RENDER PENDING (ADMIN)
     =========================== */
-    function renderPremiumRow(films) {
-      const row = document.getElementById("premiumRow");
+    function renderPending(films) {
+      const row = document.getElementById("pendingRow");
       row.innerHTML = "";
 
-      if (films.length === 0) {
-        row.innerHTML = `<p class="empty">No premium films yet...</p>`;
+      if (!films || films.length === 0) {
+        row.innerHTML = `<p class="empty">No pending uploads...</p>`;
         return;
       }
 
       films.forEach(film => {
         const card = document.createElement("div");
-        card.className = "card locked";
+        card.className = "pendingCard";
 
         card.innerHTML = `
-          <img src="${film.thumbnail_url}">
-          <div class="overlay">
-            <h4>${film.title}</h4>
-            <span class="lockTag">🔒 Premium</span>
-          </div>
+          <h4>${film.title}</h4>
+          <p>${film.description || ""}</p>
+          <button onclick="approveFilm('${film.id}')">✅ Approve</button>
         `;
-
-        card.onclick = () => openUpgrade();
 
         row.appendChild(card);
       });
     }
 
     /* ===========================
-       UPGRADE POPUP
+       APPROVE FILM (ADMIN ONLY)
     =========================== */
-    window.openUpgrade = function () {
-      document.getElementById("upgradeModal").style.display = "flex";
-    };
+    window.approveFilm = async function (filmId) {
+      if (!isAdmin) return;
 
-    window.closeUpgrade = function () {
-      document.getElementById("upgradeModal").style.display = "none";
-    };
+      await supabase
+        .from("films")
+        .update({ status: "approved" })
+        .eq("id", filmId);
 
-    window.subscribeNow = function () {
-      alert("💳 Subscription system coming next (Stripe + Premium Access)");
+      alert("Film Approved!");
+      loadApproved();
+      loadPending();
     };
 
     /* ===========================
-       INIT
+       UPLOAD VIDEO FILE (STORAGE)
     =========================== */
-    requireAuth().then(loadDashboard);
+    window.uploadFilm = async function () {
+      const title = document.getElementById("filmTitle").value.trim();
+      const desc = document.getElementById("filmDesc").value.trim();
+      const thumb = document.getElementById("filmThumb").value.trim();
+      const file = document.getElementById("filmFile").files[0];
+
+      const msg = document.getElementById("uploadMsg");
+      msg.innerText = "";
+
+      if (!title || !thumb || !file) {
+        msg.innerText = "❌ Title, thumbnail, and video file required.";
+        return;
+      }
+
+      msg.style.color = "#00ff99";
+      msg.innerText = "Uploading video...";
+
+      /* Upload to Storage */
+      const filePath = `${user.id}/${Date.now()}-${file.name}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("films")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        msg.style.color = "red";
+        msg.innerText = uploadError.message;
+        return;
+      }
+
+      /* Get Public URL */
+      const { data: urlData } = supabase.storage
+        .from("films")
+        .getPublicUrl(filePath);
+
+      const videoUrl = urlData.publicUrl;
+
+      /* Insert Pending Film */
+      await supabase.from("films").insert([
+        {
+          title,
+          description: desc,
+          thumbnail_url: thumb,
+          video_url: videoUrl,
+          creator_id: user.id,
+          status: "pending",
+          views: 0
+        }
+      ]);
+
+      msg.innerText = "✅ Uploaded! Waiting for approval.";
+
+      setTimeout(() => location.reload(), 1000);
+    };
+
+    /* ===========================
+       CREATOR EARNINGS
+    =========================== */
+    async function loadEarnings() {
+      const { data } = await supabase
+        .from("films")
+        .select("views")
+        .eq("creator_id", user.id);
+
+      let totalViews = 0;
+      data.forEach(f => totalViews += f.views || 0);
+
+      // Example payout model: $2 per 1,000 views
+      const earnings = (totalViews / 1000) * 2;
+
+      document.getElementById("totalViews").innerText = totalViews;
+      document.getElementById("totalEarnings").innerText =
+        "$" + earnings.toFixed(2);
+    }
+
+    /* ===========================
+       INIT DASHBOARD
+    =========================== */
+    requireAuth().then(() => {
+      loadApproved();
+      loadPending();
+      loadEarnings();
+    });
   </script>
 
   <style>
     body {
       margin: 0;
-      font-family: Inter, Arial, sans-serif;
+      font-family: Inter, Arial;
       background: #050507;
       color: white;
     }
@@ -164,50 +245,30 @@
       padding: 20px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
 
     h1 {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 900;
       color: #00ff99;
-    }
-
-    .userBox {
-      text-align: right;
-      font-size: 13px;
-      opacity: 0.7;
+      font-size: 24px;
     }
 
     .logoutBtn {
-      margin-top: 6px;
       padding: 8px 14px;
-      border: none;
       border-radius: 12px;
+      border: none;
       background: rgba(255,255,255,0.08);
       color: white;
       cursor: pointer;
     }
 
     .section {
-      padding: 18px 20px;
-    }
-
-    .section h2 {
-      margin-bottom: 12px;
-      font-size: 20px;
+      padding: 20px;
     }
 
     .row {
       display: flex;
       gap: 14px;
       overflow-x: auto;
-      padding-bottom: 10px;
-    }
-
-    .row::-webkit-scrollbar {
-      display: none;
     }
 
     .card {
@@ -216,12 +277,6 @@
       border-radius: 16px;
       overflow: hidden;
       position: relative;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .card:hover {
-      transform: scale(1.06);
     }
 
     .card img {
@@ -233,136 +288,103 @@
     .overlay {
       position: absolute;
       bottom: 0;
-      width: 100%;
       padding: 12px;
+      width: 100%;
       background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
     }
 
-    .overlay h4 {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    .empty {
-      opacity: 0.5;
-      font-size: 14px;
-    }
-
-    .lockTag {
-      display: inline-block;
-      margin-top: 6px;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 12px;
-      background: rgba(0,255,153,0.2);
-      color: #00ff99;
-    }
-
-    /* Upgrade Modal */
-    #upgradeModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .modalBox {
-      width: 90%;
-      max-width: 400px;
-      padding: 28px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.08);
-      text-align: center;
-      backdrop-filter: blur(16px);
-    }
-
-    .modalBox h3 {
-      margin: 0;
-      font-size: 22px;
-      color: #00ff99;
-    }
-
-    .modalBox p {
-      opacity: 0.75;
-      margin: 14px 0;
-    }
-
-    .modalBox button {
+    .studio input, textarea {
       width: 100%;
-      padding: 14px;
       margin-top: 10px;
-      border: none;
+      padding: 12px;
       border-radius: 14px;
-      font-weight: bold;
-      cursor: pointer;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: white;
     }
 
-    .subBtn {
+    .studio button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: #00ff99;
+      font-weight: bold;
+    }
+
+    .pendingCard {
+      background: rgba(255,255,255,0.06);
+      padding: 14px;
+      border-radius: 14px;
+      min-width: 220px;
+    }
+
+    .pendingCard button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 12px;
       background: #00ff99;
     }
 
-    .closeBtn {
-      background: rgba(255,255,255,0.1);
-      color: white;
+    .earnBox {
+      background: rgba(255,255,255,0.06);
+      padding: 18px;
+      border-radius: 16px;
+      margin-top: 12px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <h1>🎬 SS Films Dashboard</h1>
+<header>
+  <h1>🎬 SS Films Dashboard V6</h1>
 
-    <div class="userBox">
-      Logged in as:<br>
-      <span id="userEmail"></span><br>
-      <button class="logoutBtn" onclick="logoutUser()">Logout</button>
-    </div>
-  </header>
-
-  <!-- TRENDING -->
-  <section class="section">
-    <h2>🔥 Trending Now</h2>
-    <div class="row" id="trendingRow"></div>
-  </section>
-
-  <!-- CONTINUE WATCHING -->
-  <section class="section">
-    <h2>▶ Continue Watching</h2>
-    <div class="row" id="continueRow"></div>
-  </section>
-
-  <!-- WATCHLIST -->
-  <section class="section">
-    <h2>⭐ My Watchlist</h2>
-    <div class="row" id="watchlistRow"></div>
-  </section>
-
-  <!-- PREMIUM -->
-  <section class="section">
-    <h2>🔒 Premium Exclusives</h2>
-    <div class="row" id="premiumRow"></div>
-  </section>
-
-  <!-- UPGRADE MODAL -->
-  <div id="upgradeModal">
-    <div class="modalBox">
-      <h3>Upgrade to SS Films Premium</h3>
-      <p>Unlock exclusive originals, premieres, and bonus content.</p>
-
-      <button class="subBtn" onclick="subscribeNow()">
-        Subscribe Now ($4.99/mo)
-      </button>
-
-      <button class="closeBtn" onclick="closeUpgrade()">
-        Not Now
-      </button>
-    </div>
+  <div>
+    <div id="userEmail"></div>
+    <button class="logoutBtn" onclick="logoutUser()">Logout</button>
   </div>
+</header>
+
+<!-- ✅ CREATOR EARNINGS -->
+<section class="section">
+  <h2>💰 Creator Earnings</h2>
+  <div class="earnBox">
+    Total Views: <b id="totalViews">0</b><br>
+    Estimated Earnings: <b id="totalEarnings">$0.00</b>
+  </div>
+</section>
+
+<!-- ✅ APPROVED FILMS -->
+<section class="section">
+  <h2>✅ Approved Films</h2>
+  <div class="row" id="approvedRow"></div>
+</section>
+
+<!-- ✅ UPLOAD STUDIO -->
+<section class="section">
+  <h2>🎥 Upload Film (Pending Approval)</h2>
+
+  <div class="studio">
+    <input id="filmTitle" placeholder="Film Title" />
+    <textarea id="filmDesc" placeholder="Description"></textarea>
+    <input id="filmThumb" placeholder="Thumbnail URL" />
+
+    <input id="filmFile" type="file" accept="video/mp4" />
+
+    <button onclick="uploadFilm()">Upload Film</button>
+    <div id="uploadMsg"></div>
+  </div>
+</section>
+
+<!-- ✅ ADMIN PANEL -->
+<section class="section" id="adminPanel" style="display:none;">
+  <h2>🛠 Admin Approval Panel</h2>
+  <div class="row" id="pendingRow"></div>
+</section>
 
 </body>
 </html>
