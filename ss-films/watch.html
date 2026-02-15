@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Watch | SS Films</title>
+  <title>Watch | SS Films V3</title>
 
   <!-- ✅ Supabase -->
   <script type="module">
@@ -29,68 +29,169 @@
     ================================ */
     const titleEl = document.getElementById("filmTitle");
     const descEl = document.getElementById("filmDesc");
-    const genreEl = document.getElementById("filmGenre");
-
     const player = document.getElementById("player");
-    const playBtn = document.getElementById("playBtn");
 
-    const loading = document.getElementById("loading");
+    const likeBtn = document.getElementById("likeBtn");
+    const likeCountEl = document.getElementById("likeCount");
+
+    const commentBox = document.getElementById("commentText");
+    const commentBtn = document.getElementById("commentBtn");
+    const commentsList = document.getElementById("commentsList");
+
     const suggestionsRow = document.getElementById("suggestionsRow");
 
+    let currentUser = null;
     let currentFilm = null;
+
+    /* ================================
+       AUTH CHECK
+    ================================ */
+    async function checkAuth() {
+      const { data } = await supabase.auth.getSession();
+
+      if (!data.session) {
+        window.location.href = `login.html?redirect=watch.html?id=${filmId}`;
+        return;
+      }
+
+      currentUser = data.session.user;
+    }
 
     /* ================================
        LOAD FILM
     ================================ */
     async function loadFilm() {
-      if (!filmId) return alert("No film selected.");
-
       const { data, error } = await supabase
         .from("films")
         .select("*")
         .eq("id", filmId)
         .single();
 
-      if (error) {
-        alert("Film not found.");
-        console.log(error);
-        return;
-      }
+      if (error) return alert("Film not found.");
 
       currentFilm = data;
 
-      loading.style.display = "none";
-
       titleEl.innerText = data.title;
       descEl.innerText = data.description;
-      genreEl.innerText = data.genre || "SS Films Original";
 
       player.src = data.video_url;
     }
 
     /* ================================
-       PLAY BUTTON OVERLAY
+       ❤️ LIKE SYSTEM
     ================================ */
-    window.togglePlay = function () {
-      if (player.paused) {
-        player.play();
-        playBtn.style.display = "none";
+    async function loadLikes() {
+      const { data } = await supabase
+        .from("likes")
+        .select("*")
+        .eq("film_id", filmId);
+
+      likeCountEl.innerText = data.length;
+
+      const liked = data.some(l => l.user_id === currentUser.id);
+
+      likeBtn.innerText = liked ? "❤️ Liked" : "🤍 Like";
+      likeBtn.dataset.liked = liked;
+    }
+
+    likeBtn.onclick = async () => {
+      const liked = likeBtn.dataset.liked === "true";
+
+      if (!liked) {
+        await supabase.from("likes").insert([
+          { film_id: filmId, user_id: currentUser.id }
+        ]);
       } else {
-        player.pause();
-        playBtn.style.display = "flex";
+        await supabase
+          .from("likes")
+          .delete()
+          .eq("film_id", filmId)
+          .eq("user_id", currentUser.id);
       }
+
+      loadLikes();
     };
 
-    player.addEventListener("pause", () => {
-      playBtn.style.display = "flex";
-    });
+    /* ================================
+       💬 COMMENTS SYSTEM
+    ================================ */
+    async function loadComments() {
+      const { data } = await supabase
+        .from("comments")
+        .select("*")
+        .eq("film_id", filmId)
+        .order("created_at", { ascending: false });
 
-    player.addEventListener("play", () => {
-      playBtn.style.display = "none";
-    });
+      commentsList.innerHTML = "";
+
+      if (!data.length) {
+        commentsList.innerHTML =
+          "<p style='opacity:0.6'>No comments yet...</p>";
+        return;
+      }
+
+      data.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "comment";
+
+        div.innerHTML = `
+          <b>${c.user_email || "User"}</b>
+          <p>${c.text}</p>
+        `;
+
+        commentsList.appendChild(div);
+      });
+    }
+
+    commentBtn.onclick = async () => {
+      const text = commentBox.value.trim();
+      if (!text) return;
+
+      await supabase.from("comments").insert([
+        {
+          film_id: filmId,
+          user_id: currentUser.id,
+          user_email: currentUser.email,
+          text: text
+        }
+      ]);
+
+      commentBox.value = "";
+      loadComments();
+    };
 
     /* ================================
-       LOAD SUGGESTIONS
+       ⏯ WATCH PROGRESS SAVE + RESUME
+    ================================ */
+    async function loadProgress() {
+      const { data } = await supabase
+        .from("watch_progress")
+        .select("*")
+        .eq("film_id", filmId)
+        .eq("user_id", currentUser.id)
+        .single();
+
+      if (data) {
+        player.currentTime = data.progress;
+      }
+    }
+
+    async function saveProgress() {
+      await supabase.from("watch_progress").upsert([
+        {
+          film_id: filmId,
+          user_id: currentUser.id,
+          progress: player.currentTime
+        }
+      ]);
+    }
+
+    setInterval(() => {
+      if (!player.paused) saveProgress();
+    }, 5000);
+
+    /* ================================
+       🎥 SUGGESTIONS
     ================================ */
     async function loadSuggestions() {
       const { data } = await supabase
@@ -101,7 +202,7 @@
 
       suggestionsRow.innerHTML = "";
 
-      data.forEach((film) => {
+      data.forEach(film => {
         if (film.id === filmId) return;
 
         const card = document.createElement("div");
@@ -123,14 +224,22 @@
     /* ================================
        INIT
     ================================ */
-    loadFilm();
-    loadSuggestions();
+    async function init() {
+      await checkAuth();
+      await loadFilm();
+      await loadProgress();
+      await loadLikes();
+      await loadComments();
+      await loadSuggestions();
+    }
+
+    init();
   </script>
 
   <style>
     body {
       margin: 0;
-      font-family: "Inter", Arial, sans-serif;
+      font-family: Inter, Arial, sans-serif;
       background: #050507;
       color: white;
     }
@@ -141,18 +250,17 @@
       width: 100%;
       top: 0;
       z-index: 999;
-      background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(12px);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(14px);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     header h1 {
-      margin: 0;
-      font-size: 18px;
       color: #00ff99;
-      font-weight: 800;
+      font-size: 18px;
+      margin: 0;
     }
 
     .back-btn {
@@ -165,40 +273,13 @@
       font-weight: bold;
     }
 
-    /* 🎬 PLAYER AREA */
-    .player-wrap {
-      margin-top: 75px;
-      position: relative;
-      width: 100%;
-      max-height: 75vh;
-      overflow: hidden;
-    }
-
     video {
       width: 100%;
-      height: 75vh;
-      object-fit: cover;
+      height: 70vh;
+      margin-top: 75px;
       background: black;
     }
 
-    /* Overlay Play Button */
-    .play-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 80px;
-      cursor: pointer;
-      background: rgba(0,0,0,0.35);
-      transition: 0.2s;
-    }
-
-    .play-overlay:hover {
-      background: rgba(0,0,0,0.55);
-    }
-
-    /* Film Info */
     .info {
       max-width: 950px;
       margin: auto;
@@ -211,68 +292,96 @@
       font-weight: 900;
     }
 
-    .genre {
-      opacity: 0.7;
-      margin-top: 6px;
-      font-size: 14px;
-    }
-
     .desc {
-      margin-top: 14px;
-      font-size: 15px;
-      opacity: 0.85;
+      margin-top: 12px;
+      opacity: 0.8;
       line-height: 1.5;
     }
 
-    /* Suggestions */
-    .suggestions {
+    /* Like Button */
+    .like-area {
+      margin-top: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    #likeBtn {
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      transition: 0.2s;
+    }
+
+    #likeBtn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Comments */
+    .comments {
       margin-top: 35px;
     }
 
-    .suggestions h3 {
-      font-size: 18px;
-      margin-bottom: 12px;
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      resize: none;
+      height: 80px;
     }
 
+    #commentBtn {
+      margin-top: 10px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      background: #00ff99;
+      font-weight: bold;
+    }
+
+    .comment {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .comment b {
+      color: #00ff99;
+    }
+
+    /* Suggestions */
     .suggest-row {
       display: flex;
       gap: 14px;
       overflow-x: auto;
-    }
-
-    .suggest-row::-webkit-scrollbar {
-      display: none;
+      margin-top: 15px;
     }
 
     .suggest-card {
-      min-width: 170px;
+      min-width: 160px;
       cursor: pointer;
     }
 
     .suggest-card img {
-      width: 170px;
-      height: 230px;
-      object-fit: cover;
+      width: 160px;
+      height: 220px;
       border-radius: 14px;
-      transition: 0.2s;
-    }
-
-    .suggest-card img:hover {
-      transform: scale(1.07);
+      object-fit: cover;
     }
 
     .suggest-card p {
-      margin: 6px 0 0;
       font-size: 13px;
       opacity: 0.8;
-    }
-
-    /* Loading */
-    .loading {
-      text-align: center;
-      padding: 120px;
-      font-size: 18px;
-      opacity: 0.7;
     }
   </style>
 </head>
@@ -281,31 +390,32 @@
 
 <header>
   <h1>🎬 SS Films</h1>
-
   <button class="back-btn" onclick="window.location.href='index.html'">
     ⬅ Back
   </button>
 </header>
 
-<div id="loading" class="loading">
-  Loading film...
-</div>
+<video id="player" controls></video>
 
-<!-- 🎬 Player -->
-<div class="player-wrap">
-  <video id="player" controls></video>
-
-  <!-- Big Play Overlay -->
-  <div id="playBtn" class="play-overlay" onclick="togglePlay()">
-    ▶
-  </div>
-</div>
-
-<!-- Film Info -->
 <div class="info">
   <h2 id="filmTitle"></h2>
-  <p class="genre" id="filmGenre"></p>
   <p class="desc" id="filmDesc"></p>
+
+  <!-- ❤️ Likes -->
+  <div class="like-area">
+    <button id="likeBtn">🤍 Like</button>
+    <span><b id="likeCount">0</b> likes</span>
+  </div>
+
+  <!-- 💬 Comments -->
+  <div class="comments">
+    <h3>Comments</h3>
+
+    <textarea id="commentText" placeholder="Write a comment..."></textarea>
+    <button id="commentBtn">Post Comment</button>
+
+    <div id="commentsList"></div>
+  </div>
 
   <!-- Suggestions -->
   <div class="suggestions">
