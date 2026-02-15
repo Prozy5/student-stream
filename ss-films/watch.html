@@ -2,102 +2,143 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Watch • SS Films</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Watch | SS Films</title>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ✅ Supabase Module -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui;
+    /* ================================
+       SUPABASE CONFIG
+    ================================ */
+    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    /* ================================
+       GET FILM ID FROM URL
+    ================================ */
+    const params = new URLSearchParams(window.location.search);
+    const filmId = params.get("id");
+
+    /* ================================
+       ELEMENTS
+    ================================ */
+    const titleEl = document.getElementById("filmTitle");
+    const descEl = document.getElementById("filmDesc");
+    const genreEl = document.getElementById("filmGenre");
+    const player = document.getElementById("player");
+    const loading = document.getElementById("loading");
+
+    /* ================================
+       LOAD FILM BY ID
+    ================================ */
+    async function loadFilm() {
+      if (!filmId) {
+        alert("No film selected.");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("films")
+        .select("*")
+        .eq("id", filmId)
+        .single();
+
+      if (error) {
+        console.log(error);
+        alert("Film not found.");
+        return;
+      }
+
+      loading.style.display = "none";
+
+      titleEl.innerText = data.title;
+      descEl.innerText = data.description;
+      genreEl.innerText = data.genre || "SS Films Original";
+
+      player.src = data.video_url;
+      player.play();
     }
 
+    loadFilm();
+  </script>
+
+  <style>
     body {
-      background: radial-gradient(circle at top, #0b1022, #05060c);
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #050507;
       color: white;
-      min-height: 100vh;
     }
 
     header {
-      padding: 18px 26px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 18px 20px;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 999;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     header h1 {
-      font-size: 16px;
-      font-weight: 950;
-    }
-
-    header a {
-      color: #4da3ff;
+      margin: 0;
+      font-size: 18px;
+      color: #00ff99;
       font-weight: 800;
-      text-decoration: none;
-      font-size: 14px;
     }
 
-    .wrap {
-      max-width: 1000px;
+    .back-btn {
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 25px;
+      max-width: 900px;
       margin: auto;
-      padding: 50px 20px;
-    }
-
-    .title {
-      font-size: 42px;
-      font-weight: 1000;
-      margin-bottom: 10px;
-    }
-
-    .desc {
-      opacity: .75;
-      max-width: 750px;
-      line-height: 1.6;
-      margin-bottom: 30px;
-    }
-
-    .playerBox {
-      border-radius: 22px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      box-shadow: 0 0 70px rgba(0,0,0,.55);
     }
 
     video {
       width: 100%;
-      height: auto;
-      display: block;
+      border-radius: 18px;
       background: black;
+      margin-top: 15px;
     }
 
-    .metaRow {
-      margin-top: 18px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    h2 {
+      font-size: 34px;
+      margin-bottom: 8px;
     }
 
-    .tag {
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      background: rgba(77,163,255,.12);
-      border: 1px solid rgba(77,163,255,.25);
-      color: #4da3ff;
+    .genre {
+      opacity: 0.7;
+      font-size: 14px;
+      margin-bottom: 15px;
     }
 
-    .lockedMsg {
+    .desc {
+      opacity: 0.85;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    .loading {
       text-align: center;
-      margin-top: 80px;
-      opacity: .75;
-      font-size: 16px;
+      padding: 80px;
+      font-size: 18px;
+      opacity: 0.7;
     }
   </style>
 </head>
@@ -106,83 +147,25 @@
 
 <header>
   <h1>🎬 SS Films</h1>
-  <a href="/browse.html">← Back to Browse</a>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">
+    ⬅ Back
+  </button>
 </header>
 
-<div class="wrap" id="watchWrap">
-  <p class="lockedMsg">Loading film...</p>
+<div class="container">
+
+  <div id="loading" class="loading">
+    Loading film...
+  </div>
+
+  <h2 id="filmTitle"></h2>
+  <p class="genre" id="filmGenre"></p>
+  <p class="desc" id="filmDesc"></p>
+
+  <video id="player" controls></video>
+
 </div>
-
-<script>
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-  async function requireLogin() {
-    const { data } = await supabase.auth.getSession();
-
-    if (!data.session) {
-      // Redirect user to login page
-      // Save film ID so they return after login
-      const params = new URLSearchParams(window.location.search);
-      const filmId = params.get("id");
-
-      window.location.href = `/login.html?redirect=watch&id=${filmId}`;
-      return false;
-    }
-
-    return true;
-  }
-
-  async function loadFilm() {
-    const allowed = await requireLogin();
-    if (!allowed) return;
-
-    const params = new URLSearchParams(window.location.search);
-    const filmId = params.get("id");
-
-    if (!filmId) {
-      document.getElementById("watchWrap").innerHTML =
-        "<p class='lockedMsg'>Film not found.</p>";
-      return;
-    }
-
-    const { data: film, error } = await supabase
-      .from("films")
-      .select("*")
-      .eq("id", filmId)
-      .single();
-
-    if (error || !film) {
-      document.getElementById("watchWrap").innerHTML =
-        "<p class='lockedMsg'>Error loading film.</p>";
-      return;
-    }
-
-    document.getElementById("watchWrap").innerHTML = `
-      <h2 class="title">${film.title}</h2>
-      <p class="desc">${film.description}</p>
-
-      <div class="playerBox">
-        <video controls autoplay>
-          <source src="${film.video_url}" type="video/mp4">
-          Your browser does not support video playback.
-        </video>
-      </div>
-
-      <div class="metaRow">
-        <div class="tag">${film.film_type}</div>
-        <div class="tag">${film.genre}</div>
-      </div>
-    `;
-  }
-
-  loadFilm();
-</script>
 
 </body>
 </html>
