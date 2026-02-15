@@ -1,82 +1,391 @@
-<!-- DEBUG BOX -->
-<div id="debugBox" style="
-  position: fixed;
-  bottom: 15px;
-  left: 15px;
-  width: 360px;
-  max-height: 250px;
-  overflow-y: auto;
-  background: rgba(255,0,0,0.12);
-  border: 2px solid red;
-  padding: 14px;
-  font-size: 12px;
-  font-family: monospace;
-  color: white;
-  z-index: 9999;
-  border-radius: 12px;
-">
-  <b>SS FILMS DEBUG:</b>
-  <div id="debugText">Loading...</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SS Films</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0b0f;
+      color: white;
+    }
+
+    header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.85);
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+
+    header h1 {
+      font-size: 22px;
+      color: #00ff99;
+    }
+
+    nav button {
+      background: #00ff99;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .spotlight {
+      padding: 50px 20px;
+      background: linear-gradient(to right, black, transparent),
+        url("https://picsum.photos/1200/500");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .spotlight h2 {
+      font-size: 40px;
+      margin: 0;
+    }
+
+    .spotlight p {
+      max-width: 500px;
+      opacity: 0.85;
+    }
+
+    .spotlight button {
+      margin-top: 20px;
+      background: #00ff99;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .section {
+      padding: 25px 20px;
+    }
+
+    .section h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .card {
+      min-width: 220px;
+      background: #14141c;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+    }
+
+    .card .info {
+      padding: 10px;
+    }
+
+    .card .info h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .card .info p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+
+    .modal-content {
+      background: #15151f;
+      padding: 25px;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
+      opacity: 0.7;
+    }
+
+    .locked {
+      color: red;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    /* DEBUG BOX */
+    #debugBox {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255,0,0,0.15);
+      border: 2px solid red;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 13px;
+      width: 280px;
+      z-index: 9999;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎬 SS Films</h1>
+  <nav>
+    <button id="authBtn">Login</button>
+  </nav>
+</header>
+
+<!-- Spotlight -->
+<section class="spotlight">
+  <h2>Spotlight Premiere</h2>
+  <p>The newest featured original from SS Films creators.</p>
+  <button id="spotlightBtn">▶ Watch Spotlight</button>
+</section>
+
+<!-- Movies -->
+<section class="section">
+  <h3>🍿 Movies</h3>
+  <div class="row" id="moviesRow"></div>
+</section>
+
+<!-- Series -->
+<section class="section">
+  <h3>📺 Series</h3>
+  <div class="row" id="seriesRow"></div>
+</section>
+
+<!-- Documentary -->
+<section class="section">
+  <h3>🎥 Documentary</h3>
+  <div class="row" id="docRow"></div>
+</section>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">✖</span>
+    <h2 id="modalTitle"></h2>
+    <p id="modalDesc"></p>
+    <p class="locked" id="lockedText"></p>
+    <video id="player" controls></video>
+  </div>
 </div>
 
-<script>
-/* ================================
-   DEBUG HELPER
-================================ */
+<!-- DEBUG -->
+<div id="debugBox">SS FILMS DEBUG:\nLoading...</div>
 
-const debugText = document.getElementById("debugText");
+<!-- ✅ FIXED SCRIPT -->
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-function logDebug(msg) {
-  debugText.innerHTML += `<br>• ${msg}`;
-  console.log("DEBUG:", msg);
-}
+  /* ================================
+     CONFIG
+  ================================ */
+  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const supabaseKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-/* ================================
-   SUPABASE TEST
-================================ */
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function runDebug() {
+  /* ================================
+     ELEMENTS
+  ================================ */
+  const debugBox = document.getElementById("debugBox");
 
-  logDebug("Supabase Loaded: " + (!!window.supabase));
+  const moviesRow = document.getElementById("moviesRow");
+  const seriesRow = document.getElementById("seriesRow");
+  const docRow = document.getElementById("docRow");
 
-  // Check Auth Session
-  const sessionRes = await supabase.auth.getSession();
-  logDebug("Session Found: " + (!!sessionRes.data.session));
+  const modal = document.getElementById("modal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalDesc = document.getElementById("modalDesc");
+  const lockedText = document.getElementById("lockedText");
+  const player = document.getElementById("player");
 
-  if (sessionRes.data.session) {
-    logDebug("User Email: " + sessionRes.data.session.user.email);
+  const authBtn = document.getElementById("authBtn");
+  const spotlightBtn = document.getElementById("spotlightBtn");
+  const closeModalBtn = document.getElementById("closeModal");
+
+  let currentUser = null;
+
+  /* ================================
+     DEBUG HELPER
+  ================================ */
+  function debug(msg) {
+    debugBox.innerText += "\n" + msg;
+    console.log(msg);
   }
 
-  // Check Films Table
-  logDebug("Querying films table...");
+  debug("✅ Supabase Module Loaded");
 
-  const { data, error } = await supabase
-    .from("films")
-    .select("*")
-    .limit(5);
+  /* ================================
+     AUTH CHECK
+  ================================ */
+  async function checkUser() {
+    const { data } = await supabase.auth.getUser();
+    currentUser = data.user;
 
-  if (error) {
-    logDebug("❌ Supabase ERROR:");
-    logDebug(error.message);
-    logDebug("Code: " + error.code);
-    return;
+    authBtn.innerText = currentUser ? "Logout" : "Login";
+    debug("User: " + (currentUser ? "Logged In" : "Guest"));
   }
 
-  if (!data || data.length === 0) {
-    logDebug("⚠️ No films returned.");
-    logDebug("This means RLS is blocking OR table empty.");
-    return;
+  authBtn.onclick = async () => {
+    if (currentUser) {
+      await supabase.auth.signOut();
+      location.reload();
+    } else {
+      alert("Login page coming soon");
+    }
+  };
+
+  /* ================================
+     LOAD FILMS
+  ================================ */
+  async function loadFilms() {
+    debug("Loading films from DB...");
+
+    const { data, error } = await supabase
+      .from("films")
+      .select("*")
+      .eq("visibility", "public")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      debug("❌ DB ERROR: " + error.message);
+      return;
+    }
+
+    debug("✅ Films Found: " + data.length);
+
+    moviesRow.innerHTML = "";
+    seriesRow.innerHTML = "";
+    docRow.innerHTML = "";
+
+    if (data.length === 0) {
+      moviesRow.innerHTML = "<p>No films yet.</p>";
+      return;
+    }
+
+    data.forEach((film) => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <img src="${film.thumbnail_url}" />
+        <div class="info">
+          <h4>${film.title}</h4>
+          <p>${film.genre}</p>
+        </div>
+      `;
+
+      card.onclick = () => openFilm(film);
+
+      const cat = film.category?.toLowerCase();
+
+      if (cat === "movie") moviesRow.appendChild(card);
+      else if (cat === "series") seriesRow.appendChild(card);
+      else if (cat === "documentary") docRow.appendChild(card);
+      else moviesRow.appendChild(card);
+    });
   }
 
-  logDebug("✅ Films Found: " + data.length);
-  logDebug("First Film Title: " + data[0].title);
+  /* ================================
+     MODAL PLAYER
+  ================================ */
+  function openFilm(film) {
+    modal.style.display = "flex";
+    modalTitle.innerText = film.title;
+    modalDesc.innerText = film.description;
 
-  logDebug("Thumbnail Column Exists: " + ("thumbnail_url" in data[0]));
-  logDebug("Video Column Exists: " + ("video_url" in data[0]));
+    if (!currentUser) {
+      lockedText.innerText = "🔒 Login required to watch.";
+      player.style.display = "none";
+    } else {
+      lockedText.innerText = "";
+      player.style.display = "block";
+      player.src = film.video_url;
+    }
+  }
 
-  logDebug("FULL FILM SAMPLE:");
-  logDebug(JSON.stringify(data[0], null, 2));
-}
+  closeModalBtn.onclick = () => {
+    modal.style.display = "none";
+    player.pause();
+  };
 
-runDebug();
+  /* ================================
+     SPOTLIGHT FEATURED
+  ================================ */
+  spotlightBtn.onclick = async () => {
+    debug("Loading Spotlight...");
+
+    const { data, error } = await supabase
+      .from("films")
+      .select("*")
+      .eq("featured", true)
+      .limit(1)
+      .single();
+
+    if (error) {
+      alert("No featured film set yet.");
+      debug("Spotlight Error: " + error.message);
+      return;
+    }
+
+    openFilm(data);
+  };
+
+  /* ================================
+     INIT
+  ================================ */
+  await checkUser();
+  await loadFilms();
 </script>
+
+</body>
+</html>
