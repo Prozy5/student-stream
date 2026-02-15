@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- =========================================
+       SS FILMS • WATCH PAGE (LOCKED)
+       Requires Login + Loads Film from Supabase
+       Netflix-Style Cinematic Player
+       ========================================= -->
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Watch • SS Films</title>
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -30,55 +34,54 @@
     body{
       background:var(--bg);
       color:var(--text);
+      min-height:100vh;
     }
 
-    /* TOP BAR */
     header{
-      position:sticky;
-      top:0;
-      z-index:50;
-      padding:18px 28px;
-      background:rgba(5,6,12,0.92);
-      backdrop-filter:blur(14px);
+      padding:18px 26px;
       border-bottom:1px solid var(--line);
-
       display:flex;
       justify-content:space-between;
       align-items:center;
+      background:rgba(5,6,12,0.92);
+      backdrop-filter:blur(12px);
+      position:sticky;
+      top:0;
+      z-index:50;
     }
 
-    header .logo{
-      font-weight:1000;
+    header h1{
       font-size:14px;
-      letter-spacing:.6px;
+      font-weight:1000;
+      letter-spacing:0.4px;
     }
 
     header a{
-      color:var(--muted);
       text-decoration:none;
       font-size:13px;
       font-weight:800;
-      margin-left:16px;
+      color:var(--muted);
+      transition:.2s;
     }
 
     header a:hover{
       color:white;
     }
 
-    /* PLAYER HERO */
-    .player-wrap{
-      max-width:1200px;
+    /* MAIN PLAYER */
+    .wrap{
+      max-width:1100px;
       margin:auto;
-      padding:40px 24px;
+      padding:40px 22px;
     }
 
-    .video-box{
+    .playerBox{
       width:100%;
       border-radius:22px;
       overflow:hidden;
       border:1px solid var(--line);
-      background:black;
-      box-shadow:0 0 90px rgba(0,0,0,0.75);
+      background:rgba(255,255,255,0.03);
+      box-shadow:0 0 80px rgba(0,0,0,0.65);
     }
 
     video{
@@ -88,157 +91,137 @@
       background:black;
     }
 
-    /* FILM DETAILS */
-    .details{
-      margin-top:28px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+    /* FILM INFO */
+    .info{
+      margin-top:26px;
     }
 
-    h1{
-      font-size:42px;
+    .info h2{
+      font-size:34px;
       font-weight:1000;
-      line-height:1.1;
+      margin-bottom:10px;
+    }
+
+    .info p{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+      max-width:800px;
     }
 
     .meta{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
-      max-width:850px;
-    }
-
-    .actions{
-      margin-top:12px;
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-
-    .btn{
-      padding:13px 22px;
-      border-radius:999px;
-      font-weight:900;
-      font-size:14px;
-      border:none;
-      cursor:pointer;
-      transition:.2s;
-      text-decoration:none;
-      display:inline-block;
-    }
-
-    .btn-primary{
-      background:var(--accent);
-      color:white;
-    }
-
-    .btn-secondary{
-      border:1px solid rgba(255,255,255,0.18);
-      background:rgba(255,255,255,0.06);
-      color:white;
-    }
-
-    .btn:hover{
-      transform:translateY(-2px);
-    }
-
-    footer{
-      text-align:center;
-      padding:50px 20px;
-      margin-top:70px;
-      border-top:1px solid var(--line);
+      margin-top:16px;
       font-size:13px;
-      color:rgba(255,255,255,0.35);
+      opacity:.65;
+    }
+
+    /* LOADING */
+    .loading{
+      padding:60px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    /* ERROR */
+    .error{
+      padding:60px;
+      text-align:center;
+      color:red;
+      font-weight:800;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- NAV -->
-  <header>
-    <div class="logo">🎬 SS Films</div>
+<!-- NAV -->
+<header>
+  <h1>🎬 SS Films • Watch</h1>
+  <a href="./index.html">← Back to Feed</a>
+</header>
 
-    <nav>
-      <a href="./index.html">Home</a>
-      <a href="./dashboard.html">Creator Dashboard</a>
-    </nav>
-  </header>
+<div class="wrap">
 
-  <!-- WATCH PLAYER -->
-  <div class="player-wrap">
-
-    <!-- VIDEO PLAYER -->
-    <div class="video-box">
-      <video id="player" controls autoplay></video>
-    </div>
-
-    <!-- DETAILS -->
-    <div class="details">
-      <h1 id="title">Loading...</h1>
-
-      <p class="meta" id="description">
-        Fetching film details...
-      </p>
-
-      <div class="actions">
-        <a href="./index.html" class="btn btn-secondary">← Back to Films</a>
-        <a href="./monetization.html" class="btn btn-primary">⚡ Boost This Film</a>
-      </div>
-    </div>
-
+  <!-- PLAYER -->
+  <div class="playerBox" id="playerBox">
+    <div class="loading">Loading film...</div>
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    © 2026 StudentStream HQ — SS Films Originals
-  </footer>
+  <!-- FILM DETAILS -->
+  <div class="info">
+    <h2 id="filmTitle">...</h2>
+    <p id="filmDesc">Loading description...</p>
+    <div class="meta" id="filmMeta"></div>
+  </div>
 
-  <!-- SUPABASE FILM LOADER -->
-  <script>
-    const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+</div>
 
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+<!-- =====================================
+     SUPABASE WATCH LOADER (LOCKED)
+     ===================================== -->
+<script>
+  const supabase = window.supabase.createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
-    // Get film ID from URL
-    const params = new URLSearchParams(window.location.search);
-    const filmId = params.get("id");
+  /* GET FILM ID */
+  const params = new URLSearchParams(window.location.search);
+  const filmId = params.get("id");
 
-    async function loadFilm(){
-      if(!filmId){
-        document.getElementById("title").textContent = "Film Not Found";
-        return;
-      }
+  /* SECURITY: MUST BE LOGGED IN */
+  async function requireLogin(){
+    const { data } = await supabase.auth.getSession();
 
-      const { data: film, error } = await supabase
-        .from("films")
-        .select("*")
-        .eq("id", filmId)
-        .single();
+    if(!data.session){
+      window.location.href = "./login.html";
+      return false;
+    }
+    return true;
+  }
 
-      if(error){
-        document.getElementById("title").textContent = "Error Loading Film";
-        document.getElementById("description").textContent = error.message;
-        return;
-      }
-
-      // Inject Film Info
-      document.getElementById("title").textContent = film.title;
-      document.getElementById("description").textContent = film.description;
-
-      // Load Video
-      const player = document.getElementById("player");
-      player.src = film.video_url;
+  /* LOAD FILM DATA */
+  async function loadFilm(){
+    if(!filmId){
+      document.getElementById("playerBox").innerHTML =
+        `<div class="error">Film not found.</div>`;
+      return;
     }
 
-    loadFilm();
-  </script>
+    const { data: film, error } = await supabase
+      .from("films")
+      .select("*")
+      .eq("id", filmId)
+      .single();
+
+    if(error || !film){
+      document.getElementById("playerBox").innerHTML =
+        `<div class="error">Error loading film.</div>`;
+      return;
+    }
+
+    /* PLAYER */
+    document.getElementById("playerBox").innerHTML = `
+      <video controls autoplay>
+        <source src="${film.video_url}" type="video/mp4">
+        Your browser does not support video playback.
+      </video>
+    `;
+
+    /* INFO */
+    document.getElementById("filmTitle").textContent = film.title;
+    document.getElementById("filmDesc").textContent =
+      film.description || "No description provided.";
+
+    document.getElementById("filmMeta").textContent =
+      "Uploaded on " + new Date(film.created_at).toLocaleDateString();
+  }
+
+  /* RUN */
+  requireLogin().then(ok => {
+    if(ok) loadFilm();
+  });
+</script>
 
 </body>
 </html>
