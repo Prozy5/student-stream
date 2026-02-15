@@ -4,12 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>SS Films Dashboard • Upload</title>
+  <title>Creator Dashboard • SS Films</title>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root{
+      --bg:#05060c;
+      --panel:#0e1424;
+      --text:#f5f7ff;
+      --muted:#a9b4d0;
+      --line:rgba(255,255,255,0.12);
+      --accent:#3b82f6;
+      --radius:18px;
+    }
+
     *{
       margin:0;
       padding:0;
@@ -18,91 +28,90 @@
     }
 
     body{
-      background:radial-gradient(circle at top,#0b1020,#05060c);
-      color:white;
-      min-height:100vh;
-    }
-
-    header{
-      padding:18px 26px;
-      border-bottom:1px solid rgba(255,255,255,0.10);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:rgba(0,0,0,0.55);
-      backdrop-filter:blur(12px);
-    }
-
-    header h1{
-      font-size:15px;
-      font-weight:950;
-      letter-spacing:.4px;
-    }
-
-    .logout{
-      padding:10px 16px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.18);
-      background:rgba(255,255,255,0.06);
-      color:white;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    .wrap{
-      max-width:900px;
-      margin:auto;
+      background:var(--bg);
+      color:var(--text);
       padding:40px 20px;
     }
 
-    h2{
-      font-size:34px;
+    .wrap{
+      max-width:1000px;
+      margin:auto;
+    }
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:50px;
+    }
+
+    header h1{
+      font-size:26px;
       font-weight:1000;
-      margin-bottom:10px;
     }
 
-    p{
-      opacity:.7;
-      margin-bottom:30px;
-      line-height:1.5;
+    header a{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:800;
+      font-size:14px;
     }
 
-    .card{
+    header a:hover{
+      color:white;
+    }
+
+    /* FORM PANEL */
+    .panel{
       background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.10);
+      border:1px solid var(--line);
       border-radius:22px;
-      padding:28px;
-      box-shadow:0 0 70px rgba(0,0,0,0.55);
+      padding:34px;
+      box-shadow:0 0 80px rgba(0,0,0,0.6);
+    }
+
+    .panel h2{
+      font-size:20px;
+      font-weight:950;
+      margin-bottom:18px;
+    }
+
+    label{
+      display:block;
+      margin-top:18px;
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
     }
 
     input, textarea{
       width:100%;
+      margin-top:8px;
       padding:14px;
-      margin-top:12px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,0.14);
-      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.05);
       color:white;
       font-size:14px;
       outline:none;
     }
 
     textarea{
-      min-height:90px;
-      resize:none;
+      min-height:110px;
+      resize:vertical;
     }
 
     button{
-      margin-top:18px;
+      margin-top:26px;
       width:100%;
-      padding:14px;
+      padding:15px;
       border-radius:999px;
       border:none;
-      cursor:pointer;
       font-weight:950;
       font-size:15px;
-      background:linear-gradient(135deg,#3b82f6,#6cf2c2);
-      color:#05060c;
+      cursor:pointer;
+      background:var(--accent);
+      color:white;
       transition:.2s;
     }
 
@@ -112,73 +121,85 @@
 
     .msg{
       margin-top:18px;
-      font-size:13px;
-      opacity:.8;
+      font-size:14px;
+      color:var(--muted);
+      text-align:center;
     }
 
-    .filmsList{
-      margin-top:50px;
+    /* FILM LIST */
+    .film-list{
+      margin-top:70px;
     }
 
-    .filmItem{
-      padding:16px;
-      margin-top:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.10);
+    .film-list h2{
+      font-size:20px;
+      font-weight:950;
+      margin-bottom:18px;
+    }
+
+    .film-card{
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--line);
       background:rgba(255,255,255,0.03);
+      margin-bottom:14px;
     }
 
-    .filmItem b{
+    .film-card b{
       font-size:15px;
     }
 
-    .filmItem span{
-      display:block;
-      opacity:.6;
-      margin-top:4px;
+    .film-card p{
       font-size:13px;
+      color:var(--muted);
+      margin-top:6px;
     }
   </style>
 </head>
 
 <body>
-
-<header>
-  <h1>🎬 SS Films Creator Dashboard</h1>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
-
 <div class="wrap">
 
-  <h2>Upload a Film</h2>
-  <p>
-    Welcome to SS Films Originals. Upload your film and publish instantly
-    to the StudentStream platform.
-  </p>
+  <!-- HEADER -->
+  <header>
+    <h1>🎬 SS Films Creator Dashboard</h1>
+    <a href="./index.html">← Back to Films</a>
+  </header>
 
-  <div class="card">
+  <!-- UPLOAD PANEL -->
+  <div class="panel">
+    <h2>Upload a New Film</h2>
 
-    <input id="title" placeholder="Film Title" />
-    <textarea id="description" placeholder="Short description..."></textarea>
+    <form id="filmForm">
+      <label>Film Title</label>
+      <input id="title" required placeholder="Enter film title..." />
 
-    <input id="thumbnail" placeholder="Thumbnail Image URL" />
-    <input id="video" placeholder="Film Video URL (MP4 / YouTube / Stream Link)" />
+      <label>Description</label>
+      <textarea id="description" required placeholder="Write a short summary..."></textarea>
 
-    <button onclick="uploadFilm()">Publish Film →</button>
+      <label>Thumbnail URL</label>
+      <input id="thumb" required placeholder="https://image-link.jpg" />
+
+      <label>Video URL (MP4 link)</label>
+      <input id="video" required placeholder="https://video-link.mp4" />
+
+      <button type="submit">🚀 Publish Film</button>
+    </form>
 
     <div class="msg" id="msg"></div>
   </div>
 
-  <!-- MY FILMS -->
-  <div class="filmsList">
-    <h2 style="font-size:24px;">Your Uploaded Films</h2>
-    <div id="myFilms"></div>
+  <!-- FILM LIST -->
+  <div class="film-list">
+    <h2>Your Uploaded Films</h2>
+    <div id="filmFeed">
+      <p style="color:var(--muted)">Loading...</p>
+    </div>
   </div>
 
 </div>
 
 <script>
-  /* SUPABASE CONFIG */
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
   const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
@@ -188,96 +209,72 @@
     SUPABASE_ANON_KEY
   );
 
-  let currentUser = null;
+  const msg = document.getElementById("msg");
+  const filmFeed = document.getElementById("filmFeed");
 
-  /* CHECK LOGIN */
-  async function loadSession(){
-    const { data } = await supabase.auth.getSession();
+  // Publish Film
+  document.getElementById("filmForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    if(!data.session){
-      window.location.href = "./login.html";
-      return;
-    }
-
-    currentUser = data.session.user;
-    loadMyFilms();
-  }
-
-  /* UPLOAD FILM */
-  async function uploadFilm(){
-    const msg = document.getElementById("msg");
+    msg.textContent = "Publishing...";
 
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
-    const thumbnail = document.getElementById("thumbnail").value;
+    const thumb = document.getElementById("thumb").value;
     const video = document.getElementById("video").value;
 
-    msg.style.color = "white";
-    msg.textContent = "Publishing film...";
-
-    const { error } = await supabase
-      .from("films")
-      .insert([
-        {
-          creator_id: currentUser.id,
-          title: title,
-          description: description,
-          thumbnail_url: thumbnail,
-          video_url: video
-        }
-      ]);
+    const { error } = await supabase.from("films").insert([
+      {
+        title: title,
+        description: description,
+        thumbnail_url: thumb,
+        video_url: video
+      }
+    ]);
 
     if(error){
-      msg.style.color = "red";
-      msg.textContent = error.message;
+      msg.textContent = "❌ Error: " + error.message;
       return;
     }
 
-    msg.style.color = "#6cf2c2";
-    msg.textContent = "Film uploaded successfully 🎬";
+    msg.textContent = "✅ Film published successfully!";
+    document.getElementById("filmForm").reset();
+    loadFilms();
+  });
 
-    loadMyFilms();
-  }
-
-  /* LOAD MY FILMS */
-  async function loadMyFilms(){
-    const box = document.getElementById("myFilms");
-
-    const { data, error } = await supabase
+  // Load Uploaded Films
+  async function loadFilms(){
+    const { data: films, error } = await supabase
       .from("films")
       .select("*")
-      .eq("creator_id", currentUser.id)
       .order("created_at", { ascending: false });
 
     if(error){
-      box.innerHTML = "<p style='color:red;'>Error loading films.</p>";
+      filmFeed.innerHTML = "<p style='color:red;'>Error loading films.</p>";
       return;
     }
 
-    if(!data || data.length === 0){
-      box.innerHTML = "<p style='opacity:.6;'>No uploads yet.</p>";
+    if(!films || films.length === 0){
+      filmFeed.innerHTML = "<p style='color:var(--muted)'>No films yet.</p>";
       return;
     }
 
-    box.innerHTML = "";
+    filmFeed.innerHTML = "";
 
-    data.forEach(film => {
-      box.innerHTML += `
-        <div class="filmItem">
-          <b>${film.title}</b>
-          <span>${film.description}</span>
-        </div>
+    films.forEach(film => {
+      const div = document.createElement("div");
+      div.className = "film-card";
+
+      div.innerHTML = `
+        <b>${film.title}</b>
+        <p>${film.description}</p>
       `;
+
+      filmFeed.appendChild(div);
     });
   }
 
-  /* LOGOUT */
-  async function logout(){
-    await supabase.auth.signOut();
-    window.location.href = "./login.html";
-  }
-
-  loadSession();
+  loadFilms();
 </script>
 
 </body>
