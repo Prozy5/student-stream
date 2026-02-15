@@ -1,366 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SS Films • Originals. Spotlight. Legacy.</title>
-
-  <!-- Supabase v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root{
-      --bg:#05060c;
-      --panel:rgba(255,255,255,.04);
-      --line:rgba(255,255,255,.10);
-      --text:#fff;
-      --muted:rgba(255,255,255,.65);
-      --accent:#3b82f6;
-      --radius:20px;
-    }
-
-    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
-
-    body{
-      background:radial-gradient(circle at top,#0b1022,#05060c);
-      color:var(--text);
-      overflow-x:hidden;
-    }
-
-    header{
-      position:sticky;
-      top:0;
-      z-index:99;
-      padding:18px 26px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:rgba(5,6,12,.92);
-      backdrop-filter:blur(14px);
-      border-bottom:1px solid var(--line);
-    }
-
-    .logo{
-      font-weight:1000;
-      font-size:15px;
-      letter-spacing:.5px;
-    }
-
-    nav a{
-      margin-left:18px;
-      text-decoration:none;
-      font-size:13px;
-      font-weight:850;
-      color:var(--muted);
-    }
-    nav a:hover{color:white;}
-
-    .hero{
-      max-width:1150px;
-      margin:auto;
-      padding:80px 25px 40px;
-    }
-
-    .tag{
-      display:inline-block;
-      padding:7px 18px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:800;
-      background:rgba(59,130,246,.15);
-      border:1px solid rgba(59,130,246,.30);
-      color:#7aa2ff;
-      margin-bottom:18px;
-    }
-
-    h1{
-      font-size:64px;
-      font-weight:1000;
-      line-height:1.05;
-    }
-
-    .hero p{
-      margin-top:18px;
-      max-width:720px;
-      font-size:16px;
-      line-height:1.7;
-      color:var(--muted);
-    }
-
-    .spotlight{
-      margin-top:35px;
-      padding:26px;
-      border-radius:var(--radius);
-      border:1px solid var(--line);
-      background:var(--panel);
-    }
-
-    .spotlight h2{
-      font-size:28px;
-      font-weight:1000;
-    }
-
-    .spotlightBtn{
-      margin-top:16px;
-      display:inline-block;
-      padding:13px 24px;
-      border-radius:999px;
-      font-weight:900;
-      text-decoration:none;
-      background:linear-gradient(135deg,#3b82f6,#6cf2c2);
-      color:black;
-    }
-
-    .section{
-      max-width:1200px;
-      margin:auto;
-      padding:35px 25px;
-    }
-
-    .section h3{
-      font-size:20px;
-      font-weight:1000;
-      margin-bottom:14px;
-    }
-
-    .row{
-      display:flex;
-      gap:16px;
-      overflow-x:auto;
-      padding-bottom:12px;
-    }
-
-    .card{
-      min-width:240px;
-      border-radius:18px;
-      overflow:hidden;
-      border:1px solid var(--line);
-      background:var(--panel);
-      cursor:pointer;
-      transition:.25s;
-    }
-
-    .card:hover{
-      transform:scale(1.05);
-      border-color:rgba(59,130,246,.45);
-    }
-
-    .card img{
-      width:100%;
-      height:145px;
-      object-fit:cover;
-    }
-
-    .info{
-      padding:12px;
-    }
-
-    .info h4{
-      margin:0;
-      font-size:14px;
-      font-weight:900;
-    }
-
-    .info p{
-      margin-top:5px;
-      font-size:12px;
-      opacity:.65;
-    }
-
-    /* Debug Error Box */
-    .debugBox{
-      max-width:1150px;
-      margin:20px auto;
-      padding:14px 18px;
-      border-radius:14px;
-      border:1px solid rgba(255,0,0,.35);
-      background:rgba(255,0,0,.08);
-      color:#ffb3b3;
-      display:none;
-      font-size:13px;
-      line-height:1.4;
-    }
-
-    footer{
-      margin-top:60px;
-      padding:35px;
-      text-align:center;
-      font-size:13px;
-      opacity:.4;
-      border-top:1px solid var(--line);
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <div class="logo">🎬 SS Films • StudentStream HQ</div>
-  <nav>
-    <a href="/ss-productions/">Productions</a>
-    <a href="/boosts.html">Boosts</a>
-    <a id="loginLink" href="/ss-films/login.html">Login</a>
-  </nav>
-</header>
-
-<div class="debugBox" id="debugBox"></div>
-
-<section class="hero">
-  <span class="tag">Originals • Spotlight • Legacy</span>
-  <h1>SS Films Originals.</h1>
-  <p>
-    Creator-made movies, episodic series, documentaries, and platform Originals.
-    Browse freely — watching is unlocked after login.
-  </p>
-
-  <div class="spotlight">
-    <h2 id="spotlightTitle">Loading Spotlight…</h2>
-    <p style="opacity:.65;margin-top:6px;">Featured Premiere</p>
-    <a class="spotlightBtn" id="spotlightBtn" href="#">
-      Watch Spotlight →
-    </a>
-  </div>
-</section>
-
-<section class="section">
-  <h3>🍿 Movies</h3>
-  <div class="row" id="moviesRow"></div>
-</section>
-
-<section class="section">
-  <h3>📺 Series</h3>
-  <div class="row" id="seriesRow"></div>
-</section>
-
-<section class="section">
-  <h3>🎥 Documentaries</h3>
-  <div class="row" id="docsRow"></div>
-</section>
-
-<footer>
-  © 2026 StudentStream HQ — SS Films Division<br/>
-  Originals. Spotlight. Legacy.
-</footer>
+<!-- DEBUG BOX -->
+<div id="debugBox" style="
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  width: 360px;
+  max-height: 250px;
+  overflow-y: auto;
+  background: rgba(255,0,0,0.12);
+  border: 2px solid red;
+  padding: 14px;
+  font-size: 12px;
+  font-family: monospace;
+  color: white;
+  z-index: 9999;
+  border-radius: 12px;
+">
+  <b>SS FILMS DEBUG:</b>
+  <div id="debugText">Loading...</div>
+</div>
 
 <script>
-/* ==========================================
-   SUPABASE CONFIG (MATCHES YOUR DB)
-========================================== */
+/* ================================
+   DEBUG HELPER
+================================ */
 
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const debugText = document.getElementById("debugText");
 
-/* ✅ Correct Initialization */
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-/* Debug UI */
-const debugBox = document.getElementById("debugBox");
-function showError(msg){
-  debugBox.style.display="block";
-  debugBox.innerText = msg;
-  console.error(msg);
+function logDebug(msg) {
+  debugText.innerHTML += `<br>• ${msg}`;
+  console.log("DEBUG:", msg);
 }
 
-/* Rows */
-const moviesRow = document.getElementById("moviesRow");
-const seriesRow = document.getElementById("seriesRow");
-const docsRow   = document.getElementById("docsRow");
+/* ================================
+   SUPABASE TEST
+================================ */
 
-/* ==========================================
-   AUTH NAV FIX
-========================================== */
-async function checkSession(){
-  const { data } = await supabase.auth.getSession();
-  if(data.session){
-    document.getElementById("loginLink").textContent="Dashboard";
-    document.getElementById("loginLink").href="/ss-films/dashboard.html";
+async function runDebug() {
+
+  logDebug("Supabase Loaded: " + (!!window.supabase));
+
+  // Check Auth Session
+  const sessionRes = await supabase.auth.getSession();
+  logDebug("Session Found: " + (!!sessionRes.data.session));
+
+  if (sessionRes.data.session) {
+    logDebug("User Email: " + sessionRes.data.session.user.email);
   }
-}
-checkSession();
 
-/* ==========================================
-   CARD RENDER
-========================================== */
-function renderCard(film, row){
-  const card = document.createElement("div");
-  card.className="card";
+  // Check Films Table
+  logDebug("Querying films table...");
 
-  card.innerHTML=`
-    <img src="${film.thumbnail_url}" />
-    <div class="info">
-      <h4>${film.title}</h4>
-      <p>${film.category} • ${film.genre || "SS Original"}</p>
-    </div>
-  `;
-
-  card.onclick = async () => {
-    const { data } = await supabase.auth.getSession();
-    if(!data.session){
-      window.location.href =
-        "/ss-films/login.html?redirect=watch&id=" + film.id;
-      return;
-    }
-    window.location.href =
-      "/ss-films/watch.html?id=" + film.id;
-  };
-
-  row.appendChild(card);
-}
-
-/* ==========================================
-   LOAD FILMS (NO FILTERS)
-========================================== */
-async function loadHome(){
-  console.log("Loading films...");
-
-  const { data: films, error } = await supabase
+  const { data, error } = await supabase
     .from("films")
     .select("*")
-    .order("created_at",{ascending:false});
+    .limit(5);
 
-  console.log("FILMS:", films);
-
-  if(error){
-    showError("Supabase Error: " + error.message);
+  if (error) {
+    logDebug("❌ Supabase ERROR:");
+    logDebug(error.message);
+    logDebug("Code: " + error.code);
     return;
   }
 
-  if(!films || films.length===0){
-    showError("No films found in table.");
+  if (!data || data.length === 0) {
+    logDebug("⚠️ No films returned.");
+    logDebug("This means RLS is blocking OR table empty.");
     return;
   }
 
-  /* Spotlight = Featured or newest */
-  let spotlight = films.find(f => f.featured === true) || films[0];
+  logDebug("✅ Films Found: " + data.length);
+  logDebug("First Film Title: " + data[0].title);
 
-  document.getElementById("spotlightTitle").textContent =
-    spotlight.title;
+  logDebug("Thumbnail Column Exists: " + ("thumbnail_url" in data[0]));
+  logDebug("Video Column Exists: " + ("video_url" in data[0]));
 
-  document.getElementById("spotlightBtn").href =
-    "/ss-films/login.html?redirect=watch&id=" + spotlight.id;
-
-  /* Fill rows */
-  films.forEach(film=>{
-    const cat = (film.category || "").toLowerCase();
-
-    if(cat.includes("series")){
-      renderCard(film, seriesRow);
-    }
-    else if(cat.includes("documentary")){
-      renderCard(film, docsRow);
-    }
-    else{
-      renderCard(film, moviesRow);
-    }
-  });
+  logDebug("FULL FILM SAMPLE:");
+  logDebug(JSON.stringify(data[0], null, 2));
 }
 
-loadHome();
+runDebug();
 </script>
-
-</body>
-</html>
