@@ -72,7 +72,7 @@
 
         card.innerHTML = `
           <img src="${film.thumbnail_url}" />
-          <div class="info">
+          <div class="overlay">
             <h4>${film.title}</h4>
             <p>${film.genre || "SS Films Original"}</p>
           </div>
@@ -84,21 +84,23 @@
 
         if (film.featured) spotlightFilm = film;
 
-        if (index < 5) trendingRow.appendChild(card);
+        if (index < 6) trendingRow.appendChild(card);
 
         if (cat === "movie") moviesRow.appendChild(card);
         else if (cat === "series") seriesRow.appendChild(card);
         else if (cat === "documentary") docRow.appendChild(card);
-        else moviesRow.appendChild(card);
       });
 
+      /* Spotlight */
       if (spotlightFilm) {
-        document.getElementById("spotlightTitle").innerText = spotlightFilm.title;
-        document.getElementById("spotlightDesc").innerText = spotlightFilm.description;
+        document.getElementById("spotlightTitle").innerText =
+          spotlightFilm.title;
 
-        document.querySelector(".spotlight").style.background =
-          `linear-gradient(to right, black, transparent),
-           url('${spotlightFilm.thumbnail_url}') center/cover`;
+        document.getElementById("spotlightDesc").innerText =
+          spotlightFilm.description;
+
+        document.querySelector(".hero").style.background =
+          `url('${spotlightFilm.thumbnail_url}') center/cover`;
       }
     }
 
@@ -126,7 +128,7 @@
     filterSelect.addEventListener("change", applyFilters);
 
     /* ================================
-       MODAL WATCH
+       MODAL PLAYER
     ================================ */
     function openFilm(film) {
       modal.style.display = "flex";
@@ -136,8 +138,6 @@
 
       player.src = film.video_url;
       player.play();
-
-      localStorage.setItem("lastWatched", film.title);
     }
 
     window.closeModal = function () {
@@ -147,106 +147,168 @@
 
     window.openSpotlight = function () {
       if (spotlightFilm) openFilm(spotlightFilm);
-      else alert("No featured film yet.");
     };
 
-    /* ================================
-       INIT
-    ================================ */
     loadFilms();
   </script>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b0b0f;
+      font-family: "Inter", Arial, sans-serif;
+      background: #050507;
       color: white;
     }
 
+    /* ✅ Header */
     header {
-      padding: 20px;
-      background: rgba(0,0,0,0.9);
-      position: sticky;
+      padding: 18px 20px;
+      position: fixed;
+      width: 100%;
       top: 0;
-      z-index: 99;
+      z-index: 999;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(12px);
     }
 
     header h1 {
-      color: #00ff99;
       margin: 0;
+      font-size: 20px;
+      color: #00ff99;
+      font-weight: 800;
     }
 
-    /* 🔍 Search Bar */
+    /* ✅ Search Glass Bar */
     .controls {
       display: flex;
       gap: 10px;
-      margin-top: 15px;
+      margin-top: 12px;
     }
 
     input, select {
       flex: 1;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 14px;
       border: none;
       outline: none;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 14px;
     }
 
-    .spotlight {
-      padding: 60px 20px;
-      background-size: cover;
-      background-position: center;
+    input::placeholder {
+      color: rgba(255,255,255,0.4);
     }
 
-    .spotlight h2 {
+    /* ✅ HERO Spotlight */
+    .hero {
+      height: 70vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 90px 20px 40px;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, #050507 25%, transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 500px;
+    }
+
+    .hero h2 {
       font-size: 42px;
+      margin: 0;
+      font-weight: 900;
     }
 
-    .spotlight button {
-      background: #00ff99;
-      border: none;
+    .hero p {
+      opacity: 0.8;
+      line-height: 1.4;
+    }
+
+    .hero button {
+      margin-top: 18px;
       padding: 14px 22px;
-      border-radius: 12px;
-      cursor: pointer;
+      border: none;
+      border-radius: 14px;
       font-weight: bold;
+      cursor: pointer;
+      background: #00ff99;
     }
 
+    /* ✅ Sections */
     .section {
       padding: 25px 20px;
     }
 
+    .section h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    /* ✅ Netflix Row Scroll */
     .row {
       display: flex;
-      gap: 15px;
+      gap: 14px;
       overflow-x: auto;
+      padding-bottom: 10px;
       scroll-snap-type: x mandatory;
     }
 
-    .card {
-      min-width: 220px;
-      background: #14141c;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      scroll-snap-align: start;
-      transition: 0.2s;
+    .row::-webkit-scrollbar {
+      display: none;
     }
 
-    .card:hover {
-      transform: scale(1.05);
+    /* ✅ Premium Cards */
+    .card {
+      min-width: 170px;
+      height: 240px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      scroll-snap-align: start;
+      transition: 0.25s;
     }
 
     .card img {
       width: 100%;
-      height: 130px;
+      height: 100%;
       object-fit: cover;
     }
 
-    .info {
-      padding: 10px;
+    .card:hover {
+      transform: scale(1.08);
     }
 
-    /* Modal */
+    .overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    }
+
+    .overlay h4 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .overlay p {
+      margin: 3px 0 0;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    /* ✅ Modal */
     .modal {
       position: fixed;
       inset: 0;
@@ -254,28 +316,29 @@
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 200;
+      z-index: 9999;
     }
 
     .modal-content {
-      background: #15151f;
-      padding: 25px;
       width: 92%;
-      max-width: 750px;
-      border-radius: 15px;
+      max-width: 800px;
+      background: #111;
+      padding: 25px;
+      border-radius: 18px;
       text-align: center;
     }
 
     video {
       width: 100%;
+      border-radius: 14px;
       margin-top: 15px;
-      border-radius: 12px;
     }
 
     .close {
       float: right;
+      font-size: 20px;
       cursor: pointer;
-      font-size: 22px;
+      opacity: 0.7;
     }
   </style>
 </head>
@@ -285,9 +348,8 @@
 <header>
   <h1>🎬 SS Films</h1>
 
-  <!-- 🔍 Controls -->
   <div class="controls">
-    <input id="searchInput" placeholder="Search films..." />
+    <input id="searchInput" placeholder="Search SS Films..." />
     <select id="filterSelect">
       <option value="all">All</option>
       <option value="movie">Movies</option>
@@ -297,11 +359,13 @@
   </div>
 </header>
 
-<!-- Spotlight -->
-<section class="spotlight">
-  <h2 id="spotlightTitle">Spotlight Premiere</h2>
-  <p id="spotlightDesc">The newest featured original from SS Films creators.</p>
-  <button onclick="openSpotlight()">▶ Watch Spotlight</button>
+<!-- ✅ HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h2 id="spotlightTitle">Spotlight Premiere</h2>
+    <p id="spotlightDesc">Featured SS Films Original</p>
+    <button onclick="openSpotlight()">▶ Watch Spotlight</button>
+  </div>
 </section>
 
 <!-- Trending -->
@@ -310,19 +374,16 @@
   <div class="row" id="trendingRow"></div>
 </section>
 
-<!-- Movies -->
 <section class="section">
   <h3>🍿 Movies</h3>
   <div class="row" id="moviesRow"></div>
 </section>
 
-<!-- Series -->
 <section class="section">
   <h3>📺 Series</h3>
   <div class="row" id="seriesRow"></div>
 </section>
 
-<!-- Documentary -->
 <section class="section">
   <h3>🎥 Documentary</h3>
   <div class="row" id="docRow"></div>
