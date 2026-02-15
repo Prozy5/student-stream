@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>SS Films • Originals. Spotlight. Legacy.</title>
 
   <!-- Supabase -->
@@ -67,9 +66,9 @@
 
     /* HERO */
     .hero {
-      max-width: 1150px;
+      max-width: 1200px;
       margin: auto;
-      padding: 90px 25px 70px;
+      padding: 90px 25px 50px;
     }
 
     .heroTag {
@@ -130,11 +129,59 @@
       color: white;
     }
 
-    /* FILM ROW */
+    /* FEATURED SPOTLIGHT */
+    .spotlight {
+      max-width: 1200px;
+      margin: auto;
+      padding: 30px 25px;
+    }
+
+    .spotlightBox {
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      display: flex;
+      flex-wrap: wrap;
+      box-shadow: 0 0 90px rgba(0,0,0,.65);
+    }
+
+    .spotlightImg {
+      flex: 1;
+      min-width: 320px;
+      height: 260px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .spotlightInfo {
+      flex: 1;
+      min-width: 320px;
+      padding: 26px;
+    }
+
+    .spotlightInfo h2 {
+      font-size: 26px;
+      font-weight: 1000;
+    }
+
+    .spotlightInfo p {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .spotlightInfo a {
+      margin-top: 18px;
+      display: inline-block;
+    }
+
+    /* FILM ROWS */
     .section {
       max-width: 1200px;
       margin: auto;
-      padding: 40px 25px;
+      padding: 45px 25px;
     }
 
     .section h2 {
@@ -161,8 +208,8 @@
     }
 
     .filmCard:hover {
-      transform: scale(1.05);
-      border-color: rgba(59,130,246,.45);
+      transform: scale(1.06);
+      border-color: rgba(59,130,246,.50);
     }
 
     .filmCard img {
@@ -187,16 +234,9 @@
       line-height: 1.4;
     }
 
-    /* LOCK NOTICE */
-    .lockNotice {
-      margin-top: 18px;
-      font-size: 13px;
-      opacity: .55;
-    }
-
     footer {
       margin-top: 70px;
-      padding: 40px;
+      padding: 45px;
       text-align: center;
       font-size: 13px;
       opacity: .4;
@@ -214,7 +254,12 @@
   <nav>
     <a href="/ss-productions/">Productions</a>
     <a href="/boosts.html">Boosts</a>
-    <a id="loginLink" href="/login.html">Login</a>
+
+    <!-- LOCKED LOGIN -->
+    <a id="loginLink"
+       href="/login.html?redirect=/ss-films/dashboard.html">
+       Login
+    </a>
   </nav>
 </header>
 
@@ -225,31 +270,60 @@
   <h1>SS Films Originals.</h1>
 
   <p>
-    SS Films is StudentStream’s cinematic streaming division —
-    built for creator-made films, episodic series, documentaries,
-    and platform Originals.
+    StudentStream’s cinematic streaming division — built for creator-made
+    films, episodic series, documentaries, and platform Originals.
     <br><br>
     Browse freely. Watch instantly after login.
   </p>
 
   <div class="actions">
     <a href="#trending" class="btn primary">Browse Originals →</a>
-    <a href="/ss-films/dashboard.html" class="btn secondary">
+
+    <!-- Creator Portal LOCKED -->
+    <a href="/login.html?redirect=/ss-films/dashboard.html"
+       class="btn secondary">
       Creator Upload Portal
     </a>
   </div>
+</section>
 
-  <div class="lockNotice">
-    🔒 Watching requires an account. Uploading requires creator access.
+<!-- FEATURED SPOTLIGHT -->
+<section class="spotlight">
+  <div class="spotlightBox" id="spotlightBox">
+    <div class="spotlightImg" id="spotlightImg"></div>
+
+    <div class="spotlightInfo">
+      <h2 id="spotlightTitle">Loading Spotlight...</h2>
+      <p id="spotlightDesc">SS Films Featured Original</p>
+
+      <a id="spotlightBtn" class="btn primary">
+        Watch Spotlight →
+      </a>
+    </div>
   </div>
 </section>
 
-<!-- TRENDING ROW -->
+<!-- TRENDING -->
 <section class="section" id="trending">
   <h2>Trending on SS Films</h2>
-
   <div class="filmRow" id="filmRow">
-    <p style="color:rgba(255,255,255,.55)">Loading films...</p>
+    <p style="opacity:.6;">Loading films...</p>
+  </div>
+</section>
+
+<!-- DOCUMENTARIES -->
+<section class="section">
+  <h2>Documentaries</h2>
+  <div class="filmRow" id="docsRow">
+    <p style="opacity:.6;">Loading documentaries...</p>
+  </div>
+</section>
+
+<!-- SERIES -->
+<section class="section">
+  <h2>Episodic Series</h2>
+  <div class="filmRow" id="seriesRow">
+    <p style="opacity:.6;">Loading series...</p>
   </div>
 </section>
 
@@ -260,38 +334,35 @@
   Originals. Spotlight. Legacy.
 </footer>
 
-<!-- SUPABASE FILM FEED -->
+<!-- SUPABASE ENGINE -->
 <script>
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_KEY = "YOUR_ANON_KEY_HERE";
+  const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
   const supabase = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   );
 
-  async function loadFilms() {
-    const filmRow = document.getElementById("filmRow");
+  /* LOCKED WATCH FUNCTION */
+  async function goWatch(filmId) {
+    const { data } = await supabase.auth.getSession();
 
-    const { data: films, error } = await supabase
-      .from("films")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(10);
-
-    if (error) {
-      filmRow.innerHTML =
-        `<p style="color:red;">Error: ${error.message}</p>`;
+    if (!data.session) {
+      window.location.href =
+        `/login.html?redirect=/ss-films/watch.html?id=${filmId}`;
       return;
     }
 
-    if (!films || films.length === 0) {
-      filmRow.innerHTML =
-        `<p style="opacity:.6;">No Originals uploaded yet.</p>`;
-      return;
-    }
+    window.location.href =
+      `/ss-films/watch.html?id=${filmId}`;
+  }
 
-    filmRow.innerHTML = "";
+  /* LOAD FILMS INTO ROW */
+  function renderRow(rowId, films) {
+    const row = document.getElementById(rowId);
+    row.innerHTML = "";
 
     films.forEach(film => {
       const card = document.createElement("div");
@@ -305,27 +376,47 @@
         </div>
       `;
 
-      // LOCK WATCH UNTIL LOGIN
-      card.onclick = async () => {
-        const { data } = await supabase.auth.getSession();
+      card.onclick = () => goWatch(film.id);
 
-        if (!data.session) {
-          alert("🔒 Login required to watch films.");
-          window.location.href = "/login.html";
-          return;
-        }
-
-        window.location.href =
-          "/ss-films/watch.html?id=" + film.id;
-      };
-
-      filmRow.appendChild(card);
+      row.appendChild(card);
     });
   }
 
-  loadFilms();
+  /* LOAD ALL HOMEPAGE SECTIONS */
+  async function loadHomepage() {
+    const { data: films } = await supabase
+      .from("films")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  // Update login link if logged in
+    if (!films || films.length === 0) return;
+
+    /* Spotlight = newest upload */
+    const spotlight = films[0];
+
+    document.getElementById("spotlightImg").style.backgroundImage =
+      `url(${spotlight.thumbnail_url})`;
+
+    document.getElementById("spotlightTitle").textContent =
+      spotlight.title;
+
+    document.getElementById("spotlightDesc").textContent =
+      spotlight.description || "Featured SS Films Original";
+
+    document.getElementById("spotlightBtn").onclick =
+      () => goWatch(spotlight.id);
+
+    /* Trending = top 10 */
+    renderRow("filmRow", films.slice(0, 10));
+
+    /* Docs + Series placeholder filters */
+    renderRow("docsRow", films.slice(0, 6));
+    renderRow("seriesRow", films.slice(0, 6));
+  }
+
+  loadHomepage();
+
+  /* SESSION NAV FIX */
   async function checkSession() {
     const { data } = await supabase.auth.getSession();
 
