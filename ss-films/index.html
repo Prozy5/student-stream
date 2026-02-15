@@ -208,8 +208,9 @@
 
 <script>
 /* ================================
-   ✅ SUPABASE CONFIG
+   ✅ SUPABASE CONFIG (REAL)
 ================================ */
+
 const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
@@ -221,14 +222,30 @@ const supabase = window.supabase.createClient(
 let currentUser = null;
 
 /* ================================
+   ELEMENTS
+================================ */
+
+const moviesRow = document.getElementById("moviesRow");
+const seriesRow = document.getElementById("seriesRow");
+const docRow = document.getElementById("docRow");
+
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modalTitle");
+const modalDesc = document.getElementById("modalDesc");
+const lockedText = document.getElementById("lockedText");
+const player = document.getElementById("player");
+
+const authBtn = document.getElementById("authBtn");
+
+/* ================================
    AUTH CHECK
 ================================ */
+
 async function checkUser() {
   const { data } = await supabase.auth.getUser();
   currentUser = data.user;
 
-  document.getElementById("authBtn").innerText =
-    currentUser ? "Logout" : "Login";
+  authBtn.innerText = currentUser ? "Logout" : "Login";
 }
 
 async function handleAuth() {
@@ -241,26 +258,36 @@ async function handleAuth() {
 }
 
 /* ================================
-   LOAD FILMS FEED
+   LOAD FILMS (FIXED)
 ================================ */
+
 async function loadFilms() {
+  moviesRow.innerHTML = "<p>Loading...</p>";
+  seriesRow.innerHTML = "<p>Loading...</p>";
+  docRow.innerHTML = "<p>Loading...</p>";
+
   const { data, error } = await supabase
     .from("films")
     .select("*")
+    .eq("visibility", "public")
     .order("created_at", { ascending: false });
 
   if (error) {
-    alert("Error loading films");
-    console.log(error);
+    console.log("SUPABASE ERROR:", error);
+    alert("Error loading films.");
     return;
   }
 
-  // Clear rows
   moviesRow.innerHTML = "";
   seriesRow.innerHTML = "";
   docRow.innerHTML = "";
 
-  data.forEach(film => {
+  if (!data || data.length === 0) {
+    moviesRow.innerHTML = "<p>No films yet.</p>";
+    return;
+  }
+
+  data.forEach((film) => {
     const card = document.createElement("div");
     card.className = "card";
 
@@ -268,29 +295,32 @@ async function loadFilms() {
       <img src="${film.thumbnail_url}" />
       <div class="info">
         <h4>${film.title}</h4>
-        <p>${film.genre}</p>
+        <p>${film.genre || "SS Films Original"}</p>
       </div>
     `;
 
     card.onclick = () => openFilm(film);
 
-    if (film.category === "Movie") moviesRow.appendChild(card);
-    if (film.category === "Series") seriesRow.appendChild(card);
-    if (film.category === "Documentary") docRow.appendChild(card);
+    const cat = film.category?.toLowerCase();
+
+    if (cat === "movie") moviesRow.appendChild(card);
+    else if (cat === "series") seriesRow.appendChild(card);
+    else if (cat === "documentary") docRow.appendChild(card);
+    else moviesRow.appendChild(card); // fallback
   });
 }
 
 /* ================================
-   OPEN FILM MODAL
+   OPEN MODAL
 ================================ */
+
 function openFilm(film) {
   modal.style.display = "flex";
   modalTitle.innerText = film.title;
   modalDesc.innerText = film.description;
 
   if (!currentUser) {
-    lockedText.innerText =
-      "🔒 Login required to watch this film.";
+    lockedText.innerText = "🔒 Login required to watch.";
     player.style.display = "none";
   } else {
     lockedText.innerText = "";
@@ -305,22 +335,25 @@ function closeModal() {
 }
 
 /* ================================
-   SPOTLIGHT
+   SPOTLIGHT (DB FEATURED)
 ================================ */
-function openSpotlight() {
-  openFilm({
-    title: "Spotlight Premiere",
-    description: "The #1 Featured SS Films Original Premiere.",
-    video_url: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
-  });
+
+async function openSpotlight() {
+  const { data } = await supabase
+    .from("films")
+    .select("*")
+    .eq("featured", true)
+    .limit(1)
+    .single();
+
+  if (data) openFilm(data);
+  else alert("No featured film set yet.");
 }
 
 /* ================================
    INIT
 ================================ */
+
 checkUser();
 loadFilms();
 </script>
-
-</body>
-</html>
