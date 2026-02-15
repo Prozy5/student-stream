@@ -3,81 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StudentStream HQ • Staff Meeting</title>
+  <title>StudentStream HQ Staff Meeting</title>
 
   <style>
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      background: #050507;
+      background: #0b0b0f;
       color: white;
       overflow: hidden;
     }
 
-    /* Header */
-    header {
-      height: 65px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 22px;
+    /* TOP BAR */
+    .topbar {
+      height: 55px;
       background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      font-size: 14px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    header h1 {
-      font-size: 16px;
-      margin: 0;
+    .topbar span {
+      opacity: 0.85;
+    }
+
+    .live {
       color: #00ff99;
-      font-weight: 900;
-    }
-
-    .right-header {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .recording {
-      font-size: 13px;
       font-weight: bold;
-      color: #ff4444;
     }
 
-    .end-btn {
-      padding: 10px 16px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      background: rgba(255,60,60,0.2);
-      color: white;
-    }
-
-    /* Layout */
+    /* MAIN LAYOUT */
     .layout {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      height: calc(100vh - 65px);
-    }
-
-    /* Main */
-    .main {
-      padding: 18px;
       display: flex;
-      flex-direction: column;
-      gap: 14px;
+      height: calc(100vh - 55px);
     }
 
-    /* Video */
-    .video-box {
-      flex: 1;
-      border-radius: 18px;
-      overflow: hidden;
+    /* LEFT: VIDEO AREA */
+    .main-video {
+      flex: 3;
       position: relative;
       background: black;
-      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-box {
+      flex: 1;
+      position: relative;
+      background: #111;
     }
 
     .video-box video {
@@ -86,306 +62,280 @@
       object-fit: cover;
     }
 
-    /* CEO Sharing Popup */
-    .share-popup {
-      position: absolute;
-      top: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.75);
-      padding: 10px 18px;
-      border-radius: 14px;
-      font-size: 13px;
-      border: 1px solid rgba(255,255,255,0.12);
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .share-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #00ff99;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      50% { opacity: 0.3; }
-    }
-
-    /* Overlay Name */
     .video-overlay {
       position: absolute;
-      bottom: 14px;
-      left: 14px;
+      bottom: 18px;
+      left: 18px;
       background: rgba(0,0,0,0.65);
       padding: 10px 14px;
-      border-radius: 14px;
-      font-size: 13px;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: bold;
     }
 
-    /* Participants */
-    .people {
+    /* PARTICIPANTS ROW */
+    .participants {
+      height: 140px;
       display: flex;
       gap: 12px;
-      overflow-x: auto;
+      padding: 14px;
+      background: rgba(0,0,0,0.55);
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
 
     .tile {
-      min-width: 170px;
-      height: 115px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 13px;
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 12px;
       position: relative;
-    }
-
-    /* Mic + Camera Icons */
-    .icons {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 14px;
-      opacity: 0.6;
-      display: flex;
-      gap: 6px;
-    }
-
-    .tile span {
-      opacity: 0.6;
-      font-size: 12px;
-      margin-top: 6px;
-    }
-
-    /* Chat */
-    .chat {
-      border-left: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
+      font-size: 13px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
     }
 
-    .chat-header {
-      padding: 18px;
+    .icons {
+      font-size: 12px;
+      opacity: 0.75;
+    }
+
+    .status {
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    .unmuted {
+      color: #00ff99;
+      font-weight: bold;
+      opacity: 1 !important;
+    }
+
+    /* RIGHT PANEL */
+    .sidepanel {
+      flex: 1;
+      border-left: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      background: rgba(15,15,20,0.95);
+    }
+
+    /* AGENDA */
+    .agenda {
+      padding: 16px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    .chat-header h2 {
-      margin: 0;
+    .agenda h3 {
+      margin: 0 0 10px;
       font-size: 15px;
-      font-weight: 800;
+      color: #00ff99;
     }
 
-    .chat-header p {
-      margin: 6px 0 0;
-      font-size: 12px;
-      opacity: 0.55;
+    .agenda ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      opacity: 0.85;
+      line-height: 1.6;
     }
 
-    .messages {
+    /* CHAT */
+    .chatbox {
       flex: 1;
-      padding: 18px;
+      padding: 16px;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      font-size: 13px;
+    }
+
+    .chatbox::-webkit-scrollbar {
+      display: none;
     }
 
     .msg {
-      background: rgba(255,255,255,0.06);
-      padding: 10px 12px;
-      border-radius: 14px;
-      font-size: 13px;
-      line-height: 1.4;
+      margin-bottom: 12px;
     }
 
     .msg b {
       color: #00ff99;
-      display: block;
-      margin-bottom: 3px;
     }
 
-    .time {
-      font-size: 11px;
-      opacity: 0.4;
-      margin-top: 4px;
-    }
-
-    /* System Messages */
     .system {
       font-size: 12px;
       opacity: 0.55;
-      text-align: center;
-    }
-
-    /* Reaction Bar */
-    .reactions {
-      padding: 14px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      justify-content: space-around;
-      font-size: 20px;
-      cursor: pointer;
+      font-style: italic;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>StudentStream HQ • Internal Staff Meeting</h1>
-
-  <div class="right-header">
-    <div class="recording">● Recording</div>
-    <button class="end-btn" onclick="endMeeting()">End Meeting</button>
-  </div>
-</header>
-
-<div class="layout">
-
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- VIDEO -->
-    <div class="video-box">
-
-      <!-- CEO Sharing Popup -->
-      <div class="share-popup">
-        <div class="share-dot"></div>
-        CEO is Screen Sharing...
-      </div>
-
-      <video autoplay muted loop>
-        <source src="your-dance-video.mp4" type="video/mp4">
-      </video>
-
-      <div class="video-overlay">
-        Deondre Chambers (CEO) • Presenting Growth Plan 😭
-      </div>
-    </div>
-
-    <!-- PARTICIPANTS -->
-    <div class="people">
-
-      <div class="tile">
-        <div class="icons">🎤🚫 📷🚫</div>
-        Mike
-        <span>Muted • Camera Off</span>
-      </div>
-
-      <div class="tile">
-        <div class="icons">🎤🚫 📷🚫</div>
-        Rebecca
-        <span>Typing...</span>
-      </div>
-
-      <div class="tile">
-        <div class="icons">🎤🚫 📷🚫</div>
-        Edward
-        <span>Connection Weak</span>
-      </div>
-
-      <div class="tile">
-        <div class="icons">🤖</div>
-        Staff Bot
-        <span>Monitoring Meeting</span>
-      </div>
-
-    </div>
-
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <span class="live">● Live • Recording</span>
+    <span>StudentStream HQ Staff Meeting</span>
+    <span>Host: Deondre</span>
   </div>
 
-  <!-- CHAT -->
-  <div class="chat">
+  <!-- MAIN LAYOUT -->
+  <div class="layout">
 
-    <div class="chat-header">
-      <h2>Live Staff Chat</h2>
-      <p><span id="viewerCount">38</span> staff online</p>
+    <!-- LEFT SIDE -->
+    <div class="main-video">
+
+      <!-- VIDEO AREA -->
+      <div class="video-box">
+        <!-- PUT YOUR DANCE VIDEO HERE -->
+        <video autoplay muted loop>
+          <source src="dance.mp4" type="video/mp4">
+        </video>
+
+        <div class="video-overlay">
+          Deondre • Founder, StudentStream HQ • Screen Sharing
+        </div>
+      </div>
+
+      <!-- PARTICIPANTS -->
+      <div class="participants">
+
+        <div class="tile" id="mikeTile">
+          <div class="icons">🎤🚫 📷🚫</div>
+          Mike
+          <div class="status" id="mikeStatus">Muted • Camera Off</div>
+        </div>
+
+        <div class="tile" id="rebeccaTile">
+          <div class="icons">🎤🚫 📷🚫</div>
+          Rebecca
+          <div class="status" id="rebeccaStatus">Muted • Camera Off</div>
+        </div>
+
+        <div class="tile" id="edwardTile">
+          <div class="icons">🎤🚫 📷🚫</div>
+          Edward
+          <div class="status" id="edwardStatus">Muted • Camera Off</div>
+        </div>
+
+        <div class="tile" id="jasonTile">
+          <div class="icons">🎤🚫 📷🚫</div>
+          Jason
+          <div class="status" id="jasonStatus">Muted • Camera Off</div>
+        </div>
+
+      </div>
     </div>
 
-    <div class="messages" id="chatBox"></div>
+    <!-- RIGHT SIDE PANEL -->
+    <div class="sidepanel">
 
-    <div class="reactions">
-      <span>😂</span>
-      <span>👏</span>
-      <span>🔥</span>
-      <span>💀</span>
-      <span>🎬</span>
+      <!-- AGENDA PANEL -->
+      <div class="agenda">
+        <h3>📌 Meeting Agenda</h3>
+        <ul>
+          <li>SS Films Content Rollout</li>
+          <li>Creator Upload System Review</li>
+          <li>Marketing + Social Strategy</li>
+          <li>StudentStream HQ Growth Plan</li>
+          <li>Next Week Action Items</li>
+        </ul>
+      </div>
+
+      <!-- CHAT -->
+      <div class="chatbox" id="chatBox"></div>
+
     </div>
-
   </div>
 
-</div>
+  <!-- SCRIPT -->
+  <script>
+    /* ================================
+       FAKE CHAT FEED
+    ================================ */
+    const chatBox = document.getElementById("chatBox");
 
-<!-- ✅ REALISTIC CHAT SCRIPT -->
-<script>
-  const chatBox = document.getElementById("chatBox");
-  const viewerCount = document.getElementById("viewerCount");
+    const fakeFeed = [
+      { system: true, text: "Mike joined the meeting" },
+      { system: true, text: "Rebecca joined the meeting" },
+      { system: true, text: "Edward joined the meeting" },
 
-  const fakeFeed = [
-    { system: true, text: "Mike joined the meeting" },
-    { system: true, text: "Rebecca joined the meeting" },
-    { name: "Mike", text: "Bro why is the CEO dancing already 💀" },
-    { name: "Rebecca", text: "This is NOT on the agenda 😭" },
-    { system: true, text: "Edward connected (unstable network)" },
-    { name: "Edward", text: "Investor meeting in 8 minutes btw..." },
-    { name: "Mike", text: "Lowkey this might be the best marketing ever 🔥" },
-    { name: "Rebecca", text: "SS Films rollout gonna be insane" },
-    { name: "Edward", text: "He hit that move TOO clean 😭😭" },
-    { system: true, text: "Staff Bot is recording this meeting" },
-    { name: "Mike", text: "Chat going crazy rn 😂" }
-  ];
+      { name: "Mike", text: "Good afternoon everyone" },
+      { name: "Rebecca", text: "Hey team 🙌" },
 
-  let i = 0;
+      { system: true, text: "Deondre is now screen sharing" },
 
-  function timestamp() {
-    const d = new Date();
-    return d.toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"});
-  }
+      { name: "Edward", text: "SS Films rollout is looking strong so far" },
+      { name: "Mike", text: "Agreed. The platform is clean" },
 
-  function dropMessage() {
-    if (i >= fakeFeed.length) return;
+      { name: "Rebecca", text: "Marketing clips like this will go crazy 😭" },
 
-    const m = fakeFeed[i];
+      { system: true, text: "Staff Bot started recording" },
 
-    if (m.system) {
-      const sys = document.createElement("div");
-      sys.className = "system";
-      sys.innerText = m.text;
-      chatBox.appendChild(sys);
-    } else {
+      { name: "Jason", text: "Sorry I'm late, just joined" },
+      { name: "Mike", text: "All good 💀" },
+
+      { name: "Edward", text: "Next week we push more creator content" },
+
+      { system: true, text: "Chat has been quiet… meeting continues." }
+    ];
+
+    let i = 0;
+
+    function dropMessage() {
+      if (i >= fakeFeed.length) return;
+
+      const msg = fakeFeed[i];
+
       const div = document.createElement("div");
-      div.className = "msg";
-      div.innerHTML = `
-        <b>${m.name}</b>
-        ${m.text}
-        <div class="time">${timestamp()}</div>
-      `;
+
+      if (msg.system) {
+        div.className = "system";
+        div.innerText = msg.text;
+      } else {
+        div.className = "msg";
+        div.innerHTML = `<b>${msg.name}:</b> ${msg.text}`;
+      }
+
       chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      i++;
     }
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+    setInterval(dropMessage, 3200);
 
-    viewerCount.innerText = 35 + i * 2;
+    /* ================================
+       RANDOM UNMUTE REALISM
+    ================================ */
+    const people = [
+      { name: "Mike", statusEl: "mikeStatus" },
+      { name: "Rebecca", statusEl: "rebeccaStatus" },
+      { name: "Edward", statusEl: "edwardStatus" },
+      { name: "Jason", statusEl: "jasonStatus" }
+    ];
 
-    i++;
-  }
+    function randomUnmute() {
+      const person = people[Math.floor(Math.random() * people.length)];
+      const el = document.getElementById(person.statusEl);
 
-  // Faster for realism
-  setInterval(dropMessage, 1800);
+      // Unmute moment
+      el.innerText = "🎤 Unmuted...";
+      el.classList.add("unmuted");
 
-  function endMeeting() {
-    alert("Meeting Ended (Demo Skit)");
-    window.location.href = "index.html";
-  }
-</script>
+      // Back to muted after 1–3 seconds
+      const duration = Math.random() * 2000 + 1000;
+
+      setTimeout(() => {
+        el.innerText = "Muted • Camera Off";
+        el.classList.remove("unmuted");
+      }, duration);
+    }
+
+    // Trigger every 8–15 seconds randomly
+    setInterval(() => {
+      if (Math.random() > 0.5) randomUnmute();
+    }, 9000);
+  </script>
 
 </body>
 </html>
