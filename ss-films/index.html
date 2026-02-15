@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>SS Films • Originals. Spotlight. Legacy.</title>
 
   <!-- Supabase -->
@@ -35,8 +34,8 @@
     header {
       position: sticky;
       top: 0;
-      z-index: 999;
-      padding: 18px 28px;
+      z-index: 100;
+      padding: 18px 26px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -48,7 +47,6 @@
     .logo {
       font-weight: 1000;
       font-size: 15px;
-      letter-spacing: .5px;
     }
 
     nav a {
@@ -57,21 +55,19 @@
       font-size: 13px;
       font-weight: 850;
       color: var(--muted);
-      transition: .2s;
     }
 
     nav a:hover {
       color: white;
     }
 
-    /* HERO */
     .hero {
       max-width: 1150px;
       margin: auto;
-      padding: 80px 25px 40px;
+      padding: 70px 25px 40px;
     }
 
-    .tag {
+    .heroTag {
       display: inline-block;
       padding: 7px 18px;
       border-radius: 999px;
@@ -84,40 +80,39 @@
     }
 
     .hero h1 {
-      font-size: 64px;
+      font-size: 60px;
       font-weight: 1000;
       line-height: 1.05;
     }
 
     .hero p {
       margin-top: 18px;
-      font-size: 17px;
+      font-size: 16px;
       line-height: 1.7;
       max-width: 720px;
       color: var(--muted);
     }
 
-    /* FEATURED */
-    .featuredBox {
-      margin-top: 40px;
+    .spotlightBox {
+      margin-top: 35px;
       padding: 26px;
-      border-radius: 22px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
     }
 
-    .featuredBox h2 {
-      font-size: 22px;
+    .spotlightBox h2 {
+      font-size: 28px;
       font-weight: 1000;
     }
 
-    .featuredBox p {
-      opacity: .6;
+    .spotlightBox p {
       margin-top: 6px;
-      font-size: 13px;
+      opacity: .6;
+      font-size: 14px;
     }
 
-    .watchBtn {
+    .spotlightBtn {
       margin-top: 18px;
       display: inline-block;
       padding: 14px 26px;
@@ -126,72 +121,70 @@
       text-decoration: none;
       background: linear-gradient(135deg,#3b82f6,#6cf2c2);
       color: black;
-      cursor: pointer;
     }
 
-    /* ROWS */
     .section {
       max-width: 1200px;
       margin: auto;
-      padding: 50px 25px;
+      padding: 40px 25px;
     }
 
     .section h2 {
       font-size: 22px;
       font-weight: 1000;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
-    .row {
+    .filmRow {
       display: flex;
       gap: 18px;
       overflow-x: auto;
       padding-bottom: 12px;
     }
 
-    .card {
+    .filmCard {
       min-width: 240px;
       border-radius: 18px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      background: var(--panel);
       cursor: pointer;
       transition: .25s;
     }
 
-    .card:hover {
+    .filmCard:hover {
       transform: scale(1.05);
       border-color: rgba(59,130,246,.45);
     }
 
-    .card img {
+    .filmCard img {
       width: 100%;
       height: 150px;
       object-fit: cover;
     }
 
-    .info {
+    .filmInfo {
       padding: 14px;
     }
 
-    .info h3 {
+    .filmInfo h3 {
       font-size: 14px;
       font-weight: 900;
+      margin-bottom: 5px;
     }
 
-    .info p {
+    .filmInfo p {
       font-size: 12px;
-      opacity: .6;
-      margin-top: 5px;
+      opacity: .65;
     }
 
     footer {
-      padding: 50px;
+      margin-top: 60px;
+      padding: 35px;
       text-align: center;
       font-size: 13px;
       opacity: .4;
-      border-top: 1px solid rgba(255,255,255,.10);
-      margin-top: 70px;
+      border-top: 1px solid var(--line);
     }
   </style>
 </head>
@@ -205,55 +198,49 @@
   <nav>
     <a href="/ss-productions/">Productions</a>
     <a href="/boosts.html">Boosts</a>
-    <a id="loginBtn" href="/ss-films/login.html">Login</a>
+    <a id="loginLink" href="/ss-films/login.html">Login</a>
   </nav>
 </header>
 
 <!-- HERO -->
 <section class="hero">
-  <span class="tag">Originals • Spotlight • Legacy</span>
+  <span class="heroTag">Originals • Spotlight • Legacy</span>
 
   <h1>SS Films Originals.</h1>
 
   <p>
-    StudentStream’s cinematic streaming division —
-    built for creator-made films, episodic series,
-    documentaries, and platform Originals.
+    SS Films is StudentStream’s cinematic streaming division —
+    built for creator-made movies, episodic series, documentaries,
+    and platform Originals.
     <br><br>
     Browse freely. Watch instantly after login.
   </p>
 
-  <!-- FEATURED SPOTLIGHT -->
-  <div class="featuredBox">
-    <h2 id="spotTitle">Loading Spotlight...</h2>
-    <p id="spotDesc">SS Films Featured Original</p>
+  <!-- SPOTLIGHT -->
+  <div class="spotlightBox">
+    <h2 id="spotlightTitle">Loading Spotlight...</h2>
+    <p>SS Films Featured Original</p>
 
-    <a id="spotBtn" class="watchBtn">Watch Spotlight →</a>
+    <a id="spotlightBtn" class="spotlightBtn" href="#">
+      Watch Spotlight →
+    </a>
   </div>
 </section>
 
-<!-- TRENDING -->
+<!-- ROWS -->
 <section class="section">
   <h2>Trending on SS Films</h2>
-  <div class="row" id="trendingRow">
-    <p style="opacity:.6">Loading films...</p>
-  </div>
+  <div class="filmRow" id="trendingRow"></div>
 </section>
 
-<!-- DOCUMENTARIES -->
 <section class="section">
   <h2>Documentaries</h2>
-  <div class="row" id="docsRow">
-    <p style="opacity:.6">Loading documentaries...</p>
-  </div>
+  <div class="filmRow" id="docsRow"></div>
 </section>
 
-<!-- SERIES -->
 <section class="section">
   <h2>Episodic Series</h2>
-  <div class="row" id="seriesRow">
-    <p style="opacity:.6">Loading series...</p>
-  </div>
+  <div class="filmRow" id="seriesRow"></div>
 </section>
 
 <!-- FOOTER -->
@@ -263,75 +250,50 @@
   Originals. Spotlight. Legacy.
 </footer>
 
+<!-- SCRIPT -->
 <script>
   const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 
-  // ⚠️ PUT YOUR REAL KEY HERE
+  // ✅ PUT YOUR REAL KEY HERE
   const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...REPLACE_FULL_KEY";
 
   const supabase = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   );
 
-  /* LOGIN BUTTON FIX */
-  async function updateLoginBtn() {
-    const { data } = await supabase.auth.getSession();
+  // ✅ Helper: Create Film Card
+  function renderCard(film, row) {
+    const card = document.createElement("div");
+    card.className = "filmCard";
 
-    if (data.session) {
-      loginBtn.textContent = "Dashboard";
-      loginBtn.href = "/ss-films/dashboard.html";
-    }
-  }
+    card.innerHTML = `
+      <img src="${film.thumbnail_url}" />
+      <div class="filmInfo">
+        <h3>${film.title}</h3>
+        <p>${film.description || "SS Films Original"}</p>
+      </div>
+    `;
 
-  updateLoginBtn();
+    card.onclick = async () => {
+      const { data } = await supabase.auth.getSession();
 
-  /* LOCKED WATCH FUNCTION */
-  async function goWatch(filmId) {
-    const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        window.location.href =
+          "/ss-films/login.html?redirect=watch&id=" + film.id;
+        return;
+      }
 
-    if (!data.session) {
-      alert("🔒 Login required to watch films.");
       window.location.href =
-        "/ss-films/login.html?redirect=watch&id=" + filmId;
-      return;
-    }
+        "/ss-films/watch.html?id=" + film.id;
+    };
 
-    window.location.href =
-      "/ss-films/watch.html?id=" + filmId;
+    row.appendChild(card);
   }
 
-  /* BUILD ROW */
-  function renderRow(rowId, films) {
-    const row = document.getElementById(rowId);
-    row.innerHTML = "";
-
-    if (!films || films.length === 0) {
-      row.innerHTML =
-        `<p style="opacity:.6">No uploads yet.</p>`;
-      return;
-    }
-
-    films.forEach(film => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      card.innerHTML = `
-        <img src="${film.thumbnail_url}" />
-        <div class="info">
-          <h3>${film.title}</h3>
-          <p>${film.description || "SS Films Original"}</p>
-        </div>
-      `;
-
-      card.onclick = () => goWatch(film.id);
-      row.appendChild(card);
-    });
-  }
-
-  /* LOAD ALL FILMS */
-  async function loadHomepage() {
+  // ✅ Load Spotlight + Rows
+  async function loadHome() {
     const { data: films } = await supabase
       .from("films")
       .select("*")
@@ -339,25 +301,47 @@
 
     if (!films || films.length === 0) return;
 
-    /* SPOTLIGHT */
-    const spotlight = films.find(f => f.is_spotlight);
+    // Spotlight = newest film
+    const spotlight = films[0];
+    document.getElementById("spotlightTitle").textContent =
+      spotlight.title;
 
-    if (spotlight) {
-      spotTitle.textContent = spotlight.title;
-      spotDesc.textContent = spotlight.description;
-      spotBtn.onclick = () => goWatch(spotlight.id);
-    } else {
-      spotTitle.textContent = "No Spotlight Yet";
-      spotBtn.style.display = "none";
-    }
+    document.getElementById("spotlightBtn").href =
+      "/ss-films/login.html?redirect=watch&id=" + spotlight.id;
 
-    /* ROW FILTERS */
-    renderRow("trendingRow", films.slice(0, 8));
-    renderRow("docsRow", films.filter(f => f.category === "Documentary"));
-    renderRow("seriesRow", films.filter(f => f.category === "Series"));
+    // Rows
+    films.slice(0, 8).forEach(f =>
+      renderCard(f, document.getElementById("trendingRow"))
+    );
+
+    films.filter(f => f.category === "Documentary")
+      .slice(0, 8)
+      .forEach(f =>
+        renderCard(f, document.getElementById("docsRow"))
+      );
+
+    films.filter(f => f.category === "Series")
+      .slice(0, 8)
+      .forEach(f =>
+        renderCard(f, document.getElementById("seriesRow"))
+      );
   }
 
-  loadHomepage();
+  loadHome();
+
+  // ✅ Fix Login Link
+  async function checkSession() {
+    const { data } = await supabase.auth.getSession();
+
+    if (data.session) {
+      document.getElementById("loginLink").textContent =
+        "Dashboard";
+      document.getElementById("loginLink").href =
+        "/ss-films/dashboard.html";
+    }
+  }
+
+  checkSession();
 </script>
 
 </body>
