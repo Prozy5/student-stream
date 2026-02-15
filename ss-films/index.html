@@ -12,7 +12,6 @@
     /* ================================
        ✅ SUPABASE CONFIG
     ================================ */
-
     const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
     const supabaseKey =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
@@ -22,27 +21,26 @@
     /* ================================
        ELEMENTS
     ================================ */
-
     const moviesRow = document.getElementById("moviesRow");
     const seriesRow = document.getElementById("seriesRow");
     const docRow = document.getElementById("docRow");
+    const trendingRow = document.getElementById("trendingRow");
 
     const modal = document.getElementById("modal");
     const modalTitle = document.getElementById("modalTitle");
     const modalDesc = document.getElementById("modalDesc");
     const player = document.getElementById("player");
 
+    const searchInput = document.getElementById("searchInput");
+    const filterSelect = document.getElementById("filterSelect");
+
     let spotlightFilm = null;
+    let allFilms = [];
 
     /* ================================
-       LOAD FILMS (PUBLIC)
+       LOAD FILMS
     ================================ */
-
     async function loadFilms() {
-      moviesRow.innerHTML = "<p>Loading...</p>";
-      seriesRow.innerHTML = "<p>Loading...</p>";
-      docRow.innerHTML = "<p>Loading...</p>";
-
       const { data, error } = await supabase
         .from("films")
         .select("*")
@@ -55,16 +53,20 @@
         return;
       }
 
+      allFilms = data;
+      renderFilms(data);
+    }
+
+    /* ================================
+       RENDER FILMS
+    ================================ */
+    function renderFilms(films) {
       moviesRow.innerHTML = "";
       seriesRow.innerHTML = "";
       docRow.innerHTML = "";
+      trendingRow.innerHTML = "";
 
-      if (!data || data.length === 0) {
-        moviesRow.innerHTML = "<p>No films yet.</p>";
-        return;
-      }
-
-      data.forEach((film) => {
+      films.forEach((film, index) => {
         const card = document.createElement("div");
         card.className = "card";
 
@@ -82,18 +84,14 @@
 
         if (film.featured) spotlightFilm = film;
 
+        if (index < 5) trendingRow.appendChild(card);
+
         if (cat === "movie") moviesRow.appendChild(card);
         else if (cat === "series") seriesRow.appendChild(card);
         else if (cat === "documentary") docRow.appendChild(card);
         else moviesRow.appendChild(card);
       });
 
-      /* ✅ Hide Empty Rows */
-      if (!moviesRow.innerHTML.trim()) moviesRow.parentElement.style.display = "none";
-      if (!seriesRow.innerHTML.trim()) seriesRow.parentElement.style.display = "none";
-      if (!docRow.innerHTML.trim()) docRow.parentElement.style.display = "none";
-
-      /* ✅ Spotlight Auto Background */
       if (spotlightFilm) {
         document.getElementById("spotlightTitle").innerText = spotlightFilm.title;
         document.getElementById("spotlightDesc").innerText = spotlightFilm.description;
@@ -105,27 +103,47 @@
     }
 
     /* ================================
-       OPEN MODAL (PUBLIC WATCH)
+       SEARCH + FILTER
     ================================ */
+    function applyFilters() {
+      const query = searchInput.value.toLowerCase();
+      const category = filterSelect.value;
 
+      let filtered = allFilms.filter(f =>
+        f.title.toLowerCase().includes(query)
+      );
+
+      if (category !== "all") {
+        filtered = filtered.filter(f =>
+          f.category?.toLowerCase() === category
+        );
+      }
+
+      renderFilms(filtered);
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+    filterSelect.addEventListener("change", applyFilters);
+
+    /* ================================
+       MODAL WATCH
+    ================================ */
     function openFilm(film) {
       modal.style.display = "flex";
+
       modalTitle.innerText = film.title;
       modalDesc.innerText = film.description;
 
-      player.style.display = "block";
       player.src = film.video_url;
       player.play();
+
+      localStorage.setItem("lastWatched", film.title);
     }
 
     window.closeModal = function () {
       modal.style.display = "none";
       player.pause();
     };
-
-    /* ================================
-       SPOTLIGHT PLAY
-    ================================ */
 
     window.openSpotlight = function () {
       if (spotlightFilm) openFilm(spotlightFilm);
@@ -135,7 +153,6 @@
     /* ================================
        INIT
     ================================ */
-
     loadFilms();
   </script>
 
@@ -149,46 +166,49 @@
 
     header {
       padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.9);
       position: sticky;
       top: 0;
       z-index: 99;
     }
 
     header h1 {
-      font-size: 22px;
       color: #00ff99;
+      margin: 0;
+    }
+
+    /* 🔍 Search Bar */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    input, select {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
     }
 
     .spotlight {
       padding: 60px 20px;
-      background: linear-gradient(to right, black, transparent),
-        url("https://picsum.photos/1200/500");
       background-size: cover;
       background-position: center;
     }
 
     .spotlight h2 {
       font-size: 42px;
-      margin: 0;
-    }
-
-    .spotlight p {
-      max-width: 520px;
-      opacity: 0.85;
     }
 
     .spotlight button {
-      margin-top: 20px;
       background: #00ff99;
       border: none;
       padding: 14px 22px;
       border-radius: 12px;
-      font-weight: bold;
       cursor: pointer;
+      font-weight: bold;
     }
 
     .section {
@@ -199,7 +219,7 @@
       display: flex;
       gap: 15px;
       overflow-x: auto;
-      padding-bottom: 10px;
+      scroll-snap-type: x mandatory;
     }
 
     .card {
@@ -208,6 +228,7 @@
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
+      scroll-snap-align: start;
       transition: 0.2s;
     }
 
@@ -221,19 +242,8 @@
       object-fit: cover;
     }
 
-    .card .info {
+    .info {
       padding: 10px;
-    }
-
-    .card .info h4 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .card .info p {
-      margin: 5px 0 0;
-      font-size: 13px;
-      opacity: 0.7;
     }
 
     /* Modal */
@@ -251,22 +261,21 @@
       background: #15151f;
       padding: 25px;
       width: 92%;
-      max-width: 700px;
+      max-width: 750px;
       border-radius: 15px;
       text-align: center;
     }
 
     video {
       width: 100%;
-      border-radius: 12px;
       margin-top: 15px;
+      border-radius: 12px;
     }
 
     .close {
       float: right;
       cursor: pointer;
       font-size: 22px;
-      opacity: 0.7;
     }
   </style>
 </head>
@@ -275,6 +284,17 @@
 
 <header>
   <h1>🎬 SS Films</h1>
+
+  <!-- 🔍 Controls -->
+  <div class="controls">
+    <input id="searchInput" placeholder="Search films..." />
+    <select id="filterSelect">
+      <option value="all">All</option>
+      <option value="movie">Movies</option>
+      <option value="series">Series</option>
+      <option value="documentary">Documentary</option>
+    </select>
+  </div>
 </header>
 
 <!-- Spotlight -->
@@ -282,6 +302,12 @@
   <h2 id="spotlightTitle">Spotlight Premiere</h2>
   <p id="spotlightDesc">The newest featured original from SS Films creators.</p>
   <button onclick="openSpotlight()">▶ Watch Spotlight</button>
+</section>
+
+<!-- Trending -->
+<section class="section">
+  <h3>🔥 Trending Now</h3>
+  <div class="row" id="trendingRow"></div>
 </section>
 
 <!-- Movies -->
