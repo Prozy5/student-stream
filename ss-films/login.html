@@ -2,322 +2,156 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login • SS Films</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudentStream Login</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui;
-    }
-
     body {
-      background: radial-gradient(circle at top, #0b1022, #05060c);
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #050507;
       color: white;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 30px;
-      overflow: hidden;
     }
 
-    /* Glow Animation */
-    .glow {
-      position: absolute;
-      width: 550px;
-      height: 550px;
-      background: #3b82f6;
-      filter: blur(200px);
-      opacity: 0.22;
-      animation: float 7s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%,100% { transform: translateY(0px); }
-      50% { transform: translateY(-80px); }
-    }
-
-    .loginBox {
-      width: 100%;
-      max-width: 460px;
-      padding: 42px;
-      border-radius: 26px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 0 90px rgba(0,0,0,.65);
-      text-align: center;
-      position: relative;
-      z-index: 5;
+    .box {
+      width: 90%;
+      max-width: 420px;
+      padding: 35px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.06);
       backdrop-filter: blur(18px);
+      text-align: center;
     }
 
     h1 {
-      font-size: 34px;
-      font-weight: 1000;
-      margin-bottom: 8px;
-    }
-
-    h1 span {
-      color: #6cf2c2;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 900;
+      color: #00ff99;
     }
 
     p {
-      opacity: .7;
+      opacity: 0.7;
+      margin: 12px 0 25px;
       font-size: 14px;
-      margin-bottom: 26px;
-      line-height: 1.5;
     }
 
-    /* Inputs */
     input {
       width: 100%;
       padding: 14px;
       margin-bottom: 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: white;
-      font-size: 15px;
+      border: none;
       outline: none;
-      transition: .2s;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 14px;
     }
 
-    input:focus {
-      border-color: rgba(108,242,194,.7);
-      box-shadow: 0 0 0 2px rgba(108,242,194,.15);
-    }
-
-    /* Password Toggle */
-    .passwordWrap {
-      position: relative;
-    }
-
-    .togglePass {
-      position: absolute;
-      right: 14px;
-      top: 14px;
-      font-size: 13px;
-      opacity: .6;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .togglePass:hover {
-      opacity: 1;
-    }
-
-    /* Button */
     button {
       width: 100%;
       padding: 14px;
-      border-radius: 14px;
       border: none;
-      font-weight: 900;
+      border-radius: 14px;
+      background: #00ff99;
+      font-weight: bold;
       font-size: 15px;
       cursor: pointer;
-      background: linear-gradient(135deg, #3b82f6, #6cf2c2);
-      color: black;
-      margin-top: 6px;
-      transition: .2s;
+      transition: 0.2s;
     }
 
     button:hover {
-      transform: translateY(-2px);
+      opacity: 0.85;
     }
 
-    button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Switch Mode */
-    .switchMode {
-      margin-top: 18px;
-      font-size: 13px;
-      opacity: .75;
-    }
-
-    .switchMode span {
-      color: #6cf2c2;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    /* Error */
-    .errorMsg {
-      margin-top: 14px;
-      font-size: 13px;
-      color: #ff4d4d;
-      display: none;
-    }
-
-    /* Back */
-    .backLink {
+    .link {
       margin-top: 18px;
       display: block;
       font-size: 13px;
-      opacity: .6;
+      opacity: 0.65;
       text-decoration: none;
       color: white;
+    }
+
+    #msg {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #ff5555;
     }
   </style>
 </head>
 
 <body>
 
-<div class="glow"></div>
+  <div class="box">
+    <h1>StudentStream Login</h1>
+    <p>Sign in to access SS Films + StudentStreamHQ.</p>
 
-<div class="loginBox">
-  <h1>🎬 SS <span>Films</span></h1>
+    <input id="email" type="email" placeholder="Email address" />
+    <input id="password" type="password" placeholder="Password" />
 
-  <p id="subtitle">
-    Log in to watch films, series, and Originals on StudentStream.
-  </p>
+    <button id="loginBtn">Login</button>
 
-  <input type="email" id="email" placeholder="Email" />
+    <div id="msg"></div>
 
-  <div class="passwordWrap">
-    <input type="password" id="password" placeholder="Password" />
-    <div class="togglePass" onclick="togglePassword()">Show</div>
+    <a class="link" href="signup.html">
+      Don’t have an account? Sign up →
+    </a>
   </div>
 
-  <button id="authBtn" onclick="handleAuth()">Login</button>
+  <!-- ✅ UNIVERSAL LOGIN SCRIPT -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  <p class="errorMsg" id="errorMsg"></p>
+    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-  <div class="switchMode">
-    Don’t have an account?
-    <span onclick="toggleMode()">Sign up</span>
-  </div>
+    const loginBtn = document.getElementById("loginBtn");
+    const msg = document.getElementById("msg");
 
-  <a href="index.html" class="backLink">
-    ← Back to Browse
-  </a>
-</div>
+    // ✅ Detect redirect destination
+    const params = new URLSearchParams(window.location.search);
 
-<script>
-  /* ================================
-     SUPABASE CONFIG
-  ================================ */
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    // Default goes to StudentStreamHQ dashboard
+    const redirectTo =
+      params.get("redirect") || "hq-dashboard.html";
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+    loginBtn.onclick = async () => {
+      msg.innerText = "";
 
-  /* ================================
-     REDIRECT SUPPORT
-  ================================ */
-  const params = new URLSearchParams(window.location.search);
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-  const redirectTarget =
-    params.get("redirect") || "index.html";
+      if (!email || !password) {
+        msg.innerText = "Enter your email + password.";
+        return;
+      }
 
-  /* ================================
-     MODE TOGGLE
-  ================================ */
-  let mode = "login";
-
-  function toggleMode() {
-    const subtitle = document.getElementById("subtitle");
-    const btn = document.getElementById("authBtn");
-
-    if (mode === "login") {
-      mode = "signup";
-      subtitle.innerText =
-        "Create an account to unlock SS Films Originals.";
-      btn.innerText = "Create Account";
-    } else {
-      mode = "login";
-      subtitle.innerText =
-        "Log in to watch films, series, and Originals on StudentStream.";
-      btn.innerText = "Login";
-    }
-  }
-
-  /* ================================
-     PASSWORD SHOW/HIDE
-  ================================ */
-  function togglePassword() {
-    const pass = document.getElementById("password");
-    const toggle = document.querySelector(".togglePass");
-
-    if (pass.type === "password") {
-      pass.type = "text";
-      toggle.innerText = "Hide";
-    } else {
-      pass.type = "password";
-      toggle.innerText = "Show";
-    }
-  }
-
-  /* ================================
-     AUTH HANDLER
-  ================================ */
-  async function handleAuth() {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const errorBox = document.getElementById("errorMsg");
-    const btn = document.getElementById("authBtn");
-
-    errorBox.style.display = "none";
-
-    if (!email || !password) {
-      errorBox.textContent = "Please enter your email and password.";
-      errorBox.style.display = "block";
-      return;
-    }
-
-    btn.disabled = true;
-    btn.innerText = mode === "login" ? "Signing in..." : "Creating...";
-
-    let result;
-
-    if (mode === "login") {
-      result = await supabase.auth.signInWithPassword({
+      // ✅ Login Supabase User
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
-    } else {
-      result = await supabase.auth.signUp({
-        email,
-        password
-      });
-    }
 
-    if (result.error) {
-      errorBox.textContent = result.error.message;
-      errorBox.style.display = "block";
-      btn.disabled = false;
-      btn.innerText = mode === "login" ? "Login" : "Create Account";
-      return;
-    }
+      if (error) {
+        msg.innerText = "❌ " + error.message;
+        return;
+      }
 
-    window.location.href = redirectTarget;
-  }
+      msg.style.color = "#00ff99";
+      msg.innerText = "✅ Login successful... redirecting";
 
-  /* ================================
-     AUTO REDIRECT IF LOGGED IN
-  ================================ */
-  async function checkSession() {
-    const { data } = await supabase.auth.getSession();
-
-    if (data.session) {
-      window.location.href = redirectTarget;
-    }
-  }
-
-  checkSession();
-</script>
+      // ✅ Redirect to correct platform
+      setTimeout(() => {
+        window.location.href = redirectTo;
+      }, 800);
+    };
+  </script>
 
 </body>
 </html>
