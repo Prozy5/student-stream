@@ -3,46 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StudentStream Login</title>
+  <title>SS Films Login</title>
 
   <style>
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      background: #050507;
+      background: black;
       color: white;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 🎥 Animated Cinematic Background */
+    .bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, #00ff9950, transparent 70%),
+                  radial-gradient(circle at bottom, #ffffff10, transparent 70%),
+                  linear-gradient(to bottom, #050507, black);
+      animation: pulse 6s infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes pulse {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.25); }
+    }
+
+    /* Floating Glow Orbs */
+    .orb {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: #00ff9940;
+      filter: blur(90px);
+      animation: float 8s infinite ease-in-out;
+    }
+
+    .orb:nth-child(1) {
+      top: 15%;
+      left: 10%;
+    }
+
+    .orb:nth-child(2) {
+      bottom: 15%;
+      right: 10%;
+      animation-delay: 2s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-35px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Center Login Box */
+    .wrap {
+      position: relative;
+      z-index: 2;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
     .box {
-      width: 90%;
-      max-width: 420px;
-      padding: 35px;
-      border-radius: 18px;
+      width: 100%;
+      max-width: 430px;
+      padding: 40px;
+      border-radius: 22px;
       background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(18px);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 0 50px rgba(0,255,153,0.12);
       text-align: center;
+      animation: fadeUp 0.9s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 900;
       color: #00ff99;
+      letter-spacing: 1px;
     }
 
     p {
       opacity: 0.7;
-      margin: 12px 0 25px;
+      margin: 12px 0 28px;
       font-size: 14px;
+      line-height: 1.4;
     }
 
     input {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       margin-bottom: 14px;
       border: none;
       outline: none;
@@ -50,78 +113,131 @@
       background: rgba(255,255,255,0.08);
       color: white;
       font-size: 14px;
+      transition: 0.25s;
+    }
+
+    input:focus {
+      border: 1px solid #00ff99;
+      box-shadow: 0 0 18px #00ff9950;
     }
 
     button {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       border: none;
       border-radius: 14px;
       background: #00ff99;
       font-weight: bold;
       font-size: 15px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.25s;
+      margin-top: 5px;
     }
 
     button:hover {
-      opacity: 0.85;
+      transform: scale(1.03);
+      box-shadow: 0 0 25px rgba(0,255,153,0.35);
     }
 
-    .link {
+    /* Extra Buttons */
+    .extra {
       margin-top: 18px;
-      display: block;
+      display: flex;
+      justify-content: space-between;
       font-size: 13px;
-      opacity: 0.65;
-      text-decoration: none;
+      opacity: 0.75;
+    }
+
+    .extra a {
       color: white;
+      text-decoration: none;
+    }
+
+    .extra a:hover {
+      color: #00ff99;
     }
 
     #msg {
-      margin-top: 14px;
+      margin-top: 16px;
       font-size: 14px;
-      color: #ff5555;
+      font-weight: 600;
+    }
+
+    /* Footer Tag */
+    .tag {
+      margin-top: 26px;
+      font-size: 12px;
+      opacity: 0.45;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
-    <h1>StudentStream Login</h1>
-    <p>Sign in to access SS Films + StudentStreamHQ.</p>
+  <!-- Background Effects -->
+  <div class="bg"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
 
-    <input id="email" type="email" placeholder="Email address" />
-    <input id="password" type="password" placeholder="Password" />
+  <!-- Login Box -->
+  <div class="wrap">
+    <div class="box">
+      <h1>🎬 SS Films</h1>
+      <p>
+        Sign in with your StudentStream account<br>
+        to access exclusive films + dashboard.
+      </p>
 
-    <button id="loginBtn">Login</button>
+      <input id="email" type="email" placeholder="Email address" />
+      <input id="password" type="password" placeholder="Password" />
 
-    <div id="msg"></div>
+      <button id="loginBtn">Login</button>
 
-    <a class="link" href="signup.html">
-      Don’t have an account? Sign up →
-    </a>
+      <div id="msg"></div>
+
+      <div class="extra">
+        <a href="signup.html">Create Account</a>
+        <a href="#">Forgot Password?</a>
+      </div>
+
+      <div class="tag">
+        StudentStreamHQ • SS Films Platform
+      </div>
+    </div>
   </div>
 
-  <!-- ✅ UNIVERSAL LOGIN SCRIPT -->
+  <!-- ✅ SUPABASE UNIVERSAL LOGIN SCRIPT -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+    const supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const loginBtn = document.getElementById("loginBtn");
     const msg = document.getElementById("msg");
 
-    // ✅ Detect redirect destination
+    /* ✅ Redirect Support */
     const params = new URLSearchParams(window.location.search);
 
-    // Default goes to StudentStreamHQ dashboard
+    // Default = SS Films Dashboard
     const redirectTo =
-      params.get("redirect") || "hq-dashboard.html";
+      params.get("redirect") || "dashboard.html";
 
+    /* ✅ Auto Redirect if Already Logged In */
+    async function autoRedirect() {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        window.location.href = redirectTo;
+      }
+    }
+    autoRedirect();
+
+    /* ✅ Login */
     loginBtn.onclick = async () => {
+      msg.style.color = "#ff5555";
       msg.innerText = "";
 
       const email = document.getElementById("email").value.trim();
@@ -132,10 +248,9 @@
         return;
       }
 
-      // ✅ Login Supabase User
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
 
       if (error) {
@@ -146,10 +261,9 @@
       msg.style.color = "#00ff99";
       msg.innerText = "✅ Login successful... redirecting";
 
-      // ✅ Redirect to correct platform
       setTimeout(() => {
         window.location.href = redirectTo;
-      }, 800);
+      }, 900);
     };
   </script>
 
