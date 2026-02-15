@@ -2,346 +2,324 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SS Films • Originals. Spotlight. Legacy.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SS Films</title>
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root {
-      --bg: #05060c;
-      --panel: rgba(255,255,255,.04);
-      --line: rgba(255,255,255,.10);
-      --text: #ffffff;
-      --muted: rgba(255,255,255,.65);
-      --radius: 22px;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui;
-    }
-
     body {
-      background: radial-gradient(circle at top, #0b1022, #05060c);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 18px 26px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(5,6,12,.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .logo {
-      font-weight: 1000;
-      font-size: 15px;
-    }
-
-    nav a {
-      margin-left: 18px;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 850;
-      color: var(--muted);
-    }
-
-    nav a:hover {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0b0f;
       color: white;
     }
 
-    .hero {
-      max-width: 1150px;
-      margin: auto;
-      padding: 70px 25px 40px;
+    header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.85);
+      position: sticky;
+      top: 0;
+      z-index: 99;
     }
 
-    .heroTag {
-      display: inline-block;
-      padding: 7px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      background: rgba(59,130,246,.15);
-      border: 1px solid rgba(59,130,246,.30);
-      color: #7aa2ff;
-      margin-bottom: 18px;
+    header h1 {
+      font-size: 22px;
+      color: #00ff99;
     }
 
-    .hero h1 {
-      font-size: 60px;
-      font-weight: 1000;
-      line-height: 1.05;
+    nav button {
+      background: #00ff99;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    .hero p {
-      margin-top: 18px;
-      font-size: 16px;
-      line-height: 1.7;
-      max-width: 720px;
-      color: var(--muted);
+    .spotlight {
+      padding: 50px 20px;
+      background: linear-gradient(to right, black, transparent),
+        url("https://picsum.photos/1200/500");
+      background-size: cover;
+      background-position: center;
     }
 
-    .spotlightBox {
-      margin-top: 35px;
-      padding: 26px;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
-      background: var(--panel);
+    .spotlight h2 {
+      font-size: 40px;
+      margin: 0;
     }
 
-    .spotlightBox h2 {
-      font-size: 28px;
-      font-weight: 1000;
+    .spotlight p {
+      max-width: 500px;
+      opacity: 0.85;
     }
 
-    .spotlightBox p {
-      margin-top: 6px;
-      opacity: .6;
-      font-size: 14px;
-    }
-
-    .spotlightBtn {
-      margin-top: 18px;
-      display: inline-block;
-      padding: 14px 26px;
-      border-radius: 999px;
-      font-weight: 900;
-      text-decoration: none;
-      background: linear-gradient(135deg,#3b82f6,#6cf2c2);
-      color: black;
+    .spotlight button {
+      margin-top: 20px;
+      background: #00ff99;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .section {
-      max-width: 1200px;
-      margin: auto;
-      padding: 40px 25px;
+      padding: 25px 20px;
     }
 
-    .section h2 {
-      font-size: 22px;
-      font-weight: 1000;
-      margin-bottom: 14px;
+    .section h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
     }
 
-    .filmRow {
+    .row {
       display: flex;
-      gap: 18px;
+      gap: 15px;
       overflow-x: auto;
-      padding-bottom: 12px;
+      padding-bottom: 10px;
     }
 
-    .filmCard {
-      min-width: 240px;
-      border-radius: 18px;
+    .card {
+      min-width: 220px;
+      background: #14141c;
+      border-radius: 12px;
       overflow: hidden;
-      border: 1px solid var(--line);
-      background: var(--panel);
       cursor: pointer;
-      transition: .25s;
+      transition: 0.2s;
     }
 
-    .filmCard:hover {
+    .card:hover {
       transform: scale(1.05);
-      border-color: rgba(59,130,246,.45);
     }
 
-    .filmCard img {
+    .card img {
       width: 100%;
-      height: 150px;
+      height: 130px;
       object-fit: cover;
     }
 
-    .filmInfo {
-      padding: 14px;
+    .card .info {
+      padding: 10px;
     }
 
-    .filmInfo h3 {
-      font-size: 14px;
-      font-weight: 900;
-      margin-bottom: 5px;
+    .card .info h4 {
+      margin: 0;
+      font-size: 16px;
     }
 
-    .filmInfo p {
-      font-size: 12px;
-      opacity: .65;
-    }
-
-    footer {
-      margin-top: 60px;
-      padding: 35px;
-      text-align: center;
+    .card .info p {
+      margin: 5px 0 0;
       font-size: 13px;
-      opacity: .4;
-      border-top: 1px solid var(--line);
+      opacity: 0.7;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+
+    .modal-content {
+      background: #15151f;
+      padding: 25px;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
+      opacity: 0.7;
+    }
+
+    .locked {
+      color: red;
+      font-weight: bold;
+      margin-top: 15px;
     }
   </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header>
-  <div class="logo">🎬 SS Films • StudentStream HQ</div>
-
+  <h1>🎬 SS Films</h1>
   <nav>
-    <a href="/ss-productions/">Productions</a>
-    <a href="/boosts.html">Boosts</a>
-    <a id="loginLink" href="/ss-films/login.html">Login</a>
+    <button onclick="handleAuth()" id="authBtn">Login</button>
   </nav>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <span class="heroTag">Originals • Spotlight • Legacy</span>
+<!-- Spotlight -->
+<section class="spotlight" id="spotlight">
+  <h2>Spotlight Premiere</h2>
+  <p>The newest featured original from SS Films creators.</p>
+  <button onclick="openSpotlight()">▶ Watch Spotlight</button>
+</section>
 
-  <h1>SS Films Originals.</h1>
+<!-- Movies -->
+<section class="section">
+  <h3>🍿 Movies</h3>
+  <div class="row" id="moviesRow"></div>
+</section>
 
-  <p>
-    SS Films is StudentStream’s cinematic streaming division —
-    built for creator-made movies, episodic series, documentaries,
-    and platform Originals.
-    <br><br>
-    Browse freely. Watch instantly after login.
-  </p>
+<!-- Series -->
+<section class="section">
+  <h3>📺 Series</h3>
+  <div class="row" id="seriesRow"></div>
+</section>
 
-  <!-- SPOTLIGHT -->
-  <div class="spotlightBox">
-    <h2 id="spotlightTitle">Loading Spotlight...</h2>
-    <p>SS Films Featured Original</p>
+<!-- Documentary -->
+<section class="section">
+  <h3>🎥 Documentary</h3>
+  <div class="row" id="docRow"></div>
+</section>
 
-    <a id="spotlightBtn" class="spotlightBtn" href="#">
-      Watch Spotlight →
-    </a>
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">✖</span>
+    <h2 id="modalTitle"></h2>
+    <p id="modalDesc"></p>
+
+    <p class="locked" id="lockedText"></p>
+
+    <video id="player" controls></video>
   </div>
-</section>
+</div>
 
-<!-- ROWS -->
-<section class="section">
-  <h2>Trending on SS Films</h2>
-  <div class="filmRow" id="trendingRow"></div>
-</section>
-
-<section class="section">
-  <h2>Documentaries</h2>
-  <div class="filmRow" id="docsRow"></div>
-</section>
-
-<section class="section">
-  <h2>Episodic Series</h2>
-  <div class="filmRow" id="seriesRow"></div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  © 2026 StudentStream HQ — SS Films Division  
-  <br>
-  Originals. Spotlight. Legacy.
-</footer>
-
-<!-- SCRIPT -->
 <script>
-  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+/* ================================
+   ✅ SUPABASE CONFIG
+================================ */
+const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
-  // ✅ PUT YOUR REAL KEY HERE
-  const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabase = window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+let currentUser = null;
 
-  // ✅ Helper: Create Film Card
-  function renderCard(film, row) {
+/* ================================
+   AUTH CHECK
+================================ */
+async function checkUser() {
+  const { data } = await supabase.auth.getUser();
+  currentUser = data.user;
+
+  document.getElementById("authBtn").innerText =
+    currentUser ? "Logout" : "Login";
+}
+
+async function handleAuth() {
+  if (currentUser) {
+    await supabase.auth.signOut();
+    location.reload();
+  } else {
+    window.location.href = "/login.html";
+  }
+}
+
+/* ================================
+   LOAD FILMS FEED
+================================ */
+async function loadFilms() {
+  const { data, error } = await supabase
+    .from("films")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    alert("Error loading films");
+    console.log(error);
+    return;
+  }
+
+  // Clear rows
+  moviesRow.innerHTML = "";
+  seriesRow.innerHTML = "";
+  docRow.innerHTML = "";
+
+  data.forEach(film => {
     const card = document.createElement("div");
-    card.className = "filmCard";
+    card.className = "card";
 
     card.innerHTML = `
       <img src="${film.thumbnail_url}" />
-      <div class="filmInfo">
-        <h3>${film.title}</h3>
-        <p>${film.description || "SS Films Original"}</p>
+      <div class="info">
+        <h4>${film.title}</h4>
+        <p>${film.genre}</p>
       </div>
     `;
 
-    card.onclick = async () => {
-      const { data } = await supabase.auth.getSession();
+    card.onclick = () => openFilm(film);
 
-      if (!data.session) {
-        window.location.href =
-          "/ss-films/login.html?redirect=watch&id=" + film.id;
-        return;
-      }
+    if (film.category === "Movie") moviesRow.appendChild(card);
+    if (film.category === "Series") seriesRow.appendChild(card);
+    if (film.category === "Documentary") docRow.appendChild(card);
+  });
+}
 
-      window.location.href =
-        "/ss-films/watch.html?id=" + film.id;
-    };
+/* ================================
+   OPEN FILM MODAL
+================================ */
+function openFilm(film) {
+  modal.style.display = "flex";
+  modalTitle.innerText = film.title;
+  modalDesc.innerText = film.description;
 
-    row.appendChild(card);
+  if (!currentUser) {
+    lockedText.innerText =
+      "🔒 Login required to watch this film.";
+    player.style.display = "none";
+  } else {
+    lockedText.innerText = "";
+    player.style.display = "block";
+    player.src = film.video_url;
   }
+}
 
-  // ✅ Load Spotlight + Rows
-  async function loadHome() {
-    const { data: films } = await supabase
-      .from("films")
-      .select("*")
-      .order("created_at", { ascending: false });
+function closeModal() {
+  modal.style.display = "none";
+  player.pause();
+}
 
-    if (!films || films.length === 0) return;
+/* ================================
+   SPOTLIGHT
+================================ */
+function openSpotlight() {
+  openFilm({
+    title: "Spotlight Premiere",
+    description: "The #1 Featured SS Films Original Premiere.",
+    video_url: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
+  });
+}
 
-    // Spotlight = newest film
-    const spotlight = films[0];
-    document.getElementById("spotlightTitle").textContent =
-      spotlight.title;
-
-    document.getElementById("spotlightBtn").href =
-      "/ss-films/login.html?redirect=watch&id=" + spotlight.id;
-
-    // Rows
-    films.slice(0, 8).forEach(f =>
-      renderCard(f, document.getElementById("trendingRow"))
-    );
-
-    films.filter(f => f.category === "Documentary")
-      .slice(0, 8)
-      .forEach(f =>
-        renderCard(f, document.getElementById("docsRow"))
-      );
-
-    films.filter(f => f.category === "Series")
-      .slice(0, 8)
-      .forEach(f =>
-        renderCard(f, document.getElementById("seriesRow"))
-      );
-  }
-
-  loadHome();
-
-  // ✅ Fix Login Link
-  async function checkSession() {
-    const { data } = await supabase.auth.getSession();
-
-    if (data.session) {
-      document.getElementById("loginLink").textContent =
-        "Dashboard";
-      document.getElementById("loginLink").href =
-        "/ss-films/dashboard.html";
-    }
-  }
-
-  checkSession();
+/* ================================
+   INIT
+================================ */
+checkUser();
+loadFilms();
 </script>
 
 </body>
