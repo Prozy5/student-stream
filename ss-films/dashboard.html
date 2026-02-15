@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SS Films Dashboard V6</title>
+  <title>SS Films Creator Dashboard V7</title>
 
   <!-- ✅ SUPABASE -->
   <script type="module">
@@ -19,7 +19,6 @@
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     let user = null;
-    let isAdmin = false;
 
     /* ===========================
        REQUIRE LOGIN
@@ -35,11 +34,8 @@
       user = data.session.user;
       document.getElementById("userEmail").innerText = user.email;
 
-      // ✅ ADMIN CHECK (your email)
-      if (user.email === "deondrestreams1@gmail.com") {
-        isAdmin = true;
-        document.getElementById("adminPanel").style.display = "block";
-      }
+      loadMyFilms();
+      loadEarnings();
     }
 
     /* ===========================
@@ -51,157 +47,38 @@
     };
 
     /* ===========================
-       LOAD FILMS (APPROVED ONLY)
+       LOAD CREATOR FILMS
     =========================== */
-    async function loadApproved() {
+    async function loadMyFilms() {
       const { data } = await supabase
         .from("films")
         .select("*")
-        .eq("status", "approved")
+        .eq("creator_id", user.id)
         .order("created_at", { ascending: false });
 
-      renderRow("approvedRow", data);
-    }
-
-    /* ===========================
-       LOAD PENDING FILMS
-    =========================== */
-    async function loadPending() {
-      const { data } = await supabase
-        .from("films")
-        .select("*")
-        .eq("status", "pending")
-        .order("created_at", { ascending: false });
-
-      renderPending(data);
-    }
-
-    /* ===========================
-       RENDER APPROVED FILMS
-    =========================== */
-    function renderRow(rowId, films) {
-      const row = document.getElementById(rowId);
+      const row = document.getElementById("myFilmsRow");
       row.innerHTML = "";
 
-      if (!films || films.length === 0) {
-        row.innerHTML = `<p class="empty">Nothing approved yet...</p>`;
+      if (!data || data.length === 0) {
+        row.innerHTML = `<p class="empty">No uploads yet…</p>`;
         return;
       }
 
-      films.forEach(film => {
+      data.forEach(film => {
         const card = document.createElement("div");
         card.className = "card";
 
         card.innerHTML = `
-          <img src="${film.thumbnail_url}">
+          <img src="${film.thumbnail_url}" />
           <div class="overlay">
             <h4>${film.title}</h4>
+            <p>${film.views || 0} views</p>
           </div>
         `;
 
         row.appendChild(card);
       });
     }
-
-    /* ===========================
-       RENDER PENDING (ADMIN)
-    =========================== */
-    function renderPending(films) {
-      const row = document.getElementById("pendingRow");
-      row.innerHTML = "";
-
-      if (!films || films.length === 0) {
-        row.innerHTML = `<p class="empty">No pending uploads...</p>`;
-        return;
-      }
-
-      films.forEach(film => {
-        const card = document.createElement("div");
-        card.className = "pendingCard";
-
-        card.innerHTML = `
-          <h4>${film.title}</h4>
-          <p>${film.description || ""}</p>
-          <button onclick="approveFilm('${film.id}')">✅ Approve</button>
-        `;
-
-        row.appendChild(card);
-      });
-    }
-
-    /* ===========================
-       APPROVE FILM (ADMIN ONLY)
-    =========================== */
-    window.approveFilm = async function (filmId) {
-      if (!isAdmin) return;
-
-      await supabase
-        .from("films")
-        .update({ status: "approved" })
-        .eq("id", filmId);
-
-      alert("Film Approved!");
-      loadApproved();
-      loadPending();
-    };
-
-    /* ===========================
-       UPLOAD VIDEO FILE (STORAGE)
-    =========================== */
-    window.uploadFilm = async function () {
-      const title = document.getElementById("filmTitle").value.trim();
-      const desc = document.getElementById("filmDesc").value.trim();
-      const thumb = document.getElementById("filmThumb").value.trim();
-      const file = document.getElementById("filmFile").files[0];
-
-      const msg = document.getElementById("uploadMsg");
-      msg.innerText = "";
-
-      if (!title || !thumb || !file) {
-        msg.innerText = "❌ Title, thumbnail, and video file required.";
-        return;
-      }
-
-      msg.style.color = "#00ff99";
-      msg.innerText = "Uploading video...";
-
-      /* Upload to Storage */
-      const filePath = `${user.id}/${Date.now()}-${file.name}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("films")
-        .upload(filePath, file);
-
-      if (uploadError) {
-        msg.style.color = "red";
-        msg.innerText = uploadError.message;
-        return;
-      }
-
-      /* Get Public URL */
-      const { data: urlData } = supabase.storage
-        .from("films")
-        .getPublicUrl(filePath);
-
-      const videoUrl = urlData.publicUrl;
-
-      /* Insert Pending Film */
-      await supabase.from("films").insert([
-        {
-          title,
-          description: desc,
-          thumbnail_url: thumb,
-          video_url: videoUrl,
-          creator_id: user.id,
-          status: "pending",
-          views: 0
-        }
-      ]);
-
-      msg.innerText = "✅ Uploaded! Waiting for approval.";
-
-      setTimeout(() => location.reload(), 1000);
-    };
 
     /* ===========================
        CREATOR EARNINGS
@@ -215,7 +92,7 @@
       let totalViews = 0;
       data.forEach(f => totalViews += f.views || 0);
 
-      // Example payout model: $2 per 1,000 views
+      // Monetization Example: $2 per 1,000 views
       const earnings = (totalViews / 1000) * 2;
 
       document.getElementById("totalViews").innerText = totalViews;
@@ -224,13 +101,90 @@
     }
 
     /* ===========================
-       INIT DASHBOARD
+       UPLOAD FILM + THUMBNAIL FILES
+       INSTANTLY PUBLISHED
     =========================== */
-    requireAuth().then(() => {
-      loadApproved();
-      loadPending();
-      loadEarnings();
-    });
+    window.uploadFilm = async function () {
+      const title = document.getElementById("filmTitle").value.trim();
+      const desc = document.getElementById("filmDesc").value.trim();
+
+      const videoFile = document.getElementById("filmVideo").files[0];
+      const thumbFile = document.getElementById("filmThumb").files[0];
+
+      const msg = document.getElementById("uploadMsg");
+      msg.innerText = "";
+
+      if (!title || !videoFile || !thumbFile) {
+        msg.style.color = "red";
+        msg.innerText = "❌ Title + Video + Thumbnail required.";
+        return;
+      }
+
+      msg.style.color = "#00ff99";
+      msg.innerText = "Uploading… please wait...";
+
+      /* ===========================
+         1. Upload Thumbnail
+      =========================== */
+      const thumbPath = `${user.id}/thumb-${Date.now()}-${thumbFile.name}`;
+
+      const { error: thumbErr } = await supabase.storage
+        .from("films")
+        .upload(thumbPath, thumbFile);
+
+      if (thumbErr) {
+        msg.style.color = "red";
+        msg.innerText = "Thumbnail upload failed.";
+        return;
+      }
+
+      const thumbUrl =
+        supabase.storage.from("films").getPublicUrl(thumbPath).data.publicUrl;
+
+      /* ===========================
+         2. Upload Video
+      =========================== */
+      const videoPath = `${user.id}/video-${Date.now()}-${videoFile.name}`;
+
+      const { error: videoErr } = await supabase.storage
+        .from("films")
+        .upload(videoPath, videoFile);
+
+      if (videoErr) {
+        msg.style.color = "red";
+        msg.innerText = "Video upload failed.";
+        return;
+      }
+
+      const videoUrl =
+        supabase.storage.from("films").getPublicUrl(videoPath).data.publicUrl;
+
+      /* ===========================
+         3. Insert Film (PUBLISHED)
+      =========================== */
+      await supabase.from("films").insert([
+        {
+          title,
+          description: desc,
+          thumbnail_url: thumbUrl,
+          video_url: videoUrl,
+          creator_id: user.id,
+
+          // ✅ INSTANTLY LIVE
+          visibility: "public",
+          status: "approved",
+
+          views: 0,
+          created_at: new Date()
+        }
+      ]);
+
+      msg.innerText = "✅ Uploaded & Published instantly!";
+
+      setTimeout(() => location.reload(), 1200);
+    };
+
+    requireAuth();
   </script>
 
   <style>
@@ -245,16 +199,18 @@
       padding: 20px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
     h1 {
+      font-size: 22px;
       color: #00ff99;
-      font-size: 24px;
+      margin: 0;
     }
 
     .logoutBtn {
-      padding: 8px 14px;
-      border-radius: 12px;
+      padding: 10px 14px;
+      border-radius: 14px;
       border: none;
       background: rgba(255,255,255,0.08);
       color: white;
@@ -262,13 +218,46 @@
     }
 
     .section {
-      padding: 20px;
+      padding: 22px;
+    }
+
+    .earnBox {
+      background: rgba(255,255,255,0.06);
+      padding: 18px;
+      border-radius: 16px;
+      margin-top: 10px;
+    }
+
+    .studio input, textarea {
+      width: 100%;
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: white;
+    }
+
+    .studio input[type="file"] {
+      padding: 10px;
+    }
+
+    .studio button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: #00ff99;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .row {
       display: flex;
       gap: 14px;
       overflow-x: auto;
+      padding-top: 10px;
     }
 
     .card {
@@ -288,52 +277,14 @@
     .overlay {
       position: absolute;
       bottom: 0;
-      padding: 12px;
       width: 100%;
+      padding: 12px;
       background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
     }
 
-    .studio input, textarea {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 14px;
-      border: none;
-      background: rgba(255,255,255,0.08);
-      color: white;
-    }
-
-    .studio button {
-      width: 100%;
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      background: #00ff99;
-      font-weight: bold;
-    }
-
-    .pendingCard {
-      background: rgba(255,255,255,0.06);
-      padding: 14px;
-      border-radius: 14px;
-      min-width: 220px;
-    }
-
-    .pendingCard button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 12px;
-      background: #00ff99;
-    }
-
-    .earnBox {
-      background: rgba(255,255,255,0.06);
-      padding: 18px;
-      border-radius: 16px;
-      margin-top: 12px;
+    .empty {
+      opacity: 0.6;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -341,49 +292,47 @@
 <body>
 
 <header>
-  <h1>🎬 SS Films Dashboard V6</h1>
+  <h1>🎬 SS Films Creator Dashboard</h1>
 
   <div>
-    <div id="userEmail"></div>
+    <div id="userEmail" style="font-size:13px;opacity:0.7;"></div>
     <button class="logoutBtn" onclick="logoutUser()">Logout</button>
   </div>
 </header>
 
-<!-- ✅ CREATOR EARNINGS -->
+<!-- ✅ Earnings -->
 <section class="section">
-  <h2>💰 Creator Earnings</h2>
+  <h2>💰 Earnings</h2>
   <div class="earnBox">
     Total Views: <b id="totalViews">0</b><br>
     Estimated Earnings: <b id="totalEarnings">$0.00</b>
   </div>
 </section>
 
-<!-- ✅ APPROVED FILMS -->
+<!-- ✅ Upload Studio -->
 <section class="section">
-  <h2>✅ Approved Films</h2>
-  <div class="row" id="approvedRow"></div>
-</section>
-
-<!-- ✅ UPLOAD STUDIO -->
-<section class="section">
-  <h2>🎥 Upload Film (Pending Approval)</h2>
+  <h2>🎥 Upload Film (Instant Publish)</h2>
 
   <div class="studio">
     <input id="filmTitle" placeholder="Film Title" />
     <textarea id="filmDesc" placeholder="Description"></textarea>
-    <input id="filmThumb" placeholder="Thumbnail URL" />
 
-    <input id="filmFile" type="file" accept="video/mp4" />
+    <label style="opacity:0.7;">Thumbnail Upload</label>
+    <input id="filmThumb" type="file" accept="image/*" />
 
-    <button onclick="uploadFilm()">Upload Film</button>
-    <div id="uploadMsg"></div>
+    <label style="opacity:0.7;">Video Upload</label>
+    <input id="filmVideo" type="file" accept="video/mp4" />
+
+    <button onclick="uploadFilm()">Upload & Publish</button>
+
+    <div id="uploadMsg" style="margin-top:12px;"></div>
   </div>
 </section>
 
-<!-- ✅ ADMIN PANEL -->
-<section class="section" id="adminPanel" style="display:none;">
-  <h2>🛠 Admin Approval Panel</h2>
-  <div class="row" id="pendingRow"></div>
+<!-- ✅ My Films -->
+<section class="section">
+  <h2>📂 My Uploaded Films</h2>
+  <div class="row" id="myFilmsRow"></div>
 </section>
 
 </body>
