@@ -94,7 +94,7 @@
   <p style="opacity:.6;">Posting requires Creator login.</p>
 
   <input id="title" placeholder="Topic title..." />
-  <textarea id="body" placeholder="Write your topic..."></textarea>
+  <textarea id="content" placeholder="Write your topic..."></textarea>
 
   <button onclick="postTopic()">Publish Topic</button>
 
@@ -124,10 +124,10 @@
   // ✅ Post Topic
   window.postTopic = async function () {
     const title = document.getElementById("title").value.trim();
-    const body = document.getElementById("body").value.trim();
+    const content = document.getElementById("content").value.trim();
 
-    if (!title || !body) {
-      statusBox.textContent = "⚠️ Title and body required.";
+    if (!title || !content) {
+      statusBox.textContent = "⚠️ Title and content required.";
       return;
     }
 
@@ -138,9 +138,8 @@
       .insert([
         {
           category_id: categoryId,
-          title,
-          body,
-          author: user.email,
+          title: title,
+          content: content,
           user_id: user.id
         }
       ]);
