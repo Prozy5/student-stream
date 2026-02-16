@@ -6,19 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- SEO -->
-  <meta name="description" content="StudentStream DevForum — report bugs, request help, and follow platform updates." />
-  <meta name="keywords" content="StudentStream, DevForum, Support, Bugs, Updates, StudentStreamHQ" />
-
-  <!-- Google Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "DiscussionForumPosting",
-    "name": "StudentStream DevForum",
-    "description": "Official developer forum for StudentStreamHQ support, updates, and bug reports.",
-    "url": "https://studentstream.online/devforum"
-  }
-  </script>
+  <meta name="description" content="StudentStream DevForum — updates, bug reports, creator support, and platform announcements." />
+  <meta name="keywords" content="StudentStreamHQ, DevForum, Support, Bug Reports, Updates" />
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -35,7 +24,7 @@
       position:sticky;
       top:0;
       z-index:100;
-      padding:20px 26px;
+      padding:18px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
       background:rgba(5,7,12,.75);
@@ -47,11 +36,16 @@
     .logo{
       font-size:20px;
       font-weight:900;
-      letter-spacing:.4px;
     }
 
     .logo span{
       color:#4da3ff;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
     }
 
     .btn{
@@ -71,6 +65,11 @@
       transform:scale(1.03);
     }
 
+    .btn.secondary{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
     /* MAIN */
     .container{
       max-width:980px;
@@ -79,17 +78,17 @@
     }
 
     h1{
-      font-size:42px;
+      font-size:44px;
       font-weight:900;
       margin-bottom:10px;
     }
 
     p{
-      opacity:.65;
+      opacity:.7;
       font-size:15px;
       margin-bottom:25px;
-      line-height:1.5;
-      max-width:650px;
+      line-height:1.6;
+      max-width:700px;
     }
 
     /* NAV TABS */
@@ -108,14 +107,14 @@
       cursor:pointer;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.03);
-      opacity:.75;
+      opacity:.7;
       transition:.2s;
     }
 
     .tab.active{
       opacity:1;
-      border-color:rgba(77,163,255,.4);
-      background:rgba(77,163,255,.12);
+      border-color:rgba(77,163,255,.5);
+      background:rgba(77,163,255,.15);
     }
 
     /* CARDS */
@@ -132,7 +131,7 @@
     .card:hover{
       transform:translateY(-3px);
       border-color:rgba(77,163,255,.35);
-      box-shadow:0 0 0 1px rgba(77,163,255,.12);
+      box-shadow:0 0 0 1px rgba(77,163,255,.10);
     }
 
     .row{
@@ -151,7 +150,6 @@
     .icon{
       font-size:22px;
       margin-top:3px;
-      opacity:.9;
     }
 
     .name{
@@ -188,31 +186,18 @@
 
     .loading{
       text-align:center;
-      opacity:.5;
+      opacity:.6;
       padding:35px;
       font-size:14px;
     }
 
-    /* FOOTER */
     footer{
       text-align:center;
       padding:35px 20px;
-      opacity:.4;
+      opacity:.35;
       font-size:13px;
       margin-top:70px;
       border-top:1px solid rgba(255,255,255,.08);
-    }
-
-    footer a{
-      color:white;
-      opacity:.55;
-      text-decoration:none;
-      margin:0 8px;
-      font-size:13px;
-    }
-
-    footer a:hover{
-      opacity:1;
     }
   </style>
 </head>
@@ -222,16 +207,20 @@
 <header>
   <div class="logo">StudentStream <span>DevForum</span></div>
 
-  <!-- ✅ LOGIN BUTTON -->
-  <button class="btn" id="accountBtn">Login</button>
+  <!-- HEADER ACTIONS -->
+  <div class="actions">
+    <button class="btn secondary" id="newTopicBtn">+ New Topic</button>
+    <button class="btn" id="accountBtn">Login</button>
+  </div>
 </header>
 
 <div class="container">
 
   <h1>Developer Forums</h1>
   <p>
-    Official StudentStreamHQ forum for updates, bug reports, and support discussions.<br>
-    <b>Public Read Mode:</b> Anyone can view — posting will require login.
+    Official StudentStreamHQ developer forum for platform announcements, creator updates,
+    bug reports, and support discussions.<br>
+    <b>Read Mode:</b> Public • Posting requires Creator login.
   </p>
 
   <!-- Tabs -->
@@ -242,9 +231,7 @@
   </div>
 
   <!-- Loading -->
-  <div id="loadingState" class="loading">
-    Loading DevForum…
-  </div>
+  <div id="loadingState" class="loading">Loading DevForum…</div>
 
   <!-- Dynamic Content -->
   <div id="mainContent"></div>
@@ -252,11 +239,7 @@
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • DevForum  
-  <br><br>
-  <a href="#">Privacy</a>
-  <a href="#">Terms</a>
-  <a href="#">Docs</a>
+  © 2026 StudentStreamHQ • DevForum
 </footer>
 
 <script type="module">
@@ -272,7 +255,7 @@
   const loadingState = document.getElementById("loadingState");
   const tabs = document.querySelectorAll(".tab");
 
-  /* ✅ LOGIN BUTTON SYSTEM */
+  /* LOGIN BUTTON */
   const accountBtn = document.getElementById("accountBtn");
 
   async function updateLoginButton() {
@@ -283,37 +266,47 @@
       accountBtn.textContent = "Account";
 
       accountBtn.onclick = async () => {
-        const confirmLogout = confirm("Logout of StudentStream?");
-        if (confirmLogout) {
+        if (confirm("Logout of StudentStream?")) {
           await supabase.auth.signOut();
           location.reload();
         }
       };
     } else {
       accountBtn.textContent = "Login";
-
       accountBtn.onclick = () => {
-        window.location.href = "https://studentstream.online/login";
+        window.location.href = "/login.html";
       };
     }
   }
 
   updateLoginButton();
 
-  /* SWITCH TAB UI */
+  /* NEW TOPIC BUTTON */
+  document.getElementById("newTopicBtn").onclick = async () => {
+    const { data } = await supabase.auth.getUser();
+
+    if (!data.user) {
+      alert("Creator login required to post.");
+      window.location.href = "/login.html";
+      return;
+    }
+
+    window.location.href = "/devforum/new-topic.html";
+  };
+
+  /* TAB SWITCH */
   tabs.forEach(tab => {
     tab.onclick = () => {
       tabs.forEach(t => t.classList.remove("active"));
       tab.classList.add("active");
 
-      const mode = tab.dataset.tab;
-      if (mode === "categories") loadCategories();
-      if (mode === "latest") loadLatestTopics();
-      if (mode === "support") loadSupportTopics();
+      if (tab.dataset.tab === "categories") loadCategories();
+      if (tab.dataset.tab === "latest") loadLatestTopics();
+      if (tab.dataset.tab === "support") loadSupportTopics();
     };
   });
 
-  /* CATEGORY VIEW */
+  /* LOAD CATEGORIES */
   async function loadCategories() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -325,13 +318,13 @@
 
     loadingState.style.display = "none";
 
-    if (error || !categories) {
-      mainContent.innerHTML = `<div class="empty">⚠️ Failed to load categories.</div>`;
+    if (error) {
+      mainContent.innerHTML = `<div class="empty">⚠️ Categories failed to load.</div>`;
       return;
     }
 
-    if (categories.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No categories created yet.</div>`;
+    if (!categories || categories.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No categories yet.</div>`;
       return;
     }
 
@@ -347,7 +340,7 @@
       card.innerHTML = `
         <div class="row">
           <div class="left">
-            <div class="icon">${cat.icon}</div>
+            <div class="icon">${cat.icon || "💬"}</div>
             <div>
               <div class="name">${cat.name}</div>
               <div class="desc">${cat.description}</div>
@@ -358,32 +351,27 @@
       `;
 
       card.onclick = () => {
-        window.location.href = `category.html?id=${cat.id}`;
+        window.location.href = "/devforum/category.html?id=" + cat.id;
       };
 
       mainContent.appendChild(card);
     }
   }
 
-  /* LATEST TOPICS VIEW */
+  /* LOAD LATEST */
   async function loadLatestTopics() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
 
-    const { data: topics, error } = await supabase
+    const { data: topics } = await supabase
       .from("forum_topics")
-      .select("id,title,created_at,category_id")
+      .select("id,title,created_at")
       .order("created_at", { ascending: false })
       .limit(8);
 
     loadingState.style.display = "none";
 
-    if (error || !topics) {
-      mainContent.innerHTML = `<div class="empty">⚠️ Failed to load latest discussions.</div>`;
-      return;
-    }
-
-    if (topics.length === 0) {
+    if (!topics || topics.length === 0) {
       mainContent.innerHTML = `<div class="empty">No discussions yet.</div>`;
       return;
     }
@@ -400,14 +388,14 @@
       `;
 
       card.onclick = () => {
-        window.location.href = `topic.html?id=${topic.id}`;
+        window.location.href = "/devforum/topic.html?id=" + topic.id;
       };
 
       mainContent.appendChild(card);
     });
   }
 
-  /* SUPPORT TOPICS VIEW */
+  /* SUPPORT ONLY */
   async function loadSupportTopics() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -450,7 +438,7 @@
       `;
 
       card.onclick = () => {
-        window.location.href = `topic.html?id=${topic.id}`;
+        window.location.href = "/devforum/topic.html?id=" + topic.id;
       };
 
       mainContent.appendChild(card);
