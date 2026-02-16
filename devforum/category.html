@@ -15,12 +15,11 @@
       min-height:100vh;
     }
 
-    /* HEADER */
     header{
       position:sticky;
       top:0;
       z-index:100;
-      padding:20px 26px;
+      padding:18px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
       background:rgba(5,7,12,.75);
@@ -34,9 +33,7 @@
       font-weight:900;
     }
 
-    .logo span{
-      color:#4da3ff;
-    }
+    .logo span{color:#4da3ff}
 
     .back{
       opacity:.7;
@@ -44,16 +41,14 @@
       font-weight:600;
     }
 
-    .back:hover{opacity:1;}
+    .back:hover{opacity:1}
 
-    /* PAGE */
     .container{
       max-width:1000px;
       margin:55px auto;
       padding:0 20px;
     }
 
-    /* CATEGORY HERO */
     .categoryHero{
       padding:28px;
       border-radius:20px;
@@ -75,7 +70,6 @@
       max-width:650px;
     }
 
-    /* ACTION BAR */
     .actionBar{
       margin-top:18px;
       display:flex;
@@ -107,11 +101,6 @@
       opacity:.95;
     }
 
-    /* TOPIC LIST */
-    .topicList{
-      margin-top:25px;
-    }
-
     .topicCard{
       padding:18px 20px;
       border-radius:18px;
@@ -130,10 +119,6 @@
       transform:translateY(-2px);
     }
 
-    .topicMain{
-      flex:1;
-    }
-
     .topicTitle{
       font-size:16px;
       font-weight:850;
@@ -143,10 +128,8 @@
     .topicInfo{
       opacity:.55;
       font-size:13px;
-      line-height:1.4;
     }
 
-    /* RIGHT STATS */
     .topicStats{
       text-align:right;
       min-width:120px;
@@ -154,12 +137,6 @@
       opacity:.6;
     }
 
-    .statNum{
-      font-weight:800;
-      opacity:.9;
-    }
-
-    /* EMPTY */
     .empty{
       text-align:center;
       opacity:.55;
@@ -167,6 +144,59 @@
       border:1px dashed rgba(255,255,255,.15);
       border-radius:18px;
       margin-top:25px;
+    }
+
+    /* MODAL */
+    .modalOverlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.65);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+    }
+
+    .modal{
+      width:100%;
+      max-width:520px;
+      padding:25px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,20,35,.95);
+    }
+
+    .modal h2{
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+
+    .modal input,
+    .modal textarea{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      color:white;
+      margin-top:10px;
+      font-size:14px;
+      outline:none;
+    }
+
+    textarea{min-height:120px;resize:none}
+
+    .modalActions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:15px;
+    }
+
+    .cancelBtn{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
     }
 
     footer{
@@ -189,30 +219,38 @@
 
 <div class="container">
 
-  <!-- CATEGORY HEADER -->
   <div class="categoryHero">
     <h1 id="catTitle">Loading...</h1>
     <p id="catDesc"></p>
 
     <div class="actionBar">
       <div class="meta" id="topicCount">Loading topics…</div>
-
-      <button class="newBtn" onclick="createTopic()">
-        + New Topic
-      </button>
+      <button class="newBtn" id="newTopicBtn">+ New Topic</button>
     </div>
   </div>
 
-  <!-- TOPICS -->
-  <div class="topicList" id="topicList">
-    Loading discussions…
-  </div>
+  <div id="topicList">Loading discussions…</div>
 
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • Category View V3
+  © 2026 StudentStreamHQ • Category View
 </footer>
+
+<!-- MODAL -->
+<div class="modalOverlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Start a New Topic</h2>
+
+    <input id="topicTitleInput" placeholder="Topic title..." />
+    <textarea id="topicBodyInput" placeholder="Write your post..."></textarea>
+
+    <div class="modalActions">
+      <button class="newBtn cancelBtn" onclick="closeModal()">Cancel</button>
+      <button class="newBtn" onclick="submitTopic()">Post Topic</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -230,97 +268,115 @@
   const topicList = document.getElementById("topicList");
   const topicCount = document.getElementById("topicCount");
 
-  /* SAFETY */
-  if(!categoryId){
-    catTitle.textContent = "Category Not Found";
-    catDesc.textContent = "Missing category ID.";
-    topicList.innerHTML = "";
-    throw new Error("No category id provided.");
-  }
+  const modalOverlay = document.getElementById("modalOverlay");
+  const titleInput = document.getElementById("topicTitleInput");
+  const bodyInput = document.getElementById("topicBodyInput");
 
   /* LOAD CATEGORY */
   async function loadCategory(){
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("forum_categories")
       .select("*")
       .eq("id", categoryId)
       .single();
 
-    if(error || !data){
-      catTitle.textContent = "Category Not Found";
-      catDesc.textContent = "This category no longer exists.";
-      topicList.innerHTML = "";
-      return;
-    }
-
     catTitle.textContent = data.name;
-    catDesc.textContent = data.description || "";
+    catDesc.textContent = data.description;
   }
 
   /* LOAD TOPICS */
   async function loadTopics(){
-    const { data: topics, error } = await supabase
+    const { data: topics } = await supabase
       .from("forum_topics")
       .select("*")
       .eq("category_id", categoryId)
       .order("created_at", { ascending:false });
 
-    if(error){
-      topicList.innerHTML = `<div class="empty">⚠️ Failed to load topics.</div>`;
-      return;
-    }
-
     if(!topics || topics.length === 0){
       topicCount.textContent = "0 discussions";
-      topicList.innerHTML = `
-        <div class="empty">
-          No discussions yet.<br><br>
-          Be the first to start a topic in this category.
-        </div>
-      `;
+      topicList.innerHTML = `<div class="empty">No topics yet. Start the first one.</div>`;
       return;
     }
 
     topicCount.textContent = `${topics.length} discussions`;
-
     topicList.innerHTML = "";
 
-    for (let topic of topics){
-
-      /* Reply Count */
-      const { count } = await supabase
-        .from("forum_replies")
-        .select("*", { count:"exact", head:true })
-        .eq("topic_id", topic.id);
-
+    topics.forEach(topic => {
       const card = document.createElement("div");
       card.className = "topicCard";
 
       card.innerHTML = `
-        <div class="topicMain">
+        <div>
           <div class="topicTitle">${topic.title}</div>
           <div class="topicInfo">
-            Started by <b>${topic.author || "Anonymous"}</b>
-            • ${new Date(topic.created_at).toLocaleString()}
+            Posted ${new Date(topic.created_at).toLocaleString()}
           </div>
         </div>
-
         <div class="topicStats">
-          <div><span class="statNum">${count || 0}</span> replies</div>
+          <b>Open →</b>
         </div>
       `;
 
       card.onclick = () => {
-        window.location.href = `topic.html?id=${topic.id}`;
+        window.location.href = "topic.html?id=" + topic.id;
       };
 
       topicList.appendChild(card);
-    }
+    });
   }
 
-  /* NEW TOPIC (Future Login Gate) */
-  window.createTopic = function(){
-    alert("Posting requires login. Admin panel coming soon.");
+  /* LOGIN + CREATOR CHECK */
+  async function requireLogin(){
+    const { data } = await supabase.auth.getUser();
+
+    if(!data.user){
+      alert("Login required to post.");
+      window.location.href = "/login.html";
+      return false;
+    }
+
+    return data.user;
+  }
+
+  /* MODAL */
+  window.closeModal = function(){
+    modalOverlay.style.display = "none";
+  };
+
+  function openModal(){
+    modalOverlay.style.display = "flex";
+  }
+
+  /* SUBMIT TOPIC */
+  window.submitTopic = async function(){
+    const user = await requireLogin();
+    if(!user) return;
+
+    if(titleInput.value.trim().length < 3){
+      alert("Title too short.");
+      return;
+    }
+
+    await supabase.from("forum_topics").insert([
+      {
+        title: titleInput.value,
+        body: bodyInput.value,
+        category_id: categoryId,
+        author_id: user.id
+      }
+    ]);
+
+    closeModal();
+    titleInput.value = "";
+    bodyInput.value = "";
+
+    loadTopics();
+  };
+
+  /* BUTTON */
+  document.getElementById("newTopicBtn").onclick = async () => {
+    const user = await requireLogin();
+    if(user) openModal();
   };
 
   loadCategory();
