@@ -1,17 +1,124 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Thread</title>
-  <link rel="stylesheet" href="forum.css">
+  <meta charset="UTF-8" />
+  <title>Topic • StudentStream DevForum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui;
+      background:radial-gradient(circle at top,#0d1b3a,#05070c);
+      color:white;
+      min-height:100vh;
+    }
+
+    header{
+      padding:18px 22px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:rgba(5,7,12,.8);
+      display:flex;
+      justify-content:space-between;
+    }
+
+    a{
+      color:white;
+      text-decoration:none;
+      opacity:.7;
+    }
+
+    .container{
+      max-width:800px;
+      margin:50px auto;
+      padding:0 20px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      padding:22px;
+      border-radius:18px;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:28px;
+    }
+
+    .meta{
+      font-size:13px;
+      opacity:.6;
+      margin-bottom:18px;
+    }
+
+    .content{
+      font-size:15px;
+      line-height:1.6;
+      white-space:pre-wrap;
+    }
+  </style>
 </head>
+
 <body>
 
 <header>
-  <a href="index.html">← Forum</a>
+  <div>StudentStream DevForum</div>
+  <a href="/devforum/index.html">← Back</a>
 </header>
 
-<main id="thread"></main>
+<div class="container">
+  <div class="card">
+    <h1 id="topicTitle">Loading...</h1>
+    <div class="meta" id="topicMeta"></div>
+    <div class="content" id="topicContent"></div>
+  </div>
+</div>
 
-<script type="module" src="thread.js"></script>
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  const titleEl = document.getElementById("topicTitle");
+  const metaEl = document.getElementById("topicMeta");
+  const contentEl = document.getElementById("topicContent");
+
+  // Get topic ID from URL
+  const params = new URLSearchParams(window.location.search);
+  const topicId = params.get("id");
+
+  if (!topicId) {
+    titleEl.textContent = "Topic not found.";
+    contentEl.textContent = "";
+    throw new Error("Missing ID");
+  }
+
+  async function loadTopic() {
+    const { data, error } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .eq("id", topicId)
+      .single();
+
+    if (error || !data) {
+      titleEl.textContent = "Topic not found.";
+      contentEl.textContent = "";
+      return;
+    }
+
+    titleEl.textContent = data.title;
+    metaEl.textContent =
+      `Posted ${new Date(data.created_at).toLocaleString()}`;
+
+    contentEl.textContent = data.content;
+  }
+
+  loadTopic();
+</script>
+
 </body>
 </html>
