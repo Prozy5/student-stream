@@ -44,7 +44,6 @@
       max-width:900px;
       margin:55px auto;
       padding:0 20px;
-      padding-bottom:160px;
     }
 
     .topicHero{
@@ -78,7 +77,7 @@
       gap:12px;
       flex-wrap:wrap;
       font-size:13px;
-      opacity:.65;
+      opacity:.7;
       margin-bottom:20px;
     }
 
@@ -92,12 +91,11 @@
       justify-content:center;
       font-weight:900;
       font-size:15px;
-      flex-shrink:0;
     }
 
     .authorName{
-      font-weight:750;
-      opacity:.9;
+      font-weight:800;
+      opacity:.95;
     }
 
     .topicBody{
@@ -105,26 +103,18 @@
       line-height:1.9;
       opacity:.92;
       white-space:pre-wrap;
-      margin-top:10px;
     }
 
     .replyHeader{
       margin-top:40px;
       display:flex;
       justify-content:space-between;
-      align-items:center;
       margin-bottom:18px;
     }
 
     .replyHeader h2{
       font-size:16px;
       font-weight:850;
-      opacity:.9;
-    }
-
-    .replyCount{
-      font-size:13px;
-      opacity:.55;
     }
 
     .replyCard{
@@ -133,12 +123,6 @@
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.02);
       margin-bottom:14px;
-      animation:fadeIn .25s ease;
-    }
-
-    @keyframes fadeIn{
-      from{opacity:0;transform:translateY(10px)}
-      to{opacity:1;transform:translateY(0)}
     }
 
     .replyTop{
@@ -197,8 +181,8 @@
       background:rgba(255,255,255,.05);
       color:white;
       font-size:14px;
-      resize:none;
       outline:none;
+      resize:none;
     }
 
     button{
@@ -214,8 +198,9 @@
 
     footer{
       text-align:center;
-      padding:80px 20px;
+      padding:90px 20px;
       opacity:.35;
+      margin-top:90px;
       font-size:13px;
     }
   </style>
@@ -246,7 +231,7 @@
 
   <div class="replyHeader">
     <h2>Replies</h2>
-    <div class="replyCount" id="replyCount">0 Replies</div>
+    <div id="replyCount">0 Replies</div>
   </div>
 
   <div id="replyList"></div>
@@ -272,120 +257,98 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  const params = new URLSearchParams(window.location.search);
-  const topicId = params.get("id");
+  const topicId = new URLSearchParams(window.location.search).get("id");
 
-  const titleEl   = document.getElementById("topicTitle");
-  const bodyEl    = document.getElementById("topicBody");
-  const dateEl    = document.getElementById("topicDate");
-  const authorEl  = document.getElementById("topicAuthor");
-  const avatarEl  = document.getElementById("topicAvatar");
+  const topicTitle  = document.getElementById("topicTitle");
+  const topicBody   = document.getElementById("topicBody");
+  const topicDate   = document.getElementById("topicDate");
+  const topicAvatar = document.getElementById("topicAvatar");
+  const topicAuthor = document.getElementById("topicAuthor");
 
-  const replyList = document.getElementById("replyList");
-  const replyCount= document.getElementById("replyCount");
-  const replyInput= document.getElementById("replyInput");
+  const replyList   = document.getElementById("replyList");
+  const replyCount  = document.getElementById("replyCount");
+  const replyInput  = document.getElementById("replyInput");
 
-  /* ✅ LOAD TOPIC */
   async function loadTopic() {
-
-    if (!topicId) {
-      titleEl.textContent = "Topic not found.";
-      authorEl.textContent = "Missing topic ID.";
-      return;
-    }
-
     const { data: topic, error } = await supabase
       .from("forum_topics")
-      .select("id,title,content,created_at,user_id,profiles(username)")
+      .select("*")
       .eq("id", topicId)
       .single();
 
     if (error || !topic) {
-      titleEl.textContent = "Error loading topic.";
-      authorEl.textContent = error?.message || "Not found.";
+      topicTitle.textContent = "Error loading topic.";
+      topicBody.textContent = error?.message || "Topic not found.";
       return;
     }
 
-    titleEl.textContent = topic.title;
-    bodyEl.textContent  = topic.content;
+    topicTitle.textContent = topic.title;
+    topicBody.textContent = topic.content;
+    topicDate.textContent = "• " + new Date(topic.created_at).toLocaleString();
 
-    const username = topic.profiles?.username || "StudentStream User";
+    topicAvatar.textContent = topic.title[0].toUpperCase();
 
-    authorEl.textContent = username;
-    avatarEl.textContent = username[0].toUpperCase();
+    // ✅ Load author separately (NO relationship needed)
+    if (topic.user_id) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", topic.user_id)
+        .single();
 
-    dateEl.textContent =
-      "• " + new Date(topic.created_at).toLocaleString();
+      topicAuthor.textContent =
+        profile?.username || "StudentStream Member";
+    } else {
+      topicAuthor.textContent = "Unknown User";
+    }
   }
 
-  /* ✅ LOAD REPLIES */
   async function loadReplies() {
-
     const { data: replies, error } = await supabase
       .from("forum_replies")
-      .select("id,content,created_at,user_id,profiles(username)")
+      .select("*")
       .eq("topic_id", topicId)
-      .order("created_at", { ascending: true });
+      .order("created_at");
 
     if (error) {
-      replyList.innerHTML =
-        `<div class="empty">❌ Error loading replies</div>`;
+      replyList.innerHTML = `<div class="empty">Error loading replies.</div>`;
       return;
     }
 
-    replyCount.textContent = `${replies.length} Replies`;
+    replyCount.textContent = replies.length + " Replies";
 
     if (replies.length === 0) {
-      replyList.innerHTML =
-        `<div class="empty">No replies yet. Be the first!</div>`;
+      replyList.innerHTML = `<div class="empty">No replies yet. Be the first!</div>`;
       return;
     }
 
     replyList.innerHTML = "";
 
     replies.forEach(r => {
+      const div = document.createElement("div");
+      div.className = "replyCard";
 
-      const name = r.profiles?.username || "User";
-      const letter = name[0].toUpperCase();
-
-      replyList.innerHTML += `
-        <div class="replyCard">
-          <div class="replyTop">
-            <div class="avatar">${letter}</div>
-            <div class="replyMeta">
-              ${name} • ${new Date(r.created_at).toLocaleString()}
-            </div>
+      div.innerHTML = `
+        <div class="replyTop">
+          <div class="avatar">U</div>
+          <div class="replyMeta">
+            Reply • ${new Date(r.created_at).toLocaleString()}
           </div>
-
-          <div class="replyText">${r.content}</div>
         </div>
+        <div class="replyText">${r.content}</div>
       `;
+
+      replyList.appendChild(div);
     });
   }
 
-  /* ✅ SUBMIT REPLY */
   window.submitReply = async function () {
-
     const text = replyInput.value.trim();
-    if (text.length < 2) return;
-
-    const { data: userData } = await supabase.auth.getUser();
-    const user = userData?.user;
-
-    if (!user) {
-      alert("You must be logged in to reply.");
-      return;
-    }
+    if (!text) return;
 
     const { error } = await supabase
       .from("forum_replies")
-      .insert([
-        {
-          topic_id: topicId,
-          user_id: user.id,
-          content: text
-        }
-      ]);
+      .insert([{ topic_id: topicId, content: text }]);
 
     if (error) {
       alert("❌ " + error.message);
