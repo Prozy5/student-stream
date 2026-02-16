@@ -41,8 +41,6 @@
       font-weight:600;
     }
 
-    .back:hover{opacity:1}
-
     .container{
       max-width:1000px;
       margin:55px auto;
@@ -66,8 +64,6 @@
       margin-top:10px;
       opacity:.65;
       font-size:14px;
-      line-height:1.4;
-      max-width:650px;
     }
 
     .actionBar{
@@ -93,12 +89,6 @@
       font-size:13px;
       color:white;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
-      transition:.2s;
-    }
-
-    .newBtn:hover{
-      transform:scale(1.03);
-      opacity:.95;
     }
 
     .topicCard{
@@ -130,13 +120,6 @@
       font-size:13px;
     }
 
-    .topicStats{
-      text-align:right;
-      min-width:120px;
-      font-size:13px;
-      opacity:.6;
-    }
-
     .empty{
       text-align:center;
       opacity:.55;
@@ -166,12 +149,6 @@
       background:rgba(15,20,35,.95);
     }
 
-    .modal h2{
-      font-size:20px;
-      font-weight:900;
-      margin-bottom:12px;
-    }
-
     .modal input,
     .modal textarea{
       width:100%;
@@ -185,18 +162,13 @@
       outline:none;
     }
 
-    textarea{min-height:120px;resize:none}
+    textarea{min-height:120px}
 
     .modalActions{
       display:flex;
       justify-content:flex-end;
       gap:10px;
       margin-top:15px;
-    }
-
-    .cancelBtn{
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
     }
 
     footer{
@@ -246,7 +218,7 @@
     <textarea id="topicBodyInput" placeholder="Write your post..."></textarea>
 
     <div class="modalActions">
-      <button class="newBtn cancelBtn" onclick="closeModal()">Cancel</button>
+      <button class="newBtn" onclick="closeModal()">Cancel</button>
       <button class="newBtn" onclick="submitTopic()">Post Topic</button>
     </div>
   </div>
@@ -272,7 +244,6 @@
   const titleInput = document.getElementById("topicTitleInput");
   const bodyInput = document.getElementById("topicBodyInput");
 
-  /* LOAD CATEGORY */
   async function loadCategory(){
     const { data } = await supabase
       .from("forum_categories")
@@ -284,7 +255,6 @@
     catDesc.textContent = data.description;
   }
 
-  /* LOAD TOPICS */
   async function loadTopics(){
     const { data: topics } = await supabase
       .from("forum_topics")
@@ -294,7 +264,7 @@
 
     if(!topics || topics.length === 0){
       topicCount.textContent = "0 discussions";
-      topicList.innerHTML = `<div class="empty">No topics yet. Start the first one.</div>`;
+      topicList.innerHTML = `<div class="empty">No topics yet.</div>`;
       return;
     }
 
@@ -312,9 +282,6 @@
             Posted ${new Date(topic.created_at).toLocaleString()}
           </div>
         </div>
-        <div class="topicStats">
-          <b>Open →</b>
-        </div>
       `;
 
       card.onclick = () => {
@@ -325,20 +292,18 @@
     });
   }
 
-  /* LOGIN + CREATOR CHECK */
   async function requireLogin(){
     const { data } = await supabase.auth.getUser();
 
     if(!data.user){
       alert("Login required to post.");
       window.location.href = "/login.html";
-      return false;
+      return null;
     }
 
     return data.user;
   }
 
-  /* MODAL */
   window.closeModal = function(){
     modalOverlay.style.display = "none";
   };
@@ -347,24 +312,33 @@
     modalOverlay.style.display = "flex";
   }
 
-  /* SUBMIT TOPIC */
   window.submitTopic = async function(){
     const user = await requireLogin();
     if(!user) return;
 
-    if(titleInput.value.trim().length < 3){
+    const title = titleInput.value.trim();
+    const content = bodyInput.value.trim();
+
+    if(title.length < 3){
       alert("Title too short.");
       return;
     }
 
-    await supabase.from("forum_topics").insert([
-      {
-        title: titleInput.value,
-        body: bodyInput.value,
-        category_id: categoryId,
-        author_id: user.id
-      }
-    ]);
+    const { error } = await supabase
+      .from("forum_topics")
+      .insert([
+        {
+          title: title,
+          content: content,
+          category_id: categoryId,
+          user_id: user.id
+        }
+      ]);
+
+    if(error){
+      alert("❌ Failed: " + error.message);
+      return;
+    }
 
     closeModal();
     titleInput.value = "";
@@ -373,7 +347,6 @@
     loadTopics();
   };
 
-  /* BUTTON */
   document.getElementById("newTopicBtn").onclick = async () => {
     const user = await requireLogin();
     if(user) openModal();
