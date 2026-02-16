@@ -19,6 +19,7 @@
       min-height:100vh;
     }
 
+    /* HEADER */
     header{
       position:sticky;
       top:0;
@@ -69,6 +70,7 @@
       border:1px solid rgba(255,255,255,.10);
     }
 
+    /* MAIN */
     .container{
       max-width:980px;
       margin:50px auto;
@@ -89,6 +91,7 @@
       max-width:700px;
     }
 
+    /* NAV TABS */
     .tabs{
       display:flex;
       gap:10px;
@@ -114,6 +117,7 @@
       background:rgba(77,163,255,.15);
     }
 
+    /* CARDS */
     .card{
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
@@ -170,6 +174,7 @@
       white-space:nowrap;
     }
 
+    /* STATES */
     .empty{
       text-align:center;
       opacity:.55;
@@ -202,6 +207,7 @@
 <header>
   <div class="logo">StudentStream <span>DevForum</span></div>
 
+  <!-- HEADER ACTIONS -->
   <div class="actions">
     <button class="btn secondary" id="newTopicBtn">+ New Topic</button>
     <button class="btn" id="accountBtn">Login</button>
@@ -217,13 +223,17 @@
     <b>Read Mode:</b> Public • Posting requires Creator login.
   </p>
 
+  <!-- Tabs -->
   <div class="tabs">
     <div class="tab active" data-tab="categories">Categories</div>
     <div class="tab" data-tab="latest">Latest</div>
     <div class="tab" data-tab="support">Support</div>
   </div>
 
+  <!-- Loading -->
   <div id="loadingState" class="loading">Loading DevForum…</div>
+
+  <!-- Dynamic Content -->
   <div id="mainContent"></div>
 
 </div>
@@ -235,6 +245,7 @@
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+  /* SUPABASE CONNECT */
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
@@ -243,41 +254,47 @@
   const mainContent = document.getElementById("mainContent");
   const loadingState = document.getElementById("loadingState");
   const tabs = document.querySelectorAll(".tab");
+
+  /* LOGIN BUTTON */
   const accountBtn = document.getElementById("accountBtn");
 
   async function updateLoginButton() {
     const { data } = await supabase.auth.getUser();
+    const user = data.user;
 
-    if (data.user) {
-      accountBtn.textContent = "Logout";
+    if (user) {
+      accountBtn.textContent = "Account";
+
       accountBtn.onclick = async () => {
-        await supabase.auth.signOut();
-        location.reload();
+        if (confirm("Logout of StudentStream?")) {
+          await supabase.auth.signOut();
+          location.reload();
+        }
       };
     } else {
       accountBtn.textContent = "Login";
       accountBtn.onclick = () => {
-        window.location.href =
-          "/login.html?next=/devforum/index.html";
+        window.location.href = "/login.html";
       };
     }
   }
 
   updateLoginButton();
 
+  /* NEW TOPIC BUTTON */
   document.getElementById("newTopicBtn").onclick = async () => {
     const { data } = await supabase.auth.getUser();
 
     if (!data.user) {
       alert("Creator login required to post.");
-      window.location.href =
-        "/login.html?next=/devforum/new-topic.html";
+      window.location.href = "/login.html";
       return;
     }
 
     window.location.href = "/devforum/new-topic.html";
   };
 
+  /* TAB SWITCH */
   tabs.forEach(tab => {
     tab.onclick = () => {
       tabs.forEach(t => t.classList.remove("active"));
@@ -289,7 +306,7 @@
     };
   });
 
-  /* ✅ FIXED CATEGORY ORDER */
+  /* LOAD CATEGORIES */
   async function loadCategories() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -297,19 +314,17 @@
     const { data: categories, error } = await supabase
       .from("forum_categories")
       .select("*")
-      .order("sort_order", { ascending: true });
+      .order("created_at");
 
     loadingState.style.display = "none";
 
     if (error) {
-      mainContent.innerHTML =
-        `<div class="empty">⚠️ Categories failed to load.</div>`;
+      mainContent.innerHTML = `<div class="empty">⚠️ Categories failed to load.</div>`;
       return;
     }
 
     if (!categories || categories.length === 0) {
-      mainContent.innerHTML =
-        `<div class="empty">No categories yet.</div>`;
+      mainContent.innerHTML = `<div class="empty">No categories yet.</div>`;
       return;
     }
 
@@ -336,14 +351,14 @@
       `;
 
       card.onclick = () => {
-        window.location.href =
-          "/devforum/category.html?id=" + cat.id;
+        window.location.href = "/devforum/category.html?id=" + cat.id;
       };
 
       mainContent.appendChild(card);
     }
   }
 
+  /* LOAD LATEST */
   async function loadLatestTopics() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -357,8 +372,7 @@
     loadingState.style.display = "none";
 
     if (!topics || topics.length === 0) {
-      mainContent.innerHTML =
-        `<div class="empty">No discussions yet.</div>`;
+      mainContent.innerHTML = `<div class="empty">No discussions yet.</div>`;
       return;
     }
 
@@ -374,14 +388,14 @@
       `;
 
       card.onclick = () => {
-        window.location.href =
-          "/devforum/topic.html?id=" + topic.id;
+        window.location.href = "/devforum/topic.html?id=" + topic.id;
       };
 
       mainContent.appendChild(card);
     });
   }
 
+  /* SUPPORT ONLY */
   async function loadSupportTopics() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -393,8 +407,7 @@
 
     if (!supportCats || supportCats.length === 0) {
       loadingState.style.display = "none";
-      mainContent.innerHTML =
-        `<div class="empty">No Support category found.</div>`;
+      mainContent.innerHTML = `<div class="empty">No Support category found.</div>`;
       return;
     }
 
@@ -409,8 +422,7 @@
     loadingState.style.display = "none";
 
     if (!topics || topics.length === 0) {
-      mainContent.innerHTML =
-        `<div class="empty">No support topics yet.</div>`;
+      mainContent.innerHTML = `<div class="empty">No support topics yet.</div>`;
       return;
     }
 
@@ -426,14 +438,14 @@
       `;
 
       card.onclick = () => {
-        window.location.href =
-          "/devforum/topic.html?id=" + topic.id;
+        window.location.href = "/devforum/topic.html?id=" + topic.id;
       };
 
       mainContent.appendChild(card);
     });
   }
 
+  /* DEFAULT LOAD */
   loadCategories();
 </script>
 
