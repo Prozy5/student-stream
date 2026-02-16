@@ -243,7 +243,6 @@
   const mainContent = document.getElementById("mainContent");
   const loadingState = document.getElementById("loadingState");
   const tabs = document.querySelectorAll(".tab");
-
   const accountBtn = document.getElementById("accountBtn");
 
   async function updateLoginButton() {
@@ -251,14 +250,12 @@
 
     if (data.user) {
       accountBtn.textContent = "Logout";
-
       accountBtn.onclick = async () => {
         await supabase.auth.signOut();
         location.reload();
       };
     } else {
       accountBtn.textContent = "Login";
-
       accountBtn.onclick = () => {
         window.location.href =
           "/login.html?next=/devforum/index.html";
@@ -273,7 +270,6 @@
 
     if (!data.user) {
       alert("Creator login required to post.");
-
       window.location.href =
         "/login.html?next=/devforum/new-topic.html";
       return;
@@ -293,6 +289,7 @@
     };
   });
 
+  /* ✅ FIXED CATEGORY ORDER */
   async function loadCategories() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -300,7 +297,7 @@
     const { data: categories, error } = await supabase
       .from("forum_categories")
       .select("*")
-      .order("id", { ascending: true });
+      .order("sort_order", { ascending: true });
 
     loadingState.style.display = "none";
 
@@ -328,7 +325,7 @@
       card.innerHTML = `
         <div class="row">
           <div class="left">
-            <div class="icon">💬</div>
+            <div class="icon">${cat.icon || "💬"}</div>
             <div>
               <div class="name">${cat.name}</div>
               <div class="desc">${cat.description}</div>
