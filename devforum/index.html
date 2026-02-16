@@ -19,7 +19,6 @@
       min-height:100vh;
     }
 
-    /* HEADER */
     header{
       position:sticky;
       top:0;
@@ -70,7 +69,6 @@
       border:1px solid rgba(255,255,255,.10);
     }
 
-    /* MAIN */
     .container{
       max-width:980px;
       margin:50px auto;
@@ -91,11 +89,10 @@
       max-width:700px;
     }
 
-    /* NAV TABS */
     .tabs{
       display:flex;
       gap:10px;
-      margin:25px 0 35px;
+      margin:25px 0 25px;
       flex-wrap:wrap;
     }
 
@@ -117,7 +114,23 @@
       background:rgba(77,163,255,.15);
     }
 
-    /* CARDS */
+    /* Search */
+    .searchBox{
+      width:100%;
+      margin-bottom:20px;
+    }
+
+    .searchBox input{
+      width:100%;
+      padding:12px 15px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:white;
+      font-size:14px;
+      outline:none;
+    }
+
     .card{
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
@@ -174,7 +187,13 @@
       white-space:nowrap;
     }
 
-    /* STATES */
+    .pinnedTag{
+      font-size:12px;
+      font-weight:700;
+      color:#ffd54d;
+      margin-left:8px;
+    }
+
     .empty{
       text-align:center;
       opacity:.55;
@@ -207,7 +226,6 @@
 <header>
   <div class="logo">StudentStream <span>DevForum</span></div>
 
-  <!-- HEADER ACTIONS -->
   <div class="actions">
     <button class="btn secondary" id="newTopicBtn">+ New Topic</button>
     <button class="btn" id="accountBtn">Login</button>
@@ -218,9 +236,9 @@
 
   <h1>Developer Forums</h1>
   <p>
-    Official StudentStreamHQ developer forum for platform announcements, creator updates,
+    Official StudentStreamHQ developer forum for announcements, creator updates,
     bug reports, and support discussions.<br>
-    <b>Read Mode:</b> Public • Posting requires Creator login.
+    <b>Read Mode:</b> Public • Posting requires login.
   </p>
 
   <!-- Tabs -->
@@ -230,10 +248,12 @@
     <div class="tab" data-tab="support">Support</div>
   </div>
 
-  <!-- Loading -->
-  <div id="loadingState" class="loading">Loading DevForum…</div>
+  <!-- Search -->
+  <div class="searchBox" id="searchBox" style="display:none;">
+    <input type="text" id="searchInput" placeholder="Search topics..." />
+  </div>
 
-  <!-- Dynamic Content -->
+  <div id="loadingState" class="loading">Loading DevForum…</div>
   <div id="mainContent"></div>
 
 </div>
@@ -245,56 +265,51 @@
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* SUPABASE CONNECT */
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "YOUR_ANON_KEY"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
   const mainContent = document.getElementById("mainContent");
   const loadingState = document.getElementById("loadingState");
   const tabs = document.querySelectorAll(".tab");
-
   const accountBtn = document.getElementById("accountBtn");
+
+  const searchBox = document.getElementById("searchBox");
+  const searchInput = document.getElementById("searchInput");
 
   let latestPage = 0;
   let loadingMore = false;
 
-  /* ✅ LOGIN BUTTON FIX */
+  /* LOGIN FIX */
   async function updateLoginButton() {
     const { data } = await supabase.auth.getUser();
     const user = data.user;
 
     if (user) {
       accountBtn.textContent = "Logout";
-
       accountBtn.onclick = async () => {
         await supabase.auth.signOut();
         location.reload();
       };
     } else {
       accountBtn.textContent = "Login";
-
       accountBtn.onclick = () => {
-        window.location.href =
-          "/login.html?next=/devforum/index.html";
+        window.location.href = "/login.html?next=" + encodeURIComponent(location.pathname);
       };
     }
   }
 
   updateLoginButton();
 
-  /* ✅ NEW TOPIC FIX */
+  /* NEW TOPIC */
   document.getElementById("newTopicBtn").onclick = async () => {
     const { data } = await supabase.auth.getUser();
-
     if (!data.user) {
-      alert("Creator login required to post.");
-      window.location.href =
-        "/login.html?next=/devforum/new-topic.html";
+      alert("Login required to post.");
+      window.location.href = "/login.html?next=/devforum/new-topic.html";
       return;
     }
-
     window.location.href = "/devforum/new-topic.html";
   };
 
@@ -304,27 +319,28 @@
       tabs.forEach(t => t.classList.remove("active"));
       tab.classList.add("active");
 
+      searchBox.style.display = tab.dataset.tab === "latest" ? "block" : "none";
+
       if (tab.dataset.tab === "categories") loadCategories();
       if (tab.dataset.tab === "latest") loadLatestTopics(true);
       if (tab.dataset.tab === "support") loadSupportTopics();
     };
   });
 
-  /* ✅ CATEGORY ORDER FIX */
+  /* CATEGORY LOAD */
   async function loadCategories() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
 
-    const { data: categories, error } = await supabase
+    const { data: categories } = await supabase
       .from("forum_categories")
       .select("*")
       .order("sort_order", { ascending: true });
 
     loadingState.style.display = "none";
 
-    if (error) {
-      mainContent.innerHTML =
-        `<div class="empty">⚠️ Categories failed to load.</div>`;
+    if (!categories || categories.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No categories found.</div>`;
       return;
     }
 
@@ -334,13 +350,21 @@
         .select("*", { count: "exact", head: true })
         .eq("category_id", cat.id);
 
+      const iconMap = {
+        "Announcements": "📢",
+        "Updates": "⚡",
+        "SS Central": "🏢",
+        "Bug Reports": "🐛",
+        "Support": "🛠️"
+      };
+
       const card = document.createElement("div");
       card.className = "card";
 
       card.innerHTML = `
         <div class="row">
           <div class="left">
-            <div class="icon">💬</div>
+            <div class="icon">${iconMap[cat.name] || "💬"}</div>
             <div>
               <div class="name">${cat.name}</div>
               <div class="desc">${cat.description}</div>
@@ -351,15 +375,14 @@
       `;
 
       card.onclick = () => {
-        window.location.href =
-          "/devforum/category.html?id=" + cat.id;
+        window.location.href = "/devforum/category.html?id=" + cat.id;
       };
 
       mainContent.appendChild(card);
     });
   }
 
-  /* ✅ LATEST POSTS + AUTO SCROLL LOAD */
+  /* PINNED + LATEST */
   async function loadLatestTopics(reset = false) {
     if (loadingMore) return;
     loadingMore = true;
@@ -371,9 +394,22 @@
 
     loadingState.style.display = "block";
 
+    /* PINNED FIRST */
+    if (latestPage === 0) {
+      const { data: pinned } = await supabase
+        .from("forum_topics")
+        .select("*")
+        .eq("pinned", true)
+        .order("created_at", { ascending: false });
+
+      pinned?.forEach(topic => renderTopic(topic, true));
+    }
+
+    /* NORMAL POSTS */
     const { data: topics } = await supabase
       .from("forum_topics")
-      .select("id,title,created_at,author")
+      .select("*")
+      .eq("pinned", false)
       .order("created_at", { ascending: false })
       .range(latestPage * 8, latestPage * 8 + 7);
 
@@ -382,101 +418,88 @@
 
     if (!topics || topics.length === 0) {
       if (latestPage === 0) {
-        mainContent.innerHTML =
-          `<div class="empty">No posts yet.</div>`;
+        mainContent.innerHTML += `<div class="empty">No posts yet.</div>`;
       }
       return;
     }
 
-    topics.forEach(topic => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      card.innerHTML = `
-        <div class="name">${topic.title}</div>
-        <div class="desc">
-          Posted by <b>${topic.author || "Unknown"}</b>
-          • ${new Date(topic.created_at).toLocaleString()}
-        </div>
-      `;
-
-      card.onclick = () => {
-        window.location.href =
-          "/devforum/topic.html?id=" + topic.id;
-      };
-
-      mainContent.appendChild(card);
-    });
-
+    topics.forEach(topic => renderTopic(topic));
     latestPage++;
   }
 
-  /* ✅ SUPPORT TAB */
+  function renderTopic(topic, pinned=false) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="name">
+        ${topic.title}
+        ${pinned ? `<span class="pinnedTag">📌 Pinned</span>` : ""}
+      </div>
+      <div class="desc">
+        Posted by <b>${topic.author || "Unknown"}</b>
+        • ${new Date(topic.created_at).toLocaleString()}
+      </div>
+    `;
+
+    card.onclick = () => {
+      window.location.href = "/devforum/topic.html?id=" + topic.id;
+    };
+
+    mainContent.appendChild(card);
+  }
+
+  /* SEARCH FEATURE */
+  searchInput.addEventListener("input", async () => {
+    const q = searchInput.value.trim();
+
+    if (!q) {
+      loadLatestTopics(true);
+      return;
+    }
+
+    mainContent.innerHTML = "";
+    loadingState.style.display = "block";
+
+    const { data: results } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .ilike("title", `%${q}%`)
+      .order("created_at", { ascending: false });
+
+    loadingState.style.display = "none";
+
+    if (!results || results.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No matches found.</div>`;
+      return;
+    }
+
+    results.forEach(topic => renderTopic(topic));
+  });
+
+  /* SUPPORT TAB */
   async function loadSupportTopics() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
 
-    const { data: supportCats } = await supabase
-      .from("forum_categories")
-      .select("*")
-      .ilike("name", "%Support%");
-
-    loadingState.style.display = "none";
-
-    if (!supportCats || supportCats.length === 0) {
-      mainContent.innerHTML =
-        `<div class="empty">No Support category found.</div>`;
-      return;
-    }
-
-    const supportID = supportCats[0].id;
-
     const { data: topics } = await supabase
       .from("forum_topics")
       .select("*")
-      .eq("category_id", supportID)
-      .order("created_at", { ascending: false });
+      .ilike("category_name", "%Support%");
+
+    loadingState.style.display = "none";
 
     if (!topics || topics.length === 0) {
-      mainContent.innerHTML =
-        `<div class="empty">No support topics yet.</div>`;
+      mainContent.innerHTML = `<div class="empty">No support topics yet.</div>`;
       return;
     }
 
-    topics.forEach(topic => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      card.innerHTML = `
-        <div class="name">${topic.title}</div>
-        <div class="desc">
-          Support thread • ${new Date(topic.created_at).toLocaleDateString()}
-        </div>
-      `;
-
-      card.onclick = () => {
-        window.location.href =
-          "/devforum/topic.html?id=" + topic.id;
-      };
-
-      mainContent.appendChild(card);
-    });
+    topics.forEach(topic => renderTopic(topic));
   }
-
-  /* ✅ INFINITE SCROLL AUTO LOAD */
-  window.addEventListener("scroll", () => {
-    const activeTab = document.querySelector(".tab.active");
-
-    if (activeTab.dataset.tab !== "latest") return;
-
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight - 300
-    ) {
-      loadLatestTopics();
-    }
-  });
 
   /* DEFAULT LOAD */
   loadCategories();
 </script>
+
+</body>
+</html>
