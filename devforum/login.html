@@ -105,6 +105,10 @@
 
   const statusText = document.getElementById("statusText");
 
+  // ✅ Get redirect destination from URL
+  const params = new URLSearchParams(window.location.search);
+  const redirectTo = params.get("redirect") || "/devforum/index.html";
+
   window.login = async function(){
 
     const email = document.getElementById("email").value.trim();
@@ -125,8 +129,8 @@
     statusText.textContent = "✅ Logged in! Redirecting...";
 
     setTimeout(()=>{
-      window.location.href = "index.html";
-    },1000);
+      window.location.href = redirectTo;
+    }, 900);
   };
 </script>
 
