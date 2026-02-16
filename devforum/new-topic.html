@@ -107,65 +107,62 @@
 <div class="container">
 
   <h1>Create New Topic</h1>
-  <p>Posting requires Creator login and selecting a category.</p>
+  <p>Creator login required + category selection.</p>
 
   <!-- Title -->
   <label>Topic Title</label>
-  <input type="text" id="title" placeholder="Enter topic title..." />
+  <input id="title" placeholder="Enter topic title..." />
 
-  <!-- Category Dropdown -->
+  <!-- Category -->
   <label>Category</label>
   <select id="categorySelect">
     <option value="">Loading categories...</option>
   </select>
 
-  <!-- Body -->
+  <!-- Content -->
   <label>Topic Content</label>
-  <textarea id="body" placeholder="Write your post..."></textarea>
+  <textarea id="content" placeholder="Write your post..."></textarea>
 
-  <!-- Publish -->
   <button id="publishBtn">Publish Topic</button>
 
   <div id="statusMsg" class="msg"></div>
-
 </div>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* SUPABASE CONNECT */
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
   const titleInput = document.getElementById("title");
-  const bodyInput = document.getElementById("body");
+  const contentInput = document.getElementById("content");
   const categorySelect = document.getElementById("categorySelect");
   const statusMsg = document.getElementById("statusMsg");
   const publishBtn = document.getElementById("publishBtn");
 
   /* ✅ LOAD CATEGORIES */
   async function loadCategories() {
-    const { data: categories, error } = await supabase
+    const { data, error } = await supabase
       .from("forum_categories")
       .select("id,name")
       .order("name");
 
-    if (error || !categories || categories.length === 0) {
+    if (error || !data) {
       categorySelect.innerHTML =
-        `<option value="">No categories available</option>`;
+        `<option value="">No categories found</option>`;
       return;
     }
 
     categorySelect.innerHTML =
       `<option value="">Select a category...</option>`;
 
-    categories.forEach(cat => {
-      const option = document.createElement("option");
-      option.value = cat.id;
-      option.textContent = cat.name;
-      categorySelect.appendChild(option);
+    data.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat.id;
+      opt.textContent = cat.name;
+      categorySelect.appendChild(opt);
     });
   }
 
@@ -176,17 +173,17 @@
     statusMsg.textContent = "";
 
     const title = titleInput.value.trim();
-    const body = bodyInput.value.trim();
+    const content = contentInput.value.trim();
     const categoryId = categorySelect.value;
 
-    if (!title || !body || !categoryId) {
+    if (!title || !content || !categoryId) {
       statusMsg.textContent =
         "❌ Title, content, and category are required.";
       statusMsg.className = "msg error";
       return;
     }
 
-    /* GET USER */
+    /* AUTH */
     const { data: userData } = await supabase.auth.getUser();
     const user = userData.user;
 
@@ -197,14 +194,15 @@
       return;
     }
 
-    /* ✅ INSERT POST (CORRECT SCHEMA) */
+    /* INSERT INTO forum_topics */
     const { error } = await supabase
       .from("forum_topics")
       .insert([
         {
           title: title,
-          body: body,
+          content: content,
           category_id: categoryId,
+          user_id: user.id,
           author_id: user.id,
           pinned: false
         }
@@ -216,7 +214,7 @@
       return;
     }
 
-    statusMsg.textContent = "✅ Topic posted successfully!";
+    statusMsg.textContent = "✅ Topic posted!";
     statusMsg.className = "msg success";
 
     setTimeout(() => {
