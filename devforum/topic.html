@@ -2,25 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Topic • StudentStream DevForum</title>
+  <title>Topic • StudentStreamHQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-
     body{
-      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      margin:0;
+      font-family:system-ui;
       background:radial-gradient(circle at top,#0d1b3a,#05070c);
       color:white;
       min-height:100vh;
     }
 
-    /* HEADER */
     header{
-      position:sticky;
-      top:0;
-      z-index:100;
-      padding:20px 26px;
+      padding:20px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
       background:rgba(5,7,12,.75);
@@ -29,203 +24,78 @@
       align-items:center;
     }
 
-    .logo{
-      font-size:20px;
-      font-weight:900;
-    }
-
-    .logo span{
-      color:#4da3ff;
-    }
-
-    .back{
-      font-size:14px;
-      opacity:.7;
-      cursor:pointer;
-      font-weight:600;
-    }
-
-    .back:hover{opacity:1;}
-
-    /* PAGE */
     .container{
-      max-width:1000px;
-      margin:55px auto;
-      padding:0 20px;
+      max-width:900px;
+      margin:50px auto;
+      padding:20px;
     }
 
-    /* THREAD BOX */
-    .threadBox{
-      border-radius:20px;
-      padding:26px;
+    .topicBox{
+      padding:22px;
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
       border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
     }
 
-    .threadBox h1{
-      font-size:28px;
-      font-weight:950;
-      margin-bottom:10px;
-      line-height:1.2;
+    h1{
+      margin:0;
+      font-size:26px;
     }
 
-    .threadMeta{
-      font-size:13px;
+    .meta{
+      margin-top:8px;
       opacity:.6;
-      margin-bottom:18px;
-    }
-
-    .originalPostTag{
-      display:inline-block;
-      font-size:12px;
-      font-weight:800;
-      padding:6px 10px;
-      border-radius:999px;
-      margin-bottom:14px;
-      background:rgba(77,163,255,.15);
-      color:#4da3ff;
-    }
-
-    .threadMessage{
-      font-size:15px;
-      line-height:1.75;
-      opacity:.92;
-      white-space:pre-wrap;
-    }
-
-    /* REPLY HEADER */
-    .replyHeader{
-      margin-top:45px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap:wrap;
-      gap:12px;
-    }
-
-    .replyHeader h2{
-      font-size:18px;
-      font-weight:850;
-    }
-
-    .replyCount{
       font-size:13px;
-      opacity:.55;
     }
 
-    /* REPLY CARD */
-    .replyCard{
+    .bodyText{
+      margin-top:18px;
+      line-height:1.5;
+      opacity:.9;
+    }
+
+    .replyBox{
+      margin-top:30px;
       padding:18px;
       border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.06);
-      margin-top:14px;
-      transition:.2s;
-    }
-
-    .replyCard:hover{
-      border-color:rgba(77,163,255,.35);
-    }
-
-    .replyTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:10px;
-    }
-
-    .replyAuthor{
-      font-weight:850;
-      font-size:14px;
-      color:#4da3ff;
-    }
-
-    .badge{
-      font-size:11px;
-      font-weight:800;
-      padding:4px 10px;
-      border-radius:999px;
-      background:rgba(60,255,122,.12);
-      color:#3cff7a;
-      margin-left:8px;
-    }
-
-    .replyTime{
-      font-size:12px;
-      opacity:.45;
-    }
-
-    .replyText{
-      line-height:1.55;
-      font-size:14px;
-      opacity:.9;
-      white-space:pre-wrap;
-    }
-
-    /* REPLY FORM */
-    .replyForm{
-      margin-top:25px;
-      padding:20px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.09);
-      background:rgba(255,255,255,.02);
     }
 
     textarea{
       width:100%;
       padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.02);
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.05);
       color:white;
-      font-size:14px;
+      min-height:90px;
       outline:none;
-      resize:none;
-      min-height:120px;
     }
 
     button{
-      margin-top:14px;
-      width:100%;
+      margin-top:12px;
+      padding:10px 16px;
+      border:none;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      background:linear-gradient(135deg,#2f6fff,#4da3ff);
+      color:white;
+    }
+
+    .replyCard{
+      margin-top:15px;
       padding:14px;
       border-radius:16px;
-      border:none;
-      cursor:pointer;
-      font-weight:950;
-      font-size:15px;
-      background:linear-gradient(90deg,#4da3ff,#3cff7a);
-      color:black;
-      transition:.2s;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.02);
     }
 
-    button:hover{
-      opacity:.92;
-      transform:scale(1.01);
-    }
-
-    .status{
-      text-align:center;
-      margin-top:12px;
-      opacity:.65;
-      font-size:14px;
-    }
-
-    .empty{
-      text-align:center;
+    .replyMeta{
+      font-size:12px;
       opacity:.55;
-      padding:35px;
-      border:1px dashed rgba(255,255,255,.14);
-      border-radius:18px;
-      margin-top:18px;
-    }
-
-    footer{
-      text-align:center;
-      padding:35px;
-      opacity:.4;
-      font-size:13px;
-      margin-top:85px;
-      border-top:1px solid rgba(255,255,255,.08);
+      margin-bottom:6px;
     }
   </style>
 </head>
@@ -233,178 +103,137 @@
 <body>
 
 <header>
-  <div class="logo">StudentStream <span>DevForum</span></div>
-  <div class="back" onclick="history.back()">← Back</div>
+  <div style="font-weight:900;">StudentStreamHQ • DevForum</div>
+  <div onclick="history.back()" style="cursor:pointer;opacity:.7;">← Back</div>
 </header>
 
 <div class="container">
 
-  <!-- ORIGINAL POST -->
-  <div class="threadBox">
-    <div class="originalPostTag">Original Post</div>
-    <h1 id="topicTitle">Loading topic...</h1>
-    <div class="threadMeta" id="topicMeta"></div>
-    <div class="threadMessage" id="topicMessage"></div>
+  <div class="topicBox">
+    <h1 id="title">Loading...</h1>
+    <div class="meta" id="meta"></div>
+    <div class="bodyText" id="body"></div>
   </div>
 
-  <!-- REPLIES -->
-  <div class="replyHeader">
-    <h2>Replies</h2>
-    <div class="replyCount" id="replyCount">Loading…</div>
-  </div>
+  <div class="replyBox">
+    <h3>Replies</h3>
+    <div id="replyList">Loading...</div>
 
-  <div id="replyList">Loading replies...</div>
+    <hr style="margin:18px 0;opacity:.2;">
 
-  <!-- REPLY FORM -->
-  <div class="replyForm">
-    <textarea
-      id="replyInput"
-      placeholder="Write a reply… (Login + Accounts coming soon)"
-    ></textarea>
+    <textarea id="replyText" placeholder="Write a reply..."></textarea>
+    <button onclick="postReply()">Reply</button>
 
-    <button onclick="postReply()">💬 Post Reply</button>
-
-    <div class="status" id="statusText"></div>
+    <div id="status" style="margin-top:10px;opacity:.6;"></div>
   </div>
 
 </div>
 
-<footer>
-  © 2026 StudentStreamHQ • Topic Thread V3
-</footer>
-
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* CONNECT SUPABASE */
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  /* GET TOPIC ID */
   const params = new URLSearchParams(window.location.search);
   const topicId = params.get("id");
 
-  const topicTitle = document.getElementById("topicTitle");
-  const topicMeta = document.getElementById("topicMeta");
-  const topicMessage = document.getElementById("topicMessage");
-
+  const titleEl = document.getElementById("title");
+  const metaEl = document.getElementById("meta");
+  const bodyEl = document.getElementById("body");
   const replyList = document.getElementById("replyList");
-  const replyInput = document.getElementById("replyInput");
-  const statusText = document.getElementById("statusText");
-  const replyCount = document.getElementById("replyCount");
+  const statusBox = document.getElementById("status");
 
-  /* LOAD TOPIC */
-  async function loadTopic(){
+  // ✅ Load Topic
+  async function loadTopic() {
     const { data, error } = await supabase
       .from("forum_topics")
       .select("*")
       .eq("id", topicId)
       .single();
 
-    if(error || !data){
-      topicTitle.textContent = "Topic not found.";
+    if (!data || error) {
+      titleEl.textContent = "Topic not found.";
       return;
     }
 
-    topicTitle.textContent = data.title;
-    topicMeta.textContent =
-      `Posted by ${data.author || "Anonymous"} • ${new Date(data.created_at).toLocaleString()}`;
+    titleEl.textContent = data.title;
+    metaEl.textContent =
+      "Posted by " + (data.author || "Anonymous") +
+      " • " + new Date(data.created_at).toLocaleString();
 
-    topicMessage.textContent = data.message;
+    bodyEl.textContent = data.body;
   }
 
-  /* LOAD REPLIES */
-  async function loadReplies(){
-
-    const { data, error } = await supabase
+  // ✅ Load Replies
+  async function loadReplies() {
+    const { data } = await supabase
       .from("forum_replies")
       .select("*")
       .eq("topic_id", topicId)
-      .order("created_at");
-
-    if(error){
-      replyList.innerHTML = `<div class="empty">Failed to load replies.</div>`;
-      return;
-    }
-
-    replyCount.textContent = `${data.length || 0} replies`;
-
-    if(!data || data.length === 0){
-      replyList.innerHTML = `
-        <div class="empty">
-          No replies yet.<br><br>
-          Be the first to respond 🎉
-        </div>
-      `;
-      return;
-    }
+      .order("created_at", { ascending: true });
 
     replyList.innerHTML = "";
 
-    data.forEach(r=>{
-
-      const staffBadge =
-        (r.author && r.author.toLowerCase().includes("studentstream"))
-        ? `<span class="badge">Staff</span>`
-        : "";
-
-      replyList.innerHTML += `
-        <div class="replyCard">
-          <div class="replyTop">
-            <div class="replyAuthor">
-              ${r.author || "Guest"} ${staffBadge}
-            </div>
-            <div class="replyTime">
-              ${new Date(r.created_at).toLocaleString()}
-            </div>
-          </div>
-          <div class="replyText">${r.message}</div>
-        </div>
-      `;
-    });
-  }
-
-  /* POST REPLY */
-  window.postReply = async function(){
-
-    const message = replyInput.value.trim();
-    if(!message){
-      statusText.textContent = "⚠️ Reply cannot be empty.";
+    if (!data || data.length === 0) {
+      replyList.innerHTML = "<p style='opacity:.6;'>No replies yet.</p>";
       return;
     }
 
-    statusText.textContent = "Posting reply...";
+    data.forEach(r => {
+      const div = document.createElement("div");
+      div.className = "replyCard";
+      div.innerHTML = `
+        <div class="replyMeta">
+          ${r.author || "Anonymous"} • ${new Date(r.created_at).toLocaleString()}
+        </div>
+        <div>${r.body}</div>
+      `;
+      replyList.appendChild(div);
+    });
+  }
+
+  // ✅ Post Reply (Login Required)
+  window.postReply = async function () {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const text = document.getElementById("replyText").value.trim();
+
+    if (!text) return;
+
+    statusBox.textContent = "Posting reply...";
 
     const { error } = await supabase
       .from("forum_replies")
       .insert([
         {
           topic_id: topicId,
-          message: message,
-          author: "Guest User"
+          body: text,
+          author: user.email,
+          user_id: user.id
         }
       ]);
 
-    if(error){
-      console.error(error);
-      statusText.textContent = "❌ Failed to post reply.";
+    if (error) {
+      statusBox.textContent = "❌ " + error.message;
       return;
     }
 
-    replyInput.value = "";
-    statusText.textContent = "✅ Reply posted.";
+    document.getElementById("replyText").value = "";
+    statusBox.textContent = "✅ Reply posted.";
 
     loadReplies();
   };
 
-  /* INIT */
   loadTopic();
   loadReplies();
-
-  /* LIVE REFRESH */
-  setInterval(loadReplies, 15000);
 </script>
 
 </body>
