@@ -48,10 +48,16 @@
       border:none;
       padding:10px 18px;
       border-radius:14px;
-      font-weight:700;
+      font-weight:800;
       color:white;
       cursor:pointer;
       font-size:14px;
+      transition:.2s;
+    }
+
+    .btn:hover{
+      transform:scale(1.04);
+      opacity:.9;
     }
 
     .btn.secondary{
@@ -60,54 +66,104 @@
     }
 
     .container{
-      max-width:980px;
+      max-width:1050px;
       margin:50px auto;
       padding:0 20px;
     }
 
-    h1{
-      font-size:44px;
-      font-weight:900;
-      margin-bottom:10px;
+    /* HERO */
+    .hero{
+      padding:28px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      margin-bottom:30px;
     }
 
-    p{
+    .hero h1{
+      font-size:46px;
+      font-weight:950;
+    }
+
+    .hero p{
       opacity:.7;
-      margin-bottom:25px;
-      max-width:700px;
+      margin-top:10px;
+      max-width:750px;
       line-height:1.6;
     }
 
+    .stats{
+      display:flex;
+      gap:14px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+
+    .statBox{
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:13px;
+      opacity:.8;
+    }
+
+    /* SEARCH */
+    .searchBar{
+      margin:25px 0;
+    }
+
+    .searchBar input{
+      width:100%;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:white;
+      outline:none;
+      font-size:14px;
+    }
+
+    /* TABS */
     .tabs{
       display:flex;
       gap:10px;
-      margin:25px 0;
+      margin-bottom:20px;
+      flex-wrap:wrap;
     }
 
     .tab{
       padding:10px 16px;
       border-radius:999px;
       font-size:13px;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.03);
-      opacity:.7;
+      opacity:.65;
+      transition:.2s;
     }
 
     .tab.active{
       opacity:1;
-      border-color:rgba(77,163,255,.5);
+      border-color:rgba(77,163,255,.55);
       background:rgba(77,163,255,.15);
     }
 
+    /* CARDS */
     .card{
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
       border-radius:20px;
       padding:20px;
-      margin-top:16px;
+      margin-top:14px;
       cursor:pointer;
+      transition:.25s;
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      border-color:rgba(77,163,255,.35);
     }
 
     .row{
@@ -125,12 +181,12 @@
 
     .icon{
       font-size:22px;
-      margin-top:3px;
+      margin-top:2px;
     }
 
     .name{
       font-size:18px;
-      font-weight:800;
+      font-weight:850;
     }
 
     .desc{
@@ -161,15 +217,55 @@
       padding:40px;
       border:1px dashed rgba(255,255,255,.15);
       border-radius:18px;
-      margin-top:30px;
+      margin-top:25px;
     }
 
     footer{
       text-align:center;
-      padding:35px 20px;
+      padding:35px;
       opacity:.35;
       margin-top:70px;
       border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    /* MODAL */
+    .modalOverlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.65);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+    }
+
+    .modal{
+      width:100%;
+      max-width:420px;
+      padding:22px;
+      border-radius:18px;
+      background:rgba(15,20,35,.95);
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    .modal h2{
+      font-size:18px;
+      margin-bottom:12px;
+    }
+
+    .modal select{
+      width:100%;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:white;
+      outline:none;
+    }
+
+    .modal button{
+      width:100%;
+      margin-top:14px;
     }
   </style>
 </head>
@@ -180,23 +276,38 @@
   <div class="logo">StudentStream <span>DevForum</span></div>
 
   <div class="actions">
-    <button class="btn secondary" id="newTopicBtn">+ New Topic</button>
+    <button class="btn secondary" id="newTopicBtn">+ Post Topic</button>
     <button class="btn" id="accountBtn">Login</button>
   </div>
 </header>
 
 <div class="container">
 
-  <h1>Developer Forums</h1>
-  <p>
-    Official StudentStreamHQ developer forum for announcements, creator updates,
-    bug reports, and support discussions.
-    <br><b>Read Mode:</b> Public • Posting requires login.
-  </p>
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Developer Forums</h1>
+    <p>
+      Official StudentStreamHQ forum for platform announcements, creator updates,
+      bug reports, and support discussions.
+    </p>
 
+    <div class="stats">
+      <div class="statBox">📢 Announcements</div>
+      <div class="statBox">⚡ Updates</div>
+      <div class="statBox">🐛 Bug Reports</div>
+      <div class="statBox">🛠 Support</div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="searchBar">
+    <input id="searchInput" placeholder="Search topics..." />
+  </div>
+
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" data-tab="categories">Categories</div>
-    <div class="tab" data-tab="latest">Latest</div>
+    <div class="tab" data-tab="latest">Latest Topics</div>
   </div>
 
   <div id="loadingState" class="loading">Loading DevForum…</div>
@@ -207,6 +318,16 @@
 <footer>
   © 2026 StudentStreamHQ • DevForum
 </footer>
+
+<!-- CATEGORY PICKER MODAL -->
+<div class="modalOverlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Select a Category</h2>
+    <select id="categoryPicker"></select>
+    <button class="btn" id="goCategoryBtn">Continue</button>
+    <button class="btn secondary" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -221,7 +342,13 @@
   const tabs = document.querySelectorAll(".tab");
   const accountBtn = document.getElementById("accountBtn");
 
-  /* LOGIN BUTTON */
+  const modalOverlay = document.getElementById("modalOverlay");
+  const categoryPicker = document.getElementById("categoryPicker");
+  const goCategoryBtn = document.getElementById("goCategoryBtn");
+
+  let cachedCategories = [];
+
+  /* LOGIN */
   async function updateLoginButton() {
     const { data } = await supabase.auth.getUser();
 
@@ -238,18 +365,33 @@
       };
     }
   }
-
   updateLoginButton();
 
-  /* NEW TOPIC */
+  /* MODAL */
+  window.closeModal = function(){
+    modalOverlay.style.display = "none";
+  };
+
+  function openModal(){
+    modalOverlay.style.display = "flex";
+  }
+
+  /* NEW TOPIC BUTTON */
   document.getElementById("newTopicBtn").onclick = async () => {
     const { data } = await supabase.auth.getUser();
+
     if (!data.user) {
       alert("Login required.");
       window.location.href = "/login.html";
       return;
     }
-    window.location.href = "/devforum/new-topic.html";
+
+    openModal();
+  };
+
+  goCategoryBtn.onclick = () => {
+    const id = categoryPicker.value;
+    window.location.href = "/devforum/category.html?id=" + id;
   };
 
   /* LOAD CATEGORIES */
@@ -268,6 +410,16 @@
       mainContent.innerHTML = `<div class="empty">No categories found.</div>`;
       return;
     }
+
+    cachedCategories = categories;
+
+    categoryPicker.innerHTML = "";
+    categories.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat.id;
+      opt.textContent = cat.name;
+      categoryPicker.appendChild(opt);
+    });
 
     const iconMap = {
       "Announcements": "📢",
@@ -307,7 +459,7 @@
     }
   }
 
-  /* LOAD LATEST TOPICS */
+  /* LOAD LATEST */
   async function loadLatestTopics() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -316,7 +468,7 @@
       .from("forum_topics")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(15);
+      .limit(12);
 
     loadingState.style.display = "none";
 
@@ -343,6 +495,39 @@
       mainContent.appendChild(card);
     });
   }
+
+  /* SEARCH */
+  document.getElementById("searchInput").addEventListener("input", async e => {
+    const q = e.target.value.trim();
+
+    if (!q) {
+      loadLatestTopics();
+      return;
+    }
+
+    mainContent.innerHTML = "";
+    loadingState.style.display = "block";
+
+    const { data: results } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .ilike("title", `%${q}%`)
+      .order("created_at", { ascending: false });
+
+    loadingState.style.display = "none";
+
+    if (!results || results.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No matches found.</div>`;
+      return;
+    }
+
+    results.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `<div class="name">${topic.title}</div>`;
+      mainContent.appendChild(card);
+    });
+  });
 
   /* TAB SWITCH */
   tabs.forEach(tab => {
