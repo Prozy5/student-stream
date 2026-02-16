@@ -2,130 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Topic • StudentStreamHQ</title>
+  <title>New Topic • StudentStream DevForum</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
     body{
-      margin:0;
       font-family:system-ui;
       background:radial-gradient(circle at top,#0d1b3a,#05070c);
       color:white;
       min-height:100vh;
+      padding:40px 20px;
     }
 
-    header{
-      padding:20px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.75);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-
-    .container{
-      max-width:900px;
-      margin:50px auto;
-      padding:20px;
-    }
-
-    .topicBox{
-      padding:22px;
-      border-radius:18px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
+    .wrap{
+      max-width:720px;
+      margin:auto;
     }
 
     h1{
-      margin:0;
-      font-size:26px;
+      font-size:36px;
+      font-weight:900;
+      margin-bottom:8px;
     }
 
-    .meta{
-      margin-top:8px;
+    p{
       opacity:.6;
-      font-size:13px;
+      margin-bottom:25px;
     }
 
-    .bodyText{
-      margin-top:18px;
-      line-height:1.5;
-      opacity:.9;
-    }
-
-    .replyBox{
-      margin-top:30px;
-      padding:18px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
-    }
-
-    textarea{
+    input, textarea, select{
       width:100%;
       padding:14px;
+      margin-top:12px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,.15);
-      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
       color:white;
-      min-height:90px;
+      font-size:14px;
       outline:none;
     }
 
+    textarea{
+      min-height:140px;
+      resize:none;
+    }
+
     button{
-      margin-top:12px;
-      padding:10px 16px;
-      border:none;
+      margin-top:18px;
+      padding:14px 18px;
       border-radius:14px;
-      font-weight:800;
+      border:none;
+      font-weight:900;
       cursor:pointer;
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
-      color:white;
+      background:linear-gradient(90deg,#4da3ff,#3cff7a);
+      color:black;
     }
 
-    .replyCard{
-      margin-top:15px;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.02);
+    .status{
+      margin-top:16px;
+      font-size:14px;
+      opacity:.75;
     }
 
-    .replyMeta{
-      font-size:12px;
-      opacity:.55;
-      margin-bottom:6px;
+    a{
+      color:#4da3ff;
+      text-decoration:none;
+      font-weight:700;
     }
   </style>
 </head>
 
 <body>
+<div class="wrap">
 
-<header>
-  <div style="font-weight:900;">StudentStreamHQ • DevForum</div>
-  <div onclick="history.back()" style="cursor:pointer;opacity:.7;">← Back</div>
-</header>
+  <h1>Create New Topic</h1>
+  <p>Posting requires Creator login.</p>
 
-<div class="container">
+  <select id="categorySelect"></select>
 
-  <div class="topicBox">
-    <h1 id="title">Loading...</h1>
-    <div class="meta" id="meta"></div>
-    <div class="bodyText" id="body"></div>
-  </div>
+  <input id="titleInput" placeholder="Topic title..." />
 
-  <div class="replyBox">
-    <h3>Replies</h3>
-    <div id="replyList">Loading...</div>
+  <textarea id="contentInput" placeholder="Write your post..."></textarea>
 
-    <hr style="margin:18px 0;opacity:.2;">
+  <button onclick="publishTopic()">Publish Topic</button>
 
-    <textarea id="replyText" placeholder="Write a reply..."></textarea>
-    <button onclick="postReply()">Reply</button>
+  <div class="status" id="statusText"></div>
 
-    <div id="status" style="margin-top:10px;opacity:.6;"></div>
-  </div>
+  <p style="margin-top:20px;">
+    <a href="index.html">← Back to DevForum</a>
+  </p>
 
 </div>
 
@@ -137,103 +104,76 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  const params = new URLSearchParams(window.location.search);
-  const topicId = params.get("id");
+  const categorySelect = document.getElementById("categorySelect");
+  const statusText = document.getElementById("statusText");
 
-  const titleEl = document.getElementById("title");
-  const metaEl = document.getElementById("meta");
-  const bodyEl = document.getElementById("body");
-  const replyList = document.getElementById("replyList");
-  const statusBox = document.getElementById("status");
-
-  // ✅ Load Topic
-  async function loadTopic() {
+  // Load Categories
+  async function loadCategories(){
     const { data, error } = await supabase
-      .from("forum_topics")
+      .from("forum_categories")
       .select("*")
-      .eq("id", topicId)
-      .single();
+      .order("id", { ascending: true });
 
-    if (!data || error) {
-      titleEl.textContent = "Topic not found.";
+    if(error){
+      statusText.textContent = "❌ Failed to load categories.";
       return;
     }
 
-    titleEl.textContent = data.title;
-    metaEl.textContent =
-      "Posted by " + (data.author || "Anonymous") +
-      " • " + new Date(data.created_at).toLocaleString();
-
-    bodyEl.textContent = data.body;
-  }
-
-  // ✅ Load Replies
-  async function loadReplies() {
-    const { data } = await supabase
-      .from("forum_replies")
-      .select("*")
-      .eq("topic_id", topicId)
-      .order("created_at", { ascending: true });
-
-    replyList.innerHTML = "";
-
-    if (!data || data.length === 0) {
-      replyList.innerHTML = "<p style='opacity:.6;'>No replies yet.</p>";
-      return;
-    }
-
-    data.forEach(r => {
-      const div = document.createElement("div");
-      div.className = "replyCard";
-      div.innerHTML = `
-        <div class="replyMeta">
-          ${r.author || "Anonymous"} • ${new Date(r.created_at).toLocaleString()}
-        </div>
-        <div>${r.body}</div>
-      `;
-      replyList.appendChild(div);
+    data.forEach(cat=>{
+      const option = document.createElement("option");
+      option.value = cat.id;
+      option.textContent = cat.name;
+      categorySelect.appendChild(option);
     });
   }
 
-  // ✅ Post Reply (Login Required)
-  window.postReply = async function () {
-    const { data: { user } } = await supabase.auth.getUser();
+  loadCategories();
 
-    if (!user) {
-      window.location.href = "login.html";
+  // Publish Topic
+  window.publishTopic = async function(){
+
+    const title = document.getElementById("titleInput").value.trim();
+    const content = document.getElementById("contentInput").value.trim();
+    const category_id = categorySelect.value;
+
+    if(!title || !content){
+      statusText.textContent = "⚠️ Please fill out all fields.";
       return;
     }
 
-    const text = document.getElementById("replyText").value.trim();
+    statusText.textContent = "Publishing...";
 
-    if (!text) return;
+    // Get logged in user
+    const { data: userData } = await supabase.auth.getUser();
 
-    statusBox.textContent = "Posting reply...";
+    if(!userData.user){
+      statusText.textContent = "❌ You must be logged in.";
+      return;
+    }
 
+    // Insert topic correctly using user_id
     const { error } = await supabase
-      .from("forum_replies")
+      .from("forum_topics")
       .insert([
         {
-          topic_id: topicId,
-          body: text,
-          author: user.email,
-          user_id: user.id
+          title,
+          content,
+          category_id,
+          user_id: userData.user.id
         }
       ]);
 
-    if (error) {
-      statusBox.textContent = "❌ " + error.message;
+    if(error){
+      statusText.textContent = "❌ Failed: " + error.message;
       return;
     }
 
-    document.getElementById("replyText").value = "";
-    statusBox.textContent = "✅ Reply posted.";
+    statusText.textContent = "✅ Topic posted! Redirecting...";
 
-    loadReplies();
+    setTimeout(()=>{
+      window.location.href = "index.html";
+    },1200);
   };
-
-  loadTopic();
-  loadReplies();
 </script>
 
 </body>
