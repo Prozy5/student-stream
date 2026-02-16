@@ -53,6 +53,7 @@
       background:rgba(255,255,255,.035);
       margin-bottom:28px;
       animation:fadeUp .35s ease;
+      position:relative;
     }
 
     .badge{
@@ -64,6 +65,30 @@
       background:rgba(77,163,255,.14);
       border:1px solid rgba(77,163,255,.25);
       margin-bottom:14px;
+    }
+
+    /* 🔒 Locked Banner */
+    .lockedBanner{
+      background:rgba(255,77,77,.15);
+      border:1px solid rgba(255,77,77,.35);
+      padding:10px 14px;
+      border-radius:14px;
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:14px;
+      color:#ff4d4d;
+    }
+
+    /* 📌 Pinned Banner */
+    .pinnedBanner{
+      background:rgba(255,215,0,.12);
+      border:1px solid rgba(255,215,0,.25);
+      padding:10px 14px;
+      border-radius:14px;
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:14px;
+      color:gold;
     }
 
     .topicHero h1{
@@ -102,12 +127,6 @@
       gap:6px;
     }
 
-    /* ✅ Verified Checkmark */
-    .verified{
-      font-size:13px;
-      color:#4da3ff;
-    }
-
     /* ✅ Staff Badge */
     .staffBadge{
       font-size:11px;
@@ -119,36 +138,13 @@
       text-transform:uppercase;
     }
 
-    .badge-owner{
-      color:gold;
-      border-color:gold;
-    }
+    .badge-owner{color:gold;border-color:gold;}
+    .badge-admin{color:#ff4d4d;border-color:#ff4d4d;}
+    .badge-moderator{color:#4da3ff;border-color:#4da3ff;}
 
-    .badge-admin{
-      color:#ff4d4d;
-      border-color:#ff4d4d;
-    }
-
-    .badge-moderator{
-      color:#4da3ff;
-      border-color:#4da3ff;
-    }
-
-    /* ✅ Staff Username Color */
     .staffName{
       color:#4da3ff;
       font-weight:950;
-    }
-
-    /* ✅ Staff Glow Animation */
-    .staffGlow{
-      box-shadow:0 0 18px rgba(77,163,255,.45);
-      animation:staffPulse 1.8s infinite alternate;
-    }
-
-    @keyframes staffPulse{
-      from{box-shadow:0 0 10px rgba(77,163,255,.25);}
-      to{box-shadow:0 0 22px rgba(77,163,255,.65);}
     }
 
     .topicBody{
@@ -158,16 +154,39 @@
       white-space:pre-wrap;
     }
 
+    /* Staff Tools */
+    .modTools{
+      margin-top:22px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .modBtn{
+      padding:10px 14px;
+      border-radius:14px;
+      font-size:12px;
+      font-weight:850;
+      border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.06);
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .modBtn:hover{
+      transform:scale(1.05);
+    }
+
+    .danger{
+      border-color:rgba(255,77,77,.35);
+      color:#ff4d4d;
+    }
+
     .replyHeader{
       margin-top:40px;
       display:flex;
       justify-content:space-between;
       margin-bottom:18px;
-    }
-
-    .replyHeader h2{
-      font-size:16px;
-      font-weight:850;
     }
 
     .replyCard{
@@ -177,19 +196,20 @@
       background:rgba(255,255,255,.02);
       margin-bottom:14px;
       animation:fadeUp .35s ease;
+      position:relative;
     }
 
-    /* ✅ Staff Reply Highlight Box */
-    .staffReply{
-      border:1px solid rgba(77,163,255,.4);
-      background:rgba(77,163,255,.06);
+    /* Accepted Answer */
+    .accepted{
+      border:1px solid rgba(0,255,150,.35);
+      background:rgba(0,255,150,.08);
     }
 
-    .staffLabel{
+    .acceptedLabel{
       font-size:11px;
       font-weight:900;
-      color:#4da3ff;
-      margin-top:4px;
+      color:#00ff99;
+      margin-bottom:8px;
       text-transform:uppercase;
     }
 
@@ -213,12 +233,23 @@
       opacity:.9;
     }
 
-    .empty{
-      text-align:center;
-      opacity:.55;
-      padding:30px;
-      border:1px dashed rgba(255,255,255,.15);
-      border-radius:18px;
+    .replyActions{
+      margin-top:10px;
+      padding-left:48px;
+      display:flex;
+      gap:10px;
+    }
+
+    .actionBtn{
+      font-size:12px;
+      font-weight:800;
+      opacity:.7;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .actionBtn:hover{
+      opacity:1;
     }
 
     .composerBar{
@@ -251,7 +282,6 @@
       font-size:14px;
       outline:none;
       resize:none;
-      overflow:hidden;
     }
 
     button{
@@ -263,11 +293,11 @@
       font-size:13px;
       color:white;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
-      transition:.2s;
     }
 
-    button:hover{
-      transform:scale(1.05);
+    button:disabled{
+      opacity:.4;
+      cursor:not-allowed;
     }
 
     footer{
@@ -295,7 +325,8 @@
 <div class="wrap">
 
   <div class="topicHero">
-    <div class="badge">Discussion</div>
+
+    <div id="topicFlags"></div>
 
     <h1 id="topicTitle">Loading…</h1>
 
@@ -306,6 +337,14 @@
     </div>
 
     <div class="topicBody" id="topicBody"></div>
+
+    <!-- Staff Moderation Buttons -->
+    <div class="modTools" id="modTools" style="display:none;">
+      <div class="modBtn" onclick="toggleLock()">🔒 Lock/Unlock</div>
+      <div class="modBtn" onclick="togglePin()">📌 Pin/Unpin</div>
+      <div class="modBtn danger" onclick="deleteTopic()">🗑 Delete Topic</div>
+    </div>
+
   </div>
 
   <div class="replyHeader">
@@ -346,23 +385,85 @@
 
   const replyList   = document.getElementById("replyList");
   const replyCount  = document.getElementById("replyCount");
+
   const replyInput  = document.getElementById("replyInput");
   const postBtn     = document.getElementById("postBtn");
 
-  function staffBadge(role){
-    if (!role || role === "member") return "";
+  const topicFlags  = document.getElementById("modTools");
+  const modTools    = document.getElementById("modTools");
+  const topicFlagBox= document.getElementById("topicFlags");
 
-    return `
-      <span class="verified">✔</span>
-      <span class="staffBadge badge-${role}">${role}</span>
-    `;
+  let topicData = null;
+  let currentRole = "member";
+
+  function staffBadge(role){
+    if (!["owner","admin","moderator"].includes(role)) return "";
+    return `<span class="staffBadge badge-${role}">${role}</span>`;
   }
 
   function isStaff(role){
-    return role && role !== "member";
+    return ["owner","admin","moderator"].includes(role);
   }
 
-  async function loadReplies() {
+  async function loadUserRole(){
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    currentRole = profile?.role || "member";
+
+    if (isStaff(currentRole)){
+      modTools.style.display="flex";
+    }
+  }
+
+  async function loadTopic(){
+    const { data } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .eq("id", topicId)
+      .single();
+
+    topicData = data;
+
+    topicTitle.textContent = data.title;
+    topicBody.textContent = data.content;
+    topicDate.textContent = new Date(data.created_at).toLocaleString();
+
+    if (data.locked){
+      topicFlagBox.innerHTML += `<div class="lockedBanner">🔒 This topic is locked.</div>`;
+      replyInput.disabled=true;
+      postBtn.disabled=true;
+    }
+
+    if (data.pinned){
+      topicFlagBox.innerHTML += `<div class="pinnedBanner">📌 Pinned Topic</div>`;
+    }
+
+    const { data: author } = await supabase
+      .from("profiles")
+      .select("username, role")
+      .eq("id", data.user_id)
+      .single();
+
+    const username = author?.username || "Member";
+    const role = author?.role || "member";
+
+    topicAvatar.textContent = username[0].toUpperCase();
+    topicAuthor.innerHTML = `
+      <span class="${isStaff(role) ? "staffName":""}">
+        ${username}
+      </span>
+      ${staffBadge(role)}
+    `;
+  }
+
+  async function loadReplies(){
     const { data: replies } = await supabase
       .from("forum_replies")
       .select("*")
@@ -370,69 +471,112 @@
       .order("created_at");
 
     replyCount.textContent = replies.length + " Replies";
-    replyList.innerHTML = "";
+    replyList.innerHTML="";
 
     for (const r of replies){
 
-      let username="Member";
-      let role="member";
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username, role")
+        .eq("id", r.user_id)
+        .single();
 
-      if (r.user_id){
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("username, role")
-          .eq("id", r.user_id)
-          .single();
-
-        username = profile?.username || "Member";
-        role = profile?.role || "member";
-      }
+      const username = profile?.username || "Member";
+      const role = profile?.role || "member";
 
       const div = document.createElement("div");
 
-      div.className = "replyCard";
-      if (isStaff(role)) div.classList.add("staffReply","staffGlow");
+      if (topicData.accepted_reply_id === r.id){
+        div.className="replyCard accepted";
+        div.innerHTML += `<div class="acceptedLabel">✅ Accepted Answer</div>`;
+      } else {
+        div.className="replyCard";
+      }
 
-      div.innerHTML = `
+      div.innerHTML += `
         <div class="replyTop">
           <div class="avatar">${username[0].toUpperCase()}</div>
-
           <div>
             <div class="authorName ${isStaff(role) ? "staffName":""}">
               ${username}
               ${staffBadge(role)}
             </div>
-
-            ${isStaff(role) ? `<div class="staffLabel">Staff Reply</div>` : ""}
-
-            <div class="replyMeta">
-              ${new Date(r.created_at).toLocaleString()}
-            </div>
+            <div class="replyMeta">${new Date(r.created_at).toLocaleString()}</div>
           </div>
         </div>
 
         <div class="replyText">${r.content}</div>
+
+        ${isStaff(currentRole) ? `
+          <div class="replyActions">
+            <div class="actionBtn" onclick="acceptReply(${r.id})">✅ Accept</div>
+            <div class="actionBtn danger" onclick="deleteReply(${r.id})">🗑 Delete</div>
+          </div>
+        ` : ""}
       `;
 
       replyList.appendChild(div);
     }
   }
 
-  window.submitReply = async function () {
+  window.submitReply = async function(){
     const text = replyInput.value.trim();
     if (!text) return;
 
-    postBtn.textContent="Posting...";
-
-    await supabase
-      .from("forum_replies")
+    await supabase.from("forum_replies")
       .insert([{ topic_id: topicId, content: text }]);
 
-    postBtn.textContent="Post";
     replyInput.value="";
     loadReplies();
   };
 
+  window.acceptReply = async function(replyId){
+    await supabase.from("forum_topics")
+      .update({ accepted_reply_id: replyId })
+      .eq("id", topicId);
+
+    loadTopic();
+    loadReplies();
+  };
+
+  window.deleteReply = async function(replyId){
+    if (!confirm("Delete this reply?")) return;
+
+    await supabase.from("forum_replies")
+      .delete()
+      .eq("id", replyId);
+
+    loadReplies();
+  };
+
+  window.toggleLock = async function(){
+    await supabase.from("forum_topics")
+      .update({ locked: !topicData.locked })
+      .eq("id", topicId);
+
+    location.reload();
+  };
+
+  window.togglePin = async function(){
+    await supabase.from("forum_topics")
+      .update({ pinned: !topicData.pinned })
+      .eq("id", topicId);
+
+    location.reload();
+  };
+
+  window.deleteTopic = async function(){
+    if (!confirm("Delete this topic permanently?")) return;
+
+    await supabase.from("forum_topics")
+      .delete()
+      .eq("id", topicId);
+
+    window.location.href="category.html";
+  };
+
+  loadUserRole();
+  loadTopic();
   loadReplies();
 </script>
 
