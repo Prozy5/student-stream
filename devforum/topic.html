@@ -52,6 +52,7 @@
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.035);
       margin-bottom:28px;
+      animation:fadeUp .35s ease;
     }
 
     .badge{
@@ -94,8 +95,60 @@
     }
 
     .authorName{
-      font-weight:800;
+      font-weight:850;
       opacity:.95;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    /* ✅ Verified Checkmark */
+    .verified{
+      font-size:13px;
+      color:#4da3ff;
+    }
+
+    /* ✅ Staff Badge */
+    .staffBadge{
+      font-size:11px;
+      font-weight:900;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.05);
+      text-transform:uppercase;
+    }
+
+    .badge-owner{
+      color:gold;
+      border-color:gold;
+    }
+
+    .badge-admin{
+      color:#ff4d4d;
+      border-color:#ff4d4d;
+    }
+
+    .badge-moderator{
+      color:#4da3ff;
+      border-color:#4da3ff;
+    }
+
+    /* ✅ Staff Username Color */
+    .staffName{
+      color:#4da3ff;
+      font-weight:950;
+    }
+
+    /* ✅ Staff Glow Animation */
+    .staffGlow{
+      box-shadow:0 0 18px rgba(77,163,255,.45);
+      animation:staffPulse 1.8s infinite alternate;
+    }
+
+    @keyframes staffPulse{
+      from{box-shadow:0 0 10px rgba(77,163,255,.25);}
+      to{box-shadow:0 0 22px rgba(77,163,255,.65);}
     }
 
     .topicBody{
@@ -123,6 +176,21 @@
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.02);
       margin-bottom:14px;
+      animation:fadeUp .35s ease;
+    }
+
+    /* ✅ Staff Reply Highlight Box */
+    .staffReply{
+      border:1px solid rgba(77,163,255,.4);
+      background:rgba(77,163,255,.06);
+    }
+
+    .staffLabel{
+      font-size:11px;
+      font-weight:900;
+      color:#4da3ff;
+      margin-top:4px;
+      text-transform:uppercase;
     }
 
     .replyTop{
@@ -210,20 +278,9 @@
       font-size:13px;
     }
 
-    /* ✅ Smooth fade animation */
-    .replyCard, .topicHero{
-      animation:fadeUp .35s ease;
-    }
-
     @keyframes fadeUp{
-      from{
-        opacity:0;
-        transform:translateY(12px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
+      from{opacity:0;transform:translateY(12px);}
+      to{opacity:1;transform:translateY(0);}
     }
   </style>
 </head>
@@ -292,81 +349,62 @@
   const replyInput  = document.getElementById("replyInput");
   const postBtn     = document.getElementById("postBtn");
 
-  async function loadTopic() {
-    const { data: topic, error } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .eq("id", topicId)
-      .single();
+  function staffBadge(role){
+    if (!role || role === "member") return "";
 
-    if (error || !topic) {
-      topicTitle.textContent = "Error loading topic.";
-      topicBody.textContent = error?.message || "Topic not found.";
-      return;
-    }
+    return `
+      <span class="verified">✔</span>
+      <span class="staffBadge badge-${role}">${role}</span>
+    `;
+  }
 
-    topicTitle.textContent = topic.title;
-    topicBody.textContent = topic.content;
-    topicDate.textContent = "• " + new Date(topic.created_at).toLocaleString();
-    topicAvatar.textContent = topic.title[0].toUpperCase();
-
-    if (topic.user_id) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", topic.user_id)
-        .single();
-
-      topicAuthor.textContent = profile?.username || "StudentStream Member";
-    } else {
-      topicAuthor.textContent = "Unknown User";
-    }
+  function isStaff(role){
+    return role && role !== "member";
   }
 
   async function loadReplies() {
-    const { data: replies, error } = await supabase
+    const { data: replies } = await supabase
       .from("forum_replies")
       .select("*")
       .eq("topic_id", topicId)
       .order("created_at");
 
-    if (error) {
-      replyList.innerHTML = `<div class="empty">Error loading replies.</div>`;
-      return;
-    }
-
     replyCount.textContent = replies.length + " Replies";
-
-    if (replies.length === 0) {
-      replyList.innerHTML = `<div class="empty">No replies yet. Be the first!</div>`;
-      return;
-    }
-
     replyList.innerHTML = "";
 
-    replies.forEach(async r => {
+    for (const r of replies){
 
-      let username = "StudentStream Member";
+      let username="Member";
+      let role="member";
 
-      if (r.user_id) {
+      if (r.user_id){
         const { data: profile } = await supabase
           .from("profiles")
-          .select("username")
+          .select("username, role")
           .eq("id", r.user_id)
           .single();
 
-        if (profile?.username) username = profile.username;
+        username = profile?.username || "Member";
+        role = profile?.role || "member";
       }
 
       const div = document.createElement("div");
+
       div.className = "replyCard";
+      if (isStaff(role)) div.classList.add("staffReply","staffGlow");
 
       div.innerHTML = `
         <div class="replyTop">
           <div class="avatar">${username[0].toUpperCase()}</div>
 
           <div>
-            <div class="authorName">${username}</div>
+            <div class="authorName ${isStaff(role) ? "staffName":""}">
+              ${username}
+              ${staffBadge(role)}
+            </div>
+
+            ${isStaff(role) ? `<div class="staffLabel">Staff Reply</div>` : ""}
+
             <div class="replyMeta">
               ${new Date(r.created_at).toLocaleString()}
             </div>
@@ -377,49 +415,24 @@
       `;
 
       replyList.appendChild(div);
-    });
+    }
   }
 
   window.submitReply = async function () {
     const text = replyInput.value.trim();
+    if (!text) return;
 
-    if (!text) {
-      alert("Type something first 😭");
-      return;
-    }
+    postBtn.textContent="Posting...";
 
-    postBtn.textContent = "Posting...";
-
-    const { error } = await supabase
+    await supabase
       .from("forum_replies")
       .insert([{ topic_id: topicId, content: text }]);
 
-    postBtn.textContent = "Post";
-
-    if (error) {
-      alert("❌ " + error.message);
-      return;
-    }
-
-    replyInput.value = "";
+    postBtn.textContent="Post";
+    replyInput.value="";
     loadReplies();
   };
 
-  /* ✅ Enter = Post */
-  replyInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      submitReply();
-    }
-  });
-
-  /* ✅ Auto-grow textarea */
-  replyInput.addEventListener("input", () => {
-    replyInput.style.height = "auto";
-    replyInput.style.height = replyInput.scrollHeight + "px";
-  });
-
-  loadTopic();
   loadReplies();
 </script>
 
