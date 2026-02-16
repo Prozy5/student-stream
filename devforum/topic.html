@@ -41,7 +41,7 @@
     }
 
     .wrap{
-      max-width:900px;
+      max-width:950px;
       margin:55px auto;
       padding:0 20px;
     }
@@ -56,18 +56,6 @@
       position:relative;
     }
 
-    .badge{
-      display:inline-block;
-      font-size:12px;
-      font-weight:750;
-      padding:6px 14px;
-      border-radius:999px;
-      background:rgba(77,163,255,.14);
-      border:1px solid rgba(77,163,255,.25);
-      margin-bottom:14px;
-    }
-
-    /* 🔒 Locked Banner */
     .lockedBanner{
       background:rgba(255,77,77,.15);
       border:1px solid rgba(255,77,77,.35);
@@ -79,7 +67,6 @@
       color:#ff4d4d;
     }
 
-    /* 📌 Pinned Banner */
     .pinnedBanner{
       background:rgba(255,215,0,.12);
       border:1px solid rgba(255,215,0,.25);
@@ -121,13 +108,12 @@
 
     .authorName{
       font-weight:850;
-      opacity:.95;
       display:flex;
       align-items:center;
       gap:6px;
     }
 
-    /* ✅ Staff Badge */
+    /* Staff Badge */
     .staffBadge{
       font-size:11px;
       font-weight:900;
@@ -154,7 +140,7 @@
       white-space:pre-wrap;
     }
 
-    /* Staff Tools */
+    /* Moderation Tools */
     .modTools{
       margin-top:22px;
       display:flex;
@@ -182,6 +168,7 @@
       color:#ff4d4d;
     }
 
+    /* Replies */
     .replyHeader{
       margin-top:40px;
       display:flex;
@@ -199,7 +186,6 @@
       position:relative;
     }
 
-    /* Accepted Answer */
     .accepted{
       border:1px solid rgba(0,255,150,.35);
       background:rgba(0,255,150,.08);
@@ -215,7 +201,6 @@
 
     .replyTop{
       display:flex;
-      align-items:flex-start;
       gap:10px;
       margin-bottom:8px;
     }
@@ -233,25 +218,36 @@
       opacity:.9;
     }
 
+    /* Reaction Bar */
+    .reactionBar{
+      margin-top:10px;
+      padding-left:48px;
+      display:flex;
+      gap:12px;
+      font-size:13px;
+      opacity:.8;
+    }
+
+    .reactBtn{
+      cursor:pointer;
+      transition:.2s;
+      font-weight:800;
+    }
+
+    .reactBtn:hover{
+      opacity:1;
+      transform:scale(1.1);
+    }
+
+    /* Staff Reply Actions */
     .replyActions{
       margin-top:10px;
       padding-left:48px;
       display:flex;
-      gap:10px;
+      gap:12px;
     }
 
-    .actionBtn{
-      font-size:12px;
-      font-weight:800;
-      opacity:.7;
-      cursor:pointer;
-      transition:.2s;
-    }
-
-    .actionBtn:hover{
-      opacity:1;
-    }
-
+    /* Composer */
     .composerBar{
       position:fixed;
       bottom:0;
@@ -338,11 +334,11 @@
 
     <div class="topicBody" id="topicBody"></div>
 
-    <!-- Staff Moderation Buttons -->
+    <!-- Staff Tools -->
     <div class="modTools" id="modTools" style="display:none;">
-      <div class="modBtn" onclick="toggleLock()">🔒 Lock/Unlock</div>
-      <div class="modBtn" onclick="togglePin()">📌 Pin/Unpin</div>
-      <div class="modBtn danger" onclick="deleteTopic()">🗑 Delete Topic</div>
+      <div class="modBtn" onclick="toggleLock()">🔒 Lock</div>
+      <div class="modBtn" onclick="togglePin()">📌 Pin</div>
+      <div class="modBtn danger" onclick="deleteTopic()">🗑 Delete</div>
     </div>
 
   </div>
@@ -356,6 +352,7 @@
 
 </div>
 
+<!-- Composer -->
 <div class="composerBar">
   <div class="composerInner">
     <textarea id="replyInput" placeholder="Write a reply…"></textarea>
@@ -389,20 +386,19 @@
   const replyInput  = document.getElementById("replyInput");
   const postBtn     = document.getElementById("postBtn");
 
-  const topicFlags  = document.getElementById("modTools");
   const modTools    = document.getElementById("modTools");
   const topicFlagBox= document.getElementById("topicFlags");
 
   let topicData = null;
   let currentRole = "member";
 
-  function staffBadge(role){
-    if (!["owner","admin","moderator"].includes(role)) return "";
-    return `<span class="staffBadge badge-${role}">${role}</span>`;
-  }
-
   function isStaff(role){
     return ["owner","admin","moderator"].includes(role);
+  }
+
+  function staffBadge(role){
+    if (!isStaff(role)) return "";
+    return `<span class="staffBadge badge-${role}">${role}</span>`;
   }
 
   async function loadUserRole(){
@@ -432,11 +428,11 @@
     topicData = data;
 
     topicTitle.textContent = data.title;
-    topicBody.textContent = data.content;
-    topicDate.textContent = new Date(data.created_at).toLocaleString();
+    topicBody.textContent  = data.content;
+    topicDate.textContent  = new Date(data.created_at).toLocaleString();
 
     if (data.locked){
-      topicFlagBox.innerHTML += `<div class="lockedBanner">🔒 This topic is locked.</div>`;
+      topicFlagBox.innerHTML += `<div class="lockedBanner">🔒 Topic Locked</div>`;
       replyInput.disabled=true;
       postBtn.disabled=true;
     }
@@ -451,10 +447,11 @@
       .eq("id", data.user_id)
       .single();
 
-    const username = author?.username || "Member";
-    const role = author?.role || "member";
+    const username = author?.username || "Student";
+    const role     = author?.role || "member";
 
     topicAvatar.textContent = username[0].toUpperCase();
+
     topicAuthor.innerHTML = `
       <span class="${isStaff(role) ? "staffName":""}">
         ${username}
@@ -481,16 +478,16 @@
         .eq("id", r.user_id)
         .single();
 
-      const username = profile?.username || "Member";
-      const role = profile?.role || "member";
+      const username = profile?.username || "Student";
+      const role     = profile?.role || "member";
 
       const div = document.createElement("div");
 
+      div.className = "replyCard";
+
       if (topicData.accepted_reply_id === r.id){
-        div.className="replyCard accepted";
+        div.classList.add("accepted");
         div.innerHTML += `<div class="acceptedLabel">✅ Accepted Answer</div>`;
-      } else {
-        div.className="replyCard";
       }
 
       div.innerHTML += `
@@ -507,10 +504,17 @@
 
         <div class="replyText">${r.content}</div>
 
+        <!-- Reaction Buttons -->
+        <div class="reactionBar">
+          <div class="reactBtn" onclick="react(${r.id},'like')">👍</div>
+          <div class="reactBtn" onclick="react(${r.id},'heart')">❤️</div>
+          <div class="reactBtn" onclick="react(${r.id},'eyes')">👀</div>
+        </div>
+
         ${isStaff(currentRole) ? `
           <div class="replyActions">
-            <div class="actionBtn" onclick="acceptReply(${r.id})">✅ Accept</div>
-            <div class="actionBtn danger" onclick="deleteReply(${r.id})">🗑 Delete</div>
+            <div class="reactBtn" onclick="acceptReply(${r.id})">✅ Accept</div>
+            <div class="reactBtn danger" onclick="deleteReply(${r.id})">🗑 Delete</div>
           </div>
         ` : ""}
       `;
@@ -519,6 +523,7 @@
     }
   }
 
+  /* Reply Submit */
   window.submitReply = async function(){
     const text = replyInput.value.trim();
     if (!text) return;
@@ -530,6 +535,15 @@
     loadReplies();
   };
 
+  /* Reaction Insert */
+  window.react = async function(replyId, reaction){
+    await supabase.from("forum_reply_reactions")
+      .insert([{ reply_id: replyId, reaction }]);
+
+    alert("Reaction added!");
+  };
+
+  /* Accept Answer */
   window.acceptReply = async function(replyId){
     await supabase.from("forum_topics")
       .update({ accepted_reply_id: replyId })
@@ -539,6 +553,7 @@
     loadReplies();
   };
 
+  /* Delete Reply */
   window.deleteReply = async function(replyId){
     if (!confirm("Delete this reply?")) return;
 
@@ -549,6 +564,7 @@
     loadReplies();
   };
 
+  /* Topic Moderation */
   window.toggleLock = async function(){
     await supabase.from("forum_topics")
       .update({ locked: !topicData.locked })
@@ -572,7 +588,7 @@
       .delete()
       .eq("id", topicId);
 
-    window.location.href="category.html";
+    window.location.href="index.html";
   };
 
   loadUserRole();
