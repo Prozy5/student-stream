@@ -127,7 +127,7 @@
 
     .replyTop{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       gap:10px;
       margin-bottom:8px;
     }
@@ -183,6 +183,7 @@
       font-size:14px;
       outline:none;
       resize:none;
+      overflow:hidden;
     }
 
     button{
@@ -194,6 +195,11 @@
       font-size:13px;
       color:white;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
+      transition:.2s;
+    }
+
+    button:hover{
+      transform:scale(1.05);
     }
 
     footer{
@@ -202,6 +208,22 @@
       opacity:.35;
       margin-top:90px;
       font-size:13px;
+    }
+
+    /* ✅ Smooth fade animation */
+    .replyCard, .topicHero{
+      animation:fadeUp .35s ease;
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(12px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
     }
   </style>
 </head>
@@ -241,7 +263,7 @@
 <div class="composerBar">
   <div class="composerInner">
     <textarea id="replyInput" placeholder="Write a reply…"></textarea>
-    <button onclick="submitReply()">Post</button>
+    <button id="postBtn" onclick="submitReply()">Post</button>
   </div>
 </div>
 
@@ -268,6 +290,7 @@
   const replyList   = document.getElementById("replyList");
   const replyCount  = document.getElementById("replyCount");
   const replyInput  = document.getElementById("replyInput");
+  const postBtn     = document.getElementById("postBtn");
 
   async function loadTopic() {
     const { data: topic, error } = await supabase
@@ -285,10 +308,8 @@
     topicTitle.textContent = topic.title;
     topicBody.textContent = topic.content;
     topicDate.textContent = "• " + new Date(topic.created_at).toLocaleString();
-
     topicAvatar.textContent = topic.title[0].toUpperCase();
 
-    // ✅ Load author separately (NO relationship needed)
     if (topic.user_id) {
       const { data: profile } = await supabase
         .from("profiles")
@@ -296,8 +317,7 @@
         .eq("id", topic.user_id)
         .single();
 
-      topicAuthor.textContent =
-        profile?.username || "StudentStream Member";
+      topicAuthor.textContent = profile?.username || "StudentStream Member";
     } else {
       topicAuthor.textContent = "Unknown User";
     }
@@ -324,17 +344,35 @@
 
     replyList.innerHTML = "";
 
-    replies.forEach(r => {
+    replies.forEach(async r => {
+
+      let username = "StudentStream Member";
+
+      if (r.user_id) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", r.user_id)
+          .single();
+
+        if (profile?.username) username = profile.username;
+      }
+
       const div = document.createElement("div");
       div.className = "replyCard";
 
       div.innerHTML = `
         <div class="replyTop">
-          <div class="avatar">U</div>
-          <div class="replyMeta">
-            Reply • ${new Date(r.created_at).toLocaleString()}
+          <div class="avatar">${username[0].toUpperCase()}</div>
+
+          <div>
+            <div class="authorName">${username}</div>
+            <div class="replyMeta">
+              ${new Date(r.created_at).toLocaleString()}
+            </div>
           </div>
         </div>
+
         <div class="replyText">${r.content}</div>
       `;
 
@@ -344,11 +382,19 @@
 
   window.submitReply = async function () {
     const text = replyInput.value.trim();
-    if (!text) return;
+
+    if (!text) {
+      alert("Type something first 😭");
+      return;
+    }
+
+    postBtn.textContent = "Posting...";
 
     const { error } = await supabase
       .from("forum_replies")
       .insert([{ topic_id: topicId, content: text }]);
+
+    postBtn.textContent = "Post";
 
     if (error) {
       alert("❌ " + error.message);
@@ -358,6 +404,20 @@
     replyInput.value = "";
     loadReplies();
   };
+
+  /* ✅ Enter = Post */
+  replyInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submitReply();
+    }
+  });
+
+  /* ✅ Auto-grow textarea */
+  replyInput.addEventListener("input", () => {
+    replyInput.style.height = "auto";
+    replyInput.style.height = replyInput.scrollHeight + "px";
+  });
 
   loadTopic();
   loadReplies();
