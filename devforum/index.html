@@ -248,46 +248,50 @@
   /* SUPABASE CONNECT */
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+    "YOUR_ANON_KEY"
   );
 
   const mainContent = document.getElementById("mainContent");
   const loadingState = document.getElementById("loadingState");
   const tabs = document.querySelectorAll(".tab");
 
-  /* LOGIN BUTTON */
   const accountBtn = document.getElementById("accountBtn");
 
+  let latestPage = 0;
+  let loadingMore = false;
+
+  /* ✅ LOGIN BUTTON FIX */
   async function updateLoginButton() {
     const { data } = await supabase.auth.getUser();
     const user = data.user;
 
     if (user) {
-      accountBtn.textContent = "Account";
+      accountBtn.textContent = "Logout";
 
       accountBtn.onclick = async () => {
-        if (confirm("Logout of StudentStream?")) {
-          await supabase.auth.signOut();
-          location.reload();
-        }
+        await supabase.auth.signOut();
+        location.reload();
       };
     } else {
       accountBtn.textContent = "Login";
+
       accountBtn.onclick = () => {
-        window.location.href = "/login.html";
+        window.location.href =
+          "/login.html?next=/devforum/index.html";
       };
     }
   }
 
   updateLoginButton();
 
-  /* NEW TOPIC BUTTON */
+  /* ✅ NEW TOPIC FIX */
   document.getElementById("newTopicBtn").onclick = async () => {
     const { data } = await supabase.auth.getUser();
 
     if (!data.user) {
       alert("Creator login required to post.");
-      window.location.href = "/login.html";
+      window.location.href =
+        "/login.html?next=/devforum/new-topic.html";
       return;
     }
 
@@ -301,12 +305,12 @@
       tab.classList.add("active");
 
       if (tab.dataset.tab === "categories") loadCategories();
-      if (tab.dataset.tab === "latest") loadLatestTopics();
+      if (tab.dataset.tab === "latest") loadLatestTopics(true);
       if (tab.dataset.tab === "support") loadSupportTopics();
     };
   });
 
-  /* LOAD CATEGORIES */
+  /* ✅ CATEGORY ORDER FIX */
   async function loadCategories() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -314,21 +318,17 @@
     const { data: categories, error } = await supabase
       .from("forum_categories")
       .select("*")
-      .order("created_at");
+      .order("sort_order", { ascending: true });
 
     loadingState.style.display = "none";
 
     if (error) {
-      mainContent.innerHTML = `<div class="empty">⚠️ Categories failed to load.</div>`;
+      mainContent.innerHTML =
+        `<div class="empty">⚠️ Categories failed to load.</div>`;
       return;
     }
 
-    if (!categories || categories.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No categories yet.</div>`;
-      return;
-    }
-
-    for (let cat of categories) {
+    categories.forEach(async cat => {
       const { count } = await supabase
         .from("forum_topics")
         .select("*", { count: "exact", head: true })
@@ -340,7 +340,7 @@
       card.innerHTML = `
         <div class="row">
           <div class="left">
-            <div class="icon">${cat.icon || "💬"}</div>
+            <div class="icon">💬</div>
             <div>
               <div class="name">${cat.name}</div>
               <div class="desc">${cat.description}</div>
@@ -351,28 +351,40 @@
       `;
 
       card.onclick = () => {
-        window.location.href = "/devforum/category.html?id=" + cat.id;
+        window.location.href =
+          "/devforum/category.html?id=" + cat.id;
       };
 
       mainContent.appendChild(card);
-    }
+    });
   }
 
-  /* LOAD LATEST */
-  async function loadLatestTopics() {
+  /* ✅ LATEST POSTS + AUTO SCROLL LOAD */
+  async function loadLatestTopics(reset = false) {
+    if (loadingMore) return;
+    loadingMore = true;
+
+    if (reset) {
+      latestPage = 0;
+      mainContent.innerHTML = "";
+    }
+
     loadingState.style.display = "block";
-    mainContent.innerHTML = "";
 
     const { data: topics } = await supabase
       .from("forum_topics")
-      .select("id,title,created_at")
+      .select("id,title,created_at,author")
       .order("created_at", { ascending: false })
-      .limit(8);
+      .range(latestPage * 8, latestPage * 8 + 7);
 
     loadingState.style.display = "none";
+    loadingMore = false;
 
     if (!topics || topics.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No discussions yet.</div>`;
+      if (latestPage === 0) {
+        mainContent.innerHTML =
+          `<div class="empty">No posts yet.</div>`;
+      }
       return;
     }
 
@@ -383,19 +395,23 @@
       card.innerHTML = `
         <div class="name">${topic.title}</div>
         <div class="desc">
-          Posted ${new Date(topic.created_at).toLocaleString()}
+          Posted by <b>${topic.author || "Unknown"}</b>
+          • ${new Date(topic.created_at).toLocaleString()}
         </div>
       `;
 
       card.onclick = () => {
-        window.location.href = "/devforum/topic.html?id=" + topic.id;
+        window.location.href =
+          "/devforum/topic.html?id=" + topic.id;
       };
 
       mainContent.appendChild(card);
     });
+
+    latestPage++;
   }
 
-  /* SUPPORT ONLY */
+  /* ✅ SUPPORT TAB */
   async function loadSupportTopics() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -405,9 +421,11 @@
       .select("*")
       .ilike("name", "%Support%");
 
+    loadingState.style.display = "none";
+
     if (!supportCats || supportCats.length === 0) {
-      loadingState.style.display = "none";
-      mainContent.innerHTML = `<div class="empty">No Support category found.</div>`;
+      mainContent.innerHTML =
+        `<div class="empty">No Support category found.</div>`;
       return;
     }
 
@@ -419,10 +437,9 @@
       .eq("category_id", supportID)
       .order("created_at", { ascending: false });
 
-    loadingState.style.display = "none";
-
     if (!topics || topics.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No support topics yet.</div>`;
+      mainContent.innerHTML =
+        `<div class="empty">No support topics yet.</div>`;
       return;
     }
 
@@ -438,16 +455,28 @@
       `;
 
       card.onclick = () => {
-        window.location.href = "/devforum/topic.html?id=" + topic.id;
+        window.location.href =
+          "/devforum/topic.html?id=" + topic.id;
       };
 
       mainContent.appendChild(card);
     });
   }
 
+  /* ✅ INFINITE SCROLL AUTO LOAD */
+  window.addEventListener("scroll", () => {
+    const activeTab = document.querySelector(".tab.active");
+
+    if (activeTab.dataset.tab !== "latest") return;
+
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - 300
+    ) {
+      loadLatestTopics();
+    }
+  });
+
   /* DEFAULT LOAD */
   loadCategories();
 </script>
-
-</body>
-</html>
