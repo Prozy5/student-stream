@@ -22,155 +22,192 @@
       padding:18px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.75);
+      background:rgba(5,7,12,.82);
       display:flex;
       justify-content:space-between;
       align-items:center;
     }
 
     .logo{
-      font-size:20px;
-      font-weight:900;
+      font-size:18px;
+      font-weight:950;
     }
     .logo span{color:#4da3ff}
 
     .back{
-      opacity:.7;
+      opacity:.65;
       cursor:pointer;
       font-weight:600;
     }
 
-    .container{
+    .wrap{
       max-width:900px;
-      margin:45px auto;
+      margin:55px auto;
       padding:0 20px;
+      padding-bottom:160px;
     }
 
-    /* TOPIC CARD */
     .topicHero{
-      padding:30px;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
-      margin-bottom:30px;
+      padding:38px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.035);
+      margin-bottom:28px;
     }
 
     .badge{
       display:inline-block;
+      font-size:12px;
+      font-weight:750;
       padding:6px 14px;
       border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-      background:rgba(77,163,255,.15);
+      background:rgba(77,163,255,.14);
       border:1px solid rgba(77,163,255,.25);
       margin-bottom:14px;
     }
 
-    h1{
-      font-size:38px;
+    .topicHero h1{
+      font-size:42px;
       font-weight:950;
-      margin-bottom:10px;
+      margin-bottom:14px;
     }
 
-    .metaRow{
+    .topicMeta{
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:12px;
+      flex-wrap:wrap;
       font-size:13px;
       opacity:.65;
-      margin-bottom:18px;
+      margin-bottom:20px;
     }
 
     .avatar{
-      width:34px;
-      height:34px;
+      width:38px;
+      height:38px;
       border-radius:50%;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
       display:flex;
       align-items:center;
       justify-content:center;
       font-weight:900;
-      font-size:14px;
+      font-size:15px;
+      flex-shrink:0;
+    }
+
+    .authorName{
+      font-weight:750;
+      opacity:.9;
     }
 
     .topicBody{
       font-size:15px;
-      opacity:.85;
-      line-height:1.5;
+      line-height:1.9;
+      opacity:.92;
+      white-space:pre-wrap;
+      margin-top:10px;
     }
 
-    /* REPLIES */
     .replyHeader{
+      margin-top:40px;
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-top:35px;
-      margin-bottom:14px;
+      margin-bottom:18px;
     }
 
     .replyHeader h2{
-      font-size:18px;
-      font-weight:900;
+      font-size:16px;
+      font-weight:850;
+      opacity:.9;
     }
 
     .replyCount{
-      opacity:.55;
       font-size:13px;
+      opacity:.55;
     }
 
     .replyCard{
       padding:18px 20px;
       border-radius:18px;
-      margin-bottom:14px;
       border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
+      background:rgba(255,255,255,.02);
+      margin-bottom:14px;
+      animation:fadeIn .25s ease;
     }
 
-    .replyMeta{
+    @keyframes fadeIn{
+      from{opacity:0;transform:translateY(10px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .replyTop{
       display:flex;
       align-items:center;
       gap:10px;
-      font-size:13px;
-      opacity:.65;
       margin-bottom:8px;
+    }
+
+    .replyMeta{
+      font-size:12px;
+      opacity:.55;
     }
 
     .replyText{
       font-size:14px;
-      opacity:.85;
-      line-height:1.4;
+      line-height:1.6;
+      white-space:pre-wrap;
+      padding-left:48px;
+      opacity:.9;
     }
 
-    /* STICKY REPLY BAR */
-    .replyBox{
+    .empty{
+      text-align:center;
+      opacity:.55;
+      padding:30px;
+      border:1px dashed rgba(255,255,255,.15);
+      border-radius:18px;
+    }
+
+    .composerBar{
       position:fixed;
       bottom:0;
       left:0;
       width:100%;
-      padding:14px;
+      padding:16px;
+      backdrop-filter:blur(18px);
       background:rgba(5,7,12,.92);
       border-top:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(15px);
-      display:flex;
-      gap:10px;
     }
 
-    .replyBox input{
+    .composerInner{
+      max-width:900px;
+      margin:auto;
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    textarea{
       flex:1;
-      padding:12px 14px;
-      border-radius:14px;
+      min-height:52px;
+      padding:14px 16px;
+      border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
       color:white;
+      font-size:14px;
+      resize:none;
       outline:none;
     }
 
-    .replyBox button{
+    button{
       border:none;
       cursor:pointer;
-      padding:12px 18px;
-      border-radius:14px;
-      font-weight:800;
+      padding:13px 20px;
+      border-radius:16px;
+      font-weight:850;
+      font-size:13px;
       color:white;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
     }
@@ -180,7 +217,6 @@
       padding:80px 20px;
       opacity:.35;
       font-size:13px;
-      margin-top:70px;
     }
   </style>
 </head>
@@ -192,39 +228,41 @@
   <div class="back" onclick="history.back()">← Back</div>
 </header>
 
-<div class="container">
+<div class="wrap">
 
   <div class="topicHero">
     <div class="badge">Discussion</div>
 
-    <h1 id="topicTitle">Loading...</h1>
+    <h1 id="topicTitle">Loading…</h1>
 
-    <div class="metaRow">
+    <div class="topicMeta">
       <div class="avatar" id="topicAvatar">S</div>
-      <div id="topicMeta">Loading…</div>
+      <span class="authorName" id="topicAuthor">Loading…</span>
+      <span id="topicDate"></span>
     </div>
 
-    <div class="topicBody" id="topicContent"></div>
+    <div class="topicBody" id="topicBody"></div>
   </div>
 
   <div class="replyHeader">
     <h2>Replies</h2>
-    <div class="replyCount" id="replyCount">0 replies</div>
+    <div class="replyCount" id="replyCount">0 Replies</div>
   </div>
 
   <div id="replyList"></div>
 
 </div>
 
+<div class="composerBar">
+  <div class="composerInner">
+    <textarea id="replyInput" placeholder="Write a reply…"></textarea>
+    <button onclick="submitReply()">Post</button>
+  </div>
+</div>
+
 <footer>
   © 2026 StudentStreamHQ • Topic View
 </footer>
-
-<!-- Sticky Reply Input -->
-<div class="replyBox">
-  <input id="replyInput" placeholder="Write a reply..." />
-  <button onclick="postReply()">Post</button>
-</div>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -237,81 +275,122 @@
   const params = new URLSearchParams(window.location.search);
   const topicId = params.get("id");
 
-  const titleEl = document.getElementById("topicTitle");
-  const metaEl = document.getElementById("topicMeta");
-  const contentEl = document.getElementById("topicContent");
-  const replyList = document.getElementById("replyList");
-  const replyCount = document.getElementById("replyCount");
-  const replyInput = document.getElementById("replyInput");
+  const titleEl   = document.getElementById("topicTitle");
+  const bodyEl    = document.getElementById("topicBody");
+  const dateEl    = document.getElementById("topicDate");
+  const authorEl  = document.getElementById("topicAuthor");
+  const avatarEl  = document.getElementById("topicAvatar");
 
-  async function loadTopic(){
-    const { data: topic } = await supabase
+  const replyList = document.getElementById("replyList");
+  const replyCount= document.getElementById("replyCount");
+  const replyInput= document.getElementById("replyInput");
+
+  /* ✅ LOAD TOPIC */
+  async function loadTopic() {
+
+    if (!topicId) {
+      titleEl.textContent = "Topic not found.";
+      authorEl.textContent = "Missing topic ID.";
+      return;
+    }
+
+    const { data: topic, error } = await supabase
       .from("forum_topics")
-      .select("*, profiles(username)")
+      .select("id,title,content,created_at,user_id,profiles(username)")
       .eq("id", topicId)
       .single();
 
+    if (error || !topic) {
+      titleEl.textContent = "Error loading topic.";
+      authorEl.textContent = error?.message || "Not found.";
+      return;
+    }
+
     titleEl.textContent = topic.title;
-    contentEl.textContent = topic.content;
+    bodyEl.textContent  = topic.content;
 
-    const name = topic.profiles?.username || "StudentStream User";
+    const username = topic.profiles?.username || "StudentStream User";
 
-    metaEl.textContent =
-      `${name} • ${new Date(topic.created_at).toLocaleString()}`;
+    authorEl.textContent = username;
+    avatarEl.textContent = username[0].toUpperCase();
+
+    dateEl.textContent =
+      "• " + new Date(topic.created_at).toLocaleString();
   }
 
-  async function loadReplies(){
-    const { data: replies } = await supabase
+  /* ✅ LOAD REPLIES */
+  async function loadReplies() {
+
+    const { data: replies, error } = await supabase
       .from("forum_replies")
-      .select("*, profiles(username)")
+      .select("id,content,created_at,user_id,profiles(username)")
       .eq("topic_id", topicId)
-      .order("created_at", { ascending:true });
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      replyList.innerHTML =
+        `<div class="empty">❌ Error loading replies</div>`;
+      return;
+    }
+
+    replyCount.textContent = `${replies.length} Replies`;
+
+    if (replies.length === 0) {
+      replyList.innerHTML =
+        `<div class="empty">No replies yet. Be the first!</div>`;
+      return;
+    }
 
     replyList.innerHTML = "";
 
-    if(!replies || replies.length === 0){
-      replyList.innerHTML =
-        `<div style="opacity:.55;padding:25px;">No replies yet. Be the first!</div>`;
-      return;
-    }
-
-    replyCount.textContent = `${replies.length} replies`;
-
     replies.forEach(r => {
-      const name = r.profiles?.username || "StudentStream User";
 
-      const div = document.createElement("div");
-      div.className = "replyCard";
+      const name = r.profiles?.username || "User";
+      const letter = name[0].toUpperCase();
 
-      div.innerHTML = `
-        <div class="replyMeta">
-          <div class="avatar">${name[0]}</div>
-          <div>${name} • ${new Date(r.created_at).toLocaleString()}</div>
+      replyList.innerHTML += `
+        <div class="replyCard">
+          <div class="replyTop">
+            <div class="avatar">${letter}</div>
+            <div class="replyMeta">
+              ${name} • ${new Date(r.created_at).toLocaleString()}
+            </div>
+          </div>
+
+          <div class="replyText">${r.content}</div>
         </div>
-        <div class="replyText">${r.content}</div>
       `;
-
-      replyList.appendChild(div);
     });
   }
 
-  window.postReply = async function(){
-    const text = replyInput.value.trim();
-    if(!text) return;
+  /* ✅ SUBMIT REPLY */
+  window.submitReply = async function () {
 
-    const { data: auth } = await supabase.auth.getUser();
-    if(!auth.user){
-      alert("Login required.");
+    const text = replyInput.value.trim();
+    if (text.length < 2) return;
+
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData?.user;
+
+    if (!user) {
+      alert("You must be logged in to reply.");
       return;
     }
 
-    await supabase.from("forum_replies").insert([
-      {
-        topic_id: topicId,
-        user_id: auth.user.id,
-        content: text
-      }
-    ]);
+    const { error } = await supabase
+      .from("forum_replies")
+      .insert([
+        {
+          topic_id: topicId,
+          user_id: user.id,
+          content: text
+        }
+      ]);
+
+    if (error) {
+      alert("❌ " + error.message);
+      return;
+    }
 
     replyInput.value = "";
     loadReplies();
