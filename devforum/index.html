@@ -5,15 +5,11 @@
   <title>StudentStream DevForum</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- SEO -->
-  <meta name="description" content="StudentStream DevForum — updates, bug reports, creator support, and platform announcements." />
-  <meta name="keywords" content="StudentStreamHQ, DevForum, Support, Bug Reports, Updates" />
-
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
 
     body{
-      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      font-family:system-ui;
       background:radial-gradient(circle at top,#0d1b3a,#05070c);
       color:white;
       min-height:100vh;
@@ -56,12 +52,6 @@
       color:white;
       cursor:pointer;
       font-size:14px;
-      transition:.2s;
-    }
-
-    .btn:hover{
-      opacity:.9;
-      transform:scale(1.03);
     }
 
     .btn.secondary{
@@ -83,17 +73,15 @@
 
     p{
       opacity:.7;
-      font-size:15px;
       margin-bottom:25px;
-      line-height:1.6;
       max-width:700px;
+      line-height:1.6;
     }
 
     .tabs{
       display:flex;
       gap:10px;
-      margin:25px 0 25px;
-      flex-wrap:wrap;
+      margin:25px 0;
     }
 
     .tab{
@@ -105,7 +93,6 @@
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.03);
       opacity:.7;
-      transition:.2s;
     }
 
     .tab.active{
@@ -114,37 +101,13 @@
       background:rgba(77,163,255,.15);
     }
 
-    /* Search */
-    .searchBox{
-      width:100%;
-      margin-bottom:20px;
-    }
-
-    .searchBox input{
-      width:100%;
-      padding:12px 15px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:white;
-      font-size:14px;
-      outline:none;
-    }
-
     .card{
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
       border-radius:20px;
       padding:20px;
       margin-top:16px;
-      transition:.25s;
       cursor:pointer;
-    }
-
-    .card:hover{
-      transform:translateY(-3px);
-      border-color:rgba(77,163,255,.35);
-      box-shadow:0 0 0 1px rgba(77,163,255,.10);
     }
 
     .row{
@@ -174,7 +137,6 @@
       opacity:.55;
       font-size:13px;
       margin-top:4px;
-      max-width:520px;
       line-height:1.4;
     }
 
@@ -187,11 +149,10 @@
       white-space:nowrap;
     }
 
-    .pinnedTag{
-      font-size:12px;
-      font-weight:700;
-      color:#ffd54d;
-      margin-left:8px;
+    .loading{
+      text-align:center;
+      opacity:.6;
+      padding:35px;
     }
 
     .empty{
@@ -203,18 +164,10 @@
       margin-top:30px;
     }
 
-    .loading{
-      text-align:center;
-      opacity:.6;
-      padding:35px;
-      font-size:14px;
-    }
-
     footer{
       text-align:center;
       padding:35px 20px;
       opacity:.35;
-      font-size:13px;
       margin-top:70px;
       border-top:1px solid rgba(255,255,255,.08);
     }
@@ -237,20 +190,13 @@
   <h1>Developer Forums</h1>
   <p>
     Official StudentStreamHQ developer forum for announcements, creator updates,
-    bug reports, and support discussions.<br>
-    <b>Read Mode:</b> Public • Posting requires login.
+    bug reports, and support discussions.
+    <br><b>Read Mode:</b> Public • Posting requires login.
   </p>
 
-  <!-- Tabs -->
   <div class="tabs">
     <div class="tab active" data-tab="categories">Categories</div>
     <div class="tab" data-tab="latest">Latest</div>
-    <div class="tab" data-tab="support">Support</div>
-  </div>
-
-  <!-- Search -->
-  <div class="searchBox" id="searchBox" style="display:none;">
-    <input type="text" id="searchInput" placeholder="Search topics..." />
   </div>
 
   <div id="loadingState" class="loading">Loading DevForum…</div>
@@ -275,18 +221,11 @@
   const tabs = document.querySelectorAll(".tab");
   const accountBtn = document.getElementById("accountBtn");
 
-  const searchBox = document.getElementById("searchBox");
-  const searchInput = document.getElementById("searchInput");
-
-  let latestPage = 0;
-  let loadingMore = false;
-
-  /* LOGIN FIX */
+  /* LOGIN BUTTON */
   async function updateLoginButton() {
     const { data } = await supabase.auth.getUser();
-    const user = data.user;
 
-    if (user) {
+    if (data.user) {
       accountBtn.textContent = "Logout";
       accountBtn.onclick = async () => {
         await supabase.auth.signOut();
@@ -295,7 +234,7 @@
     } else {
       accountBtn.textContent = "Login";
       accountBtn.onclick = () => {
-        window.location.href = "/login.html?next=" + encodeURIComponent(location.pathname);
+        window.location.href = "/login.html";
       };
     }
   }
@@ -306,28 +245,14 @@
   document.getElementById("newTopicBtn").onclick = async () => {
     const { data } = await supabase.auth.getUser();
     if (!data.user) {
-      alert("Login required to post.");
-      window.location.href = "/login.html?next=/devforum/new-topic.html";
+      alert("Login required.");
+      window.location.href = "/login.html";
       return;
     }
     window.location.href = "/devforum/new-topic.html";
   };
 
-  /* TAB SWITCH */
-  tabs.forEach(tab => {
-    tab.onclick = () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-
-      searchBox.style.display = tab.dataset.tab === "latest" ? "block" : "none";
-
-      if (tab.dataset.tab === "categories") loadCategories();
-      if (tab.dataset.tab === "latest") loadLatestTopics(true);
-      if (tab.dataset.tab === "support") loadSupportTopics();
-    };
-  });
-
-  /* CATEGORY LOAD */
+  /* LOAD CATEGORIES */
   async function loadCategories() {
     loadingState.style.display = "block";
     mainContent.innerHTML = "";
@@ -335,7 +260,7 @@
     const { data: categories } = await supabase
       .from("forum_categories")
       .select("*")
-      .order("sort_order", { ascending: true });
+      .order("name");
 
     loadingState.style.display = "none";
 
@@ -344,19 +269,19 @@
       return;
     }
 
-    categories.forEach(async cat => {
+    const iconMap = {
+      "Announcements": "📢",
+      "Updates": "⚡",
+      "SS Central": "🏢",
+      "Bug Reports": "🐛",
+      "Support": "🛠️"
+    };
+
+    for (const cat of categories) {
       const { count } = await supabase
         .from("forum_topics")
         .select("*", { count: "exact", head: true })
         .eq("category_id", cat.id);
-
-      const iconMap = {
-        "Announcements": "📢",
-        "Updates": "⚡",
-        "SS Central": "🏢",
-        "Bug Reports": "🐛",
-        "Support": "🛠️"
-      };
 
       const card = document.createElement("div");
       card.className = "card";
@@ -367,7 +292,7 @@
             <div class="icon">${iconMap[cat.name] || "💬"}</div>
             <div>
               <div class="name">${cat.name}</div>
-              <div class="desc">${cat.description}</div>
+              <div class="desc">${cat.description || ""}</div>
             </div>
           </div>
           <div class="count">${count || 0} Topics</div>
@@ -379,125 +304,58 @@
       };
 
       mainContent.appendChild(card);
+    }
+  }
+
+  /* LOAD LATEST TOPICS */
+  async function loadLatestTopics() {
+    loadingState.style.display = "block";
+    mainContent.innerHTML = "";
+
+    const { data: topics } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(15);
+
+    loadingState.style.display = "none";
+
+    if (!topics || topics.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No topics yet.</div>`;
+      return;
+    }
+
+    topics.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="name">${topic.title}</div>
+        <div class="desc">
+          Posted • ${new Date(topic.created_at).toLocaleString()}
+        </div>
+      `;
+
+      card.onclick = () => {
+        window.location.href = "/devforum/topic.html?id=" + topic.id;
+      };
+
+      mainContent.appendChild(card);
     });
   }
 
-  /* PINNED + LATEST */
-  async function loadLatestTopics(reset = false) {
-    if (loadingMore) return;
-    loadingMore = true;
+  /* TAB SWITCH */
+  tabs.forEach(tab => {
+    tab.onclick = () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
 
-    if (reset) {
-      latestPage = 0;
-      mainContent.innerHTML = "";
-    }
-
-    loadingState.style.display = "block";
-
-    /* PINNED FIRST */
-    if (latestPage === 0) {
-      const { data: pinned } = await supabase
-        .from("forum_topics")
-        .select("*")
-        .eq("pinned", true)
-        .order("created_at", { ascending: false });
-
-      pinned?.forEach(topic => renderTopic(topic, true));
-    }
-
-    /* NORMAL POSTS */
-    const { data: topics } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .eq("pinned", false)
-      .order("created_at", { ascending: false })
-      .range(latestPage * 8, latestPage * 8 + 7);
-
-    loadingState.style.display = "none";
-    loadingMore = false;
-
-    if (!topics || topics.length === 0) {
-      if (latestPage === 0) {
-        mainContent.innerHTML += `<div class="empty">No posts yet.</div>`;
-      }
-      return;
-    }
-
-    topics.forEach(topic => renderTopic(topic));
-    latestPage++;
-  }
-
-  function renderTopic(topic, pinned=false) {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
-      <div class="name">
-        ${topic.title}
-        ${pinned ? `<span class="pinnedTag">📌 Pinned</span>` : ""}
-      </div>
-      <div class="desc">
-        Posted by <b>${topic.author || "Unknown"}</b>
-        • ${new Date(topic.created_at).toLocaleString()}
-      </div>
-    `;
-
-    card.onclick = () => {
-      window.location.href = "/devforum/topic.html?id=" + topic.id;
+      if (tab.dataset.tab === "categories") loadCategories();
+      if (tab.dataset.tab === "latest") loadLatestTopics();
     };
-
-    mainContent.appendChild(card);
-  }
-
-  /* SEARCH FEATURE */
-  searchInput.addEventListener("input", async () => {
-    const q = searchInput.value.trim();
-
-    if (!q) {
-      loadLatestTopics(true);
-      return;
-    }
-
-    mainContent.innerHTML = "";
-    loadingState.style.display = "block";
-
-    const { data: results } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .ilike("title", `%${q}%`)
-      .order("created_at", { ascending: false });
-
-    loadingState.style.display = "none";
-
-    if (!results || results.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No matches found.</div>`;
-      return;
-    }
-
-    results.forEach(topic => renderTopic(topic));
   });
 
-  /* SUPPORT TAB */
-  async function loadSupportTopics() {
-    loadingState.style.display = "block";
-    mainContent.innerHTML = "";
-
-    const { data: topics } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .ilike("category_name", "%Support%");
-
-    loadingState.style.display = "none";
-
-    if (!topics || topics.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No support topics yet.</div>`;
-      return;
-    }
-
-    topics.forEach(topic => renderTopic(topic));
-  }
-
-  /* DEFAULT LOAD */
+  /* DEFAULT */
   loadCategories();
 </script>
 
