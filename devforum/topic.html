@@ -22,258 +22,165 @@
       padding:18px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.82);
+      background:rgba(5,7,12,.75);
       display:flex;
       justify-content:space-between;
       align-items:center;
     }
 
     .logo{
-      font-size:18px;
-      font-weight:950;
+      font-size:20px;
+      font-weight:900;
     }
     .logo span{color:#4da3ff}
 
     .back{
-      opacity:.65;
+      opacity:.7;
       cursor:pointer;
       font-weight:600;
     }
 
-    .wrap{
+    .container{
       max-width:900px;
-      margin:55px auto;
+      margin:45px auto;
       padding:0 20px;
     }
 
-    /* TOPIC HERO */
+    /* TOPIC CARD */
     .topicHero{
-      padding:38px;
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.035);
-      margin-bottom:28px;
-      position:relative;
+      padding:30px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      margin-bottom:30px;
     }
 
     .badge{
       display:inline-block;
-      font-size:12px;
-      font-weight:750;
       padding:6px 14px;
       border-radius:999px;
-      background:rgba(77,163,255,.14);
+      font-size:12px;
+      font-weight:700;
+      background:rgba(77,163,255,.15);
       border:1px solid rgba(77,163,255,.25);
       margin-bottom:14px;
     }
 
-    .topicHero h1{
-      font-size:42px;
+    h1{
+      font-size:38px;
       font-weight:950;
-      letter-spacing:-1px;
-      margin-bottom:14px;
+      margin-bottom:10px;
     }
 
-    .topicMeta{
+    .metaRow{
       display:flex;
       align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
+      gap:10px;
       font-size:13px;
       opacity:.65;
-      margin-bottom:20px;
+      margin-bottom:18px;
     }
 
     .avatar{
-      width:38px;
-      height:38px;
+      width:34px;
+      height:34px;
       border-radius:50%;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
       display:flex;
       align-items:center;
       justify-content:center;
       font-weight:900;
-      font-size:15px;
-      flex-shrink:0;
-    }
-
-    .authorName{
-      font-weight:750;
-      opacity:.9;
-    }
-
-    .role{
-      font-size:11px;
-      padding:3px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.15);
-      opacity:.6;
+      font-size:14px;
     }
 
     .topicBody{
       font-size:15px;
-      line-height:1.9;
-      opacity:.92;
-      white-space:pre-wrap;
-      margin-top:10px;
-    }
-
-    /* TOPIC ACTIONS */
-    .topicActions{
-      display:flex;
-      gap:10px;
-      margin-top:22px;
-    }
-
-    .actionBtn{
-      padding:10px 14px;
-      border-radius:14px;
-      font-size:13px;
-      font-weight:700;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      color:white;
       opacity:.85;
-      transition:.2s;
-    }
-
-    .actionBtn:hover{
-      border-color:rgba(77,163,255,.35);
-      transform:translateY(-2px);
-    }
-
-    /* REPLY HEADER */
-    .replyHeader{
-      margin-top:40px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:18px;
-    }
-
-    .replyHeader h2{
-      font-size:16px;
-      font-weight:850;
-      opacity:.9;
-    }
-
-    .replyCount{
-      font-size:13px;
-      opacity:.55;
+      line-height:1.5;
     }
 
     /* REPLIES */
+    .replyHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:35px;
+      margin-bottom:14px;
+    }
+
+    .replyHeader h2{
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .replyCount{
+      opacity:.55;
+      font-size:13px;
+    }
+
     .replyCard{
       padding:18px 20px;
       border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.02);
       margin-bottom:14px;
-      transition:.2s;
-      animation:fadeIn .3s ease;
-    }
-
-    @keyframes fadeIn{
-      from{opacity:0;transform:translateY(8px)}
-      to{opacity:1;transform:translateY(0)}
-    }
-
-    .replyTop{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-bottom:8px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
     }
 
     .replyMeta{
-      font-size:12px;
-      opacity:.55;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:13px;
+      opacity:.65;
+      margin-bottom:8px;
     }
 
     .replyText{
       font-size:14px;
-      line-height:1.6;
-      white-space:pre-wrap;
-      padding-left:48px;
-      opacity:.9;
+      opacity:.85;
+      line-height:1.4;
     }
 
-    .replyActions{
-      padding-left:48px;
-      margin-top:10px;
-      display:flex;
-      gap:14px;
-      font-size:12px;
-      opacity:.55;
-      cursor:pointer;
-    }
-
-    .replyActions span:hover{
-      opacity:1;
-      color:#4da3ff;
-    }
-
-    .empty{
-      text-align:center;
-      opacity:.55;
-      padding:30px;
-      border:1px dashed rgba(255,255,255,.15);
-      border-radius:18px;
-    }
-
-    /* COMPOSER */
-    .composerBar{
+    /* STICKY REPLY BAR */
+    .replyBox{
       position:fixed;
       bottom:0;
       left:0;
       width:100%;
-      padding:16px;
-      backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.90);
+      padding:14px;
+      background:rgba(5,7,12,.92);
       border-top:1px solid rgba(255,255,255,.08);
-    }
-
-    .composerInner{
-      max-width:900px;
-      margin:auto;
+      backdrop-filter:blur(15px);
       display:flex;
-      gap:12px;
-      align-items:center;
+      gap:10px;
     }
 
-    textarea{
+    .replyBox input{
       flex:1;
-      min-height:52px;
-      max-height:140px;
-      padding:14px 16px;
-      border-radius:18px;
+      padding:12px 14px;
+      border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
       color:white;
-      font-size:14px;
       outline:none;
-      resize:none;
     }
 
-    button{
+    .replyBox button{
       border:none;
       cursor:pointer;
-      padding:13px 20px;
-      border-radius:16px;
-      font-weight:850;
-      font-size:13px;
+      padding:12px 18px;
+      border-radius:14px;
+      font-weight:800;
       color:white;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
-      flex-shrink:0;
     }
 
     footer{
       text-align:center;
       padding:80px 20px;
       opacity:.35;
-      margin-top:90px;
       font-size:13px;
+      margin-top:70px;
     }
   </style>
 </head>
@@ -285,51 +192,39 @@
   <div class="back" onclick="history.back()">← Back</div>
 </header>
 
-<div class="wrap">
+<div class="container">
 
-  <!-- TOPIC -->
   <div class="topicHero">
-    <div class="badge" id="topicCategory">Discussion</div>
+    <div class="badge">Discussion</div>
 
-    <h1 id="topicTitle">Loading…</h1>
+    <h1 id="topicTitle">Loading...</h1>
 
-    <div class="topicMeta">
+    <div class="metaRow">
       <div class="avatar" id="topicAvatar">S</div>
-      <span class="authorName">StudentStream User</span>
-      <span class="role">Member</span>
-      <span id="topicDate"></span>
+      <div id="topicMeta">Loading…</div>
     </div>
 
-    <div class="topicBody" id="topicBody"></div>
-
-    <!-- ACTIONS -->
-    <div class="topicActions">
-      <div class="actionBtn" onclick="likeTopic()">👍 Like</div>
-      <div class="actionBtn" onclick="copyLink()">🔗 Share</div>
-    </div>
+    <div class="topicBody" id="topicContent"></div>
   </div>
 
-  <!-- REPLIES -->
   <div class="replyHeader">
     <h2>Replies</h2>
-    <div class="replyCount" id="replyCount">0 Replies</div>
+    <div class="replyCount" id="replyCount">0 replies</div>
   </div>
 
   <div id="replyList"></div>
 
 </div>
 
-<!-- COMPOSER -->
-<div class="composerBar">
-  <div class="composerInner">
-    <textarea id="replyInput" placeholder="Write a reply…"></textarea>
-    <button onclick="submitReply()">Post</button>
-  </div>
-</div>
-
 <footer>
   © 2026 StudentStreamHQ • Topic View
 </footer>
+
+<!-- Sticky Reply Input -->
+<div class="replyBox">
+  <input id="replyInput" placeholder="Write a reply..." />
+  <button onclick="postReply()">Post</button>
+</div>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -342,94 +237,85 @@
   const params = new URLSearchParams(window.location.search);
   const topicId = params.get("id");
 
-  const topicTitle = document.getElementById("topicTitle");
-  const topicBody  = document.getElementById("topicBody");
-  const topicDate  = document.getElementById("topicDate");
-  const topicAvatar= document.getElementById("topicAvatar");
-
-  const replyList  = document.getElementById("replyList");
+  const titleEl = document.getElementById("topicTitle");
+  const metaEl = document.getElementById("topicMeta");
+  const contentEl = document.getElementById("topicContent");
+  const replyList = document.getElementById("replyList");
   const replyCount = document.getElementById("replyCount");
   const replyInput = document.getElementById("replyInput");
 
   async function loadTopic(){
     const { data: topic } = await supabase
       .from("forum_topics")
-      .select("*")
+      .select("*, profiles(username)")
       .eq("id", topicId)
       .single();
 
-    topicTitle.textContent = topic.title;
-    topicBody.textContent  = topic.content;
-    topicDate.textContent  = "• " + new Date(topic.created_at).toLocaleString();
+    titleEl.textContent = topic.title;
+    contentEl.textContent = topic.content;
 
-    topicAvatar.textContent = topic.title[0].toUpperCase();
+    const name = topic.profiles?.username || "StudentStream User";
+
+    metaEl.textContent =
+      `${name} • ${new Date(topic.created_at).toLocaleString()}`;
   }
 
   async function loadReplies(){
     const { data: replies } = await supabase
       .from("forum_replies")
-      .select("*")
+      .select("*, profiles(username)")
       .eq("topic_id", topicId)
-      .order("created_at");
-
-    replyCount.textContent = replies.length + " Replies";
-
-    if(!replies || replies.length === 0){
-      replyList.innerHTML = `<div class="empty">No replies yet. Be the first!</div>`;
-      return;
-    }
+      .order("created_at", { ascending:true });
 
     replyList.innerHTML = "";
 
+    if(!replies || replies.length === 0){
+      replyList.innerHTML =
+        `<div style="opacity:.55;padding:25px;">No replies yet. Be the first!</div>`;
+      return;
+    }
+
+    replyCount.textContent = `${replies.length} replies`;
+
     replies.forEach(r => {
+      const name = r.profiles?.username || "StudentStream User";
+
       const div = document.createElement("div");
       div.className = "replyCard";
 
       div.innerHTML = `
-        <div class="replyTop">
-          <div class="avatar">U</div>
-          <div class="replyMeta">
-            Reply • ${new Date(r.created_at).toLocaleString()}
-          </div>
+        <div class="replyMeta">
+          <div class="avatar">${name[0]}</div>
+          <div>${name} • ${new Date(r.created_at).toLocaleString()}</div>
         </div>
-
         <div class="replyText">${r.content}</div>
-
-        <div class="replyActions">
-          <span>👍 Like</span>
-          <span>Reply</span>
-        </div>
       `;
 
       replyList.appendChild(div);
     });
   }
 
-  window.submitReply = async function(){
+  window.postReply = async function(){
     const text = replyInput.value.trim();
-    if(text.length < 2) return;
+    if(!text) return;
 
-    const { error } = await supabase
-      .from("forum_replies")
-      .insert([{ topic_id: topicId, content: text }]);
-
-    if(error){
-      alert("❌ " + error.message);
+    const { data: auth } = await supabase.auth.getUser();
+    if(!auth.user){
+      alert("Login required.");
       return;
     }
 
-    replyInput.value="";
+    await supabase.from("forum_replies").insert([
+      {
+        topic_id: topicId,
+        user_id: auth.user.id,
+        content: text
+      }
+    ]);
+
+    replyInput.value = "";
     loadReplies();
-  }
-
-  window.copyLink = function(){
-    navigator.clipboard.writeText(window.location.href);
-    alert("🔗 Link copied!");
-  }
-
-  window.likeTopic = function(){
-    alert("👍 Liked (we can connect this to Supabase next)");
-  }
+  };
 
   loadTopic();
   loadReplies();
