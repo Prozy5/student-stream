@@ -18,74 +18,81 @@
     header{
       position:sticky;
       top:0;
+      z-index:100;
       padding:18px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.75);
+      background:rgba(5,7,12,.78);
       display:flex;
       justify-content:space-between;
       align-items:center;
-      z-index:100;
     }
 
     .logo{
-      font-size:20px;
+      font-size:18px;
       font-weight:900;
     }
 
     .logo span{color:#4da3ff}
 
     .back{
+      opacity:.65;
       cursor:pointer;
-      opacity:.7;
-      font-weight:700;
+      font-weight:600;
     }
 
-    .container{
-      max-width:900px;
-      margin:50px auto;
+    .wrap{
+      max-width:850px;
+      margin:55px auto;
       padding:0 20px;
     }
 
-    .topicBox{
-      padding:25px;
-      border-radius:20px;
+    /* TOPIC READING HERO */
+    .topicHero{
+      padding:34px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
       margin-bottom:30px;
     }
 
-    .topicTitle{
-      font-size:28px;
-      font-weight:900;
+    .topicHero h1{
+      font-size:38px;
+      font-weight:950;
+      letter-spacing:-1px;
+      margin-bottom:12px;
     }
 
-    .meta{
-      margin-top:8px;
-      opacity:.6;
+    .topicMeta{
       font-size:13px;
+      opacity:.55;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
     }
 
-    .topicContent{
-      margin-top:18px;
+    .topicBody{
       font-size:15px;
-      line-height:1.7;
-      opacity:.9;
+      line-height:1.75;
+      opacity:.92;
       white-space:pre-wrap;
     }
 
-    /* Replies */
-    .replySection h2{
-      font-size:18px;
-      margin-bottom:14px;
+    /* REPLIES SECTION */
+    .sectionTitle{
+      font-size:16px;
+      font-weight:850;
+      margin:35px 0 14px;
+      opacity:.85;
     }
 
     .replyCard{
-      padding:16px;
-      border-radius:16px;
+      padding:18px 20px;
+      border-radius:18px;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.02);
-      margin-bottom:12px;
+      margin-bottom:14px;
     }
 
     .replyMeta{
@@ -96,57 +103,71 @@
 
     .replyText{
       font-size:14px;
-      line-height:1.5;
+      line-height:1.6;
       white-space:pre-wrap;
+      opacity:.9;
     }
 
-    /* Reply Box */
-    .replyBox{
-      margin-top:25px;
-      padding:18px;
+    .empty{
+      text-align:center;
+      opacity:.55;
+      padding:30px;
+      border:1px dashed rgba(255,255,255,.15);
       border-radius:18px;
+    }
+
+    /* REPLY COMPOSER */
+    .composer{
+      margin-top:35px;
+      padding:22px;
+      border-radius:20px;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.03);
     }
 
     textarea{
       width:100%;
-      min-height:90px;
-      border-radius:14px;
+      min-height:110px;
+      padding:14px;
+      border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
-      padding:12px;
-      background:rgba(255,255,255,.04);
+      background:rgba(255,255,255,.05);
       color:white;
+      font-size:14px;
       outline:none;
       resize:none;
-      font-size:14px;
     }
 
-    .btn{
-      margin-top:10px;
-      padding:10px 16px;
+    .composerActions{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:12px;
+    }
+
+    .hint{
+      font-size:12px;
+      opacity:.45;
+    }
+
+    button{
       border:none;
-      border-radius:14px;
-      font-weight:800;
       cursor:pointer;
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
+      padding:10px 18px;
+      border-radius:14px;
+      font-weight:850;
+      font-size:13px;
       color:white;
-    }
-
-    .empty{
-      opacity:.55;
-      padding:25px;
-      text-align:center;
-      border:1px dashed rgba(255,255,255,.15);
-      border-radius:16px;
+      background:linear-gradient(135deg,#2f6fff,#4da3ff);
     }
 
     footer{
       text-align:center;
-      padding:35px;
+      padding:40px;
       opacity:.35;
-      margin-top:70px;
+      margin-top:90px;
       border-top:1px solid rgba(255,255,255,.08);
+      font-size:13px;
     }
   </style>
 </head>
@@ -158,26 +179,33 @@
   <div class="back" onclick="history.back()">← Back</div>
 </header>
 
-<div class="container">
+<div class="wrap">
 
-  <!-- Topic -->
-  <div class="topicBox">
-    <div class="topicTitle" id="topicTitle">Loading...</div>
-    <div class="meta" id="topicMeta"></div>
-    <div class="topicContent" id="topicContent"></div>
+  <!-- TOPIC HERO -->
+  <div class="topicHero">
+    <h1 id="topicTitle">Loading…</h1>
+
+    <div class="topicMeta" id="topicMeta"></div>
+
+    <div class="topicBody" id="topicBody"></div>
   </div>
 
-  <!-- Replies -->
-  <div class="replySection">
-    <h2>Replies</h2>
-    <div id="replyList">Loading replies…</div>
-  </div>
+  <!-- REPLIES -->
+  <div class="sectionTitle">Replies</div>
+  <div id="replyList"></div>
 
-  <!-- Reply Box -->
-  <div class="replyBox">
-    <h2>Write a Reply</h2>
-    <textarea id="replyInput" placeholder="Type your reply..."></textarea>
-    <button class="btn" id="replyBtn">Post Reply</button>
+  <!-- COMPOSER -->
+  <div class="composer">
+    <div class="sectionTitle" style="margin:0 0 10px;">
+      Write a Reply
+    </div>
+
+    <textarea id="replyInput" placeholder="Type your reply…"></textarea>
+
+    <div class="composerActions">
+      <div class="hint">Be respectful • Replies are public</div>
+      <button onclick="submitReply()">Post Reply</button>
+    </div>
   </div>
 
 </div>
@@ -197,13 +225,11 @@
   const params = new URLSearchParams(window.location.search);
   const topicId = params.get("id");
 
-  const titleEl = document.getElementById("topicTitle");
-  const metaEl = document.getElementById("topicMeta");
-  const contentEl = document.getElementById("topicContent");
-
-  const replyList = document.getElementById("replyList");
+  const topicTitle = document.getElementById("topicTitle");
+  const topicMeta  = document.getElementById("topicMeta");
+  const topicBody  = document.getElementById("topicBody");
+  const replyList  = document.getElementById("replyList");
   const replyInput = document.getElementById("replyInput");
-  const replyBtn = document.getElementById("replyBtn");
 
   /* LOAD TOPIC */
   async function loadTopic(){
@@ -213,11 +239,12 @@
       .eq("id", topicId)
       .single();
 
-    titleEl.textContent = topic.title;
-    metaEl.textContent =
-      "Posted • " + new Date(topic.created_at).toLocaleString();
+    topicTitle.textContent = topic.title;
+    topicBody.textContent  = topic.content;
 
-    contentEl.textContent = topic.content || "(No content)";
+    topicMeta.innerHTML = `
+      Posted • ${new Date(topic.created_at).toLocaleString()}
+    `;
   }
 
   /* LOAD REPLIES */
@@ -226,14 +253,16 @@
       .from("forum_replies")
       .select("*")
       .eq("topic_id", topicId)
-      .order("created_at", { ascending: true });
-
-    replyList.innerHTML = "";
+      .order("created_at");
 
     if(!replies || replies.length === 0){
-      replyList.innerHTML = `<div class="empty">No replies yet. Be the first!</div>`;
+      replyList.innerHTML = `
+        <div class="empty">No replies yet. Be the first!</div>
+      `;
       return;
     }
+
+    replyList.innerHTML = "";
 
     replies.forEach(r => {
       const div = document.createElement("div");
@@ -251,20 +280,16 @@
   }
 
   /* POST REPLY */
-  replyBtn.onclick = async () => {
+  window.submitReply = async function(){
     const { data } = await supabase.auth.getUser();
-
     if(!data.user){
-      alert("Login required to reply.");
-      window.location.href = "/login.html";
+      alert("Login required.");
+      window.location.href="/login.html";
       return;
     }
 
     const text = replyInput.value.trim();
-    if(text.length < 2){
-      alert("Reply too short.");
-      return;
-    }
+    if(text.length < 2) return;
 
     const { error } = await supabase
       .from("forum_replies")
@@ -277,15 +302,14 @@
       ]);
 
     if(error){
-      alert("❌ Failed: " + error.message);
+      alert("❌ " + error.message);
       return;
     }
 
-    replyInput.value = "";
+    replyInput.value="";
     loadReplies();
-  };
+  }
 
-  /* INIT */
   loadTopic();
   loadReplies();
 </script>
