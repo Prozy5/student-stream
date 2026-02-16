@@ -30,7 +30,7 @@
 
     .logo{
       font-size:18px;
-      font-weight:900;
+      font-weight:950;
     }
 
     .logo span{color:#4da3ff}
@@ -42,18 +42,30 @@
     }
 
     .wrap{
-      max-width:850px;
+      max-width:900px;
       margin:55px auto;
       padding:0 20px;
     }
 
-    /* TOPIC READING HERO */
+    /* TOPIC HERO */
     .topicHero{
       padding:34px;
       border-radius:22px;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.03);
-      margin-bottom:30px;
+      margin-bottom:25px;
+    }
+
+    .badge{
+      display:inline-block;
+      font-size:12px;
+      font-weight:750;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(77,163,255,.14);
+      border:1px solid rgba(77,163,255,.25);
+      margin-bottom:14px;
+      opacity:.9;
     }
 
     .topicHero h1{
@@ -64,41 +76,80 @@
     }
 
     .topicMeta{
-      font-size:13px;
-      opacity:.55;
       display:flex;
+      align-items:center;
       gap:12px;
       flex-wrap:wrap;
+      font-size:13px;
+      opacity:.55;
       margin-bottom:20px;
+    }
+
+    .avatar{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#2f6fff,#4da3ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:14px;
+      flex-shrink:0;
     }
 
     .topicBody{
       font-size:15px;
-      line-height:1.75;
+      line-height:1.8;
       opacity:.92;
       white-space:pre-wrap;
     }
 
-    /* REPLIES SECTION */
-    .sectionTitle{
+    /* REPLY HEADER */
+    .replyHeader{
+      margin-top:35px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:15px;
+    }
+
+    .replyHeader h2{
       font-size:16px;
       font-weight:850;
-      margin:35px 0 14px;
       opacity:.85;
     }
 
+    .replyCount{
+      font-size:13px;
+      opacity:.55;
+    }
+
+    /* REPLIES */
     .replyCard{
       padding:18px 20px;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.02);
       margin-bottom:14px;
+      transition:.2s;
+    }
+
+    .replyCard:hover{
+      border-color:rgba(77,163,255,.35);
+      transform:translateY(-2px);
+    }
+
+    .replyTop{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
     }
 
     .replyMeta{
       font-size:12px;
       opacity:.55;
-      margin-bottom:6px;
     }
 
     .replyText{
@@ -106,6 +157,7 @@
       line-height:1.6;
       white-space:pre-wrap;
       opacity:.9;
+      padding-left:44px;
     }
 
     .empty{
@@ -116,19 +168,31 @@
       border-radius:18px;
     }
 
-    /* REPLY COMPOSER */
-    .composer{
-      margin-top:35px;
-      padding:22px;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
+    /* STICKY COMPOSER */
+    .composerBar{
+      position:fixed;
+      bottom:0;
+      left:0;
+      width:100%;
+      padding:18px;
+      backdrop-filter:blur(18px);
+      background:rgba(5,7,12,.85);
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .composerInner{
+      max-width:900px;
+      margin:auto;
+      display:flex;
+      gap:12px;
+      align-items:center;
     }
 
     textarea{
-      width:100%;
-      min-height:110px;
-      padding:14px;
+      flex:1;
+      min-height:52px;
+      max-height:120px;
+      padding:12px 14px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
@@ -138,35 +202,33 @@
       resize:none;
     }
 
-    .composerActions{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-top:12px;
-    }
-
-    .hint{
-      font-size:12px;
-      opacity:.45;
-    }
-
     button{
       border:none;
       cursor:pointer;
-      padding:10px 18px;
+      padding:12px 18px;
       border-radius:14px;
       font-weight:850;
       font-size:13px;
       color:white;
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
+      flex-shrink:0;
+    }
+
+    .locked{
+      opacity:.55;
+      font-size:13px;
+      padding:14px;
+      text-align:center;
+      border-radius:16px;
+      border:1px dashed rgba(255,255,255,.15);
+      width:100%;
     }
 
     footer{
       text-align:center;
-      padding:40px;
+      padding:70px 20px;
       opacity:.35;
-      margin-top:90px;
-      border-top:1px solid rgba(255,255,255,.08);
+      margin-top:80px;
       font-size:13px;
     }
   </style>
@@ -181,33 +243,36 @@
 
 <div class="wrap">
 
-  <!-- TOPIC HERO -->
+  <!-- TOPIC -->
   <div class="topicHero">
+    <div class="badge" id="topicCategory">Loading…</div>
+
     <h1 id="topicTitle">Loading…</h1>
 
-    <div class="topicMeta" id="topicMeta"></div>
+    <div class="topicMeta">
+      <div class="avatar" id="topicAvatar">S</div>
+      <span id="topicDate"></span>
+    </div>
 
     <div class="topicBody" id="topicBody"></div>
   </div>
 
   <!-- REPLIES -->
-  <div class="sectionTitle">Replies</div>
-  <div id="replyList"></div>
-
-  <!-- COMPOSER -->
-  <div class="composer">
-    <div class="sectionTitle" style="margin:0 0 10px;">
-      Write a Reply
-    </div>
-
-    <textarea id="replyInput" placeholder="Type your reply…"></textarea>
-
-    <div class="composerActions">
-      <div class="hint">Be respectful • Replies are public</div>
-      <button onclick="submitReply()">Post Reply</button>
-    </div>
+  <div class="replyHeader">
+    <h2>Replies</h2>
+    <div class="replyCount" id="replyCount">0</div>
   </div>
 
+  <div id="replyList"></div>
+
+</div>
+
+<!-- COMPOSER -->
+<div class="composerBar">
+  <div class="composerInner" id="composerInner">
+    <textarea id="replyInput" placeholder="Write a reply…"></textarea>
+    <button onclick="submitReply()">Post</button>
+  </div>
 </div>
 
 <footer>
@@ -226,9 +291,14 @@
   const topicId = params.get("id");
 
   const topicTitle = document.getElementById("topicTitle");
-  const topicMeta  = document.getElementById("topicMeta");
   const topicBody  = document.getElementById("topicBody");
+  const topicDate  = document.getElementById("topicDate");
+  const topicAvatar= document.getElementById("topicAvatar");
+  const topicCategory = document.getElementById("topicCategory");
+
   const replyList  = document.getElementById("replyList");
+  const replyCount = document.getElementById("replyCount");
+  const composerInner = document.getElementById("composerInner");
   const replyInput = document.getElementById("replyInput");
 
   /* LOAD TOPIC */
@@ -241,10 +311,11 @@
 
     topicTitle.textContent = topic.title;
     topicBody.textContent  = topic.content;
+    topicDate.textContent  = "Posted • " + new Date(topic.created_at).toLocaleString();
 
-    topicMeta.innerHTML = `
-      Posted • ${new Date(topic.created_at).toLocaleString()}
-    `;
+    topicAvatar.textContent = topic.title[0].toUpperCase();
+
+    topicCategory.textContent = "Discussion";
   }
 
   /* LOAD REPLIES */
@@ -255,10 +326,10 @@
       .eq("topic_id", topicId)
       .order("created_at");
 
+    replyCount.textContent = replies.length + " Replies";
+
     if(!replies || replies.length === 0){
-      replyList.innerHTML = `
-        <div class="empty">No replies yet. Be the first!</div>
-      `;
+      replyList.innerHTML = `<div class="empty">No replies yet. Be the first!</div>`;
       return;
     }
 
@@ -269,14 +340,30 @@
       div.className = "replyCard";
 
       div.innerHTML = `
-        <div class="replyMeta">
-          Reply • ${new Date(r.created_at).toLocaleString()}
+        <div class="replyTop">
+          <div class="avatar">U</div>
+          <div class="replyMeta">
+            Reply • ${new Date(r.created_at).toLocaleString()}
+          </div>
         </div>
         <div class="replyText">${r.content}</div>
       `;
 
       replyList.appendChild(div);
     });
+  }
+
+  /* CHECK LOGIN */
+  async function checkLogin(){
+    const { data } = await supabase.auth.getUser();
+
+    if(!data.user){
+      composerInner.innerHTML = `
+        <div class="locked">
+          Login required to reply.
+        </div>
+      `;
+    }
   }
 
   /* POST REPLY */
@@ -312,6 +399,7 @@
 
   loadTopic();
   loadReplies();
+  checkLogin();
 </script>
 
 </body>
