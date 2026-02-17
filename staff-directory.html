@@ -21,7 +21,7 @@
     }
 
     .wrap {
-      max-width: 950px;
+      max-width: 980px;
       margin: auto;
     }
 
@@ -34,13 +34,30 @@
     .sub {
       opacity: 0.75;
       font-size: 1.05rem;
+      margin-bottom: 25px;
+    }
+
+    /* Hiring Soon Banner */
+    .hiringBanner {
+      background: rgba(255, 200, 80, 0.10);
+      border: 1px solid rgba(255, 200, 80, 0.35);
+      color: #ffd37a;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
       margin-bottom: 45px;
+      line-height: 1.4;
+    }
+
+    .hiringBanner strong {
+      color: white;
     }
 
     .grid {
       display: grid;
       gap: 18px;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
     }
 
     /* Staff Cards */
@@ -78,7 +95,7 @@
       border: 1px solid rgba(108,242,194,0.35);
       background: linear-gradient(
         145deg,
-        rgba(108,242,194,0.10),
+        rgba(108,242,194,0.12),
         rgba(255,255,255,0.04)
       );
     }
@@ -102,13 +119,6 @@
       font-weight: 900;
     }
 
-    .titleLine {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
     p {
       margin-top: 10px;
       opacity: 0.78;
@@ -117,7 +127,7 @@
     }
 
     .note {
-      margin-top: 40px;
+      margin-top: 45px;
       opacity: 0.65;
       font-size: 0.95rem;
     }
@@ -148,7 +158,14 @@
 
     <div class="title">Staff Directory</div>
     <div class="sub">
-      Verified StudentStreamHQ platform leadership and operational staff.
+      Verified StudentStreamHQ leadership and operational teams.
+    </div>
+
+    <!-- Hiring Soon Banner -->
+    <div class="hiringBanner">
+      🚀 <strong>Staff Recruitment Opening Soon</strong><br>
+      StudentStreamHQ divisions will begin onboarding verified staff prior to
+      full platform launch on <strong>April 4, 2026</strong>.
     </div>
 
     <div class="grid">
@@ -161,32 +178,32 @@
         <h2>Deondre</h2>
 
         <p>
-          Founder-level authority overseeing StudentStreamHQ’s development,
-          creator systems, division expansion, and official launch operations.
+          Founder-level authority overseeing StudentStreamHQ development,
+          division expansion, creator systems, and launch operations.
         </p>
 
         <p>
-          Responsible for platform infrastructure, internal staff verification,
-          and long-term ecosystem growth leading into April 2026.
+          Responsible for internal verification, platform infrastructure,
+          and long-term ecosystem growth.
         </p>
       </div>
 
       <!-- Placeholder Staff -->
       <div class="staffCard">
         <span class="role">Division Operations</span>
-        <h2>Staff Positions Opening Soon</h2>
+        <h2>Positions Pending</h2>
         <p>
-          Verified operational staff will be added as divisions expand and
-          platform systems go live.
+          Division directors and operational staff will be listed here as
+          internal systems activate.
         </p>
       </div>
 
       <div class="staffCard">
         <span class="role">Creator Support</span>
-        <h2>Recruitment Pending</h2>
+        <h2>Hiring Soon</h2>
         <p>
-          Creator support teams and moderation staff will activate closer
-          to full launch in April 2026.
+          Creator support, moderation, and partner relations teams will
+          begin onboarding closer to launch.
         </p>
       </div>
 
