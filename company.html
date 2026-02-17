@@ -3,17 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About – StudentStream</title>
+<title>Company – StudentStreamHQ</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:system-ui,-apple-system,BlinkMacSystemFont;
-  background:#070b12;
+  background:radial-gradient(circle at top,#10101c,#040406);
   color:#fff;
 }
 
+/* HEADER */
 header{
   position:sticky;
   top:0;
@@ -40,31 +42,81 @@ header{
 }
 .nav a:hover{color:#fff}
 
+/* HERO */
 .hero{
-  padding:90px 24px 60px;
+  padding:95px 24px 65px;
   max-width:1100px;
   margin:auto;
+  text-align:center;
+}
+
+.heroBadge{
+  display:inline-block;
+  padding:7px 16px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:18px;
+  background:rgba(77,163,255,0.12);
+  border:1px solid rgba(77,163,255,0.25);
+  color:#6db4ff;
 }
 
 .hero h1{
-  font-size:42px;
-  margin:0 0 12px;
+  font-size:44px;
+  margin:0 0 14px;
+  font-weight:900;
 }
+
 .hero p{
   font-size:18px;
-  opacity:.8;
-  max-width:750px;
+  opacity:.82;
+  max-width:780px;
+  margin:auto;
+}
+
+/* BUTTONS */
+.heroButtons{
+  margin-top:32px;
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:14px 26px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.04);
+  color:white;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s;
+  text-decoration:none;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  border-color:rgba(108,242,194,0.45);
+}
+
+.btnPrimary{
+  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+  border:none;
+  color:black;
 }
 
 .section{
   max-width:1100px;
-  margin:70px auto;
+  margin:80px auto;
   padding:0 24px;
 }
 
 .section h2{
-  font-size:26px;
-  margin-bottom:20px;
+  font-size:28px;
+  margin-bottom:22px;
+  font-weight:900;
 }
 
 .grid{
@@ -73,103 +125,140 @@ header{
   gap:20px;
 }
 
+/* CARD */
 .card{
-  background:#0e1522;
-  border:1px solid #1f2a3a;
-  border-radius:16px;
-  padding:22px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:18px;
+  padding:24px;
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(77,163,255,0.45);
+  box-shadow:0 14px 35px rgba(0,0,0,0.55);
 }
 
 .badge{
   display:inline-block;
-  background:#1e90ff22;
-  color:#6db4ff;
+  background:rgba(108,242,194,0.12);
+  border:1px solid rgba(108,242,194,0.25);
+  color:#6cf2c2;
   font-size:12px;
-  padding:4px 10px;
+  padding:5px 12px;
   border-radius:999px;
-  margin-bottom:10px;
+  margin-bottom:12px;
+  font-weight:800;
 }
+
+/* DIVISION STATUS */
+.statusTag{
+  display:inline-block;
+  margin-top:10px;
+  font-size:12px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-weight:700;
+}
+
+.open{background:rgba(108,242,194,0.12);color:#6cf2c2;}
+.maint{background:rgba(255,200,80,0.12);color:#ffd37a;}
+.closed{background:rgba(255,90,90,0.12);color:#ff7a7a;}
 
 .division span{
-  color:#6db4ff;
-  font-weight:800;
-  font-size:16px;
+  font-weight:900;
+  font-size:17px;
 }
 
-.division p{opacity:.85}
+.division p{
+  opacity:.82;
+  line-height:1.45;
+}
 
+/* FOOTER */
 footer{
-  border-top:1px solid #1c2533;
-  padding:40px 24px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding:45px 24px;
   text-align:center;
   font-size:13px;
-  opacity:.6;
+  opacity:.65;
 }
 </style>
 </head>
+
 <body>
 
 <header>
-  <div class="logo">StudentStream</div>
+  <div class="logo">StudentStreamHQ</div>
   <div class="nav">
-    <a href="index.html">SS Films</a>
+    <a href="index.html">Home</a>
     <a href="company.html">Company</a>
   </div>
 </header>
 
+<!-- HERO -->
 <section class="hero">
-  <h1>One company. Multiple worlds.</h1>
+  <div class="heroBadge">StudentStream Corporate Network</div>
+
+  <h1>One Company. Multiple Worlds.</h1>
+
   <p>
-    StudentStream is a technology company building powerful platforms across entertainment,
-    digital production, legal infrastructure, and investigative media.
+    StudentStream is building a multi-division technology ecosystem across
+    entertainment, production, investigations, and creator-first infrastructure.
   </p>
+
+  <!-- NEW BUTTONS -->
+  <div class="heroButtons">
+    <a href="division-directory.html" class="btn btnPrimary">Division Directory</a>
+    <a href="staff-directory.html" class="btn">Staff Directory</a>
+  </div>
 </section>
 
+<!-- MISSION -->
 <section class="section">
   <h2>Our Mission</h2>
   <div class="grid">
     <div class="card">
       <p>
-        StudentStream exists to give creators, investigators, filmmakers, and digital entrepreneurs
+        StudentStream exists to give creators, filmmakers, investigators, and digital entrepreneurs
         the tools, ownership, and infrastructure they need to operate independently.
       </p>
+
       <p>
-        We design systems that replace outdated platforms with modern technology — transparent,
-        creator-first, and built for long-term growth.
+        We design systems that replace outdated platforms with modern technology —
+        transparent, creator-first, and built for long-term growth.
       </p>
     </div>
   </div>
 </section>
 
+<!-- FOUNDER -->
 <section class="section">
   <h2>Founder</h2>
   <div class="grid">
     <div class="card">
-      <span class="badge">Founder & Owner</span>
-      <h3>Deondre</h3>
+      <span class="badge">✔ Verified Founder & Owner</span>
+      <h3 style="margin:0;font-size:22px;font-weight:900;">Deondre</h3>
 
       <p>
-        Deondre is the owner and founder of the technology company StudentStream and the visionary
-        behind its multi-division ecosystem.
+        Deondre is the owner and founder of StudentStreamHQ and the visionary behind its
+        multi-division ecosystem.
       </p>
 
       <p>
-        He created StudentStream to solve critical problems in creator monetization, platform control,
-        digital rights, and media transparency.
+        He created StudentStream to solve critical problems in creator monetization,
+        platform control, digital rights, and media transparency.
       </p>
 
-      <p>
-        Under his leadership, StudentStream expanded beyond a single platform into a connected network
-        of streaming, production, legal, and investigative divisions.
-      </p>
-
-      <p style="opacity:.7;font-size:14px;margin-top:12px">
+      <p style="opacity:.7;font-size:14px;margin-top:14px">
         “We don’t just build platforms. We build systems that change who controls the future.”
       </p>
     </div>
   </div>
 </section>
 
+<!-- DIVISIONS -->
 <section class="section">
   <h2>Divisions</h2>
 
@@ -177,62 +266,53 @@ footer{
 
     <div class="card division">
       <span>SS Films</span>
-      <p>
-        StudentStream’s production and streaming division dedicated to independent films,
-        original series, documentaries, and creator-owned entertainment.
-      </p>
+      <p>Production + streaming division for independent films and originals.</p>
+      <div class="statusTag open">Open</div>
     </div>
 
     <div class="card division">
       <span>StudentStream Studios</span>
-      <p>
-        A creative production division providing infrastructure, tools, and development resources
-        for filmmakers, digital creators, and media teams.
-      </p>
+      <p>Creative infrastructure for filmmakers, creators, and digital teams.</p>
+      <div class="statusTag open">Open</div>
     </div>
 
     <div class="card division">
       <span>SSI Law (StudentStream Law)</span>
-      <p>
-        A legal-focused division built to protect creators, intellectual property, digital businesses,
-        and emerging media platforms through accessible legal infrastructure.
-      </p>
+      <p>Legal infrastructure protecting creators and digital businesses.</p>
+      <div class="statusTag maint">Maintenance</div>
     </div>
 
     <div class="card division">
       <span>SS:I — StudentStream Investigations</span>
       <p>
-        A specialized investigative division focused on uncovering the unknown, exposing hidden systems,
-        untold stories, classified subjects, and the secrets that traditional media avoids.
+        Investigative division documenting what others overlook and producing deep research media.
       </p>
-      <p>
-        SS:I produces deep-research content, documentaries, and intelligence-driven media
-        designed to challenge narratives and reveal the truth beneath the surface.
-      </p>
+      <div class="statusTag open">Open</div>
     </div>
 
   </div>
 </section>
 
+<!-- VISION -->
 <section class="section">
   <h2>Our Vision</h2>
   <div class="grid">
     <div class="card">
       <p>
-        StudentStream is building a unified digital empire where entertainment, truth, law, and
-        creator ownership coexist in one ecosystem.
+        StudentStream is building a unified digital empire where entertainment, truth,
+        law, and creator ownership coexist in one ecosystem.
       </p>
 
       <p>
-        Our goal is to become the backbone infrastructure for independent media and digital power
-        worldwide — where creators control distribution, data, revenue, and narrative.
+        Our goal is to become the backbone infrastructure for independent media worldwide —
+        where creators control distribution, revenue, and narrative.
       </p>
     </div>
   </div>
 </section>
 
 <footer>
-  © 2026 StudentStream · SS Films, StudentStream Studios, SSI Law, and SS:I are divisions of StudentStream
+  © 2026 StudentStreamHQ · SS Films, StudentStream Studios, SSI Law, and SS:I are divisions of StudentStream
 </footer>
 
 </body>
