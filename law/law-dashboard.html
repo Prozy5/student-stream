@@ -18,12 +18,14 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
   font-family:system-ui;
   background:radial-gradient(circle at top,#0c1b33,#05080f);
   color:var(--text);
 }
 
+/* HEADER */
 header{
   padding:18px 24px;
   border-bottom:1px solid var(--border);
@@ -36,16 +38,16 @@ header{
 
 h1{
   font-size:18px;
-  font-weight:900;
+  font-weight:950;
 }
 
 .staffTag{
   color:var(--accent);
-  font-weight:800;
+  font-weight:900;
 }
 
 .wrap{
-  max-width:1100px;
+  max-width:1150px;
   margin:auto;
   padding:40px 20px;
 }
@@ -55,6 +57,8 @@ h1{
   justify-content:space-between;
   align-items:center;
   margin-bottom:25px;
+  flex-wrap:wrap;
+  gap:12px;
 }
 
 button{
@@ -62,8 +66,14 @@ button{
   border-radius:12px;
   border:none;
   cursor:pointer;
-  font-weight:800;
+  font-weight:850;
+  color:white;
   background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
+}
+
+button.secondary{
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border);
 }
 
 .caseCard{
@@ -83,7 +93,7 @@ button{
 
 .caseTitle{
   font-size:16px;
-  font-weight:850;
+  font-weight:900;
 }
 
 .caseMeta{
@@ -92,13 +102,13 @@ button{
   color:var(--muted);
 }
 
-.status{
+.statusTag{
   display:inline-block;
   margin-top:10px;
   padding:5px 10px;
   border-radius:999px;
   font-size:12px;
-  font-weight:800;
+  font-weight:850;
   border:1px solid rgba(255,255,255,.12);
 }
 
@@ -110,11 +120,11 @@ button{
   border-radius:16px;
 }
 
-/* ✅ MODAL ADDITION */
+/* MODAL */
 .modalOverlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.72);
+  background:rgba(0,0,0,.7);
   display:none;
   justify-content:center;
   align-items:center;
@@ -123,44 +133,52 @@ button{
 
 .modal{
   width:100%;
-  max-width:520px;
-  background:var(--panel);
+  max-width:550px;
   padding:25px;
   border-radius:18px;
-  border:1px solid rgba(255,255,255,.14);
+  border:1px solid var(--border);
+  background:rgba(15,20,35,.95);
 }
 
 .modal h2{
-  font-size:18px;
   margin-bottom:12px;
 }
 
-.modal input,
-.modal textarea,
-.modal select{
+input, textarea, select{
   width:100%;
   margin-top:10px;
   padding:12px;
   border-radius:12px;
-  border:1px solid rgba(255,255,255,.12);
+  border:1px solid var(--border);
   background:rgba(255,255,255,.05);
   color:white;
   outline:none;
 }
 
-.modal textarea{
-  min-height:110px;
-  resize:none;
-}
+textarea{min-height:110px}
 
 .modalActions{
   display:flex;
+  justify-content:flex-end;
   gap:10px;
   margin-top:15px;
 }
 
-.modalActions button{
-  flex:1;
+/* REPORTS BOX */
+.reportBox{
+  margin-top:40px;
+}
+
+.reportCard{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  padding:14px;
+  border-radius:14px;
+  margin-top:12px;
+}
+
+.reportCard b{
+  color:var(--accent);
 }
 </style>
 </head>
@@ -168,48 +186,52 @@ button{
 <body>
 
 <header>
-  <h1>⚖️ StudentStream Law <span class="staffTag">Dashboard</span></h1>
+  <h1>⚖️ StudentStream Law <span class="staffTag">HQ Dashboard</span></h1>
   <div id="staffName">Loading...</div>
 </header>
 
 <div class="wrap">
 
+  <!-- TOP ACTIONS -->
   <div class="topBar">
-    <h2>Active Cases</h2>
-    <button onclick="newCase()">+ New Case</button>
+    <h2>Active Case Files</h2>
+    <div>
+      <button onclick="openCaseModal()">+ New Case</button>
+      <button class="secondary" onclick="refreshAll()">↻ Refresh</button>
+    </div>
   </div>
 
+  <!-- CASE LIST -->
   <div id="caseList">Loading cases...</div>
+
+  <!-- REPORTS -->
+  <div class="reportBox">
+    <h2>Public Reports</h2>
+    <div id="reportList">Loading reports...</div>
+  </div>
 
 </div>
 
-<!-- ✅ CASE CREATION MODAL -->
+<!-- CASE CREATION MODAL -->
 <div class="modalOverlay" id="caseModal">
   <div class="modal">
-    <h2>🔥 Create New Case</h2>
+    <h2>📂 Create New Case</h2>
 
-    <input id="caseTitleInput" placeholder="Case Title..." />
-    <textarea id="caseDescInput" placeholder="Case Description..."></textarea>
+    <input id="caseTitle" placeholder="Case Title..." />
+    <textarea id="caseDesc" placeholder="Case Description..."></textarea>
 
-    <select id="casePriorityInput">
-      <option value="low">Low</option>
-      <option value="medium" selected>Medium</option>
-      <option value="high">High</option>
+    <select id="casePriority">
+      <option value="low">Low Priority</option>
+      <option value="medium" selected>Medium Priority</option>
+      <option value="high">High Priority</option>
       <option value="critical">Critical</option>
     </select>
 
-    <!-- ✅ Assignment Dropdown -->
-    <select id="caseAssignInput">
-      <option value="">Assign to Staff (optional)</option>
-    </select>
+    <select id="caseAssign"></select>
 
     <div class="modalActions">
-      <button onclick="closeModal()" style="background:#222;">
-        Cancel
-      </button>
-      <button onclick="submitCase()">
-        Create Case
-      </button>
+      <button class="secondary" onclick="closeCaseModal()">Cancel</button>
+      <button onclick="createCase()">Create Case</button>
     </div>
   </div>
 </div>
@@ -222,20 +244,12 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const caseList = document.getElementById("caseList");
-const modal = document.getElementById("caseModal");
-
 let currentUser = null;
-let currentRole = "member";
+let lawRank = "none";
 
-/* ✅ Staff Roles Shared */
-function isStaff(role){
-  return ["owner","admin","moderator"].includes(role);
-}
-
-/* ✅ ACCESS CHECK */
+/* ACCESS CONTROL */
 async function checkLawAccess(){
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data:{user} } = await supabase.auth.getUser();
   if(!user){
     alert("Law login required.");
     location.href="law-login.html";
@@ -244,141 +258,159 @@ async function checkLawAccess(){
 
   currentUser = user;
 
-  const { data: profile } = await supabase
+  const { data:profile } = await supabase
     .from("profiles")
-    .select("username, role")
+    .select("username, law_rank")
     .eq("id", user.id)
     .single();
 
-  currentRole = profile?.role || "member";
+  lawRank = profile.law_rank;
 
-  if(!isStaff(currentRole)){
-    alert("Access denied. Only verified StudentStreamHQ staff.");
+  if(lawRank === "none"){
+    alert("Access denied.");
     location.href="law.html";
     return;
   }
 
   document.getElementById("staffName").textContent =
-    profile.username + " (" + currentRole + ")";
+    profile.username + " (" + lawRank.toUpperCase() + ")";
 }
 
-/* ✅ LOAD STAFF FOR ASSIGNMENT */
+/* LOAD STAFF FOR ASSIGNMENT */
 async function loadStaffList(){
-  const { data: staff } = await supabase
+  const { data:staff } = await supabase
     .from("profiles")
-    .select("id, username, role")
-    .in("role", ["owner","admin","moderator"]);
+    .select("id, username, law_rank")
+    .neq("law_rank","none");
 
-  const dropdown = document.getElementById("caseAssignInput");
+  const dropdown = document.getElementById("caseAssign");
+  dropdown.innerHTML = `<option value="">Unassigned</option>`;
 
-  staff.forEach(s => {
-    const opt = document.createElement("option");
-    opt.value = s.id;
-    opt.textContent = `${s.username} (${s.role})`;
-    dropdown.appendChild(opt);
+  staff.forEach(s=>{
+    dropdown.innerHTML += `
+      <option value="${s.id}">
+        ${s.username} (${s.law_rank})
+      </option>
+    `;
   });
 }
 
-/* ✅ LOAD CASES */
+/* LOAD CASES */
 async function loadCases(){
-  const { data: cases } = await supabase
+  const { data:cases } = await supabase
     .from("law_cases")
     .select("*")
-    .eq("archived", false)
-    .order("created_at", { ascending:false });
+    .order("created_at",{ascending:false});
 
-  if(!cases || cases.length === 0){
-    caseList.innerHTML = `<div class="empty">No active cases yet.</div>`;
+  const list = document.getElementById("caseList");
+
+  if(!cases || cases.length===0){
+    list.innerHTML = `<div class="empty">No active cases yet.</div>`;
     return;
   }
 
-  caseList.innerHTML = "";
+  list.innerHTML="";
 
-  cases.forEach(c => {
-    const div = document.createElement("div");
+  cases.forEach(c=>{
+    const div=document.createElement("div");
     div.className="caseCard";
 
-    div.innerHTML = `
+    div.innerHTML=`
       <div class="caseTitle">${c.title}</div>
       <div class="caseMeta">
         Priority: <b>${c.priority}</b> • Status: <b>${c.status}</b>
       </div>
-      <span class="status">${c.status.toUpperCase()}</span>
+      <span class="statusTag">${c.status.toUpperCase()}</span>
     `;
 
-    div.onclick = () => {
-      location.href="case.html?id=" + c.id;
+    div.onclick=()=>{
+      location.href="case.html?id="+c.id;
     };
 
-    caseList.appendChild(div);
+    list.appendChild(div);
   });
 }
 
-/* ✅ MODAL CONTROLS */
-window.newCase = function(){
-  modal.style.display="flex";
-};
+/* LOAD REPORTS */
+async function loadReports(){
+  const { data:reports } = await supabase
+    .from("law_reports")
+    .select("*")
+    .order("created_at",{ascending:false});
 
-window.closeModal = function(){
-  modal.style.display="none";
-};
+  const box=document.getElementById("reportList");
 
-/* ✅ AUTO LOG ACTION */
-async function logAction(caseId, action, details=""){
-  await supabase.from("law_case_logs").insert([{
-    case_id: caseId,
-    staff_user: currentUser.id,
-    action,
-    details
-  }]);
-}
-
-/* ✅ SUBMIT CASE */
-window.submitCase = async function(){
-  const title = document.getElementById("caseTitleInput").value.trim();
-  const desc  = document.getElementById("caseDescInput").value.trim();
-  const priority = document.getElementById("casePriorityInput").value;
-  const assignedTo = document.getElementById("caseAssignInput").value || null;
-
-  if(title.length < 3){
-    alert("Title too short.");
+  if(!reports || reports.length===0){
+    box.innerHTML=`<div class="empty">No reports submitted.</div>`;
     return;
   }
 
-  const { data: newCase, error } = await supabase
+  box.innerHTML="";
+
+  reports.forEach(r=>{
+    const div=document.createElement("div");
+    div.className="reportCard";
+
+    div.innerHTML=`
+      <b>${r.issue_type}</b> report by ${r.username || "Anonymous"}<br>
+      <span style="color:var(--muted)">${r.description}</span>
+    `;
+
+    box.appendChild(div);
+  });
+}
+
+/* MODAL CONTROLS */
+window.openCaseModal=()=>{
+  document.getElementById("caseModal").style.display="flex";
+};
+
+window.closeCaseModal=()=>{
+  document.getElementById("caseModal").style.display="none";
+};
+
+/* CREATE CASE */
+window.createCase = async function(){
+  const title=document.getElementById("caseTitle").value.trim();
+  const desc=document.getElementById("caseDesc").value.trim();
+  const priority=document.getElementById("casePriority").value;
+  const assigned=document.getElementById("caseAssign").value || null;
+
+  if(title.length<3){
+    alert("Case title too short.");
+    return;
+  }
+
+  const { error } = await supabase
     .from("law_cases")
     .insert([{
       title,
-      description: desc,
+      description:desc,
       priority,
-      status: "open",
-      created_by: currentUser.id,
-      assigned_to: assignedTo
-    }])
-    .select()
-    .single();
+      assigned_to:assigned
+    }]);
 
   if(error){
     alert("❌ Failed: " + error.message);
     return;
   }
 
-  await logAction(newCase.id, "Case Created", "Priority: " + priority);
-
-  alert("✅ Case Created!");
-  closeModal();
-
-  document.getElementById("caseTitleInput").value="";
-  document.getElementById("caseDescInput").value="";
-
+  alert("✅ Case created.");
+  closeCaseModal();
   loadCases();
 };
 
-/* INIT */
+/* REFRESH */
+window.refreshAll=()=>{
+  loadCases();
+  loadReports();
+};
+
 (async()=>{
   await checkLawAccess();
   await loadStaffList();
   await loadCases();
+  await loadReports();
 })();
 </script>
 
