@@ -33,7 +33,7 @@ nav{
   justify-content:space-between;
   align-items:center;
   padding:18px 26px;
-  background:rgba(10,20,40,.82);
+  background:rgba(10,20,40,.85);
   backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border);
 }
@@ -58,32 +58,32 @@ nav{
 
 /* HERO */
 .hero{
-  max-width:1100px;
+  max-width:1120px;
   margin:auto;
   padding:85px 22px 55px;
   text-align:center;
 }
 
 .hero h1{
-  font-size:55px;
+  font-size:56px;
   font-weight:990;
 }
 
 .hero span{color:var(--accent)}
 
 .hero p{
-  max-width:860px;
+  max-width:880px;
   margin:18px auto;
   color:var(--muted);
   font-size:15px;
   line-height:1.75;
 }
 
-/* OFFICIAL HEADER */
+/* OFFICIAL BANNER */
 .govBanner{
-  margin:30px auto 0;
-  max-width:860px;
-  padding:15px 18px;
+  margin:28px auto 0;
+  max-width:880px;
+  padding:16px 18px;
   border-radius:16px;
   border:1px solid rgba(255,93,93,.25);
   background:rgba(255,93,93,.06);
@@ -95,9 +95,46 @@ nav{
   color:var(--accent);
 }
 
-/* ACTION BUTTONS */
+/* CHIEF AUTHORITY */
+.chiefHighlight{
+  margin:35px auto 0;
+  max-width:880px;
+  padding:20px;
+  border-radius:18px;
+  border:1px solid rgba(255,93,93,.35);
+  background:linear-gradient(
+    135deg,
+    rgba(255,93,93,.14),
+    rgba(12,22,38,.92)
+  );
+  text-align:left;
+}
+
+.chiefHighlight h3{
+  font-size:15px;
+  font-weight:950;
+}
+
+.chiefHighlight p{
+  margin-top:6px;
+  font-size:13.5px;
+  color:var(--muted);
+}
+
+.chiefBadge{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:950;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#200000;
+}
+
+/* BUTTONS */
 .hero-actions{
-  margin-top:32px;
+  margin-top:34px;
   display:flex;
   justify-content:center;
   gap:14px;
@@ -126,16 +163,16 @@ nav{
   opacity:.92;
 }
 
-/* SYSTEM STATUS */
-.statusGrid{
+/* METRICS */
+.metricsGrid{
   margin:45px auto 0;
-  max-width:950px;
+  max-width:980px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
   gap:14px;
 }
 
-.statusCard{
+.metricCard{
   padding:18px;
   border-radius:18px;
   border:1px solid rgba(255,255,255,.10);
@@ -143,18 +180,18 @@ nav{
   text-align:left;
 }
 
-.statusCard h3{
-  font-size:14px;
-  font-weight:950;
+.metricCard h2{
+  font-size:26px;
+  font-weight:990;
+  margin-top:6px;
 }
 
-.statusCard p{
-  margin-top:6px;
+.metricCard span{
   font-size:13px;
   color:var(--muted);
 }
 
-/* VERIFIED NOTICE */
+/* STAFF NOTICE */
 .notice{
   margin:45px auto 0;
   max-width:920px;
@@ -168,41 +205,18 @@ nav{
 
 .notice strong{color:var(--accent)}
 
-/* STAFF BADGE */
-.badge{
-  margin:25px auto 0;
-  max-width:520px;
-  padding:14px;
-  border-radius:16px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.02);
-  font-size:14px;
-  color:var(--muted);
-  display:none;
-}
-
-.badge span{
-  font-weight:900;
-  color:var(--accent);
-}
-
 /* STAFF PANEL */
 .staffPanel{
   margin:30px auto 0;
-  max-width:760px;
+  max-width:780px;
   padding:22px;
   border-radius:20px;
   border:1px solid rgba(255,93,93,.35);
-  background:linear-gradient(
-    135deg,
-    rgba(255,93,93,.12),
-    rgba(12,22,38,.92)
-  );
+  background:rgba(255,93,93,.07);
   display:none;
 }
 
 .staffPanel h3{
-  margin-bottom:10px;
   font-size:17px;
   font-weight:990;
 }
@@ -222,7 +236,7 @@ nav{
 .section{
   max-width:1150px;
   margin:auto;
-  padding:65px 22px;
+  padding:70px 22px;
 }
 
 .section h2{
@@ -231,7 +245,6 @@ nav{
   margin-bottom:18px;
 }
 
-/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -254,10 +267,10 @@ nav{
 .card h3{
   font-size:16px;
   font-weight:900;
-  margin-bottom:8px;
 }
 
 .card p{
+  margin-top:8px;
   font-size:13.5px;
   color:var(--muted);
   line-height:1.55;
@@ -292,17 +305,26 @@ footer{
 
 <!-- HERO -->
 <section class="hero">
+
   <h1>StudentStream <span>Law</span></h1>
 
   <p>
-    The official enforcement, safety, and creator protection division of StudentStreamHQ.
-    We investigate abuse, prevent fraud, secure evidence, and uphold platform integrity.
+    The official enforcement and creator safety division of StudentStreamHQ.
+    Abuse investigations, fraud prevention, evidence security, and platform integrity.
   </p>
 
-  <!-- OFFICIAL BANNER -->
   <div class="govBanner">
-    <strong>Official Enforcement Division:</strong>
-    StudentStream Law operates under verified authority ranks and internal oversight.
+    <strong>Verified Enforcement System:</strong>
+    Reports are reviewed internally and assigned to authorized investigators only.
+  </div>
+
+  <!-- CHIEF -->
+  <div class="chiefHighlight">
+    <h3>⭐ Chief Authority Oversight</h3>
+    <p>
+      All enforcement actions are monitored under verified Chief command authority.
+    </p>
+    <div class="chiefBadge">✔ VERIFIED CHIEF · StudentStreamHQ</div>
   </div>
 
   <!-- ACTIONS -->
@@ -310,43 +332,41 @@ footer{
     <a href="report.html" class="btn primary">🚨 Submit Report</a>
     <a href="my-reports.html" class="btn">📌 My Reports</a>
     <a href="rights.html" class="btn">📜 Creator Rights</a>
-    <a href="appeals.html" class="btn">⚠ Appeals Portal</a>
+    <a href="appeals.html" class="btn">⚠ Appeals</a>
   </div>
 
-  <!-- SYSTEM STATUS -->
-  <div class="statusGrid">
-    <div class="statusCard">
-      <h3>📁 Case System</h3>
-      <p>Active enforcement investigations are tracked internally.</p>
+  <!-- METRICS -->
+  <div class="metricsGrid">
+    <div class="metricCard">
+      <span>Active Reports</span>
+      <h2 id="metricReports">—</h2>
     </div>
 
-    <div class="statusCard">
-      <h3>📎 Evidence Vault</h3>
-      <p>Secure uploads enabled for assigned enforcement staff only.</p>
+    <div class="metricCard">
+      <span>Cases Assigned</span>
+      <h2 id="metricAssigned">—</h2>
     </div>
 
-    <div class="statusCard">
-      <h3>👮 Staff Assignments</h3>
-      <p>Reports are assigned to verified investigators before action begins.</p>
+    <div class="metricCard">
+      <span>Evidence Vault Status</span>
+      <h2>ONLINE</h2>
     </div>
   </div>
 
-  <!-- VERIFIED NOTICE -->
+  <!-- STAFF NOTICE -->
   <div class="notice">
     <strong>Restricted Tools:</strong>
-    Law staff dashboards are only accessible to verified enforcement ranks.
+    Internal dashboards are only accessible to verified enforcement ranks.
   </div>
-
-  <!-- STAFF BADGE -->
-  <div class="badge" id="staffBadge"></div>
 
   <!-- STAFF PANEL -->
   <div class="staffPanel" id="staffPanel">
     <h3>⚖️ Enforcement Command Center</h3>
-    You are verified law staff. Access internal case management below.
+    You are verified staff. Access investigations below.
     <br>
     <a href="law-dashboard.html">Open Law Dashboard →</a>
   </div>
+
 </section>
 
 <!-- RESPONSIBILITIES -->
@@ -355,43 +375,32 @@ footer{
 
   <div class="grid">
     <div class="card">
-      <h3>Copyright Protection</h3>
-      <p>Ownership disputes, stolen content enforcement, takedown processing.</p>
+      <h3>Fraud & Abuse Prevention</h3>
+      <p>Scam enforcement, impersonation response, monetization fraud detection.</p>
     </div>
 
     <div class="card">
-      <h3>Fraud & Impersonation</h3>
-      <p>Scam detection, fake monetization schemes, identity abuse prevention.</p>
+      <h3>Creator Safety Division</h3>
+      <p>Harassment investigations, threat escalation, abuse protection.</p>
     </div>
 
     <div class="card">
-      <h3>Creator Safety</h3>
-      <p>Threat response, harassment investigations, coordinated abuse defense.</p>
+      <h3>Evidence & Case Handling</h3>
+      <p>Secure vault uploads, assignment-only case documentation, internal tracking.</p>
     </div>
 
     <div class="card">
-      <h3>Platform Enforcement</h3>
-      <p>Warnings, restrictions, bans, verified policy-level action handling.</p>
-    </div>
-
-    <div class="card">
-      <h3>Case Evidence Handling</h3>
-      <p>Secure vault storage, documentation, internal investigation tracking.</p>
-    </div>
-
-    <div class="card">
-      <h3>Transparency & Trust</h3>
-      <p>Publishing enforcement registries and accountability updates.</p>
+      <h3>Transparency Registry</h3>
+      <p>Verified enforcement staff listings and accountability oversight.</p>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  © 2026 StudentStream Law Division · StudentStreamHQ Digital Safety & Creator Protection
+  © 2026 StudentStream Law Division · StudentStreamHQ Enforcement & Creator Protection
 </footer>
 
-<!-- STAFF DETECTOR -->
+<!-- SUPABASE METRICS -->
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -400,29 +409,42 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-async function loadBadge(){
+async function loadMetrics(){
+
+  const { count:reports } = await supabase
+    .from("law_cases")
+    .select("*", { count:"exact", head:true });
+
+  const { count:assigned } = await supabase
+    .from("law_cases")
+    .select("*", { count:"exact", head:true })
+    .not("assigned_to", "is", null);
+
+  document.getElementById("metricReports").textContent =
+    reports ?? "0";
+
+  document.getElementById("metricAssigned").textContent =
+    assigned ?? "0";
+}
+
+async function detectStaff(){
+
   const { data:{user} } = await supabase.auth.getUser();
   if(!user) return;
 
   const { data:profile } = await supabase
     .from("profiles")
-    .select("username, law_rank")
+    .select("law_rank")
     .eq("id", user.id)
     .single();
 
   if(profile?.law_rank && profile.law_rank !== "none"){
-
-    document.getElementById("staffBadge").style.display="block";
-    document.getElementById("staffBadge").innerHTML = `
-      Logged in as <span>${profile.username}</span> —
-      Rank: <span>${profile.law_rank.toUpperCase()}</span>
-    `;
-
     document.getElementById("staffPanel").style.display="block";
   }
 }
 
-loadBadge();
+loadMetrics();
+detectStaff();
 </script>
 
 </body>
