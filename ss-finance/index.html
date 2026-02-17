@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SS:F — StudentStream Finance</title>
+
+<style>
+:root{
+  --bg:#05060a;
+  --panel:rgba(18,22,32,0.92);
+  --border:rgba(255,255,255,0.08);
+
+  --text:#f3f7ff;
+  --muted:#9aa7c2;
+
+  --accent:#4da3ff;
+  --accent2:#6cf2c2;
+  --gold:#ffd36c;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top, rgba(77,163,255,0.18), transparent 65%),
+    radial-gradient(circle at bottom, rgba(108,242,194,0.10), transparent 60%),
+    linear-gradient(to bottom, #05060a, #020205);
+}
+
+header{
+  padding:20px 28px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,12,18,0.88);
+  backdrop-filter:blur(18px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header h1{
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:.5px;
+}
+
+header a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+}
+header a:hover{color:white}
+
+.wrap{
+  max-width:1250px;
+  margin:auto;
+  padding:70px 22px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:70px;
+}
+
+.hero h2{
+  font-size:52px;
+  font-weight:1000;
+  letter-spacing:-1px;
+}
+
+.hero p{
+  margin-top:14px;
+  font-size:16px;
+  opacity:.75;
+  max-width:760px;
+  margin-inline:auto;
+  line-height:1.6;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:20px;
+  padding:8px 18px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:900;
+  background:rgba(255,211,108,0.12);
+  border:1px solid rgba(255,211,108,0.35);
+  color:var(--gold);
+}
+
+.sectionTitle{
+  font-size:15px;
+  font-weight:950;
+  margin:55px 0 18px;
+  color:var(--accent2);
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:24px;
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(77,163,255,0.35);
+  box-shadow:0 25px 60px rgba(0,0,0,0.55);
+}
+
+.card h3{
+  font-size:18px;
+  font-weight:950;
+}
+
+.card p{
+  margin-top:10px;
+  font-size:14px;
+  line-height:1.6;
+  opacity:.78;
+}
+
+.metric{
+  font-size:34px;
+  font-weight:1000;
+  margin-top:14px;
+  color:var(--accent);
+}
+
+.smallNote{
+  font-size:13px;
+  opacity:.55;
+  margin-top:6px;
+}
+
+footer{
+  margin-top:90px;
+  padding:40px;
+  text-align:center;
+  font-size:13px;
+  opacity:.55;
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>SS:F — StudentStream Finance Division</h1>
+  <a href="index.html">← Back Home</a>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <h2>SS: Finance</h2>
+    <p>
+      The financial infrastructure division of StudentStreamHQ.<br>
+      Managing creator monetization, platform funding, transparency systems,
+      and division-level treasury operations across the ecosystem.
+    </p>
+
+    <span class="badge">Verified Internal Treasury Division</span>
+  </section>
+
+  <!-- KEY METRICS -->
+  <div class="sectionTitle">Financial Overview</div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Total Public Contributions</h3>
+      <div class="metric" id="raisedTotal">$0</div>
+      <p class="smallNote">
+        Auto-synced from Stripe + Supabase donation ledger.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Creator Monetization Status</h3>
+      <div class="metric">Active</div>
+      <p class="smallNote">
+        Earnings systems currently in staged rollout.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Treasury Allocation</h3>
+      <div class="metric">Secure</div>
+      <p class="smallNote">
+        Division funding is tracked internally through audit logs.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- CORE OPERATIONS -->
+  <div class="sectionTitle">Core Financial Operations</div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>💳 Creator Revenue Systems</h3>
+      <p>
+        SS:F powers the monetization backbone of StudentStreamHQ —
+        subscriptions, payouts, creator earnings dashboards, and ownership-first distribution.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>📊 Transparency & Public Funding</h3>
+      <p>
+        All donations, initiatives, and contribution systems (including BOPH)
+        are logged publicly through verified feeds and financial oversight tools.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🏛 Division Treasury Management</h3>
+      <p>
+        SS Films productions, Studios infrastructure, platform upgrades,
+        and investigations projects are supported through structured treasury allocation.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🛡 Oversight & Fraud Protection</h3>
+      <p>
+        SS:F includes internal safeguards: payment verification, abuse prevention,
+        restricted admin controls, and long-term financial compliance design.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- INITIATIVE -->
+  <div class="sectionTitle">Active Initiative</div>
+
+  <div class="grid">
+    <div class="card" style="border:1px solid rgba(255,211,108,0.4);">
+      <h3>🌍 BOPH — Public Outreach Fund</h3>
+      <p>
+        A verified StudentStream initiative supporting platform expansion,
+        community infrastructure, and future creator-first systems.
+      </p>
+      <p class="smallNote">
+        Live totals appear above. Full transparency feed available in boph.html.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 StudentStreamHQ · SS:F Finance Division · Verified Treasury Systems
+</footer>
+
+<script>
+/* Placeholder total (later replace with Stripe + Supabase sync) */
+document.getElementById("raisedTotal").textContent = "$1,250";
+</script>
+
+</body>
+</html>
