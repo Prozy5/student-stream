@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Staff Directory · StudentStream Law</title>
+<title>Staff Registry · StudentStream Law</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script type="module" src="/js/platform-guard.js"></script>
@@ -11,6 +11,7 @@
 :root{
   --bg:#05080f;
   --panel:#0c1626;
+  --panel2:#101f35;
   --accent:#ff5d5d;
   --accent2:#ff2f2f;
   --text:#eaf1ff;
@@ -32,7 +33,7 @@ nav{
   justify-content:space-between;
   align-items:center;
   padding:18px 26px;
-  background:rgba(10,20,40,.78);
+  background:rgba(10,20,40,.82);
   backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border);
 }
@@ -50,19 +51,17 @@ nav{
   font-weight:650;
 }
 
-.nav-links a:hover{
-  color:var(--text);
-}
+.nav-links a:hover{color:var(--text)}
 
 /* PAGE */
 .container{
-  max-width:1100px;
+  max-width:1150px;
   margin:70px auto;
   padding:0 22px;
 }
 
 h1{
-  font-size:40px;
+  font-size:42px;
   font-weight:990;
 }
 
@@ -75,34 +74,49 @@ p{
   max-width:900px;
 }
 
-/* DISCLAIMER */
-.disclaimer{
-  margin-top:25px;
-  padding:16px 18px;
-  border-radius:16px;
-  border:1px solid rgba(255,93,93,.35);
-  background:rgba(255,93,93,.06);
-  font-size:13.5px;
-  color:var(--muted);
+/* REGISTRY HEADER */
+.registryHeader{
+  margin-top:28px;
+  padding:18px 20px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.disclaimer strong{
+.registryHeader strong{
+  color:var(--accent);
+}
+
+.registryTag{
+  font-size:12px;
+  padding:7px 14px;
+  border-radius:999px;
+  font-weight:850;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.10);
   color:var(--accent);
 }
 
 /* CHIEF BOX */
 .chiefBox{
   margin-top:45px;
-  padding:26px;
-  border-radius:20px;
-  border:1px solid rgba(255,93,93,.55);
-  background:rgba(255,93,93,.09);
+  padding:28px;
+  border-radius:22px;
+  border:1px solid rgba(255,93,93,.65);
+  background:linear-gradient(
+    135deg,
+    rgba(255,93,93,.14),
+    rgba(12,22,38,.90)
+  );
 }
 
 .chiefBadge{
   display:inline-block;
   margin-top:10px;
-  padding:7px 14px;
+  padding:7px 15px;
   border-radius:999px;
   font-size:12px;
   font-weight:950;
@@ -112,20 +126,45 @@ p{
 
 .chiefName{
   margin-top:14px;
-  font-size:20px;
+  font-size:22px;
   font-weight:990;
 }
 
 .chiefMeta{
-  margin-top:6px;
+  margin-top:7px;
   font-size:13px;
   color:var(--muted);
-  line-height:1.5;
+  line-height:1.55;
 }
 
-/* STAFF SECTION */
-.staffSection{
+/* RANK EXPLAINER */
+.rankGuide{
   margin-top:55px;
+  padding:22px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+}
+
+.rankGuide h2{
+  font-size:18px;
+  font-weight:950;
+  margin-bottom:14px;
+}
+
+.rankRow{
+  margin-bottom:10px;
+  font-size:13.5px;
+  color:var(--muted);
+}
+
+.rankRow b{
+  color:var(--text);
+}
+
+/* STAFF GROUPS */
+.staffSection{
+  margin-top:60px;
 }
 
 .staffSection h2{
@@ -134,16 +173,15 @@ p{
   margin-bottom:14px;
 }
 
-/* GRID */
 .staffGrid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
   gap:16px;
 }
 
 /* STAFF CARD */
 .staffCard{
-  background:rgba(12,22,38,.88);
+  background:rgba(12,22,38,.90);
   border:1px solid var(--border);
   border-radius:18px;
   padding:18px;
@@ -160,7 +198,7 @@ p{
   font-weight:950;
 }
 
-.staffRank{
+.staffRole{
   margin-top:6px;
   font-size:13px;
   color:var(--muted);
@@ -168,43 +206,25 @@ p{
 
 .rankBadge{
   display:inline-block;
-  margin-top:10px;
+  margin-top:12px;
   padding:6px 12px;
   border-radius:999px;
   font-size:11.5px;
   font-weight:850;
   border:1px solid rgba(255,255,255,.12);
-  color:var(--muted);
 }
 
-.rank-chief{
-  border-color:rgba(255,93,93,.55);
-  color:var(--accent);
+.idTag{
+  margin-top:10px;
+  font-size:11.5px;
+  color:rgba(255,255,255,.35);
 }
 
-.rank-director{
-  border-color:rgba(255,210,138,.35);
-  color:#ffd28a;
-}
-
-.rank-investigator{
-  border-color:rgba(157,255,184,.25);
-  color:#9dffb8;
-}
-
-.rank-officer{
-  border-color:rgba(126,200,255,.25);
-  color:#7ec8ff;
-}
-
-/* EMPTY */
-.empty{
-  padding:40px;
-  text-align:center;
-  border:1px dashed rgba(255,255,255,.15);
-  border-radius:18px;
-  color:var(--muted);
-}
+/* BADGE COLORS */
+.rank-chief{color:var(--accent);border-color:rgba(255,93,93,.55)}
+.rank-director{color:#ffd28a;border-color:rgba(255,210,138,.35)}
+.rank-investigator{color:#9dffb8;border-color:rgba(157,255,184,.25)}
+.rank-officer{color:#7ec8ff;border-color:rgba(126,200,255,.25)}
 
 /* FOOTER */
 footer{
@@ -234,38 +254,50 @@ footer{
 <!-- PAGE -->
 <div class="container">
 
-  <h1>Verified <span>Staff Registry</span></h1>
+  <h1>Verified <span>Enforcement Registry</span></h1>
 
   <p>
-    This public directory lists verified enforcement personnel under
-    StudentStreamHQ Law Division.  
-    Staff roles are restricted, monitored, and assigned internally.
+    This is the official public transparency registry of verified
+    StudentStreamHQ Law Division staff.
   </p>
 
-  <div class="disclaimer">
-    <strong>Transparency Notice:</strong>
-    Only confirmed StudentStreamHQ enforcement accounts appear here.  
-    No private contact details are ever displayed.
+  <!-- REGISTRY HEADER -->
+  <div class="registryHeader">
+    <div>
+      Registry Status: <strong>ACTIVE</strong><br>
+      Updated automatically through internal enforcement verification.
+    </div>
+    <div class="registryTag">✔ PUBLIC STAFF LIST</div>
   </div>
 
   <!-- CHIEF -->
   <div id="chiefContainer"></div>
 
-  <!-- STAFF GRID -->
+  <!-- RANK GUIDE -->
+  <div class="rankGuide">
+    <h2>Law Division Rank Structure</h2>
+
+    <div class="rankRow"><b>Chief Authority</b> — Final enforcement command + division oversight.</div>
+    <div class="rankRow"><b>Director</b> — Manages investigations, staff assignments, case approval.</div>
+    <div class="rankRow"><b>Investigator</b> — Handles evidence review, creator protection, case work.</div>
+    <div class="rankRow"><b>Officer</b> — Supports enforcement operations and report processing.</div>
+  </div>
+
+  <!-- STAFF -->
   <div class="staffSection">
-    <h2>Active Enforcement Staff</h2>
+    <h2>Active Enforcement Personnel</h2>
     <div id="staffGrid" class="staffGrid">
-      Loading staff registry...
+      Loading registry...
     </div>
   </div>
 
 </div>
 
 <footer>
-  © 2026 StudentStream Law Division · Public Enforcement Transparency Registry
+  © 2026 StudentStream Law Division · Transparency Enforcement Registry
 </footer>
 
-<!-- SUPABASE LOAD -->
+<!-- SUPABASE -->
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -277,7 +309,7 @@ const supabase = createClient(
 const chiefContainer = document.getElementById("chiefContainer");
 const staffGrid = document.getElementById("staffGrid");
 
-/* Rank Formatting */
+/* Helpers */
 function badgeClass(rank){
   if(rank==="chief") return "rank-chief";
   if(rank==="director") return "rank-director";
@@ -285,36 +317,29 @@ function badgeClass(rank){
   return "rank-officer";
 }
 
-function rankLabel(rank){
-  if(rank==="chief") return "Verified Chief Authority";
+function roleLabel(rank){
+  if(rank==="chief") return "Chief Enforcement Authority";
   if(rank==="director") return "Division Director";
   if(rank==="investigator") return "Case Investigator";
   return "Enforcement Officer";
 }
 
-async function loadStaffDirectory(){
+function makeRegistryID(name){
+  return "SSL-" + name.substring(0,3).toUpperCase() + "-" + Math.floor(Math.random()*9000+1000);
+}
+
+async function loadRegistry(){
 
   const { data:staff, error } = await supabase
     .from("profiles")
     .select("username, law_rank")
-    .neq("law_rank", "none");
+    .neq("law_rank","none");
 
   if(error){
-    staffGrid.innerHTML="❌ Failed loading staff registry.";
-    console.error(error);
+    staffGrid.innerHTML="❌ Failed loading registry.";
     return;
   }
 
-  if(!staff || staff.length===0){
-    staffGrid.innerHTML=`
-      <div class="empty">
-        No verified enforcement staff are currently listed.
-      </div>
-    `;
-    return;
-  }
-
-  /* Chief first */
   const chief = staff.find(s=>s.law_rank==="chief");
   const others = staff.filter(s=>s.law_rank!=="chief");
 
@@ -326,8 +351,8 @@ async function loadStaffDirectory(){
 
         <div class="chiefName">${chief.username}</div>
         <div class="chiefMeta">
-          Chief Enforcement Officer of StudentStream Law Division.<br>
-          Holds final authority over investigations, enforcement actions, and staff assignment.
+          Holds final authority over enforcement operations, staff verification,
+          and platform-level case resolution.
         </div>
       </div>
     `;
@@ -335,7 +360,6 @@ async function loadStaffDirectory(){
 
   staffGrid.innerHTML="";
 
-  /* Render Staff */
   others.forEach(person=>{
 
     const div=document.createElement("div");
@@ -343,10 +367,14 @@ async function loadStaffDirectory(){
 
     div.innerHTML=`
       <div class="staffName">${person.username}</div>
-      <div class="staffRank">${rankLabel(person.law_rank)}</div>
+      <div class="staffRole">${roleLabel(person.law_rank)}</div>
 
       <div class="rankBadge ${badgeClass(person.law_rank)}">
         Rank: ${person.law_rank.toUpperCase()}
+      </div>
+
+      <div class="idTag">
+        Verified Enforcement ID: ${makeRegistryID(person.username)}
       </div>
     `;
 
@@ -355,7 +383,7 @@ async function loadStaffDirectory(){
 
 }
 
-loadStaffDirectory();
+loadRegistry();
 </script>
 
 </body>
