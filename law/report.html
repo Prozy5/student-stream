@@ -10,6 +10,7 @@
   --bg:#05080f;
   --panel:#0c1626;
   --accent:#ff5d5d;
+  --accent2:#ff2f2f;
   --text:#eaf1ff;
   --muted:#9fb0cc;
   --border:rgba(255,255,255,0.08);
@@ -24,7 +25,6 @@ body{
 }
 
 /* NAV */
-
 nav{
   display:flex;
   justify-content:space-between;
@@ -48,14 +48,11 @@ nav{
   font-weight:650;
 }
 
-.nav-links a:hover{
-  color:var(--text);
-}
+.nav-links a:hover{color:var(--text)}
 
 /* PAGE */
-
 .container{
-  max-width:850px;
+  max-width:880px;
   margin:70px auto;
   padding:0 22px;
 }
@@ -68,14 +65,12 @@ nav{
 }
 
 h1{
-  font-size:32px;
+  font-size:34px;
   font-weight:980;
   margin-bottom:10px;
 }
 
-h1 span{
-  color:var(--accent);
-}
+h1 span{color:var(--accent)}
 
 p{
   color:var(--muted);
@@ -84,7 +79,6 @@ p{
 }
 
 /* FORM */
-
 form{
   display:flex;
   flex-direction:column;
@@ -112,9 +106,9 @@ button{
   border-radius:14px;
   border:none;
   cursor:pointer;
-  font-weight:850;
+  font-weight:900;
   font-size:14px;
-  background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
   color:#1a0000;
   transition:.2s;
 }
@@ -132,6 +126,16 @@ button:hover{
   background:rgba(255,93,93,.08);
   font-size:13px;
   color:var(--muted);
+}
+
+.successBox{
+  display:none;
+  margin-top:20px;
+  padding:18px;
+  border-radius:16px;
+  border:1px solid rgba(0,255,140,.25);
+  background:rgba(0,255,140,.08);
+  color:#bfffe2;
 }
 
 footer{
@@ -165,41 +169,63 @@ footer{
     <h1>Submit a <span>Report</span></h1>
 
     <p>
-      Use this form to report copyright theft, impersonation, harassment,
-      fraud, or other serious violations on StudentStream.
+      Reports are reviewed by verified StudentStream Law staff.
+      A case will be created automatically and assigned soon.
     </p>
 
     <!-- FORM -->
     <form id="reportForm">
 
+      <!-- Issue Type -->
       <select id="issueType" required>
         <option value="">Select issue type…</option>
-        <option value="Copyright">Copyright / Stolen Content</option>
-        <option value="Fraud">Fraud / Scam Activity</option>
+        <option value="Copyright Theft">Copyright / Stolen Content</option>
         <option value="Harassment">Harassment / Threats</option>
         <option value="Impersonation">Impersonation / Fake Account</option>
+        <option value="Fraud">Fraud / Scam Activity</option>
+        <option value="Marketplace Abuse">Marketplace Abuse</option>
+        <option value="Underage Safety">Minor Safety Concern</option>
         <option value="Other">Other</option>
       </select>
 
+      <!-- Priority -->
+      <select id="priority" required>
+        <option value="">Select priority…</option>
+        <option value="low">Low (General Issue)</option>
+        <option value="medium">Medium (Needs Review)</option>
+        <option value="high">High (Urgent Threat/Fraud)</option>
+      </select>
+
+      <!-- Target -->
       <input
         id="targetUser"
         placeholder="Username or link of the reported account/content"
         required
       />
 
+      <!-- Evidence -->
+      <input
+        id="evidence"
+        placeholder="Evidence link (Google Drive, Screenshot URL, Video, etc.)"
+      />
+
+      <!-- Description -->
       <textarea
         id="description"
-        placeholder="Describe what happened in detail… include evidence, dates, links, and context."
+        placeholder="Describe what happened in detail… include dates, links, and context."
         required
       ></textarea>
 
-      <button type="submit">Submit Report</button>
+      <button type="submit">🚨 Submit Report</button>
     </form>
+
+    <!-- SUCCESS MESSAGE -->
+    <div class="successBox" id="successBox"></div>
 
     <div class="notice">
       <strong>Important:</strong>
       False or abusive reports may result in enforcement action.
-      StudentStream Law reviews all submissions carefully.
+      All submissions are tracked internally.
     </div>
 
   </div>
@@ -219,6 +245,7 @@ const supabase = createClient(
 );
 
 const form = document.getElementById("reportForm");
+const successBox = document.getElementById("successBox");
 
 form.onsubmit = async (e) => {
   e.preventDefault();
@@ -231,29 +258,56 @@ form.onsubmit = async (e) => {
     return;
   }
 
-  const issueType = document.getElementById("issueType").value;
-  const targetUser = document.getElementById("targetUser").value.trim();
+  const issueType = issueType.value;
+  const priority = document.getElementById("priority").value;
+  const target = targetUser.value.trim();
+  const evidence = document.getElementById("evidence").value.trim();
   const description = document.getElementById("description").value.trim();
 
-  const { error } = await supabase
+  /* 1. Create report row */
+  const { data:report, error:repErr } = await supabase
     .from("law_reports")
     .insert([{
       user_id: user.id,
       issue_type: issueType,
-      target: targetUser,
-      description: description,
+      target,
+      evidence_link: evidence,
+      description,
       status: "pending"
-    }]);
+    }])
+    .select()
+    .single();
 
-  if(error){
-    alert("❌ Error submitting report: " + error.message);
-    console.error(error);
+  if(repErr){
+    alert("❌ Error submitting report: " + repErr.message);
     return;
   }
 
-  alert("✅ Report submitted successfully. StudentStream Law will review it.");
+  /* 2. Auto-create case row */
+  const { error:caseErr } = await supabase
+    .from("law_cases")
+    .insert([{
+      title: issueType + " Report: " + target,
+      priority: priority,
+      status: "open",
+      report_id: report.id,
+      assigned_to: null
+    }]);
+
+  if(caseErr){
+    alert("Report submitted but case failed: " + caseErr.message);
+    return;
+  }
+
+  /* Success message */
   form.reset();
-  window.location.href = "index.html";
+
+  successBox.style.display="block";
+  successBox.innerHTML = `
+    ✅ Report received successfully.<br><br>
+    Thank you for reporting. A verified StudentStream Law staff member will be assigned to your case soon.<br><br>
+    Tracking ID: <b>${report.id}</b>
+  `;
 };
 </script>
 
