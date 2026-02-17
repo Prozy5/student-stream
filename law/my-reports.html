@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Reports · StudentStream Law</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="module" src="/js/platform-guard.js"></script>
+
+<style>
+:root{
+  --bg:#05080f;
+  --panel:#0c1626;
+  --accent:#ff5d5d;
+  --accent2:#ff2f2f;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 75%);
+  color:var(--text);
+}
+
+/* NAV */
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 26px;
+  background:rgba(10,20,40,.78);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+
+.brand{
+  font-weight:950;
+  font-size:15px;
+}
+
+.nav-links a{
+  margin-left:18px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:650;
+}
+
+.nav-links a:hover{color:var(--text)}
+
+/* PAGE */
+.container{
+  max-width:950px;
+  margin:70px auto;
+  padding:0 22px;
+}
+
+h1{
+  font-size:34px;
+  font-weight:980;
+  margin-bottom:10px;
+}
+
+h1 span{color:var(--accent)}
+
+p{
+  color:var(--muted);
+  margin-bottom:25px;
+  line-height:1.6;
+}
+
+/* REPORT LIST */
+.reportCard{
+  background:rgba(12,22,38,.92);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:16px;
+  transition:.2s;
+}
+
+.reportCard:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,93,93,.35);
+}
+
+.reportTitle{
+  font-size:16px;
+  font-weight:900;
+}
+
+.reportMeta{
+  margin-top:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.statusTag{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:850;
+  border:1px solid rgba(255,255,255,.12);
+}
+
+.pending{color:#ffd28a;border-color:rgba(255,210,138,.25)}
+.assigned{color:#9dffb8;border-color:rgba(157,255,184,.25)}
+.resolved{color:#7ec8ff;border-color:rgba(126,200,255,.25)}
+
+.staffBox{
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.02);
+  font-size:13px;
+  color:var(--muted);
+}
+
+.empty{
+  padding:40px;
+  text-align:center;
+  opacity:.7;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:18px;
+}
+
+footer{
+  text-align:center;
+  margin-top:70px;
+  padding:30px;
+  border-top:1px solid var(--border);
+  font-size:13px;
+  color:var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="brand">⚖️ StudentStream Law Division</div>
+
+  <div class="nav-links">
+    <a href="index.html">Law Home</a>
+    <a href="report.html">Submit Report</a>
+    <a href="creator-rights.html">Creator Rights</a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="container">
+
+  <h1>My <span>Reports</span></h1>
+  <p>
+    Track your submitted reports.  
+    If no staff member is assigned yet, your case is still in review.
+  </p>
+
+  <div id="reportList">Loading your reports...</div>
+
+</div>
+
+<footer>
+  © 2026 StudentStream Law Division · User Report Tracking Portal
+</footer>
+
+<!-- SUPABASE -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const reportList = document.getElementById("reportList");
+
+/* LOAD USER REPORTS */
+async function loadMyReports(){
+
+  // Require login
+  const { data:{user} } = await supabase.auth.getUser();
+  if(!user){
+    alert("You must be logged in to view your reports.");
+    location.href="/login.html";
+    return;
+  }
+
+  /* Pull reports */
+  const { data:reports, error } = await supabase
+    .from("law_reports")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending:false });
+
+  if(error){
+    reportList.innerHTML = "❌ Failed loading reports.";
+    console.error(error);
+    return;
+  }
+
+  if(!reports || reports.length===0){
+    reportList.innerHTML = `
+      <div class="empty">
+        You have not submitted any reports yet.<br><br>
+        <a href="report.html" style="color:var(--accent);font-weight:800;">
+          Submit your first report →
+        </a>
+      </div>
+    `;
+    return;
+  }
+
+  reportList.innerHTML = "";
+
+  /* Render */
+  reports.forEach(r=>{
+
+    let tagClass="pending";
+    let tagText="Pending Review";
+
+    if(r.status==="assigned"){
+      tagClass="assigned";
+      tagText="Staff Assigned";
+    }
+
+    if(r.status==="resolved"){
+      tagClass="resolved";
+      tagText="Resolved";
+    }
+
+    const staffMessage =
+      r.assigned_staff
+        ? `✅ Assigned Staff: <b>${r.assigned_staff}</b>`
+        : `⏳ Thank you for reporting. A StudentStream Law staff member will be assigned soon.`;
+
+    const div=document.createElement("div");
+    div.className="reportCard";
+
+    div.innerHTML=`
+      <div class="reportTitle">${r.issue_type}</div>
+      <div class="reportMeta">
+        Target: <b>${r.target}</b><br>
+        Submitted: ${new Date(r.created_at).toLocaleString()}
+      </div>
+
+      <span class="statusTag ${tagClass}">
+        ${tagText}
+      </span>
+
+      <div class="staffBox">
+        ${staffMessage}
+      </div>
+    `;
+
+    reportList.appendChild(div);
+  });
+}
+
+loadMyReports();
+</script>
+
+</body>
+</html>
