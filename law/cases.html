@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Case File · StudentStream Law</title>
+<title>Law Staff Cases · StudentStream Law</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script type="module" src="/js/platform-guard.js"></script>
@@ -25,13 +25,13 @@ body{
 }
 
 header{
-  padding:18px 24px;
+  padding:18px 22px;
   border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:rgba(10,20,40,.75);
-  backdrop-filter:blur(10px);
+  background:rgba(10,20,40,.78);
+  backdrop-filter:blur(12px);
 }
 
 header b{
@@ -44,89 +44,78 @@ header b{
   padding:35px 20px;
 }
 
-.caseBox{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:24px;
-}
-
 h1{
   margin:0;
-  font-size:26px;
+  font-size:22px;
   font-weight:950;
 }
 
-.meta{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:14px;
+.searchRow{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:20px 0;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin-top:20px;
-}
-
-.section{
-  margin-top:25px;
-}
-
-.card{
-  padding:18px;
-  border-radius:16px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.02);
-}
-
-.card h3{
-  margin:0 0 12px;
-}
-
-select, textarea, input{
-  width:100%;
-  margin-top:10px;
+input, select{
+  flex:1;
+  min-width:180px;
   padding:12px;
   border-radius:12px;
   border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
+  background:rgba(255,255,255,.03);
   color:white;
   outline:none;
 }
 
-textarea{min-height:100px}
-
-button{
-  margin-top:12px;
-  padding:11px 16px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:850;
-  color:white;
-  background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
-}
-
-button.secondary{
-  background:rgba(255,255,255,.05);
+.caseCard{
+  background:var(--panel);
   border:1px solid var(--border);
+  padding:18px;
+  border-radius:16px;
+  margin-bottom:14px;
+  cursor:pointer;
+  transition:.2s;
 }
 
-.logItem{
-  padding:10px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.08);
-  margin-top:10px;
+.caseCard:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,93,93,.35);
+}
+
+.caseTitle{
+  font-size:16px;
+  font-weight:900;
+}
+
+.caseMeta{
+  margin-top:6px;
   font-size:13px;
   color:var(--muted);
 }
 
-.dangerZone{
-  margin-top:25px;
-  border:1px solid rgba(255,50,50,.35);
-  background:rgba(255,50,50,.06);
+.pill{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:850;
+  border:1px solid rgba(255,255,255,.12);
+}
+
+.open{color:#00ffb3;}
+.investigating{color:#ffd966;}
+.resolved{color:#77ff77;}
+.dismissed{color:#ff7777;}
+.archived{color:#aaa;}
+
+.empty{
+  padding:40px;
+  text-align:center;
+  opacity:.6;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:16px;
 }
 </style>
 </head>
@@ -135,73 +124,33 @@ button.secondary{
 
 <header>
   <div onclick="history.back()" style="cursor:pointer;">← Back</div>
-  <b>⚖️ StudentStream Law Case File</b>
+  <b>⚖️ StudentStream Law Staff Cases</b>
 </header>
 
 <div class="wrap">
 
-  <div class="caseBox">
+  <h1>Internal Enforcement Reports</h1>
+  <p style="color:var(--muted);margin-top:8px;">
+    This system is restricted to verified StudentStreamHQ Law Staff only.
+    All user reports are processed here.
+  </p>
 
-    <h1 id="caseTitle">Loading...</h1>
-    <div class="meta" id="caseMeta"></div>
+  <!-- SEARCH + FILTER -->
+  <div class="searchRow">
+    <input id="searchInput" placeholder="Search report/case title..." />
 
-    <!-- CASE MANAGEMENT GRID -->
-    <div class="grid">
-
-      <!-- STATUS + ASSIGNMENT -->
-      <div class="card">
-        <h3>Case Control</h3>
-
-        <label>Status</label>
-        <select id="statusSelect">
-          <option value="open">Open</option>
-          <option value="investigating">Investigating</option>
-          <option value="resolved">Resolved</option>
-          <option value="dismissed">Dismissed</option>
-          <option value="archived">Archived</option>
-        </select>
-
-        <label>Assigned Staff</label>
-        <select id="assignSelect"></select>
-
-        <button onclick="saveCaseUpdates()">Save Updates</button>
-      </div>
-
-      <!-- ACTION LOGS -->
-      <div class="card">
-        <h3>Action Timeline</h3>
-        <div id="logList">Loading logs...</div>
-      </div>
-
-    </div>
-
-    <!-- NOTES -->
-    <div class="section card">
-      <h3>Internal Notes</h3>
-      <textarea id="noteInput" placeholder="Staff-only notes..."></textarea>
-      <button onclick="addNote()">Add Note</button>
-
-      <div id="noteList"></div>
-    </div>
-
-    <!-- EVIDENCE UPLOAD -->
-    <div class="section card">
-      <h3>Evidence Upload</h3>
-
-      <input type="file" id="fileInput" />
-      <button onclick="uploadEvidence()">Upload Evidence</button>
-
-      <div id="evidenceList"></div>
-    </div>
-
-    <!-- CHIEF ONLY DANGER -->
-    <div id="dangerZone" class="section card dangerZone" style="display:none;">
-      <h3>Chief/Admin Tools</h3>
-      <button onclick="archiveCase()">📦 Archive Case</button>
-      <button onclick="deleteCase()">🗑 Delete Case</button>
-    </div>
-
+    <select id="statusFilter">
+      <option value="">All Status</option>
+      <option value="open">Open</option>
+      <option value="investigating">Investigating</option>
+      <option value="resolved">Resolved</option>
+      <option value="dismissed">Dismissed</option>
+      <option value="archived">Archived</option>
+    </select>
   </div>
+
+  <!-- CASE LIST -->
+  <div id="caseList">Loading enforcement cases...</div>
 
 </div>
 
@@ -213,21 +162,19 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const caseId = new URLSearchParams(location.search).get("id");
+const caseList = document.getElementById("caseList");
 
-let caseData=null;
-let currentRank="none";
-let currentUser=null;
+let allCases = [];
 
-/* LOAD ACCESS */
-async function checkAccess(){
+/* 🔒 LAW STAFF ACCESS ONLY */
+async function requireLawStaff(){
   const { data:{user} } = await supabase.auth.getUser();
+
   if(!user){
-    alert("Law login required.");
+    alert("Law Staff login required.");
     location.href="law-login.html";
     return;
   }
-  currentUser=user;
 
   const { data:profile } = await supabase
     .from("profiles")
@@ -235,219 +182,77 @@ async function checkAccess(){
     .eq("id", user.id)
     .single();
 
-  currentRank=profile.law_rank;
-
-  if(currentRank==="none"){
-    alert("Access denied.");
+  if(!profile || profile.law_rank === "none"){
+    alert("Access denied. Verified Law Staff only.");
     location.href="law.html";
-  }
-
-  if(currentRank==="chief" || currentRank==="admin"){
-    document.getElementById("dangerZone").style.display="block";
+    return;
   }
 }
 
-/* LOAD CASE */
-async function loadCase(){
+/* LOAD CASES */
+async function loadCases(){
   const { data } = await supabase
     .from("law_cases")
     .select("*")
-    .eq("id", caseId)
-    .single();
+    .neq("status","archived")
+    .order("created_at",{ascending:false});
 
-  caseData=data;
-
-  document.getElementById("caseTitle").textContent=data.title;
-  document.getElementById("caseMeta").textContent =
-    `Priority: ${data.priority} • Created: ${new Date(data.created_at).toLocaleString()}`;
-
-  document.getElementById("statusSelect").value=data.status;
+  allCases = data || [];
+  renderCases(allCases);
 }
 
-/* STAFF DROPDOWN */
-async function loadStaff(){
-  const { data:staff } = await supabase
-    .from("profiles")
-    .select("id, username, law_rank")
-    .neq("law_rank","none");
+/* RENDER */
+function renderCases(cases){
+  caseList.innerHTML="";
 
-  const dropdown=document.getElementById("assignSelect");
-  dropdown.innerHTML=`<option value="">Unassigned</option>`;
+  if(cases.length===0){
+    caseList.innerHTML=`<div class="empty">No active enforcement cases.</div>`;
+    return;
+  }
 
-  staff.forEach(s=>{
-    dropdown.innerHTML += `
-      <option value="${s.id}">
-        ${s.username} (${s.law_rank})
-      </option>
+  cases.forEach(c=>{
+    const div=document.createElement("div");
+    div.className="caseCard";
+
+    div.innerHTML=`
+      <div class="caseTitle">${c.title}</div>
+      <div class="caseMeta">
+        Priority: <b>${c.priority}</b> • Status: <b>${c.status}</b>
+      </div>
+      <span class="pill ${c.status}">
+        ${c.status.toUpperCase()}
+      </span>
     `;
-  });
 
-  dropdown.value=caseData.assigned_to || "";
-}
+    div.onclick=()=>{
+      location.href="case.html?id="+c.id;
+    };
 
-/* SAVE UPDATES */
-window.saveCaseUpdates = async function(){
-  const status=document.getElementById("statusSelect").value;
-  const assigned=document.getElementById("assignSelect").value || null;
-
-  await supabase.from("law_cases")
-    .update({ status, assigned_to:assigned })
-    .eq("id", caseId);
-
-  await logAction("Updated case status/assignment");
-
-  alert("Case updated.");
-};
-
-/* LOG ACTION */
-async function logAction(action){
-  await supabase.from("law_action_logs").insert([{
-    case_id: caseId,
-    staff_user: currentUser.id,
-    action
-  }]);
-  loadLogs();
-}
-
-/* LOAD LOGS */
-async function loadLogs(){
-  const { data:logs } = await supabase
-    .from("law_action_logs")
-    .select("*")
-    .eq("case_id", caseId)
-    .order("created_at",{ascending:false});
-
-  const list=document.getElementById("logList");
-  list.innerHTML="";
-
-  if(!logs || logs.length===0){
-    list.innerHTML="<div class='logItem'>No actions yet.</div>";
-    return;
-  }
-
-  logs.forEach(l=>{
-    const div=document.createElement("div");
-    div.className="logItem";
-    div.textContent =
-      `${new Date(l.created_at).toLocaleString()} • ${l.action}`;
-    list.appendChild(div);
+    caseList.appendChild(div);
   });
 }
 
-/* NOTES */
-async function loadNotes(){
-  const { data } = await supabase
-    .from("law_case_notes")
-    .select("*")
-    .eq("case_id", caseId)
-    .order("created_at",{ascending:false});
+/* LIVE FILTER */
+document.getElementById("searchInput").addEventListener("input", filterCases);
+document.getElementById("statusFilter").addEventListener("change", filterCases);
 
-  const list=document.getElementById("noteList");
-  list.innerHTML="";
+function filterCases(){
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const status = document.getElementById("statusFilter").value;
 
-  data.forEach(n=>{
-    const div=document.createElement("div");
-    div.className="logItem";
-    div.textContent=n.note;
-    list.appendChild(div);
+  const filtered = allCases.filter(c=>{
+    const matchTitle = c.title.toLowerCase().includes(search);
+    const matchStatus = status ? c.status===status : true;
+    return matchTitle && matchStatus;
   });
+
+  renderCases(filtered);
 }
 
-window.addNote = async function(){
-  const text=document.getElementById("noteInput").value.trim();
-  if(!text) return;
-
-  await supabase.from("law_case_notes").insert([{
-    case_id: caseId,
-    staff_user: currentUser.id,
-    note:text
-  }]);
-
-  await logAction("Added internal note");
-
-  document.getElementById("noteInput").value="";
-  loadNotes();
-};
-
-/* EVIDENCE UPLOAD */
-window.uploadEvidence = async function(){
-  const file=document.getElementById("fileInput").files[0];
-  if(!file) return alert("Select a file first.");
-
-  const path=`case-${caseId}/${Date.now()}-${file.name}`;
-
-  const { error } = await supabase.storage
-    .from("law-evidence")
-    .upload(path,file);
-
-  if(error){
-    alert("Upload failed: "+error.message);
-    return;
-  }
-
-  const { data:urlData } = supabase.storage
-    .from("law-evidence")
-    .getPublicUrl(path);
-
-  await supabase.from("law_case_evidence").insert([{
-    case_id: caseId,
-    uploaded_by: currentUser.id,
-    file_url: urlData.publicUrl
-  }]);
-
-  await logAction("Uploaded evidence file");
-
-  alert("Evidence uploaded.");
-  loadEvidence();
-};
-
-/* LOAD EVIDENCE */
-async function loadEvidence(){
-  const { data } = await supabase
-    .from("law_case_evidence")
-    .select("*")
-    .eq("case_id", caseId);
-
-  const list=document.getElementById("evidenceList");
-  list.innerHTML="";
-
-  data.forEach(e=>{
-    const div=document.createElement("div");
-    div.className="logItem";
-    div.innerHTML=`📎 <a href="${e.file_url}" target="_blank">${e.file_url}</a>`;
-    list.appendChild(div);
-  });
-}
-
-/* CHIEF ONLY */
-window.archiveCase = async function(){
-  await supabase.from("law_cases")
-    .update({ status:"archived" })
-    .eq("id", caseId);
-
-  await logAction("Archived case");
-
-  alert("Case archived.");
-};
-
-window.deleteCase = async function(){
-  if(!confirm("Delete permanently?")) return;
-
-  await supabase.from("law_cases")
-    .delete()
-    .eq("id", caseId);
-
-  alert("Case deleted.");
-  location.href="law-dashboard.html";
-};
-
+/* INIT */
 (async()=>{
-  await checkAccess();
-  await loadCase();
-  await loadStaff();
-  await loadLogs();
-  await loadNotes();
-  await loadEvidence();
+  await requireLawStaff();
+  await loadCases();
 })();
 </script>
 
