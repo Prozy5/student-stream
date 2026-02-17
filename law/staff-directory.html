@@ -56,62 +56,76 @@ nav{
 
 /* PAGE */
 .container{
-  max-width:1050px;
+  max-width:1100px;
   margin:70px auto;
   padding:0 22px;
 }
 
 h1{
-  font-size:38px;
-  font-weight:980;
+  font-size:40px;
+  font-weight:990;
 }
 
-h1 span{
-  color:var(--accent);
-}
+h1 span{color:var(--accent)}
 
 p{
   margin-top:12px;
   color:var(--muted);
-  line-height:1.65;
-  max-width:850px;
+  line-height:1.7;
+  max-width:900px;
+}
+
+/* DISCLAIMER */
+.disclaimer{
+  margin-top:25px;
+  padding:16px 18px;
+  border-radius:16px;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.06);
+  font-size:13.5px;
+  color:var(--muted);
+}
+
+.disclaimer strong{
+  color:var(--accent);
 }
 
 /* CHIEF BOX */
 .chiefBox{
   margin-top:45px;
-  padding:22px;
-  border-radius:18px;
-  border:1px solid rgba(255,93,93,.45);
-  background:rgba(255,93,93,.08);
+  padding:26px;
+  border-radius:20px;
+  border:1px solid rgba(255,93,93,.55);
+  background:rgba(255,93,93,.09);
 }
 
 .chiefBadge{
   display:inline-block;
   margin-top:10px;
-  padding:6px 12px;
+  padding:7px 14px;
   border-radius:999px;
   font-size:12px;
-  font-weight:900;
+  font-weight:950;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#250000;
+  color:#240000;
 }
 
 .chiefName{
-  margin-top:12px;
-  font-size:18px;
-  font-weight:950;
+  margin-top:14px;
+  font-size:20px;
+  font-weight:990;
 }
 
 .chiefMeta{
-  margin-top:5px;
+  margin-top:6px;
   font-size:13px;
   color:var(--muted);
+  line-height:1.5;
 }
 
-/* STAFF LIST */
+/* STAFF SECTION */
 .staffSection{
-  margin-top:45px;
+  margin-top:55px;
 }
 
 .staffSection h2{
@@ -120,43 +134,82 @@ p{
   margin-bottom:14px;
 }
 
-.staffList{
+/* GRID */
+.staffGrid{
   display:grid;
-  gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
 }
 
+/* STAFF CARD */
 .staffCard{
-  background:rgba(12,22,38,.85);
+  background:rgba(12,22,38,.88);
   border:1px solid var(--border);
-  border-radius:16px;
+  border-radius:18px;
   padding:18px;
+  transition:.2s;
 }
 
-.staffCard b{
+.staffCard:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,93,93,.35);
+}
+
+.staffName{
   font-size:15px;
+  font-weight:950;
 }
 
-.staffCard span{
-  display:block;
+.staffRank{
   margin-top:6px;
-  color:var(--muted);
   font-size:13px;
+  color:var(--muted);
+}
+
+.rankBadge{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:11.5px;
+  font-weight:850;
+  border:1px solid rgba(255,255,255,.12);
+  color:var(--muted);
+}
+
+.rank-chief{
+  border-color:rgba(255,93,93,.55);
+  color:var(--accent);
+}
+
+.rank-director{
+  border-color:rgba(255,210,138,.35);
+  color:#ffd28a;
+}
+
+.rank-investigator{
+  border-color:rgba(157,255,184,.25);
+  color:#9dffb8;
+}
+
+.rank-officer{
+  border-color:rgba(126,200,255,.25);
+  color:#7ec8ff;
 }
 
 /* EMPTY */
 .empty{
-  padding:35px;
+  padding:40px;
   text-align:center;
   border:1px dashed rgba(255,255,255,.15);
-  border-radius:16px;
+  border-radius:18px;
   color:var(--muted);
-  margin-top:20px;
 }
 
 /* FOOTER */
 footer{
   text-align:center;
-  margin-top:80px;
+  margin-top:85px;
   padding:35px;
   border-top:1px solid var(--border);
   color:var(--muted);
@@ -181,29 +234,35 @@ footer{
 <!-- PAGE -->
 <div class="container">
 
-  <h1>Verified <span>Staff Directory</span></h1>
+  <h1>Verified <span>Staff Registry</span></h1>
 
   <p>
-    This directory contains publicly visible enforcement staff
-    verified under StudentStreamHQ Law Division.
-    Staff ranks are restricted and monitored internally.
+    This public directory lists verified enforcement personnel under
+    StudentStreamHQ Law Division.  
+    Staff roles are restricted, monitored, and assigned internally.
   </p>
+
+  <div class="disclaimer">
+    <strong>Transparency Notice:</strong>
+    Only confirmed StudentStreamHQ enforcement accounts appear here.  
+    No private contact details are ever displayed.
+  </div>
 
   <!-- CHIEF -->
   <div id="chiefContainer"></div>
 
-  <!-- STAFF -->
+  <!-- STAFF GRID -->
   <div class="staffSection">
     <h2>Active Enforcement Staff</h2>
-    <div id="staffList" class="staffList">
-      Loading staff directory...
+    <div id="staffGrid" class="staffGrid">
+      Loading staff registry...
     </div>
   </div>
 
 </div>
 
 <footer>
-  © 2026 StudentStream Law Division · Transparency Staff Registry
+  © 2026 StudentStream Law Division · Public Enforcement Transparency Registry
 </footer>
 
 <!-- SUPABASE LOAD -->
@@ -216,11 +275,21 @@ const supabase = createClient(
 );
 
 const chiefContainer = document.getElementById("chiefContainer");
-const staffList = document.getElementById("staffList");
+const staffGrid = document.getElementById("staffGrid");
 
-function formatRank(rank){
-  if(!rank) return "Staff";
-  return rank.charAt(0).toUpperCase() + rank.slice(1);
+/* Rank Formatting */
+function badgeClass(rank){
+  if(rank==="chief") return "rank-chief";
+  if(rank==="director") return "rank-director";
+  if(rank==="investigator") return "rank-investigator";
+  return "rank-officer";
+}
+
+function rankLabel(rank){
+  if(rank==="chief") return "Verified Chief Authority";
+  if(rank==="director") return "Division Director";
+  if(rank==="investigator") return "Case Investigator";
+  return "Enforcement Officer";
 }
 
 async function loadStaffDirectory(){
@@ -228,17 +297,16 @@ async function loadStaffDirectory(){
   const { data:staff, error } = await supabase
     .from("profiles")
     .select("username, law_rank")
-    .neq("law_rank", "none")
-    .order("law_rank", { ascending: true });
+    .neq("law_rank", "none");
 
   if(error){
-    staffList.innerHTML = "❌ Failed loading staff list.";
+    staffGrid.innerHTML="❌ Failed loading staff registry.";
     console.error(error);
     return;
   }
 
-  if(!staff || staff.length === 0){
-    staffList.innerHTML = `
+  if(!staff || staff.length===0){
+    staffGrid.innerHTML=`
       <div class="empty">
         No verified enforcement staff are currently listed.
       </div>
@@ -246,39 +314,43 @@ async function loadStaffDirectory(){
     return;
   }
 
-  staffList.innerHTML = "";
+  /* Chief first */
+  const chief = staff.find(s=>s.law_rank==="chief");
+  const others = staff.filter(s=>s.law_rank!=="chief");
 
-  // Separate Chief
-  const chief = staff.find(s => s.law_rank === "chief");
-  const others = staff.filter(s => s.law_rank !== "chief");
-
-  // Render Chief Box
   if(chief){
-    chiefContainer.innerHTML = `
+    chiefContainer.innerHTML=`
       <div class="chiefBox">
         <h2>Verified Chief Authority</h2>
         <div class="chiefBadge">✔ VERIFIED CHIEF</div>
 
         <div class="chiefName">${chief.username}</div>
         <div class="chiefMeta">
-          Chief of StudentStream Law Enforcement Division
+          Chief Enforcement Officer of StudentStream Law Division.<br>
+          Holds final authority over investigations, enforcement actions, and staff assignment.
         </div>
       </div>
     `;
   }
 
-  // Render Other Staff
-  others.forEach(person => {
+  staffGrid.innerHTML="";
 
-    const div = document.createElement("div");
-    div.className = "staffCard";
+  /* Render Staff */
+  others.forEach(person=>{
 
-    div.innerHTML = `
-      <b>${person.username}</b>
-      <span>Rank: ${formatRank(person.law_rank)}</span>
+    const div=document.createElement("div");
+    div.className="staffCard";
+
+    div.innerHTML=`
+      <div class="staffName">${person.username}</div>
+      <div class="staffRank">${rankLabel(person.law_rank)}</div>
+
+      <div class="rankBadge ${badgeClass(person.law_rank)}">
+        Rank: ${person.law_rank.toUpperCase()}
+      </div>
     `;
 
-    staffList.appendChild(div);
+    staffGrid.appendChild(div);
   });
 
 }
