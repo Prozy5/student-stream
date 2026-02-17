@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>StudentStreamHQ — Division Directory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Division Directory — StudentStreamHQ</title>
 
   <style>
     * {
@@ -16,173 +17,231 @@
       min-height: 100vh;
       background: radial-gradient(circle at top, #10101c, #040406);
       color: white;
-      padding: 35px 20px;
+      padding: 40px 20px;
+    }
+
+    header {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 25px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #4da3ff;
+    }
+
+    nav a {
+      color: #aaa;
+      margin-left: 18px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: 70px auto 50px;
       text-align: center;
     }
 
-    .wrap {
-      max-width: 950px;
-      margin: auto;
+    .heroBadge {
+      display: inline-block;
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      background: rgba(77,163,255,0.12);
+      border: 1px solid rgba(77,163,255,0.25);
+      color: #6db4ff;
+      margin-bottom: 18px;
     }
 
-    .title {
-      font-size: 2.6rem;
+    .hero h1 {
+      font-size: 44px;
+      margin: 0 0 14px;
       font-weight: 900;
-      margin-bottom: 10px;
     }
 
-    .sub {
-      opacity: 0.75;
-      font-size: 1.05rem;
-      margin-bottom: 40px;
+    .hero p {
+      opacity: 0.82;
+      font-size: 18px;
+      max-width: 750px;
+      margin: auto;
+      line-height: 1.5;
     }
 
     .grid {
+      max-width: 1100px;
+      margin: auto;
       display: grid;
-      gap: 18px;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
     }
 
     .card {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.10);
-      padding: 22px;
       border-radius: 18px;
-      text-align: left;
-      transition: 0.2s;
+      padding: 24px;
+      transition: 0.25s;
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(108,242,194,0.45);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+      transform: translateY(-5px);
+      border-color: rgba(77,163,255,0.45);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.55);
     }
 
-    .tag {
+    .divisionName {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      opacity: 0.8;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+
+    .statusTag {
       display: inline-block;
-      font-size: 0.75rem;
       padding: 6px 12px;
       border-radius: 999px;
-      margin-bottom: 12px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 800;
     }
 
     .open {
       background: rgba(108,242,194,0.12);
       color: #6cf2c2;
-      border: 1px solid rgba(108,242,194,0.25);
     }
 
-    .maintenance {
-      background: rgba(255,200,80,0.10);
-      color: #ffd27a;
-      border: 1px solid rgba(255,200,80,0.25);
+    .maint {
+      background: rgba(255,200,80,0.12);
+      color: #ffd37a;
     }
 
     .closed {
-      background: rgba(255,80,80,0.10);
-      color: #ff8080;
-      border: 1px solid rgba(255,80,80,0.25);
+      background: rgba(255,90,90,0.12);
+      color: #ff7a7a;
     }
 
-    h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      font-weight: 900;
-    }
-
-    p {
-      margin-top: 10px;
-      opacity: 0.75;
-      font-size: 0.98rem;
-      line-height: 1.4;
-    }
-
-    .backBtn {
-      margin-top: 45px;
+    .btn {
+      margin-top: 18px;
       display: inline-block;
-      padding: 14px 26px;
+      padding: 12px 18px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.20);
+      font-weight: 800;
+      font-size: 14px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.18);
       background: rgba(255,255,255,0.04);
       color: white;
-      cursor: pointer;
-      font-weight: 800;
       transition: 0.2s;
-      text-decoration: none;
     }
 
-    .backBtn:hover {
+    .btn:hover {
       transform: translateY(-2px);
       border-color: rgba(108,242,194,0.45);
+    }
+
+    footer {
+      margin-top: 80px;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.55;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 35px 0;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <div class="title">Division Directory</div>
-    <div class="sub">
-      Official StudentStreamHQ divisions currently operating across the platform.
+  <!-- HEADER -->
+  <header>
+    <div class="logo">StudentStreamHQ</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="company.html">Company</a>
+      <a href="staff-directory.html">Staff</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="heroBadge">Official Division Directory</div>
+    <h1>StudentStream Divisions</h1>
+    <p>
+      StudentStreamHQ operates as a multi-division platform network.
+      Each division is independently structured with its own mission,
+      leadership, and operational status.
+    </p>
+  </section>
+
+  <!-- DIVISION GRID -->
+  <section class="grid">
+
+    <!-- SS FILMS -->
+    <div class="card">
+      <div class="divisionName">SS Films</div>
+      <p>
+        StudentStream’s entertainment and production division for independent films,
+        originals, documentaries, and creator-owned streaming media.
+      </p>
+      <span class="statusTag open">Open</span><br>
+      <a class="btn" href="ss-films.html">View Division</a>
     </div>
 
-    <div class="grid">
-
-      <!-- StudentStream Studios -->
-      <div class="card">
-        <span class="tag open">OPEN</span>
-        <h2>SS:S — StudentStream Studios</h2>
-        <p>
-          Official production division for StudentStream Originals,
-          creator partnerships, and studio content development.
-        </p>
-      </div>
-
-      <!-- SS Films -->
-      <div class="card">
-        <span class="tag maintenance">MAINTENANCE</span>
-        <h2>SS:F — SS Films Division</h2>
-        <p>
-          Film and cinematic branch of StudentStreamHQ.
-          Currently expanding productions and internal systems.
-        </p>
-      </div>
-
-      <!-- StudentStream Investigations -->
-      <div class="card">
-        <span class="tag closed">CLOSED</span>
-        <h2>SS:I — StudentStream Investigations</h2>
-        <p>
-          Archival + investigative division.
-          Not publicly accessible during platform rebuild.
-        </p>
-      </div>
-
-      <!-- Creator Tools -->
-      <div class="card">
-        <span class="tag maintenance">MAINTENANCE</span>
-        <h2>SS:C — Creator Systems</h2>
-        <p>
-          Creator monetization tools, dashboards, payouts,
-          and platform-wide creator upgrades.
-        </p>
-      </div>
-
-      <!-- StudentStream Network -->
-      <div class="card">
-        <span class="tag open">OPEN</span>
-        <h2>SS:N — StudentStream Network</h2>
-        <p>
-          Core platform infrastructure powering community streaming,
-          accounts, discovery, and content systems.
-        </p>
-      </div>
-
+    <!-- STUDIOS -->
+    <div class="card">
+      <div class="divisionName">StudentStream Studios</div>
+      <p>
+        A creative development division providing tools, infrastructure,
+        and production resources for creators and media teams.
+      </p>
+      <span class="statusTag open">Open</span><br>
+      <a class="btn" href="studios.html">View Division</a>
     </div>
 
-    <a href="/index.html" class="backBtn">← Back to Home</a>
+    <!-- LAW -->
+    <div class="card">
+      <div class="divisionName">SSI Law (StudentStream Law)</div>
+      <p>
+        Legal infrastructure division designed to protect creators,
+        intellectual property, and emerging digital businesses.
+      </p>
+      <span class="statusTag maint">Maintenance</span><br>
+      <a class="btn" href="ssi-law.html">View Division</a>
+    </div>
 
-  </div>
+    <!-- INVESTIGATIONS -->
+    <div class="card">
+      <div class="divisionName">SS:I — StudentStream Investigations</div>
+      <p>
+        Specialized investigative division focused on uncovering hidden systems,
+        untold stories, intelligence-driven documentaries, and truth media.
+      </p>
+      <span class="statusTag open">Open</span><br>
+      <a class="btn" href="ssi.html">View Division</a>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 StudentStreamHQ · Official Division Directory
+  </footer>
+
 </body>
 </html>
