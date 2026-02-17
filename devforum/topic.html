@@ -22,7 +22,7 @@
       padding:18px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.82);
+      background:rgba(5,7,12,.85);
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -37,16 +37,17 @@
     .back{
       opacity:.65;
       cursor:pointer;
-      font-weight:600;
+      font-weight:700;
     }
 
     .wrap{
       max-width:950px;
       margin:55px auto;
       padding:0 20px;
+      padding-bottom:140px;
     }
 
-    /* Topic Thread Post */
+    /* Topic Post */
     .topicHero{
       padding:38px;
       border-radius:24px;
@@ -57,7 +58,7 @@
     }
 
     .topicHero h1{
-      font-size:42px;
+      font-size:40px;
       font-weight:950;
       margin-bottom:14px;
     }
@@ -78,6 +79,7 @@
       font-size:13px;
       font-weight:900;
       margin-bottom:14px;
+      display:inline-block;
     }
 
     .lockedBanner{
@@ -112,12 +114,6 @@
       font-size:15px;
     }
 
-    .userInfo{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-
     .authorName{
       font-weight:900;
       display:flex;
@@ -125,13 +121,11 @@
       gap:8px;
     }
 
-    .staffName{
-      color:#4da3ff;
-    }
+    .staffName{color:#4da3ff;}
 
     .staffBadge{
       font-size:11px;
-      font-weight:900;
+      font-weight:950;
       padding:4px 10px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.15);
@@ -167,16 +161,14 @@
       transition:.2s;
     }
 
-    .modBtn:hover{
-      transform:scale(1.05);
-    }
+    .modBtn:hover{transform:scale(1.05);}
 
     .danger{
       border-color:rgba(255,77,77,.35);
       color:#ff4d4d;
     }
 
-    /* Replies Thread Layout */
+    /* Replies Thread */
     .replyHeader{
       display:flex;
       justify-content:space-between;
@@ -184,7 +176,7 @@
     }
 
     .replyCard{
-      padding:20px 22px;
+      padding:22px;
       border-radius:20px;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.02);
@@ -193,11 +185,12 @@
     }
 
     .replyText{
+      margin-top:12px;
       font-size:14px;
       line-height:1.7;
       opacity:.92;
-      margin-top:12px;
       white-space:pre-wrap;
+      padding-left:58px;
     }
 
     .accepted{
@@ -216,15 +209,15 @@
     /* Reaction Bar */
     .reactionBar{
       margin-top:14px;
+      padding-left:58px;
       display:flex;
-      gap:12px;
-      font-size:13px;
-      opacity:.85;
+      gap:10px;
     }
 
     .reactBtn{
       cursor:pointer;
       font-weight:850;
+      font-size:13px;
       padding:6px 10px;
       border-radius:12px;
       border:1px solid rgba(255,255,255,.08);
@@ -232,15 +225,14 @@
       transition:.2s;
     }
 
-    .reactBtn:hover{
-      transform:scale(1.08);
-    }
+    .reactBtn:hover{transform:scale(1.08);}
 
-    /* Staff Reply Actions */
+    /* Actions */
     .replyActions{
       margin-top:12px;
+      padding-left:58px;
       display:flex;
-      gap:12px;
+      gap:10px;
     }
 
     /* Composer */
@@ -287,14 +279,6 @@
       background:linear-gradient(135deg,#2f6fff,#4da3ff);
     }
 
-    footer{
-      text-align:center;
-      padding:90px 20px;
-      opacity:.35;
-      margin-top:90px;
-      font-size:13px;
-    }
-
     @keyframes fadeUp{
       from{opacity:0;transform:translateY(12px);}
       to{opacity:1;transform:translateY(0);}
@@ -311,16 +295,14 @@
 
 <div class="wrap">
 
-  <!-- Topic Thread -->
+  <!-- Topic -->
   <div class="topicHero">
-
     <div id="topicFlags"></div>
-
     <h1 id="topicTitle">Loading…</h1>
 
     <div class="userRow">
       <div class="avatar" id="topicAvatar">S</div>
-      <div class="userInfo">
+      <div>
         <div class="authorName" id="topicAuthor"></div>
         <div class="metaDate" id="topicDate"></div>
       </div>
@@ -328,13 +310,11 @@
 
     <div class="topicBody" id="topicBody"></div>
 
-    <!-- Staff Tools -->
     <div class="modTools" id="modTools" style="display:none;">
       <div class="modBtn" onclick="toggleLock()">🔒 Lock</div>
       <div class="modBtn" onclick="togglePin()">📌 Pin</div>
       <div class="modBtn danger" onclick="deleteTopic()">🗑 Delete</div>
     </div>
-
   </div>
 
   <!-- Replies -->
@@ -355,10 +335,6 @@
   </div>
 </div>
 
-<footer>
-  © 2026 StudentStreamHQ • Topic Thread View
-</footer>
-
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -369,31 +345,31 @@
 
   const topicId = new URLSearchParams(window.location.search).get("id");
 
-  let topicData = null;
-  let currentRole = "member";
+  let topicData=null;
+  let currentRole="member";
 
   function isStaff(role){
     return ["owner","admin","moderator"].includes(role);
   }
 
   function staffBadge(role){
-    if (!isStaff(role)) return "";
+    if(!isStaff(role)) return "";
     return `<span class="staffBadge badge-${role}">${role}</span>`;
   }
 
   async function loadUserRole(){
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    const { data:{user} } = await supabase.auth.getUser();
+    if(!user) return;
 
-    const { data: profile } = await supabase
+    const { data:profile } = await supabase
       .from("profiles")
       .select("role")
-      .eq("id", user.id)
+      .eq("id",user.id)
       .single();
 
     currentRole = profile?.role || "member";
 
-    if (isStaff(currentRole)){
+    if(isStaff(currentRole)){
       document.getElementById("modTools").style.display="flex";
     }
   }
@@ -402,81 +378,74 @@
     const { data } = await supabase
       .from("forum_topics")
       .select("*")
-      .eq("id", topicId)
+      .eq("id",topicId)
       .single();
 
-    topicData = data;
+    topicData=data;
 
-    document.getElementById("topicTitle").textContent = data.title;
-    document.getElementById("topicBody").textContent = data.content;
+    document.getElementById("topicTitle").textContent=data.title;
+    document.getElementById("topicBody").textContent=data.content;
     document.getElementById("topicDate").textContent =
       new Date(data.created_at).toLocaleString();
 
-    if (data.locked){
-      document.getElementById("topicFlags").innerHTML +=
-        `<div class="lockedBanner">🔒 Topic Locked</div>`;
-      document.getElementById("replyInput").disabled = true;
+    if(data.locked){
+      document.getElementById("topicFlags").innerHTML+=
+        `<div class="lockedBanner">🔒 Locked</div>`;
+      document.getElementById("replyInput").disabled=true;
     }
 
-    const { data: author } = await supabase
+    if(data.pinned){
+      document.getElementById("topicFlags").innerHTML+=
+        `<div class="pinnedBanner">📌 Pinned</div>`;
+    }
+
+    const { data:author } = await supabase
       .from("profiles")
-      .select("username, role")
-      .eq("id", data.user_id)
+      .select("username,role")
+      .eq("id",data.user_id)
       .single();
 
-    const username = author?.username || "Student";
-    const role = author?.role || "member";
-
     document.getElementById("topicAvatar").textContent =
-      username[0].toUpperCase();
+      author.username[0].toUpperCase();
 
-    document.getElementById("topicAuthor").innerHTML = `
-      <span class="${isStaff(role) ? "staffName":""}">
-        ${username}
+    document.getElementById("topicAuthor").innerHTML=
+      `<span class="${isStaff(author.role)?"staffName":""}">
+        ${author.username}
       </span>
-      ${staffBadge(role)}
-    `;
+      ${staffBadge(author.role)}`;
   }
 
   async function loadReplies(){
-    const { data: replies } = await supabase
+    const { data:replies } = await supabase
       .from("forum_replies")
       .select("*")
-      .eq("topic_id", topicId)
+      .eq("topic_id",topicId)
       .order("created_at");
 
     document.getElementById("replyCount").textContent =
-      replies.length + " Replies";
+      replies.length+" Replies";
 
-    const replyList = document.getElementById("replyList");
-    replyList.innerHTML="";
+    const list=document.getElementById("replyList");
+    list.innerHTML="";
 
-    for (const r of replies){
+    for(const r of replies){
 
-      const { data: profile } = await supabase
+      const { data:user } = await supabase
         .from("profiles")
-        .select("username, role")
-        .eq("id", r.user_id)
+        .select("username,role")
+        .eq("id",r.user_id)
         .single();
 
-      const username = profile?.username || "Student";
-      const role = profile?.role || "member";
-
-      const div = document.createElement("div");
+      const div=document.createElement("div");
       div.className="replyCard";
 
-      if (topicData.accepted_reply_id === r.id){
-        div.classList.add("accepted");
-        div.innerHTML += `<div class="acceptedLabel">✅ Accepted Answer</div>`;
-      }
-
-      div.innerHTML += `
+      div.innerHTML=`
         <div class="userRow">
-          <div class="avatar">${username[0].toUpperCase()}</div>
-          <div class="userInfo">
-            <div class="authorName ${isStaff(role) ? "staffName":""}">
-              ${username}
-              ${staffBadge(role)}
+          <div class="avatar">${user.username[0]}</div>
+          <div>
+            <div class="authorName ${isStaff(user.role)?"staffName":""}">
+              ${user.username}
+              ${staffBadge(user.role)}
             </div>
             <div class="metaDate">${new Date(r.created_at).toLocaleString()}</div>
           </div>
@@ -485,50 +454,47 @@
         <div class="replyText">${r.content}</div>
 
         <div class="reactionBar">
-          <div class="reactBtn" onclick="react('${r.id}','like')">👍 Like</div>
-          <div class="reactBtn" onclick="react('${r.id}','heart')">❤️ Heart</div>
-          <div class="reactBtn" onclick="react('${r.id}','eyes')">👀 Watch</div>
+          <div class="reactBtn" onclick="reactReply('${r.id}','like')">👍</div>
+          <div class="reactBtn" onclick="reactReply('${r.id}','heart')">❤️</div>
+          <div class="reactBtn" onclick="reactReply('${r.id}','eyes')">👀</div>
         </div>
 
-        ${isStaff(currentRole) ? `
+        ${isStaff(currentRole)?`
           <div class="replyActions">
             <div class="reactBtn" onclick="acceptReply('${r.id}')">✅ Accept</div>
             <div class="reactBtn danger" onclick="deleteReply('${r.id}')">🗑 Delete</div>
           </div>
-        ` : ""}
+        `:""}
       `;
 
-      replyList.appendChild(div);
+      list.appendChild(div);
     }
   }
 
   window.submitReply = async function(){
-    const text = document.getElementById("replyInput").value.trim();
-    if (!text) return;
+    const text=document.getElementById("replyInput").value.trim();
+    if(!text) return;
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user){
-      alert("Login required.");
-      return;
-    }
+    const { data:{user} } = await supabase.auth.getUser();
+    if(!user) return alert("Login required.");
 
     await supabase.from("forum_replies").insert([{
-      topic_id: topicId,
-      user_id: user.id,
-      content: text
+      topic_id:topicId,
+      user_id:user.id,
+      content:text
     }]);
 
     document.getElementById("replyInput").value="";
     loadReplies();
   };
 
-  window.react = async function(replyId, reaction){
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return alert("Login required.");
+  window.reactReply = async function(replyId,reaction){
+    const { data:{user} } = await supabase.auth.getUser();
+    if(!user) return alert("Login required.");
 
     await supabase.from("forum_reply_reactions").insert([{
-      reply_id: replyId,
-      user_id: user.id,
+      reply_id:replyId,
+      user_id:user.id,
       reaction
     }]);
 
@@ -537,49 +503,49 @@
 
   window.acceptReply = async function(replyId){
     await supabase.from("forum_topics")
-      .update({ accepted_reply_id: replyId })
-      .eq("id", topicId);
+      .update({accepted_reply_id:replyId})
+      .eq("id",topicId);
 
     loadReplies();
   };
 
   window.deleteReply = async function(replyId){
-    if (!confirm("Delete this reply?")) return;
+    if(!confirm("Delete reply?")) return;
 
     await supabase.from("forum_replies")
       .delete()
-      .eq("id", replyId);
+      .eq("id",replyId);
 
     loadReplies();
   };
 
   window.toggleLock = async function(){
     await supabase.from("forum_topics")
-      .update({ locked: !topicData.locked })
-      .eq("id", topicId);
+      .update({locked:!topicData.locked})
+      .eq("id",topicId);
 
     location.reload();
   };
 
   window.togglePin = async function(){
     await supabase.from("forum_topics")
-      .update({ pinned: !topicData.pinned })
-      .eq("id", topicId);
+      .update({pinned:!topicData.pinned})
+      .eq("id",topicId);
 
     location.reload();
   };
 
   window.deleteTopic = async function(){
-    if (!confirm("Delete this topic permanently?")) return;
+    if(!confirm("Delete topic permanently?")) return;
 
     await supabase.from("forum_topics")
       .delete()
-      .eq("id", topicId);
+      .eq("id",topicId);
 
     window.location.href="index.html";
   };
 
-  (async ()=>{
+  (async()=>{
     await loadUserRole();
     await loadTopic();
     await loadReplies();
