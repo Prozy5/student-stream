@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Project B.O.P.H · StudentStream</title>
+
+<style>
+:root{
+  --bg:#05070d;
+  --panel:#0c1422;
+  --border:rgba(255,255,255,0.10);
+
+  --text:#eaf2ff;
+  --muted:#9fb0cc;
+
+  --gold:#ffd36c;
+  --accent:#4da3ff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top, rgba(255,211,108,0.20), transparent 65%),
+    radial-gradient(circle at bottom, rgba(77,163,255,0.10), transparent 60%),
+    linear-gradient(to bottom, #05070d, #020205);
+}
+
+header{
+  padding:18px 26px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,15,25,.88);
+  backdrop-filter:blur(16px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header h1{
+  font-size:18px;
+  font-weight:950;
+}
+
+header a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+}
+header a:hover{color:white}
+
+.wrap{
+  max-width:1100px;
+  margin:auto;
+  padding:70px 22px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:60px;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 18px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:850;
+  border:1px solid rgba(255,211,108,0.35);
+  background:rgba(255,211,108,0.10);
+  color:var(--gold);
+  margin-bottom:18px;
+}
+
+.hero h2{
+  font-size:52px;
+  font-weight:1000;
+  margin-bottom:14px;
+}
+
+.hero p{
+  font-size:17px;
+  opacity:.78;
+  max-width:720px;
+  margin:auto;
+  line-height:1.6;
+}
+
+.heroQuote{
+  margin-top:22px;
+  font-size:18px;
+  font-weight:900;
+  color:var(--gold);
+}
+
+/* Progress Box */
+.progressBox{
+  margin:50px auto 0;
+  max-width:720px;
+  padding:28px;
+  border-radius:20px;
+  border:1px solid rgba(255,211,108,0.25);
+  background:rgba(255,211,108,0.06);
+}
+
+.progressTitle{
+  font-size:16px;
+  font-weight:950;
+  margin-bottom:14px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--gold);
+}
+
+.progressStats{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:12px;
+  opacity:.85;
+}
+
+.barOuter{
+  width:100%;
+  height:16px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+}
+
+.barInner{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--gold),#ffb84d);
+  transition:width 1.2s ease;
+}
+
+.progressNote{
+  margin-top:14px;
+  font-size:13px;
+  opacity:.65;
+}
+
+/* Grid Cards */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:22px;
+  margin-top:70px;
+}
+
+.card{
+  background:rgba(12,20,34,.92);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:26px;
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,211,108,0.35);
+  box-shadow:0 20px 55px rgba(0,0,0,0.55);
+}
+
+.card h3{
+  font-size:18px;
+  font-weight:950;
+  margin-bottom:10px;
+}
+
+.card p{
+  font-size:14px;
+  opacity:.82;
+  line-height:1.55;
+}
+
+.list{
+  margin-top:12px;
+  padding-left:18px;
+  opacity:.85;
+  line-height:1.7;
+}
+
+/* Support Box */
+.supportBox{
+  margin-top:90px;
+  text-align:center;
+  padding:40px 25px;
+  border-radius:22px;
+  border:1px solid rgba(255,211,108,0.25);
+  background:rgba(255,211,108,0.06);
+}
+
+.supportBox h2{
+  font-size:28px;
+  font-weight:1000;
+}
+
+.supportBox p{
+  margin-top:12px;
+  font-size:15px;
+  opacity:.78;
+  max-width:720px;
+  margin-left:auto;
+  margin-right:auto;
+  line-height:1.6;
+}
+
+.btnRow{
+  margin-top:28px;
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:14px 28px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.20);
+  background:rgba(255,255,255,0.03);
+  color:white;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:850;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,211,108,0.40);
+}
+
+.btnPrimary{
+  border:none;
+  background:linear-gradient(90deg,var(--gold),#ffb84d);
+  color:black;
+  font-weight:1000;
+}
+
+footer{
+  margin-top:90px;
+  padding:35px;
+  text-align:center;
+  font-size:13px;
+  opacity:.55;
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>StudentStream · Project B.O.P.H</h1>
+  <a href="index.html">← Back Home</a>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="badge">🎺 Give-Back Initiative</span>
+
+    <h2>Project B.O.P.H</h2>
+
+    <p>
+      Project B.O.P.H is StudentStream’s official cultural give-back program —
+      built to directly support bands, student musicians, and the spirit behind the sound.
+    </p>
+
+    <div class="heroQuote">
+      “If StudentStream eats, the band eats too.”
+    </div>
+
+    <!-- FUNDING PROGRESS -->
+    <div class="progressBox">
+      <div class="progressTitle">Band Support Fund Progress</div>
+
+      <div class="progressStats">
+        <span id="raised">$0 Raised</span>
+        <span id="goal">$5,000 Goal</span>
+      </div>
+
+      <div class="barOuter">
+        <div class="barInner" id="barFill"></div>
+      </div>
+
+      <div class="progressNote">
+        Updated live as contributions come in. Every dollar supports real students.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- INFO GRID -->
+  <section class="grid">
+
+    <div class="card">
+      <h3>What is B.O.P.H?</h3>
+      <p>
+        Project B.O.P.H exists to fund what schools and systems often leave behind —
+        instruments, travel, uniforms, and the real needs that help bands thrive.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>What We Support</h3>
+      <p>Every contribution helps provide:</p>
+      <ul class="list">
+        <li>New instruments + repairs</li>
+        <li>Competition travel + costs</li>
+        <li>Uniform upgrades</li>
+        <li>Student-focused resources</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Why StudentStream Built This</h3>
+      <p>
+        StudentStream was created by a young creator — and this project is about giving that power back.
+        Not talk. Action. Culture first.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Transparency + Updates</h3>
+      <p>
+        Progress and deployments will be shared publicly as the program expands.
+        This is only the beginning.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- SUPPORT -->
+  <section class="supportBox">
+    <h2>Support the Band Fund</h2>
+    <p>
+      Help build something bigger than a platform —
+      help fund the culture, the students, and the future.
+    </p>
+
+    <div class="btnRow">
+      <button class="btn btnPrimary"
+        onclick="window.open('https://buy.stripe.com/bJe00je7g6K269l7nI8Ra04','_blank')">
+        Donate to Project B.O.P.H
+      </button>
+
+      <button class="btn"
+        onclick="location.href='company.html'">
+        Learn About StudentStream
+      </button>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  © 2026 StudentStream · Project B.O.P.H — Built for the culture.
+</footer>
+
+<!-- Progress Script -->
+<script>
+/* Change these anytime */
+const goalAmount = 5000;
+const raisedAmount = 0; // update manually OR connect to Supabase later
+
+/* Display */
+document.getElementById("goal").textContent =
+  `$${goalAmount.toLocaleString()} Goal`;
+
+document.getElementById("raised").textContent =
+  `$${raisedAmount.toLocaleString()} Raised`;
+
+const percent = Math.min((raisedAmount / goalAmount) * 100, 100);
+
+setTimeout(() => {
+  document.getElementById("barFill").style.width = percent + "%";
+}, 400);
+</script>
+
+</body>
+</html>
