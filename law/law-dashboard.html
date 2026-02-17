@@ -52,6 +52,20 @@ h1{
   padding:40px 20px;
 }
 
+/* ALERT SYSTEM */
+.alertBanner{
+  padding:16px;
+  border-radius:16px;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.10);
+  margin-bottom:25px;
+}
+
+.alertBanner strong{
+  color:var(--accent);
+}
+
+/* TOP BAR */
 .topBar{
   display:flex;
   justify-content:space-between;
@@ -76,6 +90,7 @@ button.secondary{
   border:1px solid var(--border);
 }
 
+/* CASE CARD */
 .caseCard{
   background:var(--panel);
   border:1px solid var(--border);
@@ -112,73 +127,39 @@ button.secondary{
   border:1px solid rgba(255,255,255,.12);
 }
 
+/* CHIEF PANEL */
+.chiefPanel{
+  display:none;
+  margin-top:35px;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.08);
+}
+
+.chiefPanel h2{
+  font-size:16px;
+  font-weight:950;
+  margin-bottom:12px;
+}
+
+select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  margin-top:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.05);
+  color:white;
+}
+
+/* EMPTY */
 .empty{
   padding:40px;
   text-align:center;
   opacity:.6;
   border:1px dashed rgba(255,255,255,.15);
   border-radius:16px;
-}
-
-/* MODAL */
-.modalOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-}
-
-.modal{
-  width:100%;
-  max-width:550px;
-  padding:25px;
-  border-radius:18px;
-  border:1px solid var(--border);
-  background:rgba(15,20,35,.95);
-}
-
-.modal h2{
-  margin-bottom:12px;
-}
-
-input, textarea, select{
-  width:100%;
-  margin-top:10px;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.05);
-  color:white;
-  outline:none;
-}
-
-textarea{min-height:110px}
-
-.modalActions{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-top:15px;
-}
-
-/* REPORTS BOX */
-.reportBox{
-  margin-top:40px;
-}
-
-.reportCard{
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--border);
-  padding:14px;
-  border-radius:14px;
-  margin-top:12px;
-}
-
-.reportCard b{
-  color:var(--accent);
 }
 </style>
 </head>
@@ -192,6 +173,13 @@ textarea{min-height:110px}
 
 <div class="wrap">
 
+  <!-- 🚨 NATIONAL ALERT -->
+  <div class="alertBanner">
+    🚨 <strong>National Enforcement Alert System:</strong>
+    All abuse reports are tracked under verified staff authority.
+    Unauthorized access is logged.
+  </div>
+
   <!-- TOP ACTIONS -->
   <div class="topBar">
     <h2>Active Case Files</h2>
@@ -204,36 +192,29 @@ textarea{min-height:110px}
   <!-- CASE LIST -->
   <div id="caseList">Loading cases...</div>
 
-  <!-- REPORTS -->
-  <div class="reportBox">
-    <h2>Public Reports</h2>
-    <div id="reportList">Loading reports...</div>
-  </div>
+  <!-- ⭐ CHIEF COMMAND CENTER -->
+  <div class="chiefPanel" id="chiefPanel">
+    <h2>⭐ Chief Command Center</h2>
 
-</div>
+    <p style="color:var(--muted);font-size:13px;">
+      Chief authority only. Assign staff, manage ranks, archive investigations.
+    </p>
 
-<!-- CASE CREATION MODAL -->
-<div class="modalOverlay" id="caseModal">
-  <div class="modal">
-    <h2>📂 Create New Case</h2>
-
-    <input id="caseTitle" placeholder="Case Title..." />
-    <textarea id="caseDesc" placeholder="Case Description..."></textarea>
-
-    <select id="casePriority">
-      <option value="low">Low Priority</option>
-      <option value="medium" selected>Medium Priority</option>
-      <option value="high">High Priority</option>
-      <option value="critical">Critical</option>
+    <!-- PROMOTE STAFF -->
+    <h3 style="margin-top:18px;">Promote / Demote Staff</h3>
+    <select id="rankUser"></select>
+    <select id="rankLevel">
+      <option value="investigator">Investigator</option>
+      <option value="commander">Commander</option>
+      <option value="chief">Chief</option>
+      <option value="none">Remove Rank</option>
     </select>
 
-    <select id="caseAssign"></select>
-
-    <div class="modalActions">
-      <button class="secondary" onclick="closeCaseModal()">Cancel</button>
-      <button onclick="createCase()">Create Case</button>
-    </div>
+    <button style="margin-top:10px;" onclick="updateRank()">
+      Update Rank
+    </button>
   </div>
+
 </div>
 
 <script type="module">
@@ -244,19 +225,19 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let currentUser = null;
-let lawRank = "none";
+let currentUser=null;
+let lawRank="none";
 
-/* ACCESS CONTROL */
+/* ACCESS */
 async function checkLawAccess(){
   const { data:{user} } = await supabase.auth.getUser();
+
   if(!user){
-    alert("Law login required.");
     location.href="law-login.html";
     return;
   }
 
-  currentUser = user;
+  currentUser=user;
 
   const { data:profile } = await supabase
     .from("profiles")
@@ -264,154 +245,68 @@ async function checkLawAccess(){
     .eq("id", user.id)
     .single();
 
-  lawRank = profile.law_rank;
+  lawRank=profile.law_rank;
 
-  if(lawRank === "none"){
+  if(lawRank==="none"){
     alert("Access denied.");
     location.href="law.html";
     return;
   }
 
   document.getElementById("staffName").textContent =
-    profile.username + " (" + lawRank.toUpperCase() + ")";
+    profile.username+" ("+lawRank.toUpperCase()+")";
+
+  /* CHIEF ONLY */
+  if(lawRank==="chief"){
+    document.getElementById("chiefPanel").style.display="block";
+    loadRankUsers();
+  }
 }
 
-/* LOAD STAFF FOR ASSIGNMENT */
-async function loadStaffList(){
-  const { data:staff } = await supabase
+/* LOAD STAFF LIST */
+async function loadRankUsers(){
+  const { data } = await supabase
     .from("profiles")
     .select("id, username, law_rank")
     .neq("law_rank","none");
 
-  const dropdown = document.getElementById("caseAssign");
-  dropdown.innerHTML = `<option value="">Unassigned</option>`;
+  const dropdown=document.getElementById("rankUser");
+  dropdown.innerHTML="";
 
-  staff.forEach(s=>{
+  data.forEach(u=>{
     dropdown.innerHTML += `
-      <option value="${s.id}">
-        ${s.username} (${s.law_rank})
+      <option value="${u.id}">
+        ${u.username} (${u.law_rank})
       </option>
     `;
   });
 }
 
-/* LOAD CASES */
-async function loadCases(){
-  const { data:cases } = await supabase
-    .from("law_cases")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  const list = document.getElementById("caseList");
-
-  if(!cases || cases.length===0){
-    list.innerHTML = `<div class="empty">No active cases yet.</div>`;
+/* UPDATE RANK (CHIEF ONLY) */
+window.updateRank = async function(){
+  if(lawRank!=="chief"){
+    alert("Chief only.");
     return;
   }
 
-  list.innerHTML="";
-
-  cases.forEach(c=>{
-    const div=document.createElement("div");
-    div.className="caseCard";
-
-    div.innerHTML=`
-      <div class="caseTitle">${c.title}</div>
-      <div class="caseMeta">
-        Priority: <b>${c.priority}</b> • Status: <b>${c.status}</b>
-      </div>
-      <span class="statusTag">${c.status.toUpperCase()}</span>
-    `;
-
-    div.onclick=()=>{
-      location.href="case.html?id="+c.id;
-    };
-
-    list.appendChild(div);
-  });
-}
-
-/* LOAD REPORTS */
-async function loadReports(){
-  const { data:reports } = await supabase
-    .from("law_reports")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  const box=document.getElementById("reportList");
-
-  if(!reports || reports.length===0){
-    box.innerHTML=`<div class="empty">No reports submitted.</div>`;
-    return;
-  }
-
-  box.innerHTML="";
-
-  reports.forEach(r=>{
-    const div=document.createElement("div");
-    div.className="reportCard";
-
-    div.innerHTML=`
-      <b>${r.issue_type}</b> report by ${r.username || "Anonymous"}<br>
-      <span style="color:var(--muted)">${r.description}</span>
-    `;
-
-    box.appendChild(div);
-  });
-}
-
-/* MODAL CONTROLS */
-window.openCaseModal=()=>{
-  document.getElementById("caseModal").style.display="flex";
-};
-
-window.closeCaseModal=()=>{
-  document.getElementById("caseModal").style.display="none";
-};
-
-/* CREATE CASE */
-window.createCase = async function(){
-  const title=document.getElementById("caseTitle").value.trim();
-  const desc=document.getElementById("caseDesc").value.trim();
-  const priority=document.getElementById("casePriority").value;
-  const assigned=document.getElementById("caseAssign").value || null;
-
-  if(title.length<3){
-    alert("Case title too short.");
-    return;
-  }
+  const userId=document.getElementById("rankUser").value;
+  const newRank=document.getElementById("rankLevel").value;
 
   const { error } = await supabase
-    .from("law_cases")
-    .insert([{
-      title,
-      description:desc,
-      priority,
-      assigned_to:assigned
-    }]);
+    .from("profiles")
+    .update({ law_rank:newRank })
+    .eq("id", userId);
 
   if(error){
-    alert("❌ Failed: " + error.message);
+    alert("❌ "+error.message);
     return;
   }
 
-  alert("✅ Case created.");
-  closeCaseModal();
-  loadCases();
+  alert("✅ Rank updated.");
+  loadRankUsers();
 };
 
-/* REFRESH */
-window.refreshAll=()=>{
-  loadCases();
-  loadReports();
-};
-
-(async()=>{
-  await checkLawAccess();
-  await loadStaffList();
-  await loadCases();
-  await loadReports();
-})();
+checkLawAccess();
 </script>
 
 </body>
