@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Topic • StudentStream DevForum</title>
+  <title>StudentStream DevForum</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
@@ -22,225 +22,250 @@
       padding:18px 26px;
       border-bottom:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.82);
+      background:rgba(5,7,12,.75);
       display:flex;
       justify-content:space-between;
       align-items:center;
     }
 
     .logo{
-      font-size:18px;
-      font-weight:950;
-    }
-    .logo span{color:#4da3ff}
-
-    .back{
-      opacity:.65;
-      cursor:pointer;
-      font-weight:600;
-    }
-
-    .wrap{
-      max-width:950px;
-      margin:55px auto;
-      padding:0 20px;
-    }
-
-    .topicHero{
-      padding:38px;
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.035);
-      margin-bottom:28px;
-    }
-
-    .lockedBanner{
-      background:rgba(255,77,77,.15);
-      border:1px solid rgba(255,77,77,.35);
-      padding:10px 14px;
-      border-radius:14px;
-      font-size:13px;
-      font-weight:800;
-      margin-bottom:14px;
-      color:#ff4d4d;
-    }
-
-    .pinnedBanner{
-      background:rgba(255,215,0,.12);
-      border:1px solid rgba(255,215,0,.25);
-      padding:10px 14px;
-      border-radius:14px;
-      font-size:13px;
-      font-weight:800;
-      margin-bottom:14px;
-      color:gold;
-    }
-
-    .topicHero h1{
-      font-size:42px;
-      font-weight:950;
-      margin-bottom:14px;
-    }
-
-    .topicMeta{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      font-size:13px;
-      opacity:.7;
-      margin-bottom:20px;
-    }
-
-    .avatar{
-      width:38px;
-      height:38px;
-      border-radius:50%;
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      font-size:20px;
       font-weight:900;
     }
 
-    .authorName{
-      font-weight:850;
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-
-    .staffBadge{
-      font-size:11px;
-      font-weight:900;
-      padding:4px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.15);
-      background:rgba(255,255,255,.05);
-      text-transform:uppercase;
-    }
-
-    .badge-owner{color:gold;border-color:gold;}
-    .badge-admin{color:#ff4d4d;border-color:#ff4d4d;}
-    .badge-moderator{color:#4da3ff;border-color:#4da3ff;}
-
-    .staffName{
+    .logo span{
       color:#4da3ff;
-      font-weight:950;
     }
 
-    .topicBody{
-      font-size:15px;
-      line-height:1.9;
-      opacity:.92;
-      white-space:pre-wrap;
-    }
-
-    .modTools{
-      margin-top:22px;
+    .actions{
       display:flex;
       gap:10px;
-      flex-wrap:wrap;
+      align-items:center;
     }
 
-    .modBtn{
-      padding:10px 14px;
+    .btn{
+      background:linear-gradient(135deg,#2f6fff,#4da3ff);
+      border:none;
+      padding:10px 18px;
       border-radius:14px;
-      font-size:12px;
-      font-weight:850;
-      border:1px solid rgba(255,255,255,.15);
-      background:rgba(255,255,255,.06);
+      font-weight:800;
+      color:white;
       cursor:pointer;
-    }
-
-    .danger{
-      border-color:rgba(255,77,77,.35);
-      color:#ff4d4d;
-    }
-
-    .replyHeader{
-      margin-top:40px;
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:18px;
-    }
-
-    .replyCard{
-      padding:18px 20px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.02);
-      margin-bottom:14px;
-    }
-
-    .replyText{
       font-size:14px;
-      line-height:1.6;
-      white-space:pre-wrap;
-      padding-left:48px;
+      transition:.2s;
+    }
+
+    .btn:hover{
+      transform:scale(1.04);
       opacity:.9;
     }
 
-    .reactionBar{
+    .btn.secondary{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .container{
+      max-width:1050px;
+      margin:50px auto;
+      padding:0 20px;
+    }
+
+    /* HERO */
+    .hero{
+      padding:28px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      margin-bottom:30px;
+    }
+
+    .hero h1{
+      font-size:46px;
+      font-weight:950;
+    }
+
+    .hero p{
+      opacity:.7;
       margin-top:10px;
-      padding-left:48px;
+      max-width:750px;
+      line-height:1.6;
+    }
+
+    .stats{
       display:flex;
-      gap:12px;
+      gap:14px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+
+    .statBox{
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
       font-size:13px;
       opacity:.8;
     }
 
-    .reactBtn{
-      cursor:pointer;
-      font-weight:800;
+    /* SEARCH */
+    .searchBar{
+      margin:25px 0;
     }
 
-    .composerBar{
-      position:fixed;
-      bottom:0;
-      left:0;
+    .searchBar input{
       width:100%;
-      padding:16px;
-      backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.92);
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-
-    .composerInner{
-      max-width:900px;
-      margin:auto;
-      display:flex;
-      gap:12px;
-      align-items:center;
-    }
-
-    textarea{
-      flex:1;
-      min-height:52px;
-      padding:14px 16px;
-      border-radius:18px;
+      padding:14px;
+      border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
+      background:rgba(255,255,255,.04);
       color:white;
       outline:none;
-      resize:none;
+      font-size:14px;
     }
 
-    button{
-      border:none;
+    /* TABS */
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin-bottom:20px;
+      flex-wrap:wrap;
+    }
+
+    .tab{
+      padding:10px 16px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
       cursor:pointer;
-      padding:13px 20px;
-      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      opacity:.65;
+      transition:.2s;
+    }
+
+    .tab.active{
+      opacity:1;
+      border-color:rgba(77,163,255,.55);
+      background:rgba(77,163,255,.15);
+    }
+
+    /* CARDS */
+    .card{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:20px;
+      margin-top:14px;
+      cursor:pointer;
+      transition:.25s;
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      border-color:rgba(77,163,255,.35);
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+    }
+
+    .left{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+
+    .icon{
+      font-size:22px;
+      margin-top:2px;
+    }
+
+    .name{
+      font-size:18px;
       font-weight:850;
-      color:white;
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
+    }
+
+    .desc{
+      opacity:.55;
+      font-size:13px;
+      margin-top:4px;
+      line-height:1.4;
+    }
+
+    .count{
+      font-size:13px;
+      opacity:.7;
+      background:rgba(255,255,255,.06);
+      padding:7px 14px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+
+    .loading{
+      text-align:center;
+      opacity:.6;
+      padding:35px;
+    }
+
+    .empty{
+      text-align:center;
+      opacity:.55;
+      padding:40px;
+      border:1px dashed rgba(255,255,255,.15);
+      border-radius:18px;
+      margin-top:25px;
     }
 
     footer{
       text-align:center;
-      padding:90px 20px;
+      padding:35px;
       opacity:.35;
-      margin-top:90px;
+      margin-top:70px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    /* MODAL */
+    .modalOverlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.65);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+    }
+
+    .modal{
+      width:100%;
+      max-width:420px;
+      padding:22px;
+      border-radius:18px;
+      background:rgba(15,20,35,.95);
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    .modal h2{
+      font-size:18px;
+      margin-bottom:12px;
+    }
+
+    .modal select{
+      width:100%;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:white;
+      outline:none;
+    }
+
+    .modal button{
+      width:100%;
+      margin-top:14px;
     }
   </style>
 </head>
@@ -249,47 +274,60 @@
 
 <header>
   <div class="logo">StudentStream <span>DevForum</span></div>
-  <div class="back" onclick="history.back()">← Back</div>
+
+  <div class="actions">
+    <button class="btn secondary" id="newTopicBtn">+ Post Topic</button>
+    <button class="btn" id="accountBtn">Login</button>
+  </div>
 </header>
 
-<div class="wrap">
+<div class="container">
 
-  <div class="topicHero">
-    <div id="topicFlags"></div>
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Developer Forums</h1>
+    <p>
+      Official StudentStreamHQ forum for platform announcements, creator updates,
+      bug reports, and support discussions.
+    </p>
 
-    <h1 id="topicTitle">Loading…</h1>
-
-    <div class="topicMeta">
-      <div class="avatar" id="topicAvatar">S</div>
-      <span class="authorName" id="topicAuthor"></span>
-      <span id="topicDate"></span>
-    </div>
-
-    <div class="topicBody" id="topicBody"></div>
-
-    <div class="modTools" id="modTools" style="display:none;">
-      <div class="modBtn" onclick="toggleLock()">🔒 Lock</div>
-      <div class="modBtn" onclick="togglePin()">📌 Pin</div>
-      <div class="modBtn danger" onclick="deleteTopic()">🗑 Delete</div>
+    <div class="stats">
+      <div class="statBox">📢 Announcements</div>
+      <div class="statBox">⚡ Updates</div>
+      <div class="statBox">🐛 Bug Reports</div>
+      <div class="statBox">🛠 Support</div>
     </div>
   </div>
 
-  <div class="replyHeader">
-    <h2>Replies</h2>
-    <div id="replyCount">0 Replies</div>
+  <!-- SEARCH -->
+  <div class="searchBar">
+    <input id="searchInput" placeholder="Search topics..." />
   </div>
 
-  <div id="replyList"></div>
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" data-tab="categories">Categories</div>
+    <div class="tab" data-tab="latest">Latest Topics</div>
+  </div>
+
+  <div id="loadingState" class="loading">Loading DevForum…</div>
+  <div id="mainContent"></div>
+
 </div>
 
-<div class="composerBar">
-  <div class="composerInner">
-    <textarea id="replyInput" placeholder="Write a reply…"></textarea>
-    <button onclick="submitReply()">Post</button>
+<footer>
+  © 2026 StudentStreamHQ • DevForum
+</footer>
+
+<!-- CATEGORY PICKER MODAL -->
+<div class="modalOverlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Select a Category</h2>
+    <select id="categoryPicker"></select>
+    <button class="btn" id="goCategoryBtn">Continue</button>
+    <button class="btn secondary" onclick="closeModal()">Cancel</button>
   </div>
 </div>
-
-<footer>© 2026 StudentStreamHQ</footer>
 
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -299,110 +337,211 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  const topicId = new URLSearchParams(window.location.search).get("id");
+  const mainContent = document.getElementById("mainContent");
+  const loadingState = document.getElementById("loadingState");
+  const tabs = document.querySelectorAll(".tab");
+  const accountBtn = document.getElementById("accountBtn");
 
-  const replyInput = document.getElementById("replyInput");
-  const replyList = document.getElementById("replyList");
-  const replyCount = document.getElementById("replyCount");
+  const modalOverlay = document.getElementById("modalOverlay");
+  const categoryPicker = document.getElementById("categoryPicker");
+  const goCategoryBtn = document.getElementById("goCategoryBtn");
 
-  let topicData = null;
-  let currentUser = null;
+  let cachedCategories = [];
 
-  function isStaff(role){
-    return ["owner","admin","moderator"].includes(role);
+  /* LOGIN */
+  async function updateLoginButton() {
+    const { data } = await supabase.auth.getUser();
+
+    if (data.user) {
+      accountBtn.textContent = "Logout";
+      accountBtn.onclick = async () => {
+        await supabase.auth.signOut();
+        location.reload();
+      };
+    } else {
+      accountBtn.textContent = "Login";
+      accountBtn.onclick = () => {
+        window.location.href = "/login.html";
+      };
+    }
+  }
+  updateLoginButton();
+
+  /* MODAL */
+  window.closeModal = function(){
+    modalOverlay.style.display = "none";
+  };
+
+  function openModal(){
+    modalOverlay.style.display = "flex";
   }
 
-  async function loadUser(){
-    const { data: { user } } = await supabase.auth.getUser();
-    currentUser = user;
-  }
+  /* NEW TOPIC BUTTON */
+  document.getElementById("newTopicBtn").onclick = async () => {
+    const { data } = await supabase.auth.getUser();
 
-  async function loadTopic(){
-    const { data } = await supabase
-      .from("forum_topics")
+    if (!data.user) {
+      alert("Login required.");
+      window.location.href = "/login.html";
+      return;
+    }
+
+    openModal();
+  };
+
+  goCategoryBtn.onclick = () => {
+    const id = categoryPicker.value;
+    window.location.href = "/devforum/category.html?id=" + id;
+  };
+
+  /* LOAD CATEGORIES */
+  async function loadCategories() {
+    loadingState.style.display = "block";
+    mainContent.innerHTML = "";
+
+    const { data: categories } = await supabase
+      .from("forum_categories")
       .select("*")
-      .eq("id", topicId)
-      .single();
+      .order("name");
 
-    topicData = data;
+    loadingState.style.display = "none";
 
-    document.getElementById("topicTitle").textContent = data.title;
-    document.getElementById("topicBody").textContent = data.content;
-    document.getElementById("topicDate").textContent =
-      new Date(data.created_at).toLocaleString();
-  }
+    if (!categories || categories.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No categories found.</div>`;
+      return;
+    }
 
-  async function loadReplies(){
-    const { data: replies } = await supabase
-      .from("forum_replies")
-      .select("*")
-      .eq("topic_id", topicId)
-      .order("created_at");
+    cachedCategories = categories;
 
-    replyCount.textContent = replies.length + " Replies";
-    replyList.innerHTML = "";
+    categoryPicker.innerHTML = "";
+    categories.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat.id;
+      opt.textContent = cat.name;
+      categoryPicker.appendChild(opt);
+    });
 
-    for (const r of replies){
-      const div = document.createElement("div");
-      div.className = "replyCard";
-      div.innerHTML = `
-        <div class="replyText">${r.content}</div>
-        <div class="reactionBar">
-          <span class="reactBtn" onclick="reactReply('${r.id}','like')">👍</span>
-          <span class="reactBtn" onclick="reactReply('${r.id}','heart')">❤️</span>
+    const iconMap = {
+      "Announcements": "📢",
+      "Updates": "⚡",
+      "SS Central": "🏢",
+      "Bug Reports": "🐛",
+      "Support": "🛠️"
+    };
+
+    for (const cat of categories) {
+      const { count } = await supabase
+        .from("forum_topics")
+        .select("*", { count: "exact", head: true })
+        .eq("category_id", cat.id);
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="row">
+          <div class="left">
+            <div class="icon">${iconMap[cat.name] || "💬"}</div>
+            <div>
+              <div class="name">${cat.name}</div>
+              <div class="desc">${cat.description || ""}</div>
+            </div>
+          </div>
+          <div class="count">${count || 0} Topics</div>
         </div>
       `;
-      replyList.appendChild(div);
+
+      card.onclick = () => {
+        window.location.href = "/devforum/category.html?id=" + cat.id;
+      };
+
+      mainContent.appendChild(card);
     }
   }
 
-  window.submitReply = async function(){
-    const text = replyInput.value.trim();
-    if (!text) return;
+  /* LOAD LATEST */
+  async function loadLatestTopics() {
+    loadingState.style.display = "block";
+    mainContent.innerHTML = "";
 
-    if (!currentUser){
-      alert("Login required to reply.");
+    const { data: topics } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(12);
+
+    loadingState.style.display = "none";
+
+    if (!topics || topics.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No topics yet.</div>`;
       return;
     }
 
-    const { error } = await supabase
-      .from("forum_replies")
-      .insert([{
-        topic_id: topicId,
-        user_id: currentUser.id,
-        content: text
-      }]);
+    topics.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "card";
 
-    if (error){
-      alert("Reply failed: " + error.message);
+      card.innerHTML = `
+        <div class="name">${topic.title}</div>
+        <div class="desc">
+          Posted • ${new Date(topic.created_at).toLocaleString()}
+        </div>
+      `;
+
+      card.onclick = () => {
+        window.location.href = "/devforum/topic.html?id=" + topic.id;
+      };
+
+      mainContent.appendChild(card);
+    });
+  }
+
+  /* SEARCH */
+  document.getElementById("searchInput").addEventListener("input", async e => {
+    const q = e.target.value.trim();
+
+    if (!q) {
+      loadLatestTopics();
       return;
     }
 
-    replyInput.value = "";
-    loadReplies();
-  };
+    mainContent.innerHTML = "";
+    loadingState.style.display = "block";
 
-  window.reactReply = async function(replyId, reaction){
-    if (!currentUser){
-      alert("Login required.");
+    const { data: results } = await supabase
+      .from("forum_topics")
+      .select("*")
+      .ilike("title", `%${q}%`)
+      .order("created_at", { ascending: false });
+
+    loadingState.style.display = "none";
+
+    if (!results || results.length === 0) {
+      mainContent.innerHTML = `<div class="empty">No matches found.</div>`;
       return;
     }
 
-    await supabase.from("forum_reply_reactions")
-      .insert([{
-        reply_id: replyId,
-        user_id: currentUser.id,
-        reaction
-      }]);
+    results.forEach(topic => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `<div class="name">${topic.title}</div>`;
+      mainContent.appendChild(card);
+    });
+  });
 
-    alert("Reaction added!");
-  };
+  /* TAB SWITCH */
+  tabs.forEach(tab => {
+    tab.onclick = () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
 
-  (async () => {
-    await loadUser();
-    await loadTopic();
-    await loadReplies();
-  })();
+      if (tab.dataset.tab === "categories") loadCategories();
+      if (tab.dataset.tab === "latest") loadLatestTopics();
+    };
+  });
+
+  /* DEFAULT */
+  loadCategories();
 </script>
 
 </body>
