@@ -1,48 +1,259 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Report Issue</title>
 <meta charset="UTF-8">
+<title>Report an Issue · StudentStream Law</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#05080f;
+  --panel:#0c1626;
+  --accent:#ff5d5d;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 75%);
+  color:var(--text);
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 26px;
+  background:rgba(10,20,40,.78);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+
+.brand{
+  font-weight:950;
+  font-size:15px;
+}
+
+.nav-links a{
+  margin-left:18px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:650;
+}
+
+.nav-links a:hover{
+  color:var(--text);
+}
+
+/* PAGE */
+
+.container{
+  max-width:850px;
+  margin:70px auto;
+  padding:0 22px;
+}
+
+.panel{
+  background:rgba(12,22,38,.92);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:35px;
+}
+
+h1{
+  font-size:32px;
+  font-weight:980;
+  margin-bottom:10px;
+}
+
+h1 span{
+  color:var(--accent);
+}
+
+p{
+  color:var(--muted);
+  line-height:1.7;
+  margin-bottom:20px;
+}
+
+/* FORM */
+
+form{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+input, select, textarea{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font-size:14px;
+  outline:none;
+}
+
+textarea{
+  min-height:140px;
+  resize:vertical;
+}
+
+button{
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-weight:850;
+  font-size:14px;
+  background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
+  color:#1a0000;
+  transition:.2s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  opacity:.9;
+}
+
+.notice{
+  margin-top:20px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.08);
+  font-size:13px;
+  color:var(--muted);
+}
+
+footer{
+  text-align:center;
+  margin-top:70px;
+  padding:30px;
+  border-top:1px solid var(--border);
+  font-size:13px;
+  color:var(--muted);
+}
+</style>
 </head>
+
 <body>
 
-<h2>Submit a Report</h2>
+<!-- NAV -->
+<nav>
+  <div class="brand">⚖️ StudentStream Law Division</div>
 
-<form id="reportForm">
-  <input id="username" placeholder="Your username" required><br><br>
+  <div class="nav-links">
+    <a href="index.html">Law Home</a>
+    <a href="creator-rights.html">Creator Rights</a>
+    <a href="transparency.html">Transparency</a>
+  </div>
+</nav>
 
-  <select id="issue" required>
-    <option value="">Select issue type</option>
-    <option>Copyright</option>
-    <option>Fraud</option>
-    <option>Harassment</option>
-    <option>Impersonation</option>
-  </select><br><br>
+<!-- PAGE -->
+<div class="container">
+  <div class="panel">
 
-  <textarea id="desc" placeholder="Describe the issue" required></textarea><br><br>
+    <h1>Submit a <span>Report</span></h1>
 
-  <button type="submit">Submit</button>
-</form>
+    <p>
+      Use this form to report copyright theft, impersonation, harassment,
+      fraud, or other serious violations on StudentStream.
+    </p>
 
-<script src="supabase.js"></script>
+    <!-- FORM -->
+    <form id="reportForm">
 
-<script>
-document.getElementById("reportForm").onsubmit = async (e) => {
+      <select id="issueType" required>
+        <option value="">Select issue type…</option>
+        <option value="Copyright">Copyright / Stolen Content</option>
+        <option value="Fraud">Fraud / Scam Activity</option>
+        <option value="Harassment">Harassment / Threats</option>
+        <option value="Impersonation">Impersonation / Fake Account</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <input
+        id="targetUser"
+        placeholder="Username or link of the reported account/content"
+        required
+      />
+
+      <textarea
+        id="description"
+        placeholder="Describe what happened in detail… include evidence, dates, links, and context."
+        required
+      ></textarea>
+
+      <button type="submit">Submit Report</button>
+    </form>
+
+    <div class="notice">
+      <strong>Important:</strong>
+      False or abusive reports may result in enforcement action.
+      StudentStream Law reviews all submissions carefully.
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  © 2026 StudentStream Law Division · Report & Enforcement System
+</footer>
+
+<!-- SUPABASE -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const form = document.getElementById("reportForm");
+
+form.onsubmit = async (e) => {
   e.preventDefault();
 
-  const { error } = await db.from("law_reports").insert([{
-    username: username.value,
-    issue_type: issue.value,
-    description: desc.value
-  }]);
+  // Require login
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user){
+    alert("You must be logged in to submit a report.");
+    window.location.href = "/login.html";
+    return;
+  }
+
+  const issueType = document.getElementById("issueType").value;
+  const targetUser = document.getElementById("targetUser").value.trim();
+  const description = document.getElementById("description").value.trim();
+
+  const { error } = await supabase
+    .from("law_reports")
+    .insert([{
+      user_id: user.id,
+      issue_type: issueType,
+      target: targetUser,
+      description: description,
+      status: "pending"
+    }]);
 
   if(error){
-    alert("Error submitting report");
+    alert("❌ Error submitting report: " + error.message);
     console.error(error);
-  } else {
-    alert("Report submitted successfully.");
-    location.href = "law.html";
+    return;
   }
+
+  alert("✅ Report submitted successfully. StudentStream Law will review it.");
+  form.reset();
+  window.location.href = "index.html";
 };
 </script>
 
