@@ -32,7 +32,6 @@
       font-size:20px;
       font-weight:900;
     }
-
     .logo span{color:#4da3ff}
 
     .back{
@@ -142,7 +141,7 @@
 
     .modal{
       width:100%;
-      max-width:520px;
+      max-width:560px;
       padding:25px;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
@@ -162,13 +161,63 @@
       outline:none;
     }
 
-    textarea{min-height:120px}
+    textarea{
+      min-height:160px;
+      resize:none;
+      line-height:1.6;
+    }
+
+    /* TOOLBAR */
+    .toolbar{
+      margin-top:12px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .toolBtn{
+      padding:7px 10px;
+      font-size:13px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:white;
+      cursor:pointer;
+      font-weight:750;
+      transition:.2s;
+    }
+
+    .toolBtn:hover{
+      transform:scale(1.05);
+      border-color:rgba(77,163,255,.5);
+    }
+
+    /* Counter */
+    .counter{
+      margin-top:8px;
+      font-size:12px;
+      opacity:.55;
+      text-align:right;
+    }
+
+    /* Preview */
+    .previewBox{
+      display:none;
+      margin-top:14px;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.03);
+      font-size:14px;
+      line-height:1.7;
+      white-space:pre-wrap;
+    }
 
     .modalActions{
       display:flex;
       justify-content:flex-end;
       gap:10px;
-      margin-top:15px;
+      margin-top:18px;
     }
 
     footer{
@@ -215,7 +264,24 @@
     <h2>Start a New Topic</h2>
 
     <input id="topicTitleInput" placeholder="Topic title..." />
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <button class="toolBtn" onclick="formatText('**','**')"><b>B</b></button>
+      <button class="toolBtn" onclick="formatText('*','*')"><i>I</i></button>
+      <button class="toolBtn" onclick="formatText('`','`')">Code</button>
+      <button class="toolBtn" onclick="formatText('\n- ','')">• List</button>
+      <button class="toolBtn" onclick="formatText('\n> ','')">Quote</button>
+      <button class="toolBtn" onclick="insertLink()">🔗 Link</button>
+      <button class="toolBtn" onclick="togglePreview()">👁 Preview</button>
+    </div>
+
     <textarea id="topicBodyInput" placeholder="Write your post..."></textarea>
+
+    <div class="counter" id="charCount">0 characters</div>
+
+    <!-- Preview Box -->
+    <div class="previewBox" id="previewBox"></div>
 
     <div class="modalActions">
       <button class="newBtn" onclick="closeModal()">Cancel</button>
@@ -243,6 +309,9 @@
   const modalOverlay = document.getElementById("modalOverlay");
   const titleInput = document.getElementById("topicTitleInput");
   const bodyInput = document.getElementById("topicBodyInput");
+
+  const previewBox = document.getElementById("previewBox");
+  const charCount = document.getElementById("charCount");
 
   async function loadCategory(){
     const { data } = await supabase
@@ -300,17 +369,50 @@
       window.location.href = "/login.html";
       return null;
     }
-
     return data.user;
   }
 
   window.closeModal = function(){
     modalOverlay.style.display = "none";
+    previewBox.style.display = "none";
   };
 
   function openModal(){
     modalOverlay.style.display = "flex";
   }
+
+  /* TOOLBAR FUNCTIONS */
+  window.formatText = function(before, after){
+    const start = bodyInput.selectionStart;
+    const end = bodyInput.selectionEnd;
+    const selected = bodyInput.value.substring(start, end);
+
+    bodyInput.setRangeText(before + selected + after);
+    bodyInput.focus();
+    updateCounter();
+  };
+
+  window.insertLink = function(){
+    const url = prompt("Enter link URL:");
+    if(!url) return;
+    bodyInput.value += `\n[Link Text](${url})\n`;
+    updateCounter();
+  };
+
+  window.togglePreview = function(){
+    if(previewBox.style.display === "block"){
+      previewBox.style.display = "none";
+    } else {
+      previewBox.textContent = bodyInput.value;
+      previewBox.style.display = "block";
+    }
+  };
+
+  function updateCounter(){
+    charCount.textContent = bodyInput.value.length + " characters";
+  }
+
+  bodyInput.addEventListener("input", updateCounter);
 
   window.submitTopic = async function(){
     const user = await requireLogin();
@@ -328,8 +430,8 @@
       .from("forum_topics")
       .insert([
         {
-          title: title,
-          content: content,
+          title,
+          content,
           category_id: categoryId,
           user_id: user.id
         }
@@ -343,7 +445,6 @@
     closeModal();
     titleInput.value = "";
     bodyInput.value = "";
-
     loadTopics();
   };
 
