@@ -1,247 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Division Directory · StudentStreamHQ</title>
 
-  <title>Division Directory — StudentStreamHQ</title>
+<style>
+:root{
+  --bg:#05070d;
+  --panel:#0c1422;
+  --border:rgba(255,255,255,0.08);
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Inter, system-ui, Arial, sans-serif;
-    }
+  --text:#eaf2ff;
+  --muted:#9fb0cc;
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #10101c, #040406);
-      color: white;
-      padding: 40px 20px;
-    }
+  --open:#38ff9c;
+  --maint:#ffd24d;
+  --closed:#ff5d5d;
+}
 
-    header {
-      max-width: 1100px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 25px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
+*{margin:0;padding:0;box-sizing:border-box}
 
-    .logo {
-      font-size: 22px;
-      font-weight: 900;
-      color: #4da3ff;
-    }
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#101a2f,#05070d);
+  color:var(--text);
+}
 
-    nav a {
-      color: #aaa;
-      margin-left: 18px;
-      text-decoration: none;
-      font-size: 14px;
-    }
+header{
+  padding:18px 26px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,15,25,.92);
+  backdrop-filter:blur(14px);
 
-    nav a:hover {
-      color: white;
-    }
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .hero {
-      max-width: 1100px;
-      margin: 70px auto 50px;
-      text-align: center;
-    }
+header h1{
+  font-size:18px;
+  font-weight:950;
+}
 
-    .heroBadge {
-      display: inline-block;
-      padding: 7px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      background: rgba(77,163,255,0.12);
-      border: 1px solid rgba(77,163,255,0.25);
-      color: #6db4ff;
-      margin-bottom: 18px;
-    }
+header a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+}
+header a:hover{color:white}
 
-    .hero h1 {
-      font-size: 44px;
-      margin: 0 0 14px;
-      font-weight: 900;
-    }
+.wrap{
+  max-width:1100px;
+  margin:auto;
+  padding:55px 20px;
+}
 
-    .hero p {
-      opacity: 0.82;
-      font-size: 18px;
-      max-width: 750px;
-      margin: auto;
-      line-height: 1.5;
-    }
+.title{
+  text-align:center;
+  margin-bottom:45px;
+}
 
-    .grid {
-      max-width: 1100px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 22px;
-    }
+.title h2{
+  font-size:40px;
+  font-weight:950;
+}
 
-    .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 18px;
-      padding: 24px;
-      transition: 0.25s;
-    }
+.title p{
+  margin-top:10px;
+  opacity:.75;
+  font-size:15px;
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(77,163,255,0.45);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.55);
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px;
+}
 
-    .divisionName {
-      font-size: 18px;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
+.card{
+  background:rgba(12,20,34,.92);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
 
-    .card p {
-      opacity: 0.8;
-      line-height: 1.45;
-      margin-bottom: 14px;
-    }
+.card h3{
+  font-size:18px;
+  font-weight:950;
+}
 
-    .statusTag {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-    }
+.desc{
+  margin-top:10px;
+  font-size:13px;
+  line-height:1.5;
+  opacity:.78;
+}
 
-    .open {
-      background: rgba(108,242,194,0.12);
-      color: #6cf2c2;
-    }
+.statusRow{
+  margin-top:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .maint {
-      background: rgba(255,200,80,0.12);
-      color: #ffd37a;
-    }
+.badge{
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,0.15);
+}
 
-    .closed {
-      background: rgba(255,90,90,0.12);
-      color: #ff7a7a;
-    }
+.open{color:var(--open);border-color:rgba(56,255,156,.4)}
+.maintenance{color:var(--maint);border-color:rgba(255,210,77,.4)}
+.closed{color:var(--closed);border-color:rgba(255,93,93,.4)}
 
-    .btn {
-      margin-top: 18px;
-      display: inline-block;
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 14px;
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.04);
-      color: white;
-      transition: 0.2s;
-    }
+.updated{
+  font-size:12px;
+  opacity:.55;
+}
 
-    .btn:hover {
-      transform: translateY(-2px);
-      border-color: rgba(108,242,194,0.45);
-    }
-
-    footer {
-      margin-top: 80px;
-      text-align: center;
-      font-size: 13px;
-      opacity: 0.55;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 35px 0;
-    }
-  </style>
+footer{
+  margin-top:70px;
+  padding:30px;
+  text-align:center;
+  font-size:13px;
+  opacity:.55;
+  border-top:1px solid var(--border);
+}
+</style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo">StudentStreamHQ</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="company.html">Company</a>
-      <a href="staff-directory.html">Staff</a>
-    </nav>
-  </header>
+<header>
+  <h1>StudentStreamHQ · Division Directory</h1>
+  <a href="index.html">← Back Home</a>
+</header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="heroBadge">Official Division Directory</div>
-    <h1>StudentStream Divisions</h1>
+<div class="wrap">
+
+  <div class="title">
+    <h2>Division Status Board</h2>
     <p>
-      StudentStreamHQ operates as a multi-division platform network.
-      Each division is independently structured with its own mission,
-      leadership, and operational status.
+      Live operational status across all StudentStreamHQ divisions.<br>
+      Updated directly from internal platform systems.
     </p>
-  </section>
+  </div>
 
-  <!-- DIVISION GRID -->
-  <section class="grid">
+  <div id="divisionGrid" class="grid">
+    <div class="card">Loading divisions...</div>
+  </div>
 
-    <!-- SS FILMS -->
-    <div class="card">
-      <div class="divisionName">SS Films</div>
-      <p>
-        StudentStream’s entertainment and production division for independent films,
-        originals, documentaries, and creator-owned streaming media.
-      </p>
-      <span class="statusTag open">Open</span><br>
-      <a class="btn" href="ss-films.html">View Division</a>
-    </div>
+</div>
 
-    <!-- STUDIOS -->
-    <div class="card">
-      <div class="divisionName">StudentStream Studios</div>
-      <p>
-        A creative development division providing tools, infrastructure,
-        and production resources for creators and media teams.
-      </p>
-      <span class="statusTag open">Open</span><br>
-      <a class="btn" href="studios.html">View Division</a>
-    </div>
+<footer>
+  © 2026 StudentStreamHQ · Official Division Directory
+</footer>
 
-    <!-- LAW -->
-    <div class="card">
-      <div class="divisionName">SSI Law (StudentStream Law)</div>
-      <p>
-        Legal infrastructure division designed to protect creators,
-        intellectual property, and emerging digital businesses.
-      </p>
-      <span class="statusTag maint">Maintenance</span><br>
-      <a class="btn" href="ssi-law.html">View Division</a>
-    </div>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    <!-- INVESTIGATIONS -->
-    <div class="card">
-      <div class="divisionName">SS:I — StudentStream Investigations</div>
-      <p>
-        Specialized investigative division focused on uncovering hidden systems,
-        untold stories, intelligence-driven documentaries, and truth media.
-      </p>
-      <span class="statusTag open">Open</span><br>
-      <a class="btn" href="ssi.html">View Division</a>
-    </div>
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  </section>
+function badgeClass(status){
+  if(status==="open") return "open";
+  if(status==="closed") return "closed";
+  return "maintenance";
+}
 
-  <!-- FOOTER -->
-  <footer>
-    © 2026 StudentStreamHQ · Official Division Directory
-  </footer>
+function label(status){
+  if(status==="open") return "OPEN";
+  if(status==="closed") return "CLOSED";
+  return "MAINTENANCE";
+}
+
+async function loadDivisions(){
+  const grid = document.getElementById("divisionGrid");
+
+  const { data, error } = await supabase
+    .from("divisions")
+    .select("*")
+    .order("name",{ascending:true});
+
+  if(error){
+    grid.innerHTML = `<div class="card">Error loading divisions.</div>`;
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  data.forEach(d=>{
+    grid.innerHTML += `
+      <div class="card">
+        <h3>${d.name}</h3>
+        <p class="desc">${d.description || ""}</p>
+
+        <div class="statusRow">
+          <span class="badge ${badgeClass(d.status)}">
+            ${label(d.status)}
+          </span>
+          <span class="updated">
+            Updated ${new Date(d.updated_at).toLocaleDateString()}
+          </span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+loadDivisions();
+</script>
 
 </body>
 </html>
