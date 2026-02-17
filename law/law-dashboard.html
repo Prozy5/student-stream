@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Law Staff Dashboard · StudentStream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root{
+      --bg:#060b14;
+      --panel:#0c1626;
+      --accent:#ff5d5d;
+      --text:#eaf1ff;
+      --muted:#9fb0cc;
+      --border:rgba(255,255,255,0.08);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    body{
+      font-family:system-ui;
+      background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
+      color:var(--text);
+      padding:40px;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:30px;
+      font-size:36px;
+    }
+
+    .reports{
+      max-width:1100px;
+      margin:auto;
+      display:grid;
+      gap:16px;
+    }
+
+    .report{
+      background:var(--panel);
+      border:1px solid var(--border);
+      padding:18px;
+      border-radius:14px;
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    select{
+      padding:8px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#05080f;
+      color:var(--text);
+    }
+
+    button{
+      margin-top:12px;
+      padding:10px 14px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
+      color:#140000;
+      font-weight:700;
+    }
+
+    p{
+      color:var(--muted);
+      margin-top:6px;
+      font-size:14px;
+      line-height:1.4;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>⚖️ StudentStream Law Staff Dashboard</h1>
+
+<div class="reports" id="reportsList"></div>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+  const db = createClient(supabaseUrl, supabaseKey);
+
+  const list = document.getElementById("reportsList");
+
+  async function checkStaff() {
+
+    const { data: { user } } = await db.auth.getUser();
+    if (!user) {
+      alert("Login required.");
+      location.href = "../login.html";
+      return;
+    }
+
+    const { data: profile } = await db
+      .from("profiles")
+      .select("law_rank")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.law_rank !== "law_staff") {
+      alert("Access denied: Staff only.");
+      location.href = "law.html";
+      return;
+    }
+
+    loadReports();
+  }
+
+  async function loadReports() {
+
+    const { data, error } = await db
+      .from("law_reports")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      alert("Error loading reports.");
+      return;
+    }
+
+    list.innerHTML = "";
+
+    data.forEach(report => {
+
+      const div = document.createElement("div");
+      div.className = "report";
+
+      div.innerHTML = `
+        <div class="top">
+          <h3>${report.issue_type}</h3>
+
+          <select id="status-${report.id}">
+            <option value="pending">Pending</option>
+            <option value="reviewing">Reviewing</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+
+        <p><b>User:</b> ${report.username}</p>
+        <p><b>Description:</b> ${report.description}</p>
+        <p><b>Submitted:</b> ${new Date(report.created_at).toLocaleString()}</p>
+
+        <button onclick="updateStatus('${report.id}')">
+          Save Status
+        </button>
+      `;
+
+      list.appendChild(div);
+
+      // set current status
+      document.getElementById(`status-${report.id}`).value = report.status;
+    });
+  }
+
+  window.updateStatus = async function(reportId){
+
+    const newStatus =
+      document.getElementById(`status-${reportId}`).value;
+
+    const { error } = await db
+      .from("law_reports")
+      .update({ status: newStatus })
+      .eq("id", reportId);
+
+    if(error){
+      alert("Update failed.");
+      console.error(error);
+    } else {
+      alert("Status updated.");
+      loadReports();
+    }
+  }
+
+  checkStaff();
+</script>
+
+</body>
+</html>
