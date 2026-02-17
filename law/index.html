@@ -13,6 +13,7 @@
   --bg:#060b14;
   --panel:#0c1626;
   --accent:#ff5d5d;
+  --accent2:#ff2f2f;
   --text:#eaf1ff;
   --muted:#9fb0cc;
   --border:rgba(255,255,255,0.08);
@@ -33,21 +34,17 @@ nav{
   justify-content:space-between;
   align-items:center;
   padding:18px 24px;
-  background:rgba(10,20,40,.7);
-  backdrop-filter:blur(10px);
+  background:rgba(10,20,40,.75);
+  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
 }
 
 .nav-left{
   display:flex;
   align-items:center;
-  gap:12px;
-  font-weight:700;
+  gap:10px;
+  font-weight:900;
   font-size:16px;
-}
-
-.nav-left img{
-  height:28px;
 }
 
 .nav-links a{
@@ -55,22 +52,26 @@ nav{
   text-decoration:none;
   margin-left:18px;
   font-size:14px;
+  font-weight:600;
 }
 
-.nav-links a:hover{color:var(--text)}
+.nav-links a:hover{
+  color:var(--text);
+}
 
 /* HERO */
 
 .hero{
-  max-width:1000px;
+  max-width:1050px;
   margin:auto;
-  padding:70px 22px 40px;
+  padding:80px 22px 55px;
   text-align:center;
 }
 
 .hero h1{
-  font-size:42px;
-  margin-bottom:10px;
+  font-size:46px;
+  font-weight:950;
+  margin-bottom:14px;
 }
 
 .hero span{
@@ -79,13 +80,14 @@ nav{
 
 .hero p{
   color:var(--muted);
-  max-width:700px;
-  margin:16px auto;
-  line-height:1.6;
+  max-width:760px;
+  margin:18px auto;
+  line-height:1.7;
+  font-size:15px;
 }
 
 .hero-actions{
-  margin-top:26px;
+  margin-top:30px;
   display:flex;
   justify-content:center;
   gap:14px;
@@ -94,24 +96,42 @@ nav{
 
 .btn{
   padding:12px 22px;
-  border-radius:10px;
+  border-radius:12px;
   border:1px solid var(--border);
   background:var(--panel);
   color:var(--text);
   cursor:pointer;
   text-decoration:none;
+  font-weight:750;
   transition:.2s;
 }
 
 .btn.primary{
-  background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
   border:none;
-  color:#1a0000;
+  color:#180000;
 }
 
 .btn:hover{
   transform:translateY(-2px);
-  opacity:.9;
+  opacity:.92;
+}
+
+/* VERIFIED STAFF NOTICE */
+
+.notice{
+  max-width:900px;
+  margin:35px auto 0;
+  padding:14px 18px;
+  border-radius:14px;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.08);
+  font-size:14px;
+  color:var(--muted);
+}
+
+.notice strong{
+  color:var(--accent);
 }
 
 /* SECTIONS */
@@ -119,45 +139,85 @@ nav{
 .section{
   max-width:1100px;
   margin:auto;
-  padding:40px 22px;
+  padding:55px 22px;
 }
 
 .section h2{
-  margin-bottom:16px;
+  font-size:22px;
+  font-weight:950;
+  margin-bottom:18px;
+}
+
+.section p{
+  color:var(--muted);
+  max-width:850px;
+  line-height:1.75;
+  font-size:14.5px;
 }
 
 /* GRID */
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+  margin-top:20px;
 }
 
 .card{
-  background:var(--panel);
+  background:rgba(12,22,38,.85);
   border:1px solid var(--border);
-  border-radius:14px;
-  padding:18px;
+  border-radius:16px;
+  padding:20px;
+  transition:.2s;
+}
+
+.card:hover{
+  border-color:rgba(255,93,93,.35);
+  transform:translateY(-4px);
 }
 
 .card h3{
-  margin-bottom:6px;
+  margin-bottom:8px;
   font-size:16px;
+  font-weight:900;
 }
 
 .card p{
   color:var(--muted);
-  font-size:14px;
+  font-size:13.5px;
+  line-height:1.5;
+}
+
+/* PROCESS */
+
+.process{
+  margin-top:25px;
+  display:grid;
+  gap:14px;
+}
+
+.step{
+  padding:16px 18px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+
+.step span{
+  color:var(--accent);
+  font-weight:900;
 }
 
 /* FOOTER */
 
 footer{
   text-align:center;
-  padding:30px;
+  padding:40px;
   color:var(--muted);
   font-size:13px;
+  border-top:1px solid var(--border);
+  margin-top:70px;
 }
 </style>
 </head>
@@ -182,66 +242,86 @@ footer{
   <h1>StudentStream <span>Law</span></h1>
 
   <p>
-    The digital safety, creator rights, and platform enforcement division of StudentStream.
-    We protect creators, investigate abuse, handle fraud, and ensure fair use of the platform.
+    The enforcement, creator protection, and digital safety division of StudentStreamHQ.
+    We investigate abuse, defend creator ownership, prevent fraud, and maintain trust across the platform.
   </p>
 
   <div class="hero-actions">
-    <a href="report.html" class="btn primary">Report an Issue</a>
-    <a href="rights.html" class="btn">Creator Rights</a>
-    <a href="transparency.html" class="btn">Transparency</a>
-    <a href="law-login.html" class="btn">Staff Login</a>
+    <a href="report.html" class="btn primary">🚨 Report an Issue</a>
+    <a href="rights.html" class="btn">📜 Creator Rights</a>
+    <a href="transparency.html" class="btn">📂 Transparency</a>
+    <a href="law-login.html" class="btn">🔒 Staff Access</a>
+  </div>
+
+  <div class="notice">
+    <strong>Verified Staff Only:</strong> StudentStream Law tools are restricted to approved enforcement ranks inside StudentStreamHQ.
   </div>
 </section>
 
 <section class="section">
-  <h2>What We Handle</h2>
+  <h2>Core Areas of Enforcement</h2>
 
   <div class="grid">
     <div class="card">
-      <h3>Copyright & IP</h3>
-      <p>Stolen content, ownership disputes, takedown requests.</p>
+      <h3>Copyright & Intellectual Property</h3>
+      <p>Handling stolen uploads, ownership disputes, takedown requests, and rights verification.</p>
     </div>
 
     <div class="card">
-      <h3>Fraud & Scams</h3>
-      <p>Fake listings, impersonation, marketplace abuse.</p>
+      <h3>Fraud Prevention</h3>
+      <p>Investigating scams, impersonation attempts, fake monetization schemes, and marketplace abuse.</p>
     </div>
 
     <div class="card">
-      <h3>Harassment & Threats</h3>
-      <p>Creator safety and coordinated abuse handling.</p>
+      <h3>Harassment & Threat Response</h3>
+      <p>Protecting creators from coordinated attacks, threats, stalking, or targeted abuse.</p>
     </div>
 
     <div class="card">
-      <h3>Platform Enforcement</h3>
-      <p>Policy violations, account restrictions, bans.</p>
+      <h3>Platform Policy Enforcement</h3>
+      <p>Warnings, restrictions, bans, and policy actions based on verified evidence.</p>
     </div>
 
     <div class="card">
-      <h3>Evidence Handling</h3>
-      <p>Secure documentation and case tracking.</p>
+      <h3>Evidence & Case Tracking</h3>
+      <p>Secure documentation, reports, and internal case review procedures.</p>
     </div>
 
     <div class="card">
       <h3>Legal Cooperation</h3>
-      <p>Working with authorities when legally required.</p>
+      <p>Responding to lawful requests and cooperating with authorities when legally required.</p>
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h2>Mission</h2>
+  <h2>How StudentStream Law Works</h2>
 
-  <p style="color:var(--muted);max-width:800px;">
-    StudentStream Law exists to protect creative work, maintain trust on the platform,
-    and ensure creators can build without fear of exploitation, theft, or abuse.
-    Our mission is fairness, transparency, and safety across the StudentStream ecosystem.
+  <p>
+    Every report submitted through StudentStream Law follows a structured enforcement process designed for fairness,
+    transparency, and creator protection.
+  </p>
+
+  <div class="process">
+    <div class="step"><span>1.</span> Report is reviewed by verified enforcement staff.</div>
+    <div class="step"><span>2.</span> Evidence is collected and securely documented.</div>
+    <div class="step"><span>3.</span> Policy or legal evaluation is performed.</div>
+    <div class="step"><span>4.</span> Action is taken: warning, restriction, takedown, or escalation.</div>
+    <div class="step"><span>5.</span> Transparency logs may be updated when appropriate.</div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Mission Statement</h2>
+
+  <p>
+    StudentStream Law exists to ensure creators can build freely without exploitation, theft, fraud, or abuse.
+    Our mission is long-term platform trust, fair enforcement, and strong creator rights across the StudentStream ecosystem.
   </p>
 </section>
 
 <footer>
-  © 2026 StudentStream Law · Digital Safety & Creator Protection Division
+  © 2026 StudentStream Law Division · StudentStreamHQ Digital Safety & Creator Protection
 </footer>
 
 </body>
