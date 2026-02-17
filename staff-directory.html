@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>StudentStreamHQ — Staff Directory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Staff Directory — StudentStreamHQ</title>
 
   <style>
     * {
@@ -16,205 +17,269 @@
       min-height: 100vh;
       background: radial-gradient(circle at top, #10101c, #040406);
       color: white;
-      padding: 35px 20px;
+      padding: 40px 20px;
+    }
+
+    header {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 25px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #4da3ff;
+    }
+
+    nav a {
+      color: #aaa;
+      margin-left: 18px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: 70px auto 55px;
       text-align: center;
     }
 
-    .wrap {
-      max-width: 980px;
-      margin: auto;
+    .heroBadge {
+      display: inline-block;
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      background: rgba(108,242,194,0.12);
+      border: 1px solid rgba(108,242,194,0.25);
+      color: #6cf2c2;
+      margin-bottom: 18px;
     }
 
-    .title {
-      font-size: 2.6rem;
+    .hero h1 {
+      font-size: 44px;
+      margin: 0 0 14px;
       font-weight: 900;
-      margin-bottom: 10px;
     }
 
-    .sub {
-      opacity: 0.75;
-      font-size: 1.05rem;
-      margin-bottom: 25px;
-    }
-
-    /* Hiring Soon Banner */
-    .hiringBanner {
-      background: rgba(255, 200, 80, 0.10);
-      border: 1px solid rgba(255, 200, 80, 0.35);
-      color: #ffd37a;
-      padding: 14px 18px;
-      border-radius: 16px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 45px;
-      line-height: 1.4;
-    }
-
-    .hiringBanner strong {
-      color: white;
+    .hero p {
+      opacity: 0.82;
+      font-size: 18px;
+      max-width: 760px;
+      margin: auto;
+      line-height: 1.55;
     }
 
     .grid {
+      max-width: 1100px;
+      margin: auto;
       display: grid;
-      gap: 18px;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
     }
 
-    /* Staff Cards */
-    .staffCard {
+    .card {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.10);
-      padding: 22px;
       border-radius: 18px;
-      text-align: left;
+      padding: 24px;
       transition: 0.25s;
-      position: relative;
     }
 
-    .staffCard:hover {
-      transform: translateY(-4px);
-      border-color: rgba(77,163,255,0.55);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(77,163,255,0.45);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.55);
     }
 
-    /* Role Badge */
-    .role {
-      display: inline-block;
-      font-size: 0.75rem;
-      padding: 6px 12px;
-      border-radius: 999px;
+    .nameRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 12px;
-      font-weight: 700;
-      background: rgba(77,163,255,0.15);
-      color: #4da3ff;
-      border: 1px solid rgba(77,163,255,0.25);
     }
 
-    /* VERIFIED OWNER Highlight */
-    .chiefCard {
-      border: 1px solid rgba(108,242,194,0.35);
-      background: linear-gradient(
-        145deg,
-        rgba(108,242,194,0.12),
-        rgba(255,255,255,0.04)
-      );
-    }
-
-    .verifiedBadge {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      background: rgba(108,242,194,0.15);
-      border: 1px solid rgba(108,242,194,0.35);
-      color: #6cf2c2;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 6px 12px;
-      border-radius: 999px;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 1.35rem;
+    .staffName {
+      font-size: 18px;
       font-weight: 900;
     }
 
-    p {
-      margin-top: 10px;
-      opacity: 0.78;
-      font-size: 0.98rem;
-      line-height: 1.45;
-    }
-
-    .note {
-      margin-top: 45px;
-      opacity: 0.65;
-      font-size: 0.95rem;
-    }
-
-    .backBtn {
-      margin-top: 45px;
-      display: inline-block;
-      padding: 14px 26px;
+    .badge {
+      font-size: 11px;
+      font-weight: 900;
+      padding: 6px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.20);
-      background: rgba(255,255,255,0.04);
-      color: white;
-      cursor: pointer;
-      font-weight: 800;
-      transition: 0.2s;
-      text-decoration: none;
+      display: inline-block;
     }
 
-    .backBtn:hover {
-      transform: translateY(-2px);
-      border-color: rgba(108,242,194,0.45);
+    .chiefBadge {
+      background: linear-gradient(90deg, #4da3ff, #6cf2c2);
+      color: black;
+    }
+
+    .verifiedBadge {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.20);
+      color: white;
+    }
+
+    .role {
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #6db4ff;
+    }
+
+    .desc {
+      opacity: 0.8;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .sectionTitle {
+      max-width: 1100px;
+      margin: 70px auto 25px;
+      font-size: 20px;
+      font-weight: 900;
+      opacity: 0.9;
+    }
+
+    footer {
+      margin-top: 80px;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.55;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 35px 0;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <div class="title">Staff Directory</div>
-    <div class="sub">
-      Verified StudentStreamHQ leadership and operational teams.
-    </div>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">StudentStreamHQ</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="division-directory.html">Divisions</a>
+      <a href="company.html">Company</a>
+    </nav>
+  </header>
 
-    <!-- Hiring Soon Banner -->
-    <div class="hiringBanner">
-      🚀 <strong>Staff Recruitment Opening Soon</strong><br>
-      StudentStreamHQ divisions will begin onboarding verified staff prior to
-      full platform launch on <strong>April 4, 2026</strong>.
-    </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="heroBadge">Verified Staff Directory</div>
+    <h1>StudentStream Staff Directory</h1>
+    <p>
+      StudentStreamHQ operates with a structured internal staff network.
+      Leadership and division personnel are verified and listed publicly
+      for transparency and organizational trust.
+    </p>
+  </section>
 
-    <div class="grid">
+  <!-- EXECUTIVE COMMAND -->
+  <div class="sectionTitle">Executive Command</div>
 
-      <!-- VERIFIED OWNER CARD -->
-      <div class="staffCard chiefCard">
-        <span class="verifiedBadge">✔ VERIFIED OWNER</span>
-        <span class="role">Platform Executive Command</span>
+  <section class="grid">
 
-        <h2>Deondre</h2>
-
-        <p>
-          Founder-level authority overseeing StudentStreamHQ development,
-          division expansion, creator systems, and launch operations.
-        </p>
-
-        <p>
-          Responsible for internal verification, platform infrastructure,
-          and long-term ecosystem growth.
-        </p>
+    <!-- YOU (CHIEF VERIFIED) -->
+    <div class="card" style="border:1px solid rgba(108,242,194,0.35);">
+      <div class="nameRow">
+        <div class="staffName">Deondre</div>
+        <span class="badge chiefBadge">✔ Chief Verified</span>
       </div>
 
-      <!-- Placeholder Staff -->
-      <div class="staffCard">
-        <span class="role">Division Operations</span>
-        <h2>Positions Pending</h2>
-        <p>
-          Division directors and operational staff will be listed here as
-          internal systems activate.
-        </p>
-      </div>
+      <div class="role">Chief Command Authority</div>
 
-      <div class="staffCard">
-        <span class="role">Creator Support</span>
-        <h2>Hiring Soon</h2>
-        <p>
-          Creator support, moderation, and partner relations teams will
-          begin onboarding closer to launch.
-        </p>
-      </div>
+      <p class="desc">
+        Highest-level platform authority responsible for staff oversight,
+        division operations, internal enforcement, platform security,
+        and executive development control across StudentStreamHQ.
+      </p>
 
+      <p class="desc" style="margin-top:10px;">
+        Oversees all divisions including SS Films, StudentStream Studios,
+        SSI Law, and SS:I Investigations.
+      </p>
     </div>
 
-    <div class="note">
-      All staff listings are verified internally through StudentStreamHQ systems.
+  </section>
+
+  <!-- DIVISION LEADERSHIP -->
+  <div class="sectionTitle">Division Leadership</div>
+
+  <section class="grid">
+
+    <div class="card">
+      <div class="nameRow">
+        <div class="staffName">Rebecca Miles</div>
+        <span class="badge verifiedBadge">Division Lead</span>
+      </div>
+      <div class="role">SS Films Operations</div>
+      <p class="desc">
+        Coordinates film production workflow, creator partnerships,
+        and release scheduling for SS Films originals.
+      </p>
     </div>
 
-    <a href="/index.html" class="backBtn">← Back to Home</a>
+    <div class="card">
+      <div class="nameRow">
+        <div class="staffName">Edward Lane</div>
+        <span class="badge verifiedBadge">Division Lead</span>
+      </div>
+      <div class="role">StudentStream Studios</div>
+      <p class="desc">
+        Oversees studio infrastructure development, creator tool systems,
+        and production resources for internal media teams.
+      </p>
+    </div>
 
-  </div>
+    <div class="card">
+      <div class="nameRow">
+        <div class="staffName">Michael Grant</div>
+        <span class="badge verifiedBadge">Division Lead</span>
+      </div>
+      <div class="role">Platform Systems</div>
+      <p class="desc">
+        Manages internal platform systems, security operations,
+        account integrity, and core deployment structure.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- SUPPORT STAFF -->
+  <div class="sectionTitle">Staff & Support</div>
+
+  <section class="grid">
+
+    <div class="card">
+      <div class="nameRow">
+        <div class="staffName">Open Recruitment</div>
+        <span class="badge verifiedBadge">Pending</span>
+      </div>
+      <div class="role">Staff Expansion</div>
+      <p class="desc">
+        StudentStreamHQ is currently expanding staff roles in development,
+        media production, moderation, and division operations.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 StudentStreamHQ · Verified Staff Directory · Internal ranks protected under Chief Command Authority
+  </footer>
+
 </body>
 </html>
