@@ -109,6 +109,59 @@ button{
   border:1px dashed rgba(255,255,255,.15);
   border-radius:16px;
 }
+
+/* ✅ MODAL ADDITION */
+.modalOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+.modal{
+  width:100%;
+  max-width:520px;
+  background:var(--panel);
+  padding:25px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.14);
+}
+
+.modal h2{
+  font-size:18px;
+  margin-bottom:12px;
+}
+
+.modal input,
+.modal textarea,
+.modal select{
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:white;
+  outline:none;
+}
+
+.modal textarea{
+  min-height:110px;
+  resize:none;
+}
+
+.modalActions{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.modalActions button{
+  flex:1;
+}
 </style>
 </head>
 
@@ -130,6 +183,37 @@ button{
 
 </div>
 
+<!-- ✅ CASE CREATION MODAL -->
+<div class="modalOverlay" id="caseModal">
+  <div class="modal">
+    <h2>🔥 Create New Case</h2>
+
+    <input id="caseTitleInput" placeholder="Case Title..." />
+    <textarea id="caseDescInput" placeholder="Case Description..."></textarea>
+
+    <select id="casePriorityInput">
+      <option value="low">Low</option>
+      <option value="medium" selected>Medium</option>
+      <option value="high">High</option>
+      <option value="critical">Critical</option>
+    </select>
+
+    <!-- ✅ Assignment Dropdown -->
+    <select id="caseAssignInput">
+      <option value="">Assign to Staff (optional)</option>
+    </select>
+
+    <div class="modalActions">
+      <button onclick="closeModal()" style="background:#222;">
+        Cancel
+      </button>
+      <button onclick="submitCase()">
+        Create Case
+      </button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -139,7 +223,17 @@ const supabase = createClient(
 );
 
 const caseList = document.getElementById("caseList");
+const modal = document.getElementById("caseModal");
 
+let currentUser = null;
+let currentRole = "member";
+
+/* ✅ Staff Roles Shared */
+function isStaff(role){
+  return ["owner","admin","moderator"].includes(role);
+}
+
+/* ✅ ACCESS CHECK */
 async function checkLawAccess(){
   const { data: { user } } = await supabase.auth.getUser();
   if(!user){
@@ -148,30 +242,53 @@ async function checkLawAccess(){
     return;
   }
 
+  currentUser = user;
+
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username, law_rank")
+    .select("username, role")
     .eq("id", user.id)
     .single();
 
-  if(profile.law_rank === "none"){
-    alert("Access denied. Not Law Staff.");
+  currentRole = profile?.role || "member";
+
+  if(!isStaff(currentRole)){
+    alert("Access denied. Only verified StudentStreamHQ staff.");
     location.href="law.html";
     return;
   }
 
   document.getElementById("staffName").textContent =
-    profile.username + " (" + profile.law_rank + ")";
+    profile.username + " (" + currentRole + ")";
 }
 
+/* ✅ LOAD STAFF FOR ASSIGNMENT */
+async function loadStaffList(){
+  const { data: staff } = await supabase
+    .from("profiles")
+    .select("id, username, role")
+    .in("role", ["owner","admin","moderator"]);
+
+  const dropdown = document.getElementById("caseAssignInput");
+
+  staff.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.id;
+    opt.textContent = `${s.username} (${s.role})`;
+    dropdown.appendChild(opt);
+  });
+}
+
+/* ✅ LOAD CASES */
 async function loadCases(){
   const { data: cases } = await supabase
     .from("law_cases")
     .select("*")
+    .eq("archived", false)
     .order("created_at", { ascending:false });
 
   if(!cases || cases.length === 0){
-    caseList.innerHTML = `<div class="empty">No cases yet.</div>`;
+    caseList.innerHTML = `<div class="empty">No active cases yet.</div>`;
     return;
   }
 
@@ -197,12 +314,70 @@ async function loadCases(){
   });
 }
 
+/* ✅ MODAL CONTROLS */
 window.newCase = function(){
-  alert("Next: Case creation modal coming.");
+  modal.style.display="flex";
 };
 
+window.closeModal = function(){
+  modal.style.display="none";
+};
+
+/* ✅ AUTO LOG ACTION */
+async function logAction(caseId, action, details=""){
+  await supabase.from("law_case_logs").insert([{
+    case_id: caseId,
+    staff_user: currentUser.id,
+    action,
+    details
+  }]);
+}
+
+/* ✅ SUBMIT CASE */
+window.submitCase = async function(){
+  const title = document.getElementById("caseTitleInput").value.trim();
+  const desc  = document.getElementById("caseDescInput").value.trim();
+  const priority = document.getElementById("casePriorityInput").value;
+  const assignedTo = document.getElementById("caseAssignInput").value || null;
+
+  if(title.length < 3){
+    alert("Title too short.");
+    return;
+  }
+
+  const { data: newCase, error } = await supabase
+    .from("law_cases")
+    .insert([{
+      title,
+      description: desc,
+      priority,
+      status: "open",
+      created_by: currentUser.id,
+      assigned_to: assignedTo
+    }])
+    .select()
+    .single();
+
+  if(error){
+    alert("❌ Failed: " + error.message);
+    return;
+  }
+
+  await logAction(newCase.id, "Case Created", "Priority: " + priority);
+
+  alert("✅ Case Created!");
+  closeModal();
+
+  document.getElementById("caseTitleInput").value="";
+  document.getElementById("caseDescInput").value="";
+
+  loadCases();
+};
+
+/* INIT */
 (async()=>{
   await checkLawAccess();
+  await loadStaffList();
   await loadCases();
 })();
 </script>
