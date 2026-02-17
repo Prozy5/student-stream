@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Status Admin V3 · StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="module" src="/js/platform-guard.js"></script>
+
+<style>
+:root{
+  --bg:#05080f;
+  --panel:#0c1626;
+  --accent:#ff5d5d;
+  --accent2:#ff2f2f;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.10);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0c1b33,#05080f);
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  padding:18px 26px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,20,40,.88);
+  backdrop-filter:blur(14px);
+}
+
+h1{
+  font-size:18px;
+  font-weight:950;
+}
+
+.chiefTag{
+  color:var(--accent);
+}
+
+/* WRAP */
+.wrap{
+  max-width:1250px;
+  margin:auto;
+  padding:40px 20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(430px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:rgba(12,22,38,.92);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
+
+.card h2{
+  font-size:15px;
+  font-weight:950;
+  margin-bottom:14px;
+}
+
+/* TOGGLE */
+.toggleRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  margin-bottom:14px;
+}
+
+.switch{
+  width:55px;
+  height:30px;
+  background:rgba(255,255,255,.15);
+  border-radius:999px;
+  position:relative;
+  cursor:pointer;
+}
+
+.switch::after{
+  content:"";
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:white;
+  position:absolute;
+  top:4px;
+  left:5px;
+  transition:.25s;
+}
+
+.switch.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
+
+.switch.active::after{
+  left:28px;
+}
+
+/* INPUTS */
+textarea,input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:white;
+  outline:none;
+  margin-top:10px;
+}
+
+textarea{
+  min-height:90px;
+  resize:none;
+}
+
+/* BUTTONS */
+button{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  font-weight:950;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#200000;
+}
+
+button.secondary{
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border);
+  color:white;
+}
+
+/* PREVIEW */
+.preview{
+  margin-top:14px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,93,93,.08);
+}
+
+.previewTitle{
+  font-weight:950;
+  margin-bottom:6px;
+  color:var(--accent);
+}
+
+/* PROGRESS */
+.progressBar{
+  width:100%;
+  height:14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  margin-top:10px;
+  overflow:hidden;
+}
+
+.progressFill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
+
+/* LOGS */
+.logBox{
+  max-height:320px;
+  overflow:auto;
+}
+
+.logItem{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.06);
+  margin-bottom:10px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.logItem b{
+  color:var(--accent);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🛰 Status Admin Panel <span class="chiefTag">V3</span></h1>
+  <div id="chiefName">Loading...</div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <!-- CONTROL -->
+    <div class="card">
+      <h2>🚧 Maintenance Scheduler + Countdown</h2>
+
+      <div class="toggleRow">
+        <span>Maintenance Mode</span>
+        <div id="toggleSwitch" class="switch" onclick="toggleMaintenance()"></div>
+      </div>
+
+      <textarea id="statusMessage"
+        placeholder="Public maintenance message..."></textarea>
+
+      <input id="scheduleTime" type="datetime-local" />
+      <input id="endTime" type="datetime-local" />
+
+      <button class="secondary" onclick="quickSchedule3PM()">
+        ⚡ Start Today @ 3:00 PM
+      </button>
+
+      <button onclick="applyMaintenance()">
+        Save Maintenance Plan
+      </button>
+
+      <div class="preview">
+        <div class="previewTitle">Live Countdown Preview</div>
+        <div id="countdownText">No scheduled maintenance.</div>
+
+        <div class="progressBar">
+          <div id="progressFill" class="progressFill"></div>
+        </div>
+      </div>
+
+      <button class="secondary" onclick="sendNotification()">
+        🔔 Notify All Users
+      </button>
+    </div>
+
+    <!-- AUDIT LOGS -->
+    <div class="card">
+      <h2>🧾 Platform Status Logs</h2>
+      <div id="auditLogs" class="logBox">Loading...</div>
+
+      <button class="secondary" onclick="loadLogs()">
+        Refresh Logs
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+let maintenanceEnabled=false;
+let countdownInterval=null;
+
+/* CHIEF LOCK */
+async function chiefOnly(){
+  const { data:{user} } = await supabase.auth.getUser();
+  if(!user){ location.href="law-login.html"; return; }
+
+  const { data:profile } = await supabase
+    .from("profiles")
+    .select("username, law_rank")
+    .eq("id", user.id)
+    .single();
+
+  if(profile.law_rank !== "chief"){
+    alert("⛔ Chief Only");
+    location.href="law.html";
+    return;
+  }
+
+  document.getElementById("chiefName").textContent =
+    "Verified Chief: " + profile.username;
+}
+
+/* TOGGLE */
+window.toggleMaintenance=()=>{
+  maintenanceEnabled=!maintenanceEnabled;
+  document.getElementById("toggleSwitch")
+    .classList.toggle("active", maintenanceEnabled);
+};
+
+/* QUICK 3PM */
+window.quickSchedule3PM=()=>{
+  const now=new Date();
+  now.setHours(15,0,0,0);
+
+  document.getElementById("scheduleTime").value =
+    now.toISOString().slice(0,16);
+
+  now.setHours(17,0,0,0);
+  document.getElementById("endTime").value =
+    now.toISOString().slice(0,16);
+};
+
+/* APPLY */
+window.applyMaintenance=async()=>{
+  const msg=document.getElementById("statusMessage").value.trim();
+  const start=document.getElementById("scheduleTime").value;
+  const end=document.getElementById("endTime").value;
+
+  const { error } = await supabase.rpc("chief_set_maintenance",{
+    new_mode:maintenanceEnabled,
+    new_message:msg,
+    new_time: start ? new Date(start).toISOString() : null,
+    new_end: end ? new Date(end).toISOString() : null
+  });
+
+  if(error){ alert(error.message); return; }
+
+  alert("✅ Maintenance Scheduled.");
+  loadStatus();
+  loadLogs();
+};
+
+/* LOAD STATUS */
+async function loadStatus(){
+  const { data } = await supabase
+    .from("platform_status")
+    .select("*")
+    .single();
+
+  maintenanceEnabled=data.maintenance_mode;
+
+  document.getElementById("toggleSwitch")
+    .classList.toggle("active", maintenanceEnabled);
+
+  document.getElementById("statusMessage").value =
+    data.maintenance_message || "";
+
+  if(data.maintenance_start){
+    startCountdown(data.maintenance_start, data.maintenance_end);
+  }
+}
+
+/* COUNTDOWN */
+function startCountdown(startISO,endISO){
+  clearInterval(countdownInterval);
+
+  countdownInterval=setInterval(()=>{
+    const now=new Date();
+    const start=new Date(startISO);
+    const end=endISO ? new Date(endISO) : null;
+
+    if(now < start){
+      const diff=Math.floor((start-now)/1000);
+      document.getElementById("countdownText").textContent =
+        "Maintenance begins in " + Math.floor(diff/60) + " min.";
+    }
+    else if(end && now < end){
+      const total=end-start;
+      const passed=now-start;
+      const pct=Math.floor((passed/total)*100);
+
+      document.getElementById("countdownText").textContent =
+        "🚧 Maintenance Active ("+pct+"% complete)";
+
+      document.getElementById("progressFill").style.width=pct+"%";
+    }
+    else{
+      document.getElementById("countdownText").textContent =
+        "No active maintenance.";
+      document.getElementById("progressFill").style.width="0%";
+    }
+  },1000);
+}
+
+/* NOTIFY */
+window.sendNotification=async()=>{
+  const msg=document.getElementById("statusMessage").value.trim();
+
+  await supabase.from("platform_notifications").insert({
+    title:"🚧 StudentStreamHQ Maintenance Update",
+    body: msg || "Scheduled maintenance soon.",
+    priority:"high"
+  });
+
+  alert("🔔 Notification Sent.");
+};
+
+/* LOGS */
+window.loadLogs=async()=>{
+  const { data } = await supabase
+    .from("platform_status_logs")
+    .select("*")
+    .order("changed_at",{ascending:false})
+    .limit(15);
+
+  const box=document.getElementById("auditLogs");
+  box.innerHTML="";
+
+  data.forEach(l=>{
+    box.innerHTML += `
+      <div class="logItem">
+        <b>${l.action}</b><br>
+        ${l.message}<br>
+        <small>${new Date(l.changed_at).toLocaleString()}</small>
+      </div>
+    `;
+  });
+};
+
+/* INIT */
+(async()=>{
+  await chiefOnly();
+  await loadStatus();
+  await loadLogs();
+})();
+</script>
+
+</body>
+</html>
