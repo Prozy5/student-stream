@@ -28,7 +28,6 @@ body{
 }
 
 /* NAV */
-
 nav{
   display:flex;
   justify-content:space-between;
@@ -58,7 +57,6 @@ nav{
 .nav-links a:hover{color:var(--text)}
 
 /* HERO */
-
 .hero{
   max-width:1100px;
   margin:auto;
@@ -112,7 +110,6 @@ nav{
 }
 
 /* VERIFIED NOTICE */
-
 .notice{
   margin:40px auto 0;
   max-width:920px;
@@ -124,12 +121,9 @@ nav{
   font-size:14px;
 }
 
-.notice strong{
-  color:var(--accent);
-}
+.notice strong{color:var(--accent)}
 
 /* STAFF BADGE */
-
 .badge{
   margin:25px auto 0;
   max-width:520px;
@@ -147,8 +141,35 @@ nav{
   color:var(--accent);
 }
 
-/* SECTION */
+/* QUICK STAFF PANEL */
+.staffPanel{
+  margin:30px auto 0;
+  max-width:720px;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid rgba(255,93,93,.25);
+  background:rgba(255,93,93,.05);
+  display:none;
+}
 
+.staffPanel h3{
+  margin-bottom:12px;
+  font-size:16px;
+  font-weight:950;
+}
+
+.staffPanel a{
+  display:inline-block;
+  margin-top:10px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  font-weight:900;
+  color:#200000;
+  text-decoration:none;
+}
+
+/* SECTION */
 .section{
   max-width:1150px;
   margin:auto;
@@ -162,7 +183,6 @@ nav{
 }
 
 /* GRID */
-
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -195,7 +215,6 @@ nav{
 }
 
 /* LAW ALERTS */
-
 .alerts{
   margin-top:20px;
   display:grid;
@@ -211,12 +230,9 @@ nav{
   color:var(--muted);
 }
 
-.alertBox strong{
-  color:var(--accent);
-}
+.alertBox strong{color:var(--accent)}
 
 /* FOOTER */
-
 footer{
   text-align:center;
   padding:40px;
@@ -237,7 +253,7 @@ footer{
   <div class="nav-links">
     <a href="../index.html">Home</a>
     <a href="report.html">Report</a>
-    <a href="cases.html">Cases</a>
+    <a href="my-reports.html">My Reports</a>
     <a href="transparency.html">Transparency</a>
     <a href="law-login.html">Staff Access</a>
   </div>
@@ -254,7 +270,7 @@ footer{
 
   <div class="hero-actions">
     <a href="report.html" class="btn primary">🚨 Submit Report</a>
-    <a href="cases.html" class="btn">📁 Track a Case</a>
+    <a href="my-reports.html" class="btn">📌 My Reports</a>
     <a href="rights.html" class="btn">📜 Creator Rights</a>
     <a href="appeals.html" class="btn">⚠️ Appeals Portal</a>
   </div>
@@ -262,11 +278,21 @@ footer{
   <!-- VERIFIED ONLY NOTICE -->
   <div class="notice">
     <strong>Verified Enforcement Only:</strong>
-    StudentStream Law tools are restricted to approved StudentStreamHQ staff ranks.
+    StudentStream Law staff tools are restricted to approved StudentStreamHQ ranks.
   </div>
 
   <!-- STAFF BADGE -->
   <div class="badge" id="staffBadge"></div>
+
+  <!-- STAFF QUICK PANEL -->
+  <div class="staffPanel" id="staffPanel">
+    <h3>⚖️ Law Staff Portal</h3>
+    You have verified enforcement access.<br>
+    Manage active investigations and case assignments below.
+
+    <br>
+    <a href="law-dashboard.html">Open Law Dashboard →</a>
+  </div>
 </section>
 
 <!-- RESPONSIBILITIES -->
@@ -322,8 +348,8 @@ footer{
     </div>
 
     <div class="alertBox">
-      <strong>Transparency Updates Coming Soon:</strong>
-      Public enforcement logs will launch after beta review.
+      <strong>User Tracking Portal Live:</strong>
+      Users can now monitor report assignment status through My Reports.
     </div>
   </div>
 </section>
@@ -339,7 +365,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  "YOUR_ANON_KEY"
 );
 
 async function loadBadge(){
@@ -353,12 +379,17 @@ async function loadBadge(){
     .single();
 
   if(profile?.law_rank && profile.law_rank !== "none"){
+
+    /* Badge */
     const badge=document.getElementById("staffBadge");
     badge.style.display="block";
     badge.innerHTML = `
       Logged in as <span>${profile.username}</span> —
       Rank: <span>${profile.law_rank.toUpperCase()}</span>
     `;
+
+    /* Staff Panel */
+    document.getElementById("staffPanel").style.display="block";
   }
 }
 
