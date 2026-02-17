@@ -5,29 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Staff Directory · StudentStreamHQ</title>
 
+<script type="module" src="/js/platform-guard.js"></script>
+
 <style>
 :root{
   --bg:#05070d;
   --panel:#0c1422;
   --border:rgba(255,255,255,0.08);
+
   --text:#eaf2ff;
   --muted:#9fb0cc;
+
   --accent:#4da3ff;
+  --accent2:#6cf2c2;
+  --gold:#ffd36c;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
   font-family:system-ui;
-  background:radial-gradient(circle at top,#101a2f,#05070d);
   color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top, rgba(77,163,255,0.25), transparent 60%),
+    radial-gradient(circle at bottom, rgba(108,242,194,0.10), transparent 60%),
+    linear-gradient(to bottom, #05070d, #020205);
 }
 
 header{
   padding:18px 26px;
   border-bottom:1px solid var(--border);
-  background:rgba(10,15,25,.92);
-  backdrop-filter:blur(14px);
+  background:rgba(10,15,25,.88);
+  backdrop-filter:blur(16px);
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -48,44 +58,53 @@ header a:hover{color:white}
 .wrap{
   max-width:1200px;
   margin:auto;
-  padding:50px 20px;
+  padding:55px 20px;
 }
 
 .pageTitle{
   text-align:center;
-  margin-bottom:40px;
+  margin-bottom:55px;
 }
 
 .pageTitle h2{
-  font-size:38px;
-  font-weight:950;
+  font-size:42px;
+  font-weight:1000;
 }
 
 .pageTitle p{
   margin-top:10px;
   opacity:.75;
+  font-size:15px;
+  line-height:1.5;
 }
 
 .sectionTitle{
-  font-size:16px;
-  font-weight:900;
-  margin:40px 0 18px;
-  color:var(--accent);
+  font-size:15px;
+  font-weight:950;
+  margin:50px 0 18px;
+  color:var(--accent2);
   text-transform:uppercase;
   letter-spacing:1px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:18px;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
 }
 
 .card{
   background:rgba(12,20,34,.92);
   border:1px solid var(--border);
-  border-radius:18px;
-  padding:20px;
+  border-radius:20px;
+  padding:22px;
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(77,163,255,0.35);
+  box-shadow:0 20px 50px rgba(0,0,0,0.55);
 }
 
 .nameRow{
@@ -95,36 +114,36 @@ header a:hover{color:white}
 }
 
 .staffName{
-  font-size:18px;
-  font-weight:950;
+  font-size:20px;
+  font-weight:1000;
 }
 
 .role{
   margin-top:6px;
   font-size:14px;
   color:var(--muted);
-  font-weight:700;
+  font-weight:750;
 }
 
 .desc{
   margin-top:14px;
   font-size:13px;
-  line-height:1.5;
-  opacity:.82;
+  line-height:1.55;
+  opacity:.84;
 }
 
 .badge{
-  padding:6px 12px;
+  padding:7px 14px;
   border-radius:999px;
   font-size:12px;
-  font-weight:800;
+  font-weight:950;
   border:1px solid rgba(255,255,255,0.15);
 }
 
-.verifiedBadge{
-  background:rgba(77,163,255,0.15);
-  color:var(--accent);
-  border-color:rgba(77,163,255,0.35);
+.executiveBadge{
+  background:rgba(255,211,108,0.14);
+  color:var(--gold);
+  border-color:rgba(255,211,108,0.35);
 }
 
 .staffBadge{
@@ -132,13 +151,31 @@ header a:hover{color:white}
   color:white;
 }
 
+.divisionTag{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:850;
+  border:1px solid rgba(255,255,255,0.12);
+  opacity:.8;
+}
+
 footer{
-  margin-top:70px;
-  padding:30px;
+  margin-top:80px;
+  padding:35px;
   text-align:center;
   font-size:13px;
   opacity:.55;
   border-top:1px solid var(--border);
+}
+
+.loading{
+  text-align:center;
+  opacity:.65;
+  font-size:15px;
+  margin-top:40px;
 }
 </style>
 </head>
@@ -153,80 +190,85 @@ footer{
 <div class="wrap">
 
   <div class="pageTitle">
-    <h2>Official Staff Directory</h2>
+    <h2>Verified Staff Network</h2>
     <p>
-      Verified leadership and staff across the StudentStreamHQ ecosystem.<br>
-      Division enforcement ranks are listed separately under SSI Law.
+      This directory is powered live by StudentStreamHQ internal staff records.<br>
+      Enforcement ranks are listed separately under SSI Law.
     </p>
   </div>
 
-  <!-- EXECUTIVE LEADERSHIP -->
-  <div class="sectionTitle">Executive Leadership</div>
+  <div class="sectionTitle">Active Staff Profiles</div>
 
-  <section class="grid">
-
-    <!-- YOU -->
-    <div class="card" style="border:1px solid rgba(77,163,255,0.45);">
-
-      <div class="nameRow">
-        <div class="staffName">Deondre</div>
-        <span class="badge verifiedBadge">Executive Verified</span>
-      </div>
-
-      <div class="role">Owner · StudentStreamHQ Executive Authority</div>
-
-      <p class="desc">
-        Platform-level executive authority responsible for overseeing all
-        StudentStreamHQ divisions, infrastructure, and development systems.
-      </p>
-
-      <p class="desc">
-        Supervises operations across SS Films, StudentStream Studios,
-        SSI Law, and SS:I Investigations.
-      </p>
-
-      <p class="desc" style="opacity:.65;">
-        Note: “Chief” enforcement authority applies only inside the SSI Law Division.
-      </p>
-
-    </div>
-
-  </section>
-
-  <!-- GENERAL STAFF -->
-  <div class="sectionTitle">Core Staff Members</div>
-
-  <section class="grid">
-
-    <div class="card">
-      <div class="nameRow">
-        <div class="staffName">Open Position</div>
-        <span class="badge staffBadge">Staff Verified</span>
-      </div>
-      <div class="role">Operations Support</div>
-      <p class="desc">
-        Future staff roles will appear here as StudentStreamHQ expands.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="nameRow">
-        <div class="staffName">Open Position</div>
-        <span class="badge staffBadge">Staff Verified</span>
-      </div>
-      <div class="role">Division Coordinator</div>
-      <p class="desc">
-        Division coordinators manage internal workflows across platform systems.
-      </p>
-    </div>
-
-  </section>
+  <div id="staffGrid" class="grid">
+    <div class="loading">Loading staff profiles...</div>
+  </div>
 
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ · Official Platform Staff Directory
+  © 2026 StudentStreamHQ · Live Staff Directory
 </footer>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+/* LOAD STAFF */
+async function loadStaff(){
+  const grid = document.getElementById("staffGrid");
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("username, staff_role, division, staff_level")
+    .eq("is_staff", true)
+    .order("staff_level",{ascending:true});
+
+  if(error){
+    grid.innerHTML = `<div class="loading">Error loading staff.</div>`;
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  data.forEach(staff => {
+
+    const isExec = staff.staff_level === "executive";
+
+    grid.innerHTML += `
+      <div class="card" style="${
+        isExec ? "border:1px solid rgba(255,211,108,0.45);" : ""
+      }">
+
+        <div class="nameRow">
+          <div class="staffName">${staff.username}</div>
+          <span class="badge ${
+            isExec ? "executiveBadge" : "staffBadge"
+          }">
+            ${isExec ? "Executive Verified" : "Staff Verified"}
+          </span>
+        </div>
+
+        <div class="role">${staff.staff_role}</div>
+
+        <p class="desc">
+          Division Assignment: <b>${staff.division}</b>
+        </p>
+
+        <span class="divisionTag">
+          ${staff.staff_level.toUpperCase()}
+        </span>
+
+      </div>
+    `;
+  });
+}
+
+loadStaff();
+</script>
 
 </body>
 </html>
