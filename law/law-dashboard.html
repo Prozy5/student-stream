@@ -1,190 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Law Staff Dashboard · StudentStream</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Law Dashboard · StudentStream Law</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    :root{
-      --bg:#060b14;
-      --panel:#0c1626;
-      --accent:#ff5d5d;
-      --text:#eaf1ff;
-      --muted:#9fb0cc;
-      --border:rgba(255,255,255,0.08);
-    }
+<script type="module" src="/js/platform-guard.js"></script>
 
-    *{margin:0;padding:0;box-sizing:border-box}
+<style>
+:root{
+  --bg:#060b14;
+  --panel:#0c1626;
+  --accent:#ff5d5d;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
 
-    body{
-      font-family:system-ui;
-      background:radial-gradient(circle at top,#0c1b33,#05080f 70%);
-      color:var(--text);
-      padding:40px;
-    }
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0c1b33,#05080f);
+  color:var(--text);
+}
 
-    h1{
-      text-align:center;
-      margin-bottom:30px;
-      font-size:36px;
-    }
+header{
+  padding:18px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(10,20,40,.75);
+  backdrop-filter:blur(12px);
+}
 
-    .reports{
-      max-width:1100px;
-      margin:auto;
-      display:grid;
-      gap:16px;
-    }
+h1{
+  font-size:18px;
+  font-weight:900;
+}
 
-    .report{
-      background:var(--panel);
-      border:1px solid var(--border);
-      padding:18px;
-      border-radius:14px;
-    }
+.staffTag{
+  color:var(--accent);
+  font-weight:800;
+}
 
-    .top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:10px;
-    }
+.wrap{
+  max-width:1100px;
+  margin:auto;
+  padding:40px 20px;
+}
 
-    select{
-      padding:8px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      background:#05080f;
-      color:var(--text);
-    }
+.topBar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
 
-    button{
-      margin-top:12px;
-      padding:10px 14px;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-      background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
-      color:#140000;
-      font-weight:700;
-    }
+button{
+  padding:11px 16px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  font-weight:800;
+  background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
+}
 
-    p{
-      color:var(--muted);
-      margin-top:6px;
-      font-size:14px;
-      line-height:1.4;
-    }
-  </style>
+.caseCard{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:18px;
+  border-radius:16px;
+  margin-bottom:14px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.caseCard:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,93,93,.35);
+}
+
+.caseTitle{
+  font-size:16px;
+  font-weight:850;
+}
+
+.caseMeta{
+  margin-top:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.status{
+  display:inline-block;
+  margin-top:10px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,.12);
+}
+
+.empty{
+  padding:40px;
+  text-align:center;
+  opacity:.6;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:16px;
+}
+</style>
 </head>
 
 <body>
 
-<h1>⚖️ StudentStream Law Staff Dashboard</h1>
+<header>
+  <h1>⚖️ StudentStream Law <span class="staffTag">Dashboard</span></h1>
+  <div id="staffName">Loading...</div>
+</header>
 
-<div class="reports" id="reportsList"></div>
+<div class="wrap">
+
+  <div class="topBar">
+    <h2>Active Cases</h2>
+    <button onclick="newCase()">+ New Case</button>
+  </div>
+
+  <div id="caseList">Loading cases...</div>
+
+</div>
 
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-  const db = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  const list = document.getElementById("reportsList");
+const caseList = document.getElementById("caseList");
 
-  async function checkStaff() {
-
-    const { data: { user } } = await db.auth.getUser();
-    if (!user) {
-      alert("Login required.");
-      location.href = "../login.html";
-      return;
-    }
-
-    const { data: profile } = await db
-      .from("profiles")
-      .select("law_rank")
-      .eq("id", user.id)
-      .single();
-
-    if (!profile || profile.law_rank !== "law_staff") {
-      alert("Access denied: Staff only.");
-      location.href = "law.html";
-      return;
-    }
-
-    loadReports();
+async function checkLawAccess(){
+  const { data: { user } } = await supabase.auth.getUser();
+  if(!user){
+    alert("Law login required.");
+    location.href="law-login.html";
+    return;
   }
 
-  async function loadReports() {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username, law_rank")
+    .eq("id", user.id)
+    .single();
 
-    const { data, error } = await db
-      .from("law_reports")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error(error);
-      alert("Error loading reports.");
-      return;
-    }
-
-    list.innerHTML = "";
-
-    data.forEach(report => {
-
-      const div = document.createElement("div");
-      div.className = "report";
-
-      div.innerHTML = `
-        <div class="top">
-          <h3>${report.issue_type}</h3>
-
-          <select id="status-${report.id}">
-            <option value="pending">Pending</option>
-            <option value="reviewing">Reviewing</option>
-            <option value="resolved">Resolved</option>
-          </select>
-        </div>
-
-        <p><b>User:</b> ${report.username}</p>
-        <p><b>Description:</b> ${report.description}</p>
-        <p><b>Submitted:</b> ${new Date(report.created_at).toLocaleString()}</p>
-
-        <button onclick="updateStatus('${report.id}')">
-          Save Status
-        </button>
-      `;
-
-      list.appendChild(div);
-
-      // set current status
-      document.getElementById(`status-${report.id}`).value = report.status;
-    });
+  if(profile.law_rank === "none"){
+    alert("Access denied. Not Law Staff.");
+    location.href="law.html";
+    return;
   }
 
-  window.updateStatus = async function(reportId){
+  document.getElementById("staffName").textContent =
+    profile.username + " (" + profile.law_rank + ")";
+}
 
-    const newStatus =
-      document.getElementById(`status-${reportId}`).value;
+async function loadCases(){
+  const { data: cases } = await supabase
+    .from("law_cases")
+    .select("*")
+    .order("created_at", { ascending:false });
 
-    const { error } = await db
-      .from("law_reports")
-      .update({ status: newStatus })
-      .eq("id", reportId);
-
-    if(error){
-      alert("Update failed.");
-      console.error(error);
-    } else {
-      alert("Status updated.");
-      loadReports();
-    }
+  if(!cases || cases.length === 0){
+    caseList.innerHTML = `<div class="empty">No cases yet.</div>`;
+    return;
   }
 
-  checkStaff();
+  caseList.innerHTML = "";
+
+  cases.forEach(c => {
+    const div = document.createElement("div");
+    div.className="caseCard";
+
+    div.innerHTML = `
+      <div class="caseTitle">${c.title}</div>
+      <div class="caseMeta">
+        Priority: <b>${c.priority}</b> • Status: <b>${c.status}</b>
+      </div>
+      <span class="status">${c.status.toUpperCase()}</span>
+    `;
+
+    div.onclick = () => {
+      location.href="case.html?id=" + c.id;
+    };
+
+    caseList.appendChild(div);
+  });
+}
+
+window.newCase = function(){
+  alert("Next: Case creation modal coming.");
+};
+
+(async()=>{
+  await checkLawAccess();
+  await loadCases();
+})();
 </script>
 
 </body>
