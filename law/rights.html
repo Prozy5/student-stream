@@ -4,33 +4,222 @@
 <meta charset="UTF-8">
 <title>Creator Rights · StudentStream Law</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body{font-family:system-ui;background:#05080f;color:#eaf1ff;padding:40px}
-.section{max-width:800px;margin:auto;background:#0c1626;padding:25px;border-radius:14px}
-h2{margin-bottom:10px}
-p{color:#9fb0cc;line-height:1.6}
+:root{
+  --bg:#05080f;
+  --panel:#0c1626;
+  --panel2:#101f35;
+  --accent:#ff5d5d;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 75%);
+  color:var(--text);
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 26px;
+  background:rgba(10,20,40,.78);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+
+.brand{
+  font-weight:950;
+  font-size:15px;
+}
+
+.nav-links a{
+  margin-left:18px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:650;
+}
+
+.nav-links a:hover{
+  color:var(--text);
+}
+
+/* PAGE WRAP */
+
+.container{
+  max-width:950px;
+  margin:70px auto;
+  padding:0 22px;
+}
+
+.section{
+  background:rgba(12,22,38,.92);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:35px;
+}
+
+/* HEADERS */
+
+h1{
+  font-size:34px;
+  font-weight:980;
+  margin-bottom:10px;
+}
+
+h1 span{
+  color:var(--accent);
+}
+
+p{
+  color:var(--muted);
+  line-height:1.7;
+  margin-bottom:16px;
+  font-size:15px;
+}
+
+/* RIGHTS LIST */
+
+.rights{
+  margin-top:22px;
+  display:grid;
+  gap:14px;
+}
+
+.right{
+  padding:16px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+
+.right strong{
+  color:var(--text);
+  font-size:15px;
+}
+
+.right span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* NOTICE */
+
+.notice{
+  margin-top:28px;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.08);
+  font-size:14px;
+  color:var(--muted);
+}
+
+.notice strong{
+  color:var(--accent);
+}
+
+/* FOOTER */
+
+footer{
+  text-align:center;
+  margin-top:70px;
+  padding:30px;
+  border-top:1px solid var(--border);
+  font-size:13px;
+  color:var(--muted);
+}
 </style>
 </head>
+
 <body>
 
-<div class="section">
-<h2>Creator Rights</h2>
+<!-- NAV -->
+<nav>
+  <div class="brand">⚖️ StudentStream Law Division</div>
 
-<p>Every creator on StudentStream owns their content.</p>
+  <div class="nav-links">
+    <a href="index.html">Law Home</a>
+    <a href="report.html">Report</a>
+    <a href="cases.html">Cases</a>
+    <a href="transparency.html">Transparency</a>
+  </div>
+</nav>
 
-<ul>
-<li>You retain full ownership of your work.</li>
-<li>You control how your content is distributed.</li>
-<li>You may monetize your work.</li>
-<li>You may file takedown requests.</li>
-<li>You are protected from impersonation.</li>
-</ul>
+<!-- PAGE CONTENT -->
+<div class="container">
+  <div class="section">
 
-<p>
-StudentStream Law exists to enforce these rights and respond to violations quickly and fairly.
-</p>
+    <h1>Creator <span>Rights</span></h1>
 
+    <p>
+      StudentStream is built on creator ownership.
+      Every creator retains control over their original work, identity, and distribution.
+    </p>
+
+    <p>
+      StudentStream Law exists to enforce these protections fairly, quickly, and transparently.
+    </p>
+
+    <!-- RIGHTS GRID -->
+    <div class="rights">
+
+      <div class="right">
+        <strong>Full Content Ownership</strong>
+        <span>You always retain full rights to the work you create and upload.</span>
+      </div>
+
+      <div class="right">
+        <strong>Distribution Control</strong>
+        <span>You control where and how your content is shared across StudentStream.</span>
+      </div>
+
+      <div class="right">
+        <strong>Monetization Rights</strong>
+        <span>Eligible creators may monetize their work without theft or unauthorized resale.</span>
+      </div>
+
+      <div class="right">
+        <strong>Takedown & Enforcement</strong>
+        <span>You may file copyright and abuse reports for stolen or reposted content.</span>
+      </div>
+
+      <div class="right">
+        <strong>Protection From Impersonation</strong>
+        <span>StudentStream Law investigates identity abuse and fake creator accounts.</span>
+      </div>
+
+      <div class="right">
+        <strong>Fair Review Process</strong>
+        <span>All enforcement actions follow structured investigation and documentation.</span>
+      </div>
+
+    </div>
+
+    <!-- NOTICE -->
+    <div class="notice">
+      <strong>Need Help?</strong><br>
+      If your work has been stolen, misused, or you are being impersonated,
+      submit an official report through the StudentStream Law portal.
+    </div>
+
+  </div>
 </div>
+
+<footer>
+  © 2026 StudentStream Law Division · Creator Protection & Rights Enforcement
+</footer>
 
 </body>
 </html>
