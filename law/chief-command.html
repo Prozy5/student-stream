@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chief Command Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="module" src="/js/platform-guard.js"></script>
+
+<style>
+:root{
+  --bg:#05080f;
+  --panel:#0c1626;
+  --panel2:#101f35;
+  --accent:#ff5d5d;
+  --accent2:#ff2f2f;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.10);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 75%);
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  padding:20px 28px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,20,40,.88);
+  backdrop-filter:blur(14px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header h1{
+  font-size:15px;
+  font-weight:950;
+}
+
+header a{
+  color:var(--muted);
+  text-decoration:none;
+  font-weight:750;
+}
+
+header a:hover{color:var(--text)}
+
+/* LOCKED */
+.locked{
+  display:none;
+  text-align:center;
+  padding:120px 20px;
+}
+
+.locked h2{
+  font-size:38px;
+  font-weight:990;
+  color:var(--accent);
+}
+
+.locked p{
+  margin-top:10px;
+  color:var(--muted);
+}
+
+/* MAIN */
+.main{
+  display:none;
+  max-width:1250px;
+  margin:auto;
+  padding:70px 22px;
+}
+
+/* TITLE */
+.title{
+  font-size:54px;
+  font-weight:990;
+}
+
+.title span{color:var(--accent)}
+
+.subtitle{
+  margin-top:10px;
+  color:var(--muted);
+  line-height:1.7;
+  max-width:850px;
+}
+
+/* ALERT SYSTEM */
+.alertBanner{
+  margin-top:25px;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid rgba(255,93,93,.50);
+  background:linear-gradient(
+    135deg,
+    rgba(255,93,93,.20),
+    rgba(12,22,38,.92)
+  );
+}
+
+.alertBanner strong{
+  font-weight:950;
+  color:var(--accent);
+}
+
+.alertBanner span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:13.5px;
+}
+
+/* IDENTITY */
+.identityPanel{
+  margin-top:25px;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid rgba(255,93,93,.40);
+  background:rgba(255,93,93,.08);
+}
+
+.identityPanel strong{
+  color:var(--accent);
+}
+
+.rankBadge{
+  margin-top:8px;
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:950;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#200000;
+}
+
+/* GRID */
+.section{
+  margin-top:55px;
+}
+
+.section h2{
+  font-size:18px;
+  font-weight:950;
+  margin-bottom:14px;
+}
+
+.panel{
+  padding:18px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px;
+  font-size:13px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+th{
+  text-align:left;
+  color:var(--muted);
+}
+
+select,button{
+  padding:8px 10px;
+  border-radius:10px;
+  border:none;
+  font-weight:850;
+}
+
+select{
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+}
+
+button{
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#200000;
+}
+
+button:hover{
+  opacity:.9;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>⭐ StudentStreamHQ · Chief Enforcement Authority</h1>
+  <a href="index.html">← Return to Law Division</a>
+</header>
+
+<!-- LOCKED -->
+<div class="locked" id="lockedScreen">
+  <h2>ACCESS DENIED</h2>
+  <p>Chief Authority Only — Unauthorized access blocked.</p>
+</div>
+
+<!-- MAIN -->
+<section class="main" id="chiefPanel">
+
+  <div class="title">
+    Chief <span>Command Center</span>
+  </div>
+
+  <p class="subtitle">
+    Highest enforcement authority interface.  
+    Assign investigations, manage staff ranks, close cases, archive evidence,
+    and oversee platform-wide enforcement integrity.
+  </p>
+
+  <!-- NATIONAL ALERT -->
+  <div class="alertBanner">
+    <strong>🚨 National Enforcement Alert System</strong>
+    <span>
+      Chief Authority may issue emergency platform enforcement actions at any time.
+      All escalations are logged and monitored internally.
+    </span>
+  </div>
+
+  <!-- IDENTITY -->
+  <div class="identityPanel">
+    Logged in as: <strong id="chiefName">Loading...</strong><br>
+    Status: <span class="rankBadge">✔ VERIFIED CHIEF AUTHORITY</span>
+  </div>
+
+  <!-- CASE ASSIGNMENT -->
+  <div class="section">
+    <h2>📁 Case Assignment Oversight</h2>
+    <div class="panel">
+      <table id="casesTable">
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Status</th>
+            <th>Assign Investigator</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="4">Loading cases...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RANK MANAGEMENT -->
+  <div class="section">
+    <h2>👮 Staff Rank Authority</h2>
+    <div class="panel">
+      <table id="staffTable">
+        <thead>
+          <tr>
+            <th>Staff Member</th>
+            <th>Current Rank</th>
+            <th>Update Rank</th>
+            <th>Confirm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="4">Loading staff...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<!-- SUPABASE -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+let staffList = [];
+
+async function verifyChief(){
+
+  const { data:{user} } = await supabase.auth.getUser();
+  if(!user){
+    document.getElementById("lockedScreen").style.display="block";
+    return;
+  }
+
+  const { data:profile } = await supabase
+    .from("profiles")
+    .select("username, law_rank")
+    .eq("id", user.id)
+    .single();
+
+  if(profile?.law_rank !== "chief"){
+    document.getElementById("lockedScreen").style.display="block";
+    return;
+  }
+
+  document.getElementById("chiefPanel").style.display="block";
+  document.getElementById("chiefName").textContent = profile.username;
+
+  loadStaff();
+  loadCases();
+}
+
+async function loadStaff(){
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, username, law_rank")
+    .neq("law_rank","none");
+
+  staffList = data || [];
+  renderStaffTable();
+}
+
+async function loadCases(){
+  const { data } = await supabase
+    .from("law_cases")
+    .select("id,status,assigned_to")
+    .order("id",{ascending:false})
+    .limit(10);
+
+  renderCasesTable(data || []);
+}
+
+/* RENDER CASES */
+function renderCasesTable(cases){
+
+  const body = document.querySelector("#casesTable tbody");
+  body.innerHTML="";
+
+  cases.forEach(c => {
+
+    const staffOptions = staffList
+      .filter(s=>s.law_rank!=="chief")
+      .map(s=>`<option value="${s.id}">${s.username}</option>`)
+      .join("");
+
+    body.innerHTML += `
+      <tr>
+        <td>#${c.id}</td>
+        <td>${c.status}</td>
+        <td>
+          <select id="assign-${c.id}">
+            <option value="">Unassigned</option>
+            ${staffOptions}
+          </select>
+        </td>
+        <td>
+          <button onclick="assignCase(${c.id})">Assign</button>
+          <button onclick="closeCase(${c.id})">Close</button>
+          <button onclick="archiveCase(${c.id})">Archive</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+/* ASSIGN CASE */
+window.assignCase = async function(caseId){
+  const staffId = document.getElementById(`assign-${caseId}`).value;
+
+  await supabase
+    .from("law_cases")
+    .update({ assigned_to: staffId })
+    .eq("id", caseId);
+
+  alert("✅ Case assigned successfully.");
+};
+
+/* CLOSE CASE */
+window.closeCase = async function(caseId){
+  await supabase
+    .from("law_cases")
+    .update({ status:"closed" })
+    .eq("id", caseId);
+
+  alert("✅ Case closed.");
+};
+
+/* ARCHIVE CASE */
+window.archiveCase = async function(caseId){
+  await supabase
+    .from("law_cases")
+    .update({ status:"archived" })
+    .eq("id", caseId);
+
+  alert("📦 Case archived.");
+};
+
+/* STAFF TABLE */
+function renderStaffTable(){
+
+  const body = document.querySelector("#staffTable tbody");
+  body.innerHTML="";
+
+  staffList.forEach(s=>{
+
+    body.innerHTML += `
+      <tr>
+        <td>${s.username}</td>
+        <td>${s.law_rank}</td>
+        <td>
+          <select id="rank-${s.id}">
+            <option value="investigator">Investigator</option>
+            <option value="senior">Senior</option>
+            <option value="chief">Chief</option>
+            <option value="none">Remove Access</option>
+          </select>
+        </td>
+        <td>
+          <button onclick="updateRank('${s.id}')">Update</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+/* UPDATE RANK */
+window.updateRank = async function(userId){
+
+  const newRank = document.getElementById(`rank-${userId}`).value;
+
+  await supabase
+    .from("profiles")
+    .update({ law_rank:newRank })
+    .eq("id", userId);
+
+  alert("✅ Rank updated.");
+};
+
+verifyChief();
+</script>
+
+</body>
+</html>
