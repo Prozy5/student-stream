@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Staff Directory · StudentStream Law</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="module" src="/js/platform-guard.js"></script>
+
+<style>
+:root{
+  --bg:#05080f;
+  --panel:#0c1626;
+  --accent:#ff5d5d;
+  --accent2:#ff2f2f;
+  --text:#eaf1ff;
+  --muted:#9fb0cc;
+  --border:rgba(255,255,255,0.08);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0c1b33,#05080f 75%);
+  color:var(--text);
+}
+
+/* NAV */
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 26px;
+  background:rgba(10,20,40,.78);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+
+.brand{
+  font-weight:950;
+  font-size:15px;
+}
+
+.nav-links a{
+  margin-left:18px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:650;
+}
+
+.nav-links a:hover{
+  color:var(--text);
+}
+
+/* PAGE */
+.container{
+  max-width:1050px;
+  margin:70px auto;
+  padding:0 22px;
+}
+
+h1{
+  font-size:38px;
+  font-weight:980;
+}
+
+h1 span{
+  color:var(--accent);
+}
+
+p{
+  margin-top:12px;
+  color:var(--muted);
+  line-height:1.65;
+  max-width:850px;
+}
+
+/* CHIEF BOX */
+.chiefBox{
+  margin-top:45px;
+  padding:22px;
+  border-radius:18px;
+  border:1px solid rgba(255,93,93,.45);
+  background:rgba(255,93,93,.08);
+}
+
+.chiefBadge{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#250000;
+}
+
+.chiefName{
+  margin-top:12px;
+  font-size:18px;
+  font-weight:950;
+}
+
+.chiefMeta{
+  margin-top:5px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* STAFF LIST */
+.staffSection{
+  margin-top:45px;
+}
+
+.staffSection h2{
+  font-size:20px;
+  font-weight:950;
+  margin-bottom:14px;
+}
+
+.staffList{
+  display:grid;
+  gap:14px;
+}
+
+.staffCard{
+  background:rgba(12,22,38,.85);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+}
+
+.staffCard b{
+  font-size:15px;
+}
+
+.staffCard span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* EMPTY */
+.empty{
+  padding:35px;
+  text-align:center;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:16px;
+  color:var(--muted);
+  margin-top:20px;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  margin-top:80px;
+  padding:35px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="brand">⚖️ StudentStream Law Division</div>
+
+  <div class="nav-links">
+    <a href="index.html">Law Home</a>
+    <a href="report.html">Report</a>
+    <a href="transparency.html">Transparency</a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="container">
+
+  <h1>Verified <span>Staff Directory</span></h1>
+
+  <p>
+    This directory contains publicly visible enforcement staff
+    verified under StudentStreamHQ Law Division.
+    Staff ranks are restricted and monitored internally.
+  </p>
+
+  <!-- CHIEF -->
+  <div id="chiefContainer"></div>
+
+  <!-- STAFF -->
+  <div class="staffSection">
+    <h2>Active Enforcement Staff</h2>
+    <div id="staffList" class="staffList">
+      Loading staff directory...
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 StudentStream Law Division · Transparency Staff Registry
+</footer>
+
+<!-- SUPABASE LOAD -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const chiefContainer = document.getElementById("chiefContainer");
+const staffList = document.getElementById("staffList");
+
+function formatRank(rank){
+  if(!rank) return "Staff";
+  return rank.charAt(0).toUpperCase() + rank.slice(1);
+}
+
+async function loadStaffDirectory(){
+
+  const { data:staff, error } = await supabase
+    .from("profiles")
+    .select("username, law_rank")
+    .neq("law_rank", "none")
+    .order("law_rank", { ascending: true });
+
+  if(error){
+    staffList.innerHTML = "❌ Failed loading staff list.";
+    console.error(error);
+    return;
+  }
+
+  if(!staff || staff.length === 0){
+    staffList.innerHTML = `
+      <div class="empty">
+        No verified enforcement staff are currently listed.
+      </div>
+    `;
+    return;
+  }
+
+  staffList.innerHTML = "";
+
+  // Separate Chief
+  const chief = staff.find(s => s.law_rank === "chief");
+  const others = staff.filter(s => s.law_rank !== "chief");
+
+  // Render Chief Box
+  if(chief){
+    chiefContainer.innerHTML = `
+      <div class="chiefBox">
+        <h2>Verified Chief Authority</h2>
+        <div class="chiefBadge">✔ VERIFIED CHIEF</div>
+
+        <div class="chiefName">${chief.username}</div>
+        <div class="chiefMeta">
+          Chief of StudentStream Law Enforcement Division
+        </div>
+      </div>
+    `;
+  }
+
+  // Render Other Staff
+  others.forEach(person => {
+
+    const div = document.createElement("div");
+    div.className = "staffCard";
+
+    div.innerHTML = `
+      <b>${person.username}</b>
+      <span>Rank: ${formatRank(person.law_rank)}</span>
+    `;
+
+    staffList.appendChild(div);
+  });
+
+}
+
+loadStaffDirectory();
+</script>
+
+</body>
+</html>
