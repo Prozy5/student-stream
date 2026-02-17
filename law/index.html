@@ -54,7 +54,9 @@ nav{
   font-weight:650;
 }
 
-.nav-links a:hover{color:var(--text)}
+.nav-links a:hover{
+  color:var(--text);
+}
 
 /* HERO */
 .hero{
@@ -65,11 +67,13 @@ nav{
 }
 
 .hero h1{
-  font-size:58px;
+  font-size:56px;
   font-weight:990;
 }
 
-.hero span{color:var(--accent)}
+.hero span{
+  color:var(--accent);
+}
 
 .hero p{
   max-width:880px;
@@ -95,7 +99,7 @@ nav{
   color:var(--accent);
 }
 
-/* CHIEF */
+/* CHIEF AUTHORITY */
 .chiefHighlight{
   margin:35px auto 0;
   max-width:880px;
@@ -115,11 +119,11 @@ nav{
   font-weight:950;
 }
 
-.chiefName{
-  margin-top:8px;
-  font-size:16px;
-  font-weight:950;
-  color:var(--text);
+.chiefHighlight p{
+  margin-top:6px;
+  font-size:13.5px;
+  color:var(--muted);
+  line-height:1.6;
 }
 
 .chiefBadge{
@@ -181,54 +185,42 @@ nav{
   text-align:left;
 }
 
+.metricCard span{
+  font-size:13px;
+  color:var(--muted);
+}
+
 .metricCard h2{
   font-size:26px;
   font-weight:990;
   margin-top:6px;
 }
 
-.metricCard span{
-  font-size:13px;
-  color:var(--muted);
-}
-
-/* ACTIVITY FEED */
-.feed{
-  margin:60px auto 0;
+/* NOTICE */
+.notice{
+  margin:45px auto 0;
   max-width:920px;
-  text-align:left;
-}
-
-.feed h2{
-  font-size:20px;
-  font-weight:950;
-  margin-bottom:14px;
-}
-
-.feedBox{
-  padding:16px;
+  padding:16px 18px;
   border-radius:16px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.02);
-  margin-bottom:14px;
-  font-size:14px;
+  border:1px solid rgba(255,93,93,.35);
+  background:rgba(255,93,93,.08);
   color:var(--muted);
+  font-size:14px;
 }
 
-.feedBox strong{
+.notice strong{
   color:var(--accent);
 }
 
 /* STAFF PANEL */
 .staffPanel{
-  margin:40px auto 0;
+  margin:30px auto 0;
   max-width:780px;
   padding:22px;
   border-radius:20px;
   border:1px solid rgba(255,93,93,.35);
   background:rgba(255,93,93,.07);
   display:none;
-  text-align:left;
 }
 
 .staffPanel h3{
@@ -247,12 +239,56 @@ nav{
   text-decoration:none;
 }
 
+/* SECTION */
+.section{
+  max-width:1150px;
+  margin:auto;
+  padding:70px 22px;
+}
+
+.section h2{
+  font-size:22px;
+  font-weight:950;
+  margin-bottom:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:rgba(12,22,38,.88);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,93,93,.35);
+}
+
+.card h3{
+  font-size:16px;
+  font-weight:900;
+}
+
+.card p{
+  margin-top:8px;
+  font-size:13.5px;
+  color:var(--muted);
+  line-height:1.55;
+}
+
 /* FOOTER */
 footer{
   text-align:center;
   padding:40px;
   border-top:1px solid var(--border);
-  margin-top:80px;
+  margin-top:70px;
   font-size:13px;
   color:var(--muted);
 }
@@ -280,26 +316,30 @@ footer{
   <h1>StudentStream <span>Law</span></h1>
 
   <p>
-    StudentStreamHQ’s verified enforcement and creator safety division.
-    Reports are reviewed internally, assigned to investigators, and handled securely.
+    The official enforcement and creator safety division of StudentStreamHQ.
+    Abuse investigations, fraud prevention, evidence security, and platform integrity.
   </p>
 
   <div class="govBanner">
-    <strong>Enforcement Workflow:</strong>
-    Reports remain pending until a verified staff investigator is assigned.
+    <strong>Verified Enforcement System:</strong>
+    Reports are reviewed internally and assigned to authorized investigators only.
   </div>
 
   <!-- CHIEF -->
   <div class="chiefHighlight">
-    <h3>⭐ Verified Chief Authority</h3>
-    <div class="chiefName" id="chiefName">Loading Chief...</div>
-    <div class="chiefBadge">✔ VERIFIED CHIEF COMMAND</div>
+    <h3>⭐ Chief Authority Oversight</h3>
+    <p>
+      All enforcement actions and internal investigations operate under the oversight of
+      <strong>Chief Deondre</strong>, verified command authority of StudentStream Law Division.
+    </p>
+    <div class="chiefBadge">✔ VERIFIED CHIEF · StudentStreamHQ LAW</div>
   </div>
 
   <!-- ACTIONS -->
   <div class="hero-actions">
     <a href="report.html" class="btn primary">🚨 Submit Report</a>
-    <a href="my-reports.html" class="btn">📌 Track My Reports</a>
+    <a href="my-reports.html" class="btn">📌 My Reports</a>
+    <a href="rights.html" class="btn">📜 Creator Rights</a>
     <a href="appeals.html" class="btn">⚠ Appeals</a>
   </div>
 
@@ -317,46 +357,58 @@ footer{
 
     <div class="metricCard">
       <span>Evidence Vault</span>
-      <h2>SECURE</h2>
+      <h2>ONLINE</h2>
     </div>
+  </div>
+
+  <!-- NOTICE -->
+  <div class="notice">
+    <strong>Restricted Tools:</strong>
+    Internal dashboards are only accessible to verified enforcement ranks.
   </div>
 
   <!-- STAFF PANEL -->
   <div class="staffPanel" id="staffPanel">
-    <h3>⚖️ Staff Command Access</h3>
-    You are verified enforcement staff.<br>
-    Open internal investigation tools below.
+    <h3>⚖️ Enforcement Command Center</h3>
+    You are verified staff. Access investigations below.
     <br>
     <a href="law-dashboard.html">Open Law Dashboard →</a>
   </div>
 
-  <!-- FEED -->
-  <div class="feed">
-    <h2>Enforcement Activity</h2>
+</section>
 
-    <div class="feedBox">
-      <strong>Case Assignment Enabled:</strong>
-      Reports now enter review before investigator assignment.
+<!-- RESPONSIBILITIES -->
+<section class="section">
+  <h2>Division Responsibilities</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Fraud & Abuse Prevention</h3>
+      <p>Scam enforcement, impersonation response, monetization fraud detection.</p>
     </div>
 
-    <div class="feedBox">
-      <strong>Evidence Upload Restricted:</strong>
-      Vault uploads are only accessible to assigned staff.
+    <div class="card">
+      <h3>Creator Safety Division</h3>
+      <p>Harassment investigations, threat escalation, abuse protection.</p>
     </div>
 
-    <div class="feedBox">
-      <strong>Staff Registry Live:</strong>
-      Verified enforcement ranks are now visible publicly.
+    <div class="card">
+      <h3>Evidence & Case Handling</h3>
+      <p>Secure vault uploads, assignment-only documentation, internal tracking.</p>
+    </div>
+
+    <div class="card">
+      <h3>Transparency Registry</h3>
+      <p>Verified enforcement staff listings and accountability oversight.</p>
     </div>
   </div>
-
 </section>
 
 <footer>
-  © 2026 StudentStreamHQ Law Division · Enforcement & Creator Protection
+  © 2026 StudentStream Law Division · StudentStreamHQ Enforcement & Creator Protection
 </footer>
 
-<!-- SUPABASE -->
+<!-- SUPABASE METRICS + STAFF DETECTOR -->
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -376,20 +428,11 @@ async function loadMetrics(){
     .select("*", { count:"exact", head:true })
     .not("assigned_to", "is", null);
 
-  document.getElementById("metricReports").textContent = reports ?? "0";
-  document.getElementById("metricAssigned").textContent = assigned ?? "0";
-}
+  document.getElementById("metricReports").textContent =
+    reports ?? "0";
 
-async function loadChief(){
-
-  const { data:chief } = await supabase
-    .from("profiles")
-    .select("username")
-    .eq("law_rank", "chief")
-    .single();
-
-  document.getElementById("chiefName").textContent =
-    chief?.username ?? "Chief Authority Unlisted";
+  document.getElementById("metricAssigned").textContent =
+    assigned ?? "0";
 }
 
 async function detectStaff(){
@@ -409,7 +452,6 @@ async function detectStaff(){
 }
 
 loadMetrics();
-loadChief();
 detectStaff();
 </script>
 
