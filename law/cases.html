@@ -87,6 +87,22 @@ button{
   margin-top:10px;
   color:var(--muted);
 }
+
+.logCard{
+  padding:10px;
+  border-radius:12px;
+  margin-top:10px;
+  border:1px solid rgba(255,255,255,.08);
+  font-size:13px;
+  color:#cdd8ff;
+}
+
+.adminZone{
+  margin-top:30px;
+  padding:15px;
+  border:1px dashed rgba(255,93,93,.4);
+  border-radius:14px;
+}
 </style>
 </head>
 
@@ -102,6 +118,13 @@ button{
   <div class="caseBox">
     <h1 id="caseTitle">Loading...</h1>
     <div class="meta" id="caseMeta"></div>
+
+    <!-- 🔥 Assignment -->
+    <div class="section">
+      <h3>Assigned Staff</h3>
+      <select id="assignSelect"></select>
+      <button onclick="assignStaff()">Assign Case</button>
+    </div>
 
     <!-- Status Update -->
     <div class="section">
@@ -120,17 +143,30 @@ button{
       <h3>Internal Notes</h3>
       <textarea id="noteInput" placeholder="Write staff-only notes..."></textarea>
       <button onclick="addNote()">Add Note</button>
-
       <div id="noteList"></div>
     </div>
 
-    <!-- Evidence -->
+    <!-- 🔥 Evidence Upload -->
     <div class="section">
-      <h3>Evidence Links</h3>
-      <input id="evidenceUrl" placeholder="Paste file link..." />
-      <button onclick="addEvidence()">Attach Evidence</button>
-
+      <h3>Evidence Upload</h3>
+      <input type="file" id="evidenceFile" />
+      <button onclick="uploadEvidence()">Upload Evidence</button>
       <div id="evidenceList"></div>
+    </div>
+
+    <!-- 🔥 Action Logs -->
+    <div class="section">
+      <h3>Case Action Logs</h3>
+      <div id="logList"></div>
+    </div>
+
+    <!-- 🔥 Admin Tools -->
+    <div class="adminZone" id="adminTools" style="display:none;">
+      <h3>Admin Tools</h3>
+      <button onclick="archiveCase()">📦 Archive Case</button>
+      <button onclick="deleteCase()" style="background:#111;margin-top:10px;">
+        ❌ Delete Case Permanently
+      </button>
     </div>
 
   </div>
@@ -147,8 +183,58 @@ const supabase = createClient(
 
 const caseId = new URLSearchParams(location.search).get("id");
 
-let caseData = null;
+let currentUser = null;
+let currentRole = "member";
 
+/* ✅ Staff Role Check */
+function isStaff(role){
+  return ["owner","admin","moderator"].includes(role);
+}
+function isAdmin(role){
+  return ["owner","admin"].includes(role);
+}
+
+/* ✅ LOG ACTION */
+async function logAction(action, details=""){
+  await supabase.from("law_case_logs").insert([{
+    case_id: caseId,
+    staff_user: currentUser.id,
+    action,
+    details
+  }]);
+}
+
+/* ✅ ACCESS GUARD */
+async function checkAccess(){
+  const { data:{user} } = await supabase.auth.getUser();
+  if(!user){
+    alert("Login required.");
+    location.href="law-login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username, role")
+    .eq("id", user.id)
+    .single();
+
+  currentRole = profile.role;
+
+  if(!isStaff(currentRole)){
+    alert("Access denied.");
+    location.href="law.html";
+    return;
+  }
+
+  if(isAdmin(currentRole)){
+    document.getElementById("adminTools").style.display="block";
+  }
+}
+
+/* ✅ LOAD CASE */
 async function loadCase(){
   const { data } = await supabase
     .from("law_cases")
@@ -156,27 +242,58 @@ async function loadCase(){
     .eq("id", caseId)
     .single();
 
-  caseData = data;
-
   document.getElementById("caseTitle").textContent = data.title;
   document.getElementById("caseMeta").textContent =
-    "Priority: " + data.priority + " • Created: " +
-    new Date(data.created_at).toLocaleString();
+    `Priority: ${data.priority} • Created: ${new Date(data.created_at).toLocaleString()}`;
 
   document.getElementById("statusSelect").value = data.status;
 }
 
+/* ✅ LOAD STAFF LIST */
+async function loadStaff(){
+  const { data: staff } = await supabase
+    .from("profiles")
+    .select("id, username, role")
+    .in("role", ["owner","admin","moderator"]);
+
+  const dropdown = document.getElementById("assignSelect");
+  dropdown.innerHTML="";
+
+  staff.forEach(s=>{
+    const opt=document.createElement("option");
+    opt.value=s.id;
+    opt.textContent=`${s.username} (${s.role})`;
+    dropdown.appendChild(opt);
+  });
+}
+
+/* ✅ ASSIGN CASE */
+window.assignStaff = async function(){
+  const staffId = document.getElementById("assignSelect").value;
+
+  await supabase.from("law_cases")
+    .update({ assigned_to: staffId })
+    .eq("id", caseId);
+
+  await logAction("Assigned Staff", "Assigned to staff ID: " + staffId);
+
+  alert("Case assigned.");
+};
+
+/* ✅ STATUS UPDATE */
 window.updateStatus = async function(){
   const newStatus = document.getElementById("statusSelect").value;
 
-  await supabase
-    .from("law_cases")
+  await supabase.from("law_cases")
     .update({ status:newStatus })
     .eq("id", caseId);
+
+  await logAction("Status Updated", "New status: " + newStatus);
 
   alert("Status updated.");
 };
 
+/* ✅ NOTES */
 async function loadNotes(){
   const { data } = await supabase
     .from("law_case_notes")
@@ -184,33 +301,70 @@ async function loadNotes(){
     .eq("case_id", caseId)
     .order("created_at", { ascending:false });
 
-  const list = document.getElementById("noteList");
+  const list=document.getElementById("noteList");
   list.innerHTML="";
 
   data.forEach(n=>{
     const div=document.createElement("div");
     div.className="noteCard";
-    div.textContent = n.note;
+    div.textContent=n.note;
     list.appendChild(div);
   });
 }
 
 window.addNote = async function(){
-  const text = document.getElementById("noteInput").value.trim();
+  const text=document.getElementById("noteInput").value.trim();
   if(!text) return;
-
-  const { data:{user} } = await supabase.auth.getUser();
 
   await supabase.from("law_case_notes").insert([{
     case_id: caseId,
-    staff_user: user.id,
+    staff_user: currentUser.id,
     note: text
   }]);
+
+  await logAction("Note Added", text);
 
   document.getElementById("noteInput").value="";
   loadNotes();
 };
 
+/* ✅ EVIDENCE UPLOAD TO STORAGE */
+window.uploadEvidence = async function(){
+  const file=document.getElementById("evidenceFile").files[0];
+  if(!file){
+    alert("Select a file first.");
+    return;
+  }
+
+  const filePath = `case-${caseId}/${Date.now()}-${file.name}`;
+
+  const { error } = await supabase.storage
+    .from("law-evidence")
+    .upload(filePath, file);
+
+  if(error){
+    alert("Upload failed.");
+    console.error(error);
+    return;
+  }
+
+  const { data } = supabase.storage
+    .from("law-evidence")
+    .getPublicUrl(filePath);
+
+  await supabase.from("law_case_evidence").insert([{
+    case_id: caseId,
+    uploaded_by: currentUser.id,
+    file_url: data.publicUrl
+  }]);
+
+  await logAction("Evidence Uploaded", file.name);
+
+  alert("Evidence uploaded.");
+  loadEvidence();
+};
+
+/* ✅ LOAD EVIDENCE */
 async function loadEvidence(){
   const { data } = await supabase
     .from("law_case_evidence")
@@ -223,31 +377,67 @@ async function loadEvidence(){
   data.forEach(e=>{
     const div=document.createElement("div");
     div.className="noteCard";
-    div.innerHTML = `📎 <a href="${e.file_url}" target="_blank">${e.file_url}</a>`;
+    div.innerHTML=`📎 <a href="${e.file_url}" target="_blank">${e.file_url}</a>`;
     list.appendChild(div);
   });
 }
 
-window.addEvidence = async function(){
-  const url = document.getElementById("evidenceUrl").value.trim();
-  if(!url) return;
+/* ✅ LOAD LOGS */
+async function loadLogs(){
+  const { data } = await supabase
+    .from("law_case_logs")
+    .select("*")
+    .eq("case_id", caseId)
+    .order("created_at", { ascending:false });
 
-  const { data:{user} } = await supabase.auth.getUser();
+  const list=document.getElementById("logList");
+  list.innerHTML="";
 
-  await supabase.from("law_case_evidence").insert([{
-    case_id: caseId,
-    uploaded_by: user.id,
-    file_url: url
-  }]);
+  data.forEach(l=>{
+    const div=document.createElement("div");
+    div.className="logCard";
+    div.innerHTML=`🔥 <b>${l.action}</b><br>${l.details}<br>
+    <span style="opacity:.6">${new Date(l.created_at).toLocaleString()}</span>`;
+    list.appendChild(div);
+  });
+}
 
-  document.getElementById("evidenceUrl").value="";
-  loadEvidence();
+/* ✅ ARCHIVE */
+window.archiveCase = async function(){
+  if(!confirm("Archive this case?")) return;
+
+  await supabase.from("law_cases")
+    .update({ archived:true })
+    .eq("id", caseId);
+
+  await logAction("Case Archived");
+
+  alert("Archived.");
+  location.href="law-dashboard.html";
 };
 
+/* ✅ DELETE (ADMIN ONLY) */
+window.deleteCase = async function(){
+  if(!confirm("DELETE permanently?")) return;
+
+  await supabase.from("law_cases")
+    .delete()
+    .eq("id", caseId);
+
+  await logAction("Case Deleted");
+
+  alert("Deleted.");
+  location.href="law-dashboard.html";
+};
+
+/* INIT */
 (async()=>{
+  await checkAccess();
   await loadCase();
+  await loadStaff();
   await loadNotes();
   await loadEvidence();
+  await loadLogs();
 })();
 </script>
 
