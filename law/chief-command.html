@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chief Command V7 · StudentStream Law</title>
+<title>Chief Command · StudentStreamHQ Law</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script type="module" src="/js/platform-guard.js"></script>
 
 <style>
 :root{
@@ -42,11 +40,6 @@ h1{
   font-weight:950;
 }
 
-.chiefTag{
-  color:var(--accent);
-  font-weight:950;
-}
-
 .alertBanner{
   padding:14px;
   text-align:center;
@@ -57,14 +50,14 @@ h1{
 }
 
 .wrap{
-  max-width:1300px;
+  max-width:1400px;
   margin:auto;
-  padding:35px 20px;
+  padding:30px 20px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
   gap:18px;
 }
 
@@ -81,7 +74,7 @@ h1{
   margin-bottom:12px;
 }
 
-select, textarea{
+select,input{
   width:100%;
   margin-top:8px;
   padding:11px;
@@ -91,8 +84,6 @@ select, textarea{
   color:white;
   outline:none;
 }
-
-textarea{min-height:90px}
 
 button{
   margin-top:12px;
@@ -113,7 +104,7 @@ button.secondary{
 }
 
 .logBox{
-  max-height:280px;
+  max-height:320px;
   overflow:auto;
   padding-right:6px;
 }
@@ -124,20 +115,25 @@ button.secondary{
   border:1px solid rgba(255,255,255,.06);
   margin-bottom:10px;
   font-size:13px;
-  color:var(--muted);
 }
 
 .item b{
   color:var(--accent);
 }
 
-.tag{
+.badge{
   display:inline-block;
-  margin-top:6px;
-  padding:5px 10px;
+  padding:4px 10px;
   border-radius:999px;
   font-size:12px;
-  border:1px solid rgba(255,255,255,.12);
+  margin-top:6px;
+  border:1px solid rgba(255,255,255,.14);
+}
+
+.badge.chief{
+  background:rgba(255,80,80,.12);
+  color:var(--accent);
+  font-weight:900;
 }
 </style>
 </head>
@@ -145,18 +141,18 @@ button.secondary{
 <body>
 
 <header>
-  <h1>⚖️ Chief Command Center <span class="chiefTag">V7</span></h1>
-  <div id="chiefName">Loading...</div>
+  <h1>⚖️ Chief Command Center</h1>
+  <div id="chiefName">Loading Chief...</div>
 </header>
 
 <div class="alertBanner">
-🚨 NATIONAL ENFORCEMENT ALERT SYSTEM · VERIFIED CHIEF AUTHORITY ACTIVE
+🚨 NATIONAL ENFORCEMENT ALERT SYSTEM · VERIFIED CHIEF ACCESS ONLY
 </div>
 
 <div class="wrap">
   <div class="grid">
 
-    <!-- STAFF RANK CONTROL -->
+    <!-- STAFF DIRECTORY -->
     <div class="card">
       <h2>👮 Staff Rank Control</h2>
 
@@ -171,27 +167,24 @@ button.secondary{
       </select>
 
       <button onclick="updateRank()">Update Rank</button>
-
-      <button class="secondary" onclick="removeRank()">
-        Remove Enforcement Access
-      </button>
+      <button class="secondary" onclick="removeRank()">Remove Access</button>
     </div>
 
-    <!-- CASE ASSIGNMENT -->
+    <!-- CASE CONTROL -->
     <div class="card">
-      <h2>📂 Case Assignment Board</h2>
+      <h2>📂 Case Assignment + Status</h2>
 
       <select id="caseSelect"></select>
       <select id="assignSelect"></select>
 
       <button onclick="assignCase()">Assign Case</button>
 
-      <button class="secondary" onclick="unassignCase()">
-        Unassign Case
+      <button class="secondary" onclick="closeCase()">
+        Close + Archive Case
       </button>
     </div>
 
-    <!-- ACTIVE CASES -->
+    <!-- ACTIVE CASE FILES -->
     <div class="card">
       <h2>📁 Active Case Files</h2>
       <div id="caseList" class="logBox">Loading...</div>
@@ -236,8 +229,8 @@ async function chiefOnly(){
     return;
   }
 
-  document.getElementById("chiefName").textContent =
-    "Verified Chief: " + profile.username;
+  document.getElementById("chiefName").innerHTML =
+    `Verified Chief: <span class="badge chief">${profile.username}</span>`;
 }
 
 /* LOAD STAFF */
@@ -245,6 +238,7 @@ async function loadStaff(){
   const { data } = await supabase
     .from("profiles")
     .select("id, username, law_rank")
+    .neq("law_rank","none")
     .order("username",{ascending:true});
 
   const dropdown=document.getElementById("staffUser");
@@ -258,8 +252,7 @@ async function loadStaff(){
     `;
   });
 
-  document.getElementById("assignSelect").innerHTML =
-    dropdown.innerHTML;
+  document.getElementById("assignSelect").innerHTML = dropdown.innerHTML;
 }
 
 /* UPDATE RANK */
@@ -272,17 +265,14 @@ window.updateRank = async()=>{
     new_rank:newRank
   });
 
-  if(error){
-    alert("Error: "+error.message);
-    return;
-  }
+  if(error) return alert(error.message);
 
   alert("✅ Rank Updated.");
   loadStaff();
   loadAudit();
 };
 
-/* REMOVE */
+/* REMOVE ACCESS */
 window.removeRank = async()=>{
   const userId=document.getElementById("staffUser").value;
 
@@ -291,7 +281,7 @@ window.removeRank = async()=>{
     new_rank:"none"
   });
 
-  alert("Removed enforcement access.");
+  alert("Access Removed.");
   loadStaff();
   loadAudit();
 };
@@ -300,7 +290,8 @@ window.removeRank = async()=>{
 async function loadCases(){
   const { data } = await supabase
     .from("law_cases")
-    .select("id,title,status,assigned_to")
+    .select("id,title,status")
+    .neq("status","archived")
     .order("created_at",{ascending:false});
 
   const dropdown=document.getElementById("caseSelect");
@@ -319,9 +310,8 @@ async function loadCases(){
     list.innerHTML += `
       <div class="item">
         <b>${c.title}</b><br>
-        Status: ${c.status}<br>
-        Assigned: ${c.assigned_to || "Unassigned"}
-        <div class="tag">CASE FILE</div>
+        Status: ${c.status}
+        <div class="badge">ACTIVE CASE</div>
       </div>
     `;
   });
@@ -337,26 +327,23 @@ window.assignCase = async()=>{
     staff_id:staffId
   });
 
-  if(error){
-    alert("Error: "+error.message);
-    return;
-  }
+  if(error) return alert(error.message);
 
   alert("✅ Case Assigned.");
   loadCases();
   loadAudit();
 };
 
-/* UNASSIGN */
-window.unassignCase = async()=>{
+/* CLOSE + ARCHIVE */
+window.closeCase = async()=>{
   const caseId=document.getElementById("caseSelect").value;
 
   await supabase
     .from("law_cases")
-    .update({ assigned_to:null })
+    .update({ status:"archived" })
     .eq("id", caseId);
 
-  alert("Case unassigned.");
+  alert("📁 Case Archived.");
   loadCases();
   loadAudit();
 };
@@ -367,7 +354,7 @@ async function loadAudit(){
     .from("law_enforcement_actions")
     .select("*")
     .order("created_at",{ascending:false})
-    .limit(12);
+    .limit(15);
 
   const box=document.getElementById("auditLogs");
   box.innerHTML="";
@@ -377,7 +364,7 @@ async function loadAudit(){
       <div class="item">
         <b>${a.action_type}</b><br>
         ${a.reason || "No reason"}<br>
-        <span class="tag">${new Date(a.created_at).toLocaleString()}</span>
+        <span class="badge">${new Date(a.created_at).toLocaleString()}</span>
       </div>
     `;
   });
