@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StudentStreamHQ — Staff Directory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Inter, system-ui, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #10101c, #040406);
+      color: white;
+      padding: 35px 20px;
+      text-align: center;
+    }
+
+    .wrap {
+      max-width: 950px;
+      margin: auto;
+    }
+
+    .title {
+      font-size: 2.6rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .sub {
+      opacity: 0.75;
+      font-size: 1.05rem;
+      margin-bottom: 45px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    /* Staff Cards */
+    .staffCard {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 22px;
+      border-radius: 18px;
+      text-align: left;
+      transition: 0.25s;
+      position: relative;
+    }
+
+    .staffCard:hover {
+      transform: translateY(-4px);
+      border-color: rgba(77,163,255,0.55);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+    }
+
+    /* Role Badge */
+    .role {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      background: rgba(77,163,255,0.15);
+      color: #4da3ff;
+      border: 1px solid rgba(77,163,255,0.25);
+    }
+
+    /* VERIFIED OWNER Highlight */
+    .chiefCard {
+      border: 1px solid rgba(108,242,194,0.35);
+      background: linear-gradient(
+        145deg,
+        rgba(108,242,194,0.10),
+        rgba(255,255,255,0.04)
+      );
+    }
+
+    .verifiedBadge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(108,242,194,0.15);
+      border: 1px solid rgba(108,242,194,0.35);
+      color: #6cf2c2;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .titleLine {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    p {
+      margin-top: 10px;
+      opacity: 0.78;
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+
+    .note {
+      margin-top: 40px;
+      opacity: 0.65;
+      font-size: 0.95rem;
+    }
+
+    .backBtn {
+      margin-top: 45px;
+      display: inline-block;
+      padding: 14px 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: rgba(255,255,255,0.04);
+      color: white;
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+
+    .backBtn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(108,242,194,0.45);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="title">Staff Directory</div>
+    <div class="sub">
+      Verified StudentStreamHQ platform leadership and operational staff.
+    </div>
+
+    <div class="grid">
+
+      <!-- VERIFIED OWNER CARD -->
+      <div class="staffCard chiefCard">
+        <span class="verifiedBadge">✔ VERIFIED OWNER</span>
+        <span class="role">Platform Executive Command</span>
+
+        <h2>Deondre</h2>
+
+        <p>
+          Founder-level authority overseeing StudentStreamHQ’s development,
+          creator systems, division expansion, and official launch operations.
+        </p>
+
+        <p>
+          Responsible for platform infrastructure, internal staff verification,
+          and long-term ecosystem growth leading into April 2026.
+        </p>
+      </div>
+
+      <!-- Placeholder Staff -->
+      <div class="staffCard">
+        <span class="role">Division Operations</span>
+        <h2>Staff Positions Opening Soon</h2>
+        <p>
+          Verified operational staff will be added as divisions expand and
+          platform systems go live.
+        </p>
+      </div>
+
+      <div class="staffCard">
+        <span class="role">Creator Support</span>
+        <h2>Recruitment Pending</h2>
+        <p>
+          Creator support teams and moderation staff will activate closer
+          to full launch in April 2026.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="note">
+      All staff listings are verified internally through StudentStreamHQ systems.
+    </div>
+
+    <a href="/index.html" class="backBtn">← Back to Home</a>
+
+  </div>
+</body>
+</html>
