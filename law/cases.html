@@ -5,6 +5,8 @@
 <title>Case File · StudentStream Law</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script type="module" src="/js/platform-guard.js"></script>
+
 <style>
 :root{
   --bg:#060b14;
@@ -29,10 +31,15 @@ header{
   justify-content:space-between;
   align-items:center;
   background:rgba(10,20,40,.75);
+  backdrop-filter:blur(10px);
+}
+
+header b{
+  font-size:15px;
 }
 
 .wrap{
-  max-width:1000px;
+  max-width:1100px;
   margin:auto;
   padding:35px 20px;
 }
@@ -40,13 +47,14 @@ header{
 .caseBox{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:16px;
-  padding:22px;
+  border-radius:18px;
+  padding:24px;
 }
 
 h1{
   margin:0;
-  font-size:24px;
+  font-size:26px;
+  font-weight:950;
 }
 
 .meta{
@@ -55,16 +63,40 @@ h1{
   font-size:14px;
 }
 
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:20px;
+}
+
+.section{
+  margin-top:25px;
+}
+
+.card{
+  padding:18px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+
+.card h3{
+  margin:0 0 12px;
+}
+
 select, textarea, input{
   width:100%;
   margin-top:10px;
   padding:12px;
   border-radius:12px;
   border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
+  background:rgba(255,255,255,.04);
   color:white;
   outline:none;
 }
+
+textarea{min-height:100px}
 
 button{
   margin-top:12px;
@@ -72,36 +104,29 @@ button{
   border:none;
   border-radius:12px;
   cursor:pointer;
-  font-weight:800;
+  font-weight:850;
+  color:white;
   background:linear-gradient(135deg,#ff5d5d,#ff2f2f);
 }
 
-.section{
-  margin-top:25px;
+button.secondary{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
 }
 
-.noteCard{
-  padding:12px;
+.logItem{
+  padding:10px;
   border-radius:12px;
   border:1px solid rgba(255,255,255,.08);
   margin-top:10px;
+  font-size:13px;
   color:var(--muted);
 }
 
-.logCard{
-  padding:10px;
-  border-radius:12px;
-  margin-top:10px;
-  border:1px solid rgba(255,255,255,.08);
-  font-size:13px;
-  color:#cdd8ff;
-}
-
-.adminZone{
-  margin-top:30px;
-  padding:15px;
-  border:1px dashed rgba(255,93,93,.4);
-  border-radius:14px;
+.dangerZone{
+  margin-top:25px;
+  border:1px solid rgba(255,50,50,.35);
+  background:rgba(255,50,50,.06);
 }
 </style>
 </head>
@@ -110,63 +135,70 @@ button{
 
 <header>
   <div onclick="history.back()" style="cursor:pointer;">← Back</div>
-  <b>⚖️ Case File</b>
+  <b>⚖️ StudentStream Law Case File</b>
 </header>
 
 <div class="wrap">
 
   <div class="caseBox">
+
     <h1 id="caseTitle">Loading...</h1>
     <div class="meta" id="caseMeta"></div>
 
-    <!-- 🔥 Assignment -->
-    <div class="section">
-      <h3>Assigned Staff</h3>
-      <select id="assignSelect"></select>
-      <button onclick="assignStaff()">Assign Case</button>
+    <!-- CASE MANAGEMENT GRID -->
+    <div class="grid">
+
+      <!-- STATUS + ASSIGNMENT -->
+      <div class="card">
+        <h3>Case Control</h3>
+
+        <label>Status</label>
+        <select id="statusSelect">
+          <option value="open">Open</option>
+          <option value="investigating">Investigating</option>
+          <option value="resolved">Resolved</option>
+          <option value="dismissed">Dismissed</option>
+          <option value="archived">Archived</option>
+        </select>
+
+        <label>Assigned Staff</label>
+        <select id="assignSelect"></select>
+
+        <button onclick="saveCaseUpdates()">Save Updates</button>
+      </div>
+
+      <!-- ACTION LOGS -->
+      <div class="card">
+        <h3>Action Timeline</h3>
+        <div id="logList">Loading logs...</div>
+      </div>
+
     </div>
 
-    <!-- Status Update -->
-    <div class="section">
-      <h3>Status</h3>
-      <select id="statusSelect">
-        <option value="open">Open</option>
-        <option value="investigating">Investigating</option>
-        <option value="resolved">Resolved</option>
-        <option value="dismissed">Dismissed</option>
-      </select>
-      <button onclick="updateStatus()">Update Status</button>
-    </div>
-
-    <!-- Notes -->
-    <div class="section">
+    <!-- NOTES -->
+    <div class="section card">
       <h3>Internal Notes</h3>
-      <textarea id="noteInput" placeholder="Write staff-only notes..."></textarea>
+      <textarea id="noteInput" placeholder="Staff-only notes..."></textarea>
       <button onclick="addNote()">Add Note</button>
+
       <div id="noteList"></div>
     </div>
 
-    <!-- 🔥 Evidence Upload -->
-    <div class="section">
+    <!-- EVIDENCE UPLOAD -->
+    <div class="section card">
       <h3>Evidence Upload</h3>
-      <input type="file" id="evidenceFile" />
+
+      <input type="file" id="fileInput" />
       <button onclick="uploadEvidence()">Upload Evidence</button>
+
       <div id="evidenceList"></div>
     </div>
 
-    <!-- 🔥 Action Logs -->
-    <div class="section">
-      <h3>Case Action Logs</h3>
-      <div id="logList"></div>
-    </div>
-
-    <!-- 🔥 Admin Tools -->
-    <div class="adminZone" id="adminTools" style="display:none;">
-      <h3>Admin Tools</h3>
+    <!-- CHIEF ONLY DANGER -->
+    <div id="dangerZone" class="section card dangerZone" style="display:none;">
+      <h3>Chief/Admin Tools</h3>
       <button onclick="archiveCase()">📦 Archive Case</button>
-      <button onclick="deleteCase()" style="background:#111;margin-top:10px;">
-        ❌ Delete Case Permanently
-      </button>
+      <button onclick="deleteCase()">🗑 Delete Case</button>
     </div>
 
   </div>
@@ -183,58 +215,39 @@ const supabase = createClient(
 
 const caseId = new URLSearchParams(location.search).get("id");
 
-let currentUser = null;
-let currentRole = "member";
+let caseData=null;
+let currentRank="none";
+let currentUser=null;
 
-/* ✅ Staff Role Check */
-function isStaff(role){
-  return ["owner","admin","moderator"].includes(role);
-}
-function isAdmin(role){
-  return ["owner","admin"].includes(role);
-}
-
-/* ✅ LOG ACTION */
-async function logAction(action, details=""){
-  await supabase.from("law_case_logs").insert([{
-    case_id: caseId,
-    staff_user: currentUser.id,
-    action,
-    details
-  }]);
-}
-
-/* ✅ ACCESS GUARD */
+/* LOAD ACCESS */
 async function checkAccess(){
   const { data:{user} } = await supabase.auth.getUser();
   if(!user){
-    alert("Login required.");
+    alert("Law login required.");
     location.href="law-login.html";
     return;
   }
+  currentUser=user;
 
-  currentUser = user;
-
-  const { data: profile } = await supabase
+  const { data:profile } = await supabase
     .from("profiles")
-    .select("username, role")
+    .select("law_rank")
     .eq("id", user.id)
     .single();
 
-  currentRole = profile.role;
+  currentRank=profile.law_rank;
 
-  if(!isStaff(currentRole)){
+  if(currentRank==="none"){
     alert("Access denied.");
     location.href="law.html";
-    return;
   }
 
-  if(isAdmin(currentRole)){
-    document.getElementById("adminTools").style.display="block";
+  if(currentRank==="chief" || currentRank==="admin"){
+    document.getElementById("dangerZone").style.display="block";
   }
 }
 
-/* ✅ LOAD CASE */
+/* LOAD CASE */
 async function loadCase(){
   const { data } = await supabase
     .from("law_cases")
@@ -242,71 +255,99 @@ async function loadCase(){
     .eq("id", caseId)
     .single();
 
-  document.getElementById("caseTitle").textContent = data.title;
+  caseData=data;
+
+  document.getElementById("caseTitle").textContent=data.title;
   document.getElementById("caseMeta").textContent =
     `Priority: ${data.priority} • Created: ${new Date(data.created_at).toLocaleString()}`;
 
-  document.getElementById("statusSelect").value = data.status;
+  document.getElementById("statusSelect").value=data.status;
 }
 
-/* ✅ LOAD STAFF LIST */
+/* STAFF DROPDOWN */
 async function loadStaff(){
-  const { data: staff } = await supabase
+  const { data:staff } = await supabase
     .from("profiles")
-    .select("id, username, role")
-    .in("role", ["owner","admin","moderator"]);
+    .select("id, username, law_rank")
+    .neq("law_rank","none");
 
-  const dropdown = document.getElementById("assignSelect");
-  dropdown.innerHTML="";
+  const dropdown=document.getElementById("assignSelect");
+  dropdown.innerHTML=`<option value="">Unassigned</option>`;
 
   staff.forEach(s=>{
-    const opt=document.createElement("option");
-    opt.value=s.id;
-    opt.textContent=`${s.username} (${s.role})`;
-    dropdown.appendChild(opt);
+    dropdown.innerHTML += `
+      <option value="${s.id}">
+        ${s.username} (${s.law_rank})
+      </option>
+    `;
+  });
+
+  dropdown.value=caseData.assigned_to || "";
+}
+
+/* SAVE UPDATES */
+window.saveCaseUpdates = async function(){
+  const status=document.getElementById("statusSelect").value;
+  const assigned=document.getElementById("assignSelect").value || null;
+
+  await supabase.from("law_cases")
+    .update({ status, assigned_to:assigned })
+    .eq("id", caseId);
+
+  await logAction("Updated case status/assignment");
+
+  alert("Case updated.");
+};
+
+/* LOG ACTION */
+async function logAction(action){
+  await supabase.from("law_action_logs").insert([{
+    case_id: caseId,
+    staff_user: currentUser.id,
+    action
+  }]);
+  loadLogs();
+}
+
+/* LOAD LOGS */
+async function loadLogs(){
+  const { data:logs } = await supabase
+    .from("law_action_logs")
+    .select("*")
+    .eq("case_id", caseId)
+    .order("created_at",{ascending:false});
+
+  const list=document.getElementById("logList");
+  list.innerHTML="";
+
+  if(!logs || logs.length===0){
+    list.innerHTML="<div class='logItem'>No actions yet.</div>";
+    return;
+  }
+
+  logs.forEach(l=>{
+    const div=document.createElement("div");
+    div.className="logItem";
+    div.textContent =
+      `${new Date(l.created_at).toLocaleString()} • ${l.action}`;
+    list.appendChild(div);
   });
 }
 
-/* ✅ ASSIGN CASE */
-window.assignStaff = async function(){
-  const staffId = document.getElementById("assignSelect").value;
-
-  await supabase.from("law_cases")
-    .update({ assigned_to: staffId })
-    .eq("id", caseId);
-
-  await logAction("Assigned Staff", "Assigned to staff ID: " + staffId);
-
-  alert("Case assigned.");
-};
-
-/* ✅ STATUS UPDATE */
-window.updateStatus = async function(){
-  const newStatus = document.getElementById("statusSelect").value;
-
-  await supabase.from("law_cases")
-    .update({ status:newStatus })
-    .eq("id", caseId);
-
-  await logAction("Status Updated", "New status: " + newStatus);
-
-  alert("Status updated.");
-};
-
-/* ✅ NOTES */
+/* NOTES */
 async function loadNotes(){
   const { data } = await supabase
     .from("law_case_notes")
     .select("*")
     .eq("case_id", caseId)
-    .order("created_at", { ascending:false });
+    .order("created_at",{ascending:false});
 
   const list=document.getElementById("noteList");
   list.innerHTML="";
 
   data.forEach(n=>{
     const div=document.createElement("div");
-    div.className="noteCard";
+    div.className="logItem";
     div.textContent=n.note;
     list.appendChild(div);
   });
@@ -319,52 +360,48 @@ window.addNote = async function(){
   await supabase.from("law_case_notes").insert([{
     case_id: caseId,
     staff_user: currentUser.id,
-    note: text
+    note:text
   }]);
 
-  await logAction("Note Added", text);
+  await logAction("Added internal note");
 
   document.getElementById("noteInput").value="";
   loadNotes();
 };
 
-/* ✅ EVIDENCE UPLOAD TO STORAGE */
+/* EVIDENCE UPLOAD */
 window.uploadEvidence = async function(){
-  const file=document.getElementById("evidenceFile").files[0];
-  if(!file){
-    alert("Select a file first.");
-    return;
-  }
+  const file=document.getElementById("fileInput").files[0];
+  if(!file) return alert("Select a file first.");
 
-  const filePath = `case-${caseId}/${Date.now()}-${file.name}`;
+  const path=`case-${caseId}/${Date.now()}-${file.name}`;
 
   const { error } = await supabase.storage
     .from("law-evidence")
-    .upload(filePath, file);
+    .upload(path,file);
 
   if(error){
-    alert("Upload failed.");
-    console.error(error);
+    alert("Upload failed: "+error.message);
     return;
   }
 
-  const { data } = supabase.storage
+  const { data:urlData } = supabase.storage
     .from("law-evidence")
-    .getPublicUrl(filePath);
+    .getPublicUrl(path);
 
   await supabase.from("law_case_evidence").insert([{
     case_id: caseId,
     uploaded_by: currentUser.id,
-    file_url: data.publicUrl
+    file_url: urlData.publicUrl
   }]);
 
-  await logAction("Evidence Uploaded", file.name);
+  await logAction("Uploaded evidence file");
 
   alert("Evidence uploaded.");
   loadEvidence();
 };
 
-/* ✅ LOAD EVIDENCE */
+/* LOAD EVIDENCE */
 async function loadEvidence(){
   const { data } = await supabase
     .from("law_case_evidence")
@@ -376,68 +413,41 @@ async function loadEvidence(){
 
   data.forEach(e=>{
     const div=document.createElement("div");
-    div.className="noteCard";
+    div.className="logItem";
     div.innerHTML=`📎 <a href="${e.file_url}" target="_blank">${e.file_url}</a>`;
     list.appendChild(div);
   });
 }
 
-/* ✅ LOAD LOGS */
-async function loadLogs(){
-  const { data } = await supabase
-    .from("law_case_logs")
-    .select("*")
-    .eq("case_id", caseId)
-    .order("created_at", { ascending:false });
-
-  const list=document.getElementById("logList");
-  list.innerHTML="";
-
-  data.forEach(l=>{
-    const div=document.createElement("div");
-    div.className="logCard";
-    div.innerHTML=`🔥 <b>${l.action}</b><br>${l.details}<br>
-    <span style="opacity:.6">${new Date(l.created_at).toLocaleString()}</span>`;
-    list.appendChild(div);
-  });
-}
-
-/* ✅ ARCHIVE */
+/* CHIEF ONLY */
 window.archiveCase = async function(){
-  if(!confirm("Archive this case?")) return;
-
   await supabase.from("law_cases")
-    .update({ archived:true })
+    .update({ status:"archived" })
     .eq("id", caseId);
 
-  await logAction("Case Archived");
+  await logAction("Archived case");
 
-  alert("Archived.");
-  location.href="law-dashboard.html";
+  alert("Case archived.");
 };
 
-/* ✅ DELETE (ADMIN ONLY) */
 window.deleteCase = async function(){
-  if(!confirm("DELETE permanently?")) return;
+  if(!confirm("Delete permanently?")) return;
 
   await supabase.from("law_cases")
     .delete()
     .eq("id", caseId);
 
-  await logAction("Case Deleted");
-
-  alert("Deleted.");
+  alert("Case deleted.");
   location.href="law-dashboard.html";
 };
 
-/* INIT */
 (async()=>{
   await checkAccess();
   await loadCase();
   await loadStaff();
+  await loadLogs();
   await loadNotes();
   await loadEvidence();
-  await loadLogs();
 })();
 </script>
 
