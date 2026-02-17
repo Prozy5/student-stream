@@ -67,8 +67,8 @@ nav{
 }
 
 .hero h1{
-  font-size:50px;
-  font-weight:980;
+  font-size:52px;
+  font-weight:990;
 }
 
 .hero span{color:var(--accent)}
@@ -111,7 +111,7 @@ nav{
   opacity:.92;
 }
 
-/* DIVISION NOTICE */
+/* VERIFIED NOTICE */
 
 .notice{
   margin:40px auto 0;
@@ -125,6 +125,25 @@ nav{
 }
 
 .notice strong{
+  color:var(--accent);
+}
+
+/* STAFF BADGE */
+
+.badge{
+  margin:25px auto 0;
+  max-width:520px;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+  font-size:14px;
+  color:var(--muted);
+  display:none;
+}
+
+.badge span{
+  font-weight:900;
   color:var(--accent);
 }
 
@@ -175,24 +194,25 @@ nav{
   line-height:1.55;
 }
 
-/* LAW PORTAL */
+/* LAW ALERTS */
 
-.portal{
-  margin-top:30px;
+.alerts{
+  margin-top:20px;
   display:grid;
   gap:14px;
 }
 
-.portal-item{
-  padding:18px;
+.alertBox{
+  padding:16px;
   border-radius:16px;
-  border:1px solid var(--border);
+  border:1px solid rgba(255,255,255,.08);
   background:rgba(255,255,255,.02);
+  font-size:14px;
+  color:var(--muted);
 }
 
-.portal-item span{
+.alertBox strong{
   color:var(--accent);
-  font-weight:950;
 }
 
 /* FOOTER */
@@ -210,6 +230,7 @@ footer{
 
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="brand">⚖️ StudentStream Law Division</div>
 
@@ -222,12 +243,13 @@ footer{
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
   <h1>StudentStream <span>Law</span></h1>
 
   <p>
-    The official digital enforcement, creator rights, and safety division of StudentStreamHQ.
-    We protect creators, investigate abuse, prevent fraud, and maintain platform integrity.
+    The official digital enforcement and creator rights division of StudentStreamHQ.
+    We investigate abuse, prevent fraud, protect creators, and maintain platform integrity.
   </p>
 
   <div class="hero-actions">
@@ -237,12 +259,17 @@ footer{
     <a href="appeals.html" class="btn">⚠️ Appeals Portal</a>
   </div>
 
+  <!-- VERIFIED ONLY NOTICE -->
   <div class="notice">
     <strong>Verified Enforcement Only:</strong>
     StudentStream Law tools are restricted to approved StudentStreamHQ staff ranks.
   </div>
+
+  <!-- STAFF BADGE -->
+  <div class="badge" id="staffBadge"></div>
 </section>
 
+<!-- RESPONSIBILITIES -->
 <section class="section">
   <h2>Division Responsibilities</h2>
 
@@ -269,7 +296,7 @@ footer{
 
     <div class="card">
       <h3>Case Evidence Handling</h3>
-      <p>Secure evidence storage, report documentation, case file tracking.</p>
+      <p>Secure evidence storage, report documentation, internal case tracking.</p>
     </div>
 
     <div class="card">
@@ -279,31 +306,64 @@ footer{
   </div>
 </section>
 
+<!-- LAW ALERTS -->
 <section class="section">
-  <h2>Law Division Portal</h2>
+  <h2>Law Division Alerts</h2>
 
-  <div class="portal">
-    <div class="portal-item">
-      <span>1.</span> Reports are reviewed by verified enforcement staff.
+  <div class="alerts">
+    <div class="alertBox">
+      <strong>Evidence System Online:</strong>
+      Secure uploads are now supported in active investigations.
     </div>
-    <div class="portal-item">
-      <span>2.</span> Evidence is collected into an internal case file.
+
+    <div class="alertBox">
+      <strong>Staff Case Assignment Enabled:</strong>
+      Verified enforcement staff can now claim and manage cases.
     </div>
-    <div class="portal-item">
-      <span>3.</span> Policy evaluation + creator rights review is performed.
-    </div>
-    <div class="portal-item">
-      <span>4.</span> Enforcement action is issued when confirmed.
-    </div>
-    <div class="portal-item">
-      <span>5.</span> Transparency logs may update when appropriate.
+
+    <div class="alertBox">
+      <strong>Transparency Updates Coming Soon:</strong>
+      Public enforcement logs will launch after beta review.
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   © 2026 StudentStream Law Division · StudentStreamHQ Digital Safety & Creator Protection
 </footer>
+
+<!-- STAFF DETECTOR -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function loadBadge(){
+  const { data:{user} } = await supabase.auth.getUser();
+  if(!user) return;
+
+  const { data:profile } = await supabase
+    .from("profiles")
+    .select("username, law_rank")
+    .eq("id", user.id)
+    .single();
+
+  if(profile?.law_rank && profile.law_rank !== "none"){
+    const badge=document.getElementById("staffBadge");
+    badge.style.display="block";
+    badge.innerHTML = `
+      Logged in as <span>${profile.username}</span> —
+      Rank: <span>${profile.law_rank.toUpperCase()}</span>
+    `;
+  }
+}
+
+loadBadge();
+</script>
 
 </body>
 </html>
