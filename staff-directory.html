@@ -1,285 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Directory · StudentStreamHQ</title>
 
-  <title>Staff Directory — StudentStreamHQ</title>
+<style>
+:root{
+  --bg:#05070d;
+  --panel:#0c1422;
+  --border:rgba(255,255,255,0.08);
+  --text:#eaf2ff;
+  --muted:#9fb0cc;
+  --accent:#4da3ff;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Inter, system-ui, Arial, sans-serif;
-    }
+*{margin:0;padding:0;box-sizing:border-box}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #10101c, #040406);
-      color: white;
-      padding: 40px 20px;
-    }
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#101a2f,#05070d);
+  color:var(--text);
+}
 
-    header {
-      max-width: 1100px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 25px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
+header{
+  padding:18px 26px;
+  border-bottom:1px solid var(--border);
+  background:rgba(10,15,25,.92);
+  backdrop-filter:blur(14px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .logo {
-      font-size: 22px;
-      font-weight: 900;
-      color: #4da3ff;
-    }
+header h1{
+  font-size:18px;
+  font-weight:950;
+}
 
-    nav a {
-      color: #aaa;
-      margin-left: 18px;
-      text-decoration: none;
-      font-size: 14px;
-    }
+header a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+}
+header a:hover{color:white}
 
-    nav a:hover {
-      color: white;
-    }
+.wrap{
+  max-width:1200px;
+  margin:auto;
+  padding:50px 20px;
+}
 
-    .hero {
-      max-width: 1100px;
-      margin: 70px auto 55px;
-      text-align: center;
-    }
+.pageTitle{
+  text-align:center;
+  margin-bottom:40px;
+}
 
-    .heroBadge {
-      display: inline-block;
-      padding: 7px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      background: rgba(108,242,194,0.12);
-      border: 1px solid rgba(108,242,194,0.25);
-      color: #6cf2c2;
-      margin-bottom: 18px;
-    }
+.pageTitle h2{
+  font-size:38px;
+  font-weight:950;
+}
 
-    .hero h1 {
-      font-size: 44px;
-      margin: 0 0 14px;
-      font-weight: 900;
-    }
+.pageTitle p{
+  margin-top:10px;
+  opacity:.75;
+}
 
-    .hero p {
-      opacity: 0.82;
-      font-size: 18px;
-      max-width: 760px;
-      margin: auto;
-      line-height: 1.55;
-    }
+.sectionTitle{
+  font-size:16px;
+  font-weight:900;
+  margin:40px 0 18px;
+  color:var(--accent);
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
 
-    .grid {
-      max-width: 1100px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 22px;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px;
+}
 
-    .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 18px;
-      padding: 24px;
-      transition: 0.25s;
-    }
+.card{
+  background:rgba(12,20,34,.92);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(77,163,255,0.45);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.55);
-    }
+.nameRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .nameRow {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+.staffName{
+  font-size:18px;
+  font-weight:950;
+}
 
-    .staffName {
-      font-size: 18px;
-      font-weight: 900;
-    }
+.role{
+  margin-top:6px;
+  font-size:14px;
+  color:var(--muted);
+  font-weight:700;
+}
 
-    .badge {
-      font-size: 11px;
-      font-weight: 900;
-      padding: 6px 12px;
-      border-radius: 999px;
-      display: inline-block;
-    }
+.desc{
+  margin-top:14px;
+  font-size:13px;
+  line-height:1.5;
+  opacity:.82;
+}
 
-    .chiefBadge {
-      background: linear-gradient(90deg, #4da3ff, #6cf2c2);
-      color: black;
-    }
+.badge{
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,0.15);
+}
 
-    .verifiedBadge {
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.20);
-      color: white;
-    }
+.verifiedBadge{
+  background:rgba(77,163,255,0.15);
+  color:var(--accent);
+  border-color:rgba(77,163,255,0.35);
+}
 
-    .role {
-      font-weight: 800;
-      margin-bottom: 8px;
-      color: #6db4ff;
-    }
+.staffBadge{
+  background:rgba(255,255,255,0.06);
+  color:white;
+}
 
-    .desc {
-      opacity: 0.8;
-      line-height: 1.45;
-      font-size: 14px;
-    }
-
-    .sectionTitle {
-      max-width: 1100px;
-      margin: 70px auto 25px;
-      font-size: 20px;
-      font-weight: 900;
-      opacity: 0.9;
-    }
-
-    footer {
-      margin-top: 80px;
-      text-align: center;
-      font-size: 13px;
-      opacity: 0.55;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 35px 0;
-    }
-  </style>
+footer{
+  margin-top:70px;
+  padding:30px;
+  text-align:center;
+  font-size:13px;
+  opacity:.55;
+  border-top:1px solid var(--border);
+}
+</style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo">StudentStreamHQ</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="division-directory.html">Divisions</a>
-      <a href="company.html">Company</a>
-    </nav>
-  </header>
+<header>
+  <h1>StudentStreamHQ · Staff Directory</h1>
+  <a href="index.html">← Back Home</a>
+</header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="heroBadge">Verified Staff Directory</div>
-    <h1>StudentStream Staff Directory</h1>
+<div class="wrap">
+
+  <div class="pageTitle">
+    <h2>Official Staff Directory</h2>
     <p>
-      StudentStreamHQ operates with a structured internal staff network.
-      Leadership and division personnel are verified and listed publicly
-      for transparency and organizational trust.
+      Verified leadership and staff across the StudentStreamHQ ecosystem.<br>
+      Division enforcement ranks are listed separately under SSI Law.
     </p>
-  </section>
+  </div>
 
-  <!-- EXECUTIVE COMMAND -->
-  <div class="sectionTitle">Executive Command</div>
+  <!-- EXECUTIVE LEADERSHIP -->
+  <div class="sectionTitle">Executive Leadership</div>
 
   <section class="grid">
 
-    <!-- YOU (CHIEF VERIFIED) -->
-    <div class="card" style="border:1px solid rgba(108,242,194,0.35);">
+    <!-- YOU -->
+    <div class="card" style="border:1px solid rgba(77,163,255,0.45);">
+
       <div class="nameRow">
         <div class="staffName">Deondre</div>
-        <span class="badge chiefBadge">✔ Chief Verified</span>
+        <span class="badge verifiedBadge">Executive Verified</span>
       </div>
 
-      <div class="role">Chief Command Authority</div>
+      <div class="role">Owner · StudentStreamHQ Executive Authority</div>
 
       <p class="desc">
-        Highest-level platform authority responsible for staff oversight,
-        division operations, internal enforcement, platform security,
-        and executive development control across StudentStreamHQ.
+        Platform-level executive authority responsible for overseeing all
+        StudentStreamHQ divisions, infrastructure, and development systems.
       </p>
 
-      <p class="desc" style="margin-top:10px;">
-        Oversees all divisions including SS Films, StudentStream Studios,
+      <p class="desc">
+        Supervises operations across SS Films, StudentStream Studios,
         SSI Law, and SS:I Investigations.
       </p>
+
+      <p class="desc" style="opacity:.65;">
+        Note: “Chief” enforcement authority applies only inside the SSI Law Division.
+      </p>
+
     </div>
 
   </section>
 
-  <!-- DIVISION LEADERSHIP -->
-  <div class="sectionTitle">Division Leadership</div>
+  <!-- GENERAL STAFF -->
+  <div class="sectionTitle">Core Staff Members</div>
 
   <section class="grid">
 
     <div class="card">
       <div class="nameRow">
-        <div class="staffName">Rebecca Miles</div>
-        <span class="badge verifiedBadge">Division Lead</span>
+        <div class="staffName">Open Position</div>
+        <span class="badge staffBadge">Staff Verified</span>
       </div>
-      <div class="role">SS Films Operations</div>
+      <div class="role">Operations Support</div>
       <p class="desc">
-        Coordinates film production workflow, creator partnerships,
-        and release scheduling for SS Films originals.
+        Future staff roles will appear here as StudentStreamHQ expands.
       </p>
     </div>
 
     <div class="card">
       <div class="nameRow">
-        <div class="staffName">Edward Lane</div>
-        <span class="badge verifiedBadge">Division Lead</span>
+        <div class="staffName">Open Position</div>
+        <span class="badge staffBadge">Staff Verified</span>
       </div>
-      <div class="role">StudentStream Studios</div>
+      <div class="role">Division Coordinator</div>
       <p class="desc">
-        Oversees studio infrastructure development, creator tool systems,
-        and production resources for internal media teams.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="nameRow">
-        <div class="staffName">Michael Grant</div>
-        <span class="badge verifiedBadge">Division Lead</span>
-      </div>
-      <div class="role">Platform Systems</div>
-      <p class="desc">
-        Manages internal platform systems, security operations,
-        account integrity, and core deployment structure.
+        Division coordinators manage internal workflows across platform systems.
       </p>
     </div>
 
   </section>
 
-  <!-- SUPPORT STAFF -->
-  <div class="sectionTitle">Staff & Support</div>
+</div>
 
-  <section class="grid">
-
-    <div class="card">
-      <div class="nameRow">
-        <div class="staffName">Open Recruitment</div>
-        <span class="badge verifiedBadge">Pending</span>
-      </div>
-      <div class="role">Staff Expansion</div>
-      <p class="desc">
-        StudentStreamHQ is currently expanding staff roles in development,
-        media production, moderation, and division operations.
-      </p>
-    </div>
-
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    © 2026 StudentStreamHQ · Verified Staff Directory · Internal ranks protected under Chief Command Authority
-  </footer>
+<footer>
+  © 2026 StudentStreamHQ · Official Platform Staff Directory
+</footer>
 
 </body>
 </html>
