@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chief Command · StudentStream Law</title>
+<title>Chief Command V7 · StudentStream Law</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script type="module" src="/js/platform-guard.js"></script>
@@ -27,18 +27,17 @@ body{
   color:var(--text);
 }
 
-/* HEADER */
 header{
-  padding:18px 24px;
-  border-bottom:1px solid var(--border);
+  padding:18px 26px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:rgba(10,20,40,.85);
+  border-bottom:1px solid var(--border);
+  background:rgba(10,20,40,.88);
   backdrop-filter:blur(14px);
 }
 
-header h1{
+h1{
   font-size:18px;
   font-weight:950;
 }
@@ -48,48 +47,61 @@ header h1{
   font-weight:950;
 }
 
-.wrap{
-  max-width:1200px;
-  margin:auto;
-  padding:40px 22px;
-}
-
-.section{
-  margin-top:35px;
-}
-
-.section h2{
-  font-size:18px;
+.alertBanner{
+  padding:14px;
+  text-align:center;
   font-weight:950;
-  margin-bottom:14px;
+  font-size:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#200000;
 }
 
-/* ALERT SYSTEM */
-.alertBox{
-  padding:18px;
-  border-radius:18px;
-  border:1px solid rgba(255,93,93,.35);
-  background:rgba(255,93,93,.08);
+.wrap{
+  max-width:1300px;
+  margin:auto;
+  padding:35px 20px;
 }
 
-.alertBox input{
-  width:100%;
-  margin-top:10px;
-  padding:12px;
-  border-radius:14px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:rgba(12,22,38,.92);
   border:1px solid var(--border);
-  background:rgba(255,255,255,.05);
+  border-radius:18px;
+  padding:18px;
+}
+
+.card h2{
+  font-size:15px;
+  font-weight:950;
+  margin-bottom:12px;
+}
+
+select, textarea{
+  width:100%;
+  margin-top:8px;
+  padding:11px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
   color:white;
   outline:none;
 }
 
+textarea{min-height:90px}
+
 button{
   margin-top:12px;
-  padding:11px 16px;
-  border-radius:14px;
+  width:100%;
+  padding:12px;
   border:none;
+  border-radius:14px;
+  font-weight:950;
   cursor:pointer;
-  font-weight:900;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
   color:#200000;
 }
@@ -97,61 +109,35 @@ button{
 button.secondary{
   background:rgba(255,255,255,.06);
   border:1px solid var(--border);
-  color:var(--text);
-}
-
-/* TABLE */
-.table{
-  width:100%;
-  border-collapse:collapse;
-  overflow:hidden;
-  border-radius:16px;
-  border:1px solid var(--border);
-}
-
-.table th{
-  text-align:left;
-  padding:12px;
-  font-size:13px;
-  color:var(--muted);
-  background:rgba(255,255,255,.03);
-}
-
-.table td{
-  padding:12px;
-  border-top:1px solid rgba(255,255,255,.06);
-}
-
-select{
-  padding:8px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.05);
   color:white;
 }
 
-.actionBtn{
-  padding:7px 12px;
-  border-radius:10px;
-  font-size:12px;
-  font-weight:850;
-  cursor:pointer;
-  border:none;
+.logBox{
+  max-height:280px;
+  overflow:auto;
+  padding-right:6px;
 }
 
-.banBtn{
-  background:rgba(255,93,93,.18);
+.item{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.06);
+  margin-bottom:10px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.item b{
   color:var(--accent);
 }
 
-.suspendBtn{
-  background:rgba(255,255,255,.08);
-  color:white;
-}
-
-.archiveBtn{
-  background:rgba(255,255,255,.08);
-  color:var(--muted);
+.tag{
+  display:inline-block;
+  margin-top:6px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  border:1px solid rgba(255,255,255,.12);
 }
 </style>
 </head>
@@ -159,75 +145,65 @@ select{
 <body>
 
 <header>
-  <h1>⭐ Chief Command Center</h1>
-  <div id="chiefName" class="chiefTag">Loading...</div>
+  <h1>⚖️ Chief Command Center <span class="chiefTag">V7</span></h1>
+  <div id="chiefName">Loading...</div>
 </header>
 
+<div class="alertBanner">
+🚨 NATIONAL ENFORCEMENT ALERT SYSTEM · VERIFIED CHIEF AUTHORITY ACTIVE
+</div>
+
 <div class="wrap">
+  <div class="grid">
 
-  <!-- NATIONAL ALERT -->
-  <div class="section">
-    <h2>🚨 National Enforcement Alert System</h2>
+    <!-- STAFF RANK CONTROL -->
+    <div class="card">
+      <h2>👮 Staff Rank Control</h2>
 
-    <div class="alertBox">
-      <p style="color:var(--muted);font-size:14px;">
-        Publish an official enforcement-wide alert visible to all users.
-      </p>
+      <select id="staffUser"></select>
 
-      <input id="alertMessage" placeholder="Type enforcement alert..." />
+      <select id="rankSelect">
+        <option value="none">None</option>
+        <option value="officer">Officer</option>
+        <option value="investigator">Investigator</option>
+        <option value="admin">Admin</option>
+        <option value="chief">Chief</option>
+      </select>
 
-      <button onclick="publishAlert()">Publish Alert</button>
+      <button onclick="updateRank()">Update Rank</button>
+
+      <button class="secondary" onclick="removeRank()">
+        Remove Enforcement Access
+      </button>
     </div>
+
+    <!-- CASE ASSIGNMENT -->
+    <div class="card">
+      <h2>📂 Case Assignment Board</h2>
+
+      <select id="caseSelect"></select>
+      <select id="assignSelect"></select>
+
+      <button onclick="assignCase()">Assign Case</button>
+
+      <button class="secondary" onclick="unassignCase()">
+        Unassign Case
+      </button>
+    </div>
+
+    <!-- ACTIVE CASES -->
+    <div class="card">
+      <h2>📁 Active Case Files</h2>
+      <div id="caseList" class="logBox">Loading...</div>
+    </div>
+
+    <!-- AUDIT LOGS -->
+    <div class="card">
+      <h2>🧾 Chief Audit Logs</h2>
+      <div id="auditLogs" class="logBox">Loading...</div>
+    </div>
+
   </div>
-
-  <!-- STAFF RANK CONTROL -->
-  <div class="section">
-    <h2>⚖️ Staff Rank Management</h2>
-
-    <table class="table" id="staffTable">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Rank</th>
-          <th>Update</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- ACCOUNT CONTROL -->
-  <div class="section">
-    <h2>🚫 Suspension & Ban Control</h2>
-
-    <table class="table" id="accountTable">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- CASE CONTROL -->
-  <div class="section">
-    <h2>📂 Case Assignment + Archive</h2>
-
-    <table class="table" id="caseTable">
-      <thead>
-        <tr>
-          <th>Case</th>
-          <th>Assigned To</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
 </div>
 
 <script type="module">
@@ -238,11 +214,10 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let chiefUser=null;
-
 /* CHIEF LOCK */
 async function chiefOnly(){
   const { data:{user} } = await supabase.auth.getUser();
+
   if(!user){
     alert("Chief login required.");
     location.href="law-login.html";
@@ -256,200 +231,164 @@ async function chiefOnly(){
     .single();
 
   if(profile.law_rank !== "chief"){
-    alert("❌ Chief Authority Only.");
+    alert("⛔ Chief Command Only.");
     location.href="law.html";
     return;
   }
 
-  chiefUser=user;
   document.getElementById("chiefName").textContent =
-    "Chief: " + profile.username;
+    "Verified Chief: " + profile.username;
 }
-
-/* ALERT */
-window.publishAlert = async()=>{
-  const msg=document.getElementById("alertMessage").value.trim();
-  if(msg.length<5) return alert("Alert too short.");
-
-  await supabase.from("enforcement_alerts").insert([
-    { message:msg }
-  ]);
-
-  alert("✅ Alert Published.");
-  document.getElementById("alertMessage").value="";
-};
 
 /* LOAD STAFF */
 async function loadStaff(){
-  const { data:staff } = await supabase
+  const { data } = await supabase
     .from("profiles")
     .select("id, username, law_rank")
-    .neq("law_rank","none");
+    .order("username",{ascending:true});
 
-  const body=document.querySelector("#staffTable tbody");
-  body.innerHTML="";
+  const dropdown=document.getElementById("staffUser");
+  dropdown.innerHTML="";
 
-  staff.forEach(s=>{
-    body.innerHTML += `
-      <tr>
-        <td>${s.username}</td>
-        <td>
-          <select id="rank-${s.id}">
-            <option ${s.law_rank=="officer"?"selected":""}>officer</option>
-            <option ${s.law_rank=="detective"?"selected":""}>detective</option>
-            <option ${s.law_rank=="commander"?"selected":""}>commander</option>
-            <option ${s.law_rank=="chief"?"selected":""}>chief</option>
-          </select>
-        </td>
-        <td>
-          <button class="actionBtn suspendBtn"
-            onclick="updateRank('${s.id}')">
-            Update
-          </button>
-        </td>
-      </tr>
+  data.forEach(u=>{
+    dropdown.innerHTML += `
+      <option value="${u.id}">
+        ${u.username} (${u.law_rank})
+      </option>
     `;
   });
+
+  document.getElementById("assignSelect").innerHTML =
+    dropdown.innerHTML;
 }
 
 /* UPDATE RANK */
-window.updateRank = async(id)=>{
-  const newRank=document.getElementById("rank-"+id).value;
+window.updateRank = async()=>{
+  const userId=document.getElementById("staffUser").value;
+  const newRank=document.getElementById("rankSelect").value;
 
-  const { error } = await supabase
-    .from("profiles")
-    .update({ law_rank:newRank })
-    .eq("id", id);
+  const { error } = await supabase.rpc("chief_update_rank",{
+    target:userId,
+    new_rank:newRank
+  });
 
-  if(error) return alert("❌ " + error.message);
+  if(error){
+    alert("Error: "+error.message);
+    return;
+  }
 
   alert("✅ Rank Updated.");
+  loadStaff();
+  loadAudit();
 };
 
-/* ACCOUNT CONTROL */
-async function loadAccounts(){
-  const { data:users } = await supabase
-    .from("profiles")
-    .select("id, username, suspended, banned");
+/* REMOVE */
+window.removeRank = async()=>{
+  const userId=document.getElementById("staffUser").value;
 
-  const body=document.querySelector("#accountTable tbody");
-  body.innerHTML="";
-
-  users.forEach(u=>{
-    let status="Active";
-    if(u.suspended) status="Suspended";
-    if(u.banned) status="Banned";
-
-    body.innerHTML += `
-      <tr>
-        <td>${u.username}</td>
-        <td>${status}</td>
-        <td>
-          <button class="actionBtn suspendBtn"
-            onclick="toggleSuspend('${u.id}',${u.suspended})">
-            Suspend
-          </button>
-          <button class="actionBtn banBtn"
-            onclick="banUser('${u.id}')">
-            Ban
-          </button>
-        </td>
-      </tr>
-    `;
+  await supabase.rpc("chief_update_rank",{
+    target:userId,
+    new_rank:"none"
   });
-}
 
-window.toggleSuspend = async(id,current)=>{
-  await supabase.from("profiles")
-    .update({ suspended:!current })
-    .eq("id",id);
-
-  loadAccounts();
+  alert("Removed enforcement access.");
+  loadStaff();
+  loadAudit();
 };
 
-window.banUser = async(id)=>{
-  const reason=prompt("Ban reason?");
-  if(!reason) return;
-
-  await supabase.from("profiles")
-    .update({ banned:true, ban_reason:reason })
-    .eq("id",id);
-
-  loadAccounts();
-};
-
-/* CASE CONTROL */
+/* LOAD CASES */
 async function loadCases(){
-  const { data:cases } = await supabase
+  const { data } = await supabase
     .from("law_cases")
-    .select("id,title,assigned_to,archived");
+    .select("id,title,status,assigned_to")
+    .order("created_at",{ascending:false});
 
-  const { data:staff } = await supabase
-    .from("profiles")
-    .select("id,username")
-    .neq("law_rank","none");
+  const dropdown=document.getElementById("caseSelect");
+  dropdown.innerHTML="";
 
-  const body=document.querySelector("#caseTable tbody");
-  body.innerHTML="";
+  const list=document.getElementById("caseList");
+  list.innerHTML="";
 
-  cases.forEach(c=>{
-    let dropdown=`<select id="assign-${c.id}">
-      <option value="">Unassigned</option>`;
+  data.forEach(c=>{
+    dropdown.innerHTML += `
+      <option value="${c.id}">
+        ${c.title} (${c.status})
+      </option>
+    `;
 
-    staff.forEach(s=>{
-      dropdown+=`
-        <option value="${s.id}"
-          ${c.assigned_to==s.id?"selected":""}>
-          ${s.username}
-        </option>`;
-    });
-
-    dropdown+=`</select>`;
-
-    body.innerHTML += `
-      <tr>
-        <td>${c.title}</td>
-        <td>${dropdown}</td>
-        <td>
-          <button class="actionBtn suspendBtn"
-            onclick="assignCase('${c.id}')">
-            Assign
-          </button>
-          <button class="actionBtn archiveBtn"
-            onclick="archiveCase('${c.id}')">
-            Archive
-          </button>
-        </td>
-      </tr>
+    list.innerHTML += `
+      <div class="item">
+        <b>${c.title}</b><br>
+        Status: ${c.status}<br>
+        Assigned: ${c.assigned_to || "Unassigned"}
+        <div class="tag">CASE FILE</div>
+      </div>
     `;
   });
 }
 
-window.assignCase = async(caseId)=>{
-  const staffId=document.getElementById("assign-"+caseId).value || null;
+/* ASSIGN CASE */
+window.assignCase = async()=>{
+  const caseId=document.getElementById("caseSelect").value;
+  const staffId=document.getElementById("assignSelect").value;
 
-  await supabase.from("law_cases")
-    .update({ assigned_to:staffId })
-    .eq("id",caseId);
+  const { error } = await supabase.rpc("chief_assign_case",{
+    case_id:caseId,
+    staff_id:staffId
+  });
+
+  if(error){
+    alert("Error: "+error.message);
+    return;
+  }
 
   alert("✅ Case Assigned.");
-};
-
-window.archiveCase = async(caseId)=>{
-  await supabase.from("law_cases")
-    .update({ archived:true, closed_at:new Date() })
-    .eq("id",caseId);
-
-  alert("📁 Case Archived.");
   loadCases();
+  loadAudit();
 };
+
+/* UNASSIGN */
+window.unassignCase = async()=>{
+  const caseId=document.getElementById("caseSelect").value;
+
+  await supabase
+    .from("law_cases")
+    .update({ assigned_to:null })
+    .eq("id", caseId);
+
+  alert("Case unassigned.");
+  loadCases();
+  loadAudit();
+};
+
+/* LOAD AUDIT */
+async function loadAudit(){
+  const { data } = await supabase
+    .from("law_enforcement_actions")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(12);
+
+  const box=document.getElementById("auditLogs");
+  box.innerHTML="";
+
+  data.forEach(a=>{
+    box.innerHTML += `
+      <div class="item">
+        <b>${a.action_type}</b><br>
+        ${a.reason || "No reason"}<br>
+        <span class="tag">${new Date(a.created_at).toLocaleString()}</span>
+      </div>
+    `;
+  });
+}
 
 /* INIT */
 (async()=>{
   await chiefOnly();
   await loadStaff();
-  await loadAccounts();
   await loadCases();
+  await loadAudit();
 })();
 </script>
 
