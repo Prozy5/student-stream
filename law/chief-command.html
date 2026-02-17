@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chief Command · StudentStreamHQ Law</title>
+<title>Chief Command V8 · StudentStreamHQ Law</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -35,10 +35,7 @@ header{
   backdrop-filter:blur(14px);
 }
 
-h1{
-  font-size:18px;
-  font-weight:950;
-}
+h1{font-size:18px;font-weight:950}
 
 .alertBanner{
   padding:14px;
@@ -50,14 +47,14 @@ h1{
 }
 
 .wrap{
-  max-width:1400px;
+  max-width:1500px;
   margin:auto;
   padding:30px 20px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(430px,1fr));
   gap:18px;
 }
 
@@ -103,7 +100,7 @@ button.secondary{
   color:white;
 }
 
-.logBox{
+.scrollBox{
   max-height:320px;
   overflow:auto;
   padding-right:6px;
@@ -117,9 +114,7 @@ button.secondary{
   font-size:13px;
 }
 
-.item b{
-  color:var(--accent);
-}
+.item b{color:var(--accent)}
 
 .badge{
   display:inline-block;
@@ -128,25 +123,43 @@ button.secondary{
   font-size:12px;
   margin-top:6px;
   border:1px solid rgba(255,255,255,.14);
+  color:var(--muted);
 }
 
-.badge.chief{
-  background:rgba(255,80,80,.12);
-  color:var(--accent);
-  font-weight:900;
+.staffCard{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  padding:12px;
+  border-radius:14px;
+  margin-bottom:10px;
 }
+
+.staffCard span{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.rankTag{
+  float:right;
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.rank-chief{color:var(--accent);font-weight:900}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>⚖️ Chief Command Center</h1>
-  <div id="chiefName">Loading Chief...</div>
+  <h1>⚖️ Chief Command Center <span style="color:var(--accent)">V8</span></h1>
+  <div id="chiefName">Loading...</div>
 </header>
 
 <div class="alertBanner">
-🚨 NATIONAL ENFORCEMENT ALERT SYSTEM · VERIFIED CHIEF ACCESS ONLY
+🚨 NATIONAL ENFORCEMENT ALERT SYSTEM · VERIFIED CHIEF AUTHORITY ACTIVE
 </div>
 
 <div class="wrap">
@@ -154,7 +167,13 @@ button.secondary{
 
     <!-- STAFF DIRECTORY -->
     <div class="card">
-      <h2>👮 Staff Rank Control</h2>
+      <h2>👮 Staff Directory</h2>
+      <div id="staffCards" class="scrollBox">Loading staff...</div>
+    </div>
+
+    <!-- STAFF RANK CONTROL -->
+    <div class="card">
+      <h2>🎖 Rank Control Panel</h2>
 
       <select id="staffUser"></select>
 
@@ -170,30 +189,45 @@ button.secondary{
       <button class="secondary" onclick="removeRank()">Remove Access</button>
     </div>
 
-    <!-- CASE CONTROL -->
+    <!-- CASE BOARD -->
     <div class="card">
-      <h2>📂 Case Assignment + Status</h2>
+      <h2>📂 Case Assignment Board</h2>
 
       <select id="caseSelect"></select>
       <select id="assignSelect"></select>
 
       <button onclick="assignCase()">Assign Case</button>
+      <button class="secondary" onclick="archiveCase()">Close + Archive</button>
 
-      <button class="secondary" onclick="closeCase()">
-        Close + Archive Case
-      </button>
+      <div id="caseBoard" class="scrollBox" style="margin-top:14px;">
+        Loading cases...
+      </div>
     </div>
 
-    <!-- ACTIVE CASE FILES -->
+    <!-- EVIDENCE VAULT -->
     <div class="card">
-      <h2>📁 Active Case Files</h2>
-      <div id="caseList" class="logBox">Loading...</div>
+      <h2>🗄 Evidence Vault</h2>
+      <select id="evidenceCase"></select>
+
+      <button onclick="loadEvidence()">Load Evidence</button>
+
+      <div id="evidenceBox" class="scrollBox" style="margin-top:14px;">
+        Select a case to view evidence.
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="card">
+      <h2>📢 Enforcement Notifications</h2>
+      <div id="notifyBox" class="scrollBox">
+        Loading notifications...
+      </div>
     </div>
 
     <!-- AUDIT LOGS -->
     <div class="card">
       <h2>🧾 Chief Audit Logs</h2>
-      <div id="auditLogs" class="logBox">Loading...</div>
+      <div id="auditLogs" class="scrollBox">Loading...</div>
     </div>
 
   </div>
@@ -210,12 +244,7 @@ const supabase = createClient(
 /* CHIEF LOCK */
 async function chiefOnly(){
   const { data:{user} } = await supabase.auth.getUser();
-
-  if(!user){
-    alert("Chief login required.");
-    location.href="law-login.html";
-    return;
-  }
+  if(!user){ location.href="law-login.html"; return; }
 
   const { data:profile } = await supabase
     .from("profiles")
@@ -224,13 +253,13 @@ async function chiefOnly(){
     .single();
 
   if(profile.law_rank !== "chief"){
-    alert("⛔ Chief Command Only.");
+    alert("⛔ Chief Only.");
     location.href="law.html";
     return;
   }
 
-  document.getElementById("chiefName").innerHTML =
-    `Verified Chief: <span class="badge chief">${profile.username}</span>`;
+  document.getElementById("chiefName").textContent =
+    "Verified Chief: " + profile.username;
 }
 
 /* LOAD STAFF */
@@ -239,52 +268,31 @@ async function loadStaff(){
     .from("profiles")
     .select("id, username, law_rank")
     .neq("law_rank","none")
-    .order("username",{ascending:true});
+    .order("username");
 
   const dropdown=document.getElementById("staffUser");
+  const assign=document.getElementById("assignSelect");
+  const staffCards=document.getElementById("staffCards");
+
   dropdown.innerHTML="";
+  assign.innerHTML="";
+  staffCards.innerHTML="";
 
   data.forEach(u=>{
-    dropdown.innerHTML += `
-      <option value="${u.id}">
-        ${u.username} (${u.law_rank})
-      </option>
+    dropdown.innerHTML += `<option value="${u.id}">${u.username}</option>`;
+    assign.innerHTML += `<option value="${u.id}">${u.username}</option>`;
+
+    staffCards.innerHTML += `
+      <div class="staffCard">
+        <b>${u.username}</b>
+        <span class="rankTag ${u.law_rank==="chief"?"rank-chief":""}">
+          ${u.law_rank.toUpperCase()}
+        </span><br>
+        <span>Enforcement Personnel</span>
+      </div>
     `;
   });
-
-  document.getElementById("assignSelect").innerHTML = dropdown.innerHTML;
 }
-
-/* UPDATE RANK */
-window.updateRank = async()=>{
-  const userId=document.getElementById("staffUser").value;
-  const newRank=document.getElementById("rankSelect").value;
-
-  const { error } = await supabase.rpc("chief_update_rank",{
-    target:userId,
-    new_rank:newRank
-  });
-
-  if(error) return alert(error.message);
-
-  alert("✅ Rank Updated.");
-  loadStaff();
-  loadAudit();
-};
-
-/* REMOVE ACCESS */
-window.removeRank = async()=>{
-  const userId=document.getElementById("staffUser").value;
-
-  await supabase.rpc("chief_update_rank",{
-    target:userId,
-    new_rank:"none"
-  });
-
-  alert("Access Removed.");
-  loadStaff();
-  loadAudit();
-};
 
 /* LOAD CASES */
 async function loadCases(){
@@ -295,76 +303,102 @@ async function loadCases(){
     .order("created_at",{ascending:false});
 
   const dropdown=document.getElementById("caseSelect");
-  dropdown.innerHTML="";
+  const evidenceDropdown=document.getElementById("evidenceCase");
+  const board=document.getElementById("caseBoard");
 
-  const list=document.getElementById("caseList");
-  list.innerHTML="";
+  dropdown.innerHTML="";
+  evidenceDropdown.innerHTML="";
+  board.innerHTML="";
 
   data.forEach(c=>{
-    dropdown.innerHTML += `
-      <option value="${c.id}">
-        ${c.title} (${c.status})
-      </option>
-    `;
+    dropdown.innerHTML += `<option value="${c.id}">${c.title}</option>`;
+    evidenceDropdown.innerHTML += `<option value="${c.id}">${c.title}</option>`;
 
-    list.innerHTML += `
+    board.innerHTML += `
       <div class="item">
         <b>${c.title}</b><br>
         Status: ${c.status}
-        <div class="badge">ACTIVE CASE</div>
+        <div class="badge">ACTIVE CASE FILE</div>
       </div>
     `;
   });
 }
 
-/* ASSIGN CASE */
+/* ASSIGN CASE + NOTIFY */
 window.assignCase = async()=>{
   const caseId=document.getElementById("caseSelect").value;
   const staffId=document.getElementById("assignSelect").value;
 
-  const { error } = await supabase.rpc("chief_assign_case",{
-    case_id:caseId,
-    staff_id:staffId
-  });
+  await supabase.rpc("chief_assign_case",{ case_id:caseId, staff_id:staffId });
 
-  if(error) return alert(error.message);
+  await supabase.from("law_notifications").insert([{
+    title:"Case Assignment Issued",
+    message:"A case has been assigned by the Verified Chief.",
+    case_id:caseId
+  }]);
 
-  alert("✅ Case Assigned.");
+  alert("✅ Assigned + Notification Sent.");
   loadCases();
-  loadAudit();
+  loadNotifications();
 };
 
-/* CLOSE + ARCHIVE */
-window.closeCase = async()=>{
+/* ARCHIVE */
+window.archiveCase = async()=>{
   const caseId=document.getElementById("caseSelect").value;
 
-  await supabase
-    .from("law_cases")
+  await supabase.from("law_cases")
     .update({ status:"archived" })
     .eq("id", caseId);
 
-  alert("📁 Case Archived.");
+  alert("📁 Archived.");
   loadCases();
-  loadAudit();
 };
 
-/* LOAD AUDIT */
-async function loadAudit(){
+/* EVIDENCE LOAD */
+window.loadEvidence = async()=>{
+  const caseId=document.getElementById("evidenceCase").value;
+
   const { data } = await supabase
-    .from("law_enforcement_actions")
+    .from("law_evidence")
     .select("*")
-    .order("created_at",{ascending:false})
-    .limit(15);
+    .eq("case_id", caseId);
 
-  const box=document.getElementById("auditLogs");
+  const box=document.getElementById("evidenceBox");
+
+  if(!data || data.length===0){
+    box.innerHTML="No evidence uploaded yet.";
+    return;
+  }
+
   box.innerHTML="";
-
-  data.forEach(a=>{
+  data.forEach(e=>{
     box.innerHTML += `
       <div class="item">
-        <b>${a.action_type}</b><br>
-        ${a.reason || "No reason"}<br>
-        <span class="badge">${new Date(a.created_at).toLocaleString()}</span>
+        <b>${e.file_name}</b><br>
+        Uploaded: ${new Date(e.created_at).toLocaleString()}
+        <div class="badge">EVIDENCE FILE</div>
+      </div>
+    `;
+  });
+};
+
+/* LOAD NOTIFICATIONS */
+async function loadNotifications(){
+  const { data } = await supabase
+    .from("law_notifications")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(12);
+
+  const box=document.getElementById("notifyBox");
+  box.innerHTML="";
+
+  data.forEach(n=>{
+    box.innerHTML += `
+      <div class="item">
+        <b>${n.title}</b><br>
+        ${n.message}
+        <div class="badge">${new Date(n.created_at).toLocaleString()}</div>
       </div>
     `;
   });
@@ -375,7 +409,7 @@ async function loadAudit(){
   await chiefOnly();
   await loadStaff();
   await loadCases();
-  await loadAudit();
+  await loadNotifications();
 })();
 </script>
 
