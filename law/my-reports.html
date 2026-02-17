@@ -172,13 +172,12 @@ footer{
   © 2026 StudentStream Law Division · User Report Tracking Portal
 </footer>
 
-<!-- SUPABASE -->
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabase = createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  "YOUR_ANON_KEY"
 );
 
 const reportList = document.getElementById("reportList");
@@ -186,7 +185,7 @@ const reportList = document.getElementById("reportList");
 /* LOAD USER REPORTS */
 async function loadMyReports(){
 
-  // Require login
+  /* Require login */
   const { data:{user} } = await supabase.auth.getUser();
   if(!user){
     alert("You must be logged in to view your reports.");
@@ -194,21 +193,31 @@ async function loadMyReports(){
     return;
   }
 
-  /* Pull reports */
+  /* ✅ ONE JOIN QUERY */
   const { data:reports, error } = await supabase
     .from("law_reports")
-    .select("*")
+    .select(`
+      *,
+      law_cases (
+        status,
+        assigned_to,
+        profiles (
+          username,
+          law_rank
+        )
+      )
+    `)
     .eq("user_id", user.id)
     .order("created_at", { ascending:false });
 
   if(error){
-    reportList.innerHTML = "❌ Failed loading reports.";
+    reportList.innerHTML="❌ Failed loading reports.";
     console.error(error);
     return;
   }
 
   if(!reports || reports.length===0){
-    reportList.innerHTML = `
+    reportList.innerHTML=`
       <div class="empty">
         You have not submitted any reports yet.<br><br>
         <a href="report.html" style="color:var(--accent);font-weight:800;">
@@ -219,37 +228,50 @@ async function loadMyReports(){
     return;
   }
 
-  reportList.innerHTML = "";
+  reportList.innerHTML="";
 
-  /* Render */
-  reports.forEach(r=>{
+  /* RENDER REPORTS */
+  reports.forEach(r => {
 
+    /* Case info */
+    const caseRow = r.law_cases?.[0]; 
+    const staffProfile = caseRow?.profiles;
+
+    /* Status Tag */
     let tagClass="pending";
     let tagText="Pending Review";
 
-    if(r.status==="assigned"){
+    if(staffProfile){
       tagClass="assigned";
       tagText="Staff Assigned";
     }
 
-    if(r.status==="resolved"){
+    if(caseRow?.status==="resolved"){
       tagClass="resolved";
       tagText="Resolved";
     }
 
+    /* Staff Display */
     const staffMessage =
-      r.assigned_staff
-        ? `✅ Assigned Staff: <b>${r.assigned_staff}</b>`
-        : `⏳ Thank you for reporting. A StudentStream Law staff member will be assigned soon.`;
+      staffProfile
+        ? `✅ Assigned Staff: 
+           <b>${staffProfile.username}</b>
+           (${staffProfile.law_rank.toUpperCase()})<br>
+           Your case is now being actively reviewed.`
+        : `⏳ Thank you for reporting.<br>
+           A verified StudentStream Law staff member will be assigned soon.`;
 
+    /* Build Card */
     const div=document.createElement("div");
     div.className="reportCard";
 
     div.innerHTML=`
       <div class="reportTitle">${r.issue_type}</div>
+
       <div class="reportMeta">
         Target: <b>${r.target}</b><br>
-        Submitted: ${new Date(r.created_at).toLocaleString()}
+        Submitted: ${new Date(r.created_at).toLocaleString()}<br>
+        Tracking ID: <b>${r.id}</b>
       </div>
 
       <span class="statusTag ${tagClass}">
@@ -267,6 +289,3 @@ async function loadMyReports(){
 
 loadMyReports();
 </script>
-
-</body>
-</html>
