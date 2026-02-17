@@ -101,6 +101,12 @@ textarea{
   resize:vertical;
 }
 
+.charCount{
+  font-size:12px;
+  color:var(--muted);
+  text-align:right;
+}
+
 button{
   padding:14px;
   border-radius:14px;
@@ -116,6 +122,12 @@ button{
 button:hover{
   transform:translateY(-2px);
   opacity:.9;
+}
+
+button:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .notice{
@@ -136,6 +148,18 @@ button:hover{
   border:1px solid rgba(0,255,140,.25);
   background:rgba(0,255,140,.08);
   color:#bfffe2;
+}
+
+.successBox a{
+  display:inline-block;
+  margin-top:12px;
+  color:#bfffe2;
+  font-weight:900;
+  text-decoration:none;
+}
+
+.successBox a:hover{
+  text-decoration:underline;
 }
 
 footer{
@@ -206,7 +230,7 @@ footer{
       <!-- Evidence -->
       <input
         id="evidence"
-        placeholder="Evidence link (Google Drive, Screenshot URL, Video, etc.)"
+        placeholder="Evidence link (Drive, Screenshot URL, Video, etc.)"
       />
 
       <!-- Description -->
@@ -216,7 +240,10 @@ footer{
         required
       ></textarea>
 
-      <button type="submit">🚨 Submit Report</button>
+      <!-- Character Counter -->
+      <div class="charCount" id="charCount">0 / 1000</div>
+
+      <button type="submit" id="submitBtn">🚨 Submit Report</button>
     </form>
 
     <!-- SUCCESS MESSAGE -->
@@ -246,9 +273,23 @@ const supabase = createClient(
 
 const form = document.getElementById("reportForm");
 const successBox = document.getElementById("successBox");
+const submitBtn = document.getElementById("submitBtn");
 
+/* Character Counter */
+const descBox = document.getElementById("description");
+const charCount = document.getElementById("charCount");
+
+descBox.addEventListener("input", () => {
+  charCount.textContent =
+    descBox.value.length + " / 1000";
+});
+
+/* Submit Report */
 form.onsubmit = async (e) => {
   e.preventDefault();
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
 
   // Require login
   const { data: { user } } = await supabase.auth.getUser();
@@ -258,9 +299,9 @@ form.onsubmit = async (e) => {
     return;
   }
 
-  const issueType = issueType.value;
+  const issueType = document.getElementById("issueType").value;
   const priority = document.getElementById("priority").value;
-  const target = targetUser.value.trim();
+  const target = document.getElementById("targetUser").value.trim();
   const evidence = document.getElementById("evidence").value.trim();
   const description = document.getElementById("description").value.trim();
 
@@ -280,6 +321,8 @@ form.onsubmit = async (e) => {
 
   if(repErr){
     alert("❌ Error submitting report: " + repErr.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = "🚨 Submit Report";
     return;
   }
 
@@ -296,18 +339,25 @@ form.onsubmit = async (e) => {
 
   if(caseErr){
     alert("Report submitted but case failed: " + caseErr.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = "🚨 Submit Report";
     return;
   }
 
-  /* Success message */
+  /* Success UI */
   form.reset();
+  charCount.textContent="0 / 1000";
 
   successBox.style.display="block";
   successBox.innerHTML = `
     ✅ Report received successfully.<br><br>
-    Thank you for reporting. A verified StudentStream Law staff member will be assigned to your case soon.<br><br>
-    Tracking ID: <b>${report.id}</b>
+    Thank you for reporting. A verified StudentStream Law staff member will be assigned soon.<br><br>
+    Tracking ID: <b>${report.id}</b><br><br>
+
+    <a href="my-reports.html">→ View My Reports</a>
   `;
+
+  submitBtn.textContent = "Submitted ✅";
 };
 </script>
 
