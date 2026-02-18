@@ -5,40 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Forge Agency · Social Growth + Digital Security</title>
 
-<!-- Supabase -->
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-  const supabase = createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
-
-  window.submitForgeForm = async function(e){
-    e.preventDefault();
-
-    const statusBox = document.getElementById("formStatus");
-    statusBox.innerHTML = "🌿 Sending request into the Forge...";
-
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const handle = document.getElementById("handle").value;
-    const message = document.getElementById("message").value;
-
-    const { error } = await supabase
-      .from("forge_intake")
-      .insert([{ name, email, handle, message }]);
-
-    if(error){
-      statusBox.innerHTML = "❌ Error. Please try again.";
-      return;
-    }
-
-    statusBox.innerHTML = "✅ Request received. Forge will contact you within 24 hours.";
-    e.target.reset();
-  };
-</script>
-
 <style>
 :root{
   --bg:#040705;
@@ -62,18 +28,18 @@ body{
   min-height:100vh;
   overflow-x:hidden;
   background:
-    radial-gradient(circle at top, rgba(108,255,159,0.20), transparent 70%),
-    radial-gradient(circle at bottom, rgba(44,107,63,0.35), transparent 70%),
+    radial-gradient(circle at top, rgba(108,255,159,0.22), transparent 70%),
+    radial-gradient(circle at bottom, rgba(44,107,63,0.40), transparent 70%),
     linear-gradient(to bottom, #040705, #010201);
 }
 
-/* 🌫 Fog Pulse */
+/* Fog Pulse */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:radial-gradient(circle, rgba(108,255,159,0.08), transparent 75%);
-  animation:fogPulse 9s ease-in-out infinite;
+  background:radial-gradient(circle, rgba(108,255,159,0.09), transparent 75%);
+  animation:fogPulse 10s ease-in-out infinite;
   pointer-events:none;
   z-index:0;
 }
@@ -82,7 +48,7 @@ body::before{
   50%{opacity:.85;}
 }
 
-/* 🌿 Floating Background Vines */
+/* Background Vines */
 .vines{
   position:fixed;
   inset:0;
@@ -93,27 +59,27 @@ body::before{
 .vine{
   position:absolute;
   width:3px;
-  height:150%;
+  height:160%;
   background:linear-gradient(to bottom,
     transparent,
-    rgba(108,255,159,0.25),
-    rgba(44,107,63,0.65),
+    rgba(108,255,159,0.28),
+    rgba(44,107,63,0.70),
     transparent
   );
   border-radius:999px;
-  animation:vineFloat 22s ease-in-out infinite;
+  animation:vineFloat 24s ease-in-out infinite;
 }
 
-.vine:nth-child(1){left:10%; opacity:.25;}
-.vine:nth-child(2){left:30%; opacity:.15; animation-duration:30s;}
-.vine:nth-child(3){left:55%; opacity:.22; animation-duration:26s;}
-.vine:nth-child(4){left:78%; opacity:.18; animation-duration:34s;}
-.vine:nth-child(5){left:92%; opacity:.12; animation-duration:28s;}
+.vine:nth-child(1){left:8%; opacity:.20;}
+.vine:nth-child(2){left:28%; opacity:.14; animation-duration:34s;}
+.vine:nth-child(3){left:55%; opacity:.20; animation-duration:28s;}
+.vine:nth-child(4){left:78%; opacity:.16; animation-duration:38s;}
+.vine:nth-child(5){left:93%; opacity:.10; animation-duration:30s;}
 
 @keyframes vineFloat{
-  0%{transform:translateY(-80px);}
-  50%{transform:translateY(160px);}
-  100%{transform:translateY(-80px);}
+  0%{transform:translateY(-90px);}
+  50%{transform:translateY(180px);}
+  100%{transform:translateY(-90px);}
 }
 
 /* Header */
@@ -121,51 +87,57 @@ header{
   position:sticky;
   top:0;
   z-index:10;
-  padding:18px 40px;
+  padding:18px 42px;
   border-bottom:1px solid var(--border);
-  background:rgba(6,10,7,0.88);
+  background:rgba(6,10,7,0.90);
   backdrop-filter:blur(18px);
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 
-/* 🌿 Forge Logo + Hanging Vines */
+/* Logo + Hanging Vines */
 .logoBox{
   position:relative;
-  font-size:19px;
+  font-size:20px;
   font-weight:1000;
   letter-spacing:1px;
 }
 
 .logoBox span{
   color:var(--leaf);
-  text-shadow:0 0 18px rgba(108,255,159,0.35);
+  text-shadow:0 0 20px rgba(108,255,159,0.35);
 }
 
-/* Hanging vines */
+/* Hanging vines off logo */
 .logoBox::before,
 .logoBox::after{
   content:"";
   position:absolute;
-  top:-22px;
+  top:-24px;
   width:4px;
-  height:65px;
+  height:70px;
   background:linear-gradient(to bottom,
     rgba(108,255,159,0.65),
-    rgba(44,107,63,0.85),
+    rgba(44,107,63,0.90),
     transparent
   );
   border-radius:999px;
-  animation:logoVineSwing 4s ease-in-out infinite;
+  animation:swing 4s ease-in-out infinite;
 }
 
 .logoBox::before{left:-14px;}
 .logoBox::after{right:-14px; animation-delay:1s;}
 
-@keyframes logoVineSwing{
+@keyframes swing{
   0%,100%{transform:rotate(-2deg);}
   50%{transform:rotate(2deg);}
+}
+
+/* Nav */
+nav{
+  display:flex;
+  align-items:center;
 }
 
 nav a{
@@ -174,14 +146,42 @@ nav a{
   font-size:14px;
   font-weight:750;
   margin-left:20px;
+  transition:.2s;
 }
+
 nav a:hover{color:white}
+
+/* Portal Button */
+.portalBtn{
+  margin-left:25px;
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid rgba(108,255,159,0.25);
+  background:rgba(108,255,159,0.10);
+  color:var(--leaf);
+  font-weight:900;
+}
+
+.portalBtn:hover{
+  background:rgba(108,255,159,0.22);
+}
+
+/* Staff Badge */
+.staffBadge{
+  font-size:11px;
+  margin-left:10px;
+  padding:5px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,217,138,0.30);
+  background:rgba(255,217,138,0.10);
+  color:var(--gold);
+}
 
 /* Layout */
 .wrap{
   max-width:1200px;
   margin:auto;
-  padding:95px 20px;
+  padding:100px 20px;
   position:relative;
   z-index:2;
 }
@@ -189,11 +189,11 @@ nav a:hover{color:white}
 /* Hero */
 .hero{
   text-align:center;
-  margin-bottom:100px;
+  margin-bottom:110px;
 }
 
 .hero h2{
-  font-size:70px;
+  font-size:74px;
   font-weight:1100;
   line-height:1.05;
 }
@@ -207,14 +207,14 @@ nav a:hover{color:white}
   margin-top:22px;
   font-size:17px;
   opacity:0.85;
-  line-height:1.7;
+  line-height:1.75;
   max-width:860px;
   margin-inline:auto;
 }
 
 /* Buttons */
 .heroButtons{
-  margin-top:40px;
+  margin-top:42px;
   display:flex;
   justify-content:center;
   gap:15px;
@@ -222,7 +222,7 @@ nav a:hover{color:white}
 }
 
 .btn{
-  padding:14px 26px;
+  padding:14px 28px;
   border-radius:999px;
   border:1px solid var(--border);
   font-weight:850;
@@ -250,7 +250,7 @@ nav a:hover{color:white}
 .sectionTitle{
   font-size:15px;
   font-weight:950;
-  margin:90px 0 22px;
+  margin:95px 0 24px;
   text-transform:uppercase;
   letter-spacing:1px;
   color:var(--gold);
@@ -268,7 +268,7 @@ nav a:hover{color:white}
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:22px;
-  padding:30px;
+  padding:32px;
   transition:.25s;
   position:relative;
 }
@@ -293,20 +293,12 @@ nav a:hover{color:white}
 }
 
 .price{
-  font-size:28px;
+  font-size:30px;
   font-weight:1100;
   margin-top:14px;
   color:var(--gold);
 }
 
-.explain{
-  margin-top:12px;
-  font-size:13px;
-  opacity:0.72;
-  line-height:1.55;
-}
-
-/* Founder Badge */
 .badge{
   position:absolute;
   top:18px;
@@ -320,43 +312,15 @@ nav a:hover{color:white}
   color:var(--gold);
 }
 
-/* Cancel Anytime Trust */
 .trust{
   margin-top:14px;
   font-size:12px;
   opacity:0.6;
 }
 
-/* Forms */
-form input, form textarea{
-  width:100%;
-  padding:13px;
-  border-radius:14px;
-  margin-top:12px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,0.03);
-  color:white;
-}
-
-form button{
-  margin-top:18px;
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  font-weight:950;
-  cursor:pointer;
-  background:rgba(108,255,159,0.25);
-  color:var(--leaf);
-}
-
-form button:hover{
-  background:rgba(108,255,159,0.40);
-}
-
 /* Footer */
 footer{
-  margin-top:120px;
+  margin-top:130px;
   padding:55px;
   text-align:center;
   font-size:13px;
@@ -378,11 +342,18 @@ footer{
 </div>
 
 <header>
-  <div class="logoBox">Forge <span>Agency</span></div>
+  <div class="logoBox">
+    Forge <span>Agency</span>
+  </div>
+
   <nav>
     <a href="#services">Services</a>
     <a href="#pricing">Subscriptions</a>
-    <a href="#contact">Apply</a>
+
+    <a href="forge-portal-login.html" class="portalBtn">
+      Portal Login
+    </a>
+    <span class="staffBadge">Staff Only</span>
   </nav>
 </header>
 
@@ -403,7 +374,7 @@ footer{
 
     <div class="heroButtons">
       <a href="#pricing" class="btn btnPrimary">View Subscriptions →</a>
-      <a href="#contact" class="btn btnGhost">Apply Now</a>
+      <a href="forge-portal-login.html" class="btn btnGhost">Staff Portal</a>
     </div>
   </section>
 
@@ -413,17 +384,17 @@ footer{
 
     <div class="card">
       <h3>Social Media Management</h3>
-      <p>Posting, growth strategy, scheduling, brand consistency.</p>
+      <p>Posting, strategy, scheduling, growth systems, consistency.</p>
     </div>
 
     <div class="card">
       <h3>Security Shield Protection</h3>
-      <p>Anti-hack defenses, impersonation monitoring, recovery systems.</p>
+      <p>Anti-hack defense, impersonation watch, recovery planning.</p>
     </div>
 
     <div class="card">
       <h3>Creator Infrastructure</h3>
-      <p>Landing pages, creator websites, digital identity control.</p>
+      <p>Landing pages, websites, verification systems, control.</p>
     </div>
 
   </section>
@@ -435,94 +406,34 @@ footer{
     <div class="card">
       <div class="badge">Founder Client</div>
       <h3>Starter Growth</h3>
-      <p>Perfect for creators building consistency.</p>
-
+      <p>For creators building consistency.</p>
       <div class="price">$75/mo</div>
-
-      <div class="explain">
-        ✅ Weekly scheduling + posting support<br>
-        ✅ Profile optimization<br>
-        ✅ Monthly growth strategy check-in<br><br>
-        After subscribing, onboarding begins within 24 hours.
-      </div>
-
-      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_SUB_LINK">
+      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">
         Subscribe →
       </a>
-
-      <div class="trust">Cancel anytime · No long-term contracts</div>
+      <div class="trust">Cancel anytime · No contracts</div>
     </div>
 
     <div class="card">
       <div class="badge">Protection Tier</div>
       <h3>Security Monitoring</h3>
-      <p>For creators needing serious account defense.</p>
-
+      <p>Serious account defense + monitoring.</p>
       <div class="price">$45/mo</div>
-
-      <div class="explain">
-        ✅ Hack prevention setup<br>
-        ✅ Impersonation monitoring<br>
-        ✅ Emergency recovery priority<br><br>
-        Continuous protection updated monthly.
-      </div>
-
-      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_SUB_LINK">
+      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">
         Subscribe →
       </a>
-
-      <div class="trust">Cancel anytime · Secure support included</div>
+      <div class="trust">Cancel anytime · Shield included</div>
     </div>
 
     <div class="card">
       <div class="badge">Premium Access</div>
       <h3>Full Forge Management</h3>
-      <p>All-in-one agency partnership.</p>
-
+      <p>Full partnership + priority growth.</p>
       <div class="price">$150/mo</div>
-
-      <div class="explain">
-        ✅ Full social management + strategy<br>
-        ✅ Security Shield included<br>
-        ✅ Website + creator infrastructure support<br><br>
-        Best for serious creators & businesses scaling fast.
-      </div>
-
-      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_SUB_LINK">
+      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">
         Subscribe →
       </a>
-
-      <div class="trust">Cancel anytime · Priority client access</div>
-    </div>
-
-  </section>
-
-  <!-- CONTACT -->
-  <div class="sectionTitle" id="contact">Apply to Forge</div>
-  <section class="grid">
-
-    <div class="card">
-      <h3>Client Intake Request</h3>
-
-      <form onsubmit="submitForgeForm(event)">
-        <input id="name" type="text" placeholder="Full Name" required>
-        <input id="email" type="email" placeholder="Email Address" required>
-        <input id="handle" type="text" placeholder="Instagram / TikTok Handle">
-        <textarea id="message" placeholder="What do you need Forge to manage or protect?"></textarea>
-
-        <button type="submit">Submit Application →</button>
-      </form>
-
-      <p id="formStatus" style="margin-top:14px;opacity:.7;"></p>
-    </div>
-
-    <div class="card">
-      <h3>Agency Contact</h3>
-      <p>
-        Email: <b>studentstreamhq@proton.me</b><br><br>
-        Forge accepts limited weekly clients.<br>
-        Founder clients receive priority onboarding.
-      </p>
+      <div class="trust">Cancel anytime · Priority clients</div>
     </div>
 
   </section>
