@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge Portal · Client Dashboard</title>
+
+<!-- Supabase Auth -->
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabase = createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
+
+  // ✅ PROTECT DASHBOARD
+  window.onload = async function(){
+    const { data } = await supabase.auth.getSession();
+
+    if(!data.session){
+      window.location.href = "forge-portal-login.html";
+      return;
+    }
+
+    // Show client email
+    document.getElementById("clientEmail").innerText =
+      data.session.user.email;
+  };
+
+  // ✅ LOGOUT
+  window.logoutForge = async function(){
+    await supabase.auth.signOut();
+    window.location.href = "forge-portal-login.html";
+  };
+</script>
+
+<style>
+:root{
+  --bg:#040705;
+  --panel:rgba(10,16,12,0.92);
+  --border:rgba(180,255,200,0.14);
+
+  --text:#eaffef;
+  --muted:#9cc7a7;
+
+  --leaf:#6cff9f;
+  --moss:#2c6b3f;
+  --gold:#ffd98a;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui;
+  background:
+    radial-gradient(circle at top, rgba(108,255,159,0.18), transparent 70%),
+    radial-gradient(circle at bottom, rgba(44,107,63,0.35), transparent 70%),
+    linear-gradient(to bottom, #040705, #010201);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Background vines */
+.vines{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.vine{
+  position:absolute;
+  width:3px;
+  height:160%;
+  background:linear-gradient(to bottom,
+    transparent,
+    rgba(108,255,159,0.22),
+    rgba(44,107,63,0.60),
+    transparent
+  );
+  border-radius:999px;
+  animation:floatVine 28s ease-in-out infinite;
+}
+
+.vine:nth-child(1){left:10%; opacity:.20;}
+.vine:nth-child(2){left:30%; opacity:.12; animation-duration:34s;}
+.vine:nth-child(3){left:55%; opacity:.16; animation-duration:30s;}
+.vine:nth-child(4){left:78%; opacity:.14; animation-duration:36s;}
+.vine:nth-child(5){left:92%; opacity:.10; animation-duration:40s;}
+
+@keyframes floatVine{
+  0%{transform:translateY(-90px);}
+  50%{transform:translateY(180px);}
+  100%{transform:translateY(-90px);}
+}
+
+/* Header */
+header{
+  position:relative;
+  z-index:2;
+  padding:22px 40px;
+  border-bottom:1px solid var(--border);
+  background:rgba(6,10,7,0.88);
+  backdrop-filter:blur(18px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:20px;
+  font-weight:1000;
+  position:relative;
+}
+
+.logo span{color:var(--leaf);}
+
+/* Hanging vines */
+.logo::before,
+.logo::after{
+  content:"";
+  position:absolute;
+  top:-18px;
+  width:4px;
+  height:55px;
+  background:linear-gradient(to bottom,
+    rgba(108,255,159,0.65),
+    rgba(44,107,63,0.85),
+    transparent
+  );
+  border-radius:999px;
+}
+
+.logo::before{left:-14px;}
+.logo::after{right:-14px; opacity:.6;}
+
+.logoutBtn{
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.04);
+  color:white;
+  font-weight:850;
+  cursor:pointer;
+}
+
+.logoutBtn:hover{
+  border-color:rgba(108,255,159,0.35);
+}
+
+/* Layout */
+.wrap{
+  position:relative;
+  z-index:2;
+  max-width:1150px;
+  margin:auto;
+  padding:60px 20px;
+}
+
+/* Welcome */
+.welcome{
+  text-align:center;
+  margin-bottom:60px;
+}
+
+.welcome h1{
+  font-size:52px;
+  font-weight:1000;
+}
+
+.welcome h1 span{
+  color:var(--leaf);
+}
+
+.welcome p{
+  margin-top:14px;
+  opacity:0.75;
+  font-size:15px;
+}
+
+/* Grid */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:24px;
+}
+
+/* Cards */
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:26px;
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-7px);
+  border-color:rgba(108,255,159,0.30);
+  box-shadow:0 30px 80px rgba(0,0,0,0.65);
+}
+
+.card h3{
+  font-size:18px;
+  font-weight:950;
+  color:var(--leaf);
+  margin-bottom:12px;
+}
+
+.card p{
+  font-size:13.7px;
+  opacity:0.78;
+  line-height:1.55;
+}
+
+/* Status Badge */
+.badge{
+  display:inline-block;
+  margin-top:10px;
+  padding:7px 14px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:850;
+  background:rgba(108,255,159,0.18);
+  color:var(--leaf);
+}
+
+/* Progress */
+.progressItem{
+  margin-top:10px;
+  font-size:13px;
+  opacity:0.8;
+}
+
+.progressBar{
+  margin-top:8px;
+  height:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.06);
+  overflow:hidden;
+}
+
+.progressFill{
+  height:100%;
+  width:45%;
+  background:rgba(108,255,159,0.35);
+}
+
+/* Footer */
+footer{
+  margin-top:90px;
+  padding:45px;
+  text-align:center;
+  font-size:13px;
+  opacity:0.55;
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+
+<body>
+
+<!-- Vines -->
+<div class="vines">
+  <div class="vine"></div>
+  <div class="vine"></div>
+  <div class="vine"></div>
+  <div class="vine"></div>
+  <div class="vine"></div>
+</div>
+
+<header>
+  <div class="logo">Forge <span>Client Portal</span></div>
+
+  <button class="logoutBtn" onclick="logoutForge()">
+    Logout →
+  </button>
+</header>
+
+<main class="wrap">
+
+  <!-- Welcome -->
+  <section class="welcome">
+    <h1>Welcome to <span>Forge</span></h1>
+    <p>
+      Logged in as: <b id="clientEmail">Loading...</b><br>
+      Your creator infrastructure is protected.
+    </p>
+  </section>
+
+  <!-- Dashboard Cards -->
+  <section class="grid">
+
+    <!-- Subscription -->
+    <div class="card">
+      <h3>Subscription Status</h3>
+      <p>
+        Your Forge service package is currently active.
+        Billing is handled securely through Stripe.
+      </p>
+      <span class="badge">Active Client ✅</span>
+    </div>
+
+    <!-- Security Monitoring -->
+    <div class="card">
+      <h3>Security Monitoring</h3>
+      <p>
+        Forge is monitoring your digital presence for impersonation,
+        login risk, and account threats.
+      </p>
+
+      <div class="progressItem">Protection Setup Progress</div>
+      <div class="progressBar">
+        <div class="progressFill"></div>
+      </div>
+
+      <span class="badge">Shield Level: Standard</span>
+    </div>
+
+    <!-- Service Requests -->
+    <div class="card">
+      <h3>Request Support</h3>
+      <p>
+        Need a post scheduled, a security audit, or brand updates?
+        Forge clients get priority response.
+      </p>
+
+      <span class="badge">Response within 24h</span>
+    </div>
+
+    <!-- Infrastructure -->
+    <div class="card">
+      <h3>Creator Infrastructure</h3>
+      <p>
+        Website builds, landing pages, verification systems,
+        and brand control tools are managed here.
+      </p>
+      <span class="badge">Forge Build Queue Open</span>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Forge Agency · Client Portal Secure Access
+</footer>
+
+</body>
+</html>
