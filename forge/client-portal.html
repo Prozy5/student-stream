@@ -1,215 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Forge Client Portal</title>
-
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    const supabase = createClient(
-      "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-    );
-
-    let userId = null;
-
-    // ============================
-    // SESSION CHECK
-    // ============================
-    async function checkSession(){
-      const { data } = await supabase.auth.getSession();
-
-      if(!data.session){
-        document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:100px;'>❌ Not logged in</h2>";
-        return;
-      }
-
-      userId = data.session.user.id;
-      loadEverything();
-    }
-
-    // ============================
-    // LOAD ALL CLIENT DATA
-    // ============================
-    async function loadEverything(){
-      loadProfile();
-      loadTasks();
-      loadUploads();
-      loadMessages();
-    }
-
-    // ============================
-    // PROFILE
-    // ============================
-    async function loadProfile(){
-      const { data } = await supabase
-        .from("forge_client_profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      document.getElementById("clientName").innerText = data.full_name;
-      document.getElementById("clientPlan").innerText = data.plan;
-      document.getElementById("subStatus").innerText =
-        data.subscription_active ? "✅ Active" : "❌ Not Active";
-    }
-
-    // ============================
-    // TASKS
-    // ============================
-    async function loadTasks(){
-      const { data } = await supabase
-        .from("forge_tasks")
-        .select("*")
-        .eq("client_id", userId);
-
-      const box = document.getElementById("tasksBox");
-      box.innerHTML = "";
-
-      data.forEach(task=>{
-        box.innerHTML += `<p>📌 <b>${task.task_title}</b> — ${task.status}</p>`;
-      });
-    }
-
-    // ============================
-    // UPLOAD VAULT
-    // ============================
-    window.uploadFile = async function(){
-      const file = document.getElementById("vaultFile").files[0];
-
-      if(!file) return alert("Select a file first!");
-
-      const path = `${userId}/${Date.now()}-${file.name}`;
-
-      await supabase.storage
-        .from("forge-vault")
-        .upload(path, file);
-
-      const url = supabase.storage
-        .from("forge-vault")
-        .getPublicUrl(path).data.publicUrl;
-
-      await supabase.from("forge_uploads").insert([
-        { client_id: userId, file_name: file.name, file_url: url }
-      ]);
-
-      alert("✅ Uploaded to Forge Vault!");
-      loadUploads();
-    };
-
-    async function loadUploads(){
-      const { data } = await supabase
-        .from("forge_uploads")
-        .select("*")
-        .eq("client_id", userId);
-
-      const box = document.getElementById("vaultBox");
-      box.innerHTML = "";
-
-      data.forEach(file=>{
-        box.innerHTML += `<p>🌿 <a href="${file.file_url}" target="_blank">${file.file_name}</a></p>`;
-      });
-    }
-
-    // ============================
-    // MESSAGING
-    // ============================
-    window.sendMessage = async function(){
-      const msg = document.getElementById("msgInput").value;
-
-      if(!msg) return;
-
-      await supabase.from("forge_messages").insert([
-        { client_id: userId, sender: "client", message: msg }
-      ]);
-
-      document.getElementById("msgInput").value = "";
-      loadMessages();
-    };
-
-    async function loadMessages(){
-      const { data } = await supabase
-        .from("forge_messages")
-        .select("*")
-        .eq("client_id", userId)
-        .order("sent_at");
-
-      const box = document.getElementById("msgBox");
-      box.innerHTML = "";
-
-      data.forEach(m=>{
-        box.innerHTML += `<p><b>${m.sender}:</b> ${m.message}</p>`;
-      });
-    }
-
-    checkSession();
-  </script>
-
-  <style>
-    body{
-      background:#020402;
-      color:white;
-      font-family:system-ui;
-      padding:40px;
-    }
-    h1{color:#6cff9f;}
-    .card{
-      background:rgba(255,255,255,0.05);
-      padding:20px;
-      margin-top:20px;
-      border-radius:18px;
-    }
-    button{
-      margin-top:10px;
-      padding:12px;
-      width:100%;
-      border:none;
-      border-radius:12px;
-      background:rgba(108,255,159,0.25);
-      color:#6cff9f;
-      font-weight:900;
-      cursor:pointer;
-    }
-    input{
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      margin-top:10px;
-    }
-    a{color:#6cff9f;}
-  </style>
+  <title>Forge Dashboard</title>
 </head>
+<body style="background:#050806;color:white;font-family:system-ui;padding:40px;">
 
-<body>
+<h1>Client Dashboard</h1>
 
-<h1>Forge Portal — <span id="clientName"></span></h1>
+<div id="profile"></div>
 
-<div class="card">
-  <h2>Subscription</h2>
-  Plan: <b id="clientPlan"></b><br>
-  Status: <b id="subStatus"></b>
-</div>
+<hr>
 
-<div class="card">
-  <h2>📌 Task Tracker</h2>
-  <div id="tasksBox"></div>
-</div>
+<h2>Your Tasks</h2>
+<ul id="tasks"></ul>
 
-<div class="card">
-  <h2>🌿 Upload Vault</h2>
-  <input type="file" id="vaultFile"/>
-  <button onclick="uploadFile()">Upload File</button>
-  <div id="vaultBox"></div>
-</div>
+<hr>
 
-<div class="card">
-  <h2>💬 Client Messaging</h2>
-  <div id="msgBox"></div>
-  <input id="msgInput" placeholder="Send a message to Forge..."/>
-  <button onclick="sendMessage()">Send</button>
-</div>
+<h2>Upload Vault</h2>
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+<p id="uploadStatus"></p>
+
+<hr>
+
+<h2>Message Forge</h2>
+<input id="msg" placeholder="Send a message">
+<button onclick="sendMsg()">Send</button>
+
+<ul id="messages"></ul>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const user = (await supabase.auth.getUser()).data.user;
+
+if(!user){
+  location.href="forge-portal-login.html";
+}
+
+async function loadDashboard(){
+
+  // Profile
+  const { data: profile } = await supabase
+    .from("forge_clients")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  document.getElementById("profile").innerHTML =
+    `<h3>${profile.full_name}</h3>
+     Plan: ${profile.plan} <br>
+     Active: ${profile.subscription_active}`;
+
+  // Tasks
+  const { data: tasks } = await supabase
+    .from("forge_tasks")
+    .select("*");
+
+  document.getElementById("tasks").innerHTML =
+    tasks.map(t=>`<li>${t.title} (${t.status})</li>`).join("");
+
+  // Messages
+  const { data: msgs } = await supabase
+    .from("forge_messages")
+    .select("*")
+    .order("created_at");
+
+  document.getElementById("messages").innerHTML =
+    msgs.map(m=>`<li><b>${m.sender}:</b> ${m.message}</li>`).join("");
+}
+
+loadDashboard();
+
+window.sendMsg = async function(){
+  const message = document.getElementById("msg").value;
+
+  await supabase.from("forge_messages").insert([{
+    client_id:user.id,
+    sender:"client",
+    message
+  }]);
+
+  location.reload();
+};
+
+window.upload = async function(){
+  const file = document.getElementById("file").files[0];
+
+  const { error } = await supabase.storage
+    .from("forge-vault")
+    .upload(`${user.id}/${file.name}`, file);
+
+  document.getElementById("uploadStatus").innerText =
+    error ? "❌ Upload failed" : "✅ Uploaded!";
+};
+</script>
 
 </body>
 </html>
