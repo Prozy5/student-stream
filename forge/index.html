@@ -9,18 +9,16 @@
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  /* ✅ SUPABASE CONFIG */
   const supabase = createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
   );
 
-  /* ✅ INTAKE FORM SUBMIT */
   window.submitForgeForm = async function(e){
     e.preventDefault();
 
     const statusBox = document.getElementById("formStatus");
-    statusBox.innerHTML = "Submitting request...";
+    statusBox.innerHTML = "🌿 Sending request...";
 
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
@@ -36,13 +34,8 @@
       return;
     }
 
-    statusBox.innerHTML = "✅ Request submitted successfully!";
+    statusBox.innerHTML = "✅ Request submitted. Forge will contact you shortly.";
     e.target.reset();
-  };
-
-  /* ✅ CLIENT PORTAL (COMING SOON) */
-  window.portalLogin = function(){
-    alert("Client Portal is launching soon. Access will be provided to active clients.");
   };
 </script>
 
@@ -69,12 +62,28 @@ body{
   min-height:100vh;
   overflow-x:hidden;
   background:
-    radial-gradient(circle at top, rgba(108,255,159,0.16), transparent 60%),
-    radial-gradient(circle at bottom, rgba(44,107,63,0.25), transparent 70%),
+    radial-gradient(circle at top, rgba(108,255,159,0.18), transparent 65%),
+    radial-gradient(circle at bottom, rgba(44,107,63,0.35), transparent 70%),
     linear-gradient(to bottom, #050806, #020302);
 }
 
-/* 🌿 Animated Vines */
+/* 🌫 Moss Fog Overlay */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle, rgba(108,255,159,0.06), transparent 70%);
+  animation:fogPulse 8s ease-in-out infinite;
+  pointer-events:none;
+  z-index:0;
+}
+
+@keyframes fogPulse{
+  0%,100%{opacity:.4;}
+  50%{opacity:.75;}
+}
+
+/* 🌿 Vines */
 .vines{
   position:fixed;
   inset:0;
@@ -85,61 +94,38 @@ body{
 .vine{
   position:absolute;
   width:3px;
-  height:140%;
+  height:150%;
   background:linear-gradient(to bottom,
     transparent,
-    rgba(108,255,159,0.20),
-    rgba(44,107,63,0.40),
+    rgba(108,255,159,0.18),
+    rgba(44,107,63,0.55),
     transparent
   );
   border-radius:999px;
-  animation:vineFloat 14s ease-in-out infinite;
+  animation:vineFloat 16s ease-in-out infinite;
 }
 
-.vine:nth-child(1){left:10%; animation-duration:16s;}
-.vine:nth-child(2){left:28%; animation-duration:20s; opacity:0.4;}
-.vine:nth-child(3){left:52%; animation-duration:18s; opacity:0.25;}
-.vine:nth-child(4){left:72%; animation-duration:22s; opacity:0.35;}
-.vine:nth-child(5){left:90%; animation-duration:17s; opacity:0.2;}
+.vine:nth-child(1){left:8%; animation-duration:20s;}
+.vine:nth-child(2){left:26%; opacity:.35; animation-duration:28s;}
+.vine:nth-child(3){left:52%; opacity:.20; animation-duration:24s;}
+.vine:nth-child(4){left:76%; opacity:.30; animation-duration:30s;}
+.vine:nth-child(5){left:92%; opacity:.18; animation-duration:22s;}
 
 @keyframes vineFloat{
-  0%{transform:translateY(-40px) rotate(-2deg);}
-  50%{transform:translateY(70px) rotate(2deg);}
-  100%{transform:translateY(-40px) rotate(-2deg);}
-}
-
-/* 🍃 Floating Leaves */
-.leaf{
-  position:absolute;
-  width:14px;
-  height:14px;
-  background:rgba(108,255,159,0.20);
-  border-radius:50% 50% 50% 0;
-  transform:rotate(45deg);
-  animation:leafDrift 12s linear infinite;
-}
-
-.leaf:nth-child(6){left:15%; top:20%;}
-.leaf:nth-child(7){left:55%; top:55%; opacity:0.5; animation-duration:16s;}
-.leaf:nth-child(8){left:78%; top:35%; opacity:0.35; animation-duration:20s;}
-
-@keyframes leafDrift{
-  from{transform:translateY(0) rotate(45deg);}
-  to{transform:translateY(150px) rotate(405deg);}
-}
-
-/* Layout */
-header, main, footer{
-  position:relative;
-  z-index:2;
+  0%{transform:translateY(-60px);}
+  50%{transform:translateY(120px);}
+  100%{transform:translateY(-60px);}
 }
 
 /* Header */
 header{
-  padding:20px 30px;
+  position:sticky;
+  top:0;
+  z-index:10;
+  padding:18px 35px;
   border-bottom:1px solid var(--border);
   background:rgba(8,12,9,0.88);
-  backdrop-filter:blur(14px);
+  backdrop-filter:blur(18px);
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -158,45 +144,86 @@ nav a{
   text-decoration:none;
   font-size:14px;
   font-weight:750;
-  margin-left:18px;
+  margin-left:20px;
 }
 nav a:hover{color:white}
 
 /* Wrap */
 .wrap{
-  max-width:1150px;
+  max-width:1200px;
   margin:auto;
-  padding:80px 20px;
+  padding:90px 20px;
+  position:relative;
+  z-index:2;
 }
 
 /* Hero */
 .hero{
   text-align:center;
-  margin-bottom:75px;
+  margin-bottom:90px;
 }
 
 .hero h2{
-  font-size:58px;
+  font-size:64px;
   font-weight:1000;
   line-height:1.05;
 }
 
-.hero h2 span{color:var(--leaf)}
-
-.hero p{
-  margin-top:18px;
-  font-size:16px;
-  opacity:0.80;
-  line-height:1.6;
-  max-width:780px;
-  margin:auto;
+.hero h2 span{
+  color:var(--leaf);
+  text-shadow:0 0 25px rgba(108,255,159,0.25);
 }
 
-/* Section */
+.hero p{
+  margin-top:20px;
+  font-size:17px;
+  opacity:0.82;
+  line-height:1.7;
+  max-width:820px;
+  margin-inline:auto;
+}
+
+/* Hero Buttons */
+.heroButtons{
+  margin-top:35px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:14px 22px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  font-weight:850;
+  text-decoration:none;
+  transition:.25s;
+}
+
+.btnPrimary{
+  background:rgba(108,255,159,0.18);
+  color:var(--leaf);
+}
+
+.btnPrimary:hover{
+  background:rgba(108,255,159,0.32);
+}
+
+.btnGhost{
+  background:rgba(255,255,255,0.04);
+  color:white;
+}
+
+.btnGhost:hover{
+  border-color:rgba(108,255,159,0.35);
+}
+
+/* Sections */
 .sectionTitle{
   font-size:15px;
   font-weight:950;
-  margin:70px 0 20px;
+  margin:80px 0 22px;
   text-transform:uppercase;
   letter-spacing:1px;
   color:var(--gold);
@@ -205,21 +232,21 @@ nav a:hover{color:white}
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;
+  gap:22px;
 }
 
 .card{
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:22px;
-  padding:22px;
+  padding:26px;
   transition:.25s;
 }
 
 .card:hover{
-  transform:translateY(-6px);
+  transform:translateY(-7px);
   border-color:rgba(108,255,159,0.30);
-  box-shadow:0 25px 55px rgba(0,0,0,0.55);
+  box-shadow:0 25px 70px rgba(0,0,0,0.65);
 }
 
 .card h3{
@@ -230,49 +257,31 @@ nav a:hover{color:white}
 }
 
 .card p{
-  font-size:13.5px;
+  font-size:13.6px;
   line-height:1.55;
   opacity:0.82;
 }
 
 .price{
-  font-size:22px;
+  font-size:24px;
   font-weight:1000;
-  margin-top:12px;
+  margin-top:14px;
   color:var(--gold);
 }
 
-.btn{
-  display:inline-block;
-  margin-top:14px;
-  padding:12px 18px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  text-decoration:none;
-  font-weight:850;
-  transition:.25s;
-}
-
-.btnPrimary{
-  background:rgba(108,255,159,0.18);
-  color:var(--leaf);
-}
-.btnPrimary:hover{
-  background:rgba(108,255,159,0.32);
-}
-
+/* Intake Form */
 form input, form textarea{
   width:100%;
-  padding:12px;
+  padding:13px;
   border-radius:14px;
-  margin-top:10px;
+  margin-top:12px;
   border:1px solid var(--border);
   background:rgba(255,255,255,0.03);
   color:white;
 }
 
 form button{
-  margin-top:15px;
+  margin-top:18px;
   width:100%;
   padding:14px;
   border:none;
@@ -283,9 +292,14 @@ form button{
   color:var(--leaf);
 }
 
+form button:hover{
+  background:rgba(108,255,159,0.30);
+}
+
+/* Footer */
 footer{
-  margin-top:90px;
-  padding:40px;
+  margin-top:100px;
+  padding:45px;
   text-align:center;
   font-size:13px;
   opacity:0.55;
@@ -296,17 +310,13 @@ footer{
 
 <body>
 
-<!-- Animated Background -->
+<!-- Vines -->
 <div class="vines">
   <div class="vine"></div>
   <div class="vine"></div>
   <div class="vine"></div>
   <div class="vine"></div>
   <div class="vine"></div>
-
-  <div class="leaf"></div>
-  <div class="leaf"></div>
-  <div class="leaf"></div>
 </div>
 
 <header>
@@ -314,8 +324,8 @@ footer{
   <nav>
     <a href="#services">Services</a>
     <a href="#pricing">Payments</a>
-    <a href="#portal">Portal</a>
-    <a href="#contact">Contact</a>
+    <a href="forge-portal-login.html">Client Portal</a>
+    <a href="#contact">Apply</a>
   </nav>
 </header>
 
@@ -324,120 +334,95 @@ footer{
   <!-- HERO -->
   <section class="hero">
     <h2>
-      Social Media Management<br>
-      & Digital <span>Security</span>
+      Social Media Growth<br>
+      + Digital <span>Security</span>
     </h2>
 
     <p>
-      Forge is a professional agency providing account management,
-      brand growth, and online security protection for creators,
-      businesses, and public figures.
+      Forge is an independent agency trusted by creators, businesses,
+      and public figures to manage accounts, secure identities,
+      and build powerful online presence.
     </p>
+
+    <div class="heroButtons">
+      <a href="#pricing" class="btn btnPrimary">Start a Package →</a>
+      <a href="#contact" class="btn btnGhost">Request Access</a>
+    </div>
   </section>
 
   <!-- SERVICES -->
-  <div class="sectionTitle" id="services">What Forge Provides</div>
+  <div class="sectionTitle" id="services">Core Services</div>
   <section class="grid">
 
     <div class="card">
-      <h3>Social Media Management</h3>
-      <p>
-        Content scheduling, profile optimization, growth strategy,
-        and consistent management across platforms.
-      </p>
+      <h3>Management</h3>
+      <p>Full account posting, strategy, engagement, and growth.</p>
     </div>
 
     <div class="card">
-      <h3>Account Security Protection</h3>
-      <p>
-        Anti-hack setup, impersonation defense, recovery planning,
-        and digital identity protection systems.
-      </p>
+      <h3>Security Shield</h3>
+      <p>Anti-hack protection, impersonation defense, recovery setup.</p>
     </div>
 
     <div class="card">
-      <h3>Web + Brand Infrastructure</h3>
-      <p>
-        Secure landing pages, creator websites, verification systems,
-        and full online control for your brand.
-      </p>
+      <h3>Web Infrastructure</h3>
+      <p>Secure landing pages, creator sites, verification systems.</p>
     </div>
 
   </section>
 
   <!-- PAYMENTS -->
-  <div class="sectionTitle" id="pricing">Pay With Stripe</div>
+  <div class="sectionTitle" id="pricing">Stripe Packages</div>
   <section class="grid">
 
     <div class="card">
-      <h3>Starter Management</h3>
-      <p>Monthly social media support package.</p>
+      <h3>Starter Plan</h3>
+      <p>Monthly social management.</p>
       <div class="price">$75/mo</div>
-      <a class="btn btnPrimary"
-         href="https://buy.stripe.com/YOUR_LINK"
-         target="_blank">
-         Pay Now →
-      </a>
+      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">Pay Now →</a>
     </div>
 
     <div class="card">
-      <h3>Security Shield Pack</h3>
-      <p>One-time security protection setup.</p>
+      <h3>Security Shield</h3>
+      <p>One-time protection setup.</p>
       <div class="price">$60</div>
-      <a class="btn btnPrimary"
-         href="https://buy.stripe.com/YOUR_LINK"
-         target="_blank">
-         Secure Account →
-      </a>
+      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">Secure →</a>
     </div>
 
     <div class="card">
-      <h3>Full Forge Plan</h3>
-      <p>Management + security + website build.</p>
+      <h3>Full Forge</h3>
+      <p>Management + Security + Website Build.</p>
       <div class="price">$150+</div>
-      <a class="btn btnPrimary"
-         href="https://buy.stripe.com/YOUR_LINK"
-         target="_blank">
-         Start Full Service →
-      </a>
+      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">Start →</a>
     </div>
 
-  </section>
-
-  <!-- PORTAL -->
-  <div class="sectionTitle" id="portal">Client Portal</div>
-  <section class="card">
-    <h3>Forge Client Login</h3>
-    <p>
-      Active clients will receive access to the Forge Portal
-      for service updates, account monitoring, and project tracking.
-    </p>
-    <a class="btn btnPrimary" onclick="portalLogin()">Login →</a>
   </section>
 
   <!-- CONTACT -->
-  <div class="sectionTitle" id="contact">Request Services</div>
+  <div class="sectionTitle" id="contact">Client Application</div>
   <section class="grid">
 
     <div class="card">
-      <h3>Client Intake Form</h3>
+      <h3>Forge Intake Request</h3>
 
       <form onsubmit="submitForgeForm(event)">
-        <input id="name" type="text" placeholder="Your Name" required>
+        <input id="name" type="text" placeholder="Full Name" required>
         <input id="email" type="email" placeholder="Email Address" required>
-        <input id="handle" type="text" placeholder="Instagram/TikTok Handle">
-        <textarea id="message" placeholder="What do you need help with?"></textarea>
-        <button type="submit">Submit Request</button>
+        <input id="handle" type="text" placeholder="Social Handle (optional)">
+        <textarea id="message" placeholder="Describe what you need help with..."></textarea>
+
+        <button type="submit">Submit Request →</button>
       </form>
 
-      <p id="formStatus" style="margin-top:12px;opacity:.7;"></p>
+      <p id="formStatus" style="margin-top:14px;opacity:.7;"></p>
     </div>
 
     <div class="card">
-      <h3>Direct Contact</h3>
+      <h3>Agency Contact</h3>
       <p>
         Email: <b>studentstreamhq@proton.me</b><br><br>
-        Limited weekly client slots available.
+        Forge accepts a limited number of clients weekly.<br>
+        High-security accounts prioritized.
       </p>
     </div>
 
@@ -446,7 +431,7 @@ footer{
 </main>
 
 <footer>
-  © 2026 Forge Agency · Social Media Management & Digital Security
+  © 2026 Forge Agency · Growth + Digital Protection
 </footer>
 
 </body>
