@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge Agency</title>
+
+<style>
+:root{
+  --bg:#050806;
+  --panel:rgba(12,18,14,0.88);
+  --border:rgba(180,255,200,0.10);
+
+  --text:#eaffef;
+  --muted:#9cc7a7;
+
+  --leaf:#6cff9f;
+  --moss:#2c6b3f;
+  --gold:#ffd98a;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:system-ui;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top, rgba(108,255,159,0.15), transparent 60%),
+    radial-gradient(circle at bottom, rgba(44,107,63,0.18), transparent 65%),
+    linear-gradient(to bottom, #050806, #020302);
+  overflow-x:hidden;
+}
+
+/* Floating vines overlay */
+body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:url("https://www.transparenttextures.com/patterns/leaf.png");
+  opacity:0.06;
+  pointer-events:none;
+}
+
+header{
+  padding:20px 30px;
+  border-bottom:1px solid var(--border);
+  background:rgba(8,12,9,0.82);
+  backdrop-filter:blur(14px);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header h1{
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:1px;
+}
+
+header span{
+  color:var(--leaf);
+}
+
+header a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+}
+header a:hover{
+  color:white;
+}
+
+.wrap{
+  max-width:1100px;
+  margin:auto;
+  padding:70px 20px;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  margin-bottom:70px;
+}
+
+.hero h2{
+  font-size:54px;
+  font-weight:1000;
+  line-height:1.05;
+}
+
+.hero h2 span{
+  color:var(--leaf);
+}
+
+.hero p{
+  margin-top:18px;
+  font-size:16px;
+  opacity:0.78;
+  line-height:1.6;
+  max-width:720px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.heroButtons{
+  margin-top:35px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:13px 22px;
+  border-radius:999px;
+  font-weight:850;
+  font-size:14px;
+  border:1px solid var(--border);
+  text-decoration:none;
+  transition:.25s;
+}
+
+.btnPrimary{
+  background:rgba(108,255,159,0.14);
+  color:var(--leaf);
+}
+
+.btnPrimary:hover{
+  background:rgba(108,255,159,0.22);
+}
+
+.btnGhost{
+  background:rgba(255,255,255,0.04);
+  color:white;
+}
+
+.btnGhost:hover{
+  border-color:rgba(108,255,159,0.35);
+}
+
+/* SECTION */
+.sectionTitle{
+  font-size:15px;
+  font-weight:950;
+  margin:60px 0 20px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--gold);
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(108,255,159,0.30);
+  box-shadow:0 25px 55px rgba(0,0,0,0.55);
+}
+
+.card h3{
+  font-size:18px;
+  font-weight:950;
+  margin-bottom:10px;
+  color:var(--leaf);
+}
+
+.card p{
+  font-size:13.5px;
+  line-height:1.55;
+  opacity:0.82;
+}
+
+/* FOUNDER BOX */
+.founder{
+  margin-top:70px;
+  padding:28px;
+  border-radius:22px;
+  background:rgba(15,22,16,0.92);
+  border:1px solid rgba(108,255,159,0.18);
+}
+
+.founder h3{
+  font-size:18px;
+  font-weight:950;
+  color:var(--gold);
+}
+
+.founder p{
+  margin-top:10px;
+  font-size:14px;
+  line-height:1.6;
+  opacity:0.82;
+}
+
+/* FOOTER */
+footer{
+  margin-top:90px;
+  padding:40px;
+  text-align:center;
+  font-size:13px;
+  opacity:0.55;
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Forge <span>Agency</span></h1>
+  <a href="#">Contact</a>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <h2>
+      Protecting Creators.<br>
+      Building Digital <span>Legacy</span>.
+    </h2>
+
+    <p>
+      Forge is a modern creative protection agency — designed to help creators
+      secure their work, grow their brand, and build platforms that last.
+      <br><br>
+      Nature-inspired. Future-driven. Creator-first.
+    </p>
+
+    <div class="heroButtons">
+      <a href="#services" class="btn btnPrimary">Request Services</a>
+      <a href="#mission" class="btn btnGhost">Our Mission</a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <div class="sectionTitle" id="services">Core Agency Services</div>
+
+  <section class="grid">
+
+    <div class="card">
+      <h3>Creator Protection</h3>
+      <p>
+        We help creators secure their work, prevent theft, and maintain ownership
+        over digital content, branding, and media identity.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Social Media Growth</h3>
+      <p>
+        Strategic content management, audience expansion, and online presence
+        building — without selling out your vision.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Web & Platform Building</h3>
+      <p>
+        We design modern creator websites, landing pages, and systems that turn
+        followers into long-term supporters.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Digital Security Support</h3>
+      <p>
+        Basic creator-focused security: account safety, verification planning,
+        brand monitoring, and digital defense.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- MISSION -->
+  <div class="sectionTitle" id="mission">Why Forge Exists</div>
+
+  <section class="founder">
+    <h3>The Forge Philosophy</h3>
+    <p>
+      The internet moves fast — creators deserve something stronger than trends.
+      Forge exists to protect creator work, build digital stability, and provide
+      real systems that help artists and innovators grow safely.
+      <br><br>
+      Like vines reclaiming space, creators should reclaim control.
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  © 2026 Forge Agency · Independent Creator Protection & Growth Network
+</footer>
+
+</body>
+</html>
