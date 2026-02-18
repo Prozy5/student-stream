@@ -3,258 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forge Portal · Client Login</title>
-
-<!-- Supabase Auth -->
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-  const supabase = createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
-
-  // LOGIN FUNCTION
-  window.forgeLogin = async function(e){
-    e.preventDefault();
-
-    const status = document.getElementById("loginStatus");
-    status.innerHTML = "🔒 Authenticating...";
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if(error){
-      status.innerHTML = "❌ Login failed. Invalid credentials.";
-      return;
-    }
-
-    status.innerHTML = "✅ Access granted. Redirecting...";
-
-    // Redirect (future dashboard page)
-    setTimeout(()=>{
-      window.location.href = "forge-dashboard.html";
-    }, 1200);
-  };
-
-  // CHECK SESSION
-  window.onload = async function(){
-    const { data } = await supabase.auth.getSession();
-    if(data.session){
-      window.location.href = "forge-dashboard.html";
-    }
-  };
-</script>
+<title>Forge Portal Login</title>
 
 <style>
-:root{
-  --bg:#040705;
-  --panel:rgba(10,16,12,0.92);
-  --border:rgba(180,255,200,0.14);
-
-  --text:#eaffef;
-  --muted:#9cc7a7;
-
-  --leaf:#6cff9f;
-  --moss:#2c6b3f;
-  --gold:#ffd98a;
-}
-
-*{margin:0;padding:0;box-sizing:border-box}
 body{
+  background:#050806;
+  color:white;
   font-family:system-ui;
-  background:
-    radial-gradient(circle at top, rgba(108,255,159,0.18), transparent 70%),
-    radial-gradient(circle at bottom, rgba(44,107,63,0.35), transparent 70%),
-    linear-gradient(to bottom, #040705, #010201);
-  color:var(--text);
-  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  overflow:hidden;
+  height:100vh;
 }
 
-/* Background vines */
-.vines{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-}
-
-.vine{
-  position:absolute;
-  width:3px;
-  height:150%;
-  background:linear-gradient(to bottom,
-    transparent,
-    rgba(108,255,159,0.22),
-    rgba(44,107,63,0.60),
-    transparent
-  );
-  border-radius:999px;
-  animation:floatVine 24s ease-in-out infinite;
-}
-
-.vine:nth-child(1){left:12%; opacity:.25;}
-.vine:nth-child(2){left:38%; opacity:.15; animation-duration:30s;}
-.vine:nth-child(3){left:65%; opacity:.20; animation-duration:28s;}
-.vine:nth-child(4){left:88%; opacity:.12; animation-duration:34s;}
-
-@keyframes floatVine{
-  0%{transform:translateY(-80px);}
-  50%{transform:translateY(160px);}
-  100%{transform:translateY(-80px);}
-}
-
-/* Login Box */
-.loginBox{
-  position:relative;
-  z-index:2;
+.box{
   width:420px;
-  max-width:92%;
-  padding:40px;
-  border-radius:26px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  box-shadow:0 40px 100px rgba(0,0,0,0.7);
+  padding:35px;
+  border-radius:18px;
+  border:1px solid rgba(108,255,159,0.20);
+  background:rgba(12,18,14,0.92);
 }
 
-/* Logo */
-.logo{
-  font-size:22px;
+h1{
+  font-size:26px;
   font-weight:1000;
-  text-align:center;
-  margin-bottom:12px;
-  position:relative;
 }
+h1 span{color:#6cff9f;}
 
-.logo span{
-  color:var(--leaf);
-}
-
-/* Hanging vines on logo */
-.logo::before,
-.logo::after{
-  content:"";
-  position:absolute;
-  top:-22px;
-  width:4px;
-  height:65px;
-  background:linear-gradient(to bottom,
-    rgba(108,255,159,0.65),
-    rgba(44,107,63,0.85),
-    transparent
-  );
-  border-radius:999px;
-}
-
-.logo::before{left:110px;}
-.logo::after{right:110px; opacity:.7;}
-
-/* Subtitle */
-.subtitle{
-  text-align:center;
-  font-size:13px;
-  opacity:0.75;
-  margin-bottom:30px;
-  line-height:1.5;
-}
-
-/* Inputs */
 input{
   width:100%;
-  padding:14px;
-  margin-top:12px;
-  border-radius:14px;
-  border:1px solid var(--border);
+  padding:12px;
+  margin-top:14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.10);
   background:rgba(255,255,255,0.03);
   color:white;
-  font-size:14px;
 }
 
-input:focus{
-  outline:none;
-  border-color:rgba(108,255,159,0.40);
-}
-
-/* Button */
 button{
   width:100%;
   margin-top:18px;
-  padding:14px;
+  padding:13px;
   border:none;
-  border-radius:14px;
-  font-weight:950;
+  border-radius:12px;
+  font-weight:900;
   cursor:pointer;
-  background:rgba(108,255,159,0.25);
-  color:var(--leaf);
-  font-size:15px;
+  background:rgba(108,255,159,0.20);
+  color:#6cff9f;
 }
-
 button:hover{
-  background:rgba(108,255,159,0.40);
+  background:rgba(108,255,159,0.35);
 }
 
-/* Trust text */
-.trust{
-  margin-top:18px;
-  text-align:center;
-  font-size:12px;
-  opacity:0.55;
-}
-
-/* Status */
-#loginStatus{
+#status{
   margin-top:14px;
-  text-align:center;
+  opacity:.75;
   font-size:13px;
-  opacity:0.8;
 }
 </style>
 </head>
 
 <body>
 
-<!-- Vines -->
-<div class="vines">
-  <div class="vine"></div>
-  <div class="vine"></div>
-  <div class="vine"></div>
-  <div class="vine"></div>
+<div class="box">
+  <h1>Forge <span>Staff Portal</span></h1>
+  <p style="opacity:.7;margin-top:6px;">
+    StudentStreamHQ internal access only.
+  </p>
+
+  <input id="email" type="email" placeholder="Staff Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="login()">Login →</button>
+
+  <p id="status"></p>
 </div>
 
-<!-- Login Panel -->
-<div class="loginBox">
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  <div class="logo">Forge <span>Portal</span></div>
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  <div class="subtitle">
-    Client access only.<br>
-    Secure login provided after subscription onboarding.
-  </div>
+window.login = async function(){
 
-  <form onsubmit="forgeLogin(event)">
-    <input id="email" type="email" placeholder="Client Email Address" required>
-    <input id="password" type="password" placeholder="Password" required>
+  const status = document.getElementById("status");
+  status.innerText = "Checking access...";
 
-    <button type="submit">Login →</button>
-  </form>
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  <p id="loginStatus"></p>
+  // 1. Sign in
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,password
+  });
 
-  <div class="trust">
-    🔒 Protected by Forge Security Systems<br>
-    Unauthorized access is restricted.
-  </div>
+  if(error){
+    status.innerText = "❌ Login failed.";
+    return;
+  }
 
-</div>
+  // 2. Staff whitelist check
+  const { data: staff } = await supabase
+    .from("forge_staff")
+    .select("*")
+    .eq("id", data.user.id)
+    .single();
+
+  if(!staff){
+    status.innerText = "❌ Access denied. Not Staff.";
+    await supabase.auth.signOut();
+    return;
+  }
+
+  status.innerText = "✅ Welcome Staff Member.";
+
+  // 3. Redirect to dashboard
+  location.href="forge-admin-dashboard.html";
+};
+</script>
 
 </body>
 </html>
