@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge Agency · Social Media Management & Security</title>
+
+<style>
+:root{
+  --bg:#050806;
+  --panel:rgba(12,18,14,0.92);
+  --border:rgba(180,255,200,0.12);
+
+  --text:#eaffef;
+  --muted:#9cc7a7;
+
+  --leaf:#6cff9f;
+  --moss:#2c6b3f;
+  --gold:#ffd98a;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:system-ui;
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at top, rgba(108,255,159,0.16), transparent 60%),
+    radial-gradient(circle at bottom, rgba(44,107,63,0.25), transparent 70%),
+    linear-gradient(to bottom, #050806, #020302);
+}
+
+/* 🌿 Animated Background */
+.vines{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.vine{
+  position:absolute;
+  width:3px;
+  height:140%;
+  background:linear-gradient(to bottom,
+    transparent,
+    rgba(108,255,159,0.20),
+    rgba(44,107,63,0.40),
+    transparent
+  );
+  border-radius:999px;
+  animation:vineFloat 14s ease-in-out infinite;
+}
+
+.vine:nth-child(1){left:10%; animation-duration:16s;}
+.vine:nth-child(2){left:28%; animation-duration:20s; opacity:0.4;}
+.vine:nth-child(3){left:52%; animation-duration:18s; opacity:0.25;}
+.vine:nth-child(4){left:72%; animation-duration:22s; opacity:0.35;}
+.vine:nth-child(5){left:90%; animation-duration:17s; opacity:0.2;}
+
+@keyframes vineFloat{
+  0%{transform:translateY(-40px) rotate(-2deg);}
+  50%{transform:translateY(70px) rotate(2deg);}
+  100%{transform:translateY(-40px) rotate(-2deg);}
+}
+
+.leaf{
+  position:absolute;
+  width:14px;
+  height:14px;
+  background:rgba(108,255,159,0.20);
+  border-radius:50% 50% 50% 0;
+  transform:rotate(45deg);
+  animation:leafDrift 12s linear infinite;
+}
+
+.leaf:nth-child(6){left:15%; top:20%;}
+.leaf:nth-child(7){left:55%; top:55%; opacity:0.5; animation-duration:16s;}
+.leaf:nth-child(8){left:78%; top:35%; opacity:0.35; animation-duration:20s;}
+
+@keyframes leafDrift{
+  from{transform:translateY(0) rotate(45deg);}
+  to{transform:translateY(160px) rotate(405deg);}
+}
+
+/* Layout */
+header, main, footer{
+  position:relative;
+  z-index:2;
+}
+
+/* Header */
+header{
+  padding:20px 30px;
+  border-bottom:1px solid var(--border);
+  background:rgba(8,12,9,0.88);
+  backdrop-filter:blur(14px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header h1{
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:1px;
+}
+
+header span{color:var(--leaf)}
+
+nav a{
+  margin-left:18px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:700;
+}
+nav a:hover{color:white}
+
+/* Wrap */
+.wrap{
+  max-width:1150px;
+  margin:auto;
+  padding:80px 20px;
+}
+
+/* Hero */
+.hero{
+  text-align:center;
+  margin-bottom:75px;
+}
+
+.hero h2{
+  font-size:58px;
+  font-weight:1000;
+  line-height:1.05;
+}
+
+.hero h2 span{color:var(--leaf)}
+
+.hero p{
+  margin-top:18px;
+  font-size:16px;
+  opacity:0.80;
+  line-height:1.6;
+  max-width:780px;
+  margin:auto;
+}
+
+.heroButtons{
+  margin-top:35px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:13px 22px;
+  border-radius:999px;
+  font-weight:850;
+  font-size:14px;
+  border:1px solid var(--border);
+  text-decoration:none;
+  transition:.25s;
+}
+
+.btnPrimary{
+  background:rgba(108,255,159,0.18);
+  color:var(--leaf);
+}
+.btnPrimary:hover{
+  background:rgba(108,255,159,0.32);
+}
+
+.btnGold{
+  background:rgba(255,217,138,0.15);
+  color:var(--gold);
+}
+.btnGold:hover{
+  background:rgba(255,217,138,0.28);
+}
+
+/* Sections */
+.sectionTitle{
+  font-size:15px;
+  font-weight:950;
+  margin:70px 0 20px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--gold);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(108,255,159,0.30);
+  box-shadow:0 25px 55px rgba(0,0,0,0.55);
+}
+
+.card h3{
+  font-size:18px;
+  font-weight:950;
+  margin-bottom:10px;
+  color:var(--leaf);
+}
+
+.card p{
+  font-size:13.5px;
+  line-height:1.55;
+  opacity:0.82;
+}
+
+.price{
+  font-size:22px;
+  font-weight:1000;
+  margin-top:12px;
+  color:var(--gold);
+}
+
+.tag{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:850;
+  border:1px solid rgba(255,255,255,0.12);
+  opacity:.8;
+}
+
+/* Form */
+form input, form textarea{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  margin-top:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.03);
+  color:white;
+  font-size:14px;
+}
+
+form textarea{min-height:110px; resize:none;}
+
+form button{
+  margin-top:15px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-weight:950;
+  cursor:pointer;
+  background:rgba(108,255,159,0.20);
+  color:var(--leaf);
+}
+form button:hover{
+  background:rgba(108,255,159,0.32);
+}
+
+/* Footer */
+footer{
+  margin-top:90px;
+  padding:40px;
+  text-align:center;
+  font-size:13px;
+  opacity:0.55;
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+
+<body>
+
+<!-- Animated Background -->
+<div class="vines">
+  <div class="vine"></div><div class="vine"></div><div class="vine"></div>
+  <div class="vine"></div><div class="vine"></div>
+  <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
+</div>
+
+<header>
+  <h1>Forge <span>Agency</span></h1>
+  <nav>
+    <a href="#services">Services</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#testimonials">Results</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <h2>
+      Social Media Management<br>
+      & Digital <span>Security</span>
+    </h2>
+
+    <p>
+      Forge is an independent agency providing professional social media management,
+      account protection, and secure digital infrastructure for creators, brands,
+      and online businesses.
+    </p>
+
+    <div class="heroButtons">
+      <a href="#pricing" class="btn btnPrimary">View Packages</a>
+      <a href="#contact" class="btn btnGold">Request Access</a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <div class="sectionTitle" id="services">What Forge Provides</div>
+  <section class="grid">
+    <div class="card">
+      <h3>Social Media Management</h3>
+      <p>Full posting, scheduling, engagement, and growth systems.</p>
+      <span class="tag">Monthly</span>
+    </div>
+
+    <div class="card">
+      <h3>Account Security Protection</h3>
+      <p>Anti-hack defense, impersonation prevention, recovery planning.</p>
+      <span class="tag">High Demand</span>
+    </div>
+
+    <div class="card">
+      <h3>Website + Digital Presence</h3>
+      <p>Secure creator landing pages, brand sites, and identity infrastructure.</p>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <div class="sectionTitle" id="pricing">Launch Packages</div>
+  <section class="grid">
+    <div class="card">
+      <h3>Starter Management</h3>
+      <p>Weekly content + optimization support.</p>
+      <div class="price">$75/mo</div>
+    </div>
+
+    <div class="card">
+      <h3>Security Shield Pack</h3>
+      <p>Protection + account hardening setup.</p>
+      <div class="price">$60</div>
+    </div>
+
+    <div class="card">
+      <h3>Full Forge Plan</h3>
+      <p>Management + security + website build.</p>
+      <div class="price">$150+</div>
+      <span class="tag">Best Value</span>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <div class="sectionTitle" id="testimonials">Client Results</div>
+  <section class="grid">
+    <div class="card">
+      <h3>Creator Growth</h3>
+      <p>“Forge helped secure my account and rebuild my online presence fast.”</p>
+    </div>
+
+    <div class="card">
+      <h3>Protection + Control</h3>
+      <p>“I finally feel safe posting knowing my brand is protected.”</p>
+    </div>
+
+    <div class="card">
+      <h3>Professional Presence</h3>
+      <p>“My website and socials look official now. Huge upgrade.”</p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <div class="sectionTitle" id="contact">Request Forge Services</div>
+  <section class="grid">
+    <div class="card">
+      <h3>Client Intake Form</h3>
+      <p>Fill out the form and we’ll respond within 24 hours.</p>
+
+      <form>
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Email Address" required>
+        <input type="text" placeholder="Instagram / TikTok Handle">
+        <textarea placeholder="What do you need help with?"></textarea>
+        <button type="submit">Submit Request</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Direct Contact</h3>
+      <p>
+        Email: <b>forgeagency@proton.me</b><br><br>
+        Services available worldwide.<br>
+        Limited client slots open.
+      </p>
+      <span class="tag">Secure Agency</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Forge Agency · Social Media Management & Digital Security
+</footer>
+
+</body>
+</html>
