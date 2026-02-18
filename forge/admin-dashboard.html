@@ -1,223 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Forge Admin Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge Admin Dashboard</title>
 
-  <!-- 🌿 SUPABASE -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+<style>
+:root{
+  --bg:#050806;
+  --panel:rgba(15,22,17,0.92);
+  --border:rgba(180,255,200,0.14);
 
-    const supabase = createClient(
-      "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-    );
+  --text:#eaffef;
+  --muted:#9cc7a7;
+  --leaf:#6cff9f;
+  --gold:#ffd98a;
+}
 
-    // ============================
-    // 🔒 LOGIN FUNCTION
-    // ============================
-    window.adminLogin = async function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui;
+  background:linear-gradient(to bottom,#050806,#020302);
+  color:var(--text);
+  min-height:100vh;
+  padding:40px;
+}
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+h1{
+  font-size:34px;
+  font-weight:1000;
+  margin-bottom:8px;
+}
 
-      if (error) {
-        alert("❌ Login Failed: " + error.message);
-        return;
-      }
+h1 span{color:var(--leaf)}
+p{opacity:.75;margin-bottom:25px;}
 
-      location.reload();
-    };
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:20px;
+}
 
-    // ============================
-    // 🔓 CHECK SESSION
-    // ============================
-    async function checkSession() {
-      const { data } = await supabase.auth.getSession();
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
 
-      if (!data.session) {
-        document.getElementById("loginScreen").style.display = "block";
-        document.getElementById("dashboard").style.display = "none";
-      } else {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
+.card h2{
+  font-size:18px;
+  color:var(--gold);
+  margin-bottom:12px;
+}
 
-        loadIntake();
-        loadClients();
-      }
-    }
+.client{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.08);
+  margin-bottom:10px;
+}
 
-    // ============================
-    // 🚪 LOGOUT
-    // ============================
-    window.logoutAdmin = async function () {
-      await supabase.auth.signOut();
-      location.reload();
-    };
+.client b{color:var(--leaf)}
+.small{font-size:13px;opacity:.75}
 
-    // ============================
-    // 📥 LOAD INTAKE
-    // ============================
-    async function loadIntake() {
-      const { data, error } = await supabase
-        .from("forge_intake")
-        .select("*")
-        .order("created_at", { ascending: false });
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.03);
+  color:white;
+}
 
-      if (error) return alert("Error loading intake.");
+button{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:900;
+  background:rgba(108,255,159,0.18);
+  color:var(--leaf);
+}
+button:hover{
+  background:rgba(108,255,159,0.30);
+}
 
-      const container = document.getElementById("intakeList");
-      container.innerHTML = "";
+ul{padding-left:18px;margin-top:10px;}
+li{margin-bottom:6px;opacity:.85}
 
-      data.forEach((req) => {
-        container.innerHTML += `
-          <div class="card">
-            <h3>${req.name}</h3>
-            <p><b>Email:</b> ${req.email}</p>
-            <p><b>Status:</b> ${req.status}</p>
-            <p class="msg">${req.message}</p>
-          </div>
-        `;
-      });
-    }
-
-    // ============================
-    // 👥 LOAD CLIENTS
-    // ============================
-    async function loadClients() {
-      const { data, error } = await supabase
-        .from("forge_clients")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) return alert("Error loading clients.");
-
-      const container = document.getElementById("clientList");
-      container.innerHTML = "";
-
-      data.forEach((c) => {
-        container.innerHTML += `
-          <div class="card clientCard">
-            <h3>${c.full_name}</h3>
-            <p><b>Email:</b> ${c.email}</p>
-            <p><b>Plan:</b> ${c.plan}</p>
-            <p><b>Active:</b> ${c.active ? "✅ Yes" : "❌ No"}</p>
-          </div>
-        `;
-      });
-    }
-
-    // Run session check on load
-    checkSession();
-  </script>
-
-  <!-- 🌿 STYLE -->
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui;
-      background: radial-gradient(circle at top, rgba(108,255,159,0.18), transparent 70%),
-                  linear-gradient(to bottom, #020402, #000);
-      color: white;
-    }
-
-    .wrap {
-      max-width: 1100px;
-      margin: auto;
-      padding: 60px 20px;
-    }
-
-    h1 {
-      font-size: 50px;
-      color: #6cff9f;
-      text-shadow: 0 0 25px rgba(108,255,159,0.25);
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      margin-top: 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(108,255,159,0.2);
-      background: rgba(255,255,255,0.03);
-      color: white;
-    }
-
-    button {
-      margin-top: 18px;
-      padding: 14px;
-      width: 100%;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      font-weight: 900;
-      background: rgba(108,255,159,0.22);
-      color: #6cff9f;
-    }
-
-    button:hover {
-      background: rgba(108,255,159,0.35);
-    }
-
-    .logout {
-      background: rgba(255,70,70,0.15);
-      color: #ff6666;
-    }
-
-    .logout:hover {
-      background: rgba(255,70,70,0.3);
-    }
-
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(108,255,159,0.18);
-      padding: 20px;
-      border-radius: 18px;
-      margin-top: 18px;
-    }
-
-    .clientCard h3 {
-      color: gold;
-    }
-
-    .msg {
-      opacity: 0.8;
-      font-size: 14px;
-    }
-  </style>
+.logout{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  padding:10px 16px;
+  border-radius:999px;
+  cursor:pointer;
+}
+.logout:hover{border-color:rgba(108,255,159,0.35);}
+</style>
 </head>
 
 <body>
 
-  <!-- 🔒 LOGIN -->
-  <div class="wrap" id="loginScreen" style="display:none;">
-    <h1>Forge Admin Login</h1>
-    <p>Secure Supabase Authentication</p>
+<button class="logout" onclick="logout()">Logout</button>
 
-    <input id="email" placeholder="Admin Email">
-    <input id="password" type="password" placeholder="Password">
+<h1>Forge <span>Admin</span> Dashboard</h1>
+<p>Internal agency control center — clients, tasks, messaging, uploads.</p>
 
-    <button onclick="adminLogin()">Login →</button>
+<div class="grid">
+
+  <!-- CLIENT LIST -->
+  <div class="card">
+    <h2>Clients</h2>
+    <div id="clientList">Loading clients...</div>
   </div>
 
-  <!-- 🌿 DASHBOARD -->
-  <div class="wrap" id="dashboard" style="display:none;">
-    <h1>Forge Admin Dashboard</h1>
-    <p>Secure Access Enabled</p>
+  <!-- ASSIGN TASK -->
+  <div class="card">
+    <h2>Assign Task</h2>
+    <p class="small">Send a task directly to a client account.</p>
 
-    <button class="logout" onclick="logoutAdmin()">Logout</button>
+    <input id="taskClient" placeholder="Client UUID">
+    <input id="taskTitle" placeholder="Task title">
+    <button onclick="assignTask()">Assign Task →</button>
 
-    <h2 style="margin-top:50px;">📥 Intake Requests</h2>
-    <div id="intakeList"></div>
-
-    <h2 style="margin-top:60px;">👥 Active Clients</h2>
-    <div id="clientList"></div>
+    <p id="taskStatus" class="small"></p>
   </div>
+
+  <!-- MESSAGE CENTER -->
+  <div class="card">
+    <h2>Client Messages</h2>
+    <div id="messageBox">Loading messages...</div>
+
+    <input id="replyClient" placeholder="Client UUID">
+    <textarea id="replyText" placeholder="Reply message..."></textarea>
+    <button onclick="sendReply()">Send Reply →</button>
+
+    <p id="replyStatus" class="small"></p>
+  </div>
+
+  <!-- UPLOAD VAULT -->
+  <div class="card">
+    <h2>Upload Vault</h2>
+    <p class="small">Client deliverables + uploaded files.</p>
+    <div id="fileBox">Loading uploads...</div>
+  </div>
+
+</div>
+
+<!-- SUPABASE -->
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const user = (await supabase.auth.getUser()).data.user;
+
+if(!user){
+  location.href="forge-portal-login.html";
+}
+
+/* ✅ CHECK ADMIN ROLE */
+const { data: adminCheck } = await supabase
+  .from("forge_admins")
+  .select("*")
+  .eq("id", user.id)
+  .single();
+
+if(!adminCheck){
+  alert("❌ Access denied. Admins only.");
+  location.href="forge-client-dashboard.html";
+}
+
+/* LOAD CLIENTS */
+async function loadClients(){
+  const { data } = await supabase
+    .from("forge_clients")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  document.getElementById("clientList").innerHTML =
+    data.map(c=>`
+      <div class="client">
+        <b>${c.full_name || "Unnamed Client"}</b><br>
+        <span class="small">${c.email}</span><br>
+        <span class="small">
+          Plan: ${c.plan} |
+          Active: ${c.subscription_active}
+        </span><br>
+        <span class="small">ID: ${c.id}</span>
+      </div>
+    `).join("");
+}
+
+/* LOAD MESSAGES */
+async function loadMessages(){
+  const { data } = await supabase
+    .from("forge_messages")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(6);
+
+  document.getElementById("messageBox").innerHTML =
+    "<ul>" +
+    data.map(m=>`
+      <li>
+        <b>${m.sender}</b>: ${m.message}<br>
+        <span class="small">Client: ${m.client_id}</span>
+      </li>
+    `).join("") +
+    "</ul>";
+}
+
+/* LOAD FILES */
+async function loadFiles(){
+  const { data } = await supabase
+    .from("forge_files")
+    .select("*")
+    .order("uploaded_at",{ascending:false})
+    .limit(6);
+
+  document.getElementById("fileBox").innerHTML =
+    "<ul>" +
+    data.map(f=>`
+      <li>
+        ${f.file_name}<br>
+        <span class="small">Client: ${f.client_id}</span>
+      </li>
+    `).join("") +
+    "</ul>";
+}
+
+/* ASSIGN TASK */
+window.assignTask = async function(){
+  const client_id = document.getElementById("taskClient").value;
+  const title = document.getElementById("taskTitle").value;
+
+  const { error } = await supabase
+    .from("forge_tasks")
+    .insert([{ client_id, title }]);
+
+  document.getElementById("taskStatus").innerText =
+    error ? "❌ Failed to assign task" : "✅ Task assigned successfully!";
+};
+
+/* SEND REPLY */
+window.sendReply = async function(){
+  const client_id = document.getElementById("replyClient").value;
+  const message = document.getElementById("replyText").value;
+
+  const { error } = await supabase
+    .from("forge_messages")
+    .insert([{
+      client_id,
+      sender:"forge",
+      message
+    }]);
+
+  document.getElementById("replyStatus").innerText =
+    error ? "❌ Reply failed" : "✅ Reply sent!";
+};
+
+/* LOGOUT */
+window.logout = async function(){
+  await supabase.auth.signOut();
+  location.href="forge-portal-login.html";
+};
+
+/* INIT */
+loadClients();
+loadMessages();
+loadFiles();
+</script>
 
 </body>
 </html>
