@@ -5,6 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Forge Agency · Social Media Management & Security</title>
 
+<!-- Supabase -->
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  /* ✅ SUPABASE CONFIG */
+  const supabase = createClient(
+    "https://YOURPROJECT.supabase.co",
+    "YOUR_ANON_KEY"
+  );
+
+  /* ✅ INTAKE FORM SUBMIT */
+  window.submitForgeForm = async function(e){
+    e.preventDefault();
+
+    const statusBox = document.getElementById("formStatus");
+    statusBox.innerHTML = "Submitting request...";
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const handle = document.getElementById("handle").value;
+    const message = document.getElementById("message").value;
+
+    const { error } = await supabase
+      .from("forge_intake")
+      .insert([{ name, email, handle, message }]);
+
+    if(error){
+      statusBox.innerHTML = "❌ Error sending request.";
+      return;
+    }
+
+    statusBox.innerHTML = "✅ Request submitted successfully!";
+    e.target.reset();
+  };
+
+  /* ✅ CLIENT PORTAL (COMING SOON) */
+  window.portalLogin = function(){
+    alert("Client Portal is launching soon. Access will be provided to active clients.");
+  };
+</script>
+
 <style>
 :root{
   --bg:#050806;
@@ -33,7 +74,7 @@ body{
     linear-gradient(to bottom, #050806, #020302);
 }
 
-/* 🌿 Animated Background */
+/* 🌿 Animated Vines */
 .vines{
   position:fixed;
   inset:0;
@@ -67,6 +108,7 @@ body{
   100%{transform:translateY(-40px) rotate(-2deg);}
 }
 
+/* 🍃 Floating Leaves */
 .leaf{
   position:absolute;
   width:14px;
@@ -83,7 +125,7 @@ body{
 
 @keyframes leafDrift{
   from{transform:translateY(0) rotate(45deg);}
-  to{transform:translateY(160px) rotate(405deg);}
+  to{transform:translateY(150px) rotate(405deg);}
 }
 
 /* Layout */
@@ -112,11 +154,11 @@ header h1{
 header span{color:var(--leaf)}
 
 nav a{
-  margin-left:18px;
   color:var(--muted);
   text-decoration:none;
   font-size:14px;
-  font-weight:700;
+  font-weight:750;
+  margin-left:18px;
 }
 nav a:hover{color:white}
 
@@ -150,41 +192,7 @@ nav a:hover{color:white}
   margin:auto;
 }
 
-.heroButtons{
-  margin-top:35px;
-  display:flex;
-  justify-content:center;
-  gap:15px;
-  flex-wrap:wrap;
-}
-
-.btn{
-  padding:13px 22px;
-  border-radius:999px;
-  font-weight:850;
-  font-size:14px;
-  border:1px solid var(--border);
-  text-decoration:none;
-  transition:.25s;
-}
-
-.btnPrimary{
-  background:rgba(108,255,159,0.18);
-  color:var(--leaf);
-}
-.btnPrimary:hover{
-  background:rgba(108,255,159,0.32);
-}
-
-.btnGold{
-  background:rgba(255,217,138,0.15);
-  color:var(--gold);
-}
-.btnGold:hover{
-  background:rgba(255,217,138,0.28);
-}
-
-/* Sections */
+/* Section */
 .sectionTitle{
   font-size:15px;
   font-weight:950;
@@ -234,18 +242,25 @@ nav a:hover{color:white}
   color:var(--gold);
 }
 
-.tag{
+.btn{
   display:inline-block;
-  margin-top:12px;
-  padding:6px 12px;
+  margin-top:14px;
+  padding:12px 18px;
   border-radius:999px;
-  font-size:12px;
+  border:1px solid var(--border);
+  text-decoration:none;
   font-weight:850;
-  border:1px solid rgba(255,255,255,0.12);
-  opacity:.8;
+  transition:.25s;
 }
 
-/* Form */
+.btnPrimary{
+  background:rgba(108,255,159,0.18);
+  color:var(--leaf);
+}
+.btnPrimary:hover{
+  background:rgba(108,255,159,0.32);
+}
+
 form input, form textarea{
   width:100%;
   padding:12px;
@@ -254,10 +269,7 @@ form input, form textarea{
   border:1px solid var(--border);
   background:rgba(255,255,255,0.03);
   color:white;
-  font-size:14px;
 }
-
-form textarea{min-height:110px; resize:none;}
 
 form button{
   margin-top:15px;
@@ -270,11 +282,7 @@ form button{
   background:rgba(108,255,159,0.20);
   color:var(--leaf);
 }
-form button:hover{
-  background:rgba(108,255,159,0.32);
-}
 
-/* Footer */
 footer{
   margin-top:90px;
   padding:40px;
@@ -290,17 +298,23 @@ footer{
 
 <!-- Animated Background -->
 <div class="vines">
-  <div class="vine"></div><div class="vine"></div><div class="vine"></div>
-  <div class="vine"></div><div class="vine"></div>
-  <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
+  <div class="vine"></div>
+  <div class="vine"></div>
+  <div class="vine"></div>
+  <div class="vine"></div>
+  <div class="vine"></div>
+
+  <div class="leaf"></div>
+  <div class="leaf"></div>
+  <div class="leaf"></div>
 </div>
 
 <header>
   <h1>Forge <span>Agency</span></h1>
   <nav>
     <a href="#services">Services</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#testimonials">Results</a>
+    <a href="#pricing">Payments</a>
+    <a href="#portal">Portal</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
@@ -315,105 +329,118 @@ footer{
     </h2>
 
     <p>
-      Forge is an independent agency providing professional social media management,
-      account protection, and secure digital infrastructure for creators, brands,
-      and online businesses.
+      Forge is a professional agency providing account management,
+      brand growth, and online security protection for creators,
+      businesses, and public figures.
     </p>
-
-    <div class="heroButtons">
-      <a href="#pricing" class="btn btnPrimary">View Packages</a>
-      <a href="#contact" class="btn btnGold">Request Access</a>
-    </div>
   </section>
 
   <!-- SERVICES -->
   <div class="sectionTitle" id="services">What Forge Provides</div>
   <section class="grid">
+
     <div class="card">
       <h3>Social Media Management</h3>
-      <p>Full posting, scheduling, engagement, and growth systems.</p>
-      <span class="tag">Monthly</span>
+      <p>
+        Content scheduling, profile optimization, growth strategy,
+        and consistent management across platforms.
+      </p>
     </div>
 
     <div class="card">
       <h3>Account Security Protection</h3>
-      <p>Anti-hack defense, impersonation prevention, recovery planning.</p>
-      <span class="tag">High Demand</span>
+      <p>
+        Anti-hack setup, impersonation defense, recovery planning,
+        and digital identity protection systems.
+      </p>
     </div>
 
     <div class="card">
-      <h3>Website + Digital Presence</h3>
-      <p>Secure creator landing pages, brand sites, and identity infrastructure.</p>
+      <h3>Web + Brand Infrastructure</h3>
+      <p>
+        Secure landing pages, creator websites, verification systems,
+        and full online control for your brand.
+      </p>
     </div>
+
   </section>
 
-  <!-- PRICING -->
-  <div class="sectionTitle" id="pricing">Launch Packages</div>
+  <!-- PAYMENTS -->
+  <div class="sectionTitle" id="pricing">Pay With Stripe</div>
   <section class="grid">
+
     <div class="card">
       <h3>Starter Management</h3>
-      <p>Weekly content + optimization support.</p>
+      <p>Monthly social media support package.</p>
       <div class="price">$75/mo</div>
+      <a class="btn btnPrimary"
+         href="https://buy.stripe.com/YOUR_LINK"
+         target="_blank">
+         Pay Now →
+      </a>
     </div>
 
     <div class="card">
       <h3>Security Shield Pack</h3>
-      <p>Protection + account hardening setup.</p>
+      <p>One-time security protection setup.</p>
       <div class="price">$60</div>
+      <a class="btn btnPrimary"
+         href="https://buy.stripe.com/YOUR_LINK"
+         target="_blank">
+         Secure Account →
+      </a>
     </div>
 
     <div class="card">
       <h3>Full Forge Plan</h3>
       <p>Management + security + website build.</p>
       <div class="price">$150+</div>
-      <span class="tag">Best Value</span>
+      <a class="btn btnPrimary"
+         href="https://buy.stripe.com/YOUR_LINK"
+         target="_blank">
+         Start Full Service →
+      </a>
     </div>
+
   </section>
 
-  <!-- TESTIMONIALS -->
-  <div class="sectionTitle" id="testimonials">Client Results</div>
-  <section class="grid">
-    <div class="card">
-      <h3>Creator Growth</h3>
-      <p>“Forge helped secure my account and rebuild my online presence fast.”</p>
-    </div>
-
-    <div class="card">
-      <h3>Protection + Control</h3>
-      <p>“I finally feel safe posting knowing my brand is protected.”</p>
-    </div>
-
-    <div class="card">
-      <h3>Professional Presence</h3>
-      <p>“My website and socials look official now. Huge upgrade.”</p>
-    </div>
+  <!-- PORTAL -->
+  <div class="sectionTitle" id="portal">Client Portal</div>
+  <section class="card">
+    <h3>Forge Client Login</h3>
+    <p>
+      Active clients will receive access to the Forge Portal
+      for service updates, account monitoring, and project tracking.
+    </p>
+    <a class="btn btnPrimary" onclick="portalLogin()">Login →</a>
   </section>
 
   <!-- CONTACT -->
-  <div class="sectionTitle" id="contact">Request Forge Services</div>
+  <div class="sectionTitle" id="contact">Request Services</div>
   <section class="grid">
+
     <div class="card">
       <h3>Client Intake Form</h3>
-      <p>Fill out the form and we’ll respond within 24 hours.</p>
 
-      <form>
-        <input type="text" placeholder="Your Name" required>
-        <input type="email" placeholder="Email Address" required>
-        <input type="text" placeholder="Instagram / TikTok Handle">
-        <textarea placeholder="What do you need help with?"></textarea>
+      <form onsubmit="submitForgeForm(event)">
+        <input id="name" type="text" placeholder="Your Name" required>
+        <input id="email" type="email" placeholder="Email Address" required>
+        <input id="handle" type="text" placeholder="Instagram/TikTok Handle">
+        <textarea id="message" placeholder="What do you need help with?"></textarea>
         <button type="submit">Submit Request</button>
       </form>
+
+      <p id="formStatus" style="margin-top:12px;opacity:.7;"></p>
     </div>
 
     <div class="card">
       <h3>Direct Contact</h3>
       <p>
-        Email: <b>forgeagency@proton.me</b><br><br>
-        Services available worldwide.<br>
-        Limited client slots open.
+        Email: <b>studentstreamhq@proton.me</b><br><br>
+        Limited weekly client slots available.
       </p>
-      <span class="tag">Secure Agency</span>
     </div>
+
   </section>
 
 </main>
