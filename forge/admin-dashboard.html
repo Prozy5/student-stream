@@ -1,296 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Forge Admin SaaS Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forge Admin Dashboard</title>
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <style>
+    :root{
+      --bg:#040705;
+      --panel:rgba(12,18,14,0.92);
+      --border:rgba(180,255,200,0.12);
 
-const supabase = createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+      --text:#eaffef;
+      --muted:#9cc7a7;
 
-const staffDomain = "@proton.me";
+      --leaf:#6cff9f;
+      --moss:#2c6b3f;
+      --gold:#ffd98a;
+      --danger:#ff5c5c;
+    }
 
-/* ============================
-   ✅ STAFF AUTH CHECK
-============================ */
-async function checkAdmin(){
-  const { data } = await supabase.auth.getUser();
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:system-ui;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
 
-  if(!data.user){
-    window.location.href = "forge-admin-login.html";
-    return;
-  }
+    /* Background vines */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:radial-gradient(circle,
+        rgba(108,255,159,0.10),
+        transparent 70%);
+      animation:pulse 8s infinite;
+      z-index:0;
+      pointer-events:none;
+    }
+    @keyframes pulse{
+      0%,100%{opacity:.35;}
+      50%{opacity:.8;}
+    }
 
-  if(!data.user.email.endsWith(staffDomain)){
-    alert("❌ Staff Only Access.");
-    await supabase.auth.signOut();
-    window.location.href = "forge-admin-login.html";
-    return;
-  }
+    /* Layout */
+    .dashboard{
+      display:grid;
+      grid-template-columns:260px 1fr;
+      min-height:100vh;
+      position:relative;
+      z-index:2;
+    noticing.
 
-  document.getElementById("adminEmail").innerText = data.user.email;
+---
 
-  loadClients();
-  loadTasks();
-  loadMessages();
-}
+# 🔥 FORGE ADMIN DASHBOARD — FULL COMMAND CENTER HTML
 
-/* ============================
-   ✅ CLIENTS
-============================ */
-async function loadClients(){
-  const box = document.getElementById("clientBox");
-  box.innerHTML = "🌿 Loading clients...";
+Save this as:
 
-  const { data, error } = await supabase
-    .from("forge_clients")
-    .select("*")
-    .order("created_at", { ascending:false });
+### ✅ `forge-admin-dashboard.html`
 
-  if(error){
-    box.innerHTML = "❌ Error loading clients.";
-    return;
-  }
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forge Admin Dashboard</title>
 
-  if(data.length === 0){
-    box.innerHTML = "No clients onboarded yet.";
-    return;
-  }
+  <style>
+    :root{
+      --bg:#040705;
+      --panel:rgba(12,18,14,0.92);
+      --border:rgba(180,255,200,0.12);
 
-  box.innerHTML = "";
+      --text:#eaffef;
+      --muted:#9cc7a7;
 
-  data.forEach(c=>{
-    const div = document.createElement("div");
-    div.className="card";
+      --leaf:#6cff9f;
+      --moss:#2c6b3f;
+      --gold:#ffd98a;
+      --danger:#ff5c5c;
+    }
 
-    div.innerHTML = `
-      <h3>${c.name}</h3>
-      <p><b>Email:</b> ${c.email}</p>
-      <p><b>Plan:</b> ${c.plan}</p>
-      <p><b>Status:</b> 
-        <span class="pill ${c.subscription_active ? "active":"inactive"}">
-          ${c.subscription_active ? "ACTIVE":"INACTIVE"}
-        </span>
-      </p>
-      <p><b>Badge:</b> ${c.founder_client ? "👑 Founder" : "Standard"}</p>
-    `;
+    *{margin:0;padding:0;box-sizing:border-box;}
 
-    box.appendChild(div);
-  });
-}
+    body{
+      font-family:system-ui;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
 
-/* ============================
-   ✅ TASKS
-============================ */
-async function loadTasks(){
-  const box = document.getElementById("taskBox");
-  box.innerHTML="Loading tasks...";
+    /* 🌿 Background Fog Pulse */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:radial-gradient(circle,
+        rgba(108,255,159,0.10),
+        transparent 70%);
+      animation:pulse 8s infinite;
+      z-index:0;
+      pointer-events:none;
+    }
+    @keyframes pulse{
+      0%,100%{opacity:.35;}
+      50%{opacity:.85;}
+    }
 
-  const { data, error } = await supabase
-    .from("forge_tasks")
-    .select("*")
-    .order("created_at",{ascending:false});
+    /* Main Layout */
+    .dashboard{
+      display:grid;
+      grid-template-columns:270px 1fr;
+      min-height:100vh;
+      position:relative;
+      z-index:2;
+    }
 
-  if(error){
-    box.innerHTML="❌ Task error.";
-    return;
-  }
+    /* Sidebar */
+    aside{
+      background:rgba(8,14,10,0.95);
+      border-right:1px solid var(--border);
+      padding:28px;
+    }
 
-  box.innerHTML="";
+    .logo{
+      font-size:20px;
+      font-weight:1000;
+      letter-spacing:1px;
+      margin-bottom:40px;
+    }
 
-  data.forEach(t=>{
-    const div=document.createElement("div");
-    div.className="card";
+    .logo span{
+      color:var(--leaf);
+      text-shadow:0 0 20px rgba(108,255,159,0.35);
+    }
 
-    div.innerHTML=`
-      <h3>${t.title}</h3>
-      <p><b>Client:</b> ${t.client_email}</p>
-      <p><b>Status:</b> ${t.status}</p>
-    `;
+    .staffBadge{
+      display:inline-block;
+      margin-top:10px;
+      font-size:11px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(255,217,138,0.12);
+      border:1px solid rgba(255,217,138,0.30);
+      color:var(--gold);
+      font-weight:850;
+    }
 
-    box.appendChild(div);
-  });
-}
+    nav{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      margin-top:35px;
+    }
 
-/* ============================
-   ✅ MESSAGES
-============================ */
-async function loadMessages(){
-  const box=document.getElementById("messageBox");
-  box.innerHTML="Loading messages...";
+    nav a{
+      text-decoration:none;
+      color:var(--muted);
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:750;
+      transition:.2s;
+    }
 
-  const { data, error } = await supabase
-    .from("forge_messages")
-    .select("*")
-    .order("created_at",{ascending:false});
+    nav a:hover{
+      background:rgba(108,255,159,0.08);
+      color:white;
+    }
 
-  if(error){
-    box.innerHTML="❌ Message error.";
-    return;
-  }
+    /* Main Area */
+    main{
+      padding:35px;
+    }
 
-  box.innerHTML="";
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:35px;
+    }
 
-  data.forEach(m=>{
-    const div=document.createElement("div");
-    div.className="card";
+    .topbar h1{
+      font-size:28px;
+      font-weight:1100;
+    }
 
-    div.innerHTML=`
-      <h3>${m.client_email}</h3>
-      <p>${m.message}</p>
-      <span class="date">${new Date(m.created_at).toLocaleString()}</span>
-    `;
+    .topbar p{
+      font-size:13px;
+      opacity:.65;
+      margin-top:6px;
+    }
 
-    box.appendChild(div);
-  });
-}
+    .logout{
+      padding:10px 18px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.03);
+      color:white;
+      font-weight:850;
+      cursor:pointer;
+    }
 
-/* ============================
-   ✅ LOGOUT
-============================ */
-window.logoutForge = async function(){
-  await supabase.auth.signOut();
-  window.location.href="forge-admin-login.html";
-};
+    .logout:hover{
+      border-color:rgba(108,255,159,0.35);
+    }
 
-window.onload=checkAdmin;
-</script>
+    /* Cards Grid */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:22px;
+    }
 
-<style>
-:root{
-  --bg:#050806;
-  --panel:rgba(12,18,14,0.92);
-  --border:rgba(180,255,200,0.14);
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:24px;
+      transition:.25s;
+      position:relative;
+    }
 
-  --leaf:#6cff9f;
-  --gold:#ffd98a;
-  --text:#eaffef;
-}
+    .card:hover{
+      transform:translateY(-6px);
+      border-color:rgba(108,255,159,0.25);
+      box-shadow:0 25px 80px rgba(0,0,0,0.65);
+    }
 
-*{margin:0;padding:0;box-sizing:border-box;}
+    .card h3{
+      font-size:16px;
+      font-weight:950;
+      margin-bottom:10px;
+      color:var(--leaf);
+    }
 
-body{
-  font-family:system-ui;
-  background:
-    radial-gradient(circle at top, rgba(108,255,159,0.20), transparent 70%),
-    radial-gradient(circle at bottom, rgba(44,107,63,0.35), transparent 70%),
-    linear-gradient(to bottom, #050806, #010201);
-  color:var(--text);
-}
+    .card p{
+      font-size:13px;
+      opacity:.75;
+      line-height:1.5;
+    }
 
-header{
-  padding:22px 40px;
-  border-bottom:1px solid var(--border);
-  background:rgba(6,10,7,0.88);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+    /* Tables */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
+      font-size:13px;
+    }
 
-.logo{
-  font-size:20px;
-  font-weight:1000;
-}
+    th,td{
+      text-align:left;
+      padding:10px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
 
-.logo span{color:var(--leaf);}
+    th{
+      color:var(--gold);
+      font-weight:850;
+      font-size:12px;
+      text-transform:uppercase;
+    }
 
-button{
-  padding:10px 18px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,0.04);
-  color:white;
-  font-weight:850;
-  cursor:pointer;
-}
+    .statusActive{
+      color:var(--leaf);
+      font-weight:850;
+    }
 
-main{
-  max-width:1200px;
-  margin:auto;
-  padding:60px 20px;
-}
+    .statusRisk{
+      color:var(--danger);
+      font-weight:900;
+    }
 
-h2{
-  margin:35px 0 15px;
-  font-size:22px;
-  color:var(--gold);
-}
+    /* Task Pills */
+    .pill{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:850;
+      margin-top:6px;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:20px;
-}
+    .pill.todo{
+      background:rgba(255,217,138,0.12);
+      border:1px solid rgba(255,217,138,0.25);
+      color:var(--gold);
+    }
 
-.card{
-  padding:20px;
-  border-radius:18px;
-  border:1px solid var(--border);
-  background:var(--panel);
-}
+    .pill.done{
+      background:rgba(108,255,159,0.12);
+      border:1px solid rgba(108,255,159,0.25);
+      color:var(--leaf);
+    }
 
-.card h3{
-  color:var(--leaf);
-  font-size:16px;
-  margin-bottom:6px;
-}
-
-.pill{
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:850;
-}
-
-.active{
-  background:rgba(108,255,159,0.15);
-  color:var(--leaf);
-}
-
-.inactive{
-  background:rgba(255,0,0,0.10);
-  color:#ffaaaa;
-}
-
-.date{
-  display:block;
-  margin-top:10px;
-  font-size:11px;
-  opacity:.55;
-}
-</style>
+    /* Footer */
+    footer{
+      margin-top:50px;
+      text-align:center;
+      font-size:12px;
+      opacity:.5;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <div>
-    <div class="logo">Forge <span>Admin SaaS</span></div>
-    <div style="font-size:13px;opacity:.7;">
-      Logged in: <span id="adminEmail"></span>
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="logo">
+      Forge <span>Admin</span>
+      <div class="staffBadge">STAFF CONTROL PANEL</div>
     </div>
-  </div>
 
-  <button onclick="logoutForge()">Logout</button>
-</header>
+    <nav>
+      <a href="#">📊 Dashboard Overview</a>
+      <a href="#">👥 Client Accounts</a>
+      <a href="#">📌 Task Tracker</a>
+      <a href="#">🛡 Security Monitoring</a>
+      <a href="#">💳 Subscriptions</a>
+      <a href="#">📂 Upload Vault</a>
+      <a href="#">💬 Client Messages</a>
+      <a href="#">⚙ Agency Settings</a>
+    </nav>
+  </aside>
 
-<main>
+  <!-- MAIN -->
+  <main>
 
-  <h2>Clients</h2>
-  <div class="grid" id="clientBox"></div>
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <h1>Agency Command Center</h1>
+        <p>Monitor creators, manage tasks, and protect accounts in real time.</p>
+      </div>
 
-  <h2>Tasks</h2>
-  <div class="grid" id="taskBox"></div>
+      <button class="logout">Logout</button>
+    </div>
 
-  <h2>Messages</h2>
-  <div class="grid" id="messageBox"></div>
+    <!-- GRID -->
+    <section class="grid">
 
-</main>
+      <!-- CLIENT MONITOR -->
+      <div class="card">
+        <h3>Client Social Monitoring</h3>
+        <p>Active creators currently managed inside Forge.</p>
+
+        <table>
+          <tr>
+            <th>Client</th>
+            <th>Status</th>
+          </tr>
+          <tr>
+            <td>@creatorone</td>
+            <td class="statusActive">ACTIVE</td>
+          </tr>
+          <tr>
+            <td>@brandpage</td>
+            <td class="statusRisk">RISK ALERT</td>
+          </tr>
+          <tr>
+            <td>@artistvault</td>
+            <td class="statusActive">ACTIVE</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- TASK TRACKER -->
+      <div class="card">
+        <h3>Task Tracker</h3>
+        <p>Internal work pipeline for this week.</p>
+
+        <p>✔ Schedule posts for @creatorone</p>
+        <span class="pill todo">IN PROGRESS</span>
+
+        <p style="margin-top:14px;">✔ Security setup for @brandpage</p>
+        <span class="pill todo">URGENT</span>
+
+        <p style="margin-top:14px;">✔ Website refresh for @artistvault</p>
+        <span class="pill done">COMPLETED</span>
+      </div>
+
+      <!-- SECURITY WATCH -->
+      <div class="card">
+        <h3>Security Shield Watch</h3>
+        <p>Protection system alerts & monitoring.</p>
+
+        <p>⚠ Suspicious login detected (Client: @brandpage)</p>
+        <p>✅ Recovery codes confirmed (Client: @creatorone)</p>
+        <p>🛡 Weekly security audit scheduled</p>
+      </div>
+
+      <!-- SUBSCRIPTIONS -->
+      <div class="card">
+        <h3>Subscription Activation</h3>
+        <p>Stripe-linked clients currently subscribed.</p>
+
+        <table>
+          <tr>
+            <th>Client</th>
+            <th>Plan</th>
+          </tr>
+          <tr>
+            <td>@creatorone</td>
+            <td>Starter Growth</td>
+          </tr>
+          <tr>
+            <td>@artistvault</td>
+            <td>Full Forge</td>
+          </tr>
+        </table>
+      </div>
+
+    </section>
+
+    <footer>
+      © 2026 Forge Agency Admin · Social Growth + Digital Protection
+    </footer>
+
+  </main>
+
+</div>
 
 </body>
 </html>
