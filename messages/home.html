@@ -1,77 +1,158 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>StudentStreamHQ Messages</title>
 
 <style>
-body {
-  margin: 0;
-  background: #0f0f0f;
-  font-family: Arial, sans-serif;
-  color: white;
+body{
+  margin:0;
+  background:#0c0c0c;
+  font-family:system-ui;
+  color:white;
+  display:flex;
+  height:100vh;
 }
 
-.header {
-  padding: 20px;
-  font-size: 22px;
-  font-weight: bold;
-  border-bottom: 1px solid #222;
+/* SIDEBAR INBOX */
+.sidebar{
+  width:320px;
+  border-right:1px solid #1f1f1f;
+  overflow-y:auto;
 }
 
-.inbox {
-  max-width: 500px;
-  margin: auto;
+.header{
+  padding:20px;
+  font-weight:900;
+  font-size:20px;
+  border-bottom:1px solid #1f1f1f;
 }
 
-.chat-item {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #1f1f1f;
-  cursor: pointer;
-  transition: 0.2s;
+.chatItem{
+  display:flex;
+  padding:15px;
+  cursor:pointer;
+  border-bottom:1px solid #161616;
+  transition:.2s;
 }
 
-.chat-item:hover {
-  background: #181818;
+.chatItem:hover{
+  background:#181818;
 }
 
-.avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 15px;
-  object-fit: cover;
+.avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  margin-right:12px;
 }
 
-.chat-info {
-  flex: 1;
+.chatInfo{
+  flex:1;
 }
 
-.username {
-  font-weight: bold;
-  margin-bottom: 5px;
+.username{
+  font-weight:700;
+  margin-bottom:4px;
 }
 
-.preview {
-  color: #aaa;
-  font-size: 14px;
+.preview{
+  font-size:13px;
+  color:#aaa;
 }
 
-.time {
-  font-size: 12px;
-  color: #777;
+.time{
+  font-size:11px;
+  color:#777;
+}
+
+/* CHAT AREA */
+.chatArea{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+.chatHeader{
+  padding:18px;
+  border-bottom:1px solid #1f1f1f;
+  font-weight:800;
+}
+
+.messages{
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+}
+
+.bubble{
+  max-width:70%;
+  padding:10px 14px;
+  border-radius:18px;
+  margin-bottom:10px;
+  font-size:14px;
+}
+
+.sent{
+  background:#6cff9f;
+  color:black;
+  align-self:flex-end;
+}
+
+.received{
+  background:#1e1e1e;
+  align-self:flex-start;
+}
+
+.sendBox{
+  display:flex;
+  padding:15px;
+  border-top:1px solid #1f1f1f;
+}
+
+.sendBox input{
+  flex:1;
+  padding:12px;
+  border-radius:25px;
+  border:none;
+  outline:none;
+}
+
+.sendBox button{
+  margin-left:10px;
+  padding:12px 20px;
+  border:none;
+  border-radius:25px;
+  font-weight:700;
+  cursor:pointer;
+  background:#6cff9f;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  StudentStreamHQ Messages
+<div class="sidebar">
+  <div class="header">Messages</div>
+  <div id="inbox"></div>
 </div>
 
-<div class="inbox" id="inbox"></div>
+<div class="chatArea">
+  <div class="chatHeader" id="chatHeader">
+    Select a conversation
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="sendBox">
+    <input id="msgInput" placeholder="Message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
@@ -81,34 +162,90 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-async function loadInbox() {
-  const { data, error } = await supabase
-    .from('inbox_view')
-    .select('*')
+let currentUser = null
+let activeConversation = null
 
-  const inbox = document.getElementById('inbox')
-  inbox.innerHTML = ''
+async function init(){
+  const { data } = await supabase.auth.getUser()
+  currentUser = data.user
+  if(!currentUser){
+    document.body.innerHTML = "<h2 style='color:white;padding:20px;'>Login required.</h2>"
+    return
+  }
 
-  data.forEach(chat => {
-    const item = document.createElement('div')
-    item.className = 'chat-item'
-
-    item.innerHTML = `
-      <img src="${chat.avatar_url || 'https://via.placeholder.com/50'}" class="avatar">
-      <div class="chat-info">
-        <div class="username">${chat.username}</div>
-        <div class="preview">${chat.last_message || 'Start a conversation...'}</div>
-      </div>
-      <div class="time">
-        ${chat.last_message_time ? new Date(chat.last_message_time).toLocaleDateString() : ''}
-      </div>
-    `
-
-    inbox.appendChild(item)
-  })
+  loadInbox()
 }
 
-loadInbox()
+async function loadInbox(){
+  const { data } = await supabase
+    .from("conversation_members")
+    .select("conversation_id")
+    .eq("user_id", currentUser.id)
+
+  const inbox = document.getElementById("inbox")
+  inbox.innerHTML = ""
+
+  for(const convo of data){
+    const { data: lastMsg } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("conversation_id", convo.conversation_id)
+      .order("sent_at",{ascending:false})
+      .limit(1)
+
+    const item = document.createElement("div")
+    item.className="chatItem"
+    item.innerHTML=`
+      <img src="https://via.placeholder.com/48" class="avatar"/>
+      <div class="chatInfo">
+        <div class="username">Conversation</div>
+        <div class="preview">${lastMsg[0]?.body || "Start chatting..."}</div>
+      </div>
+      <div class="time">${lastMsg[0] ? new Date(lastMsg[0].sent_at).toLocaleDateString() : ""}</div>
+    `
+    item.onclick=()=>openConversation(convo.conversation_id)
+    inbox.appendChild(item)
+  }
+}
+
+async function openConversation(id){
+  activeConversation=id
+  document.getElementById("chatHeader").innerText="Chat"
+
+  const { data } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("conversation_id", id)
+    .order("sent_at",{ascending:true})
+
+  const box=document.getElementById("messages")
+  box.innerHTML=""
+
+  data.forEach(msg=>{
+    const bubble=document.createElement("div")
+    bubble.className="bubble "+(msg.sender_id===currentUser.id?"sent":"received")
+    bubble.innerText=msg.body
+    box.appendChild(bubble)
+  })
+
+  box.scrollTop=box.scrollHeight
+}
+
+window.sendMessage=async function(){
+  const input=document.getElementById("msgInput")
+  if(!input.value.trim()||!activeConversation)return
+
+  await supabase.from("messages").insert([{
+    conversation_id:activeConversation,
+    sender_id:currentUser.id,
+    body:input.value
+  }])
+
+  input.value=""
+  openConversation(activeConversation)
+}
+
+init()
 </script>
 
 </body>
