@@ -14,142 +14,95 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
     );
 
-    /* ==========================
-       LOAD CLIENTS
-    ========================== */
+    /* GLOBAL COUNTS */
+    async function loadStats(){
+      const clients = await supabase.from("forge_clients").select("*");
+      const tasks = await supabase.from("forge_tasks").select("*");
+      const messages = await supabase.from("forge_messages").select("*");
+
+      document.getElementById("statClients").innerText = clients.data.length;
+      document.getElementById("statTasks").innerText = tasks.data.length;
+      document.getElementById("statMessages").innerText = messages.data.length;
+    }
+
+    /* LOAD CLIENT TABLE */
     async function loadClients(){
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("forge_clients")
         .select("*")
-        .order("created_at", { ascending:false });
+        .order("created_at",{ascending:false});
 
-      if(error){
-        alert("Client load error");
-        return;
-      }
+      const table = document.getElementById("clientTable");
+      table.innerHTML = "";
 
-      const box = document.getElementById("clientsBox");
-      box.innerHTML = "";
-
-      data.forEach(client=>{
-        box.innerHTML += `
-          <div class="miniCard">
-            <b>${client.full_name}</b><br>
-            <span>@${client.social_handle || "none"}</span><br>
-            <small>${client.plan} · ${client.status}</small>
-          </div>
+      data.forEach(c=>{
+        table.innerHTML += `
+          <tr>
+            <td>${c.full_name}</td>
+            <td>@${c.social_handle || "—"}</td>
+            <td><span class="pill">${c.plan}</span></td>
+            <td><span class="status">${c.status}</span></td>
+          </tr>
         `;
       });
     }
 
-    /* ==========================
-       LOAD TASKS
-    ========================== */
+    /* LOAD TASK BOARD */
     async function loadTasks(){
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("forge_tasks")
         .select("*, forge_clients(full_name)")
-        .order("created_at", { ascending:false });
+        .order("created_at",{ascending:false});
 
-      if(error){
-        alert("Task load error");
-        return;
-      }
+      const todo = document.getElementById("todoTasks");
+      const prog = document.getElementById("progressTasks");
+      const done = document.getElementById("doneTasks");
 
-      const box = document.getElementById("tasksBox");
-      box.innerHTML = "";
+      todo.innerHTML = "";
+      prog.innerHTML = "";
+      done.innerHTML = "";
 
-      data.forEach(task=>{
-        box.innerHTML += `
-          <div class="miniCard">
-            <b>${task.title}</b><br>
-            <small>Client: ${task.forge_clients.full_name}</small><br>
-            <span>Status: ${task.task_status}</span>
+      data.forEach(t=>{
+        const card = `
+          <div class="taskCard">
+            <b>${t.title}</b>
+            <small>${t.forge_clients.full_name}</small>
           </div>
         `;
+
+        if(t.task_status==="TODO") todo.innerHTML += card;
+        if(t.task_status==="PROGRESS") prog.innerHTML += card;
+        if(t.task_status==="DONE") done.innerHTML += card;
       });
     }
 
-    /* ==========================
-       LOAD MESSAGES
-    ========================== */
+    /* LOAD MESSAGES */
     async function loadMessages(){
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("forge_messages")
         .select("*, forge_clients(full_name)")
-        .order("created_at", { ascending:false });
-
-      if(error){
-        alert("Message load error");
-        return;
-      }
+        .order("created_at",{ascending:false})
+        .limit(6);
 
       const box = document.getElementById("messagesBox");
       box.innerHTML = "";
 
-      data.forEach(msg=>{
+      data.forEach(m=>{
         box.innerHTML += `
-          <div class="miniCard">
-            <b>${msg.forge_clients.full_name}</b><br>
-            <small>${msg.sender}</small><br>
-            <span>${msg.message}</span>
+          <div class="msgBubble">
+            <b>${m.forge_clients.full_name}</b>
+            <p>${m.message}</p>
           </div>
         `;
       });
     }
 
-    /* ==========================
-       ADD TASK
-    ========================== */
-    window.addTask = async function(e){
-      e.preventDefault();
-
-      const clientID = document.getElementById("taskClient").value;
-      const title = document.getElementById("taskTitle").value;
-
-      await supabase.from("forge_tasks").insert([
-        { client_id: clientID, title }
-      ]);
-
-      e.target.reset();
-      loadTasks();
-    }
-
-    /* ==========================
-       SEND MESSAGE
-    ========================== */
-    window.sendMessage = async function(e){
-      e.preventDefault();
-
-      const clientID = document.getElementById("msgClient").value;
-      const message = document.getElementById("msgText").value;
-
-      await supabase.from("forge_messages").insert([
-        { client_id: clientID, message }
-      ]);
-
-      e.target.reset();
-      loadMessages();
-    }
-
-    /* ==========================
-       INIT DASHBOARD
-    ========================== */
+    /* INIT */
     async function init(){
+      await loadStats();
       await loadClients();
       await loadTasks();
       await loadMessages();
-
-      // Load dropdown clients
-      const { data } = await supabase.from("forge_clients").select("*");
-
-      const taskDrop = document.getElementById("taskClient");
-      const msgDrop = document.getElementById("msgClient");
-
-      data.forEach(c=>{
-        taskDrop.innerHTML += `<option value="${c.id}">${c.full_name}</option>`;
-        msgDrop.innerHTML += `<option value="${c.id}">${c.full_name}</option>`;
-      });
     }
 
     init();
@@ -159,106 +112,280 @@
     body{
       margin:0;
       font-family:system-ui;
-      background:#050807;
+      background:radial-gradient(circle at top,#07110b,#020302);
       color:white;
+      overflow-x:hidden;
     }
 
-    header{
-      padding:20px;
-      font-size:22px;
-      font-weight:900;
-      border-bottom:1px solid rgba(255,255,255,0.1);
+    /* VINE BACKGROUND */
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(circle,rgba(108,255,159,0.08),transparent 70%);
+      animation:pulse 8s infinite;
+      z-index:0;
+      pointer-events:none;
+    }
+    @keyframes pulse{
+      0%,100%{opacity:.4}
+      50%{opacity:.9}
     }
 
-    .wrap{
-      padding:30px;
+    /* LAYOUT */
+    .layout{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-      gap:25px;
+      grid-template-columns:260px 1fr;
+      min-height:100vh;
+      position:relative;
+      z-index:2;
     }
 
-    .card{
-      background:rgba(20,30,22,0.92);
-      border:1px solid rgba(108,255,159,0.18);
+    /* SIDEBAR */
+    .sidebar{
+      background:rgba(10,18,12,0.95);
+      border-right:1px solid rgba(108,255,159,0.12);
+      padding:25px;
+    }
+
+    .logo{
+      font-size:22px;
+      font-weight:1000;
+      color:#6cff9f;
+      margin-bottom:35px;
+    }
+
+    .nav a{
+      display:block;
+      padding:12px;
+      border-radius:12px;
+      text-decoration:none;
+      color:rgba(255,255,255,0.7);
+      margin-bottom:10px;
+      font-weight:700;
+      transition:.2s;
+    }
+
+    .nav a:hover{
+      background:rgba(108,255,159,0.12);
+      color:#6cff9f;
+    }
+
+    /* MAIN */
+    .main{
+      padding:35px;
+    }
+
+    /* TOP STATS */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:18px;
+      margin-bottom:30px;
+    }
+
+    .statCard{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(108,255,159,0.14);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .statCard h2{
+      margin:0;
+      font-size:28px;
+      color:#6cff9f;
+    }
+
+    .statCard p{
+      margin:6px 0 0;
+      opacity:.65;
+      font-size:13px;
+    }
+
+    /* GRID */
+    .grid{
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:22px;
+    }
+
+    .panel{
+      background:rgba(15,25,18,0.92);
+      border:1px solid rgba(108,255,159,0.14);
       border-radius:20px;
       padding:20px;
     }
 
-    h2{
-      margin:0 0 12px;
-      font-size:16px;
-      color:#6cff9f;
+    .panel h3{
+      margin:0 0 15px;
+      color:#ffd98a;
+      font-size:15px;
+      letter-spacing:1px;
+      text-transform:uppercase;
     }
 
-    .miniCard{
+    /* CLIENT TABLE */
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+    td{
+      padding:12px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      font-size:14px;
+    }
+
+    .pill{
+      padding:5px 10px;
+      border-radius:999px;
+      background:rgba(108,255,159,0.14);
+      color:#6cff9f;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .status{
+      font-size:12px;
+      opacity:.7;
+    }
+
+    /* TASK BOARD */
+    .taskBoard{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .taskCol{
+      background:rgba(255,255,255,0.03);
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .taskCol h4{
+      margin:0 0 10px;
+      font-size:12px;
+      opacity:.7;
+    }
+
+    .taskCard{
+      background:rgba(108,255,159,0.08);
+      border:1px solid rgba(108,255,159,0.15);
+      padding:10px;
+      border-radius:12px;
+      margin-bottom:10px;
+    }
+
+    .taskCard small{
+      display:block;
+      opacity:.6;
+      margin-top:5px;
+      font-size:11px;
+    }
+
+    /* MESSAGES */
+    .msgBubble{
+      background:rgba(255,255,255,0.04);
       padding:12px;
       border-radius:14px;
-      margin-top:10px;
-      background:rgba(255,255,255,0.04);
+      margin-bottom:12px;
       border:1px solid rgba(255,255,255,0.06);
     }
 
-    form input, form select{
-      width:100%;
-      padding:10px;
-      border-radius:12px;
-      border:none;
-      margin-top:10px;
-      background:rgba(255,255,255,0.06);
-      color:white;
+    .msgBubble b{
+      color:#6cff9f;
+      font-size:13px;
     }
 
-    button{
-      width:100%;
-      padding:12px;
-      margin-top:12px;
-      border:none;
-      border-radius:14px;
-      font-weight:900;
-      cursor:pointer;
-      background:rgba(108,255,159,0.22);
-      color:#6cff9f;
+    .msgBubble p{
+      margin:6px 0 0;
+      font-size:13px;
+      opacity:.75;
     }
+
   </style>
 </head>
 
 <body>
 
-<header>
-  Forge Admin Command Center (Clients + Tasks + Messaging)
-</header>
+<div class="layout">
 
-<div class="wrap">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">🌿 Forge Admin</div>
 
-  <!-- CLIENTS -->
-  <div class="card">
-    <h2>Clients</h2>
-    <div id="clientsBox"></div>
-  </div>
+    <div class="nav">
+      <a href="#">Dashboard</a>
+      <a href="#">Clients</a>
+      <a href="#">Tasks</a>
+      <a href="#">Messages</a>
+      <a href="#">Security Monitor</a>
+    </div>
+  </aside>
 
-  <!-- TASKS -->
-  <div class="card">
-    <h2>Tasks</h2>
-    <div id="tasksBox"></div>
+  <!-- MAIN -->
+  <main class="main">
 
-    <form onsubmit="addTask(event)">
-      <select id="taskClient"></select>
-      <input id="taskTitle" placeholder="New Task Title" required/>
-      <button>Add Task</button>
-    </form>
-  </div>
+    <!-- STATS -->
+    <div class="stats">
+      <div class="statCard">
+        <h2 id="statClients">0</h2>
+        <p>Active Clients</p>
+      </div>
 
-  <!-- MESSAGES -->
-  <div class="card">
-    <h2>Client Messages</h2>
-    <div id="messagesBox"></div>
+      <div class="statCard">
+        <h2 id="statTasks">0</h2>
+        <p>Total Tasks</p>
+      </div>
 
-    <form onsubmit="sendMessage(event)">
-      <select id="msgClient"></select>
-      <input id="msgText" placeholder="Send message..." required/>
-      <button>Send Message</button>
-    </form>
-  </div>
+      <div class="statCard">
+        <h2 id="statMessages">0</h2>
+        <p>New Messages</p>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid">
+
+      <!-- CLIENTS + TASKS -->
+      <div class="panel">
+        <h3>Client Pipeline</h3>
+
+        <table>
+          <tbody id="clientTable"></tbody>
+        </table>
+
+        <h3 style="margin-top:25px;">Task Tracker</h3>
+
+        <div class="taskBoard">
+          <div class="taskCol">
+            <h4>TODO</h4>
+            <div id="todoTasks"></div>
+          </div>
+
+          <div class="taskCol">
+            <h4>IN PROGRESS</h4>
+            <div id="progressTasks"></div>
+          </div>
+
+          <div class="taskCol">
+            <h4>DONE</h4>
+            <div id="doneTasks"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="panel">
+        <h3>Recent Client Messages</h3>
+        <div id="messagesBox"></div>
+      </div>
+
+    </div>
+
+  </main>
 
 </div>
 
