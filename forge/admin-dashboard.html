@@ -1,430 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Forge Admin Dashboard</title>
 
+  <!-- SUPABASE -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+    const supabase = createClient(
+      "https://iabzmoxzbqzcqgypxctr.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+    );
+
+    /* ==========================
+       LOAD CLIENTS
+    ========================== */
+    async function loadClients(){
+      const { data, error } = await supabase
+        .from("forge_clients")
+        .select("*")
+        .order("created_at", { ascending:false });
+
+      if(error){
+        alert("Client load error");
+        return;
+      }
+
+      const box = document.getElementById("clientsBox");
+      box.innerHTML = "";
+
+      data.forEach(client=>{
+        box.innerHTML += `
+          <div class="miniCard">
+            <b>${client.full_name}</b><br>
+            <span>@${client.social_handle || "none"}</span><br>
+            <small>${client.plan} · ${client.status}</small>
+          </div>
+        `;
+      });
+    }
+
+    /* ==========================
+       LOAD TASKS
+    ========================== */
+    async function loadTasks(){
+      const { data, error } = await supabase
+        .from("forge_tasks")
+        .select("*, forge_clients(full_name)")
+        .order("created_at", { ascending:false });
+
+      if(error){
+        alert("Task load error");
+        return;
+      }
+
+      const box = document.getElementById("tasksBox");
+      box.innerHTML = "";
+
+      data.forEach(task=>{
+        box.innerHTML += `
+          <div class="miniCard">
+            <b>${task.title}</b><br>
+            <small>Client: ${task.forge_clients.full_name}</small><br>
+            <span>Status: ${task.task_status}</span>
+          </div>
+        `;
+      });
+    }
+
+    /* ==========================
+       LOAD MESSAGES
+    ========================== */
+    async function loadMessages(){
+      const { data, error } = await supabase
+        .from("forge_messages")
+        .select("*, forge_clients(full_name)")
+        .order("created_at", { ascending:false });
+
+      if(error){
+        alert("Message load error");
+        return;
+      }
+
+      const box = document.getElementById("messagesBox");
+      box.innerHTML = "";
+
+      data.forEach(msg=>{
+        box.innerHTML += `
+          <div class="miniCard">
+            <b>${msg.forge_clients.full_name}</b><br>
+            <small>${msg.sender}</small><br>
+            <span>${msg.message}</span>
+          </div>
+        `;
+      });
+    }
+
+    /* ==========================
+       ADD TASK
+    ========================== */
+    window.addTask = async function(e){
+      e.preventDefault();
+
+      const clientID = document.getElementById("taskClient").value;
+      const title = document.getElementById("taskTitle").value;
+
+      await supabase.from("forge_tasks").insert([
+        { client_id: clientID, title }
+      ]);
+
+      e.target.reset();
+      loadTasks();
+    }
+
+    /* ==========================
+       SEND MESSAGE
+    ========================== */
+    window.sendMessage = async function(e){
+      e.preventDefault();
+
+      const clientID = document.getElementById("msgClient").value;
+      const message = document.getElementById("msgText").value;
+
+      await supabase.from("forge_messages").insert([
+        { client_id: clientID, message }
+      ]);
+
+      e.target.reset();
+      loadMessages();
+    }
+
+    /* ==========================
+       INIT DASHBOARD
+    ========================== */
+    async function init(){
+      await loadClients();
+      await loadTasks();
+      await loadMessages();
+
+      // Load dropdown clients
+      const { data } = await supabase.from("forge_clients").select("*");
+
+      const taskDrop = document.getElementById("taskClient");
+      const msgDrop = document.getElementById("msgClient");
+
+      data.forEach(c=>{
+        taskDrop.innerHTML += `<option value="${c.id}">${c.full_name}</option>`;
+        msgDrop.innerHTML += `<option value="${c.id}">${c.full_name}</option>`;
+      });
+    }
+
+    init();
+  </script>
+
   <style>
-    :root{
-      --bg:#040705;
-      --panel:rgba(12,18,14,0.92);
-      --border:rgba(180,255,200,0.12);
-
-      --text:#eaffef;
-      --muted:#9cc7a7;
-
-      --leaf:#6cff9f;
-      --moss:#2c6b3f;
-      --gold:#ffd98a;
-      --danger:#ff5c5c;
-    }
-
-    *{margin:0;padding:0;box-sizing:border-box;}
     body{
+      margin:0;
       font-family:system-ui;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
-    }
-
-    /* Background vines */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:radial-gradient(circle,
-        rgba(108,255,159,0.10),
-        transparent 70%);
-      animation:pulse 8s infinite;
-      z-index:0;
-      pointer-events:none;
-    }
-    @keyframes pulse{
-      0%,100%{opacity:.35;}
-      50%{opacity:.8;}
-    }
-
-    /* Layout */
-    .dashboard{
-      display:grid;
-      grid-template-columns:260px 1fr;
-      min-height:100vh;
-      position:relative;
-      z-index:2;
-    noticing.
-
----
-
-# 🔥 FORGE ADMIN DASHBOARD — FULL COMMAND CENTER HTML
-
-Save this as:
-
-### ✅ `forge-admin-dashboard.html`
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Forge Admin Dashboard</title>
-
-  <style>
-    :root{
-      --bg:#040705;
-      --panel:rgba(12,18,14,0.92);
-      --border:rgba(180,255,200,0.12);
-
-      --text:#eaffef;
-      --muted:#9cc7a7;
-
-      --leaf:#6cff9f;
-      --moss:#2c6b3f;
-      --gold:#ffd98a;
-      --danger:#ff5c5c;
-    }
-
-    *{margin:0;padding:0;box-sizing:border-box;}
-
-    body{
-      font-family:system-ui;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      overflow-x:hidden;
-    }
-
-    /* 🌿 Background Fog Pulse */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:radial-gradient(circle,
-        rgba(108,255,159,0.10),
-        transparent 70%);
-      animation:pulse 8s infinite;
-      z-index:0;
-      pointer-events:none;
-    }
-    @keyframes pulse{
-      0%,100%{opacity:.35;}
-      50%{opacity:.85;}
-    }
-
-    /* Main Layout */
-    .dashboard{
-      display:grid;
-      grid-template-columns:270px 1fr;
-      min-height:100vh;
-      position:relative;
-      z-index:2;
-    }
-
-    /* Sidebar */
-    aside{
-      background:rgba(8,14,10,0.95);
-      border-right:1px solid var(--border);
-      padding:28px;
-    }
-
-    .logo{
-      font-size:20px;
-      font-weight:1000;
-      letter-spacing:1px;
-      margin-bottom:40px;
-    }
-
-    .logo span{
-      color:var(--leaf);
-      text-shadow:0 0 20px rgba(108,255,159,0.35);
-    }
-
-    .staffBadge{
-      display:inline-block;
-      margin-top:10px;
-      font-size:11px;
-      padding:6px 12px;
-      border-radius:999px;
-      background:rgba(255,217,138,0.12);
-      border:1px solid rgba(255,217,138,0.30);
-      color:var(--gold);
-      font-weight:850;
-    }
-
-    nav{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      margin-top:35px;
-    }
-
-    nav a{
-      text-decoration:none;
-      color:var(--muted);
-      padding:12px 14px;
-      border-radius:14px;
-      font-weight:750;
-      transition:.2s;
-    }
-
-    nav a:hover{
-      background:rgba(108,255,159,0.08);
+      background:#050807;
       color:white;
     }
 
-    /* Main Area */
-    main{
-      padding:35px;
+    header{
+      padding:20px;
+      font-size:22px;
+      font-weight:900;
+      border-bottom:1px solid rgba(255,255,255,0.1);
     }
 
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:35px;
-    }
-
-    .topbar h1{
-      font-size:28px;
-      font-weight:1100;
-    }
-
-    .topbar p{
-      font-size:13px;
-      opacity:.65;
-      margin-top:6px;
-    }
-
-    .logout{
-      padding:10px 18px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,0.03);
-      color:white;
-      font-weight:850;
-      cursor:pointer;
-    }
-
-    .logout:hover{
-      border-color:rgba(108,255,159,0.35);
-    }
-
-    /* Cards Grid */
-    .grid{
+    .wrap{
+      padding:30px;
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:22px;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:25px;
     }
 
     .card{
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:24px;
-      transition:.25s;
-      position:relative;
+      background:rgba(20,30,22,0.92);
+      border:1px solid rgba(108,255,159,0.18);
+      border-radius:20px;
+      padding:20px;
     }
 
-    .card:hover{
-      transform:translateY(-6px);
-      border-color:rgba(108,255,159,0.25);
-      box-shadow:0 25px 80px rgba(0,0,0,0.65);
-    }
-
-    .card h3{
+    h2{
+      margin:0 0 12px;
       font-size:16px;
-      font-weight:950;
-      margin-bottom:10px;
-      color:var(--leaf);
+      color:#6cff9f;
     }
 
-    .card p{
-      font-size:13px;
-      opacity:.75;
-      line-height:1.5;
+    .miniCard{
+      padding:12px;
+      border-radius:14px;
+      margin-top:10px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.06);
     }
 
-    /* Tables */
-    table{
+    form input, form select{
       width:100%;
-      border-collapse:collapse;
-      margin-top:12px;
-      font-size:13px;
-    }
-
-    th,td{
-      text-align:left;
       padding:10px;
-      border-bottom:1px solid rgba(255,255,255,0.05);
+      border-radius:12px;
+      border:none;
+      margin-top:10px;
+      background:rgba(255,255,255,0.06);
+      color:white;
     }
 
-    th{
-      color:var(--gold);
-      font-weight:850;
-      font-size:12px;
-      text-transform:uppercase;
-    }
-
-    .statusActive{
-      color:var(--leaf);
-      font-weight:850;
-    }
-
-    .statusRisk{
-      color:var(--danger);
+    button{
+      width:100%;
+      padding:12px;
+      margin-top:12px;
+      border:none;
+      border-radius:14px;
       font-weight:900;
-    }
-
-    /* Task Pills */
-    .pill{
-      display:inline-block;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:850;
-      margin-top:6px;
-    }
-
-    .pill.todo{
-      background:rgba(255,217,138,0.12);
-      border:1px solid rgba(255,217,138,0.25);
-      color:var(--gold);
-    }
-
-    .pill.done{
-      background:rgba(108,255,159,0.12);
-      border:1px solid rgba(108,255,159,0.25);
-      color:var(--leaf);
-    }
-
-    /* Footer */
-    footer{
-      margin-top:50px;
-      text-align:center;
-      font-size:12px;
-      opacity:.5;
+      cursor:pointer;
+      background:rgba(108,255,159,0.22);
+      color:#6cff9f;
     }
   </style>
 </head>
 
 <body>
 
-<div class="dashboard">
+<header>
+  Forge Admin Command Center (Clients + Tasks + Messaging)
+</header>
 
-  <!-- SIDEBAR -->
-  <aside>
-    <div class="logo">
-      Forge <span>Admin</span>
-      <div class="staffBadge">STAFF CONTROL PANEL</div>
-    </div>
+<div class="wrap">
 
-    <nav>
-      <a href="#">📊 Dashboard Overview</a>
-      <a href="#">👥 Client Accounts</a>
-      <a href="#">📌 Task Tracker</a>
-      <a href="#">🛡 Security Monitoring</a>
-      <a href="#">💳 Subscriptions</a>
-      <a href="#">📂 Upload Vault</a>
-      <a href="#">💬 Client Messages</a>
-      <a href="#">⚙ Agency Settings</a>
-    </nav>
-  </aside>
+  <!-- CLIENTS -->
+  <div class="card">
+    <h2>Clients</h2>
+    <div id="clientsBox"></div>
+  </div>
 
-  <!-- MAIN -->
-  <main>
+  <!-- TASKS -->
+  <div class="card">
+    <h2>Tasks</h2>
+    <div id="tasksBox"></div>
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div>
-        <h1>Agency Command Center</h1>
-        <p>Monitor creators, manage tasks, and protect accounts in real time.</p>
-      </div>
+    <form onsubmit="addTask(event)">
+      <select id="taskClient"></select>
+      <input id="taskTitle" placeholder="New Task Title" required/>
+      <button>Add Task</button>
+    </form>
+  </div>
 
-      <button class="logout">Logout</button>
-    </div>
+  <!-- MESSAGES -->
+  <div class="card">
+    <h2>Client Messages</h2>
+    <div id="messagesBox"></div>
 
-    <!-- GRID -->
-    <section class="grid">
-
-      <!-- CLIENT MONITOR -->
-      <div class="card">
-        <h3>Client Social Monitoring</h3>
-        <p>Active creators currently managed inside Forge.</p>
-
-        <table>
-          <tr>
-            <th>Client</th>
-            <th>Status</th>
-          </tr>
-          <tr>
-            <td>@creatorone</td>
-            <td class="statusActive">ACTIVE</td>
-          </tr>
-          <tr>
-            <td>@brandpage</td>
-            <td class="statusRisk">RISK ALERT</td>
-          </tr>
-          <tr>
-            <td>@artistvault</td>
-            <td class="statusActive">ACTIVE</td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- TASK TRACKER -->
-      <div class="card">
-        <h3>Task Tracker</h3>
-        <p>Internal work pipeline for this week.</p>
-
-        <p>✔ Schedule posts for @creatorone</p>
-        <span class="pill todo">IN PROGRESS</span>
-
-        <p style="margin-top:14px;">✔ Security setup for @brandpage</p>
-        <span class="pill todo">URGENT</span>
-
-        <p style="margin-top:14px;">✔ Website refresh for @artistvault</p>
-        <span class="pill done">COMPLETED</span>
-      </div>
-
-      <!-- SECURITY WATCH -->
-      <div class="card">
-        <h3>Security Shield Watch</h3>
-        <p>Protection system alerts & monitoring.</p>
-
-        <p>⚠ Suspicious login detected (Client: @brandpage)</p>
-        <p>✅ Recovery codes confirmed (Client: @creatorone)</p>
-        <p>🛡 Weekly security audit scheduled</p>
-      </div>
-
-      <!-- SUBSCRIPTIONS -->
-      <div class="card">
-        <h3>Subscription Activation</h3>
-        <p>Stripe-linked clients currently subscribed.</p>
-
-        <table>
-          <tr>
-            <th>Client</th>
-            <th>Plan</th>
-          </tr>
-          <tr>
-            <td>@creatorone</td>
-            <td>Starter Growth</td>
-          </tr>
-          <tr>
-            <td>@artistvault</td>
-            <td>Full Forge</td>
-          </tr>
-        </table>
-      </div>
-
-    </section>
-
-    <footer>
-      © 2026 Forge Agency Admin · Social Growth + Digital Protection
-    </footer>
-
-  </main>
+    <form onsubmit="sendMessage(event)">
+      <select id="msgClient"></select>
+      <input id="msgText" placeholder="Send message..." required/>
+      <button>Send Message</button>
+    </form>
+  </div>
 
 </div>
 
