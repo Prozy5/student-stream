@@ -1,448 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forge Agency · Social Growth + Digital Security</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Forge — Digital Protection Agency</title>
 
 <style>
-:root{
-  --bg:#040705;
-  --panel:rgba(10,16,12,0.92);
-  --border:rgba(180,255,200,0.14);
-
-  --text:#eaffef;
-  --muted:#9cc7a7;
-
-  --leaf:#6cff9f;
-  --moss:#2c6b3f;
-  --gold:#ffd98a;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
-
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;}
 
 body{
-  font-family:system-ui;
-  color:var(--text);
-  min-height:100vh;
-  overflow-x:hidden;
-  background:
-    radial-gradient(circle at top, rgba(108,255,159,0.22), transparent 70%),
-    radial-gradient(circle at bottom, rgba(44,107,63,0.40), transparent 70%),
-    linear-gradient(to bottom, #040705, #010201);
+  font-family: 'Segoe UI', sans-serif;
+  background:#0f1a14;
+  overflow:hidden;
+  color:#e7efe9;
 }
 
-/* Fog Pulse */
-body::before{
-  content:"";
+/* =========================
+   FOREST BACKGROUND
+========================= */
+
+.forest{
   position:fixed;
-  inset:0;
-  background:radial-gradient(circle, rgba(108,255,159,0.09), transparent 75%);
-  animation:fogPulse 10s ease-in-out infinite;
-  pointer-events:none;
-  z-index:0;
-}
-@keyframes fogPulse{
-  0%,100%{opacity:.35;}
-  50%{opacity:.85;}
+  width:100%;
+  height:100%;
+  background:linear-gradient(to bottom,#1b2c22,#0f1a14);
+  overflow:hidden;
 }
 
-/* Background Vines */
-.vines{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-}
-
-.vine{
+/* Tree layers */
+.layer{
   position:absolute;
-  width:3px;
-  height:160%;
-  background:linear-gradient(to bottom,
-    transparent,
-    rgba(108,255,159,0.28),
-    rgba(44,107,63,0.70),
-    transparent
-  );
-  border-radius:999px;
-  animation:vineFloat 24s ease-in-out infinite;
+  width:120%;
+  height:100%;
+  background-repeat:no-repeat;
+  background-size:cover;
+  opacity:0.4;
 }
 
-.vine:nth-child(1){left:8%; opacity:.20;}
-.vine:nth-child(2){left:28%; opacity:.14; animation-duration:34s;}
-.vine:nth-child(3){left:55%; opacity:.20; animation-duration:28s;}
-.vine:nth-child(4){left:78%; opacity:.16; animation-duration:38s;}
-.vine:nth-child(5){left:93%; opacity:.10; animation-duration:30s;}
-
-@keyframes vineFloat{
-  0%{transform:translateY(-90px);}
-  50%{transform:translateY(180px);}
-  100%{transform:translateY(-90px);}
+.layer1{
+  background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070');
+  filter:brightness(0.3) blur(2px);
+  animation:slowDrift 60s linear infinite;
 }
 
-/* Header */
-header{
-  position:sticky;
-  top:0;
-  z-index:10;
-  padding:18px 42px;
-  border-bottom:1px solid var(--border);
-  background:rgba(6,10,7,0.90);
-  backdrop-filter:blur(18px);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.layer2{
+  background-image:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2070');
+  filter:brightness(0.25);
+  opacity:0.25;
+  animation:slowDriftReverse 80s linear infinite;
 }
 
-/* Logo + Hanging Vines */
-.logoBox{
-  position:relative;
-  font-size:20px;
-  font-weight:1000;
-  letter-spacing:1px;
-}
-
-.logoBox span{
-  color:var(--leaf);
-  text-shadow:0 0 20px rgba(108,255,159,0.35);
-}
-
-/* Hanging vines off logo */
-.logoBox::before,
-.logoBox::after{
-  content:"";
+/* Fog overlay */
+.fog{
   position:absolute;
-  top:-24px;
-  width:4px;
-  height:70px;
-  background:linear-gradient(to bottom,
-    rgba(108,255,159,0.65),
-    rgba(44,107,63,0.90),
-    transparent
-  );
-  border-radius:999px;
-  animation:swing 4s ease-in-out infinite;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle at 30% 40%, rgba(255,255,255,0.05), transparent 60%);
+  animation:fogMove 40s linear infinite;
 }
 
-.logoBox::before{left:-14px;}
-.logoBox::after{right:-14px; animation-delay:1s;}
+/* =========================
+   HERO CONTENT
+========================= */
 
-@keyframes swing{
-  0%,100%{transform:rotate(-2deg);}
-  50%{transform:rotate(2deg);}
-}
-
-/* Nav */
-nav{
-  display:flex;
-  align-items:center;
-}
-
-nav a{
-  color:var(--muted);
-  text-decoration:none;
-  font-size:14px;
-  font-weight:750;
-  margin-left:20px;
-  transition:.2s;
-}
-
-nav a:hover{color:white}
-
-/* Portal Button */
-.portalBtn{
-  margin-left:25px;
-  padding:10px 18px;
-  border-radius:999px;
-  border:1px solid rgba(108,255,159,0.25);
-  background:rgba(108,255,159,0.10);
-  color:var(--leaf);
-  font-weight:900;
-}
-
-.portalBtn:hover{
-  background:rgba(108,255,159,0.22);
-}
-
-/* Staff Badge */
-.staffBadge{
-  font-size:11px;
-  margin-left:10px;
-  padding:5px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,217,138,0.30);
-  background:rgba(255,217,138,0.10);
-  color:var(--gold);
-}
-
-/* Layout */
-.wrap{
-  max-width:1200px;
-  margin:auto;
-  padding:100px 20px;
-  position:relative;
-  z-index:2;
-}
-
-/* Hero */
 .hero{
-  text-align:center;
-  margin-bottom:110px;
-}
-
-.hero h2{
-  font-size:74px;
-  font-weight:1100;
-  line-height:1.05;
-}
-
-.hero h2 span{
-  color:var(--leaf);
-  text-shadow:0 0 35px rgba(108,255,159,0.35);
-}
-
-.hero p{
-  margin-top:22px;
-  font-size:17px;
-  opacity:0.85;
-  line-height:1.75;
-  max-width:860px;
-  margin-inline:auto;
-}
-
-/* Buttons */
-.heroButtons{
-  margin-top:42px;
+  position:relative;
+  height:100vh;
   display:flex;
+  flex-direction:column;
   justify-content:center;
-  gap:15px;
-  flex-wrap:wrap;
+  align-items:center;
+  text-align:center;
+  z-index:10;
+}
+
+.title{
+  font-size:80px;
+  letter-spacing:8px;
+  font-weight:900;
+  color:#cdd9cf;
+  text-shadow:
+    0 2px 4px rgba(0,0,0,0.7),
+    0 0 15px rgba(40,90,60,0.4);
+  position:relative;
+}
+
+.subtitle{
+  margin-top:20px;
+  font-size:18px;
+  opacity:0.8;
+  letter-spacing:2px;
 }
 
 .btn{
-  padding:14px 28px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  font-weight:850;
-  text-decoration:none;
-  transition:.25s;
-}
-
-.btnPrimary{
-  background:rgba(108,255,159,0.22);
-  color:var(--leaf);
-}
-.btnPrimary:hover{
-  background:rgba(108,255,159,0.40);
-}
-
-.btnGhost{
-  background:rgba(255,255,255,0.04);
+  margin-top:40px;
+  padding:16px 40px;
+  border-radius:40px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(30,60,40,0.6);
+  backdrop-filter:blur(6px);
   color:white;
-}
-.btnGhost:hover{
-  border-color:rgba(108,255,159,0.35);
-}
-
-/* Section Titles */
-.sectionTitle{
-  font-size:15px;
-  font-weight:950;
-  margin:95px 0 24px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  color:var(--gold);
+  font-weight:600;
+  letter-spacing:2px;
+  cursor:pointer;
+  transition:0.3s ease;
 }
 
-/* Grid */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
-  gap:26px;
+.btn:hover{
+  background:rgba(60,110,70,0.8);
+  transform:translateY(-2px);
 }
 
-/* Cards */
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:32px;
-  transition:.25s;
-  position:relative;
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes slowDrift{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-5%);}
 }
 
-.card:hover{
-  transform:translateY(-10px);
-  border-color:rgba(108,255,159,0.32);
-  box-shadow:0 35px 90px rgba(0,0,0,0.70);
+@keyframes slowDriftReverse{
+  0%{transform:translateX(-5%);}
+  100%{transform:translateX(0);}
 }
 
-.card h3{
-  font-size:19px;
-  font-weight:950;
-  margin-bottom:10px;
-  color:var(--leaf);
+@keyframes fogMove{
+  0%{transform:translateX(0) translateY(0);}
+  50%{transform:translateX(-10%) translateY(-5%);}
+  100%{transform:translateX(0) translateY(0);}
 }
 
-.card p{
-  font-size:13.8px;
-  line-height:1.6;
-  opacity:0.82;
-}
+/* =========================
+   VINE OVERLAY
+========================= */
 
-.price{
-  font-size:30px;
-  font-weight:1100;
-  margin-top:14px;
-  color:var(--gold);
-}
-
-.badge{
+.vines{
   position:absolute;
-  top:18px;
-  right:18px;
-  background:rgba(255,217,138,0.14);
-  border:1px solid rgba(255,217,138,0.30);
-  padding:6px 12px;
-  font-size:11px;
-  font-weight:850;
-  border-radius:999px;
-  color:var(--gold);
+  top:0;
+  width:100%;
+  height:200px;
+  background:url('https://pngimg.com/uploads/vine/vine_PNG44.png') repeat-x;
+  background-size:contain;
+  opacity:0.2;
+  animation:vinesway 12s ease-in-out infinite alternate;
 }
 
-.trust{
-  margin-top:14px;
-  font-size:12px;
-  opacity:0.6;
+@keyframes vinesway{
+  from{transform:translateY(0);}
+  to{transform:translateY(8px);}
 }
 
-/* Footer */
-footer{
-  margin-top:130px;
-  padding:55px;
-  text-align:center;
-  font-size:13px;
-  opacity:0.55;
-  border-top:1px solid var(--border);
-}
 </style>
 </head>
 
 <body>
 
-<!-- Background Vines -->
-<div class="vines">
-  <div class="vine"></div>
-  <div class="vine"></div>
-  <div class="vine"></div>
-  <div class="vine"></div>
-  <div class="vine"></div>
+<div class="forest">
+  <div class="layer layer1"></div>
+  <div class="layer layer2"></div>
+  <div class="fog"></div>
 </div>
 
-<header>
-  <div class="logoBox">
-    Forge <span>Agency</span>
-  </div>
+<div class="vines"></div>
 
-  <nav>
-    <a href="#services">Services</a>
-    <a href="#pricing">Subscriptions</a>
-
-    <a href="forge-portal-login.html" class="portalBtn">
-      Portal Login
-    </a>
-    <span class="staffBadge">Staff Only</span>
-  </nav>
-</header>
-
-<main class="wrap">
-
-  <!-- HERO -->
-  <section class="hero">
-    <h2>
-      Social Growth<br>
-      + Digital <span>Protection</span>
-    </h2>
-
-    <p>
-      Forge is a high-security agency built for creators, brands,
-      and businesses who want consistent growth, account protection,
-      and professional infrastructure — all in one system.
-    </p>
-
-    <div class="heroButtons">
-      <a href="#pricing" class="btn btnPrimary">View Subscriptions →</a>
-      <a href="forge-portal-login.html" class="btn btnGhost">Staff Portal</a>
-    </div>
-  </section>
-
-  <!-- SERVICES -->
-  <div class="sectionTitle" id="services">Core Services</div>
-  <section class="grid">
-
-    <div class="card">
-      <h3>Social Media Management</h3>
-      <p>Posting, strategy, scheduling, growth systems, consistency.</p>
-    </div>
-
-    <div class="card">
-      <h3>Security Shield Protection</h3>
-      <p>Anti-hack defense, impersonation watch, recovery planning.</p>
-    </div>
-
-    <div class="card">
-      <h3>Creator Infrastructure</h3>
-      <p>Landing pages, websites, verification systems, control.</p>
-    </div>
-
-  </section>
-
-  <!-- SUBSCRIPTIONS -->
-  <div class="sectionTitle" id="pricing">Monthly Subscription Plans</div>
-  <section class="grid">
-
-    <div class="card">
-      <div class="badge">Founder Client</div>
-      <h3>Starter Growth</h3>
-      <p>For creators building consistency.</p>
-      <div class="price">$75/mo</div>
-      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">
-        Subscribe →
-      </a>
-      <div class="trust">Cancel anytime · No contracts</div>
-    </div>
-
-    <div class="card">
-      <div class="badge">Protection Tier</div>
-      <h3>Security Monitoring</h3>
-      <p>Serious account defense + monitoring.</p>
-      <div class="price">$45/mo</div>
-      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">
-        Subscribe →
-      </a>
-      <div class="trust">Cancel anytime · Shield included</div>
-    </div>
-
-    <div class="card">
-      <div class="badge">Premium Access</div>
-      <h3>Full Forge Management</h3>
-      <p>Full partnership + priority growth.</p>
-      <div class="price">$150/mo</div>
-      <a class="btn btnPrimary" href="https://buy.stripe.com/YOUR_LINK">
-        Subscribe →
-      </a>
-      <div class="trust">Cancel anytime · Priority clients</div>
-    </div>
-
-  </section>
-
-</main>
-
-<footer>
-  © 2026 Forge Agency · Social Growth + Digital Security
-</footer>
+<div class="hero">
+  <div class="title">FORGE</div>
+  <div class="subtitle">Guard What You've Built</div>
+  <button class="btn" onclick="location.href='forge-portal.html'">
+    Enter The Cabin
+  </button>
+</div>
 
 </body>
 </html>
