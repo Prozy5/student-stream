@@ -21,7 +21,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Subtle Grid Overlay */
+/* Grid Overlay */
 body::before {
   content: "";
   position: fixed;
@@ -34,7 +34,7 @@ body::before {
   z-index: -1;
 }
 
-/* ===== STATUS STRIP ===== */
+/* STATUS BAR */
 .status-bar {
   background: #050807;
   padding: 8px 8%;
@@ -54,7 +54,7 @@ body::before {
   margin-right: 8px;
 }
 
-/* ===== NAVBAR ===== */
+/* NAV */
 nav {
   position: sticky;
   top: 0;
@@ -91,7 +91,7 @@ nav ul li a:hover {
   color: #2dfc8f;
 }
 
-/* ===== HERO ===== */
+/* HERO */
 .hero {
   padding: 140px 8%;
   display: flex;
@@ -145,23 +145,39 @@ nav ul li a:hover {
   filter: drop-shadow(0 0 60px rgba(45,252,143,0.2));
 }
 
-/* ===== SERVICES ===== */
+/* SERVICES */
 .services {
-  padding: 120px 8%;
+  padding: 140px 8%;
 }
 
 .services h2 {
   text-align: center;
-  font-size: 40px;
-  margin-bottom: 70px;
+  font-size: 42px;
+  margin-bottom: 20px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #2dfc8f;
 }
 
+.services-intro {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 80px auto;
+  opacity: 0.75;
+}
+
+.division-label {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #2dfc8f;
+  margin-bottom: 30px;
+  margin-top: 60px;
+}
+
 .service-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 40px;
 }
 
@@ -176,7 +192,7 @@ nav ul li a:hover {
 
 .service-card:hover {
   border-color: #2dfc8f;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
   box-shadow: 0 15px 50px rgba(0,0,0,0.5);
 }
 
@@ -190,7 +206,7 @@ nav ul li a:hover {
   opacity: 0.7;
 }
 
-/* ===== CTA SECTION ===== */
+/* CTA */
 .cta {
   padding: 120px 8%;
   text-align: center;
@@ -223,7 +239,7 @@ nav ul li a:hover {
   background: #22c96f;
 }
 
-/* ===== FOOTER ===== */
+/* FOOTER */
 footer {
   text-align: center;
   padding: 50px;
@@ -232,7 +248,6 @@ footer {
   opacity: 0.5;
 }
 
-/* ===== RESPONSIVE ===== */
 @media(max-width: 900px){
   .hero {
     flex-direction: column;
@@ -261,10 +276,10 @@ footer {
 
 <section class="hero">
   <div class="hero-text">
-    <h1>Elite <span>Digital Protection</span><br> & Social Command.</h1>
+    <h1>Elite <span>Digital Protection</span><br>& Social Command.</h1>
     <p>
-      Forge secures online identities, monitors digital threats,
-      and governs high-value social ecosystems with precision and discretion.
+      Forge protects, manages, and strengthens high-value digital identities
+      through advanced security systems and strategic social oversight.
     </p>
     <button>Request Secure Consultation</button>
   </div>
@@ -275,33 +290,47 @@ footer {
 </section>
 
 <section class="services" id="services">
-  <h2>Core Capabilities</h2>
+  <h2>Agency Services</h2>
+  <p class="services-intro">
+    Forge operates across two core divisions: digital security enforcement
+    and strategic social media management.
+  </p>
 
+  <div class="division-label">Security Division</div>
   <div class="service-grid">
     <div class="service-card">
-      <h3>Threat Intelligence</h3>
-      <p>Continuous monitoring for impersonation, data leaks, and malicious digital activity.</p>
+      <h3>Digital Threat Monitoring</h3>
+      <p>24/7 surveillance for impersonation, phishing attempts, and suspicious access behavior.</p>
     </div>
-
     <div class="service-card">
       <h3>Account Hardening</h3>
-      <p>Security audits, 2FA structuring, and breach prevention protocols.</p>
+      <p>Authentication structuring, recovery locking, and breach prevention architecture.</p>
     </div>
-
     <div class="service-card">
-      <h3>Strategic Growth</h3>
-      <p>High-level social governance, analytics, and controlled digital expansion.</p>
+      <h3>Data Exposure Prevention</h3>
+      <p>Leak detection, vulnerability audits, and proactive privacy defense systems.</p>
     </div>
+  </div>
 
+  <div class="division-label">Social Management Division</div>
+  <div class="service-grid">
     <div class="service-card">
-      <h3>Reputation Defense</h3>
-      <p>Proactive brand monitoring and rapid-response digital crisis containment.</p>
+      <h3>Strategic Social Governance</h3>
+      <p>Full-spectrum content planning, engagement control, and growth alignment.</p>
+    </div>
+    <div class="service-card">
+      <h3>Reputation Monitoring</h3>
+      <p>Brand sentiment tracking, moderation systems, and digital crisis containment.</p>
+    </div>
+    <div class="service-card">
+      <h3>Executive Account Oversight</h3>
+      <p>High-level management of influencer and executive social ecosystems.</p>
     </div>
   </div>
 </section>
 
 <section class="cta">
-  <h2>Secure Your Digital Presence.</h2>
+  <h2>Secure. Manage. Dominate.</h2>
   <p>Forge operates discreetly. Precision is our standard.</p>
   <button>Begin Protection</button>
 </section>
