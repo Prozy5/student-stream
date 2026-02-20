@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FORGE | Digital Security & Social Governance</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:'Inter','Segoe UI',sans-serif;
+  font-family:'Inter',sans-serif;
   scroll-behavior:smooth;
 }
 
@@ -20,14 +22,14 @@ body{
   overflow-x:hidden;
 }
 
-/* Grid Overlay */
+/* GRID */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   background-image:
-    linear-gradient(rgba(45,252,143,0.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(45,252,143,0.035) 1px,transparent 1px);
+    linear-gradient(rgba(45,252,143,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(45,252,143,0.03) 1px,transparent 1px);
   background-size:70px 70px;
   pointer-events:none;
   z-index:-1;
@@ -106,13 +108,13 @@ nav ul li a:hover{
 }
 
 .hero-text h1{
-  font-size:68px;
+  font-size:64px;
   line-height:1.05;
   font-weight:600;
   margin-bottom:25px;
 }
 
-.hero-text h1 span{
+.hero-text span{
   color:#2dfc8f;
 }
 
@@ -145,7 +147,7 @@ nav ul li a:hover{
   filter:drop-shadow(0 0 50px rgba(45,252,143,.2));
 }
 
-/* SECTION BASE */
+/* SECTION */
 section{
   padding:140px 8%;
 }
@@ -186,99 +188,52 @@ section h2{
   transform:translateY(-8px);
 }
 
-.service-card h3{
-  margin-bottom:18px;
-  color:#2dfc8f;
-}
-
-.service-card p{
-  opacity:.7;
-}
-
-/* PRICING */
-.pricing-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:40px;
-}
-
-.price-card{
+/* AI PANEL */
+.ai-section{
   background:rgba(15,25,22,.85);
-  padding:50px;
-  border-radius:18px;
-  border:1px solid rgba(45,252,143,.08);
-  text-align:center;
-  transition:.3s;
+  border-top:1px solid rgba(45,252,143,.1);
+  border-bottom:1px solid rgba(45,252,143,.1);
 }
 
-.price-card:hover{
-  border-color:#2dfc8f;
-  transform:translateY(-10px);
+.ai-container{
+  max-width:800px;
+  margin:0 auto;
 }
 
-.price-card h3{
-  color:#2dfc8f;
-  margin-bottom:15px;
+.ai-box{
+  background:#07110e;
+  border:1px solid rgba(45,252,143,.2);
+  padding:30px;
+  border-radius:16px;
 }
 
-.price{
-  font-size:38px;
-  margin:20px 0;
-}
-
-.price span{
-  font-size:14px;
-  opacity:.6;
-}
-
-.price-card ul{
-  list-style:none;
-  margin:30px 0;
-  opacity:.75;
-}
-
-.price-card ul li{
-  margin-bottom:12px;
-}
-
-.price-card button{
-  padding:14px 40px;
-  border-radius:30px;
-  border:1px solid #2dfc8f;
-  background:transparent;
-  color:#2dfc8f;
-  cursor:pointer;
-  transition:.3s;
-}
-
-.price-card button:hover{
-  background:#2dfc8f;
-  color:#06110e;
-}
-
-/* CTA */
-.cta{
-  text-align:center;
-  background:linear-gradient(90deg,rgba(45,252,143,.07),rgba(45,252,143,.02));
-}
-
-.cta h2{
-  font-size:44px;
+.ai-output{
+  min-height:100px;
   margin-bottom:20px;
+  opacity:.8;
 }
 
-.cta p{
-  opacity:.7;
-  margin-bottom:35px;
+.ai-input{
+  display:flex;
+  gap:10px;
 }
 
-.cta button{
-  padding:16px 50px;
-  border:none;
+.ai-input input{
+  flex:1;
+  padding:14px;
   border-radius:30px;
+  border:1px solid rgba(45,252,143,.3);
+  background:transparent;
+  color:#fff;
+}
+
+.ai-input button{
+  padding:14px 30px;
+  border-radius:30px;
+  border:none;
   background:#2dfc8f;
   color:#06110e;
-  font-weight:700;
+  font-weight:600;
   cursor:pointer;
 }
 
@@ -312,8 +267,7 @@ footer{
   <ul>
     <li><a href="#">Home</a></li>
     <li><a href="#services">Services</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#">Contact</a></li>
+    <li><a href="#ai">AI</a></li>
   </ul>
 </nav>
 
@@ -323,9 +277,9 @@ footer{
     <p>
       FORGE protects high-value digital identities and governs
       influential social ecosystems through structured security
-      systems and strategic oversight.
+      systems and AI-driven oversight.
     </p>
-    <button>Request Private Consultation</button>
+    <button onclick="scrollToAI()">Engage AI Assistant</button>
   </div>
   <div class="hero-logo">
     <img src="forgey-logo.PNG" alt="Forge Logo">
@@ -335,87 +289,74 @@ footer{
 <section id="services">
   <h2>Core Operations</h2>
   <p class="section-intro">
-    Two divisions. One objective: control, protect, and elevate your digital presence.
+    Intelligence. Protection. Governance.
   </p>
 
   <div class="service-grid">
     <div class="service-card">
       <h3>Threat Intelligence</h3>
-      <p>24/7 impersonation tracking, breach alerts, and digital risk detection.</p>
+      <p>24/7 impersonation tracking and breach detection.</p>
     </div>
 
     <div class="service-card">
       <h3>Account Hardening</h3>
-      <p>Advanced authentication structuring and layered access security.</p>
+      <p>Advanced authentication and layered security systems.</p>
     </div>
 
     <div class="service-card">
       <h3>Social Governance</h3>
-      <p>Strategic content alignment and ecosystem-level management.</p>
-    </div>
-
-    <div class="service-card">
-      <h3>Reputation Control</h3>
-      <p>Brand monitoring, moderation systems, and crisis containment.</p>
+      <p>Strategic ecosystem-level oversight.</p>
     </div>
   </div>
 </section>
 
-<section id="pricing">
-  <h2>Protection Plans</h2>
+<section id="ai" class="ai-section">
+  <h2>Forge AI Operations Assistant</h2>
   <p class="section-intro">
-    Structured tiers for individuals, creators, and executive clients.
+    Describe your risk exposure. The system will assess.
   </p>
 
-  <div class="pricing-grid">
-
-    <div class="price-card">
-      <h3>Essential</h3>
-      <div class="price">$750<span>/month</span></div>
-      <ul>
-        <li>Threat Monitoring</li>
-        <li>Account Security Audit</li>
-        <li>Basic Reputation Tracking</li>
-      </ul>
-      <button>Select Plan</button>
+  <div class="ai-container">
+    <div class="ai-box">
+      <div class="ai-output" id="aiOutput">
+        AI online. How can FORGE assist you?
+      </div>
+      <div class="ai-input">
+        <input type="text" id="aiInput" placeholder="Describe your digital risk...">
+        <button onclick="runAI()">Analyze</button>
+      </div>
     </div>
-
-    <div class="price-card">
-      <h3>Authority</h3>
-      <div class="price">$1,500<span>/month</span></div>
-      <ul>
-        <li>Advanced Monitoring</li>
-        <li>Full Account Hardening</li>
-        <li>Strategic Social Oversight</li>
-        <li>Priority Response</li>
-      </ul>
-      <button>Select Plan</button>
-    </div>
-
-    <div class="price-card">
-      <h3>Executive</h3>
-      <div class="price">Custom<span> Engagement</span></div>
-      <ul>
-        <li>24/7 Dedicated Oversight</li>
-        <li>Crisis Response Unit</li>
-        <li>Private Strategy Team</li>
-        <li>Full Social Governance</li>
-      </ul>
-      <button>Apply</button>
-    </div>
-
   </div>
-</section>
-
-<section class="cta">
-  <h2>Control Your Digital Environment.</h2>
-  <p>FORGE operates discreetly. Precision is standard.</p>
-  <button>Begin Protection</button>
 </section>
 
 <footer>
   © 2026 FORGE. All Rights Reserved.
 </footer>
+
+<script>
+function scrollToAI(){
+  document.getElementById("ai").scrollIntoView({behavior:"smooth"});
+}
+
+function runAI(){
+  const input = document.getElementById("aiInput").value;
+  const output = document.getElementById("aiOutput");
+
+  if(!input){
+    output.innerHTML = "Please describe your digital concern.";
+    return;
+  }
+
+  output.innerHTML = "Analyzing risk profile...";
+
+  setTimeout(()=>{
+    output.innerHTML = "Preliminary assessment complete. Risk exposure detected. A structured protection strategy is recommended. Request private consultation for full analysis.";
+  },1500);
+}
+</script>
+
+<!-- Tidio AI Chat (Replace with your actual script) -->
+<script src="//code.tidio.co/YOUR_UNIQUE_CODE.js" async></script>
 
 </body>
 </html>
