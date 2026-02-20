@@ -1,180 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Forge — Digital Protection Agency</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge — Digital Security & Social Media Management</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-body{
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
-  background:#0f1a14;
-  overflow:hidden;
-  color:#e7efe9;
 }
 
-/* =========================
-   FOREST BACKGROUND
-========================= */
-
-.forest{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:linear-gradient(to bottom,#1b2c22,#0f1a14);
-  overflow:hidden;
+body {
+  background: radial-gradient(circle at top, #102418 0%, #050807 60%);
+  color: white;
+  overflow-x: hidden;
 }
 
-/* Tree layers */
-.layer{
-  position:absolute;
-  width:120%;
-  height:100%;
-  background-repeat:no-repeat;
-  background-size:cover;
-  opacity:0.4;
+/* Subtle floating particles */
+body::after {
+  content: "";
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(rgba(45,252,143,0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: moveParticles 60s linear infinite;
+  pointer-events: none;
 }
 
-.layer1{
-  background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070');
-  filter:brightness(0.3) blur(2px);
-  animation:slowDrift 60s linear infinite;
+@keyframes moveParticles {
+  from { transform: translate(0,0); }
+  to { transform: translate(-200px,-200px); }
 }
 
-.layer2{
-  background-image:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2070');
-  filter:brightness(0.25);
-  opacity:0.25;
-  animation:slowDriftReverse 80s linear infinite;
+/* Hero Section */
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
 }
 
-/* Fog overlay */
-.fog{
-  position:absolute;
-  width:200%;
-  height:200%;
-  background:radial-gradient(circle at 30% 40%, rgba(255,255,255,0.05), transparent 60%);
-  animation:fogMove 40s linear infinite;
+/* Logo Styling */
+.hero img {
+  width: 420px;
+  max-width: 90%;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 0 25px rgba(45,252,143,0.25));
+  transition: 0.4s ease;
 }
 
-/* =========================
-   HERO CONTENT
-========================= */
-
-.hero{
-  position:relative;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  z-index:10;
+.hero img:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 40px rgba(45,252,143,0.4));
 }
 
-.title{
-  font-size:80px;
-  letter-spacing:8px;
-  font-weight:900;
-  color:#cdd9cf;
-  text-shadow:
-    0 2px 4px rgba(0,0,0,0.7),
-    0 0 15px rgba(40,90,60,0.4);
-  position:relative;
+.hero h1 {
+  font-size: 40px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
 }
 
-.subtitle{
-  margin-top:20px;
-  font-size:18px;
-  opacity:0.8;
-  letter-spacing:2px;
+.hero p {
+  opacity: 0.7;
+  font-size: 18px;
+  max-width: 600px;
+  margin-bottom: 35px;
 }
 
-.btn{
-  margin-top:40px;
-  padding:16px 40px;
-  border-radius:40px;
-  border:1px solid rgba(255,255,255,0.2);
-  background:rgba(30,60,40,0.6);
-  backdrop-filter:blur(6px);
-  color:white;
-  font-weight:600;
-  letter-spacing:2px;
-  cursor:pointer;
-  transition:0.3s ease;
+.btn {
+  padding: 14px 40px;
+  border-radius: 40px;
+  border: 1px solid rgba(45,252,143,0.4);
+  background: rgba(20,40,30,0.7);
+  backdrop-filter: blur(6px);
+  color: white;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
-.btn:hover{
-  background:rgba(60,110,70,0.8);
-  transform:translateY(-2px);
+.btn:hover {
+  background: rgba(45,252,143,0.15);
+  box-shadow: 0 0 20px rgba(45,252,143,0.4);
+  transform: translateY(-2px);
 }
 
-/* =========================
-   ANIMATIONS
-========================= */
-
-@keyframes slowDrift{
-  0%{transform:translateX(0);}
-  100%{transform:translateX(-5%);}
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  opacity: 0.4;
 }
-
-@keyframes slowDriftReverse{
-  0%{transform:translateX(-5%);}
-  100%{transform:translateX(0);}
-}
-
-@keyframes fogMove{
-  0%{transform:translateX(0) translateY(0);}
-  50%{transform:translateX(-10%) translateY(-5%);}
-  100%{transform:translateX(0) translateY(0);}
-}
-
-/* =========================
-   VINE OVERLAY
-========================= */
-
-.vines{
-  position:absolute;
-  top:0;
-  width:100%;
-  height:200px;
-  background:url('https://pngimg.com/uploads/vine/vine_PNG44.png') repeat-x;
-  background-size:contain;
-  opacity:0.2;
-  animation:vinesway 12s ease-in-out infinite alternate;
-}
-
-@keyframes vinesway{
-  from{transform:translateY(0);}
-  to{transform:translateY(8px);}
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="forest">
-  <div class="layer layer1"></div>
-  <div class="layer layer2"></div>
-  <div class="fog"></div>
-</div>
-
-<div class="vines"></div>
-
 <div class="hero">
-  <div class="title">FORGE</div>
-  <div class="subtitle">Guard What You've Built</div>
+
+  <!-- Make sure the path matches your file -->
+  <img src="forge-logo.jpg" alt="Forge Logo">
+
+  <h1>Digital Presence. Secured.</h1>
+
+  <p>
+    Elite digital protection, social media management, and online risk monitoring 
+    for high-value individuals and brands.
+  </p>
+
   <button class="btn" onclick="location.href='forge-portal.html'">
-    Enter The Cabin
+    Enter Forge
   </button>
+
 </div>
+
+<footer>
+  © 2026 Forge. All Rights Reserved.
+</footer>
 
 </body>
 </html>
