@@ -208,9 +208,10 @@ section h2{
 }
 
 .ai-output{
-  min-height:100px;
+  min-height:120px;
   margin-bottom:20px;
-  opacity:.8;
+  opacity:.9;
+  white-space:pre-line;
 }
 
 .ai-input{
@@ -319,10 +320,12 @@ footer{
   <div class="ai-container">
     <div class="ai-box">
       <div class="ai-output" id="aiOutput">
-        AI online. How can FORGE assist you?
+AI online. Describe your digital risk.
+Example:
+@username, 50000 followers, no 2FA, public email visible
       </div>
       <div class="ai-input">
-        <input type="text" id="aiInput" placeholder="Describe your digital risk...">
+        <input type="text" id="aiInput" placeholder="Enter: username, followers, 2FA status, email visibility">
         <button onclick="runAI()">Analyze</button>
       </div>
     </div>
@@ -338,8 +341,8 @@ function scrollToAI(){
   document.getElementById("ai").scrollIntoView({behavior:"smooth"});
 }
 
-function runAI(){
-  const input = document.getElementById("aiInput").value;
+async function runAI(){
+  const input = document.getElementById("aiInput").value.trim();
   const output = document.getElementById("aiOutput");
 
   if(!input){
@@ -347,16 +350,49 @@ function runAI(){
     return;
   }
 
-  output.innerHTML = "Analyzing risk profile...";
+  output.innerHTML = "Connecting to Forge Neural Engine...\nAnalyzing risk profile...";
 
-  setTimeout(()=>{
-    output.innerHTML = "Preliminary assessment complete. Risk exposure detected. A structured protection strategy is recommended. Request private consultation for full analysis.";
-  },1500);
+  try{
+    const parts = input.split(",");
+    const instagram = parts[0]?.replace("@","").trim() || "";
+    const followers = parseInt(parts[1]) || 0;
+    const twoFA = input.toLowerCase().includes("no 2fa") ? "no" : "yes";
+    const publicEmail = input.toLowerCase().includes("public email") ? "yes" : "no";
+
+    const response = await fetch("YOUR_EDGE_FUNCTION_URL", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        instagram,
+        followers,
+        twoFA,
+        publicEmail
+      })
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.error || "Scan failed");
+    }
+
+    output.innerHTML = `
+RISK SCORE: ${data.score}
+SEVERITY: ${data.severity}
+TIER: ${data.tier}
+ATTACK PROBABILITY: ${data.attackProbability}%
+CONFIDENCE: ${data.confidence}%
+
+${data.report}
+`;
+
+  }catch(err){
+    output.innerHTML = "Error connecting to Forge Engine.\n" + err.message;
+  }
 }
 </script>
-
-<!-- Tidio AI Chat (Replace with your actual script) -->
-<script src="//code.tidio.co/YOUR_UNIQUE_CODE.js" async></script>
 
 </body>
 </html>
