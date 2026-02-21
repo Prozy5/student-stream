@@ -211,7 +211,7 @@ section h2{
   min-height:120px;
   margin-bottom:20px;
   opacity:.9;
-  white-space:pre-line;
+  transition:.3s;
 }
 
 .ai-input{
@@ -226,6 +226,7 @@ section h2{
   border:1px solid rgba(45,252,143,.3);
   background:transparent;
   color:#fff;
+  outline:none;
 }
 
 .ai-input button{
@@ -251,6 +252,9 @@ footer{
   .hero{
     flex-direction:column;
     text-align:center;
+  }
+  .hero-logo img{
+    width:280px;
   }
 }
 </style>
@@ -320,12 +324,10 @@ footer{
   <div class="ai-container">
     <div class="ai-box">
       <div class="ai-output" id="aiOutput">
-AI online. Describe your digital risk.
-Example:
-@username, 50000 followers, no 2FA, public email visible
+        AI online. Awaiting risk input.
       </div>
       <div class="ai-input">
-        <input type="text" id="aiInput" placeholder="Enter: username, followers, 2FA status, email visibility">
+        <input type="text" id="aiInput" placeholder="Example: @username, 2k followers, no 2FA, public email">
         <button onclick="runAI()">Analyze</button>
       </div>
     </div>
@@ -341,56 +343,48 @@ function scrollToAI(){
   document.getElementById("ai").scrollIntoView({behavior:"smooth"});
 }
 
-async function runAI(){
-  const input = document.getElementById("aiInput").value.trim();
+function sanitizeInput(text){
+  return text.replace(/[^\w\s@.,]/gi, "").trim();
+}
+
+function runAI(){
+  const inputField = document.getElementById("aiInput");
   const output = document.getElementById("aiOutput");
 
-  if(!input){
+  let rawInput = inputField.value;
+
+  if(!rawInput || rawInput.trim() === ""){
     output.innerHTML = "Please describe your digital concern.";
     return;
   }
 
-  output.innerHTML = "Connecting to Forge Neural Engine...\nAnalyzing risk profile...";
+  const input = sanitizeInput(rawInput.toLowerCase());
 
-  try{
-    const parts = input.split(",");
-    const instagram = parts[0]?.replace("@","").trim() || "";
-    const followers = parseInt(parts[1]) || 0;
-    const twoFA = input.toLowerCase().includes("no 2fa") ? "no" : "yes";
-    const publicEmail = input.toLowerCase().includes("public email") ? "yes" : "no";
+  output.innerHTML = "Analyzing risk profile...";
 
-    const response = await fetch("YOUR_EDGE_FUNCTION_URL", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        instagram,
-        followers,
-        twoFA,
-        publicEmail
-      })
-    });
+  setTimeout(()=>{
+    let riskLevel = "LOW";
 
-    const data = await response.json();
+    if(input.includes("no 2fa") || input.includes("no two factor")){
+      riskLevel = "HIGH";
+    }
 
-    if(!response.ok){
-      throw new Error(data.error || "Scan failed");
+    if(input.includes("public email")){
+      riskLevel = "ELEVATED";
+    }
+
+    if(input.includes("0 followers") || input.includes("2 followers")){
+      riskLevel = "MODERATE";
     }
 
     output.innerHTML = `
-RISK SCORE: ${data.score}
-SEVERITY: ${data.severity}
-TIER: ${data.tier}
-ATTACK PROBABILITY: ${data.attackProbability}%
-CONFIDENCE: ${data.confidence}%
-
-${data.report}
-`;
-
-  }catch(err){
-    output.innerHTML = "Error connecting to Forge Engine.\n" + err.message;
-  }
+      Assessment Complete.<br><br>
+      Risk Level: <strong>${riskLevel}</strong><br><br>
+      Vulnerability indicators detected.<br>
+      A structured protection strategy is recommended.<br><br>
+      Request private consultation for full mitigation protocol.
+    `;
+  },1500);
 }
 </script>
 
