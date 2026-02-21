@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Forge AI Risk Scanner</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f0f0f;
+      color: white;
+      padding: 40px;
+    }
+    input, select, button {
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+    }
+    button {
+      background: #ff4d00;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 30px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Forge AI Risk Scanner</h1>
+
+<input id="instagram" placeholder="Instagram Handle">
+<input id="followers" type="number" placeholder="Follower Count">
+
+<select id="twoFA">
+  <option value="yes">2FA Enabled</option>
+  <option value="no">No 2FA</option>
+</select>
+
+<select id="publicEmail">
+  <option value="no">No Public Email</option>
+  <option value="yes">Public Email Visible</option>
+</select>
+
+<button onclick="runScan()">Generate Report</button>
+
+<div id="result"></div>
+
+<script>
+async function runScan() {
+  const instagram = document.getElementById("instagram").value;
+  const followers = parseInt(document.getElementById("followers").value);
+  const twoFA = document.getElementById("twoFA").value;
+  const publicEmail = document.getElementById("publicEmail").value;
+
+  document.getElementById("result").innerText = "Analyzing...";
+
+  const response = await fetch("https://YOURPROJECT.functions.supabase.co/forge-scan", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      instagram,
+      followers,
+      twoFA,
+      publicEmail
+    })
+  });
+
+  const data = await response.json();
+
+  document.getElementById("result").innerText =
+    "Risk Score: " + data.score + "\n\n" + data.report;
+}
+</script>
+
+</body>
+</html>
