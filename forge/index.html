@@ -363,30 +363,63 @@ function runAI(){
   output.innerHTML = "Analyzing risk profile...";
 
   setTimeout(()=>{
+
+    let score = 0;
+    let findings = [];
+
+    // 2FA Risk
+    if(input.includes("no 2fa") || input.includes("no two factor")){
+      score += 40;
+      findings.push("Two-factor authentication not enabled.");
+    }
+
+    // Public Email Risk
+    if(input.includes("public email")){
+      score += 25;
+      findings.push("Public email exposure detected.");
+    }
+
+    // Low Followers (new / vulnerable accounts)
+    if(input.includes("0 followers") || input.includes("1 follower") || input.includes("2 followers")){
+      score += 15;
+      findings.push("Low account authority score.");
+    }
+
+    // Impersonation indicator
+    if(input.includes("impersonation") || input.includes("fake account")){
+      score += 35;
+      findings.push("Potential impersonation activity.");
+    }
+
+    // Determine Risk Level
     let riskLevel = "LOW";
 
-    if(input.includes("no 2fa") || input.includes("no two factor")){
+    if(score >= 70){
+      riskLevel = "CRITICAL";
+    } else if(score >= 45){
       riskLevel = "HIGH";
-    }
-
-    if(input.includes("public email")){
-      riskLevel = "ELEVATED";
-    }
-
-    if(input.includes("0 followers") || input.includes("2 followers")){
+    } else if(score >= 25){
       riskLevel = "MODERATE";
     }
 
+    let color;
+
+    if(riskLevel === "CRITICAL") color = "#ff3b3b";
+    else if(riskLevel === "HIGH") color = "#ff8c42";
+    else if(riskLevel === "MODERATE") color = "#ffd166";
+    else color = "#2dfc8f";
+
     output.innerHTML = `
       Assessment Complete.<br><br>
-      Risk Level: <strong>${riskLevel}</strong><br><br>
-      Vulnerability indicators detected.<br>
-      A structured protection strategy is recommended.<br><br>
-      Request private consultation for full mitigation protocol.
+      Risk Level: <strong style="color:${color}">${riskLevel}</strong><br><br>
+      Risk Score: ${score}/100<br><br>
+      ${findings.length ? findings.join("<br>") : "No major vulnerabilities detected."}
+      <br><br>
+      ${riskLevel === "CRITICAL" || riskLevel === "HIGH"
+        ? "Immediate mitigation protocol recommended."
+        : "Structured protection strategy advised."}
     `;
-  },1500);
+
+  },1200);
 }
 </script>
-
-</body>
-</html>
