@@ -1,211 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Forge Admin Command Center</title>
+<title>Forge Operations Command</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, #071018 0%, #030712 60%, #020617 100%);
-  color: white;
-  display: flex;
-  overflow-x: hidden;
+  margin:0;
+  font-family:Segoe UI;
+  background:#050b18;
+  color:white;
 }
 
-/* ===== Sidebar ===== */
-.sidebar {
-  width: 220px;
-  background: rgba(10,15,25,0.9);
-  backdrop-filter: blur(10px);
-  height: 100vh;
-  padding-top: 20px;
-  position: fixed;
-  border-right: 1px solid rgba(255,255,255,0.05);
+.container {
+  display:grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap:20px;
+  padding:30px;
 }
 
-.sidebar a {
-  display: block;
-  padding: 15px 20px;
-  color: #9ca3af;
-  text-decoration: none;
-  transition: 0.3s;
+.globe-panel {
+  background:linear-gradient(145deg,#0b1630,#081024);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 0 40px rgba(0,150,255,.2);
 }
 
-.sidebar a:hover {
-  background: rgba(255,255,255,0.05);
-  color: white;
+.globe {
+  width:100%;
+  height:420px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#3ad5ff,#0b6cff 60%,#021029);
+  box-shadow:0 0 80px rgba(0,150,255,.6);
 }
 
-/* ===== Main ===== */
-.main {
-  margin-left: 220px;
-  padding: 40px;
-  width: 100%;
+.right-panel {
+  display:grid;
+  grid-template-rows: repeat(4, 1fr);
+  gap:20px;
 }
 
-/* ===== Cards ===== */
 .card {
-  background: rgba(20,25,40,0.7);
-  backdrop-filter: blur(12px);
-  padding: 20px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.05);
-  margin-bottom: 20px;
-  box-shadow: 0 0 25px rgba(0,255,255,0.05);
+  background:linear-gradient(145deg,#0c1833,#081024);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 0 30px rgba(0,150,255,.15);
 }
 
 .metric {
-  font-size: 26px;
-  font-weight: bold;
-  margin-top: 10px;
+  font-size:26px;
+  font-weight:bold;
+  margin-top:8px;
 }
 
-/* ===== Earth Container ===== */
-.earth-container {
-  position: relative;
-  width: 260px;
-  height: 260px;
-  margin: 30px auto;
+.chart-box {
+  height:150px;
 }
 
-.earth {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #3ee7ff, #0077ff 60%, #001a33 100%);
-  box-shadow:
-    0 0 60px rgba(0,150,255,0.6),
-    inset -20px -20px 40px rgba(0,0,0,0.6);
-  position: absolute;
-  top: 30px;
-  left: 30px;
-}
-
-/* Orbit Rings */
-.orbit {
-  position: absolute;
-  border: 1px dashed rgba(0,255,255,0.4);
-  border-radius: 50%;
-  animation: rotate 12s linear infinite;
-}
-
-.orbit.one { width: 240px; height: 240px; top: 10px; left: 10px; }
-.orbit.two { width: 270px; height: 270px; top: -5px; left: -5px; animation-duration: 18s; }
-
-/* Satellite */
-.satellite {
-  width: 12px;
-  height: 12px;
-  background: #00f0ff;
-  border-radius: 50%;
-  box-shadow: 0 0 15px #00f0ff;
-  position: absolute;
-  top: -6px;
-  left: 50%;
-}
-
-.orbit.two .satellite {
-  background: #00ff9d;
-  box-shadow: 0 0 15px #00ff9d;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.hidden { display: none; }
-
-/* Responsive */
-@media(max-width:900px){
-  .earth-container {
-    transform: scale(0.8);
-  }
+h2 {
+  margin-bottom:20px;
+  font-weight:500;
 }
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-  <a href="#" onclick="showTab('dashboard')">Dashboard</a>
-  <a href="#" onclick="showTab('clients')">Clients</a>
-  <a href="#" onclick="showTab('security')">Security</a>
-</div>
+<h2 style="padding:30px 30px 0;">Forge National Operations Dashboard</h2>
 
-<div class="main">
+<div class="container">
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="tab">
-    <h1>Forge Admin Command Center</h1>
-
-    <div class="earth-container">
-      <div class="orbit one">
-        <div class="satellite"></div>
-      </div>
-      <div class="orbit two">
-        <div class="satellite"></div>
-      </div>
-      <div class="earth"></div>
+  <!-- LEFT GLOBE -->
+  <div class="globe-panel">
+    <div class="globe"></div>
+    <div style="margin-top:20px;">
+      <canvas id="threatChart"></canvas>
     </div>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="right-panel">
 
     <div class="card">
-      <div>Active MRR</div>
+      Active MRR
       <div id="mrr" class="metric">$0</div>
     </div>
 
     <div class="card">
-      <div>Revenue At Risk</div>
+      Revenue At Risk
       <div id="risk" class="metric">$0</div>
     </div>
 
     <div class="card">
-      <div>Churn %</div>
+      Churn %
       <div id="churn" class="metric">0%</div>
     </div>
 
     <div class="card">
-      <div>Fusion Score</div>
+      Fusion Score
       <div id="fusion" class="metric">0</div>
     </div>
-  </div>
 
-  <!-- CLIENTS -->
-  <div id="clients" class="tab hidden">
-    <h2>Subscription Health</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Client</th>
-          <th>Amount</th>
-          <th>Churn Risk</th>
-          <th>Health Score</th>
-        </tr>
-      </thead>
-      <tbody id="healthTable"></tbody>
-    </table>
-  </div>
-
-  <!-- SECURITY -->
-  <div id="security" class="tab hidden">
-    <h2>Security Monitoring</h2>
-    <div class="card">
-      <div>Global Threat Index</div>
-      <div id="gti" class="metric">0</div>
-    </div>
   </div>
 
 </div>
@@ -213,36 +109,45 @@ th, td {
 <script>
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-function showTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
-  document.getElementById(tab).classList.remove('hidden');
+async function loadData(){
+  const {data:rev} = await sb.from("forge_admin_revenue_analytics").select("*").single();
+  if(rev) document.getElementById("mrr").innerText="$"+rev.active_mrr;
+
+  const {data:risk} = await sb.from("forge_revenue_at_risk").select("*").single();
+  if(risk) document.getElementById("risk").innerText="$"+risk.revenue_at_risk;
+
+  const {data:churn} = await sb.from("forge_churn_rate").select("*").single();
+  if(churn) document.getElementById("churn").innerText=churn.churn_percentage+"%";
+
+  const {data:fusion} = await sb.from("forge_fusion_score").select("*").single();
+  if(fusion) document.getElementById("fusion").innerText=fusion.forge_fusion_score;
 }
 
-async function loadDashboard(){
-  const { data: revenue } = await client.from("forge_admin_revenue_analytics").select("*").single();
-  if(revenue) document.getElementById("mrr").innerText = "$"+revenue.active_mrr;
+loadData();
 
-  const { data: risk } = await client.from("forge_revenue_at_risk").select("*").single();
-  if(risk) document.getElementById("risk").innerText = "$"+risk.revenue_at_risk;
-
-  const { data: churn } = await client.from("forge_churn_rate").select("*").single();
-  if(churn) document.getElementById("churn").innerText = churn.churn_percentage+"%";
-
-  const { data: fusion } = await client.from("forge_fusion_score").select("*").single();
-  if(fusion) document.getElementById("fusion").innerText = fusion.forge_fusion_score;
-
-  const { data: gti } = await client.from("forge_system_state").select("global_threat_index").eq("id",1).single();
-  if(gti) document.getElementById("gti").innerText = gti.global_threat_index;
-}
-
-client.channel("realtime")
-.on("postgres_changes",{event:"*",schema:"public"},()=>{
-  loadDashboard();
-}).subscribe();
-
-loadDashboard();
+/* Threat Activity Chart */
+new Chart(document.getElementById('threatChart'),{
+  type:'line',
+  data:{
+    labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    datasets:[{
+      label:"Threat Activity",
+      data:[12,19,8,15,22,17,25],
+      borderColor:"#00c8ff",
+      backgroundColor:"rgba(0,200,255,.1)",
+      tension:.4
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:"white"}},
+      y:{ticks:{color:"white"}}
+    }
+  }
+});
 </script>
 
 </body>
