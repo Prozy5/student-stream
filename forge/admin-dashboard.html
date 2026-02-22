@@ -1,392 +1,436 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Forge Admin Dashboard</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Forge AI – Control Center</title>
 
-  <!-- SUPABASE -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    const supabase = createClient(
-      "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-    );
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-    /* GLOBAL COUNTS */
-    async function loadStats(){
-      const clients = await supabase.from("forge_clients").select("*");
-      const tasks = await supabase.from("forge_tasks").select("*");
-      const messages = await supabase.from("forge_messages").select("*");
+/* ------------------ STATE ------------------ */
+let state = {
+  clients: [],
+  tasks: [],
+  messages: []
+};
 
-      document.getElementById("statClients").innerText = clients.data.length;
-      document.getElementById("statTasks").innerText = tasks.data.length;
-      document.getElementById("statMessages").innerText = messages.data.length;
+/* ------------------ INIT ------------------ */
+async function init(){
+  await loadAll();
+  startClock();
+}
+
+async function loadAll(){
+  await Promise.all([
+    loadClients(),
+    loadTasks(),
+    loadMessages()
+  ]);
+  updateStats();
+}
+
+/* ------------------ LOADERS ------------------ */
+async function loadClients(){
+  const { data, error } = await supabase
+    .from("forge_clients")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(!error && data){
+    state.clients = data;
+    renderClients();
+  }
+}
+
+async function loadTasks(){
+  const { data, error } = await supabase
+    .from("forge_tasks")
+    .select("*, forge_clients(full_name)")
+    .order("created_at",{ascending:false});
+
+  if(!error && data){
+    state.tasks = data;
+    renderTasks();
+  }
+}
+
+async function loadMessages(){
+  const { data, error } = await supabase
+    .from("forge_messages")
+    .select("*, forge_clients(full_name)")
+    .order("created_at",{ascending:false})
+    .limit(6);
+
+  if(!error && data){
+    state.messages = data;
+    renderMessages();
+  }
+}
+
+/* ------------------ RENDER ------------------ */
+function updateStats(){
+  animateNumber("statClients", state.clients.length);
+  animateNumber("statTasks", state.tasks.length);
+  animateNumber("statMessages", state.messages.length);
+
+  const openTasks = state.tasks.filter(t => t.task_status !== "DONE").length;
+  document.getElementById("threatLevel").innerText =
+    openTasks > 5 ? "MEDIUM" : "LOW";
+}
+
+function renderClients(){
+  const box = document.getElementById("clientTable");
+  box.innerHTML = state.clients.map(c=>`
+    <tr>
+      <td>${c.full_name}</td>
+      <td>@${c.social_handle || "—"}</td>
+      <td><span class="pill">${c.plan}</span></td>
+      <td><span class="status ${c.status?.toLowerCase()}">${c.status}</span></td>
+    </tr>
+  `).join("");
+}
+
+function renderTasks(){
+  const columns = {
+    TODO: document.getElementById("todoCol"),
+    PROGRESS: document.getElementById("progressCol"),
+    DONE: document.getElementById("doneCol")
+  };
+
+  Object.values(columns).forEach(col => col.innerHTML = "");
+
+  state.tasks.forEach(t=>{
+    const card = `
+      <div class="taskCard">
+        <b>${t.title}</b>
+        <small>${t.forge_clients?.full_name || ""}</small>
+      </div>
+    `;
+    if(columns[t.task_status]){
+      columns[t.task_status].innerHTML += card;
     }
+  });
+}
 
-    /* LOAD CLIENT TABLE */
-    async function loadClients(){
-      const { data } = await supabase
-        .from("forge_clients")
-        .select("*")
-        .order("created_at",{ascending:false});
+function renderMessages(){
+  const box = document.getElementById("messagesBox");
+  box.innerHTML = state.messages.map(m=>`
+    <div class="msg">
+      <b>${m.forge_clients?.full_name}</b>
+      <p>${m.message}</p>
+    </div>
+  `).join("");
+}
 
-      const table = document.getElementById("clientTable");
-      table.innerHTML = "";
+/* ------------------ UI UTILITIES ------------------ */
+function animateNumber(id, target){
+  let el = document.getElementById(id);
+  let current = 0;
+  const step = Math.ceil(target / 20);
 
-      data.forEach(c=>{
-        table.innerHTML += `
-          <tr>
-            <td>${c.full_name}</td>
-            <td>@${c.social_handle || "—"}</td>
-            <td><span class="pill">${c.plan}</span></td>
-            <td><span class="status">${c.status}</span></td>
-          </tr>
-        `;
-      });
+  const interval = setInterval(()=>{
+    current += step;
+    if(current >= target){
+      current = target;
+      clearInterval(interval);
     }
+    el.innerText = current;
+  },30);
+}
 
-    /* LOAD TASK BOARD */
-    async function loadTasks(){
-      const { data } = await supabase
-        .from("forge_tasks")
-        .select("*, forge_clients(full_name)")
-        .order("created_at",{ascending:false});
+function startClock(){
+  setInterval(()=>{
+    document.getElementById("clock").innerText =
+      new Date().toLocaleTimeString();
+  },1000);
+}
 
-      const todo = document.getElementById("todoTasks");
-      const prog = document.getElementById("progressTasks");
-      const done = document.getElementById("doneTasks");
+init();
+</script>
 
-      todo.innerHTML = "";
-      prog.innerHTML = "";
-      done.innerHTML = "";
+<style>
+:root{
+  --green:#6cff9f;
+  --bg1:#050b07;
+  --bg2:#020403;
+}
 
-      data.forEach(t=>{
-        const card = `
-          <div class="taskCard">
-            <b>${t.title}</b>
-            <small>${t.forge_clients.full_name}</small>
-          </div>
-        `;
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  background:radial-gradient(circle at top,var(--bg1),var(--bg2));
+  color:white;
+}
 
-        if(t.task_status==="TODO") todo.innerHTML += card;
-        if(t.task_status==="PROGRESS") prog.innerHTML += card;
-        if(t.task_status==="DONE") done.innerHTML += card;
-      });
-    }
+/* LAYOUT */
+.layout{
+  display:grid;
+  grid-template-columns:240px 1fr;
+  min-height:100vh;
+}
 
-    /* LOAD MESSAGES */
-    async function loadMessages(){
-      const { data } = await supabase
-        .from("forge_messages")
-        .select("*, forge_clients(full_name)")
-        .order("created_at",{ascending:false})
-        .limit(6);
+/* SIDEBAR */
+.sidebar{
+  background:#0a140f;
+  padding:25px;
+  border-right:1px solid rgba(255,255,255,0.05);
+}
 
-      const box = document.getElementById("messagesBox");
-      box.innerHTML = "";
+.logo{
+  font-weight:900;
+  color:var(--green);
+  font-size:20px;
+  margin-bottom:40px;
+}
 
-      data.forEach(m=>{
-        box.innerHTML += `
-          <div class="msgBubble">
-            <b>${m.forge_clients.full_name}</b>
-            <p>${m.message}</p>
-          </div>
-        `;
-      });
-    }
+.nav a{
+  display:block;
+  padding:12px;
+  border-radius:10px;
+  text-decoration:none;
+  color:rgba(255,255,255,0.6);
+  margin-bottom:10px;
+  transition:.2s;
+}
 
-    /* INIT */
-    async function init(){
-      await loadStats();
-      await loadClients();
-      await loadTasks();
-      await loadMessages();
-    }
+.nav a:hover{
+  background:rgba(108,255,159,0.1);
+  color:var(--green);
+}
 
-    init();
-  </script>
+/* MAIN */
+.main{
+  padding:30px;
+}
 
-  <style>
-    body{
-      margin:0;
-      font-family:system-ui;
-      background:radial-gradient(circle at top,#07110b,#020302);
-      color:white;
-      overflow-x:hidden;
-    }
+/* TOP BAR */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:25px;
+}
 
-    /* VINE BACKGROUND */
-    body:before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:
-        radial-gradient(circle,rgba(108,255,159,0.08),transparent 70%);
-      animation:pulse 8s infinite;
-      z-index:0;
-      pointer-events:none;
-    }
-    @keyframes pulse{
-      0%,100%{opacity:.4}
-      50%{opacity:.9}
-    }
+.statusLive{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
 
-    /* LAYOUT */
-    .layout{
-      display:grid;
-      grid-template-columns:260px 1fr;
-      min-height:100vh;
-      position:relative;
-      z-index:2;
-    }
+.dot{
+  width:8px;
+  height:8px;
+  background:var(--green);
+  border-radius:50%;
+  box-shadow:0 0 8px var(--green);
+}
 
-    /* SIDEBAR */
-    .sidebar{
-      background:rgba(10,18,12,0.95);
-      border-right:1px solid rgba(108,255,159,0.12);
-      padding:25px;
-    }
+.clock{
+  color:var(--green);
+  font-weight:700;
+}
 
-    .logo{
-      font-size:22px;
-      font-weight:1000;
-      color:#6cff9f;
-      margin-bottom:35px;
-    }
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:18px;
+  margin-bottom:25px;
+}
 
-    .nav a{
-      display:block;
-      padding:12px;
-      border-radius:12px;
-      text-decoration:none;
-      color:rgba(255,255,255,0.7);
-      margin-bottom:10px;
-      font-weight:700;
-      transition:.2s;
-    }
+.card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  padding:20px;
+  border-radius:18px;
+  backdrop-filter:blur(10px);
+}
 
-    .nav a:hover{
-      background:rgba(108,255,159,0.12);
-      color:#6cff9f;
-    }
+.card h2{
+  margin:0;
+  font-size:28px;
+  color:var(--green);
+}
 
-    /* MAIN */
-    .main{
-      padding:35px;
-    }
+.card p{
+  margin:5px 0 0;
+  opacity:.6;
+}
 
-    /* TOP STATS */
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:18px;
-      margin-bottom:30px;
-    }
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+}
 
-    .statCard{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(108,255,159,0.14);
-      border-radius:18px;
-      padding:18px;
-    }
+.panel{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.06);
+  padding:20px;
+  border-radius:20px;
+}
 
-    .statCard h2{
-      margin:0;
-      font-size:28px;
-      color:#6cff9f;
-    }
+.panel h3{
+  font-size:13px;
+  text-transform:uppercase;
+  opacity:.6;
+  margin-bottom:15px;
+}
 
-    .statCard p{
-      margin:6px 0 0;
-      opacity:.65;
-      font-size:13px;
-    }
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
 
-    /* GRID */
-    .grid{
-      display:grid;
-      grid-template-columns:2fr 1fr;
-      gap:22px;
-    }
+td{
+  padding:12px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:14px;
+}
 
-    .panel{
-      background:rgba(15,25,18,0.92);
-      border:1px solid rgba(108,255,159,0.14);
-      border-radius:20px;
-      padding:20px;
-    }
+.pill{
+  background:rgba(108,255,159,0.1);
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+  color:var(--green);
+}
 
-    .panel h3{
-      margin:0 0 15px;
-      color:#ffd98a;
-      font-size:15px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-    }
+/* TASK BOARD */
+.board{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
 
-    /* CLIENT TABLE */
-    table{
-      width:100%;
-      border-collapse:collapse;
-    }
-    td{
-      padding:12px;
-      border-bottom:1px solid rgba(255,255,255,0.06);
-      font-size:14px;
-    }
+.taskCol{
+  background:rgba(255,255,255,0.02);
+  padding:10px;
+  border-radius:12px;
+}
 
-    .pill{
-      padding:5px 10px;
-      border-radius:999px;
-      background:rgba(108,255,159,0.14);
-      color:#6cff9f;
-      font-size:12px;
-      font-weight:800;
-    }
+.taskCard{
+  background:rgba(108,255,159,0.08);
+  border:1px solid rgba(108,255,159,0.2);
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+  transition:.2s;
+}
 
-    .status{
-      font-size:12px;
-      opacity:.7;
-    }
+.taskCard:hover{
+  transform:translateY(-3px);
+}
 
-    /* TASK BOARD */
-    .taskBoard{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-    }
+/* MESSAGES */
+.msg{
+  background:rgba(255,255,255,0.03);
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  border:1px solid rgba(255,255,255,0.05);
+}
 
-    .taskCol{
-      background:rgba(255,255,255,0.03);
-      border-radius:14px;
-      padding:10px;
-    }
+.msg b{
+  color:var(--green);
+  font-size:13px;
+}
 
-    .taskCol h4{
-      margin:0 0 10px;
-      font-size:12px;
-      opacity:.7;
-    }
+.msg p{
+  margin:5px 0 0;
+  opacity:.7;
+  font-size:13px;
+}
 
-    .taskCard{
-      background:rgba(108,255,159,0.08);
-      border:1px solid rgba(108,255,159,0.15);
-      padding:10px;
-      border-radius:12px;
-      margin-bottom:10px;
-    }
-
-    .taskCard small{
-      display:block;
-      opacity:.6;
-      margin-top:5px;
-      font-size:11px;
-    }
-
-    /* MESSAGES */
-    .msgBubble{
-      background:rgba(255,255,255,0.04);
-      padding:12px;
-      border-radius:14px;
-      margin-bottom:12px;
-      border:1px solid rgba(255,255,255,0.06);
-    }
-
-    .msgBubble b{
-      color:#6cff9f;
-      font-size:13px;
-    }
-
-    .msgBubble p{
-      margin:6px 0 0;
-      font-size:13px;
-      opacity:.75;
-    }
-
-  </style>
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+  .sidebar{
+    display:none;
+  }
+  .grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">🌿 Forge Admin</div>
+<aside class="sidebar">
+  <div class="logo">Forge AI</div>
+  <div class="nav">
+    <a href="#">Dashboard</a>
+    <a href="#">Clients</a>
+    <a href="#">Tasks</a>
+    <a href="#">Messages</a>
+  </div>
+</aside>
 
-    <div class="nav">
-      <a href="#">Dashboard</a>
-      <a href="#">Clients</a>
-      <a href="#">Tasks</a>
-      <a href="#">Messages</a>
-      <a href="#">Security Monitor</a>
+<main class="main">
+
+  <div class="topbar">
+    <div class="statusLive">
+      <div class="dot"></div>
+      <span>AI Core Active</span>
     </div>
-  </aside>
+    <div class="clock" id="clock"></div>
+  </div>
 
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- STATS -->
-    <div class="stats">
-      <div class="statCard">
-        <h2 id="statClients">0</h2>
-        <p>Active Clients</p>
-      </div>
-
-      <div class="statCard">
-        <h2 id="statTasks">0</h2>
-        <p>Total Tasks</p>
-      </div>
-
-      <div class="statCard">
-        <h2 id="statMessages">0</h2>
-        <p>New Messages</p>
-      </div>
+  <div class="stats">
+    <div class="card">
+      <h2 id="statClients">0</h2>
+      <p>Active Clients</p>
     </div>
+    <div class="card">
+      <h2 id="statTasks">0</h2>
+      <p>Total Tasks</p>
+    </div>
+    <div class="card">
+      <h2 id="statMessages">0</h2>
+      <p>New Messages</p>
+    </div>
+    <div class="card">
+      <h2 id="threatLevel">LOW</h2>
+      <p>Threat Level</p>
+    </div>
+  </div>
 
-    <!-- GRID -->
-    <div class="grid">
+  <div class="grid">
 
-      <!-- CLIENTS + TASKS -->
-      <div class="panel">
-        <h3>Client Pipeline</h3>
+    <div class="panel">
+      <h3>Client Pipeline</h3>
+      <table>
+        <tbody id="clientTable"></tbody>
+      </table>
 
-        <table>
-          <tbody id="clientTable"></tbody>
-        </table>
-
-        <h3 style="margin-top:25px;">Task Tracker</h3>
-
-        <div class="taskBoard">
-          <div class="taskCol">
-            <h4>TODO</h4>
-            <div id="todoTasks"></div>
-          </div>
-
-          <div class="taskCol">
-            <h4>IN PROGRESS</h4>
-            <div id="progressTasks"></div>
-          </div>
-
-          <div class="taskCol">
-            <h4>DONE</h4>
-            <div id="doneTasks"></div>
-          </div>
-        </div>
+      <h3 style="margin-top:25px;">Task Tracker</h3>
+      <div class="board">
+        <div class="taskCol"><h4>TODO</h4><div id="todoCol"></div></div>
+        <div class="taskCol"><h4>IN PROGRESS</h4><div id="progressCol"></div></div>
+        <div class="taskCol"><h4>DONE</h4><div id="doneCol"></div></div>
       </div>
-
-      <!-- MESSAGES -->
-      <div class="panel">
-        <h3>Recent Client Messages</h3>
-        <div id="messagesBox"></div>
-      </div>
-
     </div>
 
-  </main>
+    <div class="panel">
+      <h3>Recent Messages</h3>
+      <div id="messagesBox"></div>
+    </div>
 
+  </div>
+
+</main>
 </div>
 
 </body>
