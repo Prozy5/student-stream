@@ -10,7 +10,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
 /* ---------------- STATE ---------------- */
@@ -34,10 +34,10 @@ async function init(){
   setInterval(loadAll, 20000);
   setInterval(runSecurityScan,15000);
   enableRealtime();
-  setupTabs();
+  setupTabs(); // ADDED
 }
 
-/* ---------------- TAB SYSTEM ---------------- */
+/* ---------------- TAB SYSTEM (ADDED) ---------------- */
 function setupTabs(){
 
   const links = document.querySelectorAll(".nav a");
@@ -180,6 +180,19 @@ function runSecurityScan(){
     logSecurity("High open task volume detected");
   }
 
+  const inactive = state.clients.filter(c=>c.status!=="ACTIVE").length;
+  if(inactive > 5){
+    risk += 20;
+    anomalies++;
+    logSecurity("Inactive client spike detected");
+  }
+
+  if(state.messages.length >= 6){
+    risk += 15;
+    anomalies++;
+    logSecurity("Message spike anomaly");
+  }
+
   if(Math.random() > 0.92){
     risk += 25;
     anomalies++;
@@ -204,8 +217,22 @@ function logSecurity(text){
 }
 
 function updateSecurityUI(){
+
   animate("riskScore", securityState.riskScore);
   animate("anomalyCount", securityState.anomalies);
+
+  const lockEl = document.getElementById("lockdownStatus");
+
+  if(securityState.riskScore > 70){
+    lockEl.innerText = "LOCKDOWN";
+    lockEl.className = "danger";
+  } else if(securityState.riskScore > 40){
+    lockEl.innerText = "ELEVATED";
+    lockEl.className = "warning";
+  } else {
+    lockEl.innerText = "SECURE";
+    lockEl.className = "safe";
+  }
 
   document.getElementById("securityFeed").innerHTML =
     securityState.events.map(e=>`
@@ -240,6 +267,7 @@ function renderTasks(){
     const card=`
       <div class="taskCard">
         <b>${t.title}</b>
+        <small>${t.forge_clients?.full_name||""}</small>
       </div>`;
     if(cols[t.task_status]) cols[t.task_status].innerHTML+=card;
   });
@@ -258,7 +286,8 @@ function renderMessages(){
 function renderActivity(){
   const feed=document.getElementById("activity");
   const recent=[
-    ...state.tasks.slice(0,3).map(t=>`Task created: ${t.title}`)
+    ...state.tasks.slice(0,3).map(t=>`Task created: ${t.title}`),
+    ...state.messages.slice(0,3).map(m=>`Message from ${m.forge_clients?.full_name}`)
   ];
   feed.innerHTML=recent.map(i=>`<div class="activityItem">${i}</div>`).join("");
 }
@@ -267,7 +296,13 @@ function renderActivity(){
 function animate(id,val){
   const el=document.getElementById(id);
   if(!el) return;
-  el.innerText = val;
+  let cur=0;
+  const step=Math.ceil(val/25)||1;
+  const i=setInterval(()=>{
+    cur+=step;
+    if(cur>=val){cur=val;clearInterval(i);}
+    el.innerText=cur;
+  },20);
 }
 
 function startClock(){
@@ -336,6 +371,56 @@ color:var(--green)!important;
 }
 
 .main{padding:30px;}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+margin-bottom:25px;
+}
+
+.clock{color:var(--green);font-weight:700;}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:18px;
+margin-bottom:25px;
+}
+
+.card{
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.05);
+padding:20px;
+border-radius:16px;
+}
+
+.card h2{margin:0;font-size:28px;color:var(--green);}
+.safe{color:var(--green);}
+.warning{color:var(--warning);}
+.danger{color:var(--danger);}
+
+.grid{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+
+.panel{
+background:rgba(255,255,255,.02);
+border:1px solid rgba(255,255,255,.05);
+padding:20px;
+border-radius:18px;
+}
+
+.securityItem{
+font-size:13px;
+opacity:.75;
+margin-bottom:8px;
+padding:6px;
+background:rgba(255,0,0,.05);
+border-left:3px solid var(--danger);
+border-radius:6px;
+}
 </style>
 </head>
 
@@ -355,20 +440,65 @@ color:var(--green)!important;
 <main class="main">
 
 <div id="dashboardPage">
-<h2>Dashboard</h2>
+
+<!-- YOUR ENTIRE ORIGINAL DASHBOARD CONTENT -->
+<div class="topbar">
+<div>AI Core Operational</div>
+<div class="clock" id="clock"></div>
 </div>
 
+<div class="stats">
+<div class="card"><h2 id="statClients">0</h2><p>Clients</p></div>
+<div class="card"><h2 id="statTasks">0</h2><p>Tasks</p></div>
+<div class="card"><h2 id="statMessages">0</h2><p>Messages</p></div>
+<div class="card"><h2 id="statRevenue">0</h2><p>Revenue ($)</p></div>
+<div class="card"><h2 id="threatLevel" class="safe">LOW</h2><p>Threat Level</p></div>
+<div class="card"><h2 id="statMRR">0</h2><p>MRR ($)</p></div>
+<div class="card"><h2 id="statChurn">0</h2><p>Churn %</p></div>
+<div class="card"><h2 id="statHealth">100</h2><p>System Health %</p></div>
+</div>
+
+<div class="grid">
+
+<div class="panel">
+<h3>Client Pipeline</h3>
+<table><tbody id="clientTable"></tbody></table>
+</div>
+
+<div class="panel">
+<h3>Recent Messages</h3>
+<div id="messages"></div>
+
+<h3 style="margin-top:20px;">Live Activity</h3>
+<div id="activity"></div>
+
+<h3 style="margin-top:20px;">Security Monitoring</h3>
+
+<div class="stats" style="grid-template-columns:repeat(3,1fr);">
+<div class="card"><h2 id="riskScore">0</h2><p>Risk Score</p></div>
+<div class="card"><h2 id="anomalyCount">0</h2><p>Anomalies</p></div>
+<div class="card"><h2 id="lockdownStatus" class="safe">SECURE</h2><p>Status</p></div>
+</div>
+
+<div id="securityFeed"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- NEW PAGES -->
 <div id="clientsPage" style="display:none;">
-<h2>Clients</h2>
+<div class="panel"><h2>Clients Page</h2></div>
 </div>
 
 <div id="tasksPage" style="display:none;">
-<h2>Tasks</h2>
+<div class="panel"><h2>Tasks Page</h2></div>
 </div>
 
 <div id="securityPage" style="display:none;">
-<h2>Security</h2>
-<div id="securityFeed"></div>
+<div class="panel"><h2>Security Page</h2></div>
 </div>
 
 </main>
