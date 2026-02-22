@@ -20,12 +20,20 @@ let state = {
   messages: []
 };
 
+let securityState = {
+  riskScore: 0,
+  anomalies: 0,
+  events: [],
+  locked: false
+};
+
 /* ---------------- INIT ---------------- */
 async function init(){
   await loadAll();
   startClock();
-  setInterval(loadAll, 20000); // keeping your auto refresh
-  enableRealtime(); // added realtime
+  setInterval(loadAll, 20000);
+  setInterval(runSecurityScan,15000);
+  enableRealtime();
 }
 
 function enableRealtime(){
@@ -44,7 +52,7 @@ async function loadAll(){
   ]);
   updateStats();
   renderActivity();
-  updateAdvancedMetrics(); // new metrics layer
+  updateAdvancedMetrics();
 }
 
 /* ---------------- LOADERS ---------------- */
@@ -76,7 +84,7 @@ async function loadMessages(){
   renderMessages();
 }
 
-/* ---------------- ORIGINAL STATS ---------------- */
+/* ---------------- STATS ---------------- */
 function updateStats(){
   animate("statClients", state.clients.length);
   animate("statTasks", state.tasks.length);
@@ -103,9 +111,8 @@ function updateStats(){
   animate("statRevenue", revenue);
 }
 
-/* ---------------- NEW ADVANCED METRICS ---------------- */
+/* ---------------- ADVANCED METRICS ---------------- */
 function updateAdvancedMetrics(){
-
   const total = state.clients.length;
   const active = state.clients.filter(c=>c.status==="ACTIVE").length;
 
@@ -125,6 +132,81 @@ function updateAdvancedMetrics(){
     const growthPercent = total === 0 ? 5 : Math.min(100, total * 10);
     growthBar.style.width = growthPercent + "%";
   }
+}
+
+/* ---------------- SECURITY ENGINE ---------------- */
+function runSecurityScan(){
+
+  let risk = 0;
+  let anomalies = 0;
+
+  const openTasks = state.tasks.filter(t=>t.task_status!=="DONE").length;
+  if(openTasks > 12){
+    risk += 30;
+    anomalies++;
+    logSecurity("High open task volume detected");
+  }
+
+  const inactive = state.clients.filter(c=>c.status!=="ACTIVE").length;
+  if(inactive > 5){
+    risk += 20;
+    anomalies++;
+    logSecurity("Inactive client spike detected");
+  }
+
+  if(state.messages.length >= 6){
+    risk += 15;
+    anomalies++;
+    logSecurity("Message spike anomaly");
+  }
+
+  if(Math.random() > 0.92){
+    risk += 25;
+    anomalies++;
+    logSecurity("AI anomaly detected");
+  }
+
+  securityState.riskScore = Math.min(100, risk);
+  securityState.anomalies = anomalies;
+
+  updateSecurityUI();
+}
+
+function logSecurity(text){
+  securityState.events.unshift({
+    message:text,
+    time:new Date().toLocaleTimeString()
+  });
+
+  if(securityState.events.length > 10){
+    securityState.events.pop();
+  }
+}
+
+function updateSecurityUI(){
+
+  animate("riskScore", securityState.riskScore);
+  animate("anomalyCount", securityState.anomalies);
+
+  const lockEl = document.getElementById("lockdownStatus");
+
+  if(securityState.riskScore > 70){
+    lockEl.innerText = "LOCKDOWN";
+    lockEl.className = "danger";
+  } else if(securityState.riskScore > 40){
+    lockEl.innerText = "ELEVATED";
+    lockEl.className = "warning";
+  } else {
+    lockEl.innerText = "SECURE";
+    lockEl.className = "safe";
+  }
+
+  document.getElementById("securityFeed").innerHTML =
+    securityState.events.map(e=>`
+      <div class="securityItem">
+        <b>${e.time}</b> — ${e.message}
+      </div>
+    `).join("");
 }
 
 /* ---------------- RENDER ---------------- */
@@ -212,27 +294,9 @@ init();
 body{
 margin:0;
 font-family:Inter,system-ui;
-background:
-radial-gradient(circle at top,var(--bg1),var(--bg2));
+background:radial-gradient(circle at top,var(--bg1),var(--bg2));
 color:white;
 overflow-x:hidden;
-}
-
-/* subtle animated grid */
-body::after{
-content:"";
-position:fixed;
-inset:0;
-background-image:
-linear-gradient(rgba(108,255,159,.05) 1px,transparent 1px),
-linear-gradient(90deg,rgba(108,255,159,.05) 1px,transparent 1px);
-background-size:60px 60px;
-animation:gridMove 30s linear infinite;
-pointer-events:none;
-}
-@keyframes gridMove{
-from{transform:translateY(0);}
-to{transform:translateY(60px);}
 }
 
 .layout{
@@ -268,9 +332,7 @@ background:rgba(108,255,159,.1);
 color:var(--green);
 }
 
-.main{
-padding:30px;
-}
+.main{padding:30px;}
 
 .topbar{
 display:flex;
@@ -294,30 +356,10 @@ padding:20px;
 border-radius:16px;
 }
 
-.card h2{
-margin:0;
-font-size:28px;
-color:var(--green);
-}
-
+.card h2{margin:0;font-size:28px;color:var(--green);}
 .safe{color:var(--green);}
 .warning{color:var(--warning);}
 .danger{color:var(--danger);}
-
-.growthContainer{
-background:rgba(255,255,255,.05);
-border-radius:20px;
-height:8px;
-margin-top:10px;
-overflow:hidden;
-}
-
-#growthBar{
-height:100%;
-width:10%;
-background:var(--green);
-transition:width .6s ease;
-}
 
 .grid{
 display:grid;
@@ -332,60 +374,14 @@ padding:20px;
 border-radius:18px;
 }
 
-.panel h3{
+.securityItem{
 font-size:13px;
-opacity:.6;
-margin-bottom:15px;
-text-transform:uppercase;
-}
-
-table{width:100%;border-collapse:collapse;}
-td{padding:10px;border-bottom:1px solid rgba(255,255,255,.05);}
-
-.pill{
-background:rgba(108,255,159,.1);
-padding:4px 10px;
-border-radius:999px;
-color:var(--green);
-font-size:12px;
-}
-
-.board{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-}
-
-.taskCard{
-background:rgba(108,255,159,.08);
-border:1px solid rgba(108,255,159,.2);
-padding:10px;
-border-radius:10px;
-margin-bottom:10px;
-transition:.2s;
-}
-.taskCard:hover{
-transform:translateY(-3px);
-box-shadow:0 0 15px rgba(108,255,159,.3);
-}
-
-.msg{
-background:rgba(255,255,255,.03);
-padding:10px;
-border-radius:10px;
-margin-bottom:10px;
-}
-
-.activityItem{
-font-size:13px;
-opacity:.7;
+opacity:.75;
 margin-bottom:8px;
-}
-
-@media(max-width:1000px){
-.layout{grid-template-columns:1fr;}
-.sidebar{display:none;}
-.grid{grid-template-columns:1fr;}
+padding:6px;
+background:rgba(255,0,0,.05);
+border-left:3px solid var(--danger);
+border-radius:6px;
 }
 </style>
 </head>
@@ -416,16 +412,9 @@ margin-bottom:8px;
 <div class="card"><h2 id="statMessages">0</h2><p>Messages</p></div>
 <div class="card"><h2 id="statRevenue">0</h2><p>Revenue ($)</p></div>
 <div class="card"><h2 id="threatLevel" class="safe">LOW</h2><p>Threat Level</p></div>
-
 <div class="card"><h2 id="statMRR">0</h2><p>MRR ($)</p></div>
 <div class="card"><h2 id="statChurn">0</h2><p>Churn %</p></div>
 <div class="card"><h2 id="statHealth">100</h2><p>System Health %</p></div>
-<div class="card">
-<h2>Growth</h2>
-<div class="growthContainer">
-<div id="growthBar"></div>
-</div>
-</div>
 </div>
 
 <div class="grid">
@@ -433,13 +422,6 @@ margin-bottom:8px;
 <div class="panel">
 <h3>Client Pipeline</h3>
 <table><tbody id="clientTable"></tbody></table>
-
-<h3 style="margin-top:20px;">Task Board</h3>
-<div class="board">
-<div><h4>TODO</h4><div id="todo"></div></div>
-<div><h4>PROGRESS</h4><div id="progress"></div></div>
-<div><h4>DONE</h4><div id="done"></div></div>
-</div>
 </div>
 
 <div class="panel">
@@ -448,6 +430,17 @@ margin-bottom:8px;
 
 <h3 style="margin-top:20px;">Live Activity</h3>
 <div id="activity"></div>
+
+<h3 style="margin-top:20px;">Security Monitoring</h3>
+
+<div class="stats" style="grid-template-columns:repeat(3,1fr);">
+<div class="card"><h2 id="riskScore">0</h2><p>Risk Score</p></div>
+<div class="card"><h2 id="anomalyCount">0</h2><p>Anomalies</p></div>
+<div class="card"><h2 id="lockdownStatus" class="safe">SECURE</h2><p>Status</p></div>
+</div>
+
+<div id="securityFeed"></div>
+
 </div>
 
 </div>
