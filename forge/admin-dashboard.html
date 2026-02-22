@@ -24,7 +24,16 @@ let state = {
 async function init(){
   await loadAll();
   startClock();
-  setInterval(loadAll, 20000); // auto refresh
+  setInterval(loadAll, 20000); // keeping your auto refresh
+  enableRealtime(); // added realtime
+}
+
+function enableRealtime(){
+  supabase.channel("forge-live")
+    .on("postgres_changes",{event:"*",schema:"public"},()=>{
+      loadAll();
+    })
+    .subscribe();
 }
 
 async function loadAll(){
@@ -35,6 +44,7 @@ async function loadAll(){
   ]);
   updateStats();
   renderActivity();
+  updateAdvancedMetrics(); // new metrics layer
 }
 
 /* ---------------- LOADERS ---------------- */
@@ -66,7 +76,7 @@ async function loadMessages(){
   renderMessages();
 }
 
-/* ---------------- RENDER ---------------- */
+/* ---------------- ORIGINAL STATS ---------------- */
 function updateStats(){
   animate("statClients", state.clients.length);
   animate("statTasks", state.tasks.length);
@@ -75,10 +85,13 @@ function updateStats(){
   const open = state.tasks.filter(t=>t.task_status!=="DONE").length;
   const threat = document.getElementById("threatLevel");
 
-  if(open > 8){
-    threat.innerText = "HIGH";
+  if(open > 10){
+    threat.innerText="CRITICAL";
     threat.className="danger";
-  } else if(open > 4){
+  } else if(open > 6){
+    threat.innerText="HIGH";
+    threat.className="danger";
+  } else if(open > 3){
     threat.innerText="MEDIUM";
     threat.className="warning";
   } else {
@@ -90,6 +103,31 @@ function updateStats(){
   animate("statRevenue", revenue);
 }
 
+/* ---------------- NEW ADVANCED METRICS ---------------- */
+function updateAdvancedMetrics(){
+
+  const total = state.clients.length;
+  const active = state.clients.filter(c=>c.status==="ACTIVE").length;
+
+  const mrr = active * 99;
+  const churn = total === 0 ? 0 :
+    Math.round(((total - active) / total) * 100);
+
+  const openTasks = state.tasks.filter(t=>t.task_status!=="DONE").length;
+  const health = Math.max(0, 100 - churn - (openTasks * 2));
+
+  animate("statMRR", mrr);
+  animate("statChurn", churn);
+  animate("statHealth", health);
+
+  const growthBar = document.getElementById("growthBar");
+  if(growthBar){
+    const growthPercent = total === 0 ? 5 : Math.min(100, total * 10);
+    growthBar.style.width = growthPercent + "%";
+  }
+}
+
+/* ---------------- RENDER ---------------- */
 function renderClients(){
   document.getElementById("clientTable").innerHTML =
     state.clients.map(c=>`
@@ -141,7 +179,8 @@ function renderActivity(){
 
 /* ---------------- UTIL ---------------- */
 function animate(id,val){
-  let el=document.getElementById(id);
+  const el=document.getElementById(id);
+  if(!el) return;
   let cur=0;
   const step=Math.ceil(val/25)||1;
   const i=setInterval(()=>{
@@ -265,6 +304,21 @@ color:var(--green);
 .warning{color:var(--warning);}
 .danger{color:var(--danger);}
 
+.growthContainer{
+background:rgba(255,255,255,.05);
+border-radius:20px;
+height:8px;
+margin-top:10px;
+overflow:hidden;
+}
+
+#growthBar{
+height:100%;
+width:10%;
+background:var(--green);
+transition:width .6s ease;
+}
+
 .grid{
 display:grid;
 grid-template-columns:2fr 1fr;
@@ -362,6 +416,16 @@ margin-bottom:8px;
 <div class="card"><h2 id="statMessages">0</h2><p>Messages</p></div>
 <div class="card"><h2 id="statRevenue">0</h2><p>Revenue ($)</p></div>
 <div class="card"><h2 id="threatLevel" class="safe">LOW</h2><p>Threat Level</p></div>
+
+<div class="card"><h2 id="statMRR">0</h2><p>MRR ($)</p></div>
+<div class="card"><h2 id="statChurn">0</h2><p>Churn %</p></div>
+<div class="card"><h2 id="statHealth">100</h2><p>System Health %</p></div>
+<div class="card">
+<h2>Growth</h2>
+<div class="growthContainer">
+<div id="growthBar"></div>
+</div>
+</div>
 </div>
 
 <div class="grid">
