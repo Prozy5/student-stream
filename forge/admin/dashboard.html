@@ -3,102 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <title>Forge Operations Command</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body {
+body{
   margin:0;
-  font-family:Segoe UI;
-  background:#050b18;
+  background:#040d1f;
+  font-family:Segoe UI, sans-serif;
   color:white;
 }
 
-.container {
-  display:grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap:20px;
-  padding:30px;
+.header{
+  padding:25px 40px;
+  font-size:20px;
+  font-weight:500;
 }
 
-.globe-panel {
-  background:linear-gradient(145deg,#0b1630,#081024);
+/* GRID LAYOUT */
+.dashboard{
+  display:grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap:25px;
+  padding:0 40px 40px;
+}
+
+/* LEFT PANEL */
+.left-panel{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+/* PERFECT SQUARE GLOBE CONTAINER */
+.globe-box{
+  background:linear-gradient(145deg,#08152e,#050e22);
   border-radius:20px;
   padding:20px;
-  box-shadow:0 0 40px rgba(0,150,255,.2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  aspect-ratio:1/1; /* THIS FIXES STRETCH */
+  box-shadow:0 0 60px rgba(0,170,255,.2);
 }
 
-.globe {
-  width:100%;
-  height:420px;
+.globe{
+  width:70%;
+  aspect-ratio:1/1;
   border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,#3ad5ff,#0b6cff 60%,#021029);
-  box-shadow:0 0 80px rgba(0,150,255,.6);
+  background:radial-gradient(circle at 35% 30%, #4fd3ff, #1b6dff 60%, #021029);
+  box-shadow:
+    0 0 80px rgba(0,170,255,.7),
+    inset -20px -20px 60px rgba(0,0,0,.5);
+  animation:rotate 30s linear infinite;
 }
 
-.right-panel {
+@keyframes rotate{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+
+/* Chart box */
+.chart-box{
+  background:linear-gradient(145deg,#0b1b39,#07122a);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 0 40px rgba(0,170,255,.12);
+}
+
+/* RIGHT PANEL */
+.right-panel{
   display:grid;
   grid-template-rows: repeat(4, 1fr);
   gap:20px;
 }
 
-.card {
-  background:linear-gradient(145deg,#0c1833,#081024);
+.card{
+  background:linear-gradient(145deg,#0b1b39,#07122a);
   border-radius:16px;
   padding:20px;
-  box-shadow:0 0 30px rgba(0,150,255,.15);
+  box-shadow:0 0 40px rgba(0,170,255,.12);
 }
 
-.metric {
+.card-title{
+  font-size:12px;
+  opacity:.7;
+  letter-spacing:.5px;
+}
+
+.metric{
   font-size:26px;
   font-weight:bold;
   margin-top:8px;
-}
-
-.chart-box {
-  height:150px;
-}
-
-h2 {
-  margin-bottom:20px;
-  font-weight:500;
 }
 </style>
 </head>
 <body>
 
-<h2 style="padding:30px 30px 0;">Forge National Operations Dashboard</h2>
+<div class="header">Forge Global Operations Command</div>
 
-<div class="container">
+<div class="dashboard">
 
-  <!-- LEFT GLOBE -->
-  <div class="globe-panel">
-    <div class="globe"></div>
-    <div style="margin-top:20px;">
-      <canvas id="threatChart"></canvas>
+  <!-- LEFT -->
+  <div class="left-panel">
+
+    <div class="globe-box">
+      <div class="globe"></div>
     </div>
+
+    <div class="chart-box">
+      <canvas id="activityChart"></canvas>
+    </div>
+
   </div>
 
-  <!-- RIGHT SIDE -->
+  <!-- RIGHT -->
   <div class="right-panel">
 
     <div class="card">
-      Active MRR
+      <div class="card-title">ACTIVE MRR</div>
       <div id="mrr" class="metric">$0</div>
     </div>
 
     <div class="card">
-      Revenue At Risk
+      <div class="card-title">REVENUE AT RISK</div>
       <div id="risk" class="metric">$0</div>
     </div>
 
     <div class="card">
-      Churn %
+      <div class="card-title">CHURN RATE</div>
       <div id="churn" class="metric">0%</div>
     </div>
 
     <div class="card">
-      Fusion Score
+      <div class="card-title">FUSION SCORE</div>
       <div id="fusion" class="metric">0</div>
     </div>
 
@@ -109,34 +148,32 @@ h2 {
 <script>
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-const sb = supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function loadData(){
   const {data:rev} = await sb.from("forge_admin_revenue_analytics").select("*").single();
-  if(rev) document.getElementById("mrr").innerText="$"+rev.active_mrr;
+  if(rev) document.getElementById("mrr").innerText="$"+(rev.active_mrr ?? 0);
 
   const {data:risk} = await sb.from("forge_revenue_at_risk").select("*").single();
-  if(risk) document.getElementById("risk").innerText="$"+risk.revenue_at_risk;
+  if(risk) document.getElementById("risk").innerText="$"+(risk.revenue_at_risk ?? 0);
 
   const {data:churn} = await sb.from("forge_churn_rate").select("*").single();
-  if(churn) document.getElementById("churn").innerText=churn.churn_percentage+"%";
+  if(churn) document.getElementById("churn").innerText=(churn.churn_percentage ?? 0)+"%";
 
   const {data:fusion} = await sb.from("forge_fusion_score").select("*").single();
-  if(fusion) document.getElementById("fusion").innerText=fusion.forge_fusion_score;
+  if(fusion) document.getElementById("fusion").innerText=fusion.forge_fusion_score ?? 0;
 }
 
 loadData();
 
-/* Threat Activity Chart */
-new Chart(document.getElementById('threatChart'),{
-  type:'line',
+new Chart(document.getElementById("activityChart"),{
+  type:"line",
   data:{
     labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
     datasets:[{
-      label:"Threat Activity",
-      data:[12,19,8,15,22,17,25],
-      borderColor:"#00c8ff",
-      backgroundColor:"rgba(0,200,255,.1)",
+      data:[12,18,9,14,22,16,27],
+      borderColor:"#00d4ff",
+      backgroundColor:"rgba(0,212,255,.1)",
       tension:.4
     }]
   },
