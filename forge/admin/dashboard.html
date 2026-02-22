@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Forge AI – Command Center</title>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+/* ---------------- STATE ---------------- */
+let state = {
+  clients: [],
+  tasks: [],
+  messages: []
+};
+
+let securityState = {
+  riskScore: 0,
+  anomalies: 0,
+  events: [],
+  locked: false
+};
+
+/* ---------------- INIT ---------------- */
+async function init(){
+  await loadAll();
+  startClock();
+  setInterval(loadAll, 20000);
+  setInterval(runSecurityScan,15000);
+  enableRealtime();
+}
+
+function enableRealtime(){
+  supabase.channel("forge-live")
+    .on("postgres_changes",{event:"*",schema:"public"},()=>{
+      loadAll();
+    })
+    .subscribe();
+}
+
+async function loadAll(){
+  await Promise.all([
+    loadClients(),
+    loadTasks(),
+    loadMessages()
+  ]);
+  updateStats();
+  renderActivity();
+  updateAdvancedMetrics();
+}
+
+/* ---------------- LOADERS ---------------- */
+async function loadClients(){
+  const { data } = await supabase
+    .from("forge_clients")
+    .select("*")
+    .order("created_at",{ascending:false});
+  state.clients = data || [];
+  renderClients();
+}
+
+async function loadTasks(){
+  const { data } = await supabase
+    .from("forge_tasks")
+    .select("*, forge_clients(full_name)")
+    .order("created_at",{ascending:false});
+  state.tasks = data || [];
+  renderTasks();
+}
+
+async function loadMessages(){
+  const { data } = await supabase
+    .from("forge_messages")
+    .select("*, forge_clients(full_name)")
+    .order("created_at",{ascending:false})
+    .limit(6);
+  state.messages = data || [];
+  renderMessages();
+}
+
+/* ---------------- STATS ---------------- */
+function updateStats(){
+  animate("statClients", state.clients.length);
+  animate("statTasks", state.tasks.length);
+  animate("statMessages", state.messages.length);
+
+  const open = state.tasks.filter(t=>t.task_status!=="DONE").length;
+  const threat = document.getElementById("threatLevel");
+
+  if(open > 10){
+    threat.innerText="CRITICAL";
+    threat.className="danger";
+  } else if(open > 6){
+    threat.innerText="HIGH";
+    threat.className="danger";
+  } else if(open > 3){
+    threat.innerText="MEDIUM";
+    threat.className="warning";
+  } else {
+    threat.innerText="LOW";
+    threat.className="safe";
+  }
+
+  const revenue = state.clients.length * 99;
+  animate("statRevenue", revenue);
+}
+
+/* ---------------- ADVANCED METRICS ---------------- */
+function updateAdvancedMetrics(){
+  const total = state.clients.length;
+  const active = state.clients.filter(c=>c.status==="ACTIVE").length;
+
+  const mrr = active * 99;
+  const churn = total === 0 ? 0 :
+    Math.round(((total - active) / total) * 100);
+
+  const openTasks = state.tasks.filter(t=>t.task_status!=="DONE").length;
+  const health = Math.max(0, 100 - churn - (openTasks * 2));
+
+  animate("statMRR", mrr);
+  animate("statChurn", churn);
+  animate("statHealth", health);
+
+  const growthBar = document.getElementById("growthBar");
+  if(growthBar){
+    const growthPercent = total === 0 ? 5 : Math.min(100, total * 10);
+    growthBar.style.width = growthPercent + "%";
+  }
+}
+
+/* ---------------- SECURITY ENGINE ---------------- */
+function runSecurityScan(){
+
+  let risk = 0;
+  let anomalies = 0;
+
+  const openTasks = state.tasks.filter(t=>t.task_status!=="DONE").length;
+  if(openTasks > 12){
+    risk += 30;
+    anomalies++;
+    logSecurity("High open task volume detected");
+  }
+
+  const inactive = state.clients.filter(c=>c.status!=="ACTIVE").length;
+  if(inactive > 5){
+    risk += 20;
+    anomalies++;
+    logSecurity("Inactive client spike detected");
+  }
+
+  if(state.messages.length >= 6){
+    risk += 15;
+    anomalies++;
+    logSecurity("Message spike anomaly");
+  }
+
+  if(Math.random() > 0.92){
+    risk += 25;
+    anomalies++;
+    logSecurity("AI anomaly detected");
+  }
+
+  securityState.riskScore = Math.min(100, risk);
+  securityState.anomalies = anomalies;
+
+  updateSecurityUI();
+}
+
+function logSecurity(text){
+  securityState.events.unshift({
+    message:text,
+    time:new Date().toLocaleTimeString()
+  });
+
+  if(securityState.events.length > 10){
+    securityState.events.pop();
+  }
+}
+
+function updateSecurityUI(){
+
+  animate("riskScore", securityState.riskScore);
+  animate("anomalyCount", securityState.anomalies);
+
+  const lockEl = document.getElementById("lockdownStatus");
+
+  if(securityState.riskScore > 70){
+    lockEl.innerText = "LOCKDOWN";
+    lockEl.className = "danger";
+  } else if(securityState.riskScore > 40){
+    lockEl.innerText = "ELEVATED";
+    lockEl.className = "warning";
+  } else {
+    lockEl.innerText = "SECURE";
+    lockEl.className = "safe";
+  }
+
+  document.getElementById("securityFeed").innerHTML =
+    securityState.events.map(e=>`
+      <div class="securityItem">
+        <b>${e.time}</b> — ${e.message}
+      </div>
+    `).join("");
+}
+
+/* ---------------- RENDER ---------------- */
+function renderClients(){
+  document.getElementById("clientTable").innerHTML =
+    state.clients.map(c=>`
+      <tr>
+        <td>${c.full_name}</td>
+        <td>@${c.social_handle || "—"}</td>
+        <td><span class="pill">${c.plan}</span></td>
+        <td>${c.status}</td>
+      </tr>
+    `).join("");
+}
+
+function renderTasks(){
+  const cols={
+    TODO:document.getElementById("todo"),
+    PROGRESS:document.getElementById("progress"),
+    DONE:document.getElementById("done")
+  };
+  Object.values(cols).forEach(c=>c.innerHTML="");
+
+  state.tasks.forEach(t=>{
+    const card=`
+      <div class="taskCard">
+        <b>${t.title}</b>
+        <small>${t.forge_clients?.full_name||""}</small>
+      </div>`;
+    if(cols[t.task_status]) cols[t.task_status].innerHTML+=card;
+  });
+}
+
+function renderMessages(){
+  document.getElementById("messages").innerHTML=
+    state.messages.map(m=>`
+      <div class="msg">
+        <b>${m.forge_clients?.full_name}</b>
+        <p>${m.message}</p>
+      </div>
+    `).join("");
+}
+
+function renderActivity(){
+  const feed=document.getElementById("activity");
+  const recent=[
+    ...state.tasks.slice(0,3).map(t=>`Task created: ${t.title}`),
+    ...state.messages.slice(0,3).map(m=>`Message from ${m.forge_clients?.full_name}`)
+  ];
+  feed.innerHTML=recent.map(i=>`<div class="activityItem">${i}</div>`).join("");
+}
+
+/* ---------------- UTIL ---------------- */
+function animate(id,val){
+  const el=document.getElementById(id);
+  if(!el) return;
+  let cur=0;
+  const step=Math.ceil(val/25)||1;
+  const i=setInterval(()=>{
+    cur+=step;
+    if(cur>=val){cur=val;clearInterval(i);}
+    el.innerText=cur;
+  },20);
+}
+
+function startClock(){
+  setInterval(()=>{
+    document.getElementById("clock").innerText=
+      new Date().toLocaleTimeString();
+  },1000);
+}
+
+init();
+</script>
+
+<style>
+:root{
+--green:#6cff9f;
+--bg1:#040a06;
+--bg2:#010302;
+--danger:#ff5e5e;
+--warning:#ffb84d;
+}
+
+body{
+margin:0;
+font-family:Inter,system-ui;
+background:radial-gradient(circle at top,var(--bg1),var(--bg2));
+color:white;
+overflow-x:hidden;
+}
+
+.layout{
+display:grid;
+grid-template-columns:250px 1fr;
+min-height:100vh;
+}
+
+.sidebar{
+background:#08120d;
+padding:30px;
+border-right:1px solid rgba(255,255,255,.05);
+}
+
+.logo{
+color:var(--green);
+font-weight:900;
+margin-bottom:40px;
+font-size:22px;
+}
+
+.nav a{
+display:block;
+color:rgba(255,255,255,.6);
+text-decoration:none;
+margin-bottom:15px;
+padding:10px;
+border-radius:8px;
+transition:.2s;
+}
+.nav a:hover{
+background:rgba(108,255,159,.1);
+color:var(--green);
+}
+
+.main{padding:30px;}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+margin-bottom:25px;
+}
+
+.clock{color:var(--green);font-weight:700;}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:18px;
+margin-bottom:25px;
+}
+
+.card{
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.05);
+padding:20px;
+border-radius:16px;
+}
+
+.card h2{margin:0;font-size:28px;color:var(--green);}
+.safe{color:var(--green);}
+.warning{color:var(--warning);}
+.danger{color:var(--danger);}
+
+.grid{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+
+.panel{
+background:rgba(255,255,255,.02);
+border:1px solid rgba(255,255,255,.05);
+padding:20px;
+border-radius:18px;
+}
+
+.securityItem{
+font-size:13px;
+opacity:.75;
+margin-bottom:8px;
+padding:6px;
+background:rgba(255,0,0,.05);
+border-left:3px solid var(--danger);
+border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+<aside class="sidebar">
+<div class="logo">Forge AI</div>
+<div class="nav">
+<a href="#">Dashboard</a>
+<a href="#">Clients</a>
+<a href="#">Tasks</a>
+<a href="#">Security</a>
+</div>
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+<div>AI Core Operational</div>
+<div class="clock" id="clock"></div>
+</div>
+
+<div class="stats">
+<div class="card"><h2 id="statClients">0</h2><p>Clients</p></div>
+<div class="card"><h2 id="statTasks">0</h2><p>Tasks</p></div>
+<div class="card"><h2 id="statMessages">0</h2><p>Messages</p></div>
+<div class="card"><h2 id="statRevenue">0</h2><p>Revenue ($)</p></div>
+<div class="card"><h2 id="threatLevel" class="safe">LOW</h2><p>Threat Level</p></div>
+<div class="card"><h2 id="statMRR">0</h2><p>MRR ($)</p></div>
+<div class="card"><h2 id="statChurn">0</h2><p>Churn %</p></div>
+<div class="card"><h2 id="statHealth">100</h2><p>System Health %</p></div>
+</div>
+
+<div class="grid">
+
+<div class="panel">
+<h3>Client Pipeline</h3>
+<table><tbody id="clientTable"></tbody></table>
+</div>
+
+<div class="panel">
+<h3>Recent Messages</h3>
+<div id="messages"></div>
+
+<h3 style="margin-top:20px;">Live Activity</h3>
+<div id="activity"></div>
+
+<h3 style="margin-top:20px;">Security Monitoring</h3>
+
+<div class="stats" style="grid-template-columns:repeat(3,1fr);">
+<div class="card"><h2 id="riskScore">0</h2><p>Risk Score</p></div>
+<div class="card"><h2 id="anomalyCount">0</h2><p>Anomalies</p></div>
+<div class="card"><h2 id="lockdownStatus" class="safe">SECURE</h2><p>Status</p></div>
+</div>
+
+<div id="securityFeed"></div>
+
+</div>
+
+</div>
+
+</main>
+</div>
+
+</body>
+</html>
