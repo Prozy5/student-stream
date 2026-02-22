@@ -2,22 +2,28 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Forge Global Command Center</title>
+<title>Forge Global Intelligence Command</title>
 
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Leaflet Map -->
+<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Chart.js -->
+<!-- Heatmap + Cluster -->
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+
+<!-- Chart -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
   margin:0;
-  background:#040d1f;
+  background:#030b1c;
   font-family:Segoe UI, sans-serif;
   color:white;
 }
@@ -25,17 +31,16 @@ body{
 .header{
   padding:25px 40px;
   font-size:20px;
-  font-weight:500;
+  letter-spacing:.5px;
 }
 
 .dashboard{
   display:grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns:1.5fr 1fr;
   gap:25px;
   padding:0 40px 40px;
 }
 
-/* LEFT SIDE */
 .left-panel{
   display:flex;
   flex-direction:column;
@@ -43,14 +48,14 @@ body{
 }
 
 .map-box{
-  background:linear-gradient(145deg,#08152e,#050e22);
+  background:linear-gradient(145deg,#071326,#040a18);
   border-radius:20px;
   padding:20px;
-  box-shadow:0 0 60px rgba(0,170,255,.2);
+  box-shadow:0 0 60px rgba(0,170,255,.25);
 }
 
 #map{
-  height:450px;
+  height:500px;
   border-radius:15px;
 }
 
@@ -58,13 +63,11 @@ body{
   background:linear-gradient(145deg,#0b1b39,#07122a);
   border-radius:16px;
   padding:20px;
-  box-shadow:0 0 40px rgba(0,170,255,.12);
 }
 
-/* RIGHT SIDE */
 .right-panel{
   display:grid;
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-rows:repeat(4,1fr);
   gap:20px;
 }
 
@@ -72,13 +75,12 @@ body{
   background:linear-gradient(145deg,#0b1b39,#07122a);
   border-radius:16px;
   padding:20px;
-  box-shadow:0 0 40px rgba(0,170,255,.12);
+  box-shadow:0 0 40px rgba(0,170,255,.15);
 }
 
 .card-title{
   font-size:12px;
-  opacity:.7;
-  letter-spacing:.5px;
+  opacity:.6;
 }
 
 .metric{
@@ -90,144 +92,174 @@ body{
 </head>
 <body>
 
-<div class="header">
-Forge Global Client Intelligence Command
-</div>
+<div class="header">Forge Global Intelligence Command</div>
 
 <div class="dashboard">
 
-  <!-- LEFT -->
-  <div class="left-panel">
+<div class="left-panel">
 
-    <div class="map-box">
-      <div id="map"></div>
-    </div>
+<div class="map-box">
+<div id="map"></div>
+</div>
 
-    <div class="chart-box">
-      <canvas id="revenueChart"></canvas>
-    </div>
-
-  </div>
-
-  <!-- RIGHT -->
-  <div class="right-panel">
-
-    <div class="card">
-      <div class="card-title">ACTIVE MRR</div>
-      <div id="mrr" class="metric">$0</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">REVENUE AT RISK</div>
-      <div id="risk" class="metric">$0</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">CHURN RATE</div>
-      <div id="churn" class="metric">0%</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">FUSION SCORE</div>
-      <div id="fusion" class="metric">0</div>
-    </div>
-
-  </div>
+<div class="chart-box">
+<canvas id="revenueChart"></canvas>
+</div>
 
 </div>
 
+<div class="right-panel">
+
+<div class="card">
+<div class="card-title">ACTIVE MRR</div>
+<div id="mrr" class="metric">$0</div>
+</div>
+
+<div class="card">
+<div class="card-title">REVENUE AT RISK</div>
+<div id="risk" class="metric">$0</div>
+</div>
+
+<div class="card">
+<div class="card-title">CHURN RATE</div>
+<div id="churn" class="metric">0%</div>
+</div>
+
+<div class="card">
+<div class="card-title">FUSION SCORE</div>
+<div id="fusion" class="metric">0</div>
+</div>
+
+</div>
+</div>
+
 <script>
-/* ---------------- SUPABASE ---------------- */
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ---------------- MAP ---------------- */
-const map = L.map('map', { zoomControl:false }).setView([20,0], 2);
+/* HQ Location (Change if needed) */
+const HQ = [37.7749,-122.4194];
+
+/* MAP INIT */
+const map = L.map('map',{zoomControl:false}).setView([20,0],2);
 
 L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
 ).addTo(map);
 
-let markersLayer = L.layerGroup().addTo(map);
+let clusterGroup = L.markerClusterGroup();
+let heatLayer;
+let arcLayer = L.layerGroup().addTo(map);
 
-async function loadClients(){
-  markersLayer.clearLayers();
-
-  const { data:clients } = await sb
-    .from("clients")
-    .select("company_name, latitude, longitude, monthly_revenue");
-
-  if(!clients) return;
-
-  clients.forEach(c=>{
-    if(c.latitude && c.longitude){
-      const marker = L.circleMarker(
-        [c.latitude, c.longitude],
-        {
-          radius:8,
-          color:"#00d4ff",
-          fillColor:"#00d4ff",
-          fillOpacity:0.9
-        }
-      ).addTo(markersLayer);
-
-      marker.bindPopup(`
-        <b>${c.company_name}</b><br>
-        Revenue: $${c.monthly_revenue ?? 0}
-      `);
-    }
+/* CURVED ARC FUNCTION */
+function drawArc(start,end){
+  const latlngs=[];
+  for(let i=0;i<=50;i++){
+    const offset=Math.sin(Math.PI*i/50)*10;
+    const lat=start[0]+(end[0]-start[0])*(i/50)+offset;
+    const lng=start[1]+(end[1]-start[1])*(i/50);
+    latlngs.push([lat,lng]);
+  }
+  return L.polyline(latlngs,{
+    color:"#00ffff",
+    weight:1,
+    opacity:.4
   });
 }
 
-/* Realtime Insert */
-sb.channel('clients-live')
-  .on(
-    'postgres_changes',
-    { event:'INSERT', schema:'public', table:'clients' },
-    payload => loadClients()
-  )
-  .subscribe();
+async function loadClients(){
 
-/* ---------------- METRICS ---------------- */
-async function loadMetrics(){
+  clusterGroup.clearLayers();
+  arcLayer.clearLayers();
+  if(heatLayer) map.removeLayer(heatLayer);
 
-  const {data:rev} = await sb.from("forge_admin_revenue_analytics").select("*").single();
-  document.getElementById("mrr").innerText =
-    "$"+(rev?.active_mrr ?? 0);
+  const {data:clients}=await sb
+    .from("clients")
+    .select("company_name,latitude,longitude,monthly_revenue");
 
-  const {data:risk} = await sb.from("forge_revenue_at_risk").select("*").single();
-  document.getElementById("risk").innerText =
-    "$"+(risk?.revenue_at_risk ?? 0);
+  if(!clients) return;
 
-  const {data:churn} = await sb.from("forge_churn_rate").select("*").single();
-  document.getElementById("churn").innerText =
-    (churn?.churn_percentage ?? 0)+"%";
+  const heatPoints=[];
+  let revenueTotals={};
 
-  const {data:fusion} = await sb.from("forge_fusion_score").select("*").single();
-  document.getElementById("fusion").innerText =
-    fusion?.forge_fusion_score ?? 0;
+  clients.forEach(c=>{
+
+    if(!c.latitude||!c.longitude) return;
+
+    const revenue=c.monthly_revenue??0;
+
+    /* Heatmap intensity */
+    heatPoints.push([c.latitude,c.longitude,Math.min(revenue/10000,1)]);
+
+    /* Pulsing marker */
+    const marker=L.circleMarker(
+      [c.latitude,c.longitude],
+      {
+        radius:6+(revenue/5000),
+        color:"#00ffff",
+        fillColor:"#00ffff",
+        fillOpacity:.8
+      }
+    );
+
+    marker.bindPopup(`
+      <b>${c.company_name}</b><br>
+      Revenue: $${revenue}
+    `);
+
+    clusterGroup.addLayer(marker);
+
+    /* Curved arc */
+    const arc=drawArc(HQ,[c.latitude,c.longitude]);
+    arcLayer.addLayer(arc);
+  });
+
+  map.addLayer(clusterGroup);
+
+  heatLayer=L.heatLayer(heatPoints,{
+    radius:35,
+    blur:30,
+    maxZoom:5
+  }).addTo(map);
 }
 
-/* ---------------- REVENUE CHART ---------------- */
-async function loadRevenueChart(){
+/* REALTIME */
+sb.channel('clients-live')
+  .on('postgres_changes',
+    {event:'INSERT',schema:'public',table:'clients'},
+    payload=>loadClients()
+  ).subscribe();
 
-  const {data} = await sb
-    .from("clients")
-    .select("company_name, monthly_revenue");
+/* METRICS */
+async function loadMetrics(){
+  const {data:rev}=await sb.from("forge_admin_revenue_analytics").select("*").single();
+  document.getElementById("mrr").innerText="$"+(rev?.active_mrr??0);
+
+  const {data:risk}=await sb.from("forge_revenue_at_risk").select("*").single();
+  document.getElementById("risk").innerText="$"+(risk?.revenue_at_risk??0);
+
+  const {data:churn}=await sb.from("forge_churn_rate").select("*").single();
+  document.getElementById("churn").innerText=(churn?.churn_percentage??0)+"%";
+
+  const {data:fusion}=await sb.from("forge_fusion_score").select("*").single();
+  document.getElementById("fusion").innerText=fusion?.forge_fusion_score??0;
+}
+
+/* REVENUE CHART */
+async function loadRevenueChart(){
+  const {data}=await sb.from("clients")
+  .select("company_name,monthly_revenue");
 
   if(!data) return;
-
-  const labels = data.map(c=>c.company_name);
-  const values = data.map(c=>c.monthly_revenue ?? 0);
 
   new Chart(document.getElementById("revenueChart"),{
     type:"bar",
     data:{
-      labels:labels,
+      labels:data.map(c=>c.company_name),
       datasets:[{
-        data:values,
-        backgroundColor:"rgba(0,212,255,.6)"
+        data:data.map(c=>c.monthly_revenue??0),
+        backgroundColor:"rgba(0,212,255,.7)"
       }]
     },
     options:{
@@ -240,12 +272,17 @@ async function loadRevenueChart(){
   });
 }
 
-/* ---------------- INIT ---------------- */
+/* Pulse animation */
+setInterval(()=>{
+  document.querySelectorAll(".leaflet-interactive").forEach(el=>{
+    el.style.opacity = el.style.opacity==0.4?0.9:0.4;
+  });
+},800);
+
 loadClients();
 loadMetrics();
 loadRevenueChart();
 
 </script>
-
 </body>
 </html>
