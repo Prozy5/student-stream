@@ -1,288 +1,230 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
 <title>Forge Global Intelligence Command</title>
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<!-- Heatmap + Cluster -->
+<!-- Heatmap + Clustering -->
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
 
-<!-- Chart -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
-body{
+body {
   margin:0;
-  background:#030b1c;
-  font-family:Segoe UI, sans-serif;
+  background:#020f1f;
+  font-family:Arial;
   color:white;
 }
 
-.header{
-  padding:25px 40px;
-  font-size:20px;
-  letter-spacing:.5px;
+#map {
+  height:60vh;
+  border-radius:12px;
 }
 
-.dashboard{
+.dashboard {
   display:grid;
-  grid-template-columns:1.5fr 1fr;
-  gap:25px;
-  padding:0 40px 40px;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:15px;
 }
 
-.left-panel{
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-.map-box{
-  background:linear-gradient(145deg,#071326,#040a18);
-  border-radius:20px;
+.card {
+  background:linear-gradient(145deg,#071c36,#0d2c55);
   padding:20px;
-  box-shadow:0 0 60px rgba(0,170,255,.25);
+  border-radius:12px;
+  box-shadow:0 0 20px rgba(0,212,255,.15);
 }
 
-#map{
-  height:500px;
-  border-radius:15px;
+.pulse {
+  width:12px;
+  height:12px;
+  background:#00d4ff;
+  border-radius:50%;
+  position:relative;
 }
 
-.chart-box{
-  background:linear-gradient(145deg,#0b1b39,#07122a);
-  border-radius:16px;
-  padding:20px;
-}
-
-.right-panel{
-  display:grid;
-  grid-template-rows:repeat(4,1fr);
-  gap:20px;
-}
-
-.card{
-  background:linear-gradient(145deg,#0b1b39,#07122a);
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 0 40px rgba(0,170,255,.15);
-}
-
-.card-title{
-  font-size:12px;
+.pulse::after{
+  content:'';
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:#00d4ff;
+  animation:pulse 2s infinite;
   opacity:.6;
 }
 
-.metric{
-  font-size:26px;
-  font-weight:bold;
-  margin-top:8px;
+@keyframes pulse{
+  0%{ transform:scale(1); opacity:.6; }
+  100%{ transform:scale(3); opacity:0; }
 }
 </style>
 </head>
+
 <body>
 
-<div class="header">Forge Global Intelligence Command</div>
+<h2 style="padding:15px;">Forge Global Intelligence Command</h2>
+<div id="map"></div>
 
 <div class="dashboard">
+  <div class="card">
+    <h3>Active MRR</h3>
+    <h1 id="mrr">$0</h1>
+  </div>
 
-<div class="left-panel">
+  <div class="card">
+    <h3>Revenue at Risk</h3>
+    <h1 id="risk">$0</h1>
+  </div>
 
-<div class="map-box">
-<div id="map"></div>
-</div>
+  <div class="card">
+    <h3>Churn Rate</h3>
+    <h1 id="churn">0%</h1>
+  </div>
 
-<div class="chart-box">
-<canvas id="revenueChart"></canvas>
-</div>
-
-</div>
-
-<div class="right-panel">
-
-<div class="card">
-<div class="card-title">ACTIVE MRR</div>
-<div id="mrr" class="metric">$0</div>
-</div>
-
-<div class="card">
-<div class="card-title">REVENUE AT RISK</div>
-<div id="risk" class="metric">$0</div>
-</div>
-
-<div class="card">
-<div class="card-title">CHURN RATE</div>
-<div id="churn" class="metric">0%</div>
-</div>
-
-<div class="card">
-<div class="card-title">FUSION SCORE</div>
-<div id="fusion" class="metric">0</div>
-</div>
-
-</div>
+  <div class="card">
+    <h3>Fusion Score</h3>
+    <h1 id="fusion">0</h1>
+  </div>
 </div>
 
 <script>
+
+/* ================= SUPABASE CONFIG ================= */
 const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* HQ Location (Change if needed) */
-const HQ = [37.7749,-122.4194];
-
-/* MAP INIT */
+/* ================= MAP INIT ================= */
 const map = L.map('map',{zoomControl:false}).setView([20,0],2);
 
 L.tileLayer(
-'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
 ).addTo(map);
 
 let clusterGroup = L.markerClusterGroup();
+map.addLayer(clusterGroup);
 let heatLayer;
-let arcLayer = L.layerGroup().addTo(map);
 
-/* CURVED ARC FUNCTION */
-function drawArc(start,end){
-  const latlngs=[];
-  for(let i=0;i<=50;i++){
-    const offset=Math.sin(Math.PI*i/50)*10;
-    const lat=start[0]+(end[0]-start[0])*(i/50)+offset;
-    const lng=start[1]+(end[1]-start[1])*(i/50);
-    latlngs.push([lat,lng]);
-  }
-  return L.polyline(latlngs,{
-    color:"#00ffff",
-    weight:1,
-    opacity:.4
-  });
-}
-
-async function loadClients(){
+/* ================= LOAD DATA ================= */
+async function loadIntel(){
 
   clusterGroup.clearLayers();
-  arcLayer.clearLayers();
   if(heatLayer) map.removeLayer(heatLayer);
 
-  const {data:clients}=await sb
+  const { data: clients } = await sb
     .from("clients")
-    .select("company_name,latitude,longitude,monthly_revenue");
+    .select("*");
 
   if(!clients) return;
 
-  const heatPoints=[];
-  let revenueTotals={};
+  let totalMRR = 0;
+  let riskMRR = 0;
+  let churned = 0;
+  let active = 0;
+  let heatData = [];
 
-  clients.forEach(c=>{
+  const headquarters = [29.9511,-90.0715]; // CHANGE TO YOUR HQ
 
-    if(!c.latitude||!c.longitude) return;
+  clients.forEach(client=>{
 
-    const revenue=c.monthly_revenue??0;
+    const revenue = client.monthly_revenue || 0;
+    const riskScore = client.churn_risk || 0;
+    const status = client.status || "active";
 
-    /* Heatmap intensity */
-    heatPoints.push([c.latitude,c.longitude,Math.min(revenue/10000,1)]);
+    if(status === "active"){
+      active++;
+      totalMRR += revenue;
+      if(riskScore > 0.6) riskMRR += revenue;
+    }
 
-    /* Pulsing marker */
-    const marker=L.circleMarker(
-      [c.latitude,c.longitude],
-      {
-        radius:6+(revenue/5000),
-        color:"#00ffff",
-        fillColor:"#00ffff",
-        fillOpacity:.8
-      }
-    );
+    if(status === "churned") churned++;
 
-    marker.bindPopup(`
-      <b>${c.company_name}</b><br>
-      Revenue: $${revenue}
-    `);
+    if(client.latitude && client.longitude){
 
-    clusterGroup.addLayer(marker);
+      heatData.push([
+        client.latitude,
+        client.longitude,
+        revenue / 10000
+      ]);
 
-    /* Curved arc */
-    const arc=drawArc(HQ,[c.latitude,c.longitude]);
-    arcLayer.addLayer(arc);
-  });
+      const icon = L.divIcon({
+        className:'pulse-marker',
+        html:`<div class="pulse"></div>`,
+        iconSize:[20,20]
+      });
 
-  map.addLayer(clusterGroup);
+      const marker = L.marker(
+        [client.latitude,client.longitude],
+        {icon}
+      ).bindPopup(`
+        <b>${client.company_name}</b><br>
+        Revenue: $${revenue}<br>
+        Risk: ${(riskScore*100).toFixed(0)}%
+      `);
 
-  heatLayer=L.heatLayer(heatPoints,{
-    radius:35,
-    blur:30,
-    maxZoom:5
-  }).addTo(map);
-}
+      clusterGroup.addLayer(marker);
 
-/* REALTIME */
-sb.channel('clients-live')
-  .on('postgres_changes',
-    {event:'INSERT',schema:'public',table:'clients'},
-    payload=>loadClients()
-  ).subscribe();
-
-/* METRICS */
-async function loadMetrics(){
-  const {data:rev}=await sb.from("forge_admin_revenue_analytics").select("*").single();
-  document.getElementById("mrr").innerText="$"+(rev?.active_mrr??0);
-
-  const {data:risk}=await sb.from("forge_revenue_at_risk").select("*").single();
-  document.getElementById("risk").innerText="$"+(risk?.revenue_at_risk??0);
-
-  const {data:churn}=await sb.from("forge_churn_rate").select("*").single();
-  document.getElementById("churn").innerText=(churn?.churn_percentage??0)+"%";
-
-  const {data:fusion}=await sb.from("forge_fusion_score").select("*").single();
-  document.getElementById("fusion").innerText=fusion?.forge_fusion_score??0;
-}
-
-/* REVENUE CHART */
-async function loadRevenueChart(){
-  const {data}=await sb.from("clients")
-  .select("company_name,monthly_revenue");
-
-  if(!data) return;
-
-  new Chart(document.getElementById("revenueChart"),{
-    type:"bar",
-    data:{
-      labels:data.map(c=>c.company_name),
-      datasets:[{
-        data:data.map(c=>c.monthly_revenue??0),
-        backgroundColor:"rgba(0,212,255,.7)"
-      }]
-    },
-    options:{
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{color:"white"}},
-        y:{ticks:{color:"white"}}
-      }
+      L.polyline(
+        [headquarters,[client.latitude,client.longitude]],
+        {
+          color:"#00d4ff",
+          weight:1,
+          opacity:0.3,
+          dashArray:"4 6"
+        }
+      ).addTo(map);
     }
   });
+
+  heatLayer = L.heatLayer(heatData,{
+    radius:30,
+    blur:25,
+    maxZoom:5
+  }).addTo(map);
+
+  const churnRate = active > 0
+    ? ((churned / (active+churned)) * 100).toFixed(1)
+    : 0;
+
+  const fusionScore = Math.round(
+    (totalMRR/1000) - (riskMRR/2000) - churnRate
+  );
+
+  document.getElementById("mrr").innerText =
+    "$" + totalMRR.toLocaleString();
+
+  document.getElementById("risk").innerText =
+    "$" + riskMRR.toLocaleString();
+
+  document.getElementById("churn").innerText =
+    churnRate + "%";
+
+  document.getElementById("fusion").innerText =
+    fusionScore;
 }
 
-/* Pulse animation */
-setInterval(()=>{
-  document.querySelectorAll(".leaflet-interactive").forEach(el=>{
-    el.style.opacity = el.style.opacity==0.4?0.9:0.4;
-  });
-},800);
+/* ================= REALTIME SYNC ================= */
+sb.channel('live-clients')
+  .on('postgres_changes',
+    {event:'*', schema:'public', table:'clients'},
+    ()=> loadIntel()
+  )
+  .subscribe();
 
-loadClients();
-loadMetrics();
-loadRevenueChart();
+/* ================= START ================= */
+loadIntel();
 
 </script>
+
 </body>
 </html>
