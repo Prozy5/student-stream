@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8" />
 <title>Forge Global Intelligence Command - Enterprise</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -20,31 +19,29 @@ font-size:22px;
 font-weight:bold;
 letter-spacing:2px;
 background:linear-gradient(90deg,#071c36,#0b2b52);
-display:flex;
-justify-content:space-between;
-align-items:center;
 }
 
 .section{padding:20px}
 
 .panel{
 background:#06182f;
-padding:15px;
+padding:20px;
 border-radius:12px;
-box-shadow:0 0 15px rgba(0,212,255,.08);
-max-width:500px;
+box-shadow:0 0 20px rgba(0,212,255,.08);
+max-width:520px;
 }
 
 .panel h3{
 margin-top:0;
 font-size:14px;
 letter-spacing:1px;
+margin-bottom:15px;
 }
 
 input{
 width:100%;
-padding:8px;
-margin-bottom:8px;
+padding:10px;
+margin-bottom:10px;
 border-radius:6px;
 border:none;
 background:#0c2b4f;
@@ -53,21 +50,25 @@ color:white;
 
 button{
 width:100%;
-padding:8px;
-margin-bottom:8px;
+padding:10px;
+margin-bottom:10px;
 border:none;
 border-radius:6px;
 background:#00d4ff;
 color:black;
 font-weight:bold;
 cursor:pointer;
+transition:.2s;
 }
 
+button:hover{opacity:.85}
+button:disabled{opacity:.5;cursor:not-allowed;}
+
 .item{
-padding:8px;
-margin-bottom:6px;
-border-radius:6px;
-font-size:12px;
+padding:10px;
+margin-bottom:8px;
+border-radius:8px;
+font-size:13px;
 background:#0b223d;
 display:flex;
 justify-content:space-between;
@@ -77,15 +78,22 @@ cursor:grab;
 
 .item img{
 max-height:35px;
-margin-right:8px;
+margin-right:10px;
 }
 
-.dragging{ opacity:.4; }
+.dragging{opacity:.4;}
 
 #logoPreview{
-max-height:60px;
+max-height:70px;
 margin-bottom:10px;
 display:none;
+border-radius:6px;
+}
+
+.status{
+font-size:12px;
+opacity:.8;
+margin-bottom:10px;
 }
 </style>
 </head>
@@ -98,15 +106,19 @@ Forge Global Intelligence Command — Enterprise
 
 <div class="section">
 <div class="panel">
+
 <h3>TRUSTED BRANDS ADMIN</h3>
+
+<div class="status" id="status"></div>
 
 <input id="brandName" placeholder="Brand name">
 <input type="file" id="brandLogo" accept="image/*">
 <img id="logoPreview">
 
-<button onclick="addBrand()">Add Brand</button>
+<button id="addBtn">Add Brand</button>
 
 <div id="brandList"></div>
+
 </div>
 </div>
 
@@ -115,7 +127,16 @@ const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* PREVIEW */
+const statusBox=document.getElementById("status");
+const addBtn=document.getElementById("addBtn");
+
+/* STATUS */
+function setStatus(msg,color="#aaa"){
+statusBox.innerText=msg;
+statusBox.style.color=color;
+}
+
+/* IMAGE PREVIEW */
 document.getElementById("brandLogo").addEventListener("change",function(e){
 const file=e.target.files[0];
 if(!file) return;
@@ -129,7 +150,7 @@ img.style.display="block";
 reader.readAsDataURL(file);
 });
 
-/* RESIZE */
+/* RESIZE IMAGE */
 function resizeImage(file,maxWidth){
 return new Promise(resolve=>{
 const img=new Image();
@@ -137,76 +158,101 @@ const canvas=document.createElement("canvas");
 const ctx=canvas.getContext("2d");
 
 img.onload=function(){
-let scale=maxWidth/img.width;
+const scale=maxWidth/img.width;
 canvas.width=maxWidth;
 canvas.height=img.height*scale;
 ctx.drawImage(img,0,0,canvas.width,canvas.height);
-canvas.toBlob(blob=>resolve(blob),"image/webp",0.85);
+
+canvas.toBlob(blob=>{
+resolve(blob);
+},"image/webp",0.9);
 };
+
 img.src=URL.createObjectURL(file);
 });
 }
 
 /* ADD BRAND */
+addBtn.addEventListener("click",addBrand);
+
 async function addBrand(){
 try{
 const name=document.getElementById("brandName").value.trim();
 const file=document.getElementById("brandLogo").files[0];
 
-if(!file || !name){
-alert("Missing fields");
+if(!name || !file){
+setStatus("Missing name or image","#ff6b6b");
 return;
 }
 
-const resized=await resizeImage(file,300);
-const filePath=`brands/${Date.now()}-${file.name}.webp`;
+addBtn.disabled=true;
+setStatus("Processing...","#00d4ff");
 
-/* 1️⃣ Upload */
+const resized=await resizeImage(file,300);
+const filePath=`brands/${Date.now()}.webp`;
+
+/* Upload */
 const { error: uploadError } = await sb.storage
 .from("brand-logos")
 .upload(filePath,resized,{ upsert:true });
 
 if(uploadError){
-console.error(uploadError);
-alert("Upload failed");
+setStatus(uploadError.message,"#ff6b6b");
+addBtn.disabled=false;
 return;
 }
 
-/* 2️⃣ Get Public URL */
-const { data: publicData } = sb.storage
+/* Get Public URL */
+const { data } = sb.storage
 .from("brand-logos")
 .getPublicUrl(filePath);
 
-const publicUrl=publicData.publicUrl;
+const publicUrl=data.publicUrl;
 
-/* 3️⃣ Save to DB */
+/* Get next sort order */
+const { data: existing } = await sb
+.from("trusted_brands")
+.select("sort_order")
+.order("sort_order",{ascending:false})
+.limit(1);
+
+let nextOrder=0;
+if(existing.length>0){
+nextOrder=existing[0].sort_order+1;
+}
+
+/* Insert */
 const { error: insertError } = await sb
 .from("trusted_brands")
 .insert({
 name:name,
-logo_url:publicUrl
+logo_url:publicUrl,
+sort_order:nextOrder
 });
 
 if(insertError){
-console.error(insertError);
-alert("Database insert failed");
+setStatus(insertError.message,"#ff6b6b");
+addBtn.disabled=false;
 return;
 }
 
-/* Reset form */
+/* Reset */
 document.getElementById("brandName").value="";
 document.getElementById("brandLogo").value="";
 document.getElementById("logoPreview").style.display="none";
 
+setStatus("Brand added successfully","#00ff9f");
+addBtn.disabled=false;
 loadBrands();
 
 }catch(err){
+setStatus("Unexpected error","#ff6b6b");
+addBtn.disabled=false;
 console.error(err);
-alert("Something went wrong");
 }
 }
 
-/* LOAD */
+/* LOAD BRANDS */
 async function loadBrands(){
 const { data, error } = await sb
 .from("trusted_brands")
@@ -219,16 +265,14 @@ return;
 }
 
 let html="";
-data?.forEach(b=>{
+data.forEach(b=>{
 html+=`
 <div class="item" draggable="true" data-id="${b.id}">
 <span>
-<img src="${b.logo_url}">
+<img src="${b.logo_url}" onerror="this.style.display='none'">
 ${b.name}
 </span>
-<span>
 <button onclick="deleteBrand('${b.id}')">❌</button>
-</span>
 </div>`;
 });
 
@@ -242,7 +286,7 @@ await sb.from("trusted_brands").delete().eq("id",id);
 loadBrands();
 }
 
-/* DRAG */
+/* DRAG REORDER */
 function enableDrag(){
 const items=document.querySelectorAll(".item");
 let dragItem;
@@ -265,6 +309,7 @@ item.parentNode.insertBefore(dragItem,item.nextSibling);
 
 async function updateOrder(){
 const items=document.querySelectorAll(".item");
+
 for(let i=0;i<items.length;i++){
 await sb.from("trusted_brands")
 .update({sort_order:i})
