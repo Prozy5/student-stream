@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
   <style>
     body {
@@ -17,260 +16,165 @@
 
     .container {
       width: 95%;
-      max-width: 1100px;
-      margin: 30px auto;
+      max-width: 800px;
+      margin: 40px auto;
     }
 
-    h1 {
-      color: #3CF58A;
-      font-size: 28px;
-      margin-bottom: 5px;
-    }
-
-    .sub {
-      color: #9aa3af;
-      margin-bottom: 30px;
-      font-size: 14px;
-    }
-
-    .panel {
-      background: #11161d;
-      padding: 20px;
-      border-radius: 14px;
-      border: 1px solid #1f2630;
-      margin-bottom: 35px;
-    }
-
-    input {
+    input, button {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      background: #0b0f14;
-      border: 1px solid #1f2630;
-      color: white;
       border-radius: 8px;
-      font-size: 14px;
-    }
-
-    input[type="file"] {
-      padding: 10px;
-      background: #0b0f14;
+      border: 1px solid #1f2630;
+      background: #11161d;
+      color: white;
     }
 
     button {
-      padding: 10px 16px;
-      background: #3CF58A;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-right: 6px;
-    }
-
-    button:hover {
-      opacity: .9;
-    }
-
-    .danger {
-      background: #ff4d4d;
-    }
-
-    .brands-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .brand-item {
-      background: #11161d;
-      border: 1px solid #1f2630;
-      padding: 15px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      cursor: grab;
-    }
-
-    .brand-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      min-width: 0;
-    }
-
-    .brand-left img {
-      width: 45px;
-      height: 45px;
-      object-fit: contain;
-      background: white;
-      border-radius: 6px;
-      padding: 5px;
-    }
-
-    .status {
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 5px;
       background: #3CF58A;
       color: black;
-      margin-top: 4px;
-      display: inline-block;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
     }
 
-    @media (max-width: 600px) {
-      .brand-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .brand-left {
-        width: 100%;
-      }
-
-      button {
-        width: 100%;
-        margin-bottom: 5px;
-      }
+    img {
+      width: 50px;
+      background: white;
+      padding: 5px;
+      border-radius: 6px;
     }
 
-    .loading {
-      opacity: .5;
-      pointer-events: none;
+    .brand {
+      background: #11161d;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Trusted Brands</h1>
-  <div class="sub">Enterprise Brand Registry – StudentStream Network</div>
+  <h2>Trusted Brands</h2>
 
-  <div class="panel">
-    <h3>Add Brand</h3>
-    <input type="text" id="name" placeholder="Brand Name">
-    <input type="url" id="website" placeholder="Website URL">
-    <input type="file" id="logo" accept="image/*">
-    <button onclick="addBrand()">Upload & Add</button>
-  </div>
+  <input id="name" placeholder="Brand Name">
+  <input id="website" placeholder="Website URL">
+  <input type="file" id="logo" accept="image/*">
+  <button id="submitBtn">Upload Brand</button>
 
-  <div class="brands-list" id="brandsList"></div>
+  <div id="brands"></div>
 </div>
 
 <script>
+console.log("JS Loaded");
+
+if (!window.supabase) {
+  alert("Supabase failed to load. Check internet.");
+}
+
 const supabase = window.supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const list = document.getElementById("brandsList");
+console.log("Supabase Ready");
+
+const submitBtn = document.getElementById("submitBtn");
+const brandsDiv = document.getElementById("brands");
+
+submitBtn.addEventListener("click", addBrand);
 
 async function loadBrands() {
   const { data, error } = await supabase
     .from("trusted_brands")
     .select("*")
-    .order("sort_order", { ascending: true });
+    .order("created_at", { ascending: false });
 
   if (error) {
-    alert(error.message);
+    console.error("Load error:", error);
     return;
   }
 
-  list.innerHTML = "";
+  brandsDiv.innerHTML = "";
 
-  data.forEach(brand => {
+  data.forEach(b => {
     const div = document.createElement("div");
-    div.className = "brand-item";
-    div.dataset.id = brand.id;
-
+    div.className = "brand";
     div.innerHTML = `
-      <div class="brand-left">
-        <img src="${brand.logo_url}">
-        <div>
-          <strong>${brand.name}</strong><br>
-          <span class="status">${brand.status}</span>
-        </div>
-      </div>
+      <img src="${b.logo_url}">
       <div>
-        <button onclick="deleteBrand('${brand.id}')">Delete</button>
+        <strong>${b.name}</strong><br>
+        <small>${b.website_url}</small>
       </div>
     `;
-
-    list.appendChild(div);
-  });
-
-  new Sortable(list, {
-    animation: 150,
-    onEnd: async function () {
-      const items = list.querySelectorAll(".brand-item");
-      for (let i = 0; i < items.length; i++) {
-        await supabase
-          .from("trusted_brands")
-          .update({ sort_order: i + 1 })
-          .eq("id", items[i].dataset.id);
-      }
-    }
+    brandsDiv.appendChild(div);
   });
 }
 
 async function addBrand() {
   try {
+    console.log("Button clicked");
+
     const name = document.getElementById("name").value.trim();
     const website = document.getElementById("website").value.trim();
-    const fileInput = document.getElementById("logo");
-    const file = fileInput.files[0];
+    const file = document.getElementById("logo").files[0];
 
     if (!name || !website || !file) {
-      alert("All fields required.");
+      alert("Fill all fields");
       return;
     }
 
-    console.log("Uploading file...");
-
     const filePath = `${Date.now()}-${file.name}`;
 
-    const { data: uploadData, error: uploadError } =
+    console.log("Uploading file...");
+
+    const { error: uploadError } =
       await supabase.storage.from("brand-logos").upload(filePath, file);
 
     if (uploadError) {
-      console.error("UPLOAD ERROR:", uploadError);
+      console.error("Upload error:", uploadError);
       alert(uploadError.message);
       return;
     }
 
-    console.log("Upload success:", uploadData);
-
     const { data: publicUrlData } =
       supabase.storage.from("brand-logos").getPublicUrl(filePath);
 
-    console.log("Public URL:", publicUrlData.publicUrl);
+    console.log("Inserting row...");
 
-    const { data: insertData, error: insertError } =
-      await supabase.from("trusted_brands").insert([
-        {
-          name,
-          website_url: website,
-          logo_url: publicUrlData.publicUrl,
-          sort_order: 999,
-          status: "Active",
-        },
-      ]);
+    const { error: insertError } =
+      await supabase.from("trusted_brands").insert([{
+        name,
+        website_url: website,
+        logo_url: publicUrlData.publicUrl
+      }]);
 
     if (insertError) {
-      console.error("INSERT ERROR:", insertError);
+      console.error("Insert error:", insertError);
       alert(insertError.message);
       return;
     }
 
-    console.log("Insert success:", insertData);
+    alert("Success");
 
-    alert("Brand added successfully!");
+    document.getElementById("name").value = "";
+    document.getElementById("website").value = "";
+    document.getElementById("logo").value = "";
 
     loadBrands();
+
   } catch (err) {
-    console.error("FULL ERROR:", err);
-    alert("Something broke. Check console.");
+    console.error("Fatal error:", err);
+    alert("Check console.");
   }
 }
+
+loadBrands();
+</script>
+
+</body>
+</html>
