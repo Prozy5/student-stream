@@ -2,60 +2,77 @@
 <html>
 <head>
   <title>Trusted Brands Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
   <style>
     body {
       margin: 0;
-      background: #0f1115;
+      background: #0b0f14;
       font-family: Inter, sans-serif;
       color: white;
     }
 
     .container {
       width: 95%;
-      max-width: 1200px;
-      margin: 40px auto;
+      max-width: 1100px;
+      margin: 30px auto;
     }
 
     h1 {
       color: #3CF58A;
-      font-size: 34px;
+      font-size: 28px;
       margin-bottom: 5px;
     }
 
     .sub {
       color: #9aa3af;
       margin-bottom: 30px;
+      font-size: 14px;
     }
 
     .panel {
-      background: #161a22;
+      background: #11161d;
       padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #2a2f3a;
-      margin-bottom: 40px;
+      border-radius: 14px;
+      border: 1px solid #1f2630;
+      margin-bottom: 35px;
     }
 
-    input, select {
+    input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin: 10px 0;
-      background: #0f1115;
-      border: 1px solid #2a2f3a;
+      background: #0b0f14;
+      border: 1px solid #1f2630;
       color: white;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      background: #0b0f14;
     }
 
     button {
-      padding: 8px 14px;
+      padding: 10px 16px;
       background: #3CF58A;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
-      margin-right: 5px;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    .danger {
+      background: #ff4d4d;
     }
 
     .brands-list {
@@ -65,13 +82,15 @@
     }
 
     .brand-item {
-      background: #161a22;
-      border: 1px solid #2a2f3a;
+      background: #11161d;
+      border: 1px solid #1f2630;
       padding: 15px;
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
       cursor: grab;
     }
 
@@ -79,81 +98,65 @@
       display: flex;
       align-items: center;
       gap: 15px;
+      min-width: 0;
     }
 
     .brand-left img {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       object-fit: contain;
+      background: white;
+      border-radius: 6px;
+      padding: 5px;
     }
 
-    .status-badge {
+    .status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 5px;
       background: #3CF58A;
       color: black;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-left: 10px;
+      margin-top: 4px;
+      display: inline-block;
     }
 
-    .danger {
-      background: #ff4d4d;
+    @media (max-width: 600px) {
+      .brand-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .brand-left {
+        width: 100%;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 5px;
+      }
     }
 
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: #161a22;
-      padding: 20px;
-      border-radius: 10px;
-      width: 400px;
+    .loading {
+      opacity: .5;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-
   <h1>Trusted Brands</h1>
   <div class="sub">Enterprise Brand Registry – StudentStream Network</div>
 
-  <!-- Add Brand -->
   <div class="panel">
     <h3>Add Brand</h3>
     <input type="text" id="name" placeholder="Brand Name">
     <input type="url" id="website" placeholder="Website URL">
-    <input type="file" id="logo">
+    <input type="file" id="logo" accept="image/*">
     <button onclick="addBrand()">Upload & Add</button>
   </div>
 
-  <!-- Brand List -->
   <div class="brands-list" id="brandsList"></div>
-
-</div>
-
-<!-- Edit Modal -->
-<div class="modal" id="editModal">
-  <div class="modal-content">
-    <h3>Edit Brand</h3>
-    <input type="text" id="editName">
-    <input type="url" id="editWebsite">
-    <select id="editStatus">
-      <option>Active</option>
-      <option>Pending</option>
-      <option>Suspended</option>
-    </select>
-    <button onclick="saveEdit()">Save</button>
-  </div>
 </div>
 
 <script>
@@ -162,37 +165,40 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let currentEditId = null;
+const list = document.getElementById("brandsList");
 
 async function loadBrands() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("trusted_brands")
     .select("*")
     .order("sort_order", { ascending: true });
 
-  const list = document.getElementById("brandsList");
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
   list.innerHTML = "";
 
   data.forEach(brand => {
-    const item = document.createElement("div");
-    item.className = "brand-item";
-    item.dataset.id = brand.id;
+    const div = document.createElement("div");
+    div.className = "brand-item";
+    div.dataset.id = brand.id;
 
-    item.innerHTML = `
+    div.innerHTML = `
       <div class="brand-left">
         <img src="${brand.logo_url}">
         <div>
-          <strong>${brand.name}</strong>
-          <span class="status-badge">${brand.status}</span>
+          <strong>${brand.name}</strong><br>
+          <span class="status">${brand.status}</span>
         </div>
       </div>
       <div>
-        <button onclick="editBrand('${brand.id}','${brand.name}','${brand.website_url}','${brand.status}')">Edit</button>
-        <button class="danger" onclick="deleteBrand('${brand.id}')">Delete</button>
+        <button onclick="deleteBrand('${brand.id}')">Delete</button>
       </div>
     `;
 
-    list.appendChild(item);
+    list.appendChild(div);
   });
 
   new Sortable(list, {
@@ -210,50 +216,54 @@ async function loadBrands() {
 }
 
 async function addBrand() {
-  const name = document.getElementById("name").value;
-  const website = document.getElementById("website").value;
-  const file = document.getElementById("logo").files[0];
+  const name = document.getElementById("name").value.trim();
+  const website = document.getElementById("website").value.trim();
+  const fileInput = document.getElementById("logo");
+  const file = fileInput.files[0];
+
+  if (!name || !website || !file) {
+    alert("All fields required.");
+    return;
+  }
+
+  document.body.classList.add("loading");
 
   const filePath = `${Date.now()}-${file.name}`;
 
-  await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from("brand-logos")
     .upload(filePath, file);
+
+  if (uploadError) {
+    alert(uploadError.message);
+    document.body.classList.remove("loading");
+    return;
+  }
 
   const { data } = supabase.storage
     .from("brand-logos")
     .getPublicUrl(filePath);
 
-  await supabase.from("trusted_brands").insert([{
-    name: name,
-    website_url: website,
-    logo_url: data.publicUrl,
-    sort_order: 999,
-    is_active: true,
-    status: "Active"
-  }]);
+  const { error: insertError } = await supabase
+    .from("trusted_brands")
+    .insert([{
+      name,
+      website_url: website,
+      logo_url: data.publicUrl,
+      sort_order: 999,
+      status: "Active"
+    }]);
 
-  loadBrands();
-}
+  if (insertError) {
+    alert(insertError.message);
+  }
 
-function editBrand(id, name, website, status) {
-  currentEditId = id;
-  document.getElementById("editName").value = name;
-  document.getElementById("editWebsite").value = website;
-  document.getElementById("editStatus").value = status;
-  document.getElementById("editModal").style.display = "flex";
-}
+  document.body.classList.remove("loading");
 
-async function saveEdit() {
-  const name = document.getElementById("editName").value;
-  const website = document.getElementById("editWebsite").value;
-  const status = document.getElementById("editStatus").value;
+  document.getElementById("name").value = "";
+  document.getElementById("website").value = "";
+  fileInput.value = "";
 
-  await supabase.from("trusted_brands")
-    .update({ name, website_url: website, status })
-    .eq("id", currentEditId);
-
-  document.getElementById("editModal").style.display = "none";
   loadBrands();
 }
 
