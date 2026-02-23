@@ -3,146 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forge Intelligence Command</title>
+<title>Forge Intelligence</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
-    background: radial-gradient(circle at top left,#0f172a,#020617);
+    background:#0b1120;
+    font-family: Inter, sans-serif;
 }
+
+/* Ambient background glow */
+.bg-ambient{
+    position:fixed;
+    width:800px;
+    height:800px;
+    background: radial-gradient(circle, rgba(56,189,248,0.15), transparent 60%);
+    top:-200px;
+    left:-200px;
+    z-index:-1;
+    filter: blur(120px);
+}
+
 .glass{
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(18px);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(25px);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.navItem{
+    padding:10px;
+    border-radius:8px;
+    transition:all .3s ease;
+}
+.navItem:hover{
+    background:rgba(56,189,248,0.1);
 }
 .activeTab{
-    background: rgba(6,182,212,0.2);
-    color:#22d3ee;
+    background:rgba(56,189,248,0.15);
+    color:#38bdf8;
+}
+.fadeIn{
+    animation:fade .4s ease forwards;
+}
+@keyframes fade{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
 
-<body class="text-white font-sans">
+<body class="text-gray-200">
+
+<div class="bg-ambient"></div>
 
 <div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
-<aside class="w-64 glass p-6 hidden md:block">
-<h1 class="text-2xl font-bold mb-8 text-cyan-400">FORGE</h1>
+<aside class="w-64 p-6 glass hidden md:block">
+<h1 class="text-xl font-semibold text-cyan-400 mb-10">FORGE</h1>
 
-<nav class="space-y-3 text-sm">
-<button onclick="switchTab('dashboard')" class="tabBtn block w-full text-left p-2 rounded activeTab">Dashboard</button>
-<button onclick="switchTab('ai')" class="tabBtn block w-full text-left p-2 rounded">AI Monitoring</button>
-<button onclick="switchTab('social')" class="tabBtn block w-full text-left p-2 rounded">Social Intelligence</button>
-<button onclick="switchTab('clients')" class="tabBtn block w-full text-left p-2 rounded">Clients</button>
-<button onclick="switchTab('analytics')" class="tabBtn block w-full text-left p-2 rounded">Analytics</button>
-<button onclick="switchTab('reports')" class="tabBtn block w-full text-left p-2 rounded">Reports</button>
-</nav>
+<div class="space-y-3 text-sm">
+<button onclick="switchTab('dashboard', this)" class="navItem activeTab w-full text-left">Dashboard</button>
+<button onclick="switchTab('ai', this)" class="navItem w-full text-left">AI Engine</button>
+<button onclick="switchTab('social', this)" class="navItem w-full text-left">Social Monitoring</button>
+<button onclick="switchTab('analytics', this)" class="navItem w-full text-left">Analytics</button>
+<button onclick="switchTab('clients', this)" class="navItem w-full text-left">Clients</button>
+</div>
 </aside>
 
 <!-- MAIN -->
-<div class="flex-1 p-8">
+<div class="flex-1 p-10">
 
-<div class="flex justify-between mb-8">
+<div class="flex justify-between items-center mb-10">
 <div>
-<h2 class="text-2xl font-semibold">Forge Intelligence Command</h2>
-<p class="text-gray-400 text-sm">Digital Security & Social Management</p>
+<h2 class="text-2xl font-semibold">Intelligence Overview</h2>
+<p class="text-gray-400 text-sm">Real-time digital security & brand monitoring</p>
 </div>
-<button onclick="runAIScan()" class="bg-cyan-500 px-4 py-2 rounded-lg">Run AI Scan</button>
+<button onclick="runAIScan()" class="bg-cyan-500 hover:bg-cyan-600 transition px-5 py-2 rounded-lg text-sm font-medium">
+Run AI Scan
+</button>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard" class="tabContent">
+<div id="dashboard" class="tabContent fadeIn">
 
-<div class="grid md:grid-cols-4 gap-6 mb-8">
+<div class="grid md:grid-cols-4 gap-6 mb-10">
+
 <div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-sm">Digital Risk Index</p>
-<h3 id="riskScore" class="text-3xl font-bold text-cyan-400">27</h3>
+<p class="text-gray-400 text-xs">Digital Risk Index</p>
+<h3 id="riskScore" class="text-3xl font-semibold text-cyan-400">0</h3>
 </div>
 
 <div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-sm">Brand Authority</p>
-<h3 class="text-3xl font-bold text-purple-400">84</h3>
+<p class="text-gray-400 text-xs">Brand Authority</p>
+<h3 id="authorityScore" class="text-3xl font-semibold text-purple-400">0</h3>
 </div>
 
 <div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-sm">Visibility</p>
-<h3 class="text-3xl font-bold text-green-400">68%</h3>
+<p class="text-gray-400 text-xs">Visibility</p>
+<h3 id="visibilityScore" class="text-3xl font-semibold text-green-400">0%</h3>
 </div>
 
 <div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-sm">Active Alerts</p>
-<h3 class="text-3xl font-bold text-red-400">3</h3>
+<p class="text-gray-400 text-xs">Active Alerts</p>
+<h3 id="alertScore" class="text-3xl font-semibold text-red-400">0</h3>
 </div>
+
 </div>
 
 <div class="glass p-6 rounded-xl">
-<h3 class="mb-4">Engagement Trend</h3>
+<h3 class="mb-6 text-sm text-gray-400">Engagement Trend</h3>
 <canvas id="chart"></canvas>
 </div>
 
 </div>
 
-<!-- AI MONITOR -->
-<div id="ai" class="tabContent hidden">
+<!-- AI ENGINE -->
+<div id="ai" class="tabContent hidden fadeIn">
 <div class="glass p-6 rounded-xl">
-<h3 class="mb-4 text-cyan-400">AI Intelligence Console</h3>
-<div id="aiConsole" class="bg-black/40 p-4 rounded h-64 overflow-auto text-green-400 font-mono text-sm"></div>
+<h3 class="mb-4 text-cyan-400 text-sm">AI Intelligence Console</h3>
+<div id="aiConsole" class="bg-black/40 p-4 rounded-lg h-72 overflow-auto text-green-400 font-mono text-xs"></div>
 </div>
 </div>
 
 <!-- SOCIAL -->
-<div id="social" class="tabContent hidden">
+<div id="social" class="tabContent hidden fadeIn">
 <div class="glass p-6 rounded-xl">
-<h3 class="mb-4">Platform Monitoring</h3>
-<ul class="space-y-2 text-sm">
-<li>Instagram: Engagement +12%</li>
-<li>TikTok: Viral trend detected</li>
-<li>YouTube: Watch time rising</li>
-<li>X/Twitter: Sentiment stable</li>
-</ul>
-</div>
-</div>
-
-<!-- CLIENTS -->
-<div id="clients" class="tabContent hidden">
-<div class="glass p-6 rounded-xl">
-<h3 class="mb-4">Client Profiles</h3>
-<table class="w-full text-sm">
-<tr class="text-gray-400">
-<th class="text-left pb-2">Client</th>
-<th class="text-left pb-2">Risk</th>
-<th class="text-left pb-2">Status</th>
-</tr>
-<tr>
-<td>Brand Alpha</td>
-<td class="text-green-400">Low</td>
-<td>Active</td>
-</tr>
-<tr>
-<td>Creator Nova</td>
-<td class="text-yellow-400">Medium</td>
-<td>Monitoring</td>
-</tr>
-</table>
+<h3 class="mb-4 text-sm text-gray-400">Platform Monitoring</h3>
+<p class="text-sm">Instagram engagement rising 14%</p>
+<p class="text-sm">TikTok trend detected</p>
+<p class="text-sm">YouTube watch time increasing</p>
 </div>
 </div>
 
 <!-- ANALYTICS -->
-<div id="analytics" class="tabContent hidden">
+<div id="analytics" class="tabContent hidden fadeIn">
 <div class="glass p-6 rounded-xl">
-<h3 class="mb-4">Content Performance</h3>
-<p class="text-gray-400 text-sm">Top Performing Post: +230% engagement</p>
+<h3 class="mb-4 text-sm text-gray-400">Top Performing Content</h3>
+<p class="text-sm">Short-form video boosted reach by 230%</p>
 </div>
 </div>
 
-<!-- REPORTS -->
-<div id="reports" class="tabContent hidden">
+<!-- CLIENTS -->
+<div id="clients" class="tabContent hidden fadeIn">
 <div class="glass p-6 rounded-xl">
-<h3 class="mb-4">Reports</h3>
-<button class="bg-purple-500 px-4 py-2 rounded">Generate AI Report</button>
+<h3 class="mb-4 text-sm text-gray-400">Client Status</h3>
+<p class="text-sm">Brand Alpha – Secure</p>
+<p class="text-sm">Creator Nova – Monitoring</p>
 </div>
 </div>
 
@@ -151,24 +160,24 @@ body{
 
 <script>
 
-// Tab Switching
-function switchTab(tab){
+/* Tab Switching */
+function switchTab(tab, btn){
 document.querySelectorAll('.tabContent').forEach(el=>el.classList.add('hidden'));
 document.getElementById(tab).classList.remove('hidden');
 
-document.querySelectorAll('.tabBtn').forEach(btn=>btn.classList.remove('activeTab'));
-event.target.classList.add('activeTab');
+document.querySelectorAll('.navItem').forEach(el=>el.classList.remove('activeTab'));
+btn.classList.add('activeTab');
 }
 
-// Chart
+/* Chart */
 new Chart(document.getElementById('chart'),{
 type:'line',
 data:{
 labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
 datasets:[{
 data:[12,19,14,22,30,25,35],
-borderColor:'#06b6d4',
-backgroundColor:'rgba(6,182,212,0.2)',
+borderColor:'#38bdf8',
+backgroundColor:'rgba(56,189,248,0.15)',
 fill:true,
 tension:0.4
 }]
@@ -176,36 +185,55 @@ tension:0.4
 options:{
 plugins:{legend:{display:false}},
 scales:{
-x:{ticks:{color:'white'}},
-y:{ticks:{color:'white'}}
+x:{ticks:{color:'#9ca3af'}},
+y:{ticks:{color:'#9ca3af'}}
 }
 }
 });
 
-// AI Simulation
+/* Animated Counters */
+function animateValue(id, end, duration) {
+let start = 0;
+let range = end - start;
+let increment = end > start ? 1 : -1;
+let stepTime = Math.abs(Math.floor(duration / range));
+let obj = document.getElementById(id);
+let current = start;
+let timer = setInterval(function() {
+current += increment;
+obj.innerHTML = id==="visibilityScore" ? current+"%" : current;
+if (current == end) clearInterval(timer);
+}, stepTime);
+}
+
+animateValue("riskScore", 27, 800);
+animateValue("authorityScore", 84, 1000);
+animateValue("visibilityScore", 68, 900);
+animateValue("alertScore", 3, 600);
+
+/* AI Simulation */
 function runAIScan(){
-const consoleBox=document.getElementById('aiConsole');
+let consoleBox=document.getElementById("aiConsole");
 consoleBox.innerHTML="";
-let messages=[
-"> Initializing Forge AI...",
-"> Scanning digital surface...",
-"> Checking social sentiment...",
-"> Running threat detection...",
-"> Risk score updated: LOW",
-"> No major vulnerabilities detected.",
+let lines=[
+"> Forge AI initializing...",
+"> Scanning digital ecosystem...",
+"> Running brand sentiment analysis...",
+"> Checking social anomalies...",
+"> Risk level: LOW",
+"> No vulnerabilities detected.",
 "> System secure."
 ];
-
 let i=0;
 let interval=setInterval(()=>{
-if(i<messages.length){
-consoleBox.innerHTML+=messages[i]+"<br>";
+if(i<lines.length){
+consoleBox.innerHTML+=lines[i]+"<br>";
 consoleBox.scrollTop=consoleBox.scrollHeight;
 i++;
 }else{
 clearInterval(interval);
 }
-},600);
+},500);
 }
 
 </script>
