@@ -7,9 +7,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
@@ -18,87 +15,42 @@ margin:0;
 background:radial-gradient(circle at top,#041a33,#020b17);
 font-family:Arial;
 color:white;
-overflow-x:hidden;
 }
 
 header{
 padding:20px;
 font-size:22px;
 font-weight:bold;
-letter-spacing:2px;
 background:linear-gradient(90deg,#071c36,#0b2b52);
-box-shadow:0 4px 20px rgba(0,0,0,.4);
 display:flex;
 justify-content:space-between;
-align-items:center;
 }
 
-#liveStatus{
-font-size:12px;
-opacity:.8;
-}
-
-#map{
-height:45vh;
-border-bottom:1px solid rgba(255,255,255,.05);
-}
+#map{height:45vh;}
 
 .section{padding:20px}
 
-.dashboard{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:20px;
-margin-bottom:25px;
-}
-
-.card{
-background:linear-gradient(145deg,#071c36,#0d2c55);
-padding:20px;
-border-radius:14px;
-box-shadow:0 0 25px rgba(0,212,255,.12);
-transition:.3s;
-position:relative;
-}
-.card:hover{transform:translateY(-4px)}
-
-.card h3{
-margin:0 0 10px 0;
-font-size:13px;
-opacity:.7;
-letter-spacing:1px;
-}
-
-.card h1{
-margin:0;
-font-size:26px;
-}
-
-.card small{
-opacity:.6;
-font-size:11px;
-}
-
-.grid-3{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-gap:20px;
-}
-
 .panel{
 background:#06182f;
-padding:15px;
+padding:20px;
+border-radius:14px;
+margin-bottom:20px;
+box-shadow:0 0 20px rgba(0,212,255,.08);
+}
+
+.advisory-panel{
+margin-top:15px;
+padding:18px;
 border-radius:12px;
-box-shadow:0 0 15px rgba(0,212,255,.08);
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.08);
+line-height:1.6;
 }
 
-.panel h3{
-margin-top:0;
-font-size:14px;
-letter-spacing:1px;
-}
+.hidden{display:none;}
 
-input, select{
+input{
 width:100%;
 padding:8px;
 margin-bottom:8px;
@@ -111,50 +63,12 @@ color:white;
 button{
 width:100%;
 padding:8px;
-margin-bottom:8px;
 border:none;
 border-radius:6px;
 background:#00d4ff;
 color:black;
 font-weight:bold;
 cursor:pointer;
-transition:.2s;
-}
-button:hover{opacity:.8}
-
-.item{
-padding:8px;
-margin-bottom:6px;
-border-radius:6px;
-font-size:12px;
-background:#0b223d;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.green{background:#00ff88}
-.yellow{background:#ffd000}
-.red{background:#ff3b3b}
-
-.low{background:#063}
-.medium{background:#664400}
-.high{background:#660000}
-.critical{background:#990000}
-
-#attackCanvas{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:45vh;
-pointer-events:none;
-}
-
-.counter{
-font-size:12px;
-opacity:.7;
-margin-bottom:5px;
 }
 </style>
 </head>
@@ -163,66 +77,23 @@ margin-bottom:5px;
 
 <header>
 Forge Global Intelligence Command — Enterprise
-<div id="liveStatus">● LIVE</div>
+<div>● LIVE</div>
 </header>
 
-<div style="position:relative;">
 <div id="map"></div>
-<canvas id="attackCanvas"></canvas>
-</div>
 
 <div class="section">
 
-<div class="dashboard">
-<div class="card"><h3>ACTIVE MRR</h3><h1 id="mrr">$0</h1><small>Live Synced</small></div>
-<div class="card"><h3>REVENUE AT RISK</h3><h1 id="risk">$0</h1><small>High churn clients</small></div>
-<div class="card"><h3>CHURN RATE</h3><h1 id="churn">0%</h1></div>
-<div class="card"><h3>FUSION SCORE</h3><h1 id="fusion">0</h1></div>
-<div class="card"><h3>THREAT LEVEL</h3><h1 id="threatLevel">LOW</h1></div>
-</div>
-
-<div class="grid-3">
-
 <div class="panel">
-<h3>CLIENT MANAGEMENT</h3>
-<input id="newClientName" placeholder="Company name">
-<input id="newClientRevenue" placeholder="Monthly Revenue">
-<input id="newClientLat" placeholder="Latitude">
-<input id="newClientLng" placeholder="Longitude">
-<button onclick="addClient()">Add Client</button>
-<div id="clientList"></div>
+<h3>AI SECURITY ENGINE (Admin Only)</h3>
+
+<input type="password" id="groqKeyInput" placeholder="Enter Groq API Key (Session Only)">
+<button onclick="setGroqKey()">Activate AI</button>
+
+<div id="aiSummary" style="margin-top:15px;"></div>
+<div id="advisoryPanel" class="advisory-panel hidden"></div>
 </div>
 
-<div class="panel">
-<h3>SECURITY ENGINE</h3>
-<select id="eventSeverity">
-<option value="low">Low</option>
-<option value="medium">Medium</option>
-<option value="high">High</option>
-<option value="critical">Critical</option>
-</select>
-<button onclick="injectEvent()">Inject Threat</button>
-<div class="counter">
-Low: <span id="lowCount">0</span> |
-High: <span id="highCount">0</span> |
-Critical: <span id="criticalCount">0</span>
-</div>
-<div id="securityFeed"></div>
-</div>
-
-<div class="panel">
-<h3>INCIDENT RESPONSE</h3>
-<input id="incidentTitle" placeholder="Incident title">
-<select id="incidentSeverity">
-<option value="low">Low</option>
-<option value="high">High</option>
-<option value="critical">Critical</option>
-</select>
-<button onclick="createIncident()">Create Incident</button>
-<div id="incidentPanel"></div>
-</div>
-
-</div>
 </div>
 
 <script>
@@ -230,42 +101,19 @@ const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
+let GROQ_API_KEY="";
+
+function setGroqKey(){
+GROQ_API_KEY=document.getElementById("groqKeyInput").value.trim();
+if(GROQ_API_KEY){
+alert("AI Activated For This Session");
+}else{
+alert("Invalid Key");
+}
+}
+
 const map=L.map('map',{zoomControl:false}).setView([20,0],2);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-
-let clusterGroup=L.markerClusterGroup();
-map.addLayer(clusterGroup);
-let heatLayer;
-
-const alertSound=new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
-let lastCriticalAlert=0;
-
-const canvas=document.getElementById("attackCanvas");
-const ctx=canvas.getContext("2d");
-
-function resizeCanvas(){
-canvas.width=canvas.offsetWidth;
-canvas.height=canvas.offsetHeight;
-}
-window.addEventListener("resize",resizeCanvas);
-resizeCanvas();
-
-function drawAttackLine(lat,lng){
-let point=map.latLngToContainerPoint([lat,lng]);
-ctx.strokeStyle="rgba(255,0,0,.7)";
-ctx.lineWidth=2;
-ctx.beginPath();
-ctx.moveTo(canvas.width/2,canvas.height/2);
-ctx.lineTo(point.x,point.y);
-ctx.stroke();
-setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),600);
-}
-
-function heartbeat(){
-const el=document.getElementById("liveStatus");
-el.style.opacity=el.style.opacity==1?0.4:1;
-}
-setInterval(heartbeat,800);
 
 function calculateAIScore(events,incidents){
 let score=0;
@@ -281,149 +129,99 @@ if(i.severity==="high") score+=15;
 return score;
 }
 
-function generateAIRecommendation(score){
-if(score>80) return "AI: Immediate containment protocol recommended.";
-if(score>50) return "AI: Escalate monitoring and isolate affected systems.";
-if(score>20) return "AI: Increase surveillance on flagged endpoints.";
-return "AI: System operating within normal parameters.";
+function getVolatility(score){
+if(score>80) return "High";
+if(score>40) return "Moderate";
+return "Low";
+}
+
+async function runStrategicAI(score,volatility,events,incidents){
+
+if(!GROQ_API_KEY){
+document.getElementById("advisoryPanel").classList.add("hidden");
+return;
+}
+
+if(volatility==="Low"){
+document.getElementById("advisoryPanel").classList.add("hidden");
+return;
+}
+
+const systemPrompt=`
+You are a senior security strategy advisor briefing executive leadership.
+Maintain calm analytical tone.
+No exaggeration.
+Structured output.
+`;
+
+const userPrompt=`
+Threat Score: ${score}
+Volatility: ${volatility}
+Critical Events: ${events.filter(e=>e.severity==="critical").length}
+High Events: ${events.filter(e=>e.severity==="high").length}
+Open Incidents: ${incidents.length}
+
+Provide:
+1. Executive Overview
+2. Stability Assessment
+3. Key Risk Drivers
+${volatility==="High" ? `
+4. Immediate Containment Actions
+5. Strategic Monitoring Recommendation
+6. Risk Mitigation Priorities
+` : `
+4. Strategic Monitoring Recommendation
+`}
+`;
+
+try{
+const res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"Authorization":`Bearer ${GROQ_API_KEY}`
+},
+body:JSON.stringify({
+model:"llama3-70b-8192",
+messages:[
+{role:"system",content:systemPrompt},
+{role:"user",content:userPrompt}
+],
+temperature:0.4
+})
+});
+
+const data=await res.json();
+if(!data.choices){return;}
+
+const text=data.choices[0].message.content;
+
+const formatted=text.split(/\n\d+\.\s/).filter(Boolean)
+.map(section=>`<p>${section.trim()}</p>`).join("");
+
+document.getElementById("advisoryPanel").innerHTML=formatted;
+document.getElementById("advisoryPanel").classList.remove("hidden");
+
+}catch(err){
+console.log("AI Error",err);
+}
 }
 
 async function loadIntel(){
-
-clusterGroup.clearLayers();
-if(heatLayer) map.removeLayer(heatLayer);
-
-const {data:clients}=await sb.from("clients").select("*");
-const {data:events}=await sb.from("security_events").select("*").order("created_at",{ascending:false}).limit(20);
-const {data:incidents}=await sb.from("incidents").select("*").order("created_at",{ascending:false});
-
-let totalMRR=0,riskMRR=0,churned=0,active=0;
-let heatData=[];
-let clientHTML="",securityHTML="",incidentHTML="";
-let low=0,high=0,critical=0;
-
-clients?.forEach(c=>{
-let revenue=c.monthly_revenue||0;
-let risk=c.churn_risk||0;
-let status=c.status||"active";
-
-if(status==="active"){active++;totalMRR+=revenue;if(risk>0.6)riskMRR+=revenue}
-if(status==="churned")churned++;
-
-clientHTML+=`
-<div class="item">
-${c.company_name} — $${revenue}
-<button onclick="deleteClient('${c.id}')">❌</button>
-</div>`;
-
-if(c.latitude&&c.longitude){
-heatData.push([c.latitude,c.longitude,revenue/10000]);
-clusterGroup.addLayer(L.marker([c.latitude,c.longitude]));
-}
-});
-
-events?.forEach(e=>{
-if(e.severity==="low")low++;
-if(e.severity==="high")high++;
-if(e.severity==="critical"){
-critical++;
-if(Date.now()-lastCriticalAlert>5000){
-alertSound.play();
-lastCriticalAlert=Date.now();
-}
-}
-securityHTML+=`<div class="item ${e.severity}">
-${e.event_type} (${e.severity})
-</div>`;
-
-if(e.latitude && e.longitude){
-drawAttackLine(e.latitude,e.longitude);
-}
-});
-
-incidents?.forEach(i=>{
-incidentHTML+=`
-<div class="item ${i.severity}">
-${i.title} (${i.status})
-<button onclick="resolveIncident('${i.id}')">Resolve</button>
-</div>`;
-});
-
-heatLayer=L.heatLayer(heatData,{radius:30,blur:25,maxZoom:5}).addTo(map);
-
-let churnRate=active>0?((churned/(active+churned))*100).toFixed(1):0;
-let fusionScore=Math.round((totalMRR/1000)-(riskMRR/2000)-churnRate);
-
-document.getElementById("mrr").innerText="$"+totalMRR.toLocaleString();
-document.getElementById("risk").innerText="$"+riskMRR.toLocaleString();
-document.getElementById("churn").innerText=churnRate+"%";
-document.getElementById("fusion").innerText=fusionScore;
-document.getElementById("clientList").innerHTML=clientHTML;
-document.getElementById("securityFeed").innerHTML=securityHTML;
-document.getElementById("incidentPanel").innerHTML=incidentHTML;
-document.getElementById("lowCount").innerText=low;
-document.getElementById("highCount").innerText=high;
-document.getElementById("criticalCount").innerText=critical;
-
-let threat="LOW";
-if(critical>0) threat="CRITICAL";
-else if(high>3) threat="HIGH";
-document.getElementById("threatLevel").innerText=threat;
+const {data:events}=await sb.from("security_events").select("*");
+const {data:incidents}=await sb.from("incidents").select("*");
 
 let aiScore=calculateAIScore(events||[],incidents||[]);
-let aiMessage=generateAIRecommendation(aiScore);
+let volatility=getVolatility(aiScore);
 
-if(!document.getElementById("aiPanel")){
-let div=document.createElement("div");
-div.id="aiPanel";
-div.className="panel";
-div.style.marginTop="20px";
-div.innerHTML=`<h3>AI SECURITY ANALYSIS</h3><div id="aiContent"></div>`;
-document.querySelector(".section").appendChild(div);
-}
-document.getElementById("aiContent").innerHTML=
-`AI Threat Score: ${aiScore}<br><br>${aiMessage}`;
-}
+document.getElementById("aiSummary").innerHTML=
+`Threat Score: ${aiScore} | Volatility: ${volatility}`;
 
-async function addClient(){
-await sb.from("clients").insert({
-company_name:document.getElementById("newClientName").value,
-monthly_revenue:parseInt(document.getElementById("newClientRevenue").value||0),
-latitude:parseFloat(document.getElementById("newClientLat").value||0),
-longitude:parseFloat(document.getElementById("newClientLng").value||0)
-});
+runStrategicAI(aiScore,volatility,events||[],incidents||[]);
 }
-
-async function deleteClient(id){
-await sb.from("clients").delete().eq("id",id);
-}
-
-async function injectEvent(){
-await sb.from("security_events").insert({
-event_type:"Manual Threat Injection",
-severity:document.getElementById("eventSeverity").value,
-latitude:(Math.random()*140-70),
-longitude:(Math.random()*360-180)
-});
-}
-
-async function createIncident(){
-await sb.from("incidents").insert({
-title:document.getElementById("incidentTitle").value,
-severity:document.getElementById("incidentSeverity").value,
-status:"open"
-});
-}
-
-async function resolveIncident(id){
-await sb.from("incidents").update({status:"resolved"}).eq("id",id);
-}
-
-sb.channel('enterprise-live')
-.on('postgres_changes',{event:'*',schema:'public',table:'clients'},loadIntel)
-.on('postgres_changes',{event:'*',schema:'public',table:'security_events'},loadIntel)
-.on('postgres_changes',{event:'*',schema:'public',table:'incidents'},loadIntel)
-.subscribe();
 
 loadIntel();
 </script>
+
+</body>
+</html>
