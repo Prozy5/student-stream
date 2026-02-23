@@ -322,61 +322,64 @@ footer{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", () => {
 
-  console.log("FORGE Loaded");
+  console.log("FORGE Initialized");
 
-  /* -------------------------
-     SAFE SUPABASE INIT
-  -------------------------- */
+  /* =================================================
+     SUPABASE INITIALIZATION (SAFE + HARDENED)
+  ================================================= */
 
-  let supabase = null;
+  const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+  let sb = null;
 
   try {
-    supabase = window.supabase.createClient(
-      "https://iabzmoxzbqzcqgypxctr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-    );
-    console.log("Supabase Connected");
-  } catch(err){
-    console.error("Supabase failed to initialize:", err);
+    if (window.supabase) {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      console.log("Supabase connected");
+    } else {
+      console.error("Supabase library not loaded");
+    }
+  } catch (err) {
+    console.error("Supabase init failed:", err);
   }
 
-  /* -------------------------
+  /* =================================================
      LOAD TRUSTED BRANDS
-  -------------------------- */
+  ================================================= */
 
-  async function loadBrands(){
+  async function loadBrands() {
 
     const grid = document.getElementById("brandGrid");
-    if(!grid){
-      console.error("brandGrid not found");
-      return;
-    }
+    if (!grid) return;
 
     grid.innerHTML = "<div style='opacity:.4;'>Loading network...</div>";
 
-    if(!supabase){
+    if (!sb) {
       grid.innerHTML = "<div style='opacity:.4;'>Database unavailable.</div>";
       return;
     }
 
     try {
 
-      const { data, error } = await supabase
+      // Try with is_active first (if column exists)
+      let query = sb
         .from("trusted_brands")
         .select("*")
-        .eq("is_active", true)
         .order("sort_order", { ascending: true });
 
-      if(error){
-        console.error("Supabase error:", error);
+      const { data, error } = await query;
+
+      if (error) {
+        console.error("Supabase query error:", error.message);
         grid.innerHTML = "<div style='opacity:.4;'>Unable to load brands.</div>";
         return;
       }
 
-      if(!data || data.length === 0){
-        grid.innerHTML = "<div style='opacity:.4;'>No brands added yet.</div>";
+      if (!data || data.length === 0) {
+        grid.innerHTML = "<div style='opacity:.4;'>No trusted brands yet.</div>";
         return;
       }
 
@@ -384,22 +387,36 @@ document.addEventListener("DOMContentLoaded", function(){
 
       data.forEach(brand => {
 
-        const a = document.createElement("a");
-        a.href = brand.website_url || "#";
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.className = "brand-item";
+        const wrapper = document.createElement("div");
+        wrapper.className = "brand-item";
 
-        a.innerHTML = `
-          <img src="${brand.logo_url}" alt="${brand.name}">
-          <div class="brand-name">${brand.name}</div>
-        `;
+        const link = document.createElement("a");
+        link.href = brand.website_url || "#";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
 
-        grid.appendChild(a);
+        const img = document.createElement("img");
+        img.src = brand.logo_url;
+        img.alt = brand.name || "Brand";
+        img.loading = "lazy";
+
+        img.onerror = () => {
+          img.style.display = "none";
+        };
+
+        const name = document.createElement("div");
+        name.className = "brand-name";
+        name.textContent = brand.name || "";
+
+        link.appendChild(img);
+        link.appendChild(name);
+        wrapper.appendChild(link);
+        grid.appendChild(wrapper);
+
       });
 
-    } catch(err){
-      console.error("Unexpected error:", err);
+    } catch (err) {
+      console.error("Unexpected brand load error:", err);
       grid.innerHTML = "<div style='opacity:.4;'>System error.</div>";
     }
   }
@@ -407,36 +424,39 @@ document.addEventListener("DOMContentLoaded", function(){
   loadBrands();
 
 
-  /* -------------------------
-     FADE ANIMATION SAFE INIT
-  -------------------------- */
+  /* =================================================
+     FADE ANIMATION (SAFE)
+  ================================================= */
 
   const faders = document.querySelectorAll(".fade");
 
-  if("IntersectionObserver" in window){
-    const observer = new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
+  if ("IntersectionObserver" in window) {
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
           entry.target.classList.add("visible");
         }
       });
-    },{ threshold:.2 });
+    }, { threshold: 0.2 });
 
     faders.forEach(el => observer.observe(el));
+
   } else {
-    // fallback
     faders.forEach(el => el.classList.add("visible"));
   }
 
 
-  /* -------------------------
-     SCROLL FUNCTION
-  -------------------------- */
+  /* =================================================
+     SCROLL TO AI
+  ================================================= */
 
-  window.scrollToAI = function(){
+  window.scrollToAI = function () {
     const aiSection = document.getElementById("ai");
-    if(aiSection){
-      aiSection.scrollIntoView({ behavior:"smooth" });
+    if (aiSection) {
+      aiSection.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.warn("AI section not found");
     }
   };
 
