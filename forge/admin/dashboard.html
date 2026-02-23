@@ -232,22 +232,73 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const map=L.map('map',{zoomControl:false}).setView([20,0],2);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+
 let clusterGroup=L.markerClusterGroup();
 map.addLayer(clusterGroup);
 let heatLayer;
 
 const alertSound=new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+let lastCriticalAlert=0;
+
+const canvas=document.getElementById("attackCanvas");
+const ctx=canvas.getContext("2d");
+
+function resizeCanvas(){
+canvas.width=canvas.offsetWidth;
+canvas.height=canvas.offsetHeight;
+}
+window.addEventListener("resize",resizeCanvas);
+resizeCanvas();
+
+function drawAttackLine(lat,lng){
+let point=map.latLngToContainerPoint([lat,lng]);
+ctx.strokeStyle="rgba(255,0,0,.7)";
+ctx.lineWidth=2;
+ctx.beginPath();
+ctx.moveTo(canvas.width/2,canvas.height/2);
+ctx.lineTo(point.x,point.y);
+ctx.stroke();
+setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),600);
+}
+
+function heartbeat(){
+const el=document.getElementById("liveStatus");
+el.style.opacity=el.style.opacity==1?0.4:1;
+}
+setInterval(heartbeat,800);
+
+function calculateAIScore(events,incidents){
+let score=0;
+events.forEach(e=>{
+if(e.severity==="critical") score+=40;
+if(e.severity==="high") score+=20;
+if(e.severity==="medium") score+=10;
+});
+incidents.forEach(i=>{
+if(i.severity==="critical") score+=30;
+if(i.severity==="high") score+=15;
+});
+return score;
+}
+
+function generateAIRecommendation(score){
+if(score>80) return "AI: Immediate containment protocol recommended.";
+if(score>50) return "AI: Escalate monitoring and isolate affected systems.";
+if(score>20) return "AI: Increase surveillance on flagged endpoints.";
+return "AI: System operating within normal parameters.";
+}
 
 async function loadIntel(){
 
 clusterGroup.clearLayers();
-if(heatLayer)map.removeLayer(heatLayer);
+if(heatLayer) map.removeLayer(heatLayer);
 
 const {data:clients}=await sb.from("clients").select("*");
 const {data:events}=await sb.from("security_events").select("*").order("created_at",{ascending:false}).limit(20);
 const {data:incidents}=await sb.from("incidents").select("*").order("created_at",{ascending:false});
 
-let totalMRR=0,riskMRR=0,churned=0,active=0,heatData=[];
+let totalMRR=0,riskMRR=0,churned=0,active=0;
+let heatData=[];
 let clientHTML="",securityHTML="",incidentHTML="";
 let low=0,high=0,critical=0;
 
@@ -274,8 +325,20 @@ clusterGroup.addLayer(L.marker([c.latitude,c.longitude]));
 events?.forEach(e=>{
 if(e.severity==="low")low++;
 if(e.severity==="high")high++;
-if(e.severity==="critical"){critical++;alertSound.play();}
-securityHTML+=`<div class="item ${e.severity}">${e.event_type} (${e.severity})</div>`;
+if(e.severity==="critical"){
+critical++;
+if(Date.now()-lastCriticalAlert>5000){
+alertSound.play();
+lastCriticalAlert=Date.now();
+}
+}
+securityHTML+=`<div class="item ${e.severity}">
+${e.event_type} (${e.severity})
+</div>`;
+
+if(e.latitude && e.longitude){
+drawAttackLine(e.latitude,e.longitude);
+}
 });
 
 incidents?.forEach(i=>{
@@ -303,9 +366,23 @@ document.getElementById("highCount").innerText=high;
 document.getElementById("criticalCount").innerText=critical;
 
 let threat="LOW";
-if(critical>0)threat="CRITICAL";
-else if(high>3)threat="HIGH";
+if(critical>0) threat="CRITICAL";
+else if(high>3) threat="HIGH";
 document.getElementById("threatLevel").innerText=threat;
+
+let aiScore=calculateAIScore(events||[],incidents||[]);
+let aiMessage=generateAIRecommendation(aiScore);
+
+if(!document.getElementById("aiPanel")){
+let div=document.createElement("div");
+div.id="aiPanel";
+div.className="panel";
+div.style.marginTop="20px";
+div.innerHTML=`<h3>AI SECURITY ANALYSIS</h3><div id="aiContent"></div>`;
+document.querySelector(".section").appendChild(div);
+}
+document.getElementById("aiContent").innerHTML=
+`AI Threat Score: ${aiScore}<br><br>${aiMessage}`;
 }
 
 async function addClient(){
@@ -324,7 +401,9 @@ await sb.from("clients").delete().eq("id",id);
 async function injectEvent(){
 await sb.from("security_events").insert({
 event_type:"Manual Threat Injection",
-severity:document.getElementById("eventSeverity").value
+severity:document.getElementById("eventSeverity").value,
+latitude:(Math.random()*140-70),
+longitude:(Math.random()*360-180)
 });
 }
 
@@ -348,6 +427,3 @@ sb.channel('enterprise-live')
 
 loadIntel();
 </script>
-
-</body>
-</html>
