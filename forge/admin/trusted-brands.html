@@ -216,65 +216,61 @@ async function loadBrands() {
 }
 
 async function addBrand() {
-  const name = document.getElementById("name").value.trim();
-  const website = document.getElementById("website").value.trim();
-  const fileInput = document.getElementById("logo");
-  const file = fileInput.files[0];
+  try {
+    const name = document.getElementById("name").value.trim();
+    const website = document.getElementById("website").value.trim();
+    const fileInput = document.getElementById("logo");
+    const file = fileInput.files[0];
 
-  if (!name || !website || !file) {
-    alert("All fields required.");
-    return;
+    if (!name || !website || !file) {
+      alert("All fields required.");
+      return;
+    }
+
+    console.log("Uploading file...");
+
+    const filePath = `${Date.now()}-${file.name}`;
+
+    const { data: uploadData, error: uploadError } =
+      await supabase.storage.from("brand-logos").upload(filePath, file);
+
+    if (uploadError) {
+      console.error("UPLOAD ERROR:", uploadError);
+      alert(uploadError.message);
+      return;
+    }
+
+    console.log("Upload success:", uploadData);
+
+    const { data: publicUrlData } =
+      supabase.storage.from("brand-logos").getPublicUrl(filePath);
+
+    console.log("Public URL:", publicUrlData.publicUrl);
+
+    const { data: insertData, error: insertError } =
+      await supabase.from("trusted_brands").insert([
+        {
+          name,
+          website_url: website,
+          logo_url: publicUrlData.publicUrl,
+          sort_order: 999,
+          status: "Active",
+        },
+      ]);
+
+    if (insertError) {
+      console.error("INSERT ERROR:", insertError);
+      alert(insertError.message);
+      return;
+    }
+
+    console.log("Insert success:", insertData);
+
+    alert("Brand added successfully!");
+
+    loadBrands();
+  } catch (err) {
+    console.error("FULL ERROR:", err);
+    alert("Something broke. Check console.");
   }
-
-  document.body.classList.add("loading");
-
-  const filePath = `${Date.now()}-${file.name}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from("brand-logos")
-    .upload(filePath, file);
-
-  if (uploadError) {
-    alert(uploadError.message);
-    document.body.classList.remove("loading");
-    return;
-  }
-
-  const { data } = supabase.storage
-    .from("brand-logos")
-    .getPublicUrl(filePath);
-
-  const { error: insertError } = await supabase
-    .from("trusted_brands")
-    .insert([{
-      name,
-      website_url: website,
-      logo_url: data.publicUrl,
-      sort_order: 999,
-      status: "Active"
-    }]);
-
-  if (insertError) {
-    alert(insertError.message);
-  }
-
-  document.body.classList.remove("loading");
-
-  document.getElementById("name").value = "";
-  document.getElementById("website").value = "";
-  fileInput.value = "";
-
-  loadBrands();
 }
-
-async function deleteBrand(id) {
-  if (!confirm("Delete this brand?")) return;
-  await supabase.from("trusted_brands").delete().eq("id", id);
-  loadBrands();
-}
-
-loadBrands();
-</script>
-
-</body>
-</html>
