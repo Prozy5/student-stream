@@ -13,67 +13,36 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
-body{
-  margin:0;
-  background:#020f1f;
-  font-family:Arial;
-  color:white;
-}
+body{margin:0;background:#020f1f;font-family:Arial;color:white}
 h2{padding:15px;margin:0}
+#map{height:45vh}
 
-#map{
-  height:50vh;
-}
-
-.section{
-  padding:15px;
-}
-
-.dashboard{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-}
-
+.section{padding:15px}
+.dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
 .card{
-  background:linear-gradient(145deg,#071c36,#0d2c55);
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 0 20px rgba(0,212,255,.15);
+background:linear-gradient(145deg,#071c36,#0d2c55);
+padding:20px;border-radius:12px;
+box-shadow:0 0 20px rgba(0,212,255,.15);
 }
-
-.card h3{margin:0 0 10px 0}
-
 .list-box{
-  background:#06182f;
-  padding:15px;
-  border-radius:10px;
-  max-height:250px;
-  overflow:auto;
+background:#06182f;padding:15px;border-radius:10px;
+max-height:250px;overflow:auto;margin-bottom:15px
 }
-
-.pulse{
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  position:relative;
+input,button{
+padding:6px;margin:4px 0;border-radius:6px;border:none
 }
+button{cursor:pointer;background:#00d4ff;color:black;font-weight:bold}
+button:hover{opacity:.8}
 
+.pulse{width:14px;height:14px;border-radius:50%;position:relative}
 .pulse::after{
-  content:'';
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  animation:pulse 2s infinite;
-  opacity:.6;
+content:'';position:absolute;width:100%;height:100%;
+border-radius:50%;animation:pulse 2s infinite;opacity:.6
 }
-
 @keyframes pulse{
-  0%{transform:scale(1);opacity:.6}
-  100%{transform:scale(3);opacity:0}
+0%{transform:scale(1);opacity:.6}
+100%{transform:scale(3);opacity:0}
 }
-
 .green{background:#00ff88}
 .green::after{background:#00ff88}
 .yellow{background:#ffd000}
@@ -81,13 +50,7 @@ h2{padding:15px;margin:0}
 .red{background:#ff3b3b}
 .red::after{background:#ff3b3b}
 
-.alert{
-  padding:10px;
-  margin-bottom:6px;
-  border-radius:6px;
-  font-size:13px;
-}
-
+.alert{padding:8px;margin-bottom:6px;border-radius:6px;font-size:13px}
 .low{background:#063}
 .medium{background:#664400}
 .high{background:#660000}
@@ -101,48 +64,41 @@ h2{padding:15px;margin:0}
 
 <div class="section">
 <div class="dashboard">
-
-<div class="card">
-<h3>Active MRR</h3>
-<h1 id="mrr">$0</h1>
-</div>
-
-<div class="card">
-<h3>Revenue at Risk</h3>
-<h1 id="risk">$0</h1>
-</div>
-
-<div class="card">
-<h3>Churn Rate</h3>
-<h1 id="churn">0%</h1>
-</div>
-
-<div class="card">
-<h3>Fusion Score</h3>
-<h1 id="fusion">0</h1>
-</div>
-
+<div class="card"><h3>Active MRR</h3><h1 id="mrr">$0</h1></div>
+<div class="card"><h3>Revenue at Risk</h3><h1 id="risk">$0</h1></div>
+<div class="card"><h3>Churn Rate</h3><h1 id="churn">0%</h1></div>
+<div class="card"><h3>Fusion Score</h3><h1 id="fusion">0</h1></div>
 </div>
 </div>
 
-<div class="section">
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">
+<div class="section" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px">
 
 <div class="list-box">
 <h3>Clients</h3>
+<input id="newClientName" placeholder="Company name">
+<button onclick="addClient()">Add Client</button>
 <div id="clientList"></div>
 </div>
 
 <div class="list-box">
-<h3>Active Tasks</h3>
+<h3>Tasks</h3>
+<input id="newTaskTitle" placeholder="Task title">
+<button onclick="addTask()">Create Task</button>
 <div id="taskList"></div>
 </div>
 
 <div class="list-box">
 <h3>Security Monitoring</h3>
+<button onclick="injectEvent()">Inject Critical Event</button>
 <div id="securityFeed"></div>
 </div>
 
+</div>
+
+<div class="section">
+<div class="list-box">
+<h3>Incidents</h3>
+<div id="incidentPanel"></div>
 </div>
 </div>
 
@@ -158,85 +114,69 @@ let clusterGroup=L.markerClusterGroup();
 map.addLayer(clusterGroup);
 let heatLayer;
 
-function animateValue(id,start,end,duration){
-let range=end-start;
-let current=start;
-let increment=end>start?1:-1;
-let stepTime=Math.abs(Math.floor(duration/range));
-let obj=document.getElementById(id);
-let timer=setInterval(function(){
-current+=increment;
-obj.innerText="$"+current.toLocaleString();
-if(current==end)clearInterval(timer);
-},stepTime);
-}
-
 async function loadIntel(){
 
 clusterGroup.clearLayers();
 if(heatLayer)map.removeLayer(heatLayer);
 
 const {data:clients}=await sb.from("clients").select("*");
-if(!clients)return;
+const {data:tasks}=await sb.from("tasks").select("*");
+const {data:events}=await sb.from("security_events").select("*").order("created_at",{ascending:false}).limit(10);
+const {data:incidents}=await sb.from("incidents").select("*").order("created_at",{ascending:false});
 
-let totalMRR=0;
-let riskMRR=0;
-let churned=0;
-let active=0;
-let heatData=[];
-let clientHTML="";
-let taskHTML="";
-let securityHTML="";
+let totalMRR=0,riskMRR=0,churned=0,active=0,heatData=[];
+let clientHTML="",taskHTML="",securityHTML="",incidentHTML="";
 
-clients.forEach(c=>{
-
+clients?.forEach(c=>{
 let revenue=c.monthly_revenue||0;
 let riskScore=c.churn_risk||0;
 let status=c.status||"active";
 
-if(status==="active"){
-active++;
-totalMRR+=revenue;
-if(riskScore>0.6)riskMRR+=revenue;
-}
+if(status==="active"){active++;totalMRR+=revenue;if(riskScore>0.6)riskMRR+=revenue}
 if(status==="churned")churned++;
 
-let riskClass="green";
-if(riskScore>0.6)riskClass="red";
-else if(riskScore>0.4)riskClass="yellow";
+let riskClass=riskScore>0.6?"red":riskScore>0.4?"yellow":"green";
 
-clientHTML+=`<div>${c.company_name} — $${revenue}</div>`;
-
-taskHTML+=`
-<div class="alert ${riskScore>0.6?'high':'low'}">
-${c.company_name} monitoring
+clientHTML+=`
+<div>
+<b>${c.company_name}</b> — $${revenue}
+<button onclick="deleteClient('${c.id}')">❌</button>
 </div>`;
 
-if(riskScore>0.6){
-securityHTML+=`
-<div class="alert high">
-⚠ High churn risk: ${c.company_name}
-</div>`;
-}
-
-if(c.latitude && c.longitude){
-
+if(c.latitude&&c.longitude){
 heatData.push([c.latitude,c.longitude,revenue/10000]);
-
-const icon=L.divIcon({
+clusterGroup.addLayer(
+L.marker([c.latitude,c.longitude],{
+icon:L.divIcon({
 html:`<div class="pulse ${riskClass}"></div>`,
 iconSize:[20,20]
+})
+}).bindPopup(`<b>${c.company_name}</b><br>$${revenue}`)
+);
+}
 });
 
-const marker=L.marker([c.latitude,c.longitude],{icon})
-.bindPopup(`
-<b>${c.company_name}</b><br>
-Revenue: $${revenue}<br>
-Risk: ${(riskScore*100).toFixed(0)}%
-`);
+tasks?.forEach(t=>{
+taskHTML+=`
+<div class="alert medium">
+${t.title} (${t.status})
+<button onclick="completeTask('${t.id}')">✔</button>
+</div>`;
+});
 
-clusterGroup.addLayer(marker);
-}
+events?.forEach(e=>{
+securityHTML+=`
+<div class="alert ${e.severity}">
+${e.event_type} - ${e.severity}
+</div>`;
+});
+
+incidents?.forEach(i=>{
+incidentHTML+=`
+<div class="alert ${i.severity}">
+${i.title} (${i.status})
+<button onclick="resolveIncident('${i.id}')">Resolve</button>
+</div>`;
 });
 
 heatLayer=L.heatLayer(heatData,{radius:30,blur:25,maxZoom:5}).addTo(map);
@@ -244,18 +184,60 @@ heatLayer=L.heatLayer(heatData,{radius:30,blur:25,maxZoom:5}).addTo(map);
 let churnRate=active>0?((churned/(active+churned))*100).toFixed(1):0;
 let fusionScore=Math.round((totalMRR/1000)-(riskMRR/2000)-churnRate);
 
-animateValue("mrr",0,totalMRR,800);
-animateValue("risk",0,riskMRR,800);
-
+document.getElementById("mrr").innerText="$"+totalMRR.toLocaleString();
+document.getElementById("risk").innerText="$"+riskMRR.toLocaleString();
 document.getElementById("churn").innerText=churnRate+"%";
 document.getElementById("fusion").innerText=fusionScore;
 document.getElementById("clientList").innerHTML=clientHTML;
 document.getElementById("taskList").innerHTML=taskHTML;
 document.getElementById("securityFeed").innerHTML=securityHTML;
+document.getElementById("incidentPanel").innerHTML=incidentHTML;
 }
 
-sb.channel('live')
-.on('postgres_changes',{event:'*',schema:'public',table:'clients'},()=>loadIntel())
+async function addClient(){
+const name=document.getElementById("newClientName").value;
+if(!name)return;
+await sb.from("clients").insert({company_name:name});
+document.getElementById("newClientName").value="";
+loadIntel();
+}
+
+async function deleteClient(id){
+await sb.from("clients").delete().eq("id",id);
+loadIntel();
+}
+
+async function addTask(){
+const title=document.getElementById("newTaskTitle").value;
+if(!title)return;
+await sb.from("tasks").insert({title});
+document.getElementById("newTaskTitle").value="";
+loadIntel();
+}
+
+async function completeTask(id){
+await sb.from("tasks").update({status:"completed"}).eq("id",id);
+loadIntel();
+}
+
+async function injectEvent(){
+await sb.from("security_events").insert({
+event_type:"Manual Critical Threat",
+severity:"critical"
+});
+loadIntel();
+}
+
+async function resolveIncident(id){
+await sb.from("incidents").update({status:"resolved"}).eq("id",id);
+loadIntel();
+}
+
+sb.channel('live-all')
+.on('postgres_changes',{event:'*',schema:'public',table:'clients'},loadIntel)
+.on('postgres_changes',{event:'*',schema:'public',table:'tasks'},loadIntel)
+.on('postgres_changes',{event:'*',schema:'public',table:'security_events'},loadIntel)
+.on('postgres_changes',{event:'*',schema:'public',table:'incidents'},loadIntel)
 .subscribe();
 
 loadIntel();
