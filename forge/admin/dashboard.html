@@ -4,50 +4,57 @@
 <meta charset="utf-8" />
 <title>Forge Global Intelligence Command</title>
 
-<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<!-- Heatmap + Clustering -->
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
-
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
-body {
+body{
   margin:0;
   background:#020f1f;
   font-family:Arial;
   color:white;
 }
+h2{padding:15px;margin:0}
 
-#map {
-  height:60vh;
-  border-radius:12px;
+#map{
+  height:50vh;
 }
 
-.dashboard {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
+.section{
   padding:15px;
 }
 
-.card {
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+
+.card{
   background:linear-gradient(145deg,#071c36,#0d2c55);
   padding:20px;
   border-radius:12px;
   box-shadow:0 0 20px rgba(0,212,255,.15);
 }
 
-.pulse {
-  width:12px;
-  height:12px;
-  background:#00d4ff;
+.card h3{margin:0 0 10px 0}
+
+.list-box{
+  background:#06182f;
+  padding:15px;
+  border-radius:10px;
+  max-height:250px;
+  overflow:auto;
+}
+
+.pulse{
+  width:14px;
+  height:14px;
   border-radius:50%;
   position:relative;
 }
@@ -58,172 +65,200 @@ body {
   width:100%;
   height:100%;
   border-radius:50%;
-  background:#00d4ff;
   animation:pulse 2s infinite;
   opacity:.6;
 }
 
 @keyframes pulse{
-  0%{ transform:scale(1); opacity:.6; }
-  100%{ transform:scale(3); opacity:0; }
+  0%{transform:scale(1);opacity:.6}
+  100%{transform:scale(3);opacity:0}
 }
+
+.green{background:#00ff88}
+.green::after{background:#00ff88}
+.yellow{background:#ffd000}
+.yellow::after{background:#ffd000}
+.red{background:#ff3b3b}
+.red::after{background:#ff3b3b}
+
+.alert{
+  padding:10px;
+  margin-bottom:6px;
+  border-radius:6px;
+  font-size:13px;
+}
+
+.low{background:#063}
+.medium{background:#664400}
+.high{background:#660000}
 </style>
 </head>
 
 <body>
 
-<h2 style="padding:15px;">Forge Global Intelligence Command</h2>
+<h2>Forge Global Intelligence Command</h2>
 <div id="map"></div>
 
+<div class="section">
 <div class="dashboard">
-  <div class="card">
-    <h3>Active MRR</h3>
-    <h1 id="mrr">$0</h1>
-  </div>
 
-  <div class="card">
-    <h3>Revenue at Risk</h3>
-    <h1 id="risk">$0</h1>
-  </div>
+<div class="card">
+<h3>Active MRR</h3>
+<h1 id="mrr">$0</h1>
+</div>
 
-  <div class="card">
-    <h3>Churn Rate</h3>
-    <h1 id="churn">0%</h1>
-  </div>
+<div class="card">
+<h3>Revenue at Risk</h3>
+<h1 id="risk">$0</h1>
+</div>
 
-  <div class="card">
-    <h3>Fusion Score</h3>
-    <h1 id="fusion">0</h1>
-  </div>
+<div class="card">
+<h3>Churn Rate</h3>
+<h1 id="churn">0%</h1>
+</div>
+
+<div class="card">
+<h3>Fusion Score</h3>
+<h1 id="fusion">0</h1>
+</div>
+
+</div>
+</div>
+
+<div class="section">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">
+
+<div class="list-box">
+<h3>Clients</h3>
+<div id="clientList"></div>
+</div>
+
+<div class="list-box">
+<h3>Active Tasks</h3>
+<div id="taskList"></div>
+</div>
+
+<div class="list-box">
+<h3>Security Monitoring</h3>
+<div id="securityFeed"></div>
+</div>
+
+</div>
 </div>
 
 <script>
+const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* ================= SUPABASE CONFIG ================= */
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const map=L.map('map',{zoomControl:false}).setView([20,0],2);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-/* ================= MAP INIT ================= */
-const map = L.map('map',{zoomControl:false}).setView([20,0],2);
-
-L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-).addTo(map);
-
-let clusterGroup = L.markerClusterGroup();
+let clusterGroup=L.markerClusterGroup();
 map.addLayer(clusterGroup);
 let heatLayer;
 
-/* ================= LOAD DATA ================= */
-async function loadIntel(){
-
-  clusterGroup.clearLayers();
-  if(heatLayer) map.removeLayer(heatLayer);
-
-  const { data: clients } = await sb
-    .from("clients")
-    .select("*");
-
-  if(!clients) return;
-
-  let totalMRR = 0;
-  let riskMRR = 0;
-  let churned = 0;
-  let active = 0;
-  let heatData = [];
-
-  const headquarters = [29.9511,-90.0715]; // CHANGE TO YOUR HQ
-
-  clients.forEach(client=>{
-
-    const revenue = client.monthly_revenue || 0;
-    const riskScore = client.churn_risk || 0;
-    const status = client.status || "active";
-
-    if(status === "active"){
-      active++;
-      totalMRR += revenue;
-      if(riskScore > 0.6) riskMRR += revenue;
-    }
-
-    if(status === "churned") churned++;
-
-    if(client.latitude && client.longitude){
-
-      heatData.push([
-        client.latitude,
-        client.longitude,
-        revenue / 10000
-      ]);
-
-      const icon = L.divIcon({
-        className:'pulse-marker',
-        html:`<div class="pulse"></div>`,
-        iconSize:[20,20]
-      });
-
-      const marker = L.marker(
-        [client.latitude,client.longitude],
-        {icon}
-      ).bindPopup(`
-        <b>${client.company_name}</b><br>
-        Revenue: $${revenue}<br>
-        Risk: ${(riskScore*100).toFixed(0)}%
-      `);
-
-      clusterGroup.addLayer(marker);
-
-      L.polyline(
-        [headquarters,[client.latitude,client.longitude]],
-        {
-          color:"#00d4ff",
-          weight:1,
-          opacity:0.3,
-          dashArray:"4 6"
-        }
-      ).addTo(map);
-    }
-  });
-
-  heatLayer = L.heatLayer(heatData,{
-    radius:30,
-    blur:25,
-    maxZoom:5
-  }).addTo(map);
-
-  const churnRate = active > 0
-    ? ((churned / (active+churned)) * 100).toFixed(1)
-    : 0;
-
-  const fusionScore = Math.round(
-    (totalMRR/1000) - (riskMRR/2000) - churnRate
-  );
-
-  document.getElementById("mrr").innerText =
-    "$" + totalMRR.toLocaleString();
-
-  document.getElementById("risk").innerText =
-    "$" + riskMRR.toLocaleString();
-
-  document.getElementById("churn").innerText =
-    churnRate + "%";
-
-  document.getElementById("fusion").innerText =
-    fusionScore;
+function animateValue(id,start,end,duration){
+let range=end-start;
+let current=start;
+let increment=end>start?1:-1;
+let stepTime=Math.abs(Math.floor(duration/range));
+let obj=document.getElementById(id);
+let timer=setInterval(function(){
+current+=increment;
+obj.innerText="$"+current.toLocaleString();
+if(current==end)clearInterval(timer);
+},stepTime);
 }
 
-/* ================= REALTIME SYNC ================= */
-sb.channel('live-clients')
-  .on('postgres_changes',
-    {event:'*', schema:'public', table:'clients'},
-    ()=> loadIntel()
-  )
-  .subscribe();
+async function loadIntel(){
 
-/* ================= START ================= */
+clusterGroup.clearLayers();
+if(heatLayer)map.removeLayer(heatLayer);
+
+const {data:clients}=await sb.from("clients").select("*");
+if(!clients)return;
+
+let totalMRR=0;
+let riskMRR=0;
+let churned=0;
+let active=0;
+let heatData=[];
+let clientHTML="";
+let taskHTML="";
+let securityHTML="";
+
+clients.forEach(c=>{
+
+let revenue=c.monthly_revenue||0;
+let riskScore=c.churn_risk||0;
+let status=c.status||"active";
+
+if(status==="active"){
+active++;
+totalMRR+=revenue;
+if(riskScore>0.6)riskMRR+=revenue;
+}
+if(status==="churned")churned++;
+
+let riskClass="green";
+if(riskScore>0.6)riskClass="red";
+else if(riskScore>0.4)riskClass="yellow";
+
+clientHTML+=`<div>${c.company_name} — $${revenue}</div>`;
+
+taskHTML+=`
+<div class="alert ${riskScore>0.6?'high':'low'}">
+${c.company_name} monitoring
+</div>`;
+
+if(riskScore>0.6){
+securityHTML+=`
+<div class="alert high">
+⚠ High churn risk: ${c.company_name}
+</div>`;
+}
+
+if(c.latitude && c.longitude){
+
+heatData.push([c.latitude,c.longitude,revenue/10000]);
+
+const icon=L.divIcon({
+html:`<div class="pulse ${riskClass}"></div>`,
+iconSize:[20,20]
+});
+
+const marker=L.marker([c.latitude,c.longitude],{icon})
+.bindPopup(`
+<b>${c.company_name}</b><br>
+Revenue: $${revenue}<br>
+Risk: ${(riskScore*100).toFixed(0)}%
+`);
+
+clusterGroup.addLayer(marker);
+}
+});
+
+heatLayer=L.heatLayer(heatData,{radius:30,blur:25,maxZoom:5}).addTo(map);
+
+let churnRate=active>0?((churned/(active+churned))*100).toFixed(1):0;
+let fusionScore=Math.round((totalMRR/1000)-(riskMRR/2000)-churnRate);
+
+animateValue("mrr",0,totalMRR,800);
+animateValue("risk",0,riskMRR,800);
+
+document.getElementById("churn").innerText=churnRate+"%";
+document.getElementById("fusion").innerText=fusionScore;
+document.getElementById("clientList").innerHTML=clientHTML;
+document.getElementById("taskList").innerHTML=taskHTML;
+document.getElementById("securityFeed").innerHTML=securityHTML;
+}
+
+sb.channel('live')
+.on('postgres_changes',{event:'*',schema:'public',table:'clients'},()=>loadIntel())
+.subscribe();
+
 loadIntel();
-
 </script>
 
 </body>
