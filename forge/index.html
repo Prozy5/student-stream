@@ -188,7 +188,7 @@ section h2{
   transform:translateY(-8px);
 }
 
-/* AI PANEL */
+/* AI */
 .ai-section{
   background:rgba(15,25,22,.85);
   border-top:1px solid rgba(45,252,143,.1);
@@ -211,7 +211,6 @@ section h2{
   min-height:120px;
   margin-bottom:20px;
   opacity:.9;
-  transition:.3s;
 }
 
 .ai-input{
@@ -237,6 +236,38 @@ section h2{
   color:#06110e;
   font-weight:600;
   cursor:pointer;
+}
+
+/* TRUSTED NETWORK */
+.trusted-network{
+  padding:100px 8%;
+  text-align:center;
+  border-top:1px solid rgba(45,252,143,.08);
+}
+
+.trusted-network h2{
+  font-size:32px;
+  margin-bottom:50px;
+}
+
+.brand-grid{
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  flex-wrap:wrap;
+}
+
+.brand-grid img{
+  max-height:50px;
+  opacity:.6;
+  transition:.3s;
+  filter:grayscale(100%);
+}
+
+.brand-grid img:hover{
+  opacity:1;
+  filter:grayscale(0%);
+  transform:scale(1.05);
 }
 
 /* FOOTER */
@@ -268,7 +299,7 @@ footer{
 </div>
 
 <nav>
-  <img src="forgey-logo.PNG" alt="Forge Logo">
+  <img src="forgey-logo.PNG">
   <ul>
     <li><a href="#">Home</a></li>
     <li><a href="#services">Services</a></li>
@@ -287,7 +318,7 @@ footer{
     <button onclick="scrollToAI()">Engage AI Assistant</button>
   </div>
   <div class="hero-logo">
-    <img src="forgey-logo.PNG" alt="Forge Logo">
+    <img src="forgey-logo.PNG">
   </div>
 </section>
 
@@ -327,18 +358,56 @@ footer{
         AI online. Awaiting risk input.
       </div>
       <div class="ai-input">
-        <input type="text" id="aiInput" placeholder="Example: @username, 2k followers, no 2FA, public email">
+        <input type="text" id="aiInput" placeholder="Example: @username, no 2FA, public email">
         <button onclick="runAI()">Analyze</button>
       </div>
     </div>
   </div>
 </section>
 
+<!-- TRUSTED NETWORK (Dynamic from Supabase) -->
+<section class="trusted-network">
+  <h2>Trusted Across Our Network</h2>
+  <div class="brand-grid" id="brandGrid"></div>
+</section>
+
 <footer>
   © 2026 FORGE. All Rights Reserved.
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const supabase = window.supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function loadBrands(){
+  const { data } = await supabase
+    .from("trusted_brands")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order",{ascending:true});
+
+  const grid = document.getElementById("brandGrid");
+  if(!data) return;
+
+  data.forEach(brand=>{
+    const link = document.createElement("a");
+    link.href = brand.website_url || "#";
+    link.target = "_blank";
+
+    const img = document.createElement("img");
+    img.src = brand.logo_url;
+    img.alt = brand.name;
+
+    link.appendChild(img);
+    grid.appendChild(link);
+  });
+}
+
+loadBrands();
+
 function scrollToAI(){
   document.getElementById("ai").scrollIntoView({behavior:"smooth"});
 }
@@ -350,76 +419,35 @@ function sanitizeInput(text){
 function runAI(){
   const inputField = document.getElementById("aiInput");
   const output = document.getElementById("aiOutput");
-
   let rawInput = inputField.value;
 
-  if(!rawInput || rawInput.trim() === ""){
-    output.innerHTML = "Please describe your digital concern.";
+  if(!rawInput){
+    output.innerHTML="Please describe your digital concern.";
     return;
   }
 
   const input = sanitizeInput(rawInput.toLowerCase());
-
-  output.innerHTML = "Analyzing risk profile...";
+  output.innerHTML="Analyzing risk profile...";
 
   setTimeout(()=>{
+    let score=0;
+    if(input.includes("no 2fa")) score+=40;
+    if(input.includes("public email")) score+=25;
+    if(input.includes("impersonation")) score+=35;
 
-    let score = 0;
-    let findings = [];
+    let risk="LOW";
+    if(score>=70) risk="CRITICAL";
+    else if(score>=45) risk="HIGH";
+    else if(score>=25) risk="MODERATE";
 
-    // 2FA Risk
-    if(input.includes("no 2fa") || input.includes("no two factor")){
-      score += 40;
-      findings.push("Two-factor authentication not enabled.");
-    }
-
-    // Public Email Risk
-    if(input.includes("public email")){
-      score += 25;
-      findings.push("Public email exposure detected.");
-    }
-
-    // Low Followers (new / vulnerable accounts)
-    if(input.includes("0 followers") || input.includes("1 follower") || input.includes("2 followers")){
-      score += 15;
-      findings.push("Low account authority score.");
-    }
-
-    // Impersonation indicator
-    if(input.includes("impersonation") || input.includes("fake account")){
-      score += 35;
-      findings.push("Potential impersonation activity.");
-    }
-
-    // Determine Risk Level
-    let riskLevel = "LOW";
-
-    if(score >= 70){
-      riskLevel = "CRITICAL";
-    } else if(score >= 45){
-      riskLevel = "HIGH";
-    } else if(score >= 25){
-      riskLevel = "MODERATE";
-    }
-
-    let color;
-
-    if(riskLevel === "CRITICAL") color = "#ff3b3b";
-    else if(riskLevel === "HIGH") color = "#ff8c42";
-    else if(riskLevel === "MODERATE") color = "#ffd166";
-    else color = "#2dfc8f";
-
-    output.innerHTML = `
+    output.innerHTML=`
       Assessment Complete.<br><br>
-      Risk Level: <strong style="color:${color}">${riskLevel}</strong><br><br>
-      Risk Score: ${score}/100<br><br>
-      ${findings.length ? findings.join("<br>") : "No major vulnerabilities detected."}
-      <br><br>
-      ${riskLevel === "CRITICAL" || riskLevel === "HIGH"
-        ? "Immediate mitigation protocol recommended."
-        : "Structured protection strategy advised."}
+      Risk Level: <strong>${risk}</strong><br>
+      Risk Score: ${score}/100
     `;
-
   },1200);
 }
 </script>
+
+</body>
+</html>
