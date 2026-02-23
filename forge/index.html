@@ -320,61 +320,125 @@ footer{
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const supabase = window.supabase.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+document.addEventListener("DOMContentLoaded", function(){
 
-async function loadBrands(){
-  const { data, error } = await supabase
-    .from("trusted_brands")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order",{ascending:true});
+  console.log("FORGE Loaded");
 
-  const grid=document.getElementById("brandGrid");
-  grid.innerHTML="";
+  /* -------------------------
+     SAFE SUPABASE INIT
+  -------------------------- */
 
-  if(error){
-    grid.innerHTML="<div style='opacity:.4;'>Failed to load brands.</div>";
-    return;
+  let supabase = null;
+
+  try {
+    supabase = window.supabase.createClient(
+      "https://iabzmoxzbqzcqgypxctr.supabase.co",
+      "YOUR_PUBLIC_ANON_KEY"
+    );
+    console.log("Supabase Connected");
+  } catch(err){
+    console.error("Supabase failed to initialize:", err);
   }
 
-  if(!data || data.length===0){
-    grid.innerHTML="<div style='opacity:.4;'>No brands added yet.</div>";
-    return;
+  /* -------------------------
+     LOAD TRUSTED BRANDS
+  -------------------------- */
+
+  async function loadBrands(){
+
+    const grid = document.getElementById("brandGrid");
+    if(!grid){
+      console.error("brandGrid not found");
+      return;
+    }
+
+    grid.innerHTML = "<div style='opacity:.4;'>Loading network...</div>";
+
+    if(!supabase){
+      grid.innerHTML = "<div style='opacity:.4;'>Database unavailable.</div>";
+      return;
+    }
+
+    try {
+
+      const { data, error } = await supabase
+        .from("trusted_brands")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+
+      if(error){
+        console.error("Supabase error:", error);
+        grid.innerHTML = "<div style='opacity:.4;'>Unable to load brands.</div>";
+        return;
+      }
+
+      if(!data || data.length === 0){
+        grid.innerHTML = "<div style='opacity:.4;'>No brands added yet.</div>";
+        return;
+      }
+
+      grid.innerHTML = "";
+
+      data.forEach(brand => {
+
+        const a = document.createElement("a");
+        a.href = brand.website_url || "#";
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.className = "brand-item";
+
+        a.innerHTML = `
+          <img src="${brand.logo_url}" alt="${brand.name}">
+          <div class="brand-name">${brand.name}</div>
+        `;
+
+        grid.appendChild(a);
+      });
+
+    } catch(err){
+      console.error("Unexpected error:", err);
+      grid.innerHTML = "<div style='opacity:.4;'>System error.</div>";
+    }
   }
 
-  data.forEach(brand=>{
-    const a=document.createElement("a");
-    a.href=brand.website_url || "#";
-    a.target="_blank";
-    a.className="brand-item";
-    a.innerHTML=`
-      <img src="${brand.logo_url}">
-      <div class="brand-name">${brand.name}</div>
-    `;
-    grid.appendChild(a);
-  });
-}
+  loadBrands();
 
-loadBrands();
 
-const faders=document.querySelectorAll(".fade");
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.classList.add("visible");
-}
+  /* -------------------------
+     FADE ANIMATION SAFE INIT
+  -------------------------- */
+
+  const faders = document.querySelectorAll(".fade");
+
+  if("IntersectionObserver" in window){
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add("visible");
+        }
+      });
+    },{ threshold:.2 });
+
+    faders.forEach(el => observer.observe(el));
+  } else {
+    // fallback
+    faders.forEach(el => el.classList.add("visible"));
+  }
+
+
+  /* -------------------------
+     SCROLL FUNCTION
+  -------------------------- */
+
+  window.scrollToAI = function(){
+    const aiSection = document.getElementById("ai");
+    if(aiSection){
+      aiSection.scrollIntoView({ behavior:"smooth" });
+    }
+  };
+
 });
-},{threshold:.2});
-faders.forEach(el=>observer.observe(el));
-
-function scrollToAI(){
-  document.getElementById("ai").scrollIntoView({behavior:"smooth"});
-}
 </script>
-
-</body>
-</html>
