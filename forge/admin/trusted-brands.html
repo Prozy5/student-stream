@@ -1,23 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Trusted Brands Admin</title>
+  <title>Trusted Brands Debug</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     body {
       margin: 0;
       background: #0b0f14;
-      font-family: Inter, sans-serif;
+      font-family: Arial;
       color: white;
-    }
-
-    .container {
-      width: 95%;
-      max-width: 800px;
-      margin: 40px auto;
+      padding: 20px;
     }
 
     input, button {
@@ -25,8 +19,8 @@
       padding: 12px;
       margin: 10px 0;
       border-radius: 8px;
-      border: 1px solid #1f2630;
-      background: #11161d;
+      border: 1px solid #333;
+      background: #111;
       color: white;
     }
 
@@ -35,45 +29,44 @@
       color: black;
       font-weight: bold;
       cursor: pointer;
-      border: none;
     }
 
-    img {
-      width: 50px;
-      background: white;
-      padding: 5px;
-      border-radius: 6px;
-    }
-
-    .brand {
-      background: #11161d;
+    #log {
+      background: #111;
       padding: 15px;
-      margin-top: 15px;
-      border-radius: 10px;
-      display: flex;
-      gap: 15px;
-      align-items: center;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow: auto;
+      border: 1px solid #222;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>Trusted Brands</h2>
+<h2>Trusted Brands Debug Mode</h2>
 
-  <input id="name" placeholder="Brand Name">
-  <input id="website" placeholder="Website URL">
-  <input type="file" id="logo" accept="image/*">
-  <button id="submitBtn">Upload Brand</button>
+<input id="name" placeholder="Brand Name">
+<input id="website" placeholder="Website URL">
+<input type="file" id="logo" accept="image/*">
+<button id="uploadBtn">Upload Brand</button>
 
-  <div id="brands"></div>
-</div>
+<div id="log"></div>
 
 <script>
-console.log("JS Loaded");
+const logBox = document.getElementById("log");
+
+function log(message) {
+  console.log(message);
+  logBox.innerText += "\n" + JSON.stringify(message, null, 2);
+}
+
+log("Script started");
 
 if (!window.supabase) {
-  alert("Supabase failed to load. Check internet.");
+  log("❌ Supabase library failed to load");
 }
 
 const supabase = window.supabase.createClient(
@@ -81,99 +74,67 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-console.log("Supabase Ready");
+log("Supabase client created");
 
-const submitBtn = document.getElementById("submitBtn");
-const brandsDiv = document.getElementById("brands");
+document.getElementById("uploadBtn").addEventListener("click", async () => {
 
-submitBtn.addEventListener("click", addBrand);
+  log("Button clicked");
 
-async function loadBrands() {
-  const { data, error } = await supabase
-    .from("trusted_brands")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const name = document.getElementById("name").value.trim();
+  const website = document.getElementById("website").value.trim();
+  const file = document.getElementById("logo").files[0];
 
-  if (error) {
-    console.error("Load error:", error);
+  if (!name || !website || !file) {
+    log("❌ Missing fields");
+    alert("Fill all fields");
     return;
   }
 
-  brandsDiv.innerHTML = "";
+  const filePath = Date.now() + "-" + file.name;
 
-  data.forEach(b => {
-    const div = document.createElement("div");
-    div.className = "brand";
-    div.innerHTML = `
-      <img src="${b.logo_url}">
-      <div>
-        <strong>${b.name}</strong><br>
-        <small>${b.website_url}</small>
-      </div>
-    `;
-    brandsDiv.appendChild(div);
-  });
-}
+  log("Uploading file...");
 
-async function addBrand() {
-  try {
-    console.log("Button clicked");
+  const upload = await supabase.storage
+    .from("brand-logos")
+    .upload(filePath, file);
 
-    const name = document.getElementById("name").value.trim();
-    const website = document.getElementById("website").value.trim();
-    const file = document.getElementById("logo").files[0];
+  log(upload);
 
-    if (!name || !website || !file) {
-      alert("Fill all fields");
-      return;
-    }
-
-    const filePath = `${Date.now()}-${file.name}`;
-
-    console.log("Uploading file...");
-
-    const { error: uploadError } =
-      await supabase.storage.from("brand-logos").upload(filePath, file);
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      alert(uploadError.message);
-      return;
-    }
-
-    const { data: publicUrlData } =
-      supabase.storage.from("brand-logos").getPublicUrl(filePath);
-
-    console.log("Inserting row...");
-
-    const { error: insertError } =
-      await supabase.from("trusted_brands").insert([{
-        name,
-        website_url: website,
-        logo_url: publicUrlData.publicUrl
-      }]);
-
-    if (insertError) {
-      console.error("Insert error:", insertError);
-      alert(insertError.message);
-      return;
-    }
-
-    alert("Success");
-
-    document.getElementById("name").value = "";
-    document.getElementById("website").value = "";
-    document.getElementById("logo").value = "";
-
-    loadBrands();
-
-  } catch (err) {
-    console.error("Fatal error:", err);
-    alert("Check console.");
+  if (upload.error) {
+    log("❌ Upload failed");
+    alert(upload.error.message);
+    return;
   }
-}
 
-loadBrands();
+  const publicUrl = supabase.storage
+    .from("brand-logos")
+    .getPublicUrl(filePath);
+
+  log("Public URL:");
+  log(publicUrl);
+
+  log("Inserting into table...");
+
+  const insert = await supabase
+    .from("trusted_brands")
+    .insert([{
+      name: name,
+      website_url: website,
+      logo_url: publicUrl.data.publicUrl
+    }]);
+
+  log(insert);
+
+  if (insert.error) {
+    log("❌ Insert failed");
+    alert(insert.error.message);
+    return;
+  }
+
+  log("✅ SUCCESS");
+  alert("Brand added successfully");
+
+});
 </script>
 
 </body>
