@@ -3,237 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forge Intelligence</title>
+<title>Forge Admin</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
-    background:#0b1120;
+    background:#0f172a;
     font-family: Inter, sans-serif;
 }
 
-/* Ambient background glow */
-.bg-ambient{
+/* Glow Background */
+.bg-glow{
     position:fixed;
-    width:800px;
-    height:800px;
-    background: radial-gradient(circle, rgba(56,189,248,0.15), transparent 60%);
-    top:-200px;
-    left:-200px;
+    width:900px;
+    height:900px;
+    background: radial-gradient(circle, rgba(56,189,248,0.18), transparent 60%);
+    top:-300px;
+    right:-300px;
+    filter:blur(140px);
     z-index:-1;
-    filter: blur(120px);
 }
 
+/* Glass */
 .glass{
     background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(20px);
     border:1px solid rgba(255,255,255,0.08);
 }
 
-.navItem{
-    padding:10px;
-    border-radius:8px;
-    transition:all .3s ease;
+/* Sidebar */
+.nav-link{
+    padding:10px 14px;
+    border-radius:10px;
+    transition:.25s;
 }
-.navItem:hover{
+.nav-link:hover{
     background:rgba(56,189,248,0.1);
 }
-.activeTab{
+.active{
     background:rgba(56,189,248,0.15);
     color:#38bdf8;
 }
-.fadeIn{
-    animation:fade .4s ease forwards;
+
+/* Fade */
+.fade{
+    animation:fade .3s ease forwards;
 }
 @keyframes fade{
-    from{opacity:0; transform:translateY(10px);}
+    from{opacity:0; transform:translateY(8px);}
     to{opacity:1; transform:translateY(0);}
+}
+
+/* AI Console Glow */
+.console-glow{
+    box-shadow:0 0 20px rgba(56,189,248,0.2);
 }
 </style>
 </head>
 
 <body class="text-gray-200">
 
-<div class="bg-ambient"></div>
+<div class="bg-glow"></div>
 
 <div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
-<aside class="w-64 p-6 glass hidden md:block">
-<h1 class="text-xl font-semibold text-cyan-400 mb-10">FORGE</h1>
+<aside class="w-64 p-6 glass hidden md:flex flex-col">
 
-<div class="space-y-3 text-sm">
-<button onclick="switchTab('dashboard', this)" class="navItem activeTab w-full text-left">Dashboard</button>
-<button onclick="switchTab('ai', this)" class="navItem w-full text-left">AI Engine</button>
-<button onclick="switchTab('social', this)" class="navItem w-full text-left">Social Monitoring</button>
-<button onclick="switchTab('analytics', this)" class="navItem w-full text-left">Analytics</button>
-<button onclick="switchTab('clients', this)" class="navItem w-full text-left">Clients</button>
+<h1 class="text-2xl font-semibold text-cyan-400 mb-12 tracking-wide">
+FORGE
+</h1>
+
+<nav class="space-y-3 text-sm flex-1">
+<button onclick="switchTab('dashboard',this)" class="nav-link active w-full text-left">Dashboard</button>
+<button onclick="switchTab('ai',this)" class="nav-link w-full text-left">AI Engine</button>
+<button onclick="switchTab('social',this)" class="nav-link w-full text-left">Social Monitoring</button>
+<button onclick="switchTab('analytics',this)" class="nav-link w-full text-left">Analytics</button>
+<button onclick="switchTab('clients',this)" class="nav-link w-full text-left">Clients</button>
+</nav>
+
+<div class="text-xs text-gray-500 mt-10">
+Forge Digital Security & Media Management
 </div>
+
 </aside>
 
 <!-- MAIN -->
-<div class="flex-1 p-10">
+<main class="flex-1 p-8 md:p-12">
 
+<!-- HEADER -->
 <div class="flex justify-between items-center mb-10">
 <div>
-<h2 class="text-2xl font-semibold">Intelligence Overview</h2>
-<p class="text-gray-400 text-sm">Real-time digital security & brand monitoring</p>
+<h2 class="text-3xl font-semibold">Admin Dashboard</h2>
+<p class="text-gray-400 text-sm mt-1">
+Digital security & brand growth overview
+</p>
 </div>
-<button onclick="runAIScan()" class="bg-cyan-500 hover:bg-cyan-600 transition px-5 py-2 rounded-lg text-sm font-medium">
+
+<button onclick="runAIScan()" class="bg-cyan-500 hover:bg-cyan-600 transition px-6 py-2 rounded-xl text-sm font-medium shadow-lg shadow-cyan-500/20">
 Run AI Scan
 </button>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard" class="tabContent fadeIn">
+<section id="dashboard" class="fade">
 
 <div class="grid md:grid-cols-4 gap-6 mb-10">
 
-<div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-xs">Digital Risk Index</p>
-<h3 id="riskScore" class="text-3xl font-semibold text-cyan-400">0</h3>
+<div class="glass p-6 rounded-2xl">
+<p class="text-gray-400 text-xs uppercase tracking-wide">Risk Score</p>
+<h3 id="riskScore" class="text-4xl mt-2 text-cyan-400 font-semibold">0</h3>
 </div>
 
-<div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-xs">Brand Authority</p>
-<h3 id="authorityScore" class="text-3xl font-semibold text-purple-400">0</h3>
+<div class="glass p-6 rounded-2xl">
+<p class="text-gray-400 text-xs uppercase tracking-wide">Brand Authority</p>
+<h3 id="authorityScore" class="text-4xl mt-2 text-purple-400 font-semibold">0</h3>
 </div>
 
-<div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-xs">Visibility</p>
-<h3 id="visibilityScore" class="text-3xl font-semibold text-green-400">0%</h3>
+<div class="glass p-6 rounded-2xl">
+<p class="text-gray-400 text-xs uppercase tracking-wide">Visibility</p>
+<h3 id="visibilityScore" class="text-4xl mt-2 text-green-400 font-semibold">0%</h3>
 </div>
 
-<div class="glass p-6 rounded-xl">
-<p class="text-gray-400 text-xs">Active Alerts</p>
-<h3 id="alertScore" class="text-3xl font-semibold text-red-400">0</h3>
+<div class="glass p-6 rounded-2xl">
+<p class="text-gray-400 text-xs uppercase tracking-wide">Active Alerts</p>
+<h3 id="alertScore" class="text-4xl mt-2 text-red-400 font-semibold">0</h3>
 </div>
 
 </div>
 
-<div class="glass p-6 rounded-xl">
-<h3 class="mb-6 text-sm text-gray-400">Engagement Trend</h3>
+<div class="glass p-6 rounded-2xl">
+<h3 class="text-sm text-gray-400 mb-6 uppercase tracking-wide">
+Engagement Growth
+</h3>
 <canvas id="chart"></canvas>
 </div>
 
-</div>
+</section>
 
-<!-- AI ENGINE -->
-<div id="ai" class="tabContent hidden fadeIn">
-<div class="glass p-6 rounded-xl">
-<h3 class="mb-4 text-cyan-400 text-sm">AI Intelligence Console</h3>
-<div id="aiConsole" class="bg-black/40 p-4 rounded-lg h-72 overflow-auto text-green-400 font-mono text-xs"></div>
+<!-- AI -->
+<section id="ai" class="hidden fade">
+<div class="glass p-6 rounded-2xl console-glow">
+<h3 class="text-sm text-cyan-400 uppercase tracking-wide mb-4">
+AI Intelligence Console
+</h3>
+<div id="aiConsole" class="bg-black/40 p-4 rounded-xl h-80 overflow-auto text-green-400 font-mono text-xs"></div>
 </div>
-</div>
+</section>
 
 <!-- SOCIAL -->
-<div id="social" class="tabContent hidden fadeIn">
-<div class="glass p-6 rounded-xl">
-<h3 class="mb-4 text-sm text-gray-400">Platform Monitoring</h3>
-<p class="text-sm">Instagram engagement rising 14%</p>
-<p class="text-sm">TikTok trend detected</p>
-<p class="text-sm">YouTube watch time increasing</p>
+<section id="social" class="hidden fade">
+<div class="glass p-6 rounded-2xl">
+<h3 class="text-sm text-gray-400 uppercase tracking-wide mb-4">
+Social Platform Overview
+</h3>
+<ul class="space-y-2 text-sm">
+<li>Instagram engagement up 14%</li>
+<li>TikTok trending content detected</li>
+<li>YouTube watch time improving</li>
+<li>No security anomalies detected</li>
+</ul>
 </div>
-</div>
+</section>
 
 <!-- ANALYTICS -->
-<div id="analytics" class="tabContent hidden fadeIn">
-<div class="glass p-6 rounded-xl">
-<h3 class="mb-4 text-sm text-gray-400">Top Performing Content</h3>
-<p class="text-sm">Short-form video boosted reach by 230%</p>
+<section id="analytics" class="hidden fade">
+<div class="glass p-6 rounded-2xl">
+<h3 class="text-sm text-gray-400 uppercase tracking-wide mb-4">
+Content Performance
+</h3>
+<p class="text-sm">
+Short-form vertical content increased reach by 230%.
+</p>
 </div>
-</div>
+</section>
 
 <!-- CLIENTS -->
-<div id="clients" class="tabContent hidden fadeIn">
-<div class="glass p-6 rounded-xl">
-<h3 class="mb-4 text-sm text-gray-400">Client Status</h3>
-<p class="text-sm">Brand Alpha – Secure</p>
-<p class="text-sm">Creator Nova – Monitoring</p>
+<section id="clients" class="hidden fade">
+<div class="glass p-6 rounded-2xl">
+<h3 class="text-sm text-gray-400 uppercase tracking-wide mb-4">
+Client Security Status
+</h3>
+<ul class="space-y-2 text-sm">
+<li>Brand Alpha — Secure</li>
+<li>Creator Nova — Monitoring</li>
+<li>Agency Beta — Protected</li>
+</ul>
 </div>
-</div>
+</section>
 
-</div>
+</main>
 </div>
 
 <script>
 
-/* Tab Switching */
-function switchTab(tab, btn){
-document.querySelectorAll('.tabContent').forEach(el=>el.classList.add('hidden'));
-document.getElementById(tab).classList.remove('hidden');
+/* Tab Switch */
+function switchTab(id,btn){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
 
-document.querySelectorAll('.navItem').forEach(el=>el.classList.remove('activeTab'));
-btn.classList.add('activeTab');
+document.querySelectorAll(".nav-link").forEach(n=>n.classList.remove("active"));
+btn.classList.add("active");
 }
 
 /* Chart */
-new Chart(document.getElementById('chart'),{
-type:'line',
+new Chart(document.getElementById("chart"),{
+type:"line",
 data:{
-labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
 datasets:[{
-data:[12,19,14,22,30,25,35],
-borderColor:'#38bdf8',
-backgroundColor:'rgba(56,189,248,0.15)',
+data:[10,18,15,25,30,28,40],
+borderColor:"#38bdf8",
+backgroundColor:"rgba(56,189,248,0.15)",
 fill:true,
-tension:0.4
+tension:.4
 }]
 },
 options:{
 plugins:{legend:{display:false}},
 scales:{
-x:{ticks:{color:'#9ca3af'}},
-y:{ticks:{color:'#9ca3af'}}
+x:{ticks:{color:"#9ca3af"}},
+y:{ticks:{color:"#9ca3af"}}
 }
 }
 });
 
-/* Animated Counters */
-function animateValue(id, end, duration) {
-let start = 0;
-let range = end - start;
-let increment = end > start ? 1 : -1;
-let stepTime = Math.abs(Math.floor(duration / range));
-let obj = document.getElementById(id);
-let current = start;
-let timer = setInterval(function() {
-current += increment;
-obj.innerHTML = id==="visibilityScore" ? current+"%" : current;
-if (current == end) clearInterval(timer);
-}, stepTime);
+/* Counter Animation */
+function animate(id,end,duration){
+let start=0;
+let range=end-start;
+let step=Math.abs(Math.floor(duration/range));
+let el=document.getElementById(id);
+let current=start;
+let timer=setInterval(()=>{
+current++;
+el.innerHTML=id==="visibilityScore"?current+"%":current;
+if(current>=end)clearInterval(timer);
+},step);
 }
 
-animateValue("riskScore", 27, 800);
-animateValue("authorityScore", 84, 1000);
-animateValue("visibilityScore", 68, 900);
-animateValue("alertScore", 3, 600);
+animate("riskScore",22,800);
+animate("authorityScore",88,1000);
+animate("visibilityScore",72,900);
+animate("alertScore",2,600);
 
-/* AI Simulation */
+/* AI Console */
 function runAIScan(){
-let consoleBox=document.getElementById("aiConsole");
-consoleBox.innerHTML="";
+let box=document.getElementById("aiConsole");
+box.innerHTML="";
 let lines=[
-"> Forge AI initializing...",
-"> Scanning digital ecosystem...",
-"> Running brand sentiment analysis...",
-"> Checking social anomalies...",
+"> Initializing Forge AI...",
+"> Scanning brand ecosystem...",
+"> Running sentiment analysis...",
+"> Checking for impersonation threats...",
+"> Monitoring account integrity...",
 "> Risk level: LOW",
-"> No vulnerabilities detected.",
+"> Brand presence stable.",
 "> System secure."
 ];
 let i=0;
 let interval=setInterval(()=>{
 if(i<lines.length){
-consoleBox.innerHTML+=lines[i]+"<br>";
-consoleBox.scrollTop=consoleBox.scrollHeight;
+box.innerHTML+=lines[i]+"<br>";
+box.scrollTop=box.scrollHeight;
 i++;
 }else{
 clearInterval(interval);
 }
-},500);
+},450);
 }
 
 </script>
