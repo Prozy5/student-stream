@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,272 +7,178 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{
-    background:#0f172a;
-    font-family: Inter, sans-serif;
-}
-
-/* Glow Background */
-.bg-glow{
-    position:fixed;
-    width:900px;
-    height:900px;
-    background: radial-gradient(circle, rgba(56,189,248,0.18), transparent 60%);
-    top:-300px;
-    right:-300px;
-    filter:blur(140px);
-    z-index:-1;
-}
-
-/* Glass */
-.glass{
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(20px);
-    border:1px solid rgba(255,255,255,0.08);
-}
-
-/* Sidebar */
-.nav-link{
-    padding:10px 14px;
-    border-radius:10px;
-    transition:.25s;
-}
-.nav-link:hover{
-    background:rgba(56,189,248,0.1);
-}
-.active{
-    background:rgba(56,189,248,0.15);
-    color:#38bdf8;
-}
-
-/* Fade */
-.fade{
-    animation:fade .3s ease forwards;
-}
-@keyframes fade{
-    from{opacity:0; transform:translateY(8px);}
-    to{opacity:1; transform:translateY(0);}
-}
-
-/* AI Console Glow */
-.console-glow{
-    box-shadow:0 0 20px rgba(56,189,248,0.2);
-}
+body{background:#0f172a;font-family:Inter,sans-serif;}
+.glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);}
 </style>
 </head>
 
 <body class="text-gray-200">
 
-<div class="bg-glow"></div>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center">
+<div class="glass p-10 rounded-2xl w-96">
+<h1 class="text-2xl text-cyan-400 mb-6 font-semibold">Forge Admin Login</h1>
 
-<div class="flex min-h-screen">
+<input id="email" placeholder="Email"
+class="w-full p-3 mb-4 bg-black/40 rounded-xl outline-none">
 
-<!-- SIDEBAR -->
-<aside class="w-64 p-6 glass hidden md:flex flex-col">
+<input id="password" type="password" placeholder="Password"
+class="w-full p-3 mb-6 bg-black/40 rounded-xl outline-none">
 
-<h1 class="text-2xl font-semibold text-cyan-400 mb-12 tracking-wide">
-FORGE
-</h1>
+<button onclick="login()" 
+class="w-full bg-cyan-500 hover:bg-cyan-600 p-3 rounded-xl">
+Login
+</button>
 
-<nav class="space-y-3 text-sm flex-1">
-<button onclick="switchTab('dashboard',this)" class="nav-link active w-full text-left">Dashboard</button>
-<button onclick="switchTab('ai',this)" class="nav-link w-full text-left">AI Engine</button>
-<button onclick="switchTab('social',this)" class="nav-link w-full text-left">Social Monitoring</button>
-<button onclick="switchTab('analytics',this)" class="nav-link w-full text-left">Analytics</button>
-<button onclick="switchTab('clients',this)" class="nav-link w-full text-left">Clients</button>
-</nav>
-
-<div class="text-xs text-gray-500 mt-10">
-Forge Digital Security & Media Management
+<p id="authMessage" class="text-sm text-red-400 mt-4"></p>
+</div>
 </div>
 
+<!-- ADMIN PANEL -->
+<div id="panel" class="hidden min-h-screen flex">
+
+<!-- SIDEBAR -->
+<aside class="w-64 p-6 glass">
+<h1 class="text-2xl text-cyan-400 mb-8">FORGE</h1>
+<button onclick="logout()" class="text-sm text-red-400">Logout</button>
 </aside>
 
 <!-- MAIN -->
-<main class="flex-1 p-8 md:p-12">
+<main class="flex-1 p-10">
 
-<!-- HEADER -->
-<div class="flex justify-between items-center mb-10">
-<div>
-<h2 class="text-3xl font-semibold">Admin Dashboard</h2>
-<p class="text-gray-400 text-sm mt-1">
-Digital security & brand growth overview
-</p>
-</div>
-
-<button onclick="runAIScan()" class="bg-cyan-500 hover:bg-cyan-600 transition px-6 py-2 rounded-xl text-sm font-medium shadow-lg shadow-cyan-500/20">
-Run AI Scan
-</button>
-</div>
-
-<!-- DASHBOARD -->
-<section id="dashboard" class="fade">
-
-<div class="grid md:grid-cols-4 gap-6 mb-10">
-
-<div class="glass p-6 rounded-2xl">
-<p class="text-gray-400 text-xs uppercase tracking-wide">Risk Score</p>
-<h3 id="riskScore" class="text-4xl mt-2 text-cyan-400 font-semibold">0</h3>
-</div>
-
-<div class="glass p-6 rounded-2xl">
-<p class="text-gray-400 text-xs uppercase tracking-wide">Brand Authority</p>
-<h3 id="authorityScore" class="text-4xl mt-2 text-purple-400 font-semibold">0</h3>
-</div>
-
-<div class="glass p-6 rounded-2xl">
-<p class="text-gray-400 text-xs uppercase tracking-wide">Visibility</p>
-<h3 id="visibilityScore" class="text-4xl mt-2 text-green-400 font-semibold">0%</h3>
-</div>
-
-<div class="glass p-6 rounded-2xl">
-<p class="text-gray-400 text-xs uppercase tracking-wide">Active Alerts</p>
-<h3 id="alertScore" class="text-4xl mt-2 text-red-400 font-semibold">0</h3>
-</div>
-
-</div>
-
-<div class="glass p-6 rounded-2xl">
-<h3 class="text-sm text-gray-400 mb-6 uppercase tracking-wide">
-Engagement Growth
-</h3>
-<canvas id="chart"></canvas>
-</div>
-
-</section>
-
-<!-- AI -->
-<section id="ai" class="hidden fade">
-<div class="glass p-6 rounded-2xl console-glow">
-<h3 class="text-sm text-cyan-400 uppercase tracking-wide mb-4">
-AI Intelligence Console
-</h3>
-<div id="aiConsole" class="bg-black/40 p-4 rounded-xl h-80 overflow-auto text-green-400 font-mono text-xs"></div>
-</div>
-</section>
-
-<!-- SOCIAL -->
-<section id="social" class="hidden fade">
-<div class="glass p-6 rounded-2xl">
-<h3 class="text-sm text-gray-400 uppercase tracking-wide mb-4">
-Social Platform Overview
-</h3>
-<ul class="space-y-2 text-sm">
-<li>Instagram engagement up 14%</li>
-<li>TikTok trending content detected</li>
-<li>YouTube watch time improving</li>
-<li>No security anomalies detected</li>
-</ul>
-</div>
-</section>
-
-<!-- ANALYTICS -->
-<section id="analytics" class="hidden fade">
-<div class="glass p-6 rounded-2xl">
-<h3 class="text-sm text-gray-400 uppercase tracking-wide mb-4">
-Content Performance
-</h3>
-<p class="text-sm">
-Short-form vertical content increased reach by 230%.
-</p>
-</div>
-</section>
+<h2 class="text-3xl mb-6 font-semibold">Dashboard</h2>
 
 <!-- CLIENTS -->
-<section id="clients" class="hidden fade">
-<div class="glass p-6 rounded-2xl">
-<h3 class="text-sm text-gray-400 uppercase tracking-wide mb-4">
-Client Security Status
-</h3>
-<ul class="space-y-2 text-sm">
-<li>Brand Alpha — Secure</li>
-<li>Creator Nova — Monitoring</li>
-<li>Agency Beta — Protected</li>
-</ul>
+<div class="glass p-6 rounded-2xl mb-8">
+<h3 class="text-lg mb-4">Clients</h3>
+
+<div class="flex gap-3 mb-4">
+<input id="clientName" placeholder="Client Name"
+class="p-2 bg-black/40 rounded-lg">
+<input id="clientEmail" placeholder="Email"
+class="p-2 bg-black/40 rounded-lg">
+<button onclick="addClient()" 
+class="bg-green-500 px-4 rounded-lg">Add</button>
 </div>
-</section>
+
+<ul id="clientList" class="space-y-2 text-sm"></ul>
+</div>
+
+<!-- ALERTS -->
+<div class="glass p-6 rounded-2xl">
+<h3 class="text-lg mb-4">Realtime Alerts</h3>
+<ul id="alertList" class="space-y-2 text-sm"></ul>
+</div>
+
+<!-- INSTAGRAM OAUTH PLACEHOLDER -->
+<div class="glass p-6 rounded-2xl mt-8">
+<h3 class="text-lg mb-4">Instagram Integration</h3>
+<button class="bg-purple-500 px-5 py-2 rounded-xl">
+Connect Instagram (OAuth)
+</button>
+<p class="text-xs text-gray-400 mt-3">
+OAuth setup required via Meta Developer Dashboard.
+</p>
+</div>
 
 </main>
 </div>
 
 <script>
 
-/* Tab Switch */
-function switchTab(id,btn){
-document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
+/* ===== SUPABASE CONFIG ===== */
+const supabase = window.supabase.createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-document.querySelectorAll(".nav-link").forEach(n=>n.classList.remove("active"));
-btn.classList.add("active");
-}
-
-/* Chart */
-new Chart(document.getElementById("chart"),{
-type:"line",
-data:{
-labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-datasets:[{
-data:[10,18,15,25,30,28,40],
-borderColor:"#38bdf8",
-backgroundColor:"rgba(56,189,248,0.15)",
-fill:true,
-tension:.4
-}]
-},
-options:{
-plugins:{legend:{display:false}},
-scales:{
-x:{ticks:{color:"#9ca3af"}},
-y:{ticks:{color:"#9ca3af"}}
-}
-}
+/* ===== AUTH ===== */
+async function login(){
+const {data,error} = await supabase.auth.signInWithPassword({
+email:document.getElementById("email").value,
+password:document.getElementById("password").value
 });
-
-/* Counter Animation */
-function animate(id,end,duration){
-let start=0;
-let range=end-start;
-let step=Math.abs(Math.floor(duration/range));
-let el=document.getElementById(id);
-let current=start;
-let timer=setInterval(()=>{
-current++;
-el.innerHTML=id==="visibilityScore"?current+"%":current;
-if(current>=end)clearInterval(timer);
-},step);
-}
-
-animate("riskScore",22,800);
-animate("authorityScore",88,1000);
-animate("visibilityScore",72,900);
-animate("alertScore",2,600);
-
-/* AI Console */
-function runAIScan(){
-let box=document.getElementById("aiConsole");
-box.innerHTML="";
-let lines=[
-"> Initializing Forge AI...",
-"> Scanning brand ecosystem...",
-"> Running sentiment analysis...",
-"> Checking for impersonation threats...",
-"> Monitoring account integrity...",
-"> Risk level: LOW",
-"> Brand presence stable.",
-"> System secure."
-];
-let i=0;
-let interval=setInterval(()=>{
-if(i<lines.length){
-box.innerHTML+=lines[i]+"<br>";
-box.scrollTop=box.scrollHeight;
-i++;
+if(error){
+document.getElementById("authMessage").innerText=error.message;
 }else{
-clearInterval(interval);
+initApp();
 }
-},450);
+}
+
+async function logout(){
+await supabase.auth.signOut();
+location.reload();
+}
+
+async function checkSession(){
+const {data:{session}}=await supabase.auth.getSession();
+if(session){
+initApp();
+}
+}
+checkSession();
+
+/* ===== INIT APP ===== */
+async function initApp(){
+document.getElementById("loginScreen").classList.add("hidden");
+document.getElementById("panel").classList.remove("hidden");
+loadClients();
+loadAlerts();
+subscribeRealtime();
+}
+
+/* ===== CLIENTS ===== */
+async function loadClients(){
+let {data}=await supabase.from("clients").select("*").order("created_at",{ascending:false});
+renderClients(data);
+}
+
+function renderClients(clients){
+let list=document.getElementById("clientList");
+list.innerHTML="";
+clients.forEach(c=>{
+list.innerHTML+=`<li class="bg-black/30 p-3 rounded-lg">
+${c.name} — ${c.status}
+</li>`;
+});
+}
+
+async function addClient(){
+let name=document.getElementById("clientName").value;
+let email=document.getElementById("clientEmail").value;
+
+await supabase.from("clients").insert([{name,email}]);
+loadClients();
+}
+
+/* ===== ALERTS ===== */
+async function loadAlerts(){
+let {data}=await supabase.from("alerts").select("*").order("created_at",{ascending:false});
+renderAlerts(data);
+}
+
+function renderAlerts(alerts){
+let list=document.getElementById("alertList");
+list.innerHTML="";
+alerts.forEach(a=>{
+list.innerHTML+=`<li class="bg-black/30 p-3 rounded-lg">
+${a.message}
+</li>`;
+});
+}
+
+/* ===== REALTIME ===== */
+function subscribeRealtime(){
+supabase.channel("realtime-alerts")
+.on("postgres_changes",
+{event:"INSERT",schema:"public",table:"alerts"},
+payload=>{
+loadAlerts();
+})
+.subscribe();
 }
 
 </script>
