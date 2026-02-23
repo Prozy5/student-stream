@@ -291,25 +291,40 @@ return "AI: System operating within normal parameters.";
 async function loadIntel(){
 
 clusterGroup.clearLayers();
-if(heatLayer)map.removeLayer(heatLayer);
 if(heatLayer) map.removeLayer(heatLayer);
 
 const {data:clients}=await sb.from("clients").select("*");
 const {data:events}=await sb.from("security_events").select("*").order("created_at",{ascending:false}).limit(20);
 const {data:incidents}=await sb.from("incidents").select("*").order("created_at",{ascending:false});
 
-let totalMRR=0,riskMRR=0,churned=0,active=0,heatData=[];
 let totalMRR=0,riskMRR=0,churned=0,active=0;
 let heatData=[];
 let clientHTML="",securityHTML="",incidentHTML="";
 let low=0,high=0,critical=0;
 
-@@ -274,8 +325,20 @@
+clients?.forEach(c=>{
+let revenue=c.monthly_revenue||0;
+let risk=c.churn_risk||0;
+let status=c.status||"active";
+
+if(status==="active"){active++;totalMRR+=revenue;if(risk>0.6)riskMRR+=revenue}
+if(status==="churned")churned++;
+
+clientHTML+=`
+<div class="item">
+${c.company_name} — $${revenue}
+<button onclick="deleteClient('${c.id}')">❌</button>
+</div>`;
+
+if(c.latitude&&c.longitude){
+heatData.push([c.latitude,c.longitude,revenue/10000]);
+clusterGroup.addLayer(L.marker([c.latitude,c.longitude]));
+}
+});
+
 events?.forEach(e=>{
 if(e.severity==="low")low++;
 if(e.severity==="high")high++;
-if(e.severity==="critical"){critical++;alertSound.play();}
-securityHTML+=`<div class="item ${e.severity}">${e.event_type} (${e.severity})</div>`;
 if(e.severity==="critical"){
 critical++;
 if(Date.now()-lastCriticalAlert>5000){
@@ -327,12 +342,30 @@ drawAttackLine(e.latitude,e.longitude);
 });
 
 incidents?.forEach(i=>{
-@@ -303,9 +366,23 @@
+incidentHTML+=`
+<div class="item ${i.severity}">
+${i.title} (${i.status})
+<button onclick="resolveIncident('${i.id}')">Resolve</button>
+</div>`;
+});
+
+heatLayer=L.heatLayer(heatData,{radius:30,blur:25,maxZoom:5}).addTo(map);
+
+let churnRate=active>0?((churned/(active+churned))*100).toFixed(1):0;
+let fusionScore=Math.round((totalMRR/1000)-(riskMRR/2000)-churnRate);
+
+document.getElementById("mrr").innerText="$"+totalMRR.toLocaleString();
+document.getElementById("risk").innerText="$"+riskMRR.toLocaleString();
+document.getElementById("churn").innerText=churnRate+"%";
+document.getElementById("fusion").innerText=fusionScore;
+document.getElementById("clientList").innerHTML=clientHTML;
+document.getElementById("securityFeed").innerHTML=securityHTML;
+document.getElementById("incidentPanel").innerHTML=incidentHTML;
+document.getElementById("lowCount").innerText=low;
+document.getElementById("highCount").innerText=high;
 document.getElementById("criticalCount").innerText=critical;
 
 let threat="LOW";
-if(critical>0)threat="CRITICAL";
-else if(high>3)threat="HIGH";
 if(critical>0) threat="CRITICAL";
 else if(high>3) threat="HIGH";
 document.getElementById("threatLevel").innerText=threat;
@@ -353,11 +386,21 @@ document.getElementById("aiContent").innerHTML=
 }
 
 async function addClient(){
-@@ -324,30 +401,29 @@
+await sb.from("clients").insert({
+company_name:document.getElementById("newClientName").value,
+monthly_revenue:parseInt(document.getElementById("newClientRevenue").value||0),
+latitude:parseFloat(document.getElementById("newClientLat").value||0),
+longitude:parseFloat(document.getElementById("newClientLng").value||0)
+});
+}
+
+async function deleteClient(id){
+await sb.from("clients").delete().eq("id",id);
+}
+
 async function injectEvent(){
 await sb.from("security_events").insert({
 event_type:"Manual Threat Injection",
-severity:document.getElementById("eventSeverity").value
 severity:document.getElementById("eventSeverity").value,
 latitude:(Math.random()*140-70),
 longitude:(Math.random()*360-180)
@@ -383,8 +426,4 @@ sb.channel('enterprise-live')
 .subscribe();
 
 loadIntel();
-</script>
-
-</body>
-</html>
 </script>
