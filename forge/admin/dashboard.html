@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Forge Global Intelligence Command - Enterprise</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body{
@@ -27,17 +27,12 @@ align-items:center;
 
 .section{padding:20px}
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
-}
-
 .panel{
 background:#06182f;
 padding:15px;
 border-radius:12px;
 box-shadow:0 0 15px rgba(0,212,255,.08);
+max-width:500px;
 }
 
 .panel h3{
@@ -46,7 +41,7 @@ font-size:14px;
 letter-spacing:1px;
 }
 
-input, select{
+input{
 width:100%;
 padding:8px;
 margin-bottom:8px;
@@ -105,19 +100,10 @@ Forge Global Intelligence Command — Enterprise
 
 <div class="section">
 
-<div class="grid">
-
 <div class="panel">
 <h3>TRUSTED BRANDS ADMIN</h3>
 
 <input id="brandName" placeholder="Brand name">
-<input id="brandWebsite" placeholder="Website URL">
-
-<select id="brandTheme">
-<option value="dark">Dark Logo</option>
-<option value="light">Light Logo</option>
-</select>
-
 <input type="file" id="brandLogo" accept="image/*">
 <img id="logoPreview">
 
@@ -127,15 +113,13 @@ Forge Global Intelligence Command — Enterprise
 </div>
 
 </div>
-</div>
 
 <script>
 const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* ---------------- PREVIEW ---------------- */
-
+/* PREVIEW */
 document.getElementById("brandLogo").addEventListener("change",function(e){
 const file=e.target.files[0];
 if(!file) return;
@@ -148,8 +132,7 @@ img.style.display="block";
 reader.readAsDataURL(file);
 });
 
-/* ---------------- RESIZE IMAGE ---------------- */
-
+/* RESIZE IMAGE */
 function resizeImage(file,maxWidth){
 return new Promise(resolve=>{
 const img=new Image();
@@ -166,12 +149,9 @@ img.src=URL.createObjectURL(file);
 });
 }
 
-/* ---------------- ADD BRAND ---------------- */
-
+/* ADD BRAND */
 async function addBrand(){
 const name=document.getElementById("brandName").value;
-const website=document.getElementById("brandWebsite").value;
-const theme=document.getElementById("brandTheme").value;
 const file=document.getElementById("brandLogo").files[0];
 
 if(!file || !name) return alert("Missing fields");
@@ -184,21 +164,17 @@ const {data}=sb.storage.from("brand-logos").getPublicUrl(fileName);
 
 await sb.from("trusted_brands").insert({
 name:name,
-website_url:website,
-logo_url:data.publicUrl,
-theme:theme
+logo_url:data.publicUrl
 });
 
 document.getElementById("brandName").value="";
-document.getElementById("brandWebsite").value="";
 document.getElementById("brandLogo").value="";
 document.getElementById("logoPreview").style.display="none";
 
 loadBrands();
 }
 
-/* ---------------- LOAD BRANDS ---------------- */
-
+/* LOAD BRANDS */
 async function loadBrands(){
 const {data}=await sb.from("trusted_brands")
 .select("*")
@@ -209,7 +185,7 @@ data?.forEach(b=>{
 html+=`
 <div class="item" draggable="true" data-id="${b.id}">
 <span>
-<img src="${b.logo_url}" style="background:${b.theme==='light'?'#fff':'transparent'}">
+<img src="${b.logo_url}">
 ${b.name}
 </span>
 <span>
@@ -222,24 +198,19 @@ document.getElementById("brandList").innerHTML=html;
 enableDrag();
 }
 
-/* ---------------- DELETE ---------------- */
-
+/* DELETE */
 async function deleteBrand(id){
 await sb.from("trusted_brands").delete().eq("id",id);
 loadBrands();
 }
 
-/* ---------------- EDIT ---------------- */
-
+/* EDIT */
 async function editBrand(id){
 const {data}=await sb.from("trusted_brands").select("*").eq("id",id).single();
 document.getElementById("brandName").value=data.name;
-document.getElementById("brandWebsite").value=data.website_url||"";
-document.getElementById("brandTheme").value=data.theme;
 }
 
-/* ---------------- DRAG REORDER ---------------- */
-
+/* DRAG REORDER */
 function enableDrag(){
 const items=document.querySelectorAll(".item");
 let dragItem;
@@ -268,8 +239,6 @@ await sb.from("trusted_brands")
 .eq("id",items[i].dataset.id);
 }
 }
-
-/* ---------------- INIT ---------------- */
 
 loadBrands();
 </script>
