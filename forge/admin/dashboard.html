@@ -9,16 +9,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
-    background: radial-gradient(circle at top left, #0f172a, #020617);
+body{
+    background: radial-gradient(circle at top left,#0f172a,#020617);
 }
-.glass {
+.glass{
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(18px);
     border: 1px solid rgba(255,255,255,0.08);
 }
-.glow {
-    box-shadow: 0 0 20px rgba(0,255,200,0.3);
+.activeTab{
+    background: rgba(6,182,212,0.2);
+    color:#22d3ee;
 }
 </style>
 </head>
@@ -29,137 +30,184 @@ body {
 
 <!-- SIDEBAR -->
 <aside class="w-64 glass p-6 hidden md:block">
-    <h1 class="text-2xl font-bold mb-8 text-cyan-400">FORGE</h1>
+<h1 class="text-2xl font-bold mb-8 text-cyan-400">FORGE</h1>
 
-    <nav class="space-y-4 text-sm">
-        <a href="#" class="block text-cyan-300">Dashboard</a>
-        <a href="#">AI Monitoring</a>
-        <a href="#">Social Intelligence</a>
-        <a href="#">Threat Detection</a>
-        <a href="#">Client Profiles</a>
-        <a href="#">Content Analytics</a>
-        <a href="#">Reports</a>
-        <a href="#">Settings</a>
-    </nav>
+<nav class="space-y-3 text-sm">
+<button onclick="switchTab('dashboard')" class="tabBtn block w-full text-left p-2 rounded activeTab">Dashboard</button>
+<button onclick="switchTab('ai')" class="tabBtn block w-full text-left p-2 rounded">AI Monitoring</button>
+<button onclick="switchTab('social')" class="tabBtn block w-full text-left p-2 rounded">Social Intelligence</button>
+<button onclick="switchTab('clients')" class="tabBtn block w-full text-left p-2 rounded">Clients</button>
+<button onclick="switchTab('analytics')" class="tabBtn block w-full text-left p-2 rounded">Analytics</button>
+<button onclick="switchTab('reports')" class="tabBtn block w-full text-left p-2 rounded">Reports</button>
+</nav>
 </aside>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div class="flex-1 p-8">
 
-<!-- TOP BAR -->
-<div class="flex justify-between items-center mb-8">
-    <div>
-        <h2 class="text-2xl font-semibold">Forge Intelligence Command</h2>
-        <p class="text-gray-400 text-sm">AI Powered Digital Security & Brand Monitoring</p>
-    </div>
-
-    <div class="flex items-center gap-4">
-        <span class="text-green-400 text-sm">System Status: Active</span>
-        <button class="bg-cyan-500 px-4 py-2 rounded-lg glow">Run AI Scan</button>
-    </div>
+<div class="flex justify-between mb-8">
+<div>
+<h2 class="text-2xl font-semibold">Forge Intelligence Command</h2>
+<p class="text-gray-400 text-sm">Digital Security & Social Management</p>
+</div>
+<button onclick="runAIScan()" class="bg-cyan-500 px-4 py-2 rounded-lg">Run AI Scan</button>
 </div>
 
-<!-- STATS GRID -->
+<!-- DASHBOARD -->
+<div id="dashboard" class="tabContent">
+
 <div class="grid md:grid-cols-4 gap-6 mb-8">
-
 <div class="glass p-6 rounded-xl">
-    <p class="text-gray-400 text-sm">Digital Risk Index</p>
-    <h3 class="text-3xl font-bold text-cyan-400">27</h3>
-</div>
-
-<div class="glass p-6 rounded-xl">
-    <p class="text-gray-400 text-sm">Brand Authority Score</p>
-    <h3 class="text-3xl font-bold text-purple-400">84</h3>
+<p class="text-gray-400 text-sm">Digital Risk Index</p>
+<h3 id="riskScore" class="text-3xl font-bold text-cyan-400">27</h3>
 </div>
 
 <div class="glass p-6 rounded-xl">
-    <p class="text-gray-400 text-sm">Surface Visibility</p>
-    <h3 class="text-3xl font-bold text-green-400">68%</h3>
+<p class="text-gray-400 text-sm">Brand Authority</p>
+<h3 class="text-3xl font-bold text-purple-400">84</h3>
 </div>
 
 <div class="glass p-6 rounded-xl">
-    <p class="text-gray-400 text-sm">Active Alerts</p>
-    <h3 class="text-3xl font-bold text-red-400">3</h3>
-</div>
-
-</div>
-
-<!-- CHART + AI CONSOLE -->
-<div class="grid md:grid-cols-2 gap-6 mb-8">
-
-<!-- Chart -->
-<div class="glass p-6 rounded-xl">
-    <h3 class="mb-4 text-lg">Engagement Trend</h3>
-    <canvas id="engagementChart"></canvas>
-</div>
-
-<!-- AI Console -->
-<div class="glass p-6 rounded-xl">
-    <h3 class="mb-4 text-lg text-cyan-400">AI Intelligence Console</h3>
-    <div class="bg-black/40 p-4 rounded-lg h-60 overflow-auto text-sm text-green-400 font-mono">
-        > Initializing Forge AI... <br>
-        > Scanning digital ecosystem... <br>
-        > Monitoring social platforms... <br>
-        > Risk score updated: LOW <br>
-        > Brand sentiment: Positive <br>
-        > No critical threats detected.
-    </div>
-</div>
-
-</div>
-
-<!-- SOCIAL + ACTIVITY -->
-<div class="grid md:grid-cols-2 gap-6">
-
-<div class="glass p-6 rounded-xl">
-    <h3 class="mb-4 text-lg">Social Platform Monitoring</h3>
-    <ul class="space-y-3 text-sm">
-        <li>Instagram: Engagement +12%</li>
-        <li>TikTok: Trending audio detected</li>
-        <li>Twitter/X: No brand threats</li>
-        <li>YouTube: Video gaining traction</li>
-    </ul>
+<p class="text-gray-400 text-sm">Visibility</p>
+<h3 class="text-3xl font-bold text-green-400">68%</h3>
 </div>
 
 <div class="glass p-6 rounded-xl">
-    <h3 class="mb-4 text-lg">Recent Activity</h3>
-    <ul class="space-y-3 text-sm">
-        <li>AI scan completed</li>
-        <li>Content performance report generated</li>
-        <li>New follower spike detected</li>
-        <li>Sentiment analysis updated</li>
-    </ul>
+<p class="text-gray-400 text-sm">Active Alerts</p>
+<h3 class="text-3xl font-bold text-red-400">3</h3>
+</div>
 </div>
 
+<div class="glass p-6 rounded-xl">
+<h3 class="mb-4">Engagement Trend</h3>
+<canvas id="chart"></canvas>
+</div>
+
+</div>
+
+<!-- AI MONITOR -->
+<div id="ai" class="tabContent hidden">
+<div class="glass p-6 rounded-xl">
+<h3 class="mb-4 text-cyan-400">AI Intelligence Console</h3>
+<div id="aiConsole" class="bg-black/40 p-4 rounded h-64 overflow-auto text-green-400 font-mono text-sm"></div>
+</div>
+</div>
+
+<!-- SOCIAL -->
+<div id="social" class="tabContent hidden">
+<div class="glass p-6 rounded-xl">
+<h3 class="mb-4">Platform Monitoring</h3>
+<ul class="space-y-2 text-sm">
+<li>Instagram: Engagement +12%</li>
+<li>TikTok: Viral trend detected</li>
+<li>YouTube: Watch time rising</li>
+<li>X/Twitter: Sentiment stable</li>
+</ul>
+</div>
+</div>
+
+<!-- CLIENTS -->
+<div id="clients" class="tabContent hidden">
+<div class="glass p-6 rounded-xl">
+<h3 class="mb-4">Client Profiles</h3>
+<table class="w-full text-sm">
+<tr class="text-gray-400">
+<th class="text-left pb-2">Client</th>
+<th class="text-left pb-2">Risk</th>
+<th class="text-left pb-2">Status</th>
+</tr>
+<tr>
+<td>Brand Alpha</td>
+<td class="text-green-400">Low</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Creator Nova</td>
+<td class="text-yellow-400">Medium</td>
+<td>Monitoring</td>
+</tr>
+</table>
+</div>
+</div>
+
+<!-- ANALYTICS -->
+<div id="analytics" class="tabContent hidden">
+<div class="glass p-6 rounded-xl">
+<h3 class="mb-4">Content Performance</h3>
+<p class="text-gray-400 text-sm">Top Performing Post: +230% engagement</p>
+</div>
+</div>
+
+<!-- REPORTS -->
+<div id="reports" class="tabContent hidden">
+<div class="glass p-6 rounded-xl">
+<h3 class="mb-4">Reports</h3>
+<button class="bg-purple-500 px-4 py-2 rounded">Generate AI Report</button>
+</div>
 </div>
 
 </div>
 </div>
 
 <script>
-const ctx = document.getElementById('engagementChart');
 
-new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-        datasets: [{
-            label: 'Engagement',
-            data: [12, 19, 14, 22, 30, 25, 35],
-            borderColor: '#06b6d4',
-            backgroundColor: 'rgba(6,182,212,0.2)',
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: {
-        plugins: { legend: { display: false } },
-        scales: {
-            x: { ticks: { color: 'white' }},
-            y: { ticks: { color: 'white' }}
-        }
-    }
+// Tab Switching
+function switchTab(tab){
+document.querySelectorAll('.tabContent').forEach(el=>el.classList.add('hidden'));
+document.getElementById(tab).classList.remove('hidden');
+
+document.querySelectorAll('.tabBtn').forEach(btn=>btn.classList.remove('activeTab'));
+event.target.classList.add('activeTab');
+}
+
+// Chart
+new Chart(document.getElementById('chart'),{
+type:'line',
+data:{
+labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+datasets:[{
+data:[12,19,14,22,30,25,35],
+borderColor:'#06b6d4',
+backgroundColor:'rgba(6,182,212,0.2)',
+fill:true,
+tension:0.4
+}]
+},
+options:{
+plugins:{legend:{display:false}},
+scales:{
+x:{ticks:{color:'white'}},
+y:{ticks:{color:'white'}}
+}
+}
 });
+
+// AI Simulation
+function runAIScan(){
+const consoleBox=document.getElementById('aiConsole');
+consoleBox.innerHTML="";
+let messages=[
+"> Initializing Forge AI...",
+"> Scanning digital surface...",
+"> Checking social sentiment...",
+"> Running threat detection...",
+"> Risk score updated: LOW",
+"> No major vulnerabilities detected.",
+"> System secure."
+];
+
+let i=0;
+let interval=setInterval(()=>{
+if(i<messages.length){
+consoleBox.innerHTML+=messages[i]+"<br>";
+consoleBox.scrollTop=consoleBox.scrollHeight;
+i++;
+}else{
+clearInterval(interval);
+}
+},600);
+}
+
 </script>
 
 </body>
