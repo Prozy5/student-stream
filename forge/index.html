@@ -22,7 +22,7 @@ body{
   overflow-x:hidden;
 }
 
-/* GRID */
+/* Subtle Grid */
 body::before{
   content:"";
   position:fixed;
@@ -33,6 +33,17 @@ body::before{
   background-size:70px 70px;
   pointer-events:none;
   z-index:-1;
+}
+
+/* Fade Animation */
+.fade{
+  opacity:0;
+  transform:translateY(40px);
+  transition:all .8s ease;
+}
+.fade.visible{
+  opacity:1;
+  transform:translateY(0);
 }
 
 /* STATUS */
@@ -71,9 +82,7 @@ nav{
   border-bottom:1px solid rgba(45,252,143,0.06);
 }
 
-nav img{
-  height:48px;
-}
+nav img{ height:48px; }
 
 nav ul{
   list-style:none;
@@ -90,9 +99,7 @@ nav ul li a{
   transition:.3s;
 }
 
-nav ul li a:hover{
-  color:#2dfc8f;
-}
+nav ul li a:hover{ color:#2dfc8f; }
 
 /* HERO */
 .hero{
@@ -103,10 +110,6 @@ nav ul li a:hover{
   gap:80px;
 }
 
-.hero-text{
-  max-width:620px;
-}
-
 .hero-text h1{
   font-size:64px;
   line-height:1.05;
@@ -114,9 +117,7 @@ nav ul li a:hover{
   margin-bottom:25px;
 }
 
-.hero-text span{
-  color:#2dfc8f;
-}
+.hero-text span{ color:#2dfc8f; }
 
 .hero-text p{
   font-size:18px;
@@ -131,7 +132,6 @@ nav ul li a:hover{
   background:transparent;
   color:#2dfc8f;
   font-weight:600;
-  letter-spacing:1px;
   cursor:pointer;
   transition:.3s;
 }
@@ -144,10 +144,15 @@ nav ul li a:hover{
 
 .hero-logo img{
   width:420px;
-  filter:drop-shadow(0 0 50px rgba(45,252,143,.2));
+  animation:float 6s ease-in-out infinite;
 }
 
-/* SECTION */
+@keyframes float{
+  0%,100%{ transform:translateY(0px); }
+  50%{ transform:translateY(-15px); }
+}
+
+/* SECTIONS */
 section{
   padding:140px 8%;
 }
@@ -164,7 +169,7 @@ section h2{
 .section-intro{
   text-align:center;
   max-width:700px;
-  margin:0 auto 80px auto;
+  margin:0 auto 80px;
   opacity:.75;
 }
 
@@ -195,22 +200,20 @@ section h2{
   border-bottom:1px solid rgba(45,252,143,.1);
 }
 
-.ai-container{
-  max-width:800px;
-  margin:0 auto;
-}
-
 .ai-box{
   background:#07110e;
   border:1px solid rgba(45,252,143,.2);
   padding:30px;
   border-radius:16px;
+  max-width:800px;
+  margin:0 auto;
 }
 
 .ai-output{
   min-height:120px;
   margin-bottom:20px;
   opacity:.9;
+  line-height:1.6;
 }
 
 .ai-input{
@@ -245,11 +248,6 @@ section h2{
   border-top:1px solid rgba(45,252,143,.08);
 }
 
-.trusted-network h2{
-  font-size:32px;
-  margin-bottom:50px;
-}
-
 .brand-grid{
   display:flex;
   justify-content:center;
@@ -257,17 +255,34 @@ section h2{
   flex-wrap:wrap;
 }
 
-.brand-grid img{
-  max-height:50px;
-  opacity:.6;
+.brand-item{
+  text-align:center;
+  opacity:.7;
   transition:.3s;
-  filter:grayscale(100%);
 }
 
-.brand-grid img:hover{
+.brand-item img{
+  max-height:50px;
+  display:block;
+  margin:0 auto 10px;
+  filter:grayscale(100%);
+  transition:.3s;
+}
+
+.brand-item:hover{
   opacity:1;
+}
+
+.brand-item:hover img{
   filter:grayscale(0%);
-  transform:scale(1.05);
+  transform:scale(1.08);
+  box-shadow:0 0 20px rgba(45,252,143,.4);
+}
+
+.brand-name{
+  font-size:13px;
+  letter-spacing:1px;
+  opacity:.7;
 }
 
 /* FOOTER */
@@ -280,13 +295,8 @@ footer{
 }
 
 @media(max-width:900px){
-  .hero{
-    flex-direction:column;
-    text-align:center;
-  }
-  .hero-logo img{
-    width:280px;
-  }
+  .hero{ flex-direction:column; text-align:center; }
+  .hero-logo img{ width:280px; }
 }
 </style>
 </head>
@@ -307,14 +317,10 @@ footer{
   </ul>
 </nav>
 
-<section class="hero">
+<section class="hero fade">
   <div class="hero-text">
     <h1>Secure Your <span>Digital Power</span>.</h1>
-    <p>
-      FORGE protects high-value digital identities and governs
-      influential social ecosystems through structured security
-      systems and AI-driven oversight.
-    </p>
+    <p>FORGE protects high-value digital identities and governs influential ecosystems through structured security systems and AI-driven oversight.</p>
     <button onclick="scrollToAI()">Engage AI Assistant</button>
   </div>
   <div class="hero-logo">
@@ -322,53 +328,33 @@ footer{
   </div>
 </section>
 
-<section id="services">
+<section id="services" class="fade">
   <h2>Core Operations</h2>
-  <p class="section-intro">
-    Intelligence. Protection. Governance.
-  </p>
-
+  <p class="section-intro">Intelligence. Protection. Governance.</p>
   <div class="service-grid">
-    <div class="service-card">
-      <h3>Threat Intelligence</h3>
-      <p>24/7 impersonation tracking and breach detection.</p>
-    </div>
-
-    <div class="service-card">
-      <h3>Account Hardening</h3>
-      <p>Advanced authentication and layered security systems.</p>
-    </div>
-
-    <div class="service-card">
-      <h3>Social Governance</h3>
-      <p>Strategic ecosystem-level oversight.</p>
-    </div>
+    <div class="service-card"><h3>Threat Intelligence</h3><p>24/7 impersonation tracking and breach detection.</p></div>
+    <div class="service-card"><h3>Account Hardening</h3><p>Advanced authentication and layered security systems.</p></div>
+    <div class="service-card"><h3>Social Governance</h3><p>Strategic ecosystem-level oversight.</p></div>
   </div>
 </section>
 
-<section id="ai" class="ai-section">
+<section id="ai" class="ai-section fade">
   <h2>Forge AI Operations Assistant</h2>
-  <p class="section-intro">
-    Describe your risk exposure. The system will assess.
-  </p>
-
-  <div class="ai-container">
-    <div class="ai-box">
-      <div class="ai-output" id="aiOutput">
-        AI online. Awaiting risk input.
-      </div>
-      <div class="ai-input">
-        <input type="text" id="aiInput" placeholder="Example: @username, no 2FA, public email">
-        <button onclick="runAI()">Analyze</button>
-      </div>
+  <p class="section-intro">Describe your risk exposure. The system will assess.</p>
+  <div class="ai-box">
+    <div class="ai-output" id="aiOutput">AI online. Awaiting risk input.</div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Example: @username, no 2FA, public email">
+      <button onclick="runAI()">Analyze</button>
     </div>
   </div>
 </section>
 
-<!-- TRUSTED NETWORK (Dynamic from Supabase) -->
-<section class="trusted-network">
+<section class="trusted-network fade">
   <h2>Trusted Across Our Network</h2>
-  <div class="brand-grid" id="brandGrid"></div>
+  <div class="brand-grid" id="brandGrid">
+    <div style="opacity:.4;">Loading network...</div>
+  </div>
 </section>
 
 <footer>
@@ -382,51 +368,64 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
+/* Load Brands */
 async function loadBrands(){
   const { data } = await supabase
     .from("trusted_brands")
     .select("*")
-    .eq("is_active", true)
     .order("sort_order",{ascending:true});
 
-  const grid = document.getElementById("brandGrid");
-  if(!data) return;
+  const grid=document.getElementById("brandGrid");
+  grid.innerHTML="";
+
+  if(!data || data.length===0){
+    grid.innerHTML="<div style='opacity:.4;'>No brands added yet.</div>";
+    return;
+  }
 
   data.forEach(brand=>{
-    const link = document.createElement("a");
-    link.href = brand.website_url || "#";
-    link.target = "_blank";
-
-    const img = document.createElement("img");
-    img.src = brand.logo_url;
-    img.alt = brand.name;
-
-    link.appendChild(img);
-    grid.appendChild(link);
+    const div=document.createElement("div");
+    div.className="brand-item";
+    div.innerHTML=`
+      <img src="${brand.logo_url}">
+      <div class="brand-name">${brand.name}</div>
+    `;
+    grid.appendChild(div);
   });
 }
 
 loadBrands();
+
+/* Fade on Scroll */
+const faders=document.querySelectorAll(".fade");
+const observer=new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add("visible");
+}
+});
+},{threshold:.2});
+faders.forEach(el=>observer.observe(el));
 
 function scrollToAI(){
   document.getElementById("ai").scrollIntoView({behavior:"smooth"});
 }
 
 function sanitizeInput(text){
-  return text.replace(/[^\w\s@.,]/gi, "").trim();
+  return text.replace(/[^\w\s@.,]/gi,"").trim();
 }
 
 function runAI(){
-  const inputField = document.getElementById("aiInput");
-  const output = document.getElementById("aiOutput");
-  let rawInput = inputField.value;
+  const inputField=document.getElementById("aiInput");
+  const output=document.getElementById("aiOutput");
+  let rawInput=inputField.value;
 
   if(!rawInput){
     output.innerHTML="Please describe your digital concern.";
     return;
   }
 
-  const input = sanitizeInput(rawInput.toLowerCase());
+  const input=sanitizeInput(rawInput.toLowerCase());
   output.innerHTML="Analyzing risk profile...";
 
   setTimeout(()=>{
@@ -441,8 +440,8 @@ function runAI(){
     else if(score>=25) risk="MODERATE";
 
     output.innerHTML=`
-      Assessment Complete.<br><br>
-      Risk Level: <strong>${risk}</strong><br>
+      <strong>Assessment Complete</strong><br><br>
+      Risk Level: <span style="color:#2dfc8f">${risk}</span><br>
       Risk Score: ${score}/100
     `;
   },1200);
