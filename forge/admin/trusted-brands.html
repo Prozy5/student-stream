@@ -3,6 +3,8 @@
 <head>
   <title>Trusted Brands Debug</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Load Supabase first -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -46,7 +48,7 @@
 </head>
 <body>
 
-<h2>Trusted Brands Debug Mode</h2>
+<h2>Trusted Brands Debug</h2>
 
 <input id="name" placeholder="Brand Name">
 <input id="website" placeholder="Website URL">
@@ -56,83 +58,84 @@
 <div id="log"></div>
 
 <script>
-const logBox = document.getElementById("log");
+window.addEventListener("load", function () {
 
-function log(message) {
-  console.log(message);
-  logBox.innerText += "\n" + JSON.stringify(message, null, 2);
-}
+  const logBox = document.getElementById("log");
 
-log("Script started");
+  function log(msg) {
+    console.log(msg);
+    logBox.innerText += "\n" + (typeof msg === "string" ? msg : JSON.stringify(msg, null, 2));
+  }
 
-if (!window.supabase) {
-  log("❌ Supabase library failed to load");
-}
+  log("Page fully loaded");
 
-const supabase = window.supabase.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
-
-log("Supabase client created");
-
-document.getElementById("uploadBtn").addEventListener("click", async () => {
-
-  log("Button clicked");
-
-  const name = document.getElementById("name").value.trim();
-  const website = document.getElementById("website").value.trim();
-  const file = document.getElementById("logo").files[0];
-
-  if (!name || !website || !file) {
-    log("❌ Missing fields");
-    alert("Fill all fields");
+  if (!window.supabase) {
+    log("❌ Supabase NOT loaded");
+    alert("Supabase failed to load.");
     return;
   }
 
-  const filePath = Date.now() + "-" + file.name;
+  log("Supabase loaded");
 
-  log("Uploading file...");
+  const supabase = window.supabase.createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
-  const upload = await supabase.storage
-    .from("brand-logos")
-    .upload(filePath, file);
+  log("Client created");
 
-  log(upload);
+  document.getElementById("uploadBtn").addEventListener("click", async function () {
 
-  if (upload.error) {
-    log("❌ Upload failed");
-    alert(upload.error.message);
-    return;
-  }
+    log("Button clicked");
 
-  const publicUrl = supabase.storage
-    .from("brand-logos")
-    .getPublicUrl(filePath);
+    const name = document.getElementById("name").value.trim();
+    const website = document.getElementById("website").value.trim();
+    const file = document.getElementById("logo").files[0];
 
-  log("Public URL:");
-  log(publicUrl);
+    if (!name || !website || !file) {
+      log("❌ Missing fields");
+      alert("Fill all fields");
+      return;
+    }
 
-  log("Inserting into table...");
+    const filePath = Date.now() + "-" + file.name;
 
-  const insert = await supabase
-    .from("trusted_brands")
-    .insert([{
-      name: name,
-      website_url: website,
-      logo_url: publicUrl.data.publicUrl
-    }]);
+    log("Uploading...");
 
-  log(insert);
+    const upload = await supabase.storage
+      .from("brand-logos")
+      .upload(filePath, file);
 
-  if (insert.error) {
-    log("❌ Insert failed");
-    alert(insert.error.message);
-    return;
-  }
+    log(upload);
 
-  log("✅ SUCCESS");
-  alert("Brand added successfully");
+    if (upload.error) {
+      alert(upload.error.message);
+      return;
+    }
+
+    const { data: publicUrl } =
+      supabase.storage.from("brand-logos").getPublicUrl(filePath);
+
+    log("Public URL:");
+    log(publicUrl);
+
+    const insert = await supabase
+      .from("trusted_brands")
+      .insert([{
+        name,
+        website_url: website,
+        logo_url: publicUrl.publicUrl
+      }]);
+
+    log(insert);
+
+    if (insert.error) {
+      alert(insert.error.message);
+      return;
+    }
+
+    alert("Success");
+  });
 
 });
 </script>
