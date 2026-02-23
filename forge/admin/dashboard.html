@@ -1,276 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Forge Intelligence Command</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-
-* { box-sizing: border-box; }
-
 body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: radial-gradient(circle at 30% 20%, #101a2b, #060b14 70%);
-  color: white;
-  overflow-x: hidden;
+    background: radial-gradient(circle at top left, #0f172a, #020617);
 }
-
-/* Animated Grid Background */
-body::before {
-  content: "";
-  position: fixed;
-  width: 200%;
-  height: 200%;
-  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  animation: moveGrid 40s linear infinite;
-  z-index: 0;
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
 }
-
-@keyframes moveGrid {
-  from { transform: translate(0,0); }
-  to { transform: translate(-40px,-40px); }
+.glow {
+    box-shadow: 0 0 20px rgba(0,255,200,0.3);
 }
-
-.topbar {
-  position: relative;
-  z-index: 2;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.logo {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.status {
-  display: flex;
-  gap: 20px;
-}
-
-.badge {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  background: rgba(0,255,200,0.1);
-  color: #00ffc8;
-  box-shadow: 0 0 10px rgba(0,255,200,0.3);
-}
-
-.container {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 280px 1fr 340px;
-  gap: 25px;
-  padding: 30px;
-}
-
-.card {
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 0 40px rgba(0,0,0,0.4);
-}
-
-.metric {
-  font-size: 34px;
-  font-weight: 600;
-  margin-top: 8px;
-}
-
-.label {
-  font-size: 12px;
-  opacity: 0.6;
-}
-
-.left-col, .right-col {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.map-panel {
-  height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  opacity: 0.5;
-}
-
-.bottom-charts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-textarea {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: none;
-  border-radius: 10px;
-  padding: 10px;
-  color: white;
-  resize: none;
-}
-
-button {
-  margin-top: 10px;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #00ffc8, #0088ff);
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-}
-
 </style>
 </head>
 
-<body>
+<body class="text-white font-sans">
 
-<div class="topbar">
-  <div class="logo">FORGE INTELLIGENCE COMMAND</div>
-  <div class="status">
-    <div class="badge">AI ACTIVE</div>
-    <div class="badge" id="riskBadge">RISK: STABLE</div>
-  </div>
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-64 glass p-6 hidden md:block">
+    <h1 class="text-2xl font-bold mb-8 text-cyan-400">FORGE</h1>
+
+    <nav class="space-y-4 text-sm">
+        <a href="#" class="block text-cyan-300">Dashboard</a>
+        <a href="#">AI Monitoring</a>
+        <a href="#">Social Intelligence</a>
+        <a href="#">Threat Detection</a>
+        <a href="#">Client Profiles</a>
+        <a href="#">Content Analytics</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+    </nav>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="flex-1 p-8">
+
+<!-- TOP BAR -->
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h2 class="text-2xl font-semibold">Forge Intelligence Command</h2>
+        <p class="text-gray-400 text-sm">AI Powered Digital Security & Brand Monitoring</p>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <span class="text-green-400 text-sm">System Status: Active</span>
+        <button class="bg-cyan-500 px-4 py-2 rounded-lg glow">Run AI Scan</button>
+    </div>
 </div>
 
-<div class="container">
+<!-- STATS GRID -->
+<div class="grid md:grid-cols-4 gap-6 mb-8">
 
-  <!-- LEFT -->
-  <div class="left-col">
-    <div class="card">
-      <div class="label">Digital Risk Index</div>
-      <div class="metric" id="riskScore">0</div>
+<div class="glass p-6 rounded-xl">
+    <p class="text-gray-400 text-sm">Digital Risk Index</p>
+    <h3 class="text-3xl font-bold text-cyan-400">27</h3>
+</div>
+
+<div class="glass p-6 rounded-xl">
+    <p class="text-gray-400 text-sm">Brand Authority Score</p>
+    <h3 class="text-3xl font-bold text-purple-400">84</h3>
+</div>
+
+<div class="glass p-6 rounded-xl">
+    <p class="text-gray-400 text-sm">Surface Visibility</p>
+    <h3 class="text-3xl font-bold text-green-400">68%</h3>
+</div>
+
+<div class="glass p-6 rounded-xl">
+    <p class="text-gray-400 text-sm">Active Alerts</p>
+    <h3 class="text-3xl font-bold text-red-400">3</h3>
+</div>
+
+</div>
+
+<!-- CHART + AI CONSOLE -->
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+
+<!-- Chart -->
+<div class="glass p-6 rounded-xl">
+    <h3 class="mb-4 text-lg">Engagement Trend</h3>
+    <canvas id="engagementChart"></canvas>
+</div>
+
+<!-- AI Console -->
+<div class="glass p-6 rounded-xl">
+    <h3 class="mb-4 text-lg text-cyan-400">AI Intelligence Console</h3>
+    <div class="bg-black/40 p-4 rounded-lg h-60 overflow-auto text-sm text-green-400 font-mono">
+        > Initializing Forge AI... <br>
+        > Scanning digital ecosystem... <br>
+        > Monitoring social platforms... <br>
+        > Risk score updated: LOW <br>
+        > Brand sentiment: Positive <br>
+        > No critical threats detected.
     </div>
+</div>
 
-    <div class="card">
-      <div class="label">Brand Authority Score</div>
-      <div class="metric" id="authorityScore">0</div>
-    </div>
+</div>
 
-    <div class="card">
-      <div class="label">Surface Visibility</div>
-      <div class="metric" id="visibilityScore">0%</div>
-    </div>
-  </div>
+<!-- SOCIAL + ACTIVITY -->
+<div class="grid md:grid-cols-2 gap-6">
 
-  <!-- CENTER -->
-  <div>
-    <div class="card map-panel">
-      AI Influence Map
-    </div>
+<div class="glass p-6 rounded-xl">
+    <h3 class="mb-4 text-lg">Social Platform Monitoring</h3>
+    <ul class="space-y-3 text-sm">
+        <li>Instagram: Engagement +12%</li>
+        <li>TikTok: Trending audio detected</li>
+        <li>Twitter/X: No brand threats</li>
+        <li>YouTube: Video gaining traction</li>
+    </ul>
+</div>
 
-    <div class="bottom-charts">
-      <div class="card">
-        <canvas id="narrativeChart"></canvas>
-      </div>
-      <div class="card">
-        <canvas id="momentumChart"></canvas>
-      </div>
-    </div>
-  </div>
+<div class="glass p-6 rounded-xl">
+    <h3 class="mb-4 text-lg">Recent Activity</h3>
+    <ul class="space-y-3 text-sm">
+        <li>AI scan completed</li>
+        <li>Content performance report generated</li>
+        <li>New follower spike detected</li>
+        <li>Sentiment analysis updated</li>
+    </ul>
+</div>
 
-  <!-- RIGHT -->
-  <div class="right-col">
+</div>
 
-    <div class="card">
-      <div class="label">Run AI Scan</div>
-      <textarea id="scanInput" rows="3" placeholder="Enter brand, creator, or domain..."></textarea>
-      <button onclick="runScan()">Run Intelligence</button>
-    </div>
-
-    <div class="card">
-      <div class="label">Executive Summary</div>
-      <p id="summaryText">Awaiting AI analysis...</p>
-    </div>
-
-  </div>
-
+</div>
 </div>
 
 <script>
+const ctx = document.getElementById('engagementChart');
 
-function animateValue(id, start, end, duration) {
-  let range = end - start;
-  let startTime = null;
-
-  function step(timestamp) {
-    if (!startTime) startTime = timestamp;
-    let progress = timestamp - startTime;
-    let value = Math.min(progress / duration * range + start, end);
-    document.getElementById(id).innerText = Math.floor(value);
-    if (progress < duration) {
-      window.requestAnimationFrame(step);
-    }
-  }
-
-  window.requestAnimationFrame(step);
-}
-
-async function runScan() {
-  const input = document.getElementById("scanInput").value;
-
-  const response = await fetch("https://YOUR_PROJECT_ID.supabase.co/functions/v1/forge-ai-engine", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ input })
-  });
-
-  const data = await response.json();
-
-  animateValue("riskScore", 0, data.threat_score, 1000);
-  animateValue("authorityScore", 0, data.authority_index, 1000);
-  document.getElementById("visibilityScore").innerText = data.exposure_level + "%";
-  document.getElementById("summaryText").innerText = data.executive_summary;
-
-  document.getElementById("riskBadge").innerText = 
-    data.volatility === "High" ? "RISK: ELEVATED" :
-    data.volatility === "Medium" ? "RISK: MODERATE" :
-    "RISK: STABLE";
-
-  new Chart(document.getElementById("narrativeChart"), {
-    type: 'doughnut',
-    data: {
-      labels: ["Positive", "Neutral", "Negative"],
-      datasets: [{
-        data: data.narrative_distribution,
-        backgroundColor: ["#00ffc8", "#0088ff", "#ff4d6d"]
-      }]
-    }
-  });
-
-  new Chart(document.getElementById("momentumChart"), {
+new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data.momentum_labels,
-      datasets: [{
-        label: "Narrative Momentum",
-        data: data.momentum_values,
-        borderColor: "#00ffc8",
-        fill: false
-      }]
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [{
+            label: 'Engagement',
+            data: [12, 19, 14, 22, 30, 25, 35],
+            borderColor: '#06b6d4',
+            backgroundColor: 'rgba(6,182,212,0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: { color: 'white' }},
+            y: { ticks: { color: 'white' }}
+        }
     }
-  });
-
-}
-
+});
 </script>
 
 </body>
