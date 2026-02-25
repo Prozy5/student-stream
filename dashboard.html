@@ -1,364 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Dashboard • StudentStreamHQ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>Dashboard • StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui;
-    }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter,system-ui,sans-serif;
+}
 
-    body {
-      background: radial-gradient(circle at top, #081428, #05070c);
-      color: white;
-      min-height: 100vh;
-    }
+body{
+  background:radial-gradient(circle at top,#081428,#05070c);
+  color:white;
+  min-height:100vh;
+  display:flex;
+}
 
-    header {
-      padding: 22px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
+/* SIDEBAR */
 
-    header h1 {
-      font-size: 20px;
-      font-weight: 900;
-    }
+.sidebar{
+  width:260px;
+  background:rgba(255,255,255,.03);
+  border-right:1px solid rgba(255,255,255,.08);
+  padding:28px 20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
 
-    header h1 span {
-      color: #4da3ff;
-    }
+.logo{
+  font-size:20px;
+  font-weight:900;
+}
 
-    .logoutBtn {
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.15);
-      background: rgba(255,255,255,.05);
-      color: white;
-      cursor: pointer;
-      font-weight: 700;
-      transition: .2s;
-    }
+.logo span{
+  color:#4da3ff;
+}
 
-    .logoutBtn:hover {
-      border-color: rgba(77,163,255,.4);
-    }
+.nav{
+  margin-top:35px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 
-    .wrap {
-      max-width: 1100px;
-      margin: auto;
-      padding: 35px 22px;
-    }
+.nav a{
+  padding:12px 16px;
+  border-radius:14px;
+  text-decoration:none;
+  color:white;
+  font-weight:600;
+  font-size:14px;
+  background:transparent;
+  transition:.2s;
+  border:1px solid transparent;
+}
 
-    /* HERO */
-    .hero {
-      padding: 34px;
-      border-radius: 28px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.09);
-      margin-bottom: 30px;
-      box-shadow: 0 0 80px rgba(0,0,0,.35);
-    }
+.nav a:hover{
+  background:rgba(77,163,255,.08);
+  border-color:rgba(77,163,255,.25);
+}
 
-    .hero h2 {
-      font-size: 38px;
-      font-weight: 950;
-    }
+.logoutBtn{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  color:white;
+  cursor:pointer;
+  font-weight:700;
+}
 
-    .badge {
-      display: inline-block;
-      margin-left: 12px;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 900;
-      background: rgba(77,163,255,.14);
-      border: 1px solid rgba(77,163,255,.25);
-    }
+/* MAIN */
 
-    .hero p {
-      margin-top: 10px;
-      opacity: .7;
-      font-size: 15px;
-      line-height: 1.5;
-    }
+.main{
+  flex:1;
+  padding:35px 40px;
+}
 
-    /* GRID */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 18px;
-    }
+/* HERO */
 
-    .card {
-      padding: 22px;
-      border-radius: 22px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.07);
-      transition: .2s;
-    }
+.hero{
+  padding:35px;
+  border-radius:28px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  margin-bottom:28px;
+}
 
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(77,163,255,.35);
-    }
+.hero h2{
+  font-size:34px;
+  font-weight:900;
+}
 
-    .card h3 {
-      font-size: 18px;
-      font-weight: 900;
-      margin-bottom: 6px;
-    }
+.badge{
+  margin-left:10px;
+  padding:6px 14px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  background:rgba(77,163,255,.15);
+  border:1px solid rgba(77,163,255,.35);
+}
 
-    .card p {
-      opacity: .7;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+.hero p{
+  margin-top:8px;
+  opacity:.7;
+  font-size:14px;
+}
 
-    .bigStat {
-      font-size: 32px;
-      font-weight: 950;
-      margin-top: 10px;
-    }
+/* STATS */
 
-    /* BUTTON */
-    .actionBtn {
-      margin-top: 14px;
-      padding: 10px 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .2s;
-      display: inline-block;
-    }
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+  margin-bottom:30px;
+}
 
-    .actionBtn:hover {
-      border-color: rgba(77,163,255,.35);
-    }
+.statCard{
+  padding:22px;
+  border-radius:20px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  transition:.2s;
+}
 
-    /* STAFF PANEL */
-    .staffPanel {
-      margin-top: 35px;
-      padding: 24px;
-      border-radius: 22px;
-      background: rgba(255,215,0,.08);
-      border: 1px solid rgba(255,215,0,.20);
-      display: none;
-    }
+.statCard:hover{
+  transform:translateY(-4px);
+  border-color:rgba(77,163,255,.4);
+}
 
-    .staffPanel h3 {
-      font-size: 18px;
-      font-weight: 950;
-    }
+.statTitle{
+  font-size:13px;
+  opacity:.6;
+}
 
-    .staffPanel p {
-      margin-top: 6px;
-      opacity: .75;
-    }
+.statValue{
+  font-size:30px;
+  font-weight:900;
+  margin-top:6px;
+}
 
-    /* LOADING */
-    .loading {
-      opacity: .6;
-    }
-  </style>
+/* GRID */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+}
+
+.card{
+  padding:22px;
+  border-radius:22px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+}
+
+.card h3{
+  font-size:17px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+
+.card p{
+  font-size:14px;
+  opacity:.7;
+  line-height:1.5;
+}
+
+.actionBtn{
+  margin-top:14px;
+  padding:10px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.actionBtn:hover{
+  border-color:rgba(77,163,255,.4);
+}
+
+/* ACTIVITY */
+
+.activity{
+  margin-top:30px;
+  padding:22px;
+  border-radius:22px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+}
+
+.activityItem{
+  font-size:14px;
+  opacity:.7;
+  margin-bottom:8px;
+}
+
+/* STAFF */
+
+.staffPanel{
+  margin-top:30px;
+  padding:22px;
+  border-radius:22px;
+  background:rgba(255,215,0,.08);
+  border:1px solid rgba(255,215,0,.25);
+  display:none;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h1>StudentStream<span>HQ</span></h1>
+<div class="sidebar">
+  <div>
+    <div class="logo">StudentStream<span>HQ</span></div>
+
+    <div class="nav">
+      <a href="/platform.html">🏠 Overview</a>
+      <a href="/sswatch/">🎥 SS:Watch</a>
+      <a href="/devforum/">💬 DevForum</a>
+      <a href="/boosts.html">💰 Boosts</a>
+      <a href="/settings.html">⚙ Settings</a>
+    </div>
+  </div>
+
   <button class="logoutBtn" onclick="logout()">Logout</button>
-</header>
+</div>
 
-<div class="wrap">
+<div class="main">
 
-  <!-- HERO PROFILE -->
   <div class="hero">
     <h2>
       Welcome, <span id="username">Loading...</span>
       <span class="badge" id="roleBadge">...</span>
     </h2>
-
-    <p id="memberLine" class="loading">
-      Loading your Creator Dashboard...
-    </p>
+    <p id="memberLine">Loading dashboard...</p>
   </div>
 
-  <!-- MAIN GRID -->
+  <div class="stats">
+    <div class="statCard">
+      <div class="statTitle">Total Boost Earnings</div>
+      <div class="statValue" id="earningsTotal">$0.00</div>
+    </div>
+
+    <div class="statCard">
+      <div class="statTitle">Monetization Status</div>
+      <div class="statValue" id="monetizationStatus">Checking...</div>
+    </div>
+
+    <div class="statCard">
+      <div class="statTitle">Divisions Active</div>
+      <div class="statValue">3</div>
+    </div>
+  </div>
+
   <div class="grid">
-
-    <!-- Earnings -->
     <div class="card">
-      <h3>💰 Creator Earnings</h3>
-      <p>Your Boost earnings update live.</p>
-      <div class="bigStat" id="earningsTotal">$0.00</div>
-
+      <h3>🚀 Monetization Club</h3>
+      <p>Boost system + manual payments active.</p>
       <button class="actionBtn" onclick="location.href='/boosts.html'">
-        Enable Boost Donations →
+        Manage Boosts →
       </button>
     </div>
 
-    <!-- Monetization Status -->
     <div class="card">
-      <h3>⚡ Monetization Status</h3>
-      <p id="monetizationStatus">
-        Checking monetization access...
-      </p>
-
+      <h3>🎬 SS Films Division</h3>
+      <p>Original productions + student-led projects.</p>
       <button class="actionBtn">
-        View Monetization Programs →
+        Enter Production →
       </button>
     </div>
 
-    <!-- Divisions -->
     <div class="card">
-      <h3>🏢 Your Divisions</h3>
-      <p id="divisionList">
-        Loading connected divisions...
-      </p>
-
-      <button class="actionBtn" onclick="location.href='/platform.html'">
-        Explore Platform →
+      <h3>🌐 Platform Tools</h3>
+      <p>Internal systems + growth infrastructure.</p>
+      <button class="actionBtn">
+        Open Tools →
       </button>
     </div>
-
-    <!-- Account Manager -->
-    <div class="card">
-      <h3>⚙️ Account Manager</h3>
-      <p>
-        Edit profile, password, payout settings,
-        and platform preferences.
-      </p>
-
-      <button class="actionBtn" onclick="location.href='/settings.html'">
-        Open Settings →
-      </button>
-    </div>
-
-    <!-- DevForum -->
-    <div class="card">
-      <h3>💬 DevForum</h3>
-      <p>Talk with the community + staff updates.</p>
-
-      <button class="actionBtn" onclick="location.href='/devforum/'">
-        Open DevForum →
-      </button>
-    </div>
-
-    <!-- SS Watch -->
-    <div class="card">
-      <h3>🎥 SS:Watch</h3>
-      <p>Creator streaming + Originals division.</p>
-
-      <button class="actionBtn" onclick="location.href='/sswatch/'">
-        Open SS:Watch →
-      </button>
-    </div>
-
   </div>
 
-  <!-- STAFF PANEL -->
+  <div class="activity">
+    <h3 style="margin-bottom:10px;">Recent Activity</h3>
+    <div class="activityItem">• Boost system initialized</div>
+    <div class="activityItem">• DevForum access enabled</div>
+    <div class="activityItem">• SS:Watch division active</div>
+  </div>
+
   <div class="staffPanel" id="staffPanel">
     <h3>👑 Staff Control Panel</h3>
-    <p>
-      Leadership access unlocked.<br>
-      Moderation tools + platform operations enabled.
-    </p>
-
-    <button class="actionBtn" onclick="location.href='/staff/'">
-      Enter Staff Panel →
-    </button>
+    <p>Leadership access unlocked. Platform moderation + operations enabled.</p>
+    <button class="actionBtn">Enter Staff Panel →</button>
   </div>
 
 </div>
 
-<!-- SUPABASE SCRIPT -->
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabase = createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  async function loadDashboard() {
+async function loadDashboard(){
 
-    /* SESSION */
-    const { data: sessionData } = await supabase.auth.getSession();
-    const user = sessionData.session?.user;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const user = sessionData.session?.user;
 
-    if (!user) {
-      location.href = "/login.html";
-      return;
-    }
-
-    /* PROFILE */
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-
-    document.getElementById("username").textContent =
-      profile.username;
-
-    /* ROLE */
-    let badgeText = "👤 Member";
-    if (profile.role === "owner") badgeText = "👑 Owner";
-    if (profile.role === "admin") badgeText = "🛡 Admin";
-    if (profile.role === "staff") badgeText = "⭐ Staff";
-
-    document.getElementById("roleBadge").textContent = badgeText;
-
-    document.getElementById("memberLine").textContent =
-      `Role: ${profile.role.toUpperCase()} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
-
-    /* EARNINGS */
-    const { data: earnings } = await supabase
-      .from("creator_earnings")
-      .select("*")
-      .eq("creator_id", user.id)
-      .single();
-
-    if (earnings) {
-      document.getElementById("earningsTotal").textContent =
-        "$" + earnings.total_boost_earnings;
-    }
-
-    /* DIVISIONS */
-    document.getElementById("divisionList").innerHTML = `
-      ✅ DevForum Access<br>
-      ✅ SS:Watch Division<br>
-      ✅ Monetization Club<br>
-      🔒 Commerce Tools (coming soon)
-    `;
-
-    /* MONETIZATION STATUS */
-    document.getElementById("monetizationStatus").innerHTML =
-      `Boosts Enabled ✅<br>Stripe Connected ✅`;
-
-    /* STAFF PANEL */
-    if (profile.role === "owner" || profile.role === "admin") {
-      document.getElementById("staffPanel").style.display = "block";
-    }
+  if(!user){
+    location.href="/login.html";
+    return;
   }
 
-  loadDashboard();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id",user.id)
+    .single();
 
-  window.logout = async function () {
-    await supabase.auth.signOut();
-    location.href = "/login.html";
-  };
+  document.getElementById("username").textContent = profile.username;
+
+  let badge="👤 Member";
+  if(profile.role==="owner") badge="👑 Owner";
+  if(profile.role==="admin") badge="🛡 Admin";
+  if(profile.role==="staff") badge="⭐ Staff";
+
+  document.getElementById("roleBadge").textContent=badge;
+  document.getElementById("memberLine").textContent=
+    `Role: ${profile.role.toUpperCase()} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
+
+  const { data: earnings } = await supabase
+    .from("creator_earnings")
+    .select("*")
+    .eq("creator_id",user.id)
+    .single();
+
+  if(earnings){
+    document.getElementById("earningsTotal").textContent=
+      "$"+Number(earnings.total_boost_earnings).toFixed(2);
+  }
+
+  document.getElementById("monetizationStatus").textContent="Active";
+
+  if(profile.role==="owner"||profile.role==="admin"){
+    document.getElementById("staffPanel").style.display="block";
+  }
+}
+
+loadDashboard();
+
+window.logout=async function(){
+  await supabase.auth.signOut();
+  location.href="/login.html";
+};
 </script>
 
 </body>
