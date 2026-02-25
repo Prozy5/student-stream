@@ -1,211 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SS:Space · StudentStream Division</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SS:Space · StudentStream Division</title>
 
-  <style>
-    :root{
-      --bg:#02020a;
-      --panel:rgba(15,20,40,0.85);
-      --border:rgba(255,255,255,0.10);
+<style>
+:root{
+  --bg:#02020a;
+  --panel:rgba(10,15,35,0.85);
+  --border:rgba(255,255,255,0.08);
 
-      --text:#f1f6ff;
-      --muted:#9fb3d8;
+  --text:#f1f6ff;
+  --muted:#9fb3d8;
 
-      --accent:#4da3ff;
-      --accent2:#9b6cff;
-      --star:#ffd36c;
-    }
+  --accent:#4da3ff;
+  --accent2:#9b6cff;
+  --star:#ffd36c;
+}
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:system-ui;
-    }
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+body{
+  min-height:100vh;
+  color:var(--text);
+  background:#000;
+  overflow-x:hidden;
+}
 
-    body{
-      min-height:100vh;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top, rgba(77,163,255,0.25), transparent 60%),
-        radial-gradient(circle at bottom, rgba(155,108,255,0.18), transparent 60%),
-        linear-gradient(to bottom, #02020a, #000);
-      overflow-x:hidden;
-    }
+/* STARFIELD */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
+}
 
-    header{
-      padding:18px 26px;
-      border-bottom:1px solid var(--border);
-      background:rgba(0,0,0,0.65);
-      backdrop-filter:blur(16px);
+/* HEADER */
+header{
+  padding:18px 26px;
+  border-bottom:1px solid var(--border);
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(16px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+header h1{
+  font-size:18px;
+  font-weight:900;
+}
+header a{
+  text-decoration:none;
+  font-size:14px;
+  color:var(--muted);
+}
+header a:hover{color:white}
 
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
+/* WRAP */
+.wrap{
+  max-width:1150px;
+  margin:auto;
+  padding:80px 20px;
+}
 
-    header h1{
-      font-size:18px;
-      font-weight:950;
-      letter-spacing:0.5px;
-    }
+/* HERO */
+.badge{
+  display:inline-block;
+  padding:8px 16px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1px;
+  background:rgba(77,163,255,0.15);
+  border:1px solid rgba(77,163,255,0.35);
+  color:var(--accent);
+  margin-bottom:18px;
+}
 
-    header a{
-      text-decoration:none;
-      font-size:14px;
-      color:var(--muted);
-    }
-    header a:hover{color:white}
+.hero h2{
+  font-size:60px;
+  font-weight:1000;
+  margin-bottom:14px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 
-    .wrap{
-      max-width:1100px;
-      margin:auto;
-      padding:70px 20px;
-    }
+.hero p{
+  max-width:760px;
+  font-size:17px;
+  line-height:1.7;
+  opacity:.82;
+}
 
-    .badge{
-      display:inline-block;
-      padding:8px 16px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:900;
-      letter-spacing:1px;
-      background:rgba(77,163,255,0.15);
-      border:1px solid rgba(77,163,255,0.35);
-      color:var(--accent);
-      margin-bottom:18px;
-    }
+/* STATS */
+.stats{
+  margin-top:50px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+.statBox{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+  transition:.3s;
+}
+.statBox:hover{
+  transform:translateY(-6px);
+  border-color:rgba(155,108,255,0.4);
+}
+.statBox b{
+  display:block;
+  font-size:28px;
+  margin-bottom:6px;
+  color:var(--star);
+}
 
-    .hero h2{
-      font-size:52px;
-      font-weight:1000;
-      margin-bottom:14px;
-    }
+/* SECTION */
+.section{
+  margin-top:100px;
+}
+.section h3{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:16px;
+  color:var(--accent2);
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
 
-    .hero p{
-      max-width:760px;
-      font-size:17px;
-      line-height:1.6;
-      opacity:.82;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+}
 
-    .stats{
-      margin-top:40px;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:18px;
-    }
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px;
+  transition:.3s;
+  opacity:0;
+  transform:translateY(40px);
+}
+.card.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 30px 60px rgba(0,0,0,0.6);
+  border-color:rgba(77,163,255,0.35);
+}
 
-    .statBox{
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:20px;
-    }
+/* TRANSMISSION PANEL */
+.transmission{
+  margin-top:80px;
+  background:rgba(0,0,0,0.85);
+  border:1px solid rgba(77,163,255,0.4);
+  padding:25px;
+  border-radius:16px;
+  font-family:monospace;
+  font-size:13px;
+  color:#8fd3ff;
+  height:160px;
+  overflow:hidden;
+}
 
-    .statBox b{
-      display:block;
-      font-size:26px;
-      margin-bottom:6px;
-      color:var(--star);
-    }
+/* BUTTONS */
+.btnRow{
+  margin-top:70px;
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.btn{
+  padding:14px 28px;
+  border-radius:999px;
+  font-weight:850;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.05);
+  color:white;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn:hover{
+  transform:translateY(-3px);
+}
+.btnPrimary{
+  border:none;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:black;
+}
 
-    .statBox span{
-      opacity:.75;
-      font-size:14px;
-    }
-
-    .section{
-      margin-top:80px;
-    }
-
-    .section h3{
-      font-size:20px;
-      font-weight:950;
-      margin-bottom:14px;
-      color:var(--accent2);
-      text-transform:uppercase;
-      letter-spacing:1px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:18px;
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:22px;
-      transition:.25s;
-    }
-
-    .card:hover{
-      transform:translateY(-5px);
-      border-color:rgba(155,108,255,0.35);
-      box-shadow:0 25px 55px rgba(0,0,0,0.55);
-    }
-
-    .card h4{
-      font-size:17px;
-      font-weight:950;
-      margin-bottom:8px;
-    }
-
-    .card p{
-      font-size:14px;
-      line-height:1.55;
-      opacity:.8;
-    }
-
-    .btnRow{
-      margin-top:55px;
-      display:flex;
-      justify-content:center;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-
-    .btn{
-      padding:14px 26px;
-      border-radius:999px;
-      font-weight:850;
-      font-size:15px;
-      border:1px solid rgba(255,255,255,0.18);
-      background:rgba(255,255,255,0.04);
-      color:white;
-      cursor:pointer;
-      transition:.2s;
-    }
-
-    .btn:hover{
-      transform:translateY(-2px);
-      border-color:rgba(77,163,255,0.4);
-    }
-
-    .btnPrimary{
-      border:none;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      color:black;
-    }
-
-    footer{
-      margin-top:90px;
-      padding:35px;
-      border-top:1px solid var(--border);
-      text-align:center;
-      font-size:13px;
-      opacity:.55;
-    }
-  </style>
+/* FOOTER */
+footer{
+  margin-top:120px;
+  padding:35px;
+  border-top:1px solid var(--border);
+  text-align:center;
+  font-size:13px;
+  opacity:.5;
+}
+</style>
 </head>
 
 <body>
+
+<canvas id="stars"></canvas>
 
 <header>
   <h1>StudentStreamHQ · SS:Space</h1>
@@ -214,85 +220,134 @@
 
 <div class="wrap">
 
-  <!-- HERO -->
-  <div class="hero">
-    <span class="badge">NEW DIVISION · DISCOVERY PROGRAM</span>
+<div class="hero">
+  <span class="badge">DISCOVERY DIVISION · THE UNKNOWN</span>
+  <h2>SS:Space</h2>
+  <p>
+    SS:Space is the exploration division of StudentStream —
+    where we investigate the unknown, document cosmic phenomena,
+    analyze unexplained discoveries, and produce science-driven storytelling
+    about what lies beyond Earth and beyond understanding.
+  </p>
 
-    <h2>SS:Space</h2>
+  <div class="stats">
+    <div class="statBox"><b id="counter1">0</b><span>Active Research Concepts</span></div>
+    <div class="statBox"><b id="counter2">0</b><span>Future Documentary Projects</span></div>
+    <div class="statBox"><b id="counter3">0</b><span>Archived Cosmic Topics</span></div>
+  </div>
+</div>
 
-    <p>
-      SS:Space is StudentStream’s exploration and discovery division —
-      dedicated to space research, cosmic storytelling, science media,
-      future technology, and documenting what lies beyond Earth.
-    </p>
-
-    <div class="stats">
-      <div class="statBox">
-        <b>Phase 1</b>
-        <span>Division Launch Stage</span>
-      </div>
-
-      <div class="statBox">
-        <b>Exploration</b>
-        <span>Discovery + Science Media</span>
-      </div>
-
-      <div class="statBox">
-        <b>Future Projects</b>
-        <span>Documentaries + Research Series</span>
-      </div>
+<div class="section">
+  <h3>The Unknown</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>Unexplained Signals</h4>
+      <p>Investigating mysterious transmissions, anomalies, and deep space data.</p>
+    </div>
+    <div class="card">
+      <h4>Cosmic Phenomena</h4>
+      <p>Black holes, dark matter, interstellar objects, and theoretical constructs.</p>
+    </div>
+    <div class="card">
+      <h4>Future Human Expansion</h4>
+      <p>Colonization, advanced propulsion systems, and the next evolution of civilization.</p>
     </div>
   </div>
+</div>
 
-  <!-- PURPOSE -->
-  <div class="section">
-    <h3>Division Purpose</h3>
+<div class="transmission" id="transmissionBox">
+> Incoming transmission...
+</div>
 
-    <div class="grid">
-      <div class="card">
-        <h4>Cosmic Discovery</h4>
-        <p>
-          Investigating space, astronomy, and the unanswered mysteries
-          of the universe through modern storytelling.
-        </p>
-      </div>
-
-      <div class="card">
-        <h4>Science & Technology Media</h4>
-        <p>
-          Producing content focused on future tech, space innovation,
-          and humanity’s next frontier.
-        </p>
-      </div>
-
-      <div class="card">
-        <h4>StudentStream Exploration Archives</h4>
-        <p>
-          Building a long-term digital archive of discoveries,
-          theories, missions, and research projects.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- BUTTONS -->
-  <div class="btnRow">
-    <button class="btn btnPrimary"
-      onclick="alert('SS:Space portal coming soon.')">
-      Enter Division Portal
-    </button>
-
-    <button class="btn"
-      onclick="location.href='company.html'">
-      View StudentStream Company
-    </button>
-  </div>
+<div class="btnRow">
+  <button class="btn btnPrimary" onclick="alert('SS:Space Portal Launching Soon')">
+    Enter Exploration Portal
+  </button>
+  <button class="btn" onclick="location.href='company.html'">
+    View StudentStream Company
+  </button>
+</div>
 
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ · SS:Space is an official division of StudentStream
+© 2026 StudentStreamHQ · SS:Space is an official division of StudentStream
 </footer>
+
+<script>
+/* STARFIELD */
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let stars=[];
+for(let i=0;i<200;i++){
+  stars.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*1.5,
+    speed:Math.random()*0.3
+  });
+}
+
+function animateStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="white";
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+    s.y+=s.speed;
+    if(s.y>canvas.height){s.y=0;s.x=Math.random()*canvas.width;}
+  });
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+
+/* SCROLL ANIMATION */
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("visible");
+    }
+  });
+});
+document.querySelectorAll(".card").forEach(el=>observer.observe(el));
+
+/* COUNTERS */
+function animateCounter(id,target){
+  let count=0;
+  const el=document.getElementById(id);
+  const interval=setInterval(()=>{
+    count++;
+    el.textContent=count;
+    if(count>=target)clearInterval(interval);
+  },30);
+}
+animateCounter("counter1",12);
+animateCounter("counter2",6);
+animateCounter("counter3",48);
+
+/* TRANSMISSION EFFECT */
+const messages=[
+  "> Signal detected from deep orbit...",
+  "> Anomaly reading: Unknown origin...",
+  "> Mapping dark sector coordinates...",
+  "> Archiving interstellar data...",
+  "> Monitoring cosmic background radiation..."
+];
+let i=0;
+setInterval(()=>{
+  document.getElementById("transmissionBox").textContent=messages[i%messages.length];
+  i++;
+},3000);
+
+window.addEventListener("resize",()=>{
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+});
+</script>
 
 </body>
 </html>
