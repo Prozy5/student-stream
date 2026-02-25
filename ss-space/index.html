@@ -8,12 +8,10 @@
 <style>
 :root{
   --bg:#02020a;
-  --panel:rgba(10,15,35,0.85);
+  --panel:rgba(15,20,45,0.75);
   --border:rgba(255,255,255,0.08);
-
-  --text:#f1f6ff;
+  --text:#f4f8ff;
   --muted:#9fb3d8;
-
   --accent:#4da3ff;
   --accent2:#9b6cff;
   --star:#ffd36c;
@@ -23,275 +21,300 @@
 body{
   min-height:100vh;
   color:var(--text);
-  background:#000;
+  background:radial-gradient(circle at 30% 20%, #111633, #000 60%);
   overflow-x:hidden;
 }
 
-/* STARFIELD */
+/* CANVAS */
 canvas{
   position:fixed;
-  top:0;
-  left:0;
+  inset:0;
+  z-index:-2;
+}
+
+/* NEBULA GLOW */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at 70% 40%, rgba(155,108,255,0.15), transparent 60%);
+  animation:pulse 6s infinite alternate ease-in-out;
   z-index:-1;
+}
+@keyframes pulse{
+  from{opacity:.4}
+  to{opacity:.9}
 }
 
 /* HEADER */
 header{
-  padding:18px 26px;
-  border-bottom:1px solid var(--border);
+  padding:20px 30px;
+  backdrop-filter:blur(18px);
   background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-header h1{
-  font-size:18px;
-  font-weight:900;
-}
-header a{
-  text-decoration:none;
-  font-size:14px;
-  color:var(--muted);
-}
+header h1{font-size:18px;font-weight:900;}
+header a{color:var(--muted);text-decoration:none;font-size:14px;}
 header a:hover{color:white}
 
 /* WRAP */
-.wrap{
-  max-width:1150px;
-  margin:auto;
-  padding:80px 20px;
-}
+.wrap{max-width:1200px;margin:auto;padding:100px 20px;}
 
 /* HERO */
 .badge{
   display:inline-block;
-  padding:8px 16px;
+  padding:8px 18px;
   border-radius:999px;
   font-size:12px;
   font-weight:900;
-  letter-spacing:1px;
   background:rgba(77,163,255,0.15);
   border:1px solid rgba(77,163,255,0.35);
   color:var(--accent);
   margin-bottom:18px;
 }
-
 .hero h2{
-  font-size:60px;
+  font-size:64px;
   font-weight:1000;
-  margin-bottom:14px;
+  margin-bottom:18px;
   background:linear-gradient(90deg,var(--accent),var(--accent2));
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
+  text-shadow:0 0 30px rgba(77,163,255,.4);
 }
-
 .hero p{
   max-width:760px;
   font-size:17px;
-  line-height:1.7;
-  opacity:.82;
+  line-height:1.8;
+  opacity:.85;
 }
 
 /* STATS */
 .stats{
-  margin-top:50px;
+  margin-top:60px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:18px;
+  gap:20px;
 }
 .statBox{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:18px;
-  padding:22px;
+  border-radius:20px;
+  padding:28px;
+  backdrop-filter:blur(12px);
   transition:.3s;
 }
 .statBox:hover{
-  transform:translateY(-6px);
-  border-color:rgba(155,108,255,0.4);
+  transform:translateY(-8px);
+  border-color:rgba(155,108,255,0.5);
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
 }
 .statBox b{
-  display:block;
-  font-size:28px;
-  margin-bottom:6px;
+  font-size:30px;
   color:var(--star);
+  display:block;
+  margin-bottom:6px;
 }
 
 /* SECTION */
-.section{
-  margin-top:100px;
-}
+.section{margin-top:120px;}
 .section h3{
   font-size:18px;
   font-weight:900;
-  margin-bottom:16px;
+  margin-bottom:20px;
   color:var(--accent2);
-  text-transform:uppercase;
   letter-spacing:1px;
 }
-
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;
+  gap:24px;
 }
-
 .card{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:18px;
-  padding:24px;
-  transition:.3s;
+  border-radius:20px;
+  padding:28px;
+  backdrop-filter:blur(12px);
   opacity:0;
-  transform:translateY(40px);
+  transform:translateY(50px) scale(.96);
+  transition:.6s ease;
 }
 .card.visible{
   opacity:1;
-  transform:translateY(0);
+  transform:translateY(0) scale(1);
 }
 .card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 30px 60px rgba(0,0,0,0.6);
-  border-color:rgba(77,163,255,0.35);
+  transform:translateY(-8px);
+  box-shadow:0 25px 70px rgba(0,0,0,.7);
 }
 
-/* TRANSMISSION PANEL */
+/* TRANSMISSION */
 .transmission{
-  margin-top:80px;
-  background:rgba(0,0,0,0.85);
-  border:1px solid rgba(77,163,255,0.4);
+  margin-top:100px;
+  background:#000;
+  border:1px solid rgba(77,163,255,.4);
   padding:25px;
   border-radius:16px;
   font-family:monospace;
-  font-size:13px;
   color:#8fd3ff;
-  height:160px;
-  overflow:hidden;
+  min-height:120px;
 }
 
 /* BUTTONS */
 .btnRow{
-  margin-top:70px;
+  margin-top:90px;
   display:flex;
   justify-content:center;
-  gap:16px;
+  gap:20px;
   flex-wrap:wrap;
 }
 .btn{
-  padding:14px 28px;
+  padding:16px 30px;
   border-radius:999px;
-  font-weight:850;
-  border:1px solid rgba(255,255,255,0.2);
-  background:rgba(255,255,255,0.05);
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.05);
   color:white;
   cursor:pointer;
   transition:.2s;
 }
-.btn:hover{
-  transform:translateY(-3px);
-}
+.btn:hover{transform:translateY(-4px);}
 .btnPrimary{
   border:none;
   background:linear-gradient(90deg,var(--accent),var(--accent2));
   color:black;
 }
 
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  opacity:0;
+  pointer-events:none;
+  transition:.4s;
+}
+.modal.active{
+  opacity:1;
+  pointer-events:auto;
+}
+.modalBox{
+  background:#111633;
+  padding:40px;
+  border-radius:20px;
+  text-align:center;
+  max-width:400px;
+}
+.modalBox h3{margin-bottom:10px;}
+.modalBox button{
+  margin-top:20px;
+  padding:10px 20px;
+  border:none;
+  border-radius:999px;
+  background:var(--accent);
+  color:black;
+  font-weight:800;
+  cursor:pointer;
+}
+
 /* FOOTER */
 footer{
-  margin-top:120px;
-  padding:35px;
-  border-top:1px solid var(--border);
+  margin-top:140px;
+  padding:40px;
   text-align:center;
-  font-size:13px;
+  border-top:1px solid var(--border);
   opacity:.5;
 }
 </style>
 </head>
-
 <body>
 
 <canvas id="stars"></canvas>
 
 <header>
   <h1>StudentStreamHQ · SS:Space</h1>
-  <a href="division-directory.html">← Back to Divisions</a>
+  <a href="#">← Back to Divisions</a>
 </header>
 
 <div class="wrap">
-
 <div class="hero">
   <span class="badge">DISCOVERY DIVISION · THE UNKNOWN</span>
   <h2>SS:Space</h2>
   <p>
-    SS:Space is the exploration division of StudentStream —
-    where we investigate the unknown, document cosmic phenomena,
-    analyze unexplained discoveries, and produce science-driven storytelling
-    about what lies beyond Earth and beyond understanding.
+    The exploration division of StudentStream.
+    We document cosmic phenomena, decode unexplained signals,
+    and produce cinematic research storytelling about what lies beyond Earth.
   </p>
 
   <div class="stats">
-    <div class="statBox"><b id="counter1">0</b><span>Active Research Concepts</span></div>
-    <div class="statBox"><b id="counter2">0</b><span>Future Documentary Projects</span></div>
-    <div class="statBox"><b id="counter3">0</b><span>Archived Cosmic Topics</span></div>
+    <div class="statBox"><b id="c1">0</b>Active Research Concepts</div>
+    <div class="statBox"><b id="c2">0</b>Future Documentary Projects</div>
+    <div class="statBox"><b id="c3">0</b>Archived Cosmic Topics</div>
   </div>
 </div>
 
 <div class="section">
   <h3>The Unknown</h3>
   <div class="grid">
-    <div class="card">
-      <h4>Unexplained Signals</h4>
-      <p>Investigating mysterious transmissions, anomalies, and deep space data.</p>
-    </div>
-    <div class="card">
-      <h4>Cosmic Phenomena</h4>
-      <p>Black holes, dark matter, interstellar objects, and theoretical constructs.</p>
-    </div>
-    <div class="card">
-      <h4>Future Human Expansion</h4>
-      <p>Colonization, advanced propulsion systems, and the next evolution of civilization.</p>
-    </div>
+    <div class="card"><h4>Unexplained Signals</h4><p>Deep orbit transmissions & anomaly detection.</p></div>
+    <div class="card"><h4>Cosmic Phenomena</h4><p>Black holes, dark matter, theoretical astrophysics.</p></div>
+    <div class="card"><h4>Future Expansion</h4><p>Human colonization & propulsion research.</p></div>
   </div>
 </div>
 
-<div class="transmission" id="transmissionBox">
-> Incoming transmission...
-</div>
+<div class="transmission" id="transmission"></div>
 
 <div class="btnRow">
-  <button class="btn btnPrimary" onclick="alert('SS:Space Portal Launching Soon')">
-    Enter Exploration Portal
-  </button>
-  <button class="btn" onclick="location.href='company.html'">
-    View StudentStream Company
-  </button>
+  <button class="btn btnPrimary" onclick="openModal()">Enter Exploration Portal</button>
+  <button class="btn">View StudentStream Company</button>
 </div>
-
 </div>
 
 <footer>
-© 2026 StudentStreamHQ · SS:Space is an official division of StudentStream
+© 2026 StudentStreamHQ · SS:Space Division
 </footer>
 
+<div class="modal" id="modal">
+  <div class="modalBox">
+    <h3>Portal Launching Soon</h3>
+    <p>SS:Space exploration interface is in development.</p>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
+
 <script>
-/* STARFIELD */
+/* PARALLAX STARFIELD */
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 
-let stars=[];
-for(let i=0;i<200;i++){
-  stars.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*1.5,
-    speed:Math.random()*0.3
-  });
-}
+const layers=[
+  {count:120,size:1,speed:.2},
+  {count:80,size:1.5,speed:.4},
+  {count:40,size:2,speed:.6}
+];
 
-function animateStars(){
+let stars=[];
+layers.forEach(layer=>{
+  for(let i=0;i<layer.count;i++){
+    stars.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:layer.size,
+      speed:layer.speed
+    });
+  }
+});
+
+function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle="white";
   stars.forEach(s=>{
@@ -301,47 +324,58 @@ function animateStars(){
     s.y+=s.speed;
     if(s.y>canvas.height){s.y=0;s.x=Math.random()*canvas.width;}
   });
-  requestAnimationFrame(animateStars);
+  requestAnimationFrame(animate);
 }
-animateStars();
+animate();
 
-/* SCROLL ANIMATION */
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.classList.add("visible");
-    }
-  });
+/* COUNTER EASE */
+function counter(id,target){
+  let el=document.getElementById(id);
+  let start=0;
+  let duration=1200;
+  let startTime=null;
+  function animateCounter(timestamp){
+    if(!startTime) startTime=timestamp;
+    let progress=timestamp-startTime;
+    let value=Math.min(Math.floor(progress/duration*target),target);
+    el.textContent=value;
+    if(progress<duration) requestAnimationFrame(animateCounter);
+  }
+  requestAnimationFrame(animateCounter);
+}
+counter("c1",18);
+counter("c2",9);
+counter("c3",64);
+
+/* SCROLL */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible");});
 });
-document.querySelectorAll(".card").forEach(el=>observer.observe(el));
+document.querySelectorAll(".card").forEach(el=>obs.observe(el));
 
-/* COUNTERS */
-function animateCounter(id,target){
-  let count=0;
-  const el=document.getElementById(id);
-  const interval=setInterval(()=>{
-    count++;
-    el.textContent=count;
-    if(count>=target)clearInterval(interval);
-  },30);
-}
-animateCounter("counter1",12);
-animateCounter("counter2",6);
-animateCounter("counter3",48);
-
-/* TRANSMISSION EFFECT */
-const messages=[
-  "> Signal detected from deep orbit...",
-  "> Anomaly reading: Unknown origin...",
-  "> Mapping dark sector coordinates...",
-  "> Archiving interstellar data...",
-  "> Monitoring cosmic background radiation..."
+/* TYPEWRITER */
+const msgs=[
+"> Signal detected beyond lunar orbit...",
+"> Mapping dark sector coordinates...",
+"> Monitoring cosmic radiation field...",
+"> Archiving deep space anomaly..."
 ];
-let i=0;
-setInterval(()=>{
-  document.getElementById("transmissionBox").textContent=messages[i%messages.length];
-  i++;
-},3000);
+let m=0, char=0;
+function type(){
+  const box=document.getElementById("transmission");
+  if(char<msgs[m].length){
+    box.textContent+=msgs[m][char];
+    char++;
+    setTimeout(type,30);
+  }else{
+    setTimeout(()=>{box.textContent="";char=0;m=(m+1)%msgs.length;type();},2000);
+  }
+}
+type();
+
+/* MODAL */
+function openModal(){document.getElementById("modal").classList.add("active");}
+function closeModal(){document.getElementById("modal").classList.remove("active");}
 
 window.addEventListener("resize",()=>{
   canvas.width=innerWidth;
