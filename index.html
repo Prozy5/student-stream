@@ -2,239 +2,285 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-
-<meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8">
-
-<title>StudentStreamHQ — Private Access Mode</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- SEO -->
-<meta name="description" content="StudentStreamHQ is currently operating in private access mode while core systems, creator infrastructure, and streaming technology are finalized. Official public launch April 4, 2026." />
-<meta name="keywords" content="StudentStreamHQ, StudentStream, SS Films, creator platform, streaming network, independent media ecosystem" />
-<meta name="author" content="StudentStreamHQ" />
+<title>StudentStreamHQ — The Next Generation Creator Network</title>
+
+<meta name="description" content="StudentStreamHQ is the next generation creator-driven entertainment ecosystem. Built for creators, filmmakers, streamers, and innovators. Official launch April 4, 2026." />
 
 <link rel="canonical" href="https://studentstream.online/" />
 
-<!-- Open Graph -->
-<meta property="og:title" content="StudentStreamHQ — Private Access Mode" />
-<meta property="og:description" content="Core systems are being finalized. Public launch April 4, 2026." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://studentstream.online/" />
-
-<!-- Schema -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "StudentStreamHQ",
-  "alternateName": "StudentStream",
-  "url": "https://studentstream.online",
-  "description": "StudentStreamHQ is a creator-driven entertainment and media ecosystem. Official public launch April 4, 2026.",
-  "sameAs": [
-    "https://www.instagram.com/studentstreamhq",
-    "https://www.tiktok.com/@studentstreamhq"
-  ]
-}
-</script>
-
 <style>
-* {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Inter, system-ui, sans-serif;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(circle at top, #0f172a, #020617);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 25px;
-  text-align: center;
+body{
+  background: radial-gradient(circle at top,#0f172a,#020617);
+  color:white;
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
-.wrap {
-  max-width: 780px;
-  width: 100%;
+/* Animated gradient background */
+body::before{
+  content:"";
+  position:fixed;
+  width:600px;
+  height:600px;
+  background:linear-gradient(45deg,#4da3ff,#6cf2c2);
+  filter:blur(140px);
+  opacity:.15;
+  top:-150px;
+  left:-150px;
+  animation: float 12s infinite ease-in-out alternate;
+  z-index:-1;
 }
 
-.logo {
-  font-size: 3rem;
-  font-weight: 900;
-  letter-spacing: -1px;
-  margin-bottom: 8px;
+@keyframes float{
+  from{ transform:translateY(0px); }
+  to{ transform:translateY(80px); }
 }
 
-.badge {
-  display: inline-block;
-  background: rgba(77,163,255,0.12);
-  color: #4da3ff;
-  padding: 8px 18px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  border: 1px solid rgba(77,163,255,0.35);
-  margin-bottom: 25px;
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:60px 25px;
+  text-align:center;
 }
 
-h1 {
-  font-size: 2.7rem;
-  margin-bottom: 14px;
-  line-height: 1.1;
+/* Header */
+.logo{
+  font-size:3rem;
+  font-weight:900;
+  letter-spacing:-1px;
+  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:15px;
 }
 
-p {
-  opacity: 0.8;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 28px;
+.tag{
+  font-size:1rem;
+  opacity:.75;
+  margin-bottom:35px;
+}
+
+/* Hero */
+h1{
+  font-size:3rem;
+  line-height:1.1;
+  margin-bottom:20px;
+}
+
+.highlight{
+  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.heroText{
+  max-width:750px;
+  margin:auto;
+  opacity:.85;
+  font-size:1.15rem;
+  line-height:1.7;
+  margin-bottom:45px;
+}
+
+/* Feature Grid */
+.features{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:25px;
+  margin-bottom:60px;
+}
+
+.card{
+  padding:30px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,0.08);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(108,242,194,.5);
+}
+
+.card h3{
+  margin-bottom:12px;
+  font-size:1.2rem;
+}
+
+.card p{
+  opacity:.8;
+  font-size:.95rem;
+  line-height:1.6;
 }
 
 /* Countdown */
-.countdown {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-bottom: 35px;
+.countdown{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:45px;
 }
 
-.time-box {
-  background: rgba(255,255,255,0.06);
-  padding: 18px 22px;
-  border-radius: 20px;
-  min-width: 95px;
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px);
+.time{
+  background:rgba(255,255,255,0.07);
+  padding:18px 22px;
+  border-radius:18px;
+  min-width:100px;
+  border:1px solid rgba(255,255,255,0.1);
 }
 
-.time-box b {
-  display: block;
-  font-size: 1.8rem;
-  font-weight: 900;
-  margin-bottom: 4px;
+.time b{
+  display:block;
+  font-size:1.8rem;
+  font-weight:900;
+  margin-bottom:5px;
 }
 
 /* Buttons */
-.btnRow {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-top: 25px;
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
 }
 
-.btn {
-  padding: 15px 28px;
-  border-radius: 999px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.04);
-  color: white;
-  transition: 0.25s;
+.btn{
+  padding:15px 32px;
+  border-radius:999px;
+  font-weight:800;
+  cursor:pointer;
+  border:none;
+  font-size:1rem;
+  transition:.3s;
 }
 
-.btn:hover {
-  transform: translateY(-3px);
-  border-color: rgba(108,242,194,0.6);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+.primary{
+  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+  color:black;
 }
 
-.btnPrimary {
-  background: linear-gradient(90deg,#4da3ff,#6cf2c2);
-  border: none;
-  color: black;
-  font-weight: 900;
+.primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
 
-.btnPrimary:hover {
-  opacity: 0.95;
+.secondary{
+  background:rgba(255,255,255,.05);
+  color:white;
+  border:1px solid rgba(255,255,255,.2);
 }
 
-/* Footer note */
-.footerNote {
-  margin-top: 40px;
-  font-size: 0.9rem;
-  opacity: 0.6;
+.secondary:hover{
+  border-color:#6cf2c2;
+}
+
+/* Footer */
+.footer{
+  margin-top:80px;
+  opacity:.6;
+  font-size:.85rem;
 }
 </style>
 </head>
 
 <body>
-<div class="wrap">
 
-<div class="logo">StudentStreamHQ</div>
-<span class="badge">PRIVATE ACCESS MODE</span>
+<div class="container">
 
-<h1>Core Systems Finalizing</h1>
+  <div class="logo">StudentStreamHQ</div>
+  <div class="tag">The Next Generation Creator Network</div>
 
-<p>
-StudentStreamHQ is currently operating in restricted access mode
-while internal platform systems, creator infrastructure, and streaming
-technology are finalized.
-<br><br>
-Public access opens April 4, 2026.
-</p>
+  <h1>
+    Built for the <span class="highlight">Future of Creators</span>
+  </h1>
 
-<div class="countdown">
-  <div class="time-box"><b id="d">--</b>Days</div>
-  <div class="time-box"><b id="h">--</b>Hours</div>
-  <div class="time-box"><b id="m">--</b>Mins</div>
-  <div class="time-box"><b id="s">--</b>Secs</div>
-</div>
+  <p class="heroText">
+    StudentStreamHQ is a next-generation entertainment and media ecosystem designed for creators, filmmakers, streamers, developers, and digital innovators.
+    <br><br>
+    We are building a platform where creators don’t just upload content — they build brands, launch productions, collaborate across divisions, and grow inside a real network.
+    <br><br>
+    From streaming upgrades to SS Films productions, creator tools, platform monetization systems, and internal infrastructure — StudentStream is built to empower both the community and the company together.
+  </p>
 
-<div class="btnRow">
-  <button class="btn btnPrimary" onclick="location.href='/login.html'">
-    Secure Login
-  </button>
+  <div class="features">
+    <div class="card">
+      <h3>🎬 Creator Ecosystem</h3>
+      <p>Upload, produce, collaborate, and grow inside an organized digital network built specifically for modern creators.</p>
+    </div>
 
-  <button class="btn" onclick="location.href='/division-directory.html'">
-    Division Directory
-  </button>
+    <div class="card">
+      <h3>🚀 Built-In Growth Systems</h3>
+      <p>Login systems, platform tools, division structures, and monetization pathways designed for serious creators.</p>
+    </div>
 
-  <button class="btn" onclick="location.href='/staff-directory.html'">
-    Staff Directory
-  </button>
+    <div class="card">
+      <h3>💼 SS Films & Originals</h3>
+      <p>In-house production expansion powering independent film, original series, and student-led projects.</p>
+    </div>
 
-  <button class="btn" onclick="location.href='/devforum/'">
-    DevForum
-  </button>
+    <div class="card">
+      <h3>🌎 Next-Gen Community</h3>
+      <p>A structured creator network where innovation, collaboration, and ownership come first.</p>
+    </div>
+  </div>
 
-  <button class="btn" onclick="window.open('https://www.instagram.com/studentstreamhq')">
-    Instagram Updates
-  </button>
-</div>
+  <div class="countdown">
+    <div class="time"><b id="d">--</b>Days</div>
+    <div class="time"><b id="h">--</b>Hours</div>
+    <div class="time"><b id="m">--</b>Mins</div>
+    <div class="time"><b id="s">--</b>Secs</div>
+  </div>
 
-<div class="footerNote">
-© 2026 StudentStreamHQ. All rights reserved.
-</div>
+  <div class="buttons">
+    <button class="btn primary" onclick="location.href='/login.html'">
+      Login to Platform
+    </button>
+
+    <button class="btn secondary" onclick="location.href='/division-directory.html'">
+      Explore Divisions
+    </button>
+  </div>
+
+  <div class="footer">
+    Official Launch — April 4, 2026<br>
+    © 2026 StudentStreamHQ. All rights reserved.
+  </div>
 
 </div>
 
 <script>
 const launchDate = new Date("2026-04-04T00:00:00").getTime();
 
-setInterval(() => {
+setInterval(()=>{
   const now = new Date().getTime();
   const diff = launchDate - now;
 
-  if (diff <= 0) return;
+  if(diff <= 0) return;
 
   document.getElementById("d").textContent =
-    Math.floor(diff / (1000 * 60 * 60 * 24));
+    Math.floor(diff / (1000*60*60*24));
 
   document.getElementById("h").textContent =
-    Math.floor((diff / (1000 * 60 * 60)) % 24);
+    Math.floor((diff / (1000*60*60)) % 24);
 
   document.getElementById("m").textContent =
-    Math.floor((diff / (1000 * 60)) % 60);
+    Math.floor((diff / (1000*60)) % 60);
 
   document.getElementById("s").textContent =
     Math.floor((diff / 1000) % 60);
-}, 1000);
+},1000);
 </script>
 
 </body>
