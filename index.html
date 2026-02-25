@@ -4,33 +4,26 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
 <meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8" />
 
 <title>StudentStreamHQ — The Next Generation Creator Network</title>
 
 <meta name="description" content="StudentStreamHQ is the next generation creator-driven entertainment ecosystem. Built for creators, filmmakers, streamers, and innovators. Official launch April 4, 2026." />
-
 <meta name="keywords" content="StudentStreamHQ, StudentStream, SS Films, creator platform, streaming network, entertainment ecosystem, creator tools, next generation creators" />
-
 <meta name="author" content="StudentStreamHQ" />
-
 <link rel="canonical" href="https://studentstream.online/" />
 
-<!-- OPEN GRAPH -->
 <meta property="og:title" content="StudentStreamHQ — The Next Generation Creator Network" />
 <meta property="og:description" content="Built for the future of creators. Official launch April 4, 2026." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://studentstream.online/" />
 <meta property="og:image" content="https://studentstream.online/preview.png" />
 
-<!-- TWITTER / X -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="StudentStreamHQ — The Next Generation Creator Network" />
 <meta name="twitter:description" content="Built for creators. Official launch April 4, 2026." />
 <meta name="twitter:image" content="https://studentstream.online/preview.png" />
 
-<!-- SCHEMA STRUCTURED DATA -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -39,7 +32,7 @@
   "alternateName": "StudentStream",
   "url": "https://studentstream.online",
   "logo": "https://studentstream.online/logo.png",
-  "description": "StudentStreamHQ is a next-generation creator-driven entertainment and media ecosystem. Official launch April 4, 2026.",
+  "description": "StudentStreamHQ is a next-generation creator-driven entertainment and media ecosystem.",
   "founder": {
     "@type": "Person",
     "name": "Deondre Chambers"
@@ -52,222 +45,202 @@
 </script>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: Inter, system-ui, sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif;}
 body{
-  background: radial-gradient(circle at top,#0f172a,#020617);
+  background:#04060f;
   color:white;
-  min-height:100vh;
   overflow-x:hidden;
 }
 
-/* Animated Glow */
-body::before{
-  content:"";
+/* Animated background particles */
+canvas{
   position:fixed;
-  width:600px;
-  height:600px;
-  background:linear-gradient(45deg,#4da3ff,#6cf2c2);
-  filter:blur(140px);
-  opacity:.15;
-  top:-150px;
-  left:-150px;
-  animation: float 12s infinite ease-in-out alternate;
+  top:0;left:0;
   z-index:-1;
 }
 
-@keyframes float{
-  from{ transform:translateY(0px); }
-  to{ transform:translateY(80px); }
+/* NAV */
+.nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:18px 40px;
+  display:flex;
+  justify-content:space-between;
+  backdrop-filter:blur(12px);
+  background:rgba(0,0,0,.35);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  z-index:10;
+}
+.nav h2{
+  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.container{
+/* HERO */
+.hero{
+  padding:160px 25px 80px;
+  text-align:center;
   max-width:1100px;
   margin:auto;
-  padding:60px 25px;
-  text-align:center;
 }
-
-.logo{
-  font-size:3rem;
-  font-weight:900;
-  letter-spacing:-1px;
-  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  margin-bottom:15px;
-}
-
-.tag{
-  font-size:1rem;
-  opacity:.75;
-  margin-bottom:35px;
-}
-
-h1{
-  font-size:3rem;
-  line-height:1.1;
+.hero h1{
+  font-size:3.5rem;
   margin-bottom:20px;
 }
-
-.highlight{
+.hero span{
   background:linear-gradient(90deg,#4da3ff,#6cf2c2);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
-
-.heroText{
-  max-width:750px;
-  margin:auto;
-  opacity:.85;
-  font-size:1.15rem;
+.hero p{
+  opacity:.8;
+  font-size:1.2rem;
   line-height:1.7;
-  margin-bottom:45px;
+  max-width:800px;
+  margin:auto;
 }
 
-.features{
+/* BUTTONS */
+.btnRow{
+  margin-top:40px;
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.btn{
+  padding:14px 28px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:pointer;
+  border:none;
+  transition:.3s;
+}
+.primary{
+  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+  color:black;
+}
+.primary:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+.secondary{
+  background:rgba(255,255,255,.06);
+  color:white;
+  border:1px solid rgba(255,255,255,.2);
+}
+.secondary:hover{
+  border-color:#6cf2c2;
+}
+
+/* SECTION */
+.section{
+  padding:80px 25px;
+  max-width:1100px;
+  margin:auto;
+  text-align:center;
+}
+.cards{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:25px;
-  margin-bottom:60px;
+  margin-top:50px;
 }
-
 .card{
   padding:30px;
   border-radius:20px;
-  background:rgba(255,255,255,0.05);
+  background:rgba(255,255,255,.05);
   backdrop-filter:blur(15px);
-  border:1px solid rgba(255,255,255,0.08);
-  transition:.3s;
+  border:1px solid rgba(255,255,255,.08);
+  transition:.4s;
 }
-
 .card:hover{
-  transform:translateY(-8px);
-  border-color:rgba(108,242,194,.5);
+  transform:translateY(-10px);
+  border-color:#6cf2c2;
 }
 
-.card h3{
-  margin-bottom:12px;
-  font-size:1.2rem;
-}
-
-.card p{
-  opacity:.8;
-  font-size:.95rem;
-  line-height:1.6;
-}
-
+/* Countdown */
 .countdown{
   display:flex;
   justify-content:center;
   gap:15px;
   flex-wrap:wrap;
-  margin-bottom:45px;
+  margin-top:40px;
 }
-
 .time{
-  background:rgba(255,255,255,0.07);
-  padding:18px 22px;
-  border-radius:18px;
+  background:rgba(255,255,255,.06);
+  padding:20px;
+  border-radius:15px;
   min-width:100px;
-  border:1px solid rgba(255,255,255,0.1);
 }
-
 .time b{
   display:block;
-  font-size:1.8rem;
+  font-size:2rem;
   font-weight:900;
-  margin-bottom:5px;
 }
 
-.buttons{
-  display:flex;
-  justify-content:center;
-  gap:15px;
-  flex-wrap:wrap;
+/* Support */
+.support{
+  margin-top:60px;
+  padding:40px;
+  border-radius:25px;
+  background:linear-gradient(135deg,rgba(77,163,255,.15),rgba(108,242,194,.1));
+  border:1px solid rgba(255,255,255,.1);
 }
 
-.btn{
-  padding:15px 32px;
-  border-radius:999px;
-  font-weight:800;
-  cursor:pointer;
-  border:none;
-  font-size:1rem;
-  transition:.3s;
-}
-
-.primary{
-  background:linear-gradient(90deg,#4da3ff,#6cf2c2);
-  color:black;
-}
-
-.primary:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
-}
-
-.secondary{
-  background:rgba(255,255,255,.05);
-  color:white;
-  border:1px solid rgba(255,255,255,.2);
-}
-
-.secondary:hover{
-  border-color:#6cf2c2;
-}
-
+/* Footer */
 .footer{
-  margin-top:80px;
+  padding:40px;
+  text-align:center;
   opacity:.6;
-  font-size:.85rem;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<canvas id="bg"></canvas>
 
-  <div class="logo">StudentStreamHQ</div>
-  <div class="tag">The Next Generation Creator Network</div>
+<div class="nav">
+  <h2>StudentStreamHQ</h2>
+  <div>
+    <button class="btn secondary" onclick="location.href='/staff-directory.html'">Staff</button>
+    <button class="btn secondary" onclick="location.href='/division-directory.html'">Divisions</button>
+    <button class="btn secondary" onclick="location.href='/devforum/'">DevForum</button>
+  </div>
+</div>
 
-  <h1>
-    Built for the <span class="highlight">Future of Creators</span>
-  </h1>
-
-  <p class="heroText">
-    StudentStreamHQ is a next-generation entertainment and media ecosystem designed for creators, filmmakers, streamers, developers, and digital innovators.
+<section class="hero">
+  <h1>The <span>Next Generation</span> Creator Network</h1>
+  <p>
+    StudentStreamHQ is a creator-driven entertainment ecosystem where streamers, filmmakers,
+    developers, and innovators build brands, launch productions, and grow inside structured divisions.
     <br><br>
-    We are building a platform where creators don’t just upload content — they build brands, launch productions, collaborate across divisions, and grow inside a real network.
-    <br><br>
-    From streaming upgrades to SS Films productions, creator tools, platform monetization systems, and internal infrastructure — StudentStream is built to empower both the community and the company together.
+    From SS Films originals to platform monetization systems — this is infrastructure for serious creators.
   </p>
 
-  <div class="features">
-    <div class="card">
-      <h3>🎬 Creator Ecosystem</h3>
-      <p>Upload, produce, collaborate, and grow inside an organized digital network built specifically for modern creators.</p>
-    </div>
+  <div class="btnRow">
+    <button class="btn primary" onclick="location.href='/login.html'">Login</button>
+    <button class="btn secondary" onclick="window.open('https://www.instagram.com/studentstreamhq')">Instagram</button>
+  </div>
+</section>
 
+<section class="section">
+  <h2>Platform Systems</h2>
+  <div class="cards">
     <div class="card">
-      <h3>🚀 Built-In Growth Systems</h3>
-      <p>Login systems, platform tools, division structures, and monetization pathways designed for serious creators.</p>
+      <h3>🎬 SS Films</h3>
+      <p>Independent production expansion powering original films and series.</p>
     </div>
-
     <div class="card">
-      <h3>💼 SS Films & Originals</h3>
-      <p>In-house production expansion powering independent film, original series, and student-led projects.</p>
+      <h3>🚀 Creator Tools</h3>
+      <p>Internal growth systems, collaboration structure, and organized divisions.</p>
     </div>
-
     <div class="card">
-      <h3>🌎 Next-Gen Community</h3>
-      <p>A structured creator network where innovation, collaboration, and ownership come first.</p>
+      <h3>💼 Monetization</h3>
+      <p>Platform-driven revenue models built for the next wave of digital creators.</p>
     </div>
   </div>
 
@@ -278,43 +251,55 @@ h1{
     <div class="time"><b id="s">--</b>Secs</div>
   </div>
 
-  <div class="buttons">
-    <button class="btn primary" onclick="location.href='/login.html'">
-      Login to Platform
-    </button>
-    <button class="btn secondary" onclick="location.href='/division-directory.html'">
-      Explore Divisions
+  <div class="support">
+    <h3>Support StudentStreamHQ</h3>
+    <p>Independent creator network. Contributions directly support development and SS Films productions.</p>
+    <button class="btn primary"
+      onclick="window.open('https://buy.stripe.com/bJe00je7g6K269l7nI8Ra04','_blank')">
+      Support the Platform
     </button>
   </div>
+</section>
 
-  <div class="footer">
-    Official Launch — April 4, 2026<br>
-    © 2026 StudentStreamHQ. All rights reserved.
-  </div>
-
+<div class="footer">
+  Official Launch — April 4, 2026<br>
+  © 2026 StudentStreamHQ. All rights reserved.
 </div>
 
 <script>
 const launchDate = new Date("2026-04-04T00:00:00").getTime();
-
 setInterval(()=>{
-  const now = new Date().getTime();
-  const diff = launchDate - now;
-
-  if(diff <= 0) return;
-
-  document.getElementById("d").textContent =
-    Math.floor(diff / (1000*60*60*24));
-
-  document.getElementById("h").textContent =
-    Math.floor((diff / (1000*60*60)) % 24);
-
-  document.getElementById("m").textContent =
-    Math.floor((diff / (1000*60)) % 60);
-
-  document.getElementById("s").textContent =
-    Math.floor((diff / 1000) % 60);
+  const now=new Date().getTime();
+  const diff=launchDate-now;
+  if(diff<=0)return;
+  d.textContent=Math.floor(diff/(1000*60*60*24));
+  h.textContent=Math.floor((diff/(1000*60*60))%24);
+  m.textContent=Math.floor((diff/(1000*60))%60);
+  s.textContent=Math.floor((diff/1000)%60);
 },1000);
+
+/* Particle Background */
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+let particles=[];
+for(let i=0;i<80;i++){
+  particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1});
+}
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="rgba(108,242,194,.3)";
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+    p.y+=0.3;
+    if(p.y>canvas.height)p.y=0;
+  });
+  requestAnimationFrame(animate);
+}
+animate();
 </script>
 
 </body>
