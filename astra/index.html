@@ -3,62 +3,101 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>StudentStream ASTRA · Intelligence Division</title>
+
+<title>StudentStream ASTRA — Intelligence & Exploration Division</title>
+
+<meta name="description" content="StudentStream ASTRA is the Intelligence & Exploration Division of StudentStreamHQ. Advanced science, signal analysis, and cinematic research storytelling." />
+<meta name="keywords" content="StudentStream ASTRA, ASTRA Division, StudentStreamHQ, intelligence media, science documentary, future civilization research" />
+<meta name="author" content="StudentStreamHQ" />
+<link rel="canonical" href="https://studentstream.online/astra" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="StudentStream ASTRA — Intelligence Division" />
+<meta property="og:description" content="Advanced science. Signal analysis. Cinematic intelligence storytelling." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://studentstream.online/astra" />
+<meta property="og:image" content="https://studentstream.online/astra-preview.png" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="StudentStream ASTRA" />
+<meta name="twitter:description" content="The Intelligence & Exploration Division of StudentStreamHQ." />
+<meta name="twitter:image" content="https://studentstream.online/astra-preview.png" />
+
+<!-- Schema -->
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"Organization",
+ "name":"StudentStreamHQ",
+ "url":"https://studentstream.online",
+ "subOrganization":{
+   "@type":"Organization",
+   "name":"StudentStream ASTRA",
+   "description":"Intelligence & Exploration Division focused on advanced science and cinematic research storytelling."
+ }
+}
+</script>
 
 <style>
 :root{
-  --bg:#05060d;
-  --panel:rgba(20,25,50,0.7);
+  --bg:#04050a;
+  --panel:rgba(18,22,40,0.65);
   --border:rgba(255,255,255,0.06);
-  --text:#f3f6ff;
-  --muted:#8c98b8;
+  --text:#f2f5ff;
+  --muted:#8893b8;
   --accent:#4da3ff;
-  --glow:rgba(77,163,255,0.6);
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
 body{
-  min-height:100vh;
-  background:radial-gradient(circle at 30% 20%, #0d1433, #000 60%);
+  background:radial-gradient(circle at 20% 10%,#101935,#000 70%);
   color:var(--text);
   overflow-x:hidden;
 }
 
-/* SCAN LINES */
-body::before{
+/* Animated Glow Orbs */
+body::after{
   content:"";
   position:fixed;
-  inset:0;
-  background:repeating-linear-gradient(
-    transparent,
-    transparent 2px,
-    rgba(255,255,255,0.02) 3px
-  );
-  pointer-events:none;
-  z-index:5;
+  width:600px;
+  height:600px;
+  background:radial-gradient(circle,var(--accent),transparent 70%);
+  top:-200px;
+  right:-200px;
+  opacity:.15;
+  filter:blur(120px);
+  animation:float 12s infinite alternate ease-in-out;
+  z-index:-2;
+}
+@keyframes float{
+  to{transform:translateY(200px) translateX(-100px);}
 }
 
-/* STARFIELD */
+/* Star Canvas */
 canvas{
   position:fixed;
   inset:0;
   z-index:-3;
 }
 
-/* HEADER */
+/* Header */
 header{
-  padding:20px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:20px 50px;
   backdrop-filter:blur(20px);
   background:rgba(0,0,0,0.6);
   border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:10;
 }
 header h1{
-  font-size:14px;
-  letter-spacing:3px;
-  font-weight:900;
+  font-size:13px;
+  letter-spacing:4px;
 }
 header a{
   color:var(--muted);
@@ -67,14 +106,14 @@ header a{
 }
 header a:hover{color:white}
 
-/* WRAP */
+/* Wrap */
 .wrap{
   max-width:1200px;
   margin:auto;
-  padding:140px 20px;
+  padding:200px 20px 120px;
 }
 
-/* HERO */
+/* Hero */
 .badge{
   display:inline-block;
   padding:6px 14px;
@@ -85,21 +124,25 @@ header a:hover{color:white}
   color:var(--accent);
   margin-bottom:30px;
 }
+
 .hero h2{
-  font-size:72px;
-  font-weight:1000;
-  letter-spacing:-2px;
+  font-size:80px;
+  font-weight:900;
+  letter-spacing:-3px;
   margin-bottom:20px;
-  text-shadow:0 0 30px var(--glow);
-}
-.hero p{
-  max-width:720px;
-  font-size:18px;
-  line-height:1.9;
-  color:var(--muted);
+  background:linear-gradient(90deg,#fff,var(--accent));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-/* STATS */
+.hero p{
+  max-width:700px;
+  line-height:1.9;
+  color:var(--muted);
+  font-size:18px;
+}
+
+/* Stats */
 .stats{
   margin-top:80px;
   display:grid;
@@ -110,28 +153,26 @@ header a:hover{color:white}
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:20px;
-  padding:32px;
+  padding:30px;
   transition:.4s;
 }
 .statBox:hover{
   transform:translateY(-8px);
   border-color:var(--accent);
-  box-shadow:0 0 40px rgba(77,163,255,.3);
+  box-shadow:0 0 40px rgba(77,163,255,.25);
 }
 .statBox b{
-  font-size:36px;
+  font-size:38px;
   display:block;
-  margin-bottom:8px;
 }
 
-/* SECTION */
+/* Section */
 .section{
   margin-top:160px;
 }
 .section h3{
-  font-size:13px;
+  font-size:12px;
   letter-spacing:4px;
-  text-transform:uppercase;
   color:var(--accent);
   margin-bottom:30px;
 }
@@ -144,10 +185,10 @@ header a:hover{color:white}
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:20px;
-  padding:32px;
+  padding:30px;
+  transition:.5s;
   opacity:0;
-  transform:translateY(50px);
-  transition:.8s ease;
+  transform:translateY(40px);
 }
 .card.visible{
   opacity:1;
@@ -155,10 +196,10 @@ header a:hover{color:white}
 }
 .card:hover{
   border-color:var(--accent);
-  box-shadow:0 0 50px rgba(77,163,255,.25);
+  box-shadow:0 0 50px rgba(77,163,255,.2);
 }
 
-/* TERMINAL */
+/* Terminal */
 .terminal{
   margin-top:120px;
   background:#000;
@@ -168,91 +209,39 @@ header a:hover{color:white}
   font-family:monospace;
   font-size:13px;
   color:#7ecbff;
-  min-height:120px;
-  position:relative;
-}
-.cursor{
-  display:inline-block;
-  width:8px;
-  height:16px;
-  background:#7ecbff;
-  margin-left:4px;
-  animation:blink 1s infinite;
-}
-@keyframes blink{
-  50%{opacity:0}
+  min-height:100px;
 }
 
-/* BUTTONS */
+/* Buttons */
 .btnRow{
-  margin-top:100px;
+  margin-top:80px;
   display:flex;
   gap:20px;
 }
 .btn{
-  padding:16px 30px;
+  padding:14px 28px;
   border-radius:999px;
-  font-weight:900;
+  font-weight:700;
   border:1px solid rgba(255,255,255,.2);
   background:transparent;
   color:white;
   cursor:pointer;
   transition:.3s;
 }
-.btn:hover{
-  transform:translateY(-4px);
-}
 .btnPrimary{
   background:var(--accent);
-  border:none;
   color:black;
-}
-
-/* MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.9);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  pointer-events:none;
-  transition:.5s;
-}
-.modal.active{
-  opacity:1;
-  pointer-events:auto;
-}
-.modalBox{
-  background:#111;
-  padding:50px;
-  border-radius:20px;
-  border:1px solid var(--accent);
-  text-align:center;
-  transform:scale(.9);
-  transition:.4s;
-}
-.modal.active .modalBox{
-  transform:scale(1);
-}
-.modalBox button{
-  margin-top:20px;
-  padding:10px 20px;
   border:none;
-  border-radius:999px;
-  background:var(--accent);
-  font-weight:900;
-  cursor:pointer;
 }
+.btn:hover{transform:translateY(-4px)}
 
-/* FOOTER */
+/* Footer */
 footer{
   margin-top:200px;
-  padding:50px;
+  padding:60px;
   text-align:center;
-  color:var(--muted);
   border-top:1px solid var(--border);
+  color:var(--muted);
 }
 </style>
 </head>
@@ -261,44 +250,41 @@ footer{
 <canvas id="stars"></canvas>
 
 <header>
-  <h1>STUDENTSTREAM · ASTRA</h1>
-  <a href="#">Back to Divisions</a>
+<h1>STUDENTSTREAM · ASTRA</h1>
+<a href="/">Back to Company</a>
 </header>
 
 <div class="wrap">
 
 <div class="hero">
-  <span class="badge">INTELLIGENCE & EXPLORATION DIVISION</span>
-  <h2>ASTRA</h2>
-  <p>
-    ASTRA investigates advanced science, unexplained signals,
-    cosmic anomalies, and the future of civilization.
-    We convert deep research into cinematic intelligence storytelling.
-  </p>
+<span class="badge">INTELLIGENCE & EXPLORATION DIVISION</span>
+<h2>ASTRA</h2>
+<p>
+ASTRA investigates advanced science, unexplained signals, cosmic anomalies,
+and the future of civilization. We convert deep research into cinematic intelligence storytelling.
+</p>
 
-  <div class="stats">
-    <div class="statBox"><b id="c1">0</b>Active Research Tracks</div>
-    <div class="statBox"><b id="c2">0</b>Documentary Projects</div>
-    <div class="statBox"><b id="c3">0</b>Archived Intelligence Files</div>
-  </div>
+<div class="stats">
+<div class="statBox"><b id="c1">0</b>Active Research Tracks</div>
+<div class="statBox"><b id="c2">0</b>Documentary Projects</div>
+<div class="statBox"><b id="c3">0</b>Archived Intelligence Files</div>
+</div>
 </div>
 
 <div class="section">
-  <h3>Core Intelligence Domains</h3>
-  <div class="grid">
-    <div class="card"><h4>Signal Analysis</h4><p>Monitoring unexplained transmissions.</p></div>
-    <div class="card"><h4>Theoretical Physics</h4><p>Dark matter, singularities, propulsion.</p></div>
-    <div class="card"><h4>Future Civilization</h4><p>Human expansion & AI evolution.</p></div>
-  </div>
+<h3>Core Intelligence Domains</h3>
+<div class="grid">
+<div class="card"><h4>Signal Analysis</h4><p>Monitoring unexplained transmissions and anomaly patterns.</p></div>
+<div class="card"><h4>Theoretical Physics</h4><p>Dark matter mapping, singularity research, propulsion modeling.</p></div>
+<div class="card"><h4>Future Civilization</h4><p>Human expansion strategy & AI evolutionary forecasting.</p></div>
+</div>
 </div>
 
-<div class="terminal" id="terminal">
-  <span id="terminalText"></span><span class="cursor"></span>
-</div>
+<div class="terminal" id="terminal"></div>
 
 <div class="btnRow">
-  <button class="btn btnPrimary" onclick="openModal()">Access ASTRA Interface</button>
-  <button class="btn">View StudentStream Company</button>
+<button class="btn btnPrimary">Access ASTRA Interface</button>
+<button class="btn">View StudentStreamHQ</button>
 </div>
 
 </div>
@@ -307,115 +293,93 @@ footer{
 © 2026 StudentStreamHQ · ASTRA Division
 </footer>
 
-<div class="modal" id="modal">
-  <div class="modalBox">
-    <h3>ASTRA Interface Initializing</h3>
-    <p>Full intelligence console in development.</p>
-    <button onclick="closeModal()">Close</button>
-  </div>
-</div>
-
 <script>
-/* MULTI-LAYER STARFIELD */
+/* STARFIELD */
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 
-const layers=[
-  {count:100,size:1,speed:.2},
-  {count:60,size:1.5,speed:.4},
-  {count:30,size:2,speed:.7}
-];
-
 let stars=[];
-layers.forEach(layer=>{
-  for(let i=0;i<layer.count;i++){
-    stars.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      r:layer.size,
-      speed:layer.speed
-    });
-  }
+for(let i=0;i<150;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*1.5,
+s:Math.random()*0.5
 });
+}
 
 function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="white";
-  stars.forEach(s=>{
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fill();
-    s.y+=s.speed;
-    if(s.y>canvas.height){s.y=0;s.x=Math.random()*canvas.width;}
-  });
-  requestAnimationFrame(animate);
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(star=>{
+ctx.beginPath();
+ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
+ctx.fill();
+star.y+=star.s;
+if(star.y>canvas.height){
+star.y=0;
+star.x=Math.random()*canvas.width;
+}
+});
+requestAnimationFrame(animate);
 }
 animate();
 
-/* SMOOTH COUNTERS */
-function animateCounter(id,target){
-  const el=document.getElementById(id);
-  let start=0;
-  const duration=1500;
-  const startTime=performance.now();
-  function update(now){
-    const progress=Math.min((now-startTime)/duration,1);
-    el.textContent=Math.floor(progress*target);
-    if(progress<1) requestAnimationFrame(update);
-  }
-  requestAnimationFrame(update);
+/* COUNTERS */
+function counter(id,target){
+let el=document.getElementById(id);
+let start=0;
+let duration=1500;
+let startTime=performance.now();
+function update(now){
+let progress=Math.min((now-startTime)/duration,1);
+el.textContent=Math.floor(progress*target);
+if(progress<1)requestAnimationFrame(update);
 }
-animateCounter("c1",28);
-animateCounter("c2",14);
-animateCounter("c3",96);
+requestAnimationFrame(update);
+}
+counter("c1",28);
+counter("c2",14);
+counter("c3",96);
 
-/* SCROLL REVEAL */
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting) e.target.classList.add("visible");
-  });
+/* SCROLL ANIMATION */
+let observer=new IntersectionObserver(entries=>{
+entries.forEach(e=>{
+if(e.isIntersecting)e.target.classList.add("visible");
 });
-document.querySelectorAll(".card").forEach(el=>observer.observe(el));
+});
+document.querySelectorAll(".card").forEach(card=>observer.observe(card));
 
-/* TERMINAL TYPE EFFECT */
-const lines=[
+/* TERMINAL */
+let lines=[
 "> Deep orbit signal detected...",
 "> Anomaly pattern under review...",
-"> Dark sector map updated...",
-"> Intelligence archive expanded..."
+"> Dark sector archive updated...",
+"> Intelligence database expanded..."
 ];
-let line=0, char=0;
-const textEl=document.getElementById("terminalText");
-
+let terminal=document.getElementById("terminal");
+let l=0,c=0;
 function type(){
-  if(char < lines[line].length){
-    textEl.textContent += lines[line][char];
-    char++;
-    setTimeout(type,30);
-  }else{
-    setTimeout(()=>{
-      textEl.textContent="";
-      char=0;
-      line=(line+1)%lines.length;
-      type();
-    },2000);
-  }
+if(c<lines[l].length){
+terminal.textContent+=lines[l][c];
+c++;
+setTimeout(type,30);
+}else{
+setTimeout(()=>{
+terminal.textContent="";
+c=0;
+l=(l+1)%lines.length;
+type();
+},2000);
+}
 }
 type();
 
-/* MODAL */
-function openModal(){
-  document.getElementById("modal").classList.add("active");
-}
-function closeModal(){
-  document.getElementById("modal").classList.remove("active");
-}
-
 window.addEventListener("resize",()=>{
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 });
 </script>
 
