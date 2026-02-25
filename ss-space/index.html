@@ -3,130 +3,142 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SS:Space · StudentStream Division</title>
+<title>StudentStream ASTRA · Intelligence Division</title>
 
 <style>
 :root{
-  --bg:#02020a;
-  --panel:rgba(15,20,45,0.75);
-  --border:rgba(255,255,255,0.08);
-  --text:#f4f8ff;
-  --muted:#9fb3d8;
+  --bg:#04050a;
+  --panel:rgba(18,22,40,0.75);
+  --border:rgba(255,255,255,0.06);
+  --text:#f5f7ff;
+  --muted:#8f9bbd;
   --accent:#4da3ff;
-  --accent2:#9b6cff;
-  --star:#ffd36c;
+  --glow:rgba(77,163,255,0.6);
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui;}
 body{
   min-height:100vh;
   color:var(--text);
-  background:radial-gradient(circle at 30% 20%, #111633, #000 60%);
+  background:radial-gradient(circle at 20% 10%, #0a1025, #000 60%);
   overflow-x:hidden;
 }
 
-/* CANVAS */
+/* STARFIELD */
 canvas{
   position:fixed;
   inset:0;
-  z-index:-2;
+  z-index:-3;
 }
 
-/* NEBULA GLOW */
+/* GRID OVERLAY */
 body::after{
   content:"";
   position:fixed;
   inset:0;
-  background:radial-gradient(circle at 70% 40%, rgba(155,108,255,0.15), transparent 60%);
-  animation:pulse 6s infinite alternate ease-in-out;
-  z-index:-1;
-}
-@keyframes pulse{
-  from{opacity:.4}
-  to{opacity:.9}
+  background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
+  z-index:-2;
 }
 
 /* HEADER */
 header{
-  padding:20px 30px;
-  backdrop-filter:blur(18px);
-  background:rgba(0,0,0,0.6);
-  border-bottom:1px solid var(--border);
+  padding:20px 40px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  backdrop-filter:blur(20px);
+  background:rgba(0,0,0,0.6);
+  border-bottom:1px solid var(--border);
 }
-header h1{font-size:18px;font-weight:900;}
-header a{color:var(--muted);text-decoration:none;font-size:14px;}
+header h1{
+  font-size:16px;
+  letter-spacing:2px;
+  font-weight:900;
+}
+header a{
+  text-decoration:none;
+  color:var(--muted);
+  font-size:13px;
+}
 header a:hover{color:white}
 
 /* WRAP */
-.wrap{max-width:1200px;margin:auto;padding:100px 20px;}
+.wrap{
+  max-width:1200px;
+  margin:auto;
+  padding:120px 20px;
+}
 
 /* HERO */
 .badge{
   display:inline-block;
-  padding:8px 18px;
+  padding:6px 14px;
   border-radius:999px;
-  font-size:12px;
-  font-weight:900;
+  font-size:11px;
+  letter-spacing:2px;
   background:rgba(77,163,255,0.15);
-  border:1px solid rgba(77,163,255,0.35);
+  border:1px solid rgba(77,163,255,0.4);
   color:var(--accent);
-  margin-bottom:18px;
+  margin-bottom:24px;
 }
+
 .hero h2{
-  font-size:64px;
+  font-size:68px;
   font-weight:1000;
-  margin-bottom:18px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:0 0 30px rgba(77,163,255,.4);
+  letter-spacing:-1px;
+  margin-bottom:20px;
+  text-shadow:0 0 25px var(--glow);
 }
+
 .hero p{
-  max-width:760px;
-  font-size:17px;
+  max-width:720px;
+  font-size:18px;
   line-height:1.8;
-  opacity:.85;
+  color:var(--muted);
 }
 
 /* STATS */
 .stats{
-  margin-top:60px;
+  margin-top:70px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
+  gap:24px;
 }
 .statBox{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:20px;
+  border-radius:18px;
   padding:28px;
   backdrop-filter:blur(12px);
   transition:.3s;
 }
 .statBox:hover{
-  transform:translateY(-8px);
-  border-color:rgba(155,108,255,0.5);
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  border-color:var(--accent);
+  box-shadow:0 0 30px rgba(77,163,255,.2);
+  transform:translateY(-6px);
 }
 .statBox b{
-  font-size:30px;
-  color:var(--star);
+  font-size:32px;
   display:block;
   margin-bottom:6px;
+  color:white;
 }
 
 /* SECTION */
-.section{margin-top:120px;}
-.section h3{
-  font-size:18px;
-  font-weight:900;
-  margin-bottom:20px;
-  color:var(--accent2);
-  letter-spacing:1px;
+.section{
+  margin-top:140px;
 }
+.section h3{
+  font-size:14px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  margin-bottom:24px;
+  color:var(--accent);
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -135,31 +147,31 @@ header a:hover{color:white}
 .card{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:20px;
-  padding:28px;
-  backdrop-filter:blur(12px);
+  border-radius:18px;
+  padding:30px;
   opacity:0;
-  transform:translateY(50px) scale(.96);
+  transform:translateY(40px);
   transition:.6s ease;
 }
 .card.visible{
   opacity:1;
-  transform:translateY(0) scale(1);
+  transform:translateY(0);
 }
 .card:hover{
-  transform:translateY(-8px);
-  box-shadow:0 25px 70px rgba(0,0,0,.7);
+  border-color:var(--accent);
+  box-shadow:0 0 40px rgba(77,163,255,.2);
 }
 
-/* TRANSMISSION */
-.transmission{
+/* TERMINAL */
+.terminal{
   margin-top:100px;
   background:#000;
   border:1px solid rgba(77,163,255,.4);
+  border-radius:14px;
   padding:25px;
-  border-radius:16px;
   font-family:monospace;
-  color:#8fd3ff;
+  font-size:13px;
+  color:#7ecbff;
   min-height:120px;
 }
 
@@ -167,24 +179,25 @@ header a:hover{color:white}
 .btnRow{
   margin-top:90px;
   display:flex;
-  justify-content:center;
   gap:20px;
   flex-wrap:wrap;
 }
 .btn{
-  padding:16px 30px;
+  padding:14px 28px;
   border-radius:999px;
   font-weight:900;
   border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.05);
+  background:transparent;
   color:white;
   cursor:pointer;
   transition:.2s;
 }
-.btn:hover{transform:translateY(-4px);}
+.btn:hover{
+  transform:translateY(-4px);
+}
 .btnPrimary{
   border:none;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  background:var(--accent);
   color:black;
 }
 
@@ -196,7 +209,6 @@ header a:hover{color:white}
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:10;
   opacity:0;
   pointer-events:none;
   transition:.4s;
@@ -206,31 +218,31 @@ header a:hover{color:white}
   pointer-events:auto;
 }
 .modalBox{
-  background:#111633;
+  background:#111;
   padding:40px;
   border-radius:20px;
   text-align:center;
-  max-width:400px;
+  max-width:420px;
+  border:1px solid var(--accent);
 }
-.modalBox h3{margin-bottom:10px;}
 .modalBox button{
   margin-top:20px;
   padding:10px 20px;
   border:none;
   border-radius:999px;
   background:var(--accent);
-  color:black;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
 }
 
 /* FOOTER */
 footer{
-  margin-top:140px;
+  margin-top:160px;
   padding:40px;
-  text-align:center;
   border-top:1px solid var(--border);
-  opacity:.5;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -239,81 +251,69 @@ footer{
 <canvas id="stars"></canvas>
 
 <header>
-  <h1>StudentStreamHQ · SS:Space</h1>
-  <a href="#">← Back to Divisions</a>
+  <h1>STUDENTSTREAM · ASTRA</h1>
+  <a href="#">Back to Divisions</a>
 </header>
 
 <div class="wrap">
+
 <div class="hero">
-  <span class="badge">DISCOVERY DIVISION · THE UNKNOWN</span>
-  <h2>SS:Space</h2>
+  <span class="badge">INTELLIGENCE & EXPLORATION DIVISION</span>
+  <h2>ASTRA</h2>
   <p>
-    The exploration division of StudentStream.
-    We document cosmic phenomena, decode unexplained signals,
-    and produce cinematic research storytelling about what lies beyond Earth.
+    StudentStream ASTRA investigates the unknown — from cosmic phenomena
+    and advanced science to future civilization and unexplained signals.
+    We transform complex research into cinematic intelligence storytelling.
   </p>
 
   <div class="stats">
-    <div class="statBox"><b id="c1">0</b>Active Research Concepts</div>
-    <div class="statBox"><b id="c2">0</b>Future Documentary Projects</div>
-    <div class="statBox"><b id="c3">0</b>Archived Cosmic Topics</div>
+    <div class="statBox"><b id="c1">0</b>Active Research Tracks</div>
+    <div class="statBox"><b id="c2">0</b>Documentary Projects</div>
+    <div class="statBox"><b id="c3">0</b>Archived Intelligence Files</div>
   </div>
 </div>
 
 <div class="section">
-  <h3>The Unknown</h3>
+  <h3>Core Intelligence Domains</h3>
   <div class="grid">
-    <div class="card"><h4>Unexplained Signals</h4><p>Deep orbit transmissions & anomaly detection.</p></div>
-    <div class="card"><h4>Cosmic Phenomena</h4><p>Black holes, dark matter, theoretical astrophysics.</p></div>
-    <div class="card"><h4>Future Expansion</h4><p>Human colonization & propulsion research.</p></div>
+    <div class="card"><h4>Signal Analysis</h4><p>Monitoring unexplained transmissions and anomaly data.</p></div>
+    <div class="card"><h4>Theoretical Science</h4><p>Dark matter, black holes, propulsion & frontier physics.</p></div>
+    <div class="card"><h4>Future Civilization</h4><p>Human expansion, AI evolution, advanced societies.</p></div>
   </div>
 </div>
 
-<div class="transmission" id="transmission"></div>
+<div class="terminal" id="terminal"></div>
 
 <div class="btnRow">
-  <button class="btn btnPrimary" onclick="openModal()">Enter Exploration Portal</button>
+  <button class="btn btnPrimary" onclick="openModal()">Access ASTRA Interface</button>
   <button class="btn">View StudentStream Company</button>
 </div>
+
 </div>
 
 <footer>
-© 2026 StudentStreamHQ · SS:Space Division
+© 2026 StudentStreamHQ · ASTRA Division
 </footer>
 
 <div class="modal" id="modal">
   <div class="modalBox">
-    <h3>Portal Launching Soon</h3>
-    <p>SS:Space exploration interface is in development.</p>
+    <h3>ASTRA Interface Launching Soon</h3>
+    <p>Full intelligence dashboard currently in development.</p>
     <button onclick="closeModal()">Close</button>
   </div>
 </div>
 
 <script>
-/* PARALLAX STARFIELD */
+/* STARFIELD */
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 
-const layers=[
-  {count:120,size:1,speed:.2},
-  {count:80,size:1.5,speed:.4},
-  {count:40,size:2,speed:.6}
-];
-
 let stars=[];
-layers.forEach(layer=>{
-  for(let i=0;i<layer.count;i++){
-    stars.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      r:layer.size,
-      speed:layer.speed
-    });
-  }
-});
-
+for(let i=0;i<200;i++){
+  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5,speed:Math.random()*0.4});
+}
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle="white";
@@ -328,50 +328,38 @@ function animate(){
 }
 animate();
 
-/* COUNTER EASE */
+/* COUNTERS */
 function counter(id,target){
   let el=document.getElementById(id);
-  let start=0;
-  let duration=1200;
-  let startTime=null;
-  function animateCounter(timestamp){
-    if(!startTime) startTime=timestamp;
-    let progress=timestamp-startTime;
-    let value=Math.min(Math.floor(progress/duration*target),target);
-    el.textContent=value;
-    if(progress<duration) requestAnimationFrame(animateCounter);
-  }
-  requestAnimationFrame(animateCounter);
+  let c=0;
+  let interval=setInterval(()=>{
+    c++;
+    el.textContent=c;
+    if(c>=target)clearInterval(interval);
+  },25);
 }
-counter("c1",18);
-counter("c2",9);
-counter("c3",64);
+counter("c1",22);
+counter("c2",11);
+counter("c3",72);
 
-/* SCROLL */
+/* SCROLL ANIMATION */
 const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible");});
 });
 document.querySelectorAll(".card").forEach(el=>obs.observe(el));
 
-/* TYPEWRITER */
-const msgs=[
-"> Signal detected beyond lunar orbit...",
-"> Mapping dark sector coordinates...",
-"> Monitoring cosmic radiation field...",
-"> Archiving deep space anomaly..."
+/* TERMINAL */
+const logs=[
+"> Deep orbit signal recorded...",
+"> Anomaly signature under review...",
+"> Dark sector mapping updated...",
+"> Intelligence archive expanded..."
 ];
-let m=0, char=0;
-function type(){
-  const box=document.getElementById("transmission");
-  if(char<msgs[m].length){
-    box.textContent+=msgs[m][char];
-    char++;
-    setTimeout(type,30);
-  }else{
-    setTimeout(()=>{box.textContent="";char=0;m=(m+1)%msgs.length;type();},2000);
-  }
-}
-type();
+let i=0;
+setInterval(()=>{
+  document.getElementById("terminal").textContent=logs[i%logs.length];
+  i++;
+},3000);
 
 /* MODAL */
 function openModal(){document.getElementById("modal").classList.add("active");}
