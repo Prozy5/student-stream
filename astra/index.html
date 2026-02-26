@@ -3,20 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 <title>StudentStream ASTRA — Intelligence & Exploration Division</title>
-
-<meta name="description" content="StudentStream ASTRA is the Intelligence & Exploration Division of StudentStreamHQ. Advanced science, signal analysis, and cinematic research storytelling." />
-<link rel="canonical" href="https://studentstream.online/astra" />
 
 <style>
 :root{
-  --bg:#04050a;
-  --panel:rgba(18,22,40,0.65);
-  --border:rgba(255,255,255,0.06);
-  --text:#f2f5ff;
-  --muted:#8893b8;
+  --bg:#05060d;
+  --panel:rgba(20,25,50,0.6);
+  --border:rgba(255,255,255,0.07);
+  --text:#f4f7ff;
+  --muted:#8b95c9;
   --accent:#4da3ff;
+  --danger:#ff4d6d;
+  --success:#3cff9c;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
@@ -27,19 +25,31 @@ body{
   overflow-x:hidden;
 }
 
+/* Animated Grid */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+  linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  z-index:-4;
+}
+
 /* Glow Orb */
 body::after{
   content:"";
   position:fixed;
-  width:600px;
-  height:600px;
+  width:700px;
+  height:700px;
   background:radial-gradient(circle,var(--accent),transparent 70%);
   top:-200px;
   right:-200px;
   opacity:.15;
   filter:blur(120px);
   animation:float 12s infinite alternate ease-in-out;
-  z-index:-2;
+  z-index:-3;
 }
 @keyframes float{
   to{transform:translateY(200px) translateX(-100px);}
@@ -49,7 +59,7 @@ body::after{
 canvas{
   position:fixed;
   inset:0;
-  z-index:-3;
+  z-index:-5;
 }
 
 /* Header */
@@ -57,9 +67,9 @@ header{
   position:fixed;
   top:0;
   width:100%;
-  padding:20px 50px;
-  backdrop-filter:blur(20px);
-  background:rgba(0,0,0,0.6);
+  padding:18px 50px;
+  backdrop-filter:blur(25px);
+  background:rgba(0,0,0,0.7);
   border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
@@ -75,18 +85,17 @@ nav a{
   text-decoration:none;
   font-size:12px;
   margin-left:25px;
+  transition:.3s;
 }
-nav a.active, nav a:hover{color:white}
+nav a:hover{color:white}
 
 /* Layout */
 .wrap{
-  max-width:1200px;
+  max-width:1250px;
   margin:auto;
-  padding:200px 20px 120px;
+  padding:180px 20px 120px;
 }
-.section{
-  margin-top:160px;
-}
+.section{margin-top:160px;}
 .section h3{
   font-size:12px;
   letter-spacing:4px;
@@ -106,7 +115,7 @@ nav a.active, nav a:hover{color:white}
   margin-bottom:30px;
 }
 .hero h2{
-  font-size:80px;
+  font-size:90px;
   font-weight:900;
   letter-spacing:-3px;
   margin-bottom:20px;
@@ -115,17 +124,39 @@ nav a.active, nav a:hover{color:white}
   -webkit-text-fill-color:transparent;
 }
 .hero p{
-  max-width:700px;
+  max-width:750px;
   line-height:1.9;
   color:var(--muted);
   font-size:18px;
+}
+
+/* Index Meter */
+.indexMeter{
+  margin-top:50px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:30px;
+}
+.meterBar{
+  height:14px;
+  background:rgba(255,255,255,0.06);
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:15px;
+}
+.meterFill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),#7efcff);
+  transition:width 2s ease;
 }
 
 /* Stats */
 .stats{
   margin-top:80px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
   gap:30px;
 }
 .statBox{
@@ -134,15 +165,35 @@ nav a.active, nav a:hover{color:white}
   border-radius:20px;
   padding:30px;
   transition:.4s;
+  position:relative;
 }
 .statBox:hover{
   transform:translateY(-8px);
   border-color:var(--accent);
-  box-shadow:0 0 40px rgba(77,163,255,.25);
+  box-shadow:0 0 50px rgba(77,163,255,.25);
 }
 .statBox b{
-  font-size:38px;
+  font-size:42px;
   display:block;
+}
+
+/* Status Dot */
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:8px;
+}
+.green{background:var(--success);}
+.red{background:var(--danger);}
+.pulse{
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(60,255,156,.7);}
+  70%{box-shadow:0 0 0 10px rgba(60,255,156,0);}
+  100%{box-shadow:0 0 0 0 rgba(60,255,156,0);}
 }
 
 /* Grid */
@@ -161,11 +212,33 @@ nav a.active, nav a:hover{color:white}
 .card:hover{
   border-color:var(--accent);
   box-shadow:0 0 50px rgba(77,163,255,.2);
+  transform:translateY(-6px);
+}
+
+/* Command Panel */
+.commandPanel{
+  margin-top:120px;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.cmdBtn{
+  padding:12px 20px;
+  border-radius:12px;
+  border:1px solid var(--accent);
+  background:transparent;
+  color:var(--accent);
+  cursor:pointer;
+  transition:.3s;
+}
+.cmdBtn:hover{
+  background:var(--accent);
+  color:black;
 }
 
 /* Terminal */
 .terminal{
-  margin-top:120px;
+  margin-top:60px;
   background:#000;
   border:1px solid var(--accent);
   border-radius:16px;
@@ -173,7 +246,7 @@ nav a.active, nav a:hover{color:white}
   font-family:monospace;
   font-size:13px;
   color:#7ecbff;
-  min-height:100px;
+  min-height:120px;
 }
 
 /* Footer */
@@ -196,30 +269,45 @@ footer{
 <a href="#hero">Overview</a>
 <a href="#feed">Live Feed</a>
 <a href="#archive">Archive</a>
-<a href="#bounties">Bounties</a>
 <a href="#contributors">Contributors</a>
 </nav>
 </header>
 
 <div class="wrap">
 
-<!-- HERO -->
 <section id="hero" class="hero">
 <span class="badge">INTELLIGENCE & EXPLORATION DIVISION</span>
 <h2>ASTRA</h2>
 <p>
 Advanced science. Signal analysis. Cinematic intelligence storytelling.
-Exploring cosmic anomalies, future civilization modeling, and deep research narratives.
+Modeling anomalies. Indexing intelligence. Expanding exploration.
 </p>
 
+<div class="indexMeter">
+<h4>ASTRA Global Intelligence Index</h4>
+<div class="meterBar">
+<div class="meterFill" id="meterFill"></div>
+</div>
+</div>
+
 <div class="stats">
-<div class="statBox"><b id="c1">0</b>Active Research Tracks</div>
-<div class="statBox"><b id="c2">0</b>Documentary Projects</div>
-<div class="statBox"><b id="c3">0</b>Archived Intelligence Files</div>
+<div class="statBox">
+<b id="c1">0</b>
+<span><span class="dot green pulse"></span>Active Research Tracks</span>
+</div>
+
+<div class="statBox">
+<b id="c2">0</b>
+<span><span class="dot green"></span>Documentary Projects</span>
+</div>
+
+<div class="statBox">
+<b id="c3">0</b>
+<span><span class="dot red"></span>Classified Files</span>
+</div>
 </div>
 </section>
 
-<!-- LIVE FEED -->
 <section id="feed" class="section">
 <h3>LIVE ANOMALY FEED</h3>
 <div class="grid">
@@ -229,36 +317,16 @@ Exploring cosmic anomalies, future civilization modeling, and deep research narr
 </div>
 </section>
 
-<!-- ARCHIVE -->
-<section id="archive" class="section">
-<h3>INTELLIGENCE ARCHIVE</h3>
-<div class="grid">
-<div class="card"><h4>AST-017</h4><p>Space Signal — Published</p></div>
-<div class="card"><h4>AST-018</h4><p>Oceanic Monitoring — Active</p></div>
-<div class="card"><h4>AST-021</h4><p>Dark Sector Modeling — Classified</p></div>
-</div>
-</section>
-
-<!-- BOUNTIES -->
-<section id="bounties" class="section">
-<h3>RESEARCH BOUNTIES</h3>
-<div class="grid">
-<div class="card"><h4>Solar Flare Data Review</h4><p>Reward: $60 — 7 Days</p></div>
-<div class="card"><h4>Pacific Seismic Pattern</h4><p>Reward: $50 — 5 Days</p></div>
-</div>
-</section>
-
-<!-- CONTRIBUTORS -->
 <section id="contributors" class="section">
-<h3>CONTRIBUTORS</h3>
-<div class="grid">
-<div class="card"><h4>Senior Intelligence</h4><p>3 Active</p></div>
-<div class="card"><h4>Verified Researchers</h4><p>7 Active</p></div>
-<div class="card"><h4>Analysts</h4><p>15 Active</p></div>
+<h3>COMMAND PANEL</h3>
+<div class="commandPanel">
+<button class="cmdBtn" onclick="simulate()">Simulate Signal</button>
+<button class="cmdBtn" onclick="increaseIndex()">Boost Index</button>
+<button class="cmdBtn" onclick="resetIndex()">Reset Index</button>
 </div>
-</section>
 
 <div class="terminal" id="terminal"></div>
+</section>
 
 </div>
 
@@ -267,14 +335,14 @@ Exploring cosmic anomalies, future civilization modeling, and deep research narr
 </footer>
 
 <script>
-/* STARFIELD */
+/* Starfield */
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 let stars=[];
-for(let i=0;i<150;i++){
-stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5,s:Math.random()*0.5});
+for(let i=0;i<180;i++){
+stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5,s:Math.random()*0.4});
 }
 function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -290,44 +358,52 @@ requestAnimationFrame(animate);
 }
 animate();
 
-/* COUNTERS */
+/* Counters */
 function counter(id,target){
 let el=document.getElementById(id);
-let startTime=performance.now();
+let start=performance.now();
 function update(now){
-let progress=Math.min((now-startTime)/1500,1);
+let progress=Math.min((now-start)/1500,1);
 el.textContent=Math.floor(progress*target);
 if(progress<1)requestAnimationFrame(update);
 }
 requestAnimationFrame(update);
 }
-counter("c1",28);
-counter("c2",14);
-counter("c3",96);
+counter("c1",32);
+counter("c2",18);
+counter("c3",42);
 
-/* TERMINAL */
-let lines=[
-"> Deep orbit signal detected...",
-"> Anomaly pattern under review...",
-"> Dark sector archive updated...",
-"> Intelligence database expanded..."
-];
+/* Index Meter */
+let indexValue=72;
+function updateMeter(){
+document.getElementById("meterFill").style.width=indexValue+"%";
+}
+updateMeter();
+
+function increaseIndex(){
+indexValue=Math.min(100,indexValue+5);
+updateMeter();
+log("> Intelligence index boosted to "+indexValue+"%");
+}
+
+function resetIndex(){
+indexValue=40;
+updateMeter();
+log("> Index reset.");
+}
+
+function simulate(){
+log("> New anomaly detected...");
+}
+
+/* Terminal */
 let terminal=document.getElementById("terminal");
-let l=0,c=0;
-function type(){
-if(c<lines[l].length){
-terminal.textContent+=lines[l][c++];
-setTimeout(type,25);
-}else{
-setTimeout(()=>{terminal.textContent="";c=0;l=(l+1)%lines.length;type();},2000);
+function log(text){
+terminal.innerHTML+=text+"<br>";
+terminal.scrollTop=terminal.scrollHeight;
 }
-}
-type();
-
-window.addEventListener("resize",()=>{
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-});
+log("> ASTRA system online.");
+log("> Monitoring anomaly grid.");
 </script>
 
 </body>
