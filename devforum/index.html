@@ -1,280 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>StudentStream DevForum</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>StudentStreamHQ DevForum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-
-    body{
-      font-family:system-ui;
-      background:radial-gradient(circle at top,#0d1b3a,#05070c);
-      color:white;
-      min-height:100vh;
-    }
-
-    header{
-      position:sticky;
-      top:0;
-      z-index:100;
-      padding:18px 26px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.75);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-
-    .logo{
-      font-size:20px;
-      font-weight:900;
-    }
-
-    .logo span{
-      color:#4da3ff;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .btn{
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
-      border:none;
-      padding:10px 18px;
-      border-radius:14px;
-      font-weight:800;
-      color:white;
-      cursor:pointer;
-      font-size:14px;
-      transition:.2s;
-    }
-
-    .btn:hover{
-      transform:scale(1.04);
-      opacity:.9;
-    }
-
-    .btn.secondary{
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-    }
-
-    .container{
-      max-width:1050px;
-      margin:50px auto;
-      padding:0 20px;
-    }
-
-    /* HERO */
-    .hero{
-      padding:28px;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
-      margin-bottom:30px;
-    }
-
-    .hero h1{
-      font-size:46px;
-      font-weight:950;
-    }
-
-    .hero p{
-      opacity:.7;
-      margin-top:10px;
-      max-width:750px;
-      line-height:1.6;
-    }
-
-    .stats{
-      display:flex;
-      gap:14px;
-      margin-top:18px;
-      flex-wrap:wrap;
-    }
-
-    .statBox{
-      padding:10px 16px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      font-size:13px;
-      opacity:.8;
-    }
-
-    /* SEARCH */
-    .searchBar{
-      margin:25px 0;
-    }
-
-    .searchBar input{
-      width:100%;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:white;
-      outline:none;
-      font-size:14px;
-    }
-
-    /* TABS */
-    .tabs{
-      display:flex;
-      gap:10px;
-      margin-bottom:20px;
-      flex-wrap:wrap;
-    }
-
-    .tab{
-      padding:10px 16px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      opacity:.65;
-      transition:.2s;
-    }
-
-    .tab.active{
-      opacity:1;
-      border-color:rgba(77,163,255,.55);
-      background:rgba(77,163,255,.15);
-    }
-
-    /* CARDS */
-    .card{
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:20px;
-      padding:20px;
-      margin-top:14px;
-      cursor:pointer;
-      transition:.25s;
-    }
-
-    .card:hover{
-      transform:translateY(-3px);
-      border-color:rgba(77,163,255,.35);
-    }
-
-    .row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:15px;
-    }
-
-    .left{
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-    }
-
-    .icon{
-      font-size:22px;
-      margin-top:2px;
-    }
-
-    .name{
-      font-size:18px;
-      font-weight:850;
-    }
-
-    .desc{
-      opacity:.55;
-      font-size:13px;
-      margin-top:4px;
-      line-height:1.4;
-    }
-
-    .count{
-      font-size:13px;
-      opacity:.7;
-      background:rgba(255,255,255,.06);
-      padding:7px 14px;
-      border-radius:999px;
-      white-space:nowrap;
-    }
-
-    .loading{
-      text-align:center;
-      opacity:.6;
-      padding:35px;
-    }
-
-    .empty{
-      text-align:center;
-      opacity:.55;
-      padding:40px;
-      border:1px dashed rgba(255,255,255,.15);
-      border-radius:18px;
-      margin-top:25px;
-    }
-
-    footer{
-      text-align:center;
-      padding:35px;
-      opacity:.35;
-      margin-top:70px;
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-
-    /* MODAL */
-    .modalOverlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.65);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      z-index:999;
-    }
-
-    .modal{
-      width:100%;
-      max-width:420px;
-      padding:22px;
-      border-radius:18px;
-      background:rgba(15,20,35,.95);
-      border:1px solid rgba(255,255,255,.12);
-    }
-
-    .modal h2{
-      font-size:18px;
-      margin-bottom:12px;
-    }
-
-    .modal select{
-      width:100%;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:white;
-      outline:none;
-    }
-
-    .modal button{
-      width:100%;
-      margin-top:14px;
-    }
-  </style>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0d1b3a,#05070c);
+  color:white;
+  min-height:100vh;
+}
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  padding:18px 26px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  background:rgba(5,7,12,.75);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo{font-size:20px;font-weight:900}
+.logo span{color:#4da3ff}
+.actions{display:flex;gap:10px;align-items:center}
+.btn{
+  background:linear-gradient(135deg,#2f6fff,#4da3ff);
+  border:none;
+  padding:10px 18px;
+  border-radius:14px;
+  font-weight:800;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
+  transition:.2s;
+}
+.btn:hover{transform:scale(1.04);opacity:.9}
+.btn.secondary{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+}
+.container{
+  max-width:1100px;
+  margin:50px auto;
+  padding:0 20px;
+}
+.hero{
+  padding:30px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.03);
+  margin-bottom:30px;
+}
+.hero h1{font-size:48px;font-weight:950}
+.hero p{opacity:.7;margin-top:10px;max-width:750px;line-height:1.6}
+.stats{
+  display:flex;gap:14px;margin-top:18px;flex-wrap:wrap
+}
+.statBox{
+  padding:10px 16px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:13px;
+  opacity:.8;
+}
+.searchBar{margin:25px 0}
+.searchBar input{
+  width:100%;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:white;
+  outline:none;
+  font-size:14px;
+}
+.tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.tab{
+  padding:10px 16px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  opacity:.65;
+  transition:.2s;
+}
+.tab.active{
+  opacity:1;
+  border-color:rgba(77,163,255,.55);
+  background:rgba(77,163,255,.15);
+}
+.card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  padding:20px;
+  margin-top:14px;
+  cursor:pointer;
+  transition:.25s;
+}
+.card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(77,163,255,.35);
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+.left{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+}
+.icon{font-size:22px;margin-top:2px}
+.name{font-size:18px;font-weight:850}
+.desc{opacity:.55;font-size:13px;margin-top:4px;line-height:1.4}
+.count{
+  font-size:13px;
+  opacity:.7;
+  background:rgba(255,255,255,.06);
+  padding:7px 14px;
+  border-radius:999px;
+}
+.loading{text-align:center;opacity:.6;padding:35px}
+.empty{
+  text-align:center;
+  opacity:.55;
+  padding:40px;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:18px;
+  margin-top:25px;
+}
+footer{
+  text-align:center;
+  padding:35px;
+  opacity:.35;
+  margin-top:70px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+</style>
 </head>
 
 <body>
 
 <header>
   <div class="logo">StudentStream <span>DevForum</span></div>
-
   <div class="actions">
     <button class="btn secondary" id="newTopicBtn">+ Post Topic</button>
     <button class="btn" id="accountBtn">Login</button>
@@ -282,29 +161,23 @@
 </header>
 
 <div class="container">
-
-  <!-- HERO -->
   <div class="hero">
     <h1>Developer Forums</h1>
     <p>
-      Official StudentStreamHQ forum for platform announcements, creator updates,
-      bug reports, and support discussions.
+      Official StudentStreamHQ forum for announcements, updates,
+      bug reports, and creator support discussions.
     </p>
-
     <div class="stats">
-      <div class="statBox">📢 Announcements</div>
-      <div class="statBox">⚡ Updates</div>
-      <div class="statBox">🐛 Bug Reports</div>
-      <div class="statBox">🛠 Support</div>
+      <div class="statBox" id="totalTopics">0 Topics</div>
+      <div class="statBox" id="totalReplies">0 Replies</div>
+      <div class="statBox" id="totalCategories">0 Categories</div>
     </div>
   </div>
 
-  <!-- SEARCH -->
   <div class="searchBar">
     <input id="searchInput" placeholder="Search topics..." />
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" data-tab="categories">Categories</div>
     <div class="tab" data-tab="latest">Latest Topics</div>
@@ -312,236 +185,192 @@
 
   <div id="loadingState" class="loading">Loading DevForum…</div>
   <div id="mainContent"></div>
-
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • DevForum
+© 2026 StudentStreamHQ • DevForum
 </footer>
 
-<!-- CATEGORY PICKER MODAL -->
-<div class="modalOverlay" id="modalOverlay">
-  <div class="modal">
-    <h2>Select a Category</h2>
-    <select id="categoryPicker"></select>
-    <button class="btn" id="goCategoryBtn">Continue</button>
-    <button class="btn secondary" onclick="closeModal()">Cancel</button>
-  </div>
-</div>
-
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabase = createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-  const mainContent = document.getElementById("mainContent");
-  const loadingState = document.getElementById("loadingState");
-  const tabs = document.querySelectorAll(".tab");
-  const accountBtn = document.getElementById("accountBtn");
+const mainContent = document.getElementById("mainContent");
+const loadingState = document.getElementById("loadingState");
+const tabs = document.querySelectorAll(".tab");
+const accountBtn = document.getElementById("accountBtn");
 
-  const modalOverlay = document.getElementById("modalOverlay");
-  const categoryPicker = document.getElementById("categoryPicker");
-  const goCategoryBtn = document.getElementById("goCategoryBtn");
+const totalTopicsEl = document.getElementById("totalTopics");
+const totalRepliesEl = document.getElementById("totalReplies");
+const totalCategoriesEl = document.getElementById("totalCategories");
 
-  let cachedCategories = [];
-
-  /* LOGIN */
-  async function updateLoginButton() {
-    const { data } = await supabase.auth.getUser();
-
-    if (data.user) {
-      accountBtn.textContent = "Logout";
-      accountBtn.onclick = async () => {
-        await supabase.auth.signOut();
-        location.reload();
-      };
-    } else {
-      accountBtn.textContent = "Login";
-      accountBtn.onclick = () => {
-        window.location.href = "/login.html";
-      };
-    }
-  }
-  updateLoginButton();
-
-  /* MODAL */
-  window.closeModal = function(){
-    modalOverlay.style.display = "none";
-  };
-
-  function openModal(){
-    modalOverlay.style.display = "flex";
-  }
-
-  /* NEW TOPIC BUTTON */
-  document.getElementById("newTopicBtn").onclick = async () => {
-    const { data } = await supabase.auth.getUser();
-
-    if (!data.user) {
-      alert("Login required.");
-      window.location.href = "/login.html";
-      return;
-    }
-
-    openModal();
-  };
-
-  goCategoryBtn.onclick = () => {
-    const id = categoryPicker.value;
-    window.location.href = "/devforum/category.html?id=" + id;
-  };
-
-  /* LOAD CATEGORIES */
-  async function loadCategories() {
-    loadingState.style.display = "block";
-    mainContent.innerHTML = "";
-
-    const { data: categories } = await supabase
-      .from("forum_categories")
-      .select("*")
-      .order("name");
-
-    loadingState.style.display = "none";
-
-    if (!categories || categories.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No categories found.</div>`;
-      return;
-    }
-
-    cachedCategories = categories;
-
-    categoryPicker.innerHTML = "";
-    categories.forEach(cat => {
-      const opt = document.createElement("option");
-      opt.value = cat.id;
-      opt.textContent = cat.name;
-      categoryPicker.appendChild(opt);
-    });
-
-    const iconMap = {
-      "Announcements": "📢",
-      "Updates": "⚡",
-      "SS Central": "🏢",
-      "Bug Reports": "🐛",
-      "Support": "🛠️"
+/* AUTH */
+async function updateAuth(){
+  const { data } = await supabase.auth.getUser();
+  if(data.user){
+    accountBtn.textContent="Logout";
+    accountBtn.onclick=async()=>{
+      await supabase.auth.signOut();
+      location.reload();
     };
+  } else {
+    accountBtn.textContent="Login";
+    accountBtn.onclick=()=>location.href="/login.html";
+  }
+}
+updateAuth();
 
-    for (const cat of categories) {
-      const { count } = await supabase
-        .from("forum_topics")
-        .select("*", { count: "exact", head: true })
-        .eq("category_id", cat.id);
+/* GLOBAL STATS */
+async function loadStats(){
+  const { count: topicCount } = await supabase
+    .from("forum_topics")
+    .select("*",{count:"exact",head:true});
 
-      const card = document.createElement("div");
-      card.className = "card";
+  const { count: replyCount } = await supabase
+    .from("forum_replies")
+    .select("*",{count:"exact",head:true});
 
-      card.innerHTML = `
-        <div class="row">
-          <div class="left">
-            <div class="icon">${iconMap[cat.name] || "💬"}</div>
-            <div>
-              <div class="name">${cat.name}</div>
-              <div class="desc">${cat.description || ""}</div>
-            </div>
+  const { count: categoryCount } = await supabase
+    .from("forum_categories")
+    .select("*",{count:"exact",head:true});
+
+  totalTopicsEl.textContent = `${topicCount || 0} Topics`;
+  totalRepliesEl.textContent = `${replyCount || 0} Replies`;
+  totalCategoriesEl.textContent = `${categoryCount || 0} Categories`;
+}
+
+/* CATEGORIES (Optimized single query) */
+async function loadCategories(){
+  loadingState.style.display="block";
+  mainContent.innerHTML="";
+
+  const { data, error } = await supabase
+    .from("forum_categories")
+    .select(`
+      id,
+      name,
+      description,
+      forum_topics ( id )
+    `);
+
+  loadingState.style.display="none";
+
+  if(error || !data){
+    mainContent.innerHTML=`<div class="empty">Error loading categories.</div>`;
+    return;
+  }
+
+  if(data.length===0){
+    mainContent.innerHTML=`<div class="empty">No categories found.</div>`;
+    return;
+  }
+
+  data.forEach(cat=>{
+    const topicCount = cat.forum_topics?.length || 0;
+
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <div class="row">
+        <div class="left">
+          <div class="icon">💬</div>
+          <div>
+            <div class="name">${cat.name}</div>
+            <div class="desc">${cat.description || ""}</div>
           </div>
-          <div class="count">${count || 0} Topics</div>
         </div>
-      `;
+        <div class="count">${topicCount} Topics</div>
+      </div>
+    `;
+    card.onclick=()=>location.href="/devforum/category.html?id="+cat.id;
+    mainContent.appendChild(card);
+  });
+}
 
-      card.onclick = () => {
-        window.location.href = "/devforum/category.html?id=" + cat.id;
-      };
+/* LATEST */
+async function loadLatest(){
+  loadingState.style.display="block";
+  mainContent.innerHTML="";
 
-      mainContent.appendChild(card);
-    }
+  const { data } = await supabase
+    .from("forum_topics")
+    .select("id,title,created_at")
+    .order("created_at",{ascending:false})
+    .limit(15);
+
+  loadingState.style.display="none";
+
+  if(!data || data.length===0){
+    mainContent.innerHTML=`<div class="empty">No topics yet.</div>`;
+    return;
   }
 
-  /* LOAD LATEST */
-  async function loadLatestTopics() {
-    loadingState.style.display = "block";
-    mainContent.innerHTML = "";
+  data.forEach(topic=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <div class="name">${topic.title}</div>
+      <div class="desc">
+        ${new Date(topic.created_at).toLocaleString()}
+      </div>
+    `;
+    card.onclick=()=>location.href="/devforum/topic.html?id="+topic.id;
+    mainContent.appendChild(card);
+  });
+}
 
-    const { data: topics } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(12);
-
-    loadingState.style.display = "none";
-
-    if (!topics || topics.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No topics yet.</div>`;
-      return;
+/* REALTIME */
+supabase.channel("forum-live")
+  .on("postgres_changes",{event:"INSERT",schema:"public",table:"forum_topics"},
+    payload=>{
+      loadLatest();
+      loadStats();
     }
+  )
+  .subscribe();
 
-    topics.forEach(topic => {
-      const card = document.createElement("div");
-      card.className = "card";
+/* SEARCH */
+document.getElementById("searchInput").addEventListener("input", async e=>{
+  const q=e.target.value.trim();
+  if(!q){ loadLatest(); return; }
 
-      card.innerHTML = `
-        <div class="name">${topic.title}</div>
-        <div class="desc">
-          Posted • ${new Date(topic.created_at).toLocaleString()}
-        </div>
-      `;
+  const { data }=await supabase
+    .from("forum_topics")
+    .select("id,title")
+    .ilike("title",`%${q}%`)
+    .limit(20);
 
-      card.onclick = () => {
-        window.location.href = "/devforum/topic.html?id=" + topic.id;
-      };
-
-      mainContent.appendChild(card);
-    });
+  mainContent.innerHTML="";
+  if(!data || data.length===0){
+    mainContent.innerHTML=`<div class="empty">No matches found.</div>`;
+    return;
   }
 
-  /* SEARCH */
-  document.getElementById("searchInput").addEventListener("input", async e => {
-    const q = e.target.value.trim();
-
-    if (!q) {
-      loadLatestTopics();
-      return;
-    }
-
-    mainContent.innerHTML = "";
-    loadingState.style.display = "block";
-
-    const { data: results } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .ilike("title", `%${q}%`)
-      .order("created_at", { ascending: false });
-
-    loadingState.style.display = "none";
-
-    if (!results || results.length === 0) {
-      mainContent.innerHTML = `<div class="empty">No matches found.</div>`;
-      return;
-    }
-
-    results.forEach(topic => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `<div class="name">${topic.title}</div>`;
-      mainContent.appendChild(card);
-    });
+  data.forEach(topic=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`<div class="name">${topic.title}</div>`;
+    mainContent.appendChild(card);
   });
+});
 
-  /* TAB SWITCH */
-  tabs.forEach(tab => {
-    tab.onclick = () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
+/* TABS */
+tabs.forEach(tab=>{
+  tab.onclick=()=>{
+    tabs.forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    if(tab.dataset.tab==="categories") loadCategories();
+    if(tab.dataset.tab==="latest") loadLatest();
+  };
+});
 
-      if (tab.dataset.tab === "categories") loadCategories();
-      if (tab.dataset.tab === "latest") loadLatestTopics();
-    };
-  });
-
-  /* DEFAULT */
-  loadCategories();
+/* INIT */
+loadCategories();
+loadStats();
 </script>
 
 </body>
