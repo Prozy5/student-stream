@@ -43,10 +43,7 @@ button{
   color:white;
   cursor:pointer;
   margin-top:10px;
-}
-
-button:hover{
-  opacity:0.85;
+  cursor:pointer;
 }
 
 table{
@@ -151,34 +148,35 @@ tr:nth-child(even){
 </div>
 
 <script>
-const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabase = window.supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-function showError(message){
-  console.error(message);
-  document.getElementById("errorBox").textContent = message;
+function showError(msg){
+  console.error(msg);
+  document.getElementById("errorBox").textContent = msg;
 }
 
 async function refreshStatus(){
   const { data, error } = await supabase.rpc("astra_system_status");
 
   if(error){
-    showError("Status RPC Error: " + error.message);
+    showError("RPC ERROR: " + error.message);
     return;
   }
 
-  if(!data || data.length === 0){
-    showError("No status data returned.");
+  if(!data || !data.length){
+    showError("No data returned from RPC.");
     return;
   }
 
   const s = data[0];
 
-  document.getElementById("totalStrategies").textContent = s.total_strategies ?? 0;
-  document.getElementById("highestGeneration").textContent = s.highest_generation ?? 0;
-  document.getElementById("activeStrategies").textContent = s.active_strategies ?? 0;
-  document.getElementById("totalLogs").textContent = s.total_logs ?? 0;
+  document.getElementById("totalStrategies").textContent = s.total_strategies || 0;
+  document.getElementById("highestGeneration").textContent = s.highest_generation || 0;
+  document.getElementById("activeStrategies").textContent = s.active_strategies || 0;
+  document.getElementById("totalLogs").textContent = s.total_logs || 0;
 }
 
 async function loadBots(){
@@ -189,21 +187,20 @@ async function loadBots(){
     .limit(20);
 
   if(error){
-    showError("Strategy Load Error: " + error.message);
+    showError("TABLE ERROR: " + error.message);
     return;
   }
 
   const table = document.getElementById("botTable");
   table.innerHTML="";
 
-  if(!data || data.length === 0){
-    table.innerHTML = "<tr><td colspan='6'>No strategies found.</td></tr>";
+  if(!data.length){
+    table.innerHTML="<tr><td colspan='6'>No strategies found.</td></tr>";
     return;
   }
 
   data.forEach(bot=>{
     const row=document.createElement("tr");
-
     row.innerHTML=`
       <td>${bot.strategy_name}</td>
       <td>${bot.generation}</td>
@@ -212,30 +209,27 @@ async function loadBots(){
       <td>${bot.active ? "🟢 Active" : "🔴 Inactive"}</td>
       <td>${new Date(bot.created_at).toLocaleTimeString()}</td>
     `;
-
     table.appendChild(row);
   });
 }
 
 async function runCycle(){
   const { error } = await supabase.rpc("astra_post_sovereign_cycle");
-
   if(error){
-    showError("Evolution Error: " + error.message);
+    showError("EVOLUTION ERROR: " + error.message);
     return;
   }
-
   refreshAll();
 }
 
 async function refreshAll(){
-  document.getElementById("errorBox").textContent = "";
+  document.getElementById("errorBox").textContent="";
   await refreshStatus();
   await loadBots();
 }
 
-setInterval(refreshAll,10000);
 refreshAll();
+setInterval(refreshAll,10000);
 </script>
 
 </body>
