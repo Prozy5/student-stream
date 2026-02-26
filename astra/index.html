@@ -1,377 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ASTRA Intelligence</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASTRA — Autonomous Signal Intelligence</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <style>
 :root{
---bg:#05060d;
---panel:rgba(20,25,50,0.6);
---border:rgba(255,255,255,0.07);
---text:#f4f7ff;
+--bg:#04050c;
+--panel:rgba(15,20,40,0.6);
+--border:rgba(255,255,255,0.08);
+--text:#f5f7ff;
 --muted:#8b95c9;
 --accent:#4da3ff;
 --success:#3cff9c;
+--danger:#ff4d6d;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
 body{
-background:#05060d;
+background:radial-gradient(circle at 20% 10%,#101935,#000 70%);
 color:var(--text);
 overflow-x:hidden;
 }
 
-/* Layout */
-.dashboard{
+header{
+position:fixed;
+top:0;
+width:100%;
+padding:18px 40px;
+backdrop-filter:blur(25px);
+background:rgba(0,0,0,0.7);
+border-bottom:1px solid var(--border);
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:10;
+}
+
+header h1{
+font-size:12px;
+letter-spacing:4px;
+}
+
+.clock{
+font-size:12px;
+color:var(--muted);
+}
+
+.wrap{
+max-width:1300px;
+margin:auto;
+padding:160px 20px 100px;
+}
+
+.section{margin-top:120px;}
+
+.hero h2{
+font-size:90px;
+font-weight:900;
+letter-spacing:-3px;
+background:linear-gradient(90deg,#fff,var(--accent));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+max-width:700px;
+margin-top:20px;
+line-height:1.8;
+color:var(--muted);
+}
+
+.grid{
 display:grid;
-grid-template-columns:280px 1fr 400px;
-height:100vh;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:25px;
+margin-top:40px;
 }
 
-/* Sidebar */
-.sidebar{
-background:#0b0f1d;
-border-right:1px solid var(--border);
-padding:30px;
-}
-.sidebar h2{
-font-size:18px;
-margin-bottom:30px;
-letter-spacing:3px;
-}
-.sidebar button{
-display:block;
-width:100%;
-margin-bottom:15px;
-padding:10px;
-background:transparent;
-border:1px solid var(--accent);
-color:var(--accent);
-cursor:pointer;
-border-radius:8px;
-}
-
-/* Center */
-.center{
-padding:30px;
-overflow:auto;
-}
-.sectionTitle{
-margin-bottom:20px;
-color:var(--accent);
-letter-spacing:2px;
-}
-
-/* Globe */
-#globeContainer{
-width:100%;
-height:300px;
-margin-bottom:40px;
-}
-
-/* Neural Graph */
-#neuralCanvas{
-width:100%;
-height:200px;
-background:black;
-border-radius:12px;
-margin-bottom:40px;
-}
-
-/* Feed */
-.feed{
-display:grid;
-gap:15px;
-}
 .card{
 background:var(--panel);
 border:1px solid var(--border);
-padding:20px;
-border-radius:12px;
+border-radius:20px;
+padding:25px;
+transition:.3s;
 }
 
-/* Right Panel */
-.right{
-background:#0b0f1d;
-border-left:1px solid var(--border);
-padding:30px;
-overflow:auto;
+.card:hover{
+border-color:var(--accent);
+transform:translateY(-4px);
 }
 
-.stat{
-margin-bottom:30px;
+.card h4{
+margin-bottom:10px;
 }
-.stat b{
-font-size:28px;
-display:block;
+
+.badge{
+display:inline-block;
+padding:3px 10px;
+font-size:10px;
+border-radius:999px;
+margin-left:8px;
+}
+
+.classified{
+background:var(--danger);
+}
+
+.active{
+background:var(--success);
+color:black;
 }
 
 .terminal{
-background:black;
-padding:15px;
-border-radius:12px;
+margin-top:40px;
+background:#000;
+border:1px solid var(--accent);
+border-radius:16px;
+padding:20px;
 font-family:monospace;
 font-size:12px;
 color:#7ecbff;
-height:200px;
+height:160px;
 overflow:auto;
+}
+
+button{
+padding:10px 18px;
+border-radius:10px;
+border:1px solid var(--accent);
+background:transparent;
+color:var(--accent);
+cursor:pointer;
+margin-top:10px;
+}
+button:hover{
+background:var(--accent);
+color:black;
 }
 </style>
 </head>
 <body>
 
-<div class="dashboard">
+<header>
+<h1>ASTRA · SIGNAL INTELLIGENCE</h1>
+<div class="clock" id="clock"></div>
+</header>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-<h2>ASTRA OS</h2>
-<button onclick="createAnomaly()">Simulate Anomaly</button>
-<button onclick="evolveBots()">Run Evolution Cycle</button>
-<button onclick="clearTerminal()">Clear Logs</button>
-</div>
+<div class="wrap">
 
-<!-- CENTER -->
-<div class="center">
+<section class="hero">
+<h2>ASTRA</h2>
+<p>
+Autonomous anomaly modeling and research orchestration engine.
+Tracking signals. Evolving scientists. Expanding intelligence.
+</p>
+</section>
 
-<h3 class="sectionTitle">GLOBAL INTELLIGENCE TRACKER</h3>
-<div id="globeContainer"></div>
+<section class="section">
+<h3>LIVE ANOMALY FEED</h3>
+<div class="grid" id="anomalyFeed"></div>
+<button onclick="simulateAnomaly()">Simulate Anomaly</button>
+</section>
 
-<h3 class="sectionTitle">NEURAL SIGNAL MAP</h3>
-<canvas id="neuralCanvas"></canvas>
+<section class="section">
+<h3>SCIENTISTS (AI BOTS)</h3>
+<div class="grid" id="scientistGrid"></div>
+<button onclick="evolveScientists()">Run Evolution Cycle</button>
+</section>
 
-<h3 class="sectionTitle">LIVE ANOMALY FEED</h3>
-<div class="feed" id="feed"></div>
+<section class="section">
+<h3>RESEARCH PROJECTS</h3>
+<div class="grid" id="researchGrid"></div>
+</section>
 
-</div>
-
-<!-- RIGHT PANEL -->
-<div class="right">
-
-<div class="stat">
-<b id="indexValue">0</b>
-Global Intelligence Index
-</div>
-
-<div class="stat">
-<b id="botCount">0</b>
-Active Bots
-</div>
-
-<div class="stat">
-<b id="generation">0</b>
-Current Evolution Generation
-</div>
-
+<section class="section">
+<h3>COMMAND TERMINAL</h3>
 <div class="terminal" id="terminal"></div>
-
-</div>
+</section>
 
 </div>
 
 <script>
-
-/* ===========================
-   SUPABASE CONNECTION
-=========================== */
-
 const supabase = window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* ===========================
-   TERMINAL
-=========================== */
-
-const terminal = document.getElementById("terminal");
+const terminal=document.getElementById("terminal");
 function log(msg){
-terminal.innerHTML += "> " + msg + "<br>";
-terminal.scrollTop = terminal.scrollHeight;
+terminal.innerHTML+="> "+msg+"<br>";
+terminal.scrollTop=terminal.scrollHeight;
 }
 
-/* ===========================
-   LOAD ANOMALIES
-=========================== */
+/* Clock */
+function updateClock(){
+document.getElementById("clock").textContent=new Date().toUTCString();
+}
+setInterval(updateClock,1000);
+updateClock();
 
+/* Load Anomalies */
 async function loadAnomalies(){
-const { data } = await supabase
-.from("anomalies")
-.select("*")
-.order("created_at", { ascending:false });
-
-document.getElementById("feed").innerHTML="";
-data.forEach(renderCard);
-updateIndex(data);
-}
-
-function renderCard(a){
+const { data } = await supabase.from("anomalies").select("*").order("created_at",{ascending:false});
+const feed=document.getElementById("anomalyFeed");
+feed.innerHTML="";
+data.forEach(a=>{
 const div=document.createElement("div");
 div.className="card";
 div.innerHTML=`
-<h4>${a.code}</h4>
+<h4>${a.code} ${a.classified?'<span class="badge classified">CLASSIFIED</span>':''}</h4>
 <p>${a.description}</p>
-<small>Index: ${a.index}</small>
+<small>Severity: ${a.severity}</small>
 `;
-document.getElementById("feed").appendChild(div);
+feed.appendChild(div);
+});
 }
 
-/* ===========================
-   REALTIME SUBSCRIPTION
-=========================== */
-
-supabase.channel('realtime-anomalies')
-.on('postgres_changes', { event: '*', schema: 'public', table: 'anomalies' }, payload => {
-renderCard(payload.new);
-loadAnomalies();
-})
-.subscribe();
-
-/* ===========================
-   AI DESCRIPTION GENERATOR
-=========================== */
-
-function generateAIDescription(){
-const topics=[
-"Solar flare irregularity",
-"Deep ocean frequency shift",
-"Satellite pattern distortion",
-"Unidentified atmospheric burst",
-"Magnetic pole fluctuation"
-];
-return topics[Math.floor(Math.random()*topics.length)] 
-+ " detected with nonlinear signal amplification.";
+/* Load Scientists */
+async function loadScientists(){
+const { data } = await supabase.from("scientists").select("*").order("generation",{ascending:false});
+const grid=document.getElementById("scientistGrid");
+grid.innerHTML="";
+data.forEach(s=>{
+const div=document.createElement("div");
+div.className="card";
+div.innerHTML=`
+<h4>${s.name} <span class="badge active">Gen ${s.generation}</span></h4>
+<p>Specialty: ${s.specialty}</p>
+<p>Performance: ${s.performance}</p>
+`;
+grid.appendChild(div);
+});
 }
 
-/* ===========================
-   CREATE ANOMALY
-=========================== */
+/* Load Research */
+async function loadResearch(){
+const { data } = await supabase.from("research_projects").select("*");
+const grid=document.getElementById("researchGrid");
+grid.innerHTML="";
+data.forEach(r=>{
+const div=document.createElement("div");
+div.className="card";
+div.innerHTML=`
+<h4>${r.title}</h4>
+<p>Status: ${r.status}</p>
+<p>Lead: ${r.lead_scientist}</p>
+`;
+grid.appendChild(div);
+});
+}
 
-async function createAnomaly(){
-const index=(Math.random()*3+6).toFixed(2);
+/* Simulate anomaly */
+async function simulateAnomaly(){
 await supabase.from("anomalies").insert({
 code:"AST-"+Math.floor(Math.random()*900+100),
-description:generateAIDescription(),
-index:index
+description:"Signal irregularity detected in atmospheric grid.",
+severity:(Math.random()*3+6).toFixed(2),
+classified:Math.random()>0.7
 });
-log("New anomaly injected.");
+log("New anomaly registered.");
 }
 
-/* ===========================
-   INTELLIGENCE INDEX
-=========================== */
-
-function updateIndex(data){
-let total=0;
-data.forEach(a=> total+=parseFloat(a.index));
-const avg = data.length ? (total/data.length).toFixed(2) : 0;
-document.getElementById("indexValue").innerText=avg;
+/* Evolve Scientists */
+async function evolveScientists(){
+const { data } = await supabase.from("scientists").select("*");
+for(const s of data){
+await supabase.from("scientists")
+.update({generation:s.generation+1,performance:(s.performance+Math.random()*2).toFixed(2)})
+.eq("id",s.id);
+}
+log("Scientists evolved to next generation.");
 }
 
-/* ===========================
-   BOT EVOLUTION
-=========================== */
+/* Realtime */
+supabase.channel('realtime')
+.on('postgres_changes',{event:'*',schema:'public',table:'anomalies'},()=>{loadAnomalies();log("Anomaly feed updated.");})
+.on('postgres_changes',{event:'*',schema:'public',table:'scientists'},()=>{loadScientists();})
+.subscribe();
 
-let generation=1;
-
-async function evolveBots(){
-generation++;
-document.getElementById("generation").innerText=generation;
-log("Bots evolved to generation "+generation);
-}
-
-/* ===========================
-   LOAD BOTS
-=========================== */
-
-async function loadBots(){
-const { data } = await supabase
-.from("bots")
-.select("*");
-
-document.getElementById("botCount").innerText=data.length;
-}
-
-function clearTerminal(){
-terminal.innerHTML="";
-}
-
-/* ===========================
-   NEURAL GRAPH
-=========================== */
-
-const neural=document.getElementById("neuralCanvas");
-const ctx=neural.getContext("2d");
-neural.width=neural.offsetWidth;
-neural.height=neural.offsetHeight;
-
-let nodes=[];
-for(let i=0;i<30;i++){
-nodes.push({x:Math.random()*neural.width,y:Math.random()*neural.height});
-}
-
-function drawNeural(){
-ctx.clearRect(0,0,neural.width,neural.height);
-ctx.fillStyle="white";
-nodes.forEach(n=>{
-ctx.beginPath();
-ctx.arc(n.x,n.y,2,0,Math.PI*2);
-ctx.fill();
-});
-for(let i=0;i<nodes.length;i++){
-for(let j=i+1;j<nodes.length;j++){
-let dx=nodes[i].x-nodes[j].x;
-let dy=nodes[i].y-nodes[j].y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-if(dist<120){
-ctx.strokeStyle="rgba(77,163,255,0.2)";
-ctx.beginPath();
-ctx.moveTo(nodes[i].x,nodes[i].y);
-ctx.lineTo(nodes[j].x,nodes[j].y);
-ctx.stroke();
-}
-}
-}
-requestAnimationFrame(drawNeural);
-}
-drawNeural();
-
-/* ===========================
-   3D GLOBE
-=========================== */
-
-const container=document.getElementById("globeContainer");
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(75,container.clientWidth/300,0.1,1000);
-const renderer=new THREE.WebGLRenderer({alpha:true});
-renderer.setSize(container.clientWidth,300);
-container.appendChild(renderer.domElement);
-
-const geometry=new THREE.SphereGeometry(1,32,32);
-const material=new THREE.MeshBasicMaterial({color:0x4da3ff,wireframe:true});
-const globe=new THREE.Mesh(geometry,material);
-scene.add(globe);
-camera.position.z=3;
-
-function animateGlobe(){
-requestAnimationFrame(animateGlobe);
-globe.rotation.y+=0.003;
-renderer.render(scene,camera);
-}
-animateGlobe();
-
-/* ===========================
-   INIT
-=========================== */
-
+/* Init */
 loadAnomalies();
-loadBots();
-log("ASTRA AI OS Online.");
-
+loadScientists();
+loadResearch();
+log("ASTRA system online.");
 </script>
 
 </body>
