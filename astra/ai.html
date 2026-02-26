@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASTRA AI Control</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  background:#05060d;
+  color:#f2f5ff;
+}
+
+h1{
+  text-align:center;
+  margin:40px 0 10px;
+  letter-spacing:3px;
+}
+
+.section{
+  max-width:1100px;
+  margin:40px auto;
+  padding:20px;
+}
+
+.card{
+  background:rgba(20,25,50,0.7);
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:16px;
+  padding:25px;
+  margin-bottom:30px;
+}
+
+button{
+  padding:10px 18px;
+  background:#4da3ff;
+  border:none;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+button:hover{
+  opacity:0.85;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px;
+  text-align:left;
+  font-size:14px;
+}
+
+th{
+  color:#4da3ff;
+}
+
+tr:nth-child(even){
+  background:rgba(255,255,255,0.02);
+}
+
+.statusGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+
+.stat{
+  font-size:22px;
+  font-weight:bold;
+}
+
+.small{
+  font-size:12px;
+  color:#8893b8;
+}
+</style>
+</head>
+
+<body>
+
+<h1>ASTRA AI SYSTEM</h1>
+
+<div class="section">
+
+<div class="card">
+<h2>System Status</h2>
+
+<div class="statusGrid">
+<div>
+<div class="stat" id="totalStrategies">-</div>
+<div class="small">Total Strategies</div>
+</div>
+
+<div>
+<div class="stat" id="highestGeneration">-</div>
+<div class="small">Highest Generation</div>
+</div>
+
+<div>
+<div class="stat" id="activeStrategies">-</div>
+<div class="small">Active Strategies</div>
+</div>
+
+<div>
+<div class="stat" id="totalLogs">-</div>
+<div class="small">Total Logs</div>
+</div>
+</div>
+
+<button onclick="runCycle()">Run Evolution Cycle</button>
+</div>
+
+<div class="card">
+<h2>AI Strategy List</h2>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Gen</th>
+<th>Weight</th>
+<th>Score</th>
+<th>Status</th>
+<th>Created</th>
+</tr>
+</thead>
+<tbody id="botTable">
+<tr><td colspan="6">Loading...</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+async function refreshStatus(){
+  const { data, error } = await supabase.rpc("astra_system_status");
+  if(error){ console.error(error); return; }
+
+  const s = data[0];
+
+  document.getElementById("totalStrategies").textContent = s.total_strategies;
+  document.getElementById("highestGeneration").textContent = s.highest_generation;
+  document.getElementById("activeStrategies").textContent = s.active_strategies;
+  document.getElementById("totalLogs").textContent = s.total_logs;
+}
+
+async function loadBots(){
+  const { data, error } = await supabase
+    .from("astra_strategies")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(20);
+
+  if(error){ console.error(error); return; }
+
+  const table = document.getElementById("botTable");
+  table.innerHTML="";
+
+  data.forEach(bot=>{
+    const row=document.createElement("tr");
+
+    row.innerHTML=`
+      <td>${bot.strategy_name}</td>
+      <td>${bot.generation}</td>
+      <td>${Number(bot.weight).toFixed(3)}</td>
+      <td>${Number(bot.performance_score).toFixed(3)}</td>
+      <td>${bot.active ? "🟢 Active" : "🔴 Inactive"}</td>
+      <td>${new Date(bot.created_at).toLocaleTimeString()}</td>
+    `;
+
+    table.appendChild(row);
+  });
+}
+
+async function runCycle(){
+  const { error } = await supabase.rpc("astra_post_sovereign_cycle");
+  if(error){ console.error(error); return; }
+
+  await refreshAll();
+}
+
+async function refreshAll(){
+  await refreshStatus();
+  await loadBots();
+}
+
+setInterval(refreshAll,10000);
+refreshAll();
+</script>
+
+</body>
+</html>
