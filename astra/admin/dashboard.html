@@ -2,242 +2,229 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ASTRA Sovereign Command</title>
+<title>ASTRA MASTER CONTROL</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: white;
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:#030712;
+    color:#e5e7eb;
 }
-
-header {
-    padding: 20px;
-    background: #111827;
-    font-size: 22px;
-    font-weight: bold;
-    letter-spacing: 2px;
+header{
+    padding:25px;
+    font-size:24px;
+    font-weight:800;
+    letter-spacing:3px;
+    background:#0f172a;
+    border-bottom:1px solid rgba(255,255,255,0.05);
 }
-
-.container {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 20px;
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
+    gap:20px;
+    padding:20px;
 }
-
-.card {
-    background: #1f2937;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+.card{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:14px;
+    backdrop-filter:blur(10px);
 }
-
-.card h3 {
-    margin-top: 0;
-    font-size: 18px;
-    margin-bottom: 15px;
+.card h3{
+    margin:0 0 15px 0;
+    font-size:15px;
+    letter-spacing:1px;
+    color:#60a5fa;
 }
-
-button {
-    background: #2563eb;
-    border: none;
-    padding: 10px 14px;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
+.stat{
+    font-size:26px;
+    font-weight:800;
 }
-
-button:hover {
-    background: #1d4ed8;
+.small{
+    font-size:12px;
+    color:#9ca3af;
 }
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
+button{
+    margin-top:10px;
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
 }
-
-td, th {
-    padding: 6px;
-    border-bottom: 1px solid #374151;
+button.danger{
+    background:#dc2626;
 }
+table{
+    width:100%;
+    font-size:12px;
+    border-collapse:collapse;
+}
+td,th{
+    padding:6px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+th{
+    text-align:left;
+    color:#9ca3af;
+}
+.log{
+    max-height:220px;
+    overflow:auto;
+    font-size:11px;
+}
+.green{color:#22c55e}
+.red{color:#ef4444}
 </style>
 </head>
-
 <body>
 
-<header>ASTRA SOVEREIGN COMMAND CENTER</header>
+<header>ASTRA MASTER MONITORING TERMINAL</header>
 
-<div class="container">
+<div class="grid">
 
-<!-- COMMAND OVERVIEW -->
 <div class="card">
-<h3>Command Overview</h3>
-<div id="overview"></div>
+<h3>GLOBAL CAPITAL</h3>
+<div class="stat" id="capital">$0</div>
+<div class="small" id="agentCount">Agents: 0</div>
 <button onclick="loadOverview()">Refresh</button>
 </div>
 
-<!-- LIVE TELEMETRY -->
 <div class="card">
-<h3>Live Telemetry</h3>
-<div id="telemetry"></div>
-</div>
-
-<!-- AGENT EVOLUTION -->
-<div class="card">
-<h3>Agent Evolution</h3>
+<h3>AGENT STATUS</h3>
 <div id="agents"></div>
-<button onclick="loadAgents()">Refresh</button>
 </div>
 
-<!-- ARBITRAGE RADAR -->
 <div class="card">
-<h3>Arbitrage Radar</h3>
-<div id="arbitrage"></div>
-<button onclick="loadArbitrage()">Refresh</button>
+<h3>CAPITAL MOVEMENTS</h3>
+<div id="capitalMonitor" class="log"></div>
 </div>
 
-<!-- MACRO SIMULATION -->
 <div class="card">
-<h3>Macro Simulation</h3>
-<input id="scenarioId" placeholder="Scenario ID" style="width:100%;padding:8px;">
-<button onclick="runMacro()">Run Simulation</button>
+<h3>EXECUTION MONITOR</h3>
+<div id="executionMonitor" class="log"></div>
 </div>
 
-<!-- SOVEREIGN CONTROLS -->
 <div class="card">
-<h3>Sovereign Controls</h3>
+<h3>NEURAL MEMORY DRIFT</h3>
+<div id="neuralMonitor" class="log"></div>
+</div>
+
+<div class="card">
+<h3>AI NEGOTIATIONS</h3>
+<div id="negotiations" class="log"></div>
+</div>
+
+<div class="card">
+<h3>STRATEGY EVOLUTION</h3>
+<div id="strategies" class="log"></div>
+</div>
+
+<div class="card">
+<h3>SYSTEM HEALTH</h3>
+<div id="systemHealth" class="log"></div>
+</div>
+
+<div class="card">
+<h3>SOVEREIGN CONTROL</h3>
 <button onclick="runCycle()">Run Intelligence Cycle</button>
-<button onclick="runKillSwitch()">Global Kill Switch</button>
+<button onclick="runKill()">Global Kill Switch</button>
 </div>
 
 </div>
 
 <script>
+
 const supabase = window.supabase.createClient(
     "https://iabzmoxzbqzcqgypxctr.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-// ==========================
-// COMMAND OVERVIEW
-// ==========================
+// =========================
+// OVERVIEW
+// =========================
+async function loadOverview(){
+    const { data } = await supabase.from('astra_agents')
+        .select('capital_allocation,status');
 
-async function loadOverview() {
-    const { data } = await supabase
-        .from('astra_agents')
-        .select('capital_allocation, status');
+    let total=0;
+    let count=data.length;
 
-    let total = 0;
-    let active = 0;
+    data.forEach(a=> total+=Number(a.capital_allocation||0));
 
-    data.forEach(a => {
-        total += Number(a.capital_allocation || 0);
-        if (a.status === 'active') active++;
-    });
-
-    document.getElementById("overview").innerHTML =
-        "Total Capital: $" + total.toFixed(2) +
-        "<br>Active Agents: " + active;
+    document.getElementById("capital").innerText=
+        "$"+total.toLocaleString();
+    document.getElementById("agentCount").innerText=
+        "Agents: "+count;
 }
 
-// ==========================
+// =========================
 // AGENTS
-// ==========================
-
-async function loadAgents() {
-    const { data } = await supabase
-        .from('astra_agents')
+// =========================
+async function loadAgents(){
+    const { data } = await supabase.from('astra_agents')
         .select('*');
 
-    let html = "<table><tr><th>Name</th><th>Rank</th><th>Capital</th><th>Perf</th></tr>";
-
-    data.forEach(a => {
-        html += `<tr>
-            <td>${a.agent_name}</td>
-            <td>${a.rank_level}</td>
-            <td>$${Number(a.capital_allocation).toFixed(2)}</td>
-            <td>${a.performance_score}</td>
+    let html="<table><tr><th>Name</th><th>Status</th><th>Rank</th><th>Perf</th></tr>";
+    data.forEach(a=>{
+        html+=`
+        <tr>
+        <td>${a.agent_name}</td>
+        <td>${a.status}</td>
+        <td>${a.rank_level}</td>
+        <td>${a.performance_score}</td>
         </tr>`;
     });
-
-    html += "</table>";
-    document.getElementById("agents").innerHTML = html;
+    html+="</table>";
+    document.getElementById("agents").innerHTML=html;
 }
 
-// ==========================
-// TELEMETRY REALTIME
-// ==========================
-
-supabase
-.channel('telemetry')
-.on(
-    'postgres_changes',
-    { event: 'INSERT', schema: 'public', table: 'astra_telemetry_logs' },
-    payload => {
-        const div = document.getElementById("telemetry");
-        div.innerHTML =
-            payload.new.event_type +
-            " | Agent: " + payload.new.agent_id +
-            "<br>" + div.innerHTML;
-    }
-)
-.subscribe();
-
-// ==========================
-// ARBITRAGE
-// ==========================
-
-async function loadArbitrage() {
-    const { data } = await supabase
-        .from('astra_arbitrage_opportunities')
-        .select('*');
-
-    let html = "<table><tr><th>Asset</th><th>Spread</th></tr>";
-
-    data.forEach(o => {
-        html += `<tr>
-            <td>${o.asset_symbol}</td>
-            <td>${Number(o.spread).toFixed(4)}</td>
-        </tr>`;
-    });
-
-    html += "</table>";
-    document.getElementById("arbitrage").innerHTML = html;
+// =========================
+// REALTIME STREAMS
+// =========================
+function stream(table, element){
+    supabase.channel(table)
+    .on('postgres_changes',
+        {event:'INSERT',schema:'public',table:table},
+        payload=>{
+            const div=document.getElementById(element);
+            div.innerHTML=
+            `<div>${JSON.stringify(payload.new)}</div>`+
+            div.innerHTML;
+        })
+    .subscribe();
 }
 
-// ==========================
-// MACRO
-// ==========================
+stream('astra_capital_monitor','capitalMonitor');
+stream('astra_execution_monitor','executionMonitor');
+stream('astra_neural_memory','neuralMonitor');
+stream('astra_ai_negotiations','negotiations');
+stream('astra_strategies','strategies');
+stream('astra_system_health','systemHealth');
 
-async function runMacro() {
-    const id = document.getElementById("scenarioId").value;
-    await supabase.rpc('astra_run_macro_simulation', { p_scenario: id });
-    alert("Simulation Executed");
-}
-
-// ==========================
-// INTELLIGENCE CYCLE
-// ==========================
-
-async function runCycle() {
+// =========================
+// CONTROLS
+// =========================
+async function runCycle(){
     await supabase.rpc('astra_post_sovereign_cycle');
-    alert("Intelligence Cycle Completed");
+    alert("Cycle Executed");
 }
 
-async function runKillSwitch() {
+async function runKill(){
     await supabase.rpc('astra_global_kill_switch');
-    alert("GLOBAL KILL SWITCH ACTIVATED");
+    alert("GLOBAL SHUTDOWN");
 }
 
-// Initial Load
+// Initial load
 loadOverview();
 loadAgents();
-loadArbitrage();
 
 </script>
 
