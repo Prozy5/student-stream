@@ -1,391 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASTRA — Autonomous Signal Intelligence</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8" />
+<title>Astra • AI Space Intelligence</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-:root{
---bg:#04050c;
---panel:rgba(15,20,40,0.6);
---border:rgba(255,255,255,0.08);
---text:#f5f7ff;
---muted:#8b95c9;
---accent:#4da3ff;
---success:#3cff9c;
---danger:#ff4d6d;
-}
-
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
-
+*{margin:0;padding:0;box-sizing:border-box}
 body{
-background:radial-gradient(circle at 20% 10%,#101935,#000 70%);
-color:var(--text);
-overflow-x:hidden;
-}
-
-canvas{
-position:fixed;
-inset:0;
-z-index:-3;
+  font-family:system-ui,-apple-system;
+  background:radial-gradient(circle at top,#0b1220,#05070c 60%);
+  color:white;
+  min-height:100vh;
 }
 
 /* HEADER */
 header{
-position:fixed;
-top:0;
-width:100%;
-padding:18px 40px;
-backdrop-filter:blur(25px);
-background:rgba(0,0,0,0.7);
-border-bottom:1px solid var(--border);
-display:flex;
-justify-content:space-between;
-align-items:center;
-z-index:10;
+  position:sticky;
+  top:0;
+  padding:18px 28px;
+  backdrop-filter:blur(16px);
+  background:rgba(10,15,25,.85);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:100;
 }
 
-header h1{
-font-size:12px;
-letter-spacing:4px;
+.logo{
+  font-weight:900;
+  font-size:22px;
+  letter-spacing:1px;
+}
+.logo span{color:#4da3ff}
+
+.tagFilter{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  color:white;
+  padding:8px 12px;
+  border-radius:10px;
 }
 
-.clock{
-font-size:12px;
-color:var(--muted);
-}
-
-.wrap{
-max-width:1200px;
-margin:auto;
-padding:160px 20px 100px;
-}
-
-.section{margin-top:160px;}
-
-.badge{
-display:inline-block;
-padding:6px 14px;
-border-radius:999px;
-font-size:10px;
-letter-spacing:3px;
-border:1px solid var(--accent);
-color:var(--accent);
-margin-bottom:30px;
+/* CONTAINER */
+.container{
+  max-width:1100px;
+  margin:50px auto;
+  padding:0 20px;
 }
 
 /* HERO */
-.hero h2{
-font-size:100px;
-font-weight:900;
-letter-spacing:-4px;
-background:linear-gradient(90deg,#fff,var(--accent));
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.hero{
+  margin-bottom:35px;
+}
+
+.hero h1{
+  font-size:40px;
+  font-weight:900;
 }
 
 .hero p{
-max-width:750px;
-margin-top:20px;
-line-height:1.9;
-color:var(--muted);
+  margin-top:10px;
+  opacity:.6;
 }
 
-/* AI CORE */
-.aiCore{
-margin-top:60px;
-width:180px;
-height:180px;
-border-radius:50%;
-background:radial-gradient(circle,var(--accent),transparent 70%);
-margin-bottom:40px;
-animation:pulse 3s infinite;
-}
-@keyframes pulse{
-0%{transform:scale(1);opacity:.7;}
-50%{transform:scale(1.15);opacity:1;}
-100%{transform:scale(1);opacity:.7;}
+/* ARTICLE CARD */
+.article{
+  padding:26px;
+  border-radius:20px;
+  margin-bottom:18px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.2s;
 }
 
-/* STATS */
-.stats{
-margin-top:60px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:30px;
-}
-.stat{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:20px;
-padding:30px;
-}
-.stat b{
-font-size:40px;
-display:block;
-margin-bottom:10px;
+.article:hover{
+  transform:translateY(-4px);
+  border-color:rgba(77,163,255,.5);
 }
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:30px;
+.article h2{
+  font-size:20px;
+  font-weight:800;
 }
 
-.card{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:20px;
-padding:25px;
-transition:.3s;
-}
-.card:hover{
-border-color:var(--accent);
-box-shadow:0 0 25px rgba(77,163,255,.2);
+.meta{
+  font-size:13px;
+  opacity:.6;
+  margin-top:8px;
 }
 
-/* TERMINAL */
-.terminal{
-margin-top:60px;
-background:#000;
-border:1px solid var(--accent);
-border-radius:16px;
-padding:30px;
-font-family:monospace;
-font-size:13px;
-color:#7ecbff;
-min-height:140px;
-overflow:auto;
+.summary{
+  margin-top:14px;
+  line-height:1.6;
+  opacity:.85;
 }
 
-/* BUTTONS */
-.cmd{
-margin-top:30px;
-display:flex;
-gap:15px;
-flex-wrap:wrap;
+.tag{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:11px;
+  background:rgba(77,163,255,.15);
+  margin-right:6px;
+  margin-top:10px;
 }
-button{
-padding:12px 20px;
-border-radius:12px;
-border:1px solid var(--accent);
-background:transparent;
-color:var(--accent);
-cursor:pointer;
+
+.confidence{
+  float:right;
+  font-size:12px;
+  opacity:.6;
 }
-button:hover{
-background:var(--accent);
-color:black;
+
+.empty{
+  text-align:center;
+  padding:60px;
+  opacity:.5;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:20px;
 }
 
 footer{
-margin-top:200px;
-padding:60px;
-text-align:center;
-color:var(--muted);
-border-top:1px solid var(--border);
+  text-align:center;
+  padding:50px;
+  opacity:.4;
+  margin-top:80px;
+  border-top:1px solid rgba(255,255,255,.08);
 }
 </style>
 </head>
+
 <body>
 
-<canvas id="bg"></canvas>
-
 <header>
-<h1>ASTRA · SIGNAL INTELLIGENCE</h1>
-<div class="clock" id="clock"></div>
+  <div class="logo">ASTRA <span>AI</span></div>
+  <select class="tagFilter" id="tagFilter">
+    <option value="">All Topics</option>
+  </select>
 </header>
 
-<div class="wrap">
+<div class="container">
 
-<section class="hero">
-<span class="badge">AUTONOMOUS SIGNAL TRACKING & RESEARCH ARCHITECTURE</span>
-<h2>ASTRA</h2>
-<p>
-Deep-space anomaly modeling engine. Tracking signals. Evolving AI scientists. Expanding intelligence beyond Earth jurisdiction.
-</p>
+  <div class="hero">
+    <h1>AI-Curated Space Intelligence</h1>
+    <p>Real-time automated analysis of global space research and discoveries.</p>
+  </div>
 
-<div class="aiCore"></div>
-
-<div class="stats">
-<div class="stat"><b id="statResearch">0</b>Active Research Tracks</div>
-<div class="stat"><b id="statProjects">0</b>Research Projects</div>
-<div class="stat"><b id="statFiles">0</b>Classified Files</div>
-<div class="stat"><b id="statScientists">0</b>AI Scientists</div>
-</div>
-</section>
-
-<section class="section">
-<h3>LIVE ANOMALY FEED</h3>
-<div class="grid" id="feed"></div>
-</section>
-
-<section class="section">
-<h3>SCIENTISTS (AI BOTS)</h3>
-<div class="grid" id="scientists"></div>
-</section>
-
-<section class="section">
-<h3>RESEARCH PROJECTS</h3>
-<div class="grid" id="projects"></div>
-</section>
-
-<section class="section">
-<h3>COMMAND TERMINAL</h3>
-
-<div class="cmd">
-<button onclick="simulate()">Simulate Anomaly</button>
-<button onclick="evolve()">Run Evolution Cycle</button>
-<button onclick="clearTerminal()">Clear Log</button>
-</div>
-
-<div class="terminal" id="terminal"></div>
-
-</section>
+  <div id="articles"></div>
 
 </div>
 
 <footer>
-© 2026 StudentStreamHQ · ASTRA Division
+© 2026 Astra Intelligence Network
 </footer>
 
-<script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* SUPABASE */
-const supabase = window.supabase.createClient(
-"https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* CLOCK */
-function updateClock(){
-document.getElementById("clock").textContent=new Date().toUTCString();
-}
-setInterval(updateClock,1000); updateClock();
+const articlesContainer = document.getElementById("articles");
+const tagFilter = document.getElementById("tagFilter");
 
-/* TERMINAL */
-let terminal=document.getElementById("terminal");
-function log(msg){
-terminal.innerHTML+="> "+msg+"<br>";
-terminal.scrollTop=terminal.scrollHeight;
-}
+/* LOAD TAGS */
+async function loadTags(){
+  const { data } = await supabase
+    .from("astra_tags")
+    .select("*")
+    .order("name");
 
-/* LOAD STATS */
-async function loadStats(){
-const {count:research}=await supabase.from("anomalies").select("*",{count:"exact",head:true});
-const {count:projects}=await supabase.from("projects").select("*",{count:"exact",head:true});
-const {count:files}=await supabase.from("files").select("*",{count:"exact",head:true});
-const {count:scientists}=await supabase.from("scientists").select("*",{count:"exact",head:true});
+  if(!data) return;
 
-document.getElementById("statResearch").textContent=research||0;
-document.getElementById("statProjects").textContent=projects||0;
-document.getElementById("statFiles").textContent=files||0;
-document.getElementById("statScientists").textContent=scientists||0;
+  data.forEach(tag=>{
+    const opt = document.createElement("option");
+    opt.value = tag.name;
+    opt.textContent = tag.name;
+    tagFilter.appendChild(opt);
+  });
 }
 
-/* LOAD ANOMALIES */
-async function loadFeed(){
-const {data}=await supabase.from("anomalies").select("*").order("created_at",{ascending:false}).limit(6);
-const feed=document.getElementById("feed");
-feed.innerHTML="";
-data?.forEach(a=>{
-feed.innerHTML+=`
-<div class="card">
-<h4>${a.code}</h4>
-<p>${a.description}</p>
-</div>`;
-});
+/* LOAD ARTICLES */
+async function loadArticles(tag=null){
+  articlesContainer.innerHTML = "<div class='empty'>Loading intelligence feed...</div>";
+
+  let query = supabase
+    .from("astra_articles")
+    .select(`
+      *,
+      astra_sources(name),
+      astra_article_tags(
+        astra_tags(name)
+      )
+    `)
+    .eq("is_published", true)
+    .order("published_at", { ascending:false });
+
+  const { data, error } = await query;
+
+  if(error){
+    articlesContainer.innerHTML = "<div class='empty'>Error loading feed.</div>";
+    console.error(error);
+    return;
+  }
+
+  if(!data || data.length === 0){
+    articlesContainer.innerHTML = "<div class='empty'>No intelligence reports yet.</div>";
+    return;
+  }
+
+  articlesContainer.innerHTML = "";
+
+  data.forEach(article=>{
+
+    const tagNames = article.astra_article_tags?.map(t=>t.astra_tags?.name) || [];
+
+    if(tag && !tagNames.includes(tag)) return;
+
+    const div = document.createElement("div");
+    div.className = "article";
+
+    div.innerHTML = `
+      <div class="confidence">Confidence: ${article.confidence_score || 75}%</div>
+      <h2>${article.title}</h2>
+      <div class="meta">
+        Source: ${article.astra_sources?.name || "Unknown"} • 
+        ${new Date(article.published_at).toLocaleString()}
+      </div>
+      <div class="summary">
+        ${article.summary || ""}
+      </div>
+      <div>
+        ${tagNames.map(t=>`<span class="tag">${t}</span>`).join("")}
+      </div>
+    `;
+
+    articlesContainer.appendChild(div);
+  });
 }
 
-/* LOAD SCIENTISTS */
-async function loadScientists(){
-const {data}=await supabase.from("scientists").select("*");
-const box=document.getElementById("scientists");
-box.innerHTML="";
-data?.forEach(s=>{
-box.innerHTML+=`
-<div class="card">
-<h4>${s.name}</h4>
-<p>Specialization: ${s.specialization}</p>
-<p>Evolution Level: ${s.level}</p>
-<p>Intelligence: ${s.intelligence}%</p>
-</div>`;
-});
-}
+tagFilter.onchange = ()=>{
+  loadArticles(tagFilter.value || null);
+};
 
-/* LOAD PROJECTS */
-async function loadProjects(){
-const {data}=await supabase.from("projects").select("*");
-const box=document.getElementById("projects");
-box.innerHTML="";
-data?.forEach(p=>{
-box.innerHTML+=`
-<div class="card">
-<h4>${p.title}</h4>
-<p>Risk Tier: ${p.risk}</p>
-<p>Progress: ${p.progress}%</p>
-</div>`;
-});
-}
-
-/* SIMULATE ANOMALY */
-async function simulate(){
-await supabase.from("anomalies").insert({
-code:"AST-"+Math.floor(Math.random()*900+100),
-description:"Deep-space anomaly detected.",
-created_at:new Date()
-});
-log("New anomaly registered.");
-loadFeed();
-loadStats();
-}
-
-/* EVOLUTION */
-async function evolve(){
-const {data}=await supabase.from("scientists").select("*");
-if(!data?.length)return;
-const random=data[Math.floor(Math.random()*data.length)];
-await supabase.from("scientists")
-.update({intelligence:random.intelligence+5,level:random.level+1})
-.eq("id",random.id);
-log(random.name+" evolved.");
-loadScientists();
-}
-
-/* CLEAR TERMINAL */
-function clearTerminal(){terminal.innerHTML="";}
-
-/* STARFIELD BACKGROUND */
-const canvas=document.getElementById("bg");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth; canvas.height=innerHeight;
-let stars=[];
-for(let i=0;i<150;i++){
-stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5});
-}
-function draw(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="white";
-stars.forEach(s=>{
-ctx.beginPath();
-ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-ctx.fill();
-});
-requestAnimationFrame(draw);
-}
-draw();
-
-/* INIT */
-log("ASTRA space division online.");
-loadStats();
-loadFeed();
-loadScientists();
-loadProjects();
-
+(async ()=>{
+  await loadTags();
+  await loadArticles();
+})();
 </script>
 
 </body>
