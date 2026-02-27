@@ -269,6 +269,7 @@ if (!categoryId) {
   alert("No category ID in URL");
 }
 
+/* ELEMENTS */
 const topicList = document.getElementById("topicList");
 const topicCount = document.getElementById("topicCount");
 const pagination = document.getElementById("pagination");
@@ -280,26 +281,26 @@ const perPage = 10;
 let currentUser = null;
 
 /* AUTH */
-async function checkUser(){
-  const { data:{ user } } = await supabase.auth.getUser();
+async function checkUser() {
+  const { data: { user } } = await supabase.auth.getUser();
   currentUser = user;
 
-  if(!user){
+  if (!user) {
     newTopicBtn.disabled = true;
     newTopicBtn.textContent = "Login to Post";
   }
 }
 
 /* LOAD CATEGORY */
-async function loadCategory(){
+async function loadCategory() {
   const { data, error } = await supabase
     .from("forum_categories")
     .select("*")
     .eq("id", categoryId)
     .single();
 
-  if(error){
-    console.error(error);
+  if (error) {
+    console.error("Category error:", error);
     return;
   }
 
@@ -308,43 +309,59 @@ async function loadCategory(){
 }
 
 /* LOAD TOPICS */
-async function loadTopics(){
-  topicList.innerHTML = "";
-
-  let ascending = sortSelect.value === "oldest";
-  let orderColumn = "created_at";
-
-  // only use reply_count IF that column exists in your table
-  if(sortSelect.value === "replies"){
-    orderColumn = "reply_count";
-  }
+async function loadTopics() {
+  topicList.innerHTML = "<div class='empty'>Loading...</div>";
 
   const from = (currentPage - 1) * perPage;
   const to = from + perPage - 1;
 
-  const { data, count, error } = await supabase
+  let query = supabase
     .from("forum_topics")
-    .select("*", { count: "exact" })
+    .select(`
+      *,
+      forum_replies(count)
+    `, { count: "exact" })
     .eq("category_id", categoryId)
-    .order("is_pinned", { ascending: false })  // USE ORIGINAL COLUMN
-    .order(orderColumn, { ascending })
-    .range(from, to);
+    .order("is_pinned", { ascending: false });
 
-  if(error){
+  // Sorting logic
+  if (sortSelect.value === "oldest") {
+    query = query.order("created_at", { ascending: true });
+  } else if (sortSelect.value === "latest") {
+    query = query.order("created_at", { ascending: false });
+  }
+
+  query = query.range(from, to);
+
+  const { data, count, error } = await query;
+
+  if (error) {
     console.error("Topic load error:", error);
     topicList.innerHTML = `<div class="empty">Error loading topics.</div>`;
     return;
   }
 
-  if(!data || data.length === 0){
+  if (!data || data.length === 0) {
     topicList.innerHTML = `<div class="empty">No discussions yet.</div>`;
     topicCount.textContent = "0 discussions";
     return;
   }
 
   topicCount.textContent = `${count} discussions`;
+  topicList.innerHTML = "";
+
+  // If sorting by replies, do client-side sort
+  if (sortSelect.value === "replies") {
+    data.sort((a, b) => {
+      const aCount = a.forum_replies?.[0]?.count || 0;
+      const bCount = b.forum_replies?.[0]?.count || 0;
+      return bCount - aCount;
+    });
+  }
 
   data.forEach(topic => {
+    const replyCount = topic.forum_replies?.[0]?.count || 0;
+
     const card = document.createElement("div");
     card.className = "topicCard";
 
@@ -360,7 +377,7 @@ async function loadTopics(){
       </div>
       <div class="topicRight">
         <div class="replyBadge">
-          ${topic.reply_count || 0} Replies
+          ${replyCount} Replies
         </div>
       </div>
     `;
@@ -376,14 +393,14 @@ async function loadTopics(){
 }
 
 /* PAGINATION */
-function renderPagination(total){
+function renderPagination(total) {
   pagination.innerHTML = "";
   const pages = Math.ceil(total / perPage);
 
-  for(let i = 1; i <= pages; i++){
+  for (let i = 1; i <= pages; i++) {
     const btn = document.createElement("div");
     btn.className = "pageBtn";
-    if(i === currentPage) btn.classList.add("active");
+    if (i === currentPage) btn.classList.add("active");
 
     btn.textContent = i;
     btn.onclick = () => {
@@ -398,7 +415,7 @@ function renderPagination(total){
 /* MODAL */
 const modalOverlay = document.getElementById("modalOverlay");
 newTopicBtn.onclick = () => {
-  if(currentUser){
+  if (currentUser) {
     modalOverlay.style.display = "flex";
   }
 };
@@ -417,12 +434,12 @@ bodyInput.addEventListener("input", () => {
 
 /* SUBMIT */
 window.submitTopic = async () => {
-  if(!currentUser) return alert("Login required.");
+  if (!currentUser) return alert("Login required.");
 
   const title = document.getElementById("titleInput").value.trim();
   const content = bodyInput.value.trim();
 
-  if(title.length < 3){
+  if (title.length < 3) {
     return alert("Title too short");
   }
 
@@ -439,7 +456,7 @@ window.submitTopic = async () => {
 
   document.getElementById("submitBtn").disabled = false;
 
-  if(error){
+  if (error) {
     console.error("Insert error:", error);
     return alert(error.message);
   }
