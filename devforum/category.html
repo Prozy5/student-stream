@@ -259,9 +259,16 @@ footer{
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
+const supabase = createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
 const categoryId = new URLSearchParams(location.search).get("id");
+if (!categoryId) {
+  alert("No category ID in URL");
+}
+
 const topicList = document.getElementById("topicList");
 const topicCount = document.getElementById("topicCount");
 const pagination = document.getElementById("pagination");
@@ -272,10 +279,11 @@ let currentPage = 1;
 const perPage = 10;
 let currentUser = null;
 
-/* AUTH CHECK */
+/* AUTH */
 async function checkUser(){
-  const { data:{user} } = await supabase.auth.getUser();
+  const { data:{ user } } = await supabase.auth.getUser();
   currentUser = user;
+
   if(!user){
     newTopicBtn.disabled = true;
     newTopicBtn.textContent = "Login to Post";
@@ -284,58 +292,66 @@ async function checkUser(){
 
 /* LOAD CATEGORY */
 async function loadCategory(){
-  const { data,error } = await supabase
+  const { data, error } = await supabase
     .from("forum_categories")
     .select("*")
     .eq("id", categoryId)
     .single();
 
-  if(error || !data) return;
+  if(error){
+    console.error(error);
+    return;
+  }
 
-  document.getElementById("catTitle").textContent=data.name;
-  document.getElementById("catDesc").textContent=data.description||"";
+  document.getElementById("catTitle").textContent = data?.name || "Category";
+  document.getElementById("catDesc").textContent = data?.description || "";
 }
 
 /* LOAD TOPICS */
 async function loadTopics(){
-  topicList.innerHTML="";
+  topicList.innerHTML = "";
 
-  let ascending = sortSelect.value==="oldest";
-  let orderColumn = sortSelect.value==="replies" ? "reply_count" : "created_at";
+  let ascending = sortSelect.value === "oldest";
+  let orderColumn = "created_at";
 
-  const from = (currentPage-1)*perPage;
-  const to = from + perPage -1;
+  // only use reply_count IF that column exists in your table
+  if(sortSelect.value === "replies"){
+    orderColumn = "reply_count";
+  }
+
+  const from = (currentPage - 1) * perPage;
+  const to = from + perPage - 1;
 
   const { data, count, error } = await supabase
     .from("forum_topics")
-    .select(`
-      id,title,created_at,pinned,
-      forum_replies(count)
-    `,{count:"exact"})
+    .select("*", { count: "exact" })
     .eq("category_id", categoryId)
-    .order("pinned",{ascending:false})
-    .order(orderColumn,{ascending})
-    .range(from,to);
+    .order("is_pinned", { ascending: false })  // USE ORIGINAL COLUMN
+    .order(orderColumn, { ascending })
+    .range(from, to);
 
-  if(error) return console.error(error);
-
-  if(!data || data.length===0){
-    topicList.innerHTML=`<div class="empty">No discussions yet.</div>`;
-    topicCount.textContent="0 discussions";
+  if(error){
+    console.error("Topic load error:", error);
+    topicList.innerHTML = `<div class="empty">Error loading topics.</div>`;
     return;
   }
 
-  topicCount.textContent=`${count} discussions`;
+  if(!data || data.length === 0){
+    topicList.innerHTML = `<div class="empty">No discussions yet.</div>`;
+    topicCount.textContent = "0 discussions";
+    return;
+  }
 
-  data.forEach(topic=>{
-    const replies = topic.forum_replies?.[0]?.count || 0;
+  topicCount.textContent = `${count} discussions`;
 
-    const card=document.createElement("div");
-    card.className="topicCard";
-    card.innerHTML=`
+  data.forEach(topic => {
+    const card = document.createElement("div");
+    card.className = "topicCard";
+
+    card.innerHTML = `
       <div class="topicLeft">
         <div class="topicTitle">
-          ${topic.pinned ? `<span class="pin">Pinned</span>` : ""}
+          ${topic.is_pinned ? `<span class="pin">Pinned</span>` : ""}
           ${topic.title}
         </div>
         <div class="topicMeta">
@@ -343,10 +359,16 @@ async function loadTopics(){
         </div>
       </div>
       <div class="topicRight">
-        <div class="replyBadge">${replies} Replies</div>
+        <div class="replyBadge">
+          ${topic.reply_count || 0} Replies
+        </div>
       </div>
     `;
-    card.onclick=()=>location.href="topic.html?id="+topic.id;
+
+    card.onclick = () => {
+      location.href = "topic.html?id=" + topic.id;
+    };
+
     topicList.appendChild(card);
   });
 
@@ -355,68 +377,85 @@ async function loadTopics(){
 
 /* PAGINATION */
 function renderPagination(total){
-  pagination.innerHTML="";
-  const pages = Math.ceil(total/perPage);
+  pagination.innerHTML = "";
+  const pages = Math.ceil(total / perPage);
 
-  for(let i=1;i<=pages;i++){
-    const btn=document.createElement("div");
-    btn.className="pageBtn";
-    if(i===currentPage) btn.classList.add("active");
-    btn.textContent=i;
-    btn.onclick=()=>{
-      currentPage=i;
+  for(let i = 1; i <= pages; i++){
+    const btn = document.createElement("div");
+    btn.className = "pageBtn";
+    if(i === currentPage) btn.classList.add("active");
+
+    btn.textContent = i;
+    btn.onclick = () => {
+      currentPage = i;
       loadTopics();
     };
+
     pagination.appendChild(btn);
   }
 }
 
 /* MODAL */
-const modalOverlay=document.getElementById("modalOverlay");
-newTopicBtn.onclick=()=>{ if(currentUser) modalOverlay.style.display="flex"; };
-window.closeModal=()=>modalOverlay.style.display="none";
+const modalOverlay = document.getElementById("modalOverlay");
+newTopicBtn.onclick = () => {
+  if(currentUser){
+    modalOverlay.style.display = "flex";
+  }
+};
+
+window.closeModal = () => {
+  modalOverlay.style.display = "none";
+};
 
 /* CHARACTER COUNT */
-const bodyInput=document.getElementById("bodyInput");
-const charCount=document.getElementById("charCount");
-bodyInput.addEventListener("input",()=>{
-  charCount.textContent=bodyInput.value.length+" / 5000";
+const bodyInput = document.getElementById("bodyInput");
+const charCount = document.getElementById("charCount");
+
+bodyInput.addEventListener("input", () => {
+  charCount.textContent = bodyInput.value.length + " / 5000";
 });
 
 /* SUBMIT */
-window.submitTopic=async()=>{
+window.submitTopic = async () => {
   if(!currentUser) return alert("Login required.");
 
-  const title=document.getElementById("titleInput").value.trim();
-  const content=bodyInput.value.trim();
-  if(title.length<3) return alert("Title too short");
+  const title = document.getElementById("titleInput").value.trim();
+  const content = bodyInput.value.trim();
 
-  document.getElementById("submitBtn").disabled=true;
+  if(title.length < 3){
+    return alert("Title too short");
+  }
 
-  const { error } = await supabase.from("forum_topics")
+  document.getElementById("submitBtn").disabled = true;
+
+  const { error } = await supabase
+    .from("forum_topics")
     .insert([{
       title,
       content,
-      category_id:categoryId,
-      user_id:currentUser.id
+      category_id: categoryId,
+      user_id: currentUser.id
     }]);
 
-  document.getElementById("submitBtn").disabled=false;
+  document.getElementById("submitBtn").disabled = false;
 
-  if(error) return alert(error.message);
+  if(error){
+    console.error("Insert error:", error);
+    return alert(error.message);
+  }
 
   closeModal();
   loadTopics();
 };
 
-sortSelect.onchange=()=>{currentPage=1;loadTopics();};
+sortSelect.onchange = () => {
+  currentPage = 1;
+  loadTopics();
+};
 
-(async()=>{
+(async () => {
   await checkUser();
   await loadCategory();
   await loadTopics();
 })();
 </script>
-
-</body>
-</html>
