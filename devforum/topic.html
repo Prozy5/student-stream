@@ -1,291 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Topic • StudentStream DevForum</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>Topic • StudentStream DevForum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
 
-    body{
-      font-family:system-ui;
-      background:radial-gradient(circle at top,#0d1b3a,#05070c);
-      color:white;
-      min-height:100vh;
-    }
+body{
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0d1b3a,#05070c);
+  color:white;
+  min-height:100vh;
+}
 
-    header{
-      position:sticky;
-      top:0;
-      z-index:100;
-      padding:18px 26px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.85);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  padding:18px 26px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  background:rgba(5,7,12,.85);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    .logo{
-      font-size:18px;
-      font-weight:950;
-    }
-    .logo span{color:#4da3ff}
+.logo{font-size:18px;font-weight:950}
+.logo span{color:#4da3ff}
+.back{opacity:.65;cursor:pointer;font-weight:700}
 
-    .back{
-      opacity:.65;
-      cursor:pointer;
-      font-weight:700;
-    }
+.wrap{
+  max-width:950px;
+  margin:55px auto;
+  padding:0 20px;
+  padding-bottom:160px;
+}
 
-    .wrap{
-      max-width:950px;
-      margin:55px auto;
-      padding:0 20px;
-      padding-bottom:140px;
-    }
+/* Topic */
+.topicHero{
+  padding:38px;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.035);
+  margin-bottom:35px;
+}
 
-    /* Topic Post */
-    .topicHero{
-      padding:38px;
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.035);
-      margin-bottom:35px;
-      animation:fadeUp .35s ease;
-    }
+.topicHero h1{
+  font-size:38px;
+  font-weight:950;
+  margin-bottom:14px;
+}
 
-    .topicHero h1{
-      font-size:40px;
-      font-weight:950;
-      margin-bottom:14px;
-    }
+.topicBody{
+  font-size:15px;
+  line-height:1.9;
+  opacity:.95;
+  white-space:pre-wrap;
+  margin-top:18px;
+}
 
-    .topicBody{
-      font-size:15px;
-      line-height:1.9;
-      opacity:.92;
-      white-space:pre-wrap;
-      margin-top:18px;
-    }
+.lockedBanner,.pinnedBanner,.deletedBanner{
+  padding:10px 14px;
+  border-radius:14px;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:14px;
+  display:inline-block;
+}
 
-    /* Flags */
-    .lockedBanner,
-    .pinnedBanner{
-      padding:10px 14px;
-      border-radius:14px;
-      font-size:13px;
-      font-weight:900;
-      margin-bottom:14px;
-      display:inline-block;
-    }
+.lockedBanner{
+  background:rgba(255,77,77,.15);
+  border:1px solid rgba(255,77,77,.35);
+  color:#ff4d4d;
+}
 
-    .lockedBanner{
-      background:rgba(255,77,77,.15);
-      border:1px solid rgba(255,77,77,.35);
-      color:#ff4d4d;
-    }
+.pinnedBanner{
+  background:rgba(255,215,0,.12);
+  border:1px solid rgba(255,215,0,.25);
+  color:gold;
+}
 
-    .pinnedBanner{
-      background:rgba(255,215,0,.12);
-      border:1px solid rgba(255,215,0,.25);
-      color:gold;
-    }
+.deletedBanner{
+  background:rgba(255,255,255,.05);
+  border:1px dashed rgba(255,255,255,.2);
+  color:#aaa;
+}
 
-    /* User Row */
-    .userRow{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-top:18px;
-    }
+.userRow{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:18px;
+}
 
-    .avatar{
-      width:44px;
-      height:44px;
-      border-radius:50%;
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:900;
-      font-size:15px;
-    }
+.avatar{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2f6fff,#4da3ff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+}
 
-    .authorName{
-      font-weight:900;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
+.staffBadge{
+  font-size:11px;
+  font-weight:950;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.05);
+  text-transform:uppercase;
+  margin-left:8px;
+}
 
-    .staffName{color:#4da3ff;}
+.modTools{
+  margin-top:22px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
-    .staffBadge{
-      font-size:11px;
-      font-weight:950;
-      padding:4px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.15);
-      background:rgba(255,255,255,.05);
-      text-transform:uppercase;
-    }
+.modBtn{
+  padding:10px 14px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:850;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06);
+  cursor:pointer;
+}
 
-    .badge-owner{color:gold;border-color:gold;}
-    .badge-admin{color:#ff4d4d;border-color:#ff4d4d;}
-    .badge-moderator{color:#4da3ff;border-color:#4da3ff;}
+.modBtn:hover{transform:scale(1.05)}
 
-    .metaDate{
-      font-size:12px;
-      opacity:.55;
-    }
+.danger{
+  border-color:rgba(255,77,77,.35);
+  color:#ff4d4d;
+}
 
-    /* Staff Tools */
-    .modTools{
-      margin-top:22px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
+/* Replies */
+.replyCard{
+  padding:22px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.02);
+  margin-bottom:18px;
+}
 
-    .modBtn{
-      padding:10px 14px;
-      border-radius:14px;
-      font-size:12px;
-      font-weight:850;
-      border:1px solid rgba(255,255,255,.15);
-      background:rgba(255,255,255,.06);
-      cursor:pointer;
-      transition:.2s;
-    }
+.replyCard.accepted{
+  border:1px solid rgba(0,255,150,.4);
+  background:rgba(0,255,150,.06);
+}
 
-    .modBtn:hover{transform:scale(1.05);}
+.replyText{
+  margin-top:12px;
+  font-size:14px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  padding-left:58px;
+}
 
-    .danger{
-      border-color:rgba(255,77,77,.35);
-      color:#ff4d4d;
-    }
+.reactionBar{
+  margin-top:12px;
+  padding-left:58px;
+  display:flex;
+  gap:10px;
+}
 
-    /* Replies Thread */
-    .replyHeader{
-      display:flex;
-      justify-content:space-between;
-      margin:35px 0 18px;
-    }
+.reactBtn{
+  padding:6px 10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  cursor:pointer;
+  font-size:13px;
+}
 
-    .replyCard{
-      padding:22px;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.02);
-      margin-bottom:18px;
-      animation:fadeUp .35s ease;
-    }
+.replyActions{
+  margin-top:10px;
+  padding-left:58px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
 
-    .replyText{
-      margin-top:12px;
-      font-size:14px;
-      line-height:1.7;
-      opacity:.92;
-      white-space:pre-wrap;
-      padding-left:58px;
-    }
+.composerBar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  padding:16px;
+  backdrop-filter:blur(18px);
+  background:rgba(5,7,12,.92);
+  border-top:1px solid rgba(255,255,255,.08);
+}
 
-    .accepted{
-      border:1px solid rgba(0,255,150,.35);
-      background:rgba(0,255,150,.07);
-    }
+.composerInner{
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  gap:12px;
+}
 
-    .acceptedLabel{
-      font-size:11px;
-      font-weight:950;
-      color:#00ff99;
-      text-transform:uppercase;
-      margin-bottom:10px;
-    }
+textarea{
+  flex:1;
+  min-height:52px;
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:white;
+  resize:none;
+}
 
-    /* Reaction Bar */
-    .reactionBar{
-      margin-top:14px;
-      padding-left:58px;
-      display:flex;
-      gap:10px;
-    }
-
-    .reactBtn{
-      cursor:pointer;
-      font-weight:850;
-      font-size:13px;
-      padding:6px 10px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      transition:.2s;
-    }
-
-    .reactBtn:hover{transform:scale(1.08);}
-
-    /* Actions */
-    .replyActions{
-      margin-top:12px;
-      padding-left:58px;
-      display:flex;
-      gap:10px;
-    }
-
-    /* Composer */
-    .composerBar{
-      position:fixed;
-      bottom:0;
-      left:0;
-      width:100%;
-      padding:16px;
-      backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.92);
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-
-    .composerInner{
-      max-width:900px;
-      margin:auto;
-      display:flex;
-      gap:12px;
-      align-items:center;
-    }
-
-    textarea{
-      flex:1;
-      min-height:52px;
-      padding:14px 16px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      color:white;
-      font-size:14px;
-      outline:none;
-      resize:none;
-    }
-
-    button{
-      border:none;
-      cursor:pointer;
-      padding:13px 20px;
-      border-radius:16px;
-      font-weight:850;
-      font-size:13px;
-      color:white;
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
-    }
-
-    @keyframes fadeUp{
-      from{opacity:0;transform:translateY(12px);}
-      to{opacity:1;transform:translateY(0);}
-    }
-  </style>
+button{
+  border:none;
+  cursor:pointer;
+  padding:13px 20px;
+  border-radius:16px;
+  font-weight:850;
+  font-size:13px;
+  color:white;
+  background:linear-gradient(135deg,#2f6fff,#4da3ff);
+}
+</style>
 </head>
-
 <body>
 
 <header>
@@ -295,261 +238,183 @@
 
 <div class="wrap">
 
-  <!-- Topic -->
-  <div class="topicHero">
-    <div id="topicFlags"></div>
-    <h1 id="topicTitle">Loading…</h1>
+<div class="topicHero">
+  <div id="topicFlags"></div>
+  <h1 id="topicTitle">Loading…</h1>
 
-    <div class="userRow">
-      <div class="avatar" id="topicAvatar">S</div>
-      <div>
-        <div class="authorName" id="topicAuthor"></div>
-        <div class="metaDate" id="topicDate"></div>
-      </div>
-    </div>
-
-    <div class="topicBody" id="topicBody"></div>
-
-    <div class="modTools" id="modTools" style="display:none;">
-      <div class="modBtn" onclick="toggleLock()">🔒 Lock</div>
-      <div class="modBtn" onclick="togglePin()">📌 Pin</div>
-      <div class="modBtn danger" onclick="deleteTopic()">🗑 Delete</div>
+  <div class="userRow">
+    <div class="avatar" id="topicAvatar"></div>
+    <div>
+      <div id="topicAuthor"></div>
+      <div id="topicDate" style="font-size:12px;opacity:.6"></div>
     </div>
   </div>
 
-  <!-- Replies -->
-  <div class="replyHeader">
-    <h2>Replies</h2>
-    <div id="replyCount">0 Replies</div>
-  </div>
+  <div class="topicBody" id="topicBody"></div>
 
-  <div id="replyList"></div>
+  <div class="modTools" id="modTools" style="display:none;">
+    <div class="modBtn" onclick="toggleLock()">🔒 Lock</div>
+    <div class="modBtn" onclick="togglePin()">📌 Pin</div>
+    <div class="modBtn" onclick="editTopic()">✏ Edit</div>
+    <div class="modBtn" onclick="softDeleteTopic()">🗑 Soft Delete</div>
+    <div class="modBtn danger" onclick="hardDeleteTopic()">❌ Hard Delete</div>
+    <div class="modBtn" onclick="clearReplies()">🧹 Clear Replies</div>
+  </div>
+</div>
+
+<h2>Replies</h2>
+<div id="replyList"></div>
 
 </div>
 
-<!-- Composer -->
 <div class="composerBar">
   <div class="composerInner">
-    <textarea id="replyInput" placeholder="Write a reply…"></textarea>
+    <textarea id="replyInput" maxlength="5000" placeholder="Write a reply…"></textarea>
     <button onclick="submitReply()">Post</button>
   </div>
 </div>
 
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabase = createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
+const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
+const topicId = new URLSearchParams(location.search).get("id");
 
-  const topicId = new URLSearchParams(window.location.search).get("id");
+let topicData=null;
+let currentUser=null;
 
-  let topicData=null;
-  let currentRole="member";
+/* LOAD USER */
+async function loadUser(){
+  const { data:{user} } = await supabase.auth.getUser();
+  currentUser=user;
+}
 
-  function isStaff(role){
-    return ["owner","admin","moderator"].includes(role);
+/* LOAD TOPIC */
+async function loadTopic(){
+  const { data } = await supabase
+    .from("forum_topics")
+    .select("*")
+    .eq("id",topicId)
+    .single();
+
+  topicData=data;
+  document.getElementById("topicTitle").textContent=data.title;
+  document.getElementById("topicBody").textContent=data.content;
+  document.getElementById("topicDate").textContent =
+    new Date(data.created_at).toLocaleString();
+
+  if(data.locked){
+    document.getElementById("topicFlags").innerHTML+=
+      `<div class="lockedBanner">Locked</div>`;
+    document.getElementById("replyInput").disabled=true;
   }
 
-  function staffBadge(role){
-    if(!isStaff(role)) return "";
-    return `<span class="staffBadge badge-${role}">${role}</span>`;
+  if(data.pinned){
+    document.getElementById("topicFlags").innerHTML+=
+      `<div class="pinnedBanner">Pinned</div>`;
   }
 
-  async function loadUserRole(){
-    const { data:{user} } = await supabase.auth.getUser();
-    if(!user) return;
-
-    const { data:profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id",user.id)
-      .single();
-
-    currentRole = profile?.role || "member";
-
-    if(isStaff(currentRole)){
-      document.getElementById("modTools").style.display="flex";
-    }
+  if(data.deleted){
+    document.getElementById("topicFlags").innerHTML+=
+      `<div class="deletedBanner">Deleted (Soft)</div>`;
   }
+}
 
-  async function loadTopic(){
-    const { data } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .eq("id",topicId)
-      .single();
+/* LOAD REPLIES (Realtime) */
+async function loadReplies(){
+  const { data } = await supabase
+    .from("forum_replies")
+    .select("*")
+    .eq("topic_id",topicId)
+    .order("created_at");
 
-    topicData=data;
+  const list=document.getElementById("replyList");
+  list.innerHTML="";
 
-    document.getElementById("topicTitle").textContent=data.title;
-    document.getElementById("topicBody").textContent=data.content;
-    document.getElementById("topicDate").textContent =
-      new Date(data.created_at).toLocaleString();
+  data.forEach(r=>{
+    const div=document.createElement("div");
+    div.className="replyCard"+(topicData.accepted_reply_id===r.id?" accepted":"");
 
-    if(data.locked){
-      document.getElementById("topicFlags").innerHTML+=
-        `<div class="lockedBanner">🔒 Locked</div>`;
-      document.getElementById("replyInput").disabled=true;
-    }
+    div.innerHTML=`
+      <div class="replyText">${r.deleted?"[deleted]":r.content}</div>
+      <div class="reactionBar">
+        <div class="reactBtn" onclick="reactReply('${r.id}','like')">👍</div>
+        <div class="reactBtn" onclick="reactReply('${r.id}','heart')">❤️</div>
+      </div>
+      <div class="replyActions">
+        <div class="reactBtn" onclick="acceptReply('${r.id}')">✅ Accept</div>
+        <div class="reactBtn" onclick="editReply('${r.id}')">✏ Edit</div>
+        <div class="reactBtn" onclick="softDeleteReply('${r.id}')">🗑 Soft</div>
+        <div class="reactBtn danger" onclick="hardDeleteReply('${r.id}')">❌ Hard</div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
 
-    if(data.pinned){
-      document.getElementById("topicFlags").innerHTML+=
-        `<div class="pinnedBanner">📌 Pinned</div>`;
-    }
+/* REPLY */
+window.submitReply=async()=>{
+  const text=document.getElementById("replyInput").value.trim();
+  if(!text||!currentUser) return;
 
-    const { data:author } = await supabase
-      .from("profiles")
-      .select("username,role")
-      .eq("id",data.user_id)
-      .single();
+  await supabase.from("forum_replies").insert([{
+    topic_id:topicId,
+    user_id:currentUser.id,
+    content:text
+  }]);
 
-    document.getElementById("topicAvatar").textContent =
-      author.username[0].toUpperCase();
+  document.getElementById("replyInput").value="";
+};
 
-    document.getElementById("topicAuthor").innerHTML=
-      `<span class="${isStaff(author.role)?"staffName":""}">
-        ${author.username}
-      </span>
-      ${staffBadge(author.role)}`;
-  }
+/* MODERATION FUNCTIONS */
+window.toggleLock=()=>supabase.from("forum_topics")
+  .update({locked:!topicData.locked}).eq("id",topicId).then(loadTopic);
 
-  async function loadReplies(){
-    const { data:replies } = await supabase
-      .from("forum_replies")
-      .select("*")
-      .eq("topic_id",topicId)
-      .order("created_at");
+window.togglePin=()=>supabase.from("forum_topics")
+  .update({pinned:!topicData.pinned}).eq("id",topicId).then(loadTopic);
 
-    document.getElementById("replyCount").textContent =
-      replies.length+" Replies";
+window.softDeleteTopic=()=>supabase.from("forum_topics")
+  .update({deleted:true}).eq("id",topicId).then(loadTopic);
 
-    const list=document.getElementById("replyList");
-    list.innerHTML="";
+window.hardDeleteTopic=()=>supabase.from("forum_topics")
+  .delete().eq("id",topicId).then(()=>location.href="index.html");
 
-    for(const r of replies){
+window.clearReplies=()=>supabase.from("forum_replies")
+  .delete().eq("topic_id",topicId).then(loadReplies);
 
-      const { data:user } = await supabase
-        .from("profiles")
-        .select("username,role")
-        .eq("id",r.user_id)
-        .single();
+window.acceptReply=id=>supabase.from("forum_topics")
+  .update({accepted_reply_id:id}).eq("id",topicId).then(loadReplies);
 
-      const div=document.createElement("div");
-      div.className="replyCard";
+window.softDeleteReply=id=>supabase.from("forum_replies")
+  .update({deleted:true}).eq("id",id).then(loadReplies);
 
-      div.innerHTML=`
-        <div class="userRow">
-          <div class="avatar">${user.username[0]}</div>
-          <div>
-            <div class="authorName ${isStaff(user.role)?"staffName":""}">
-              ${user.username}
-              ${staffBadge(user.role)}
-            </div>
-            <div class="metaDate">${new Date(r.created_at).toLocaleString()}</div>
-          </div>
-        </div>
+window.hardDeleteReply=id=>supabase.from("forum_replies")
+  .delete().eq("id",id).then(loadReplies);
 
-        <div class="replyText">${r.content}</div>
+window.editReply=id=>{
+  const newText=prompt("Edit reply:");
+  if(!newText) return;
+  supabase.from("forum_replies")
+    .update({content:newText}).eq("id",id).then(loadReplies);
+};
 
-        <div class="reactionBar">
-          <div class="reactBtn" onclick="reactReply('${r.id}','like')">👍</div>
-          <div class="reactBtn" onclick="reactReply('${r.id}','heart')">❤️</div>
-          <div class="reactBtn" onclick="reactReply('${r.id}','eyes')">👀</div>
-        </div>
+window.reactReply=id=>{
+  if(!currentUser) return;
+  supabase.from("forum_reply_reactions")
+    .insert([{reply_id:id,user_id:currentUser.id,reaction:"like"}]);
+};
 
-        ${isStaff(currentRole)?`
-          <div class="replyActions">
-            <div class="reactBtn" onclick="acceptReply('${r.id}')">✅ Accept</div>
-            <div class="reactBtn danger" onclick="deleteReply('${r.id}')">🗑 Delete</div>
-          </div>
-        `:""}
-      `;
+/* REALTIME */
+supabase.channel("replies")
+  .on("postgres_changes",{event:"*",schema:"public",table:"forum_replies"},
+    ()=>loadReplies()
+  ).subscribe();
 
-      list.appendChild(div);
-    }
-  }
-
-  window.submitReply = async function(){
-    const text=document.getElementById("replyInput").value.trim();
-    if(!text) return;
-
-    const { data:{user} } = await supabase.auth.getUser();
-    if(!user) return alert("Login required.");
-
-    await supabase.from("forum_replies").insert([{
-      topic_id:topicId,
-      user_id:user.id,
-      content:text
-    }]);
-
-    document.getElementById("replyInput").value="";
-    loadReplies();
-  };
-
-  window.reactReply = async function(replyId,reaction){
-    const { data:{user} } = await supabase.auth.getUser();
-    if(!user) return alert("Login required.");
-
-    await supabase.from("forum_reply_reactions").insert([{
-      reply_id:replyId,
-      user_id:user.id,
-      reaction
-    }]);
-
-    alert("Reaction added!");
-  };
-
-  window.acceptReply = async function(replyId){
-    await supabase.from("forum_topics")
-      .update({accepted_reply_id:replyId})
-      .eq("id",topicId);
-
-    loadReplies();
-  };
-
-  window.deleteReply = async function(replyId){
-    if(!confirm("Delete reply?")) return;
-
-    await supabase.from("forum_replies")
-      .delete()
-      .eq("id",replyId);
-
-    loadReplies();
-  };
-
-  window.toggleLock = async function(){
-    await supabase.from("forum_topics")
-      .update({locked:!topicData.locked})
-      .eq("id",topicId);
-
-    location.reload();
-  };
-
-  window.togglePin = async function(){
-    await supabase.from("forum_topics")
-      .update({pinned:!topicData.pinned})
-      .eq("id",topicId);
-
-    location.reload();
-  };
-
-  window.deleteTopic = async function(){
-    if(!confirm("Delete topic permanently?")) return;
-
-    await supabase.from("forum_topics")
-      .delete()
-      .eq("id",topicId);
-
-    window.location.href="index.html";
-  };
-
-  (async()=>{
-    await loadUserRole();
-    await loadTopic();
-    await loadReplies();
-  })();
+(async()=>{
+  await loadUser();
+  await loadTopic();
+  await loadReplies();
+})();
 </script>
 
 </body>
