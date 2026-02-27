@@ -1,234 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Category • StudentStream DevForum</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>Category • StudentStream DevForum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system;
+  background:radial-gradient(circle at top,#0d1b3a,#05070c 60%);
+  color:white;
+  min-height:100vh;
+}
 
-    body{
-      font-family:system-ui;
-      background:radial-gradient(circle at top,#0d1b3a,#05070c);
-      color:white;
-      min-height:100vh;
-    }
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  padding:18px 26px;
+  backdrop-filter:blur(18px);
+  background:rgba(5,7,12,.85);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    header{
-      position:sticky;
-      top:0;
-      z-index:100;
-      padding:18px 26px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(18px);
-      background:rgba(5,7,12,.75);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
+.logo{font-weight:900;font-size:20px}
+.logo span{color:#4da3ff}
+.back{opacity:.7;cursor:pointer}
 
-    .logo{
-      font-size:20px;
-      font-weight:900;
-    }
-    .logo span{color:#4da3ff}
+/* CONTAINER */
+.container{
+  max-width:1100px;
+  margin:60px auto;
+  padding:0 20px;
+}
 
-    .back{
-      opacity:.7;
-      cursor:pointer;
-      font-weight:600;
-    }
+/* HERO */
+.categoryHero{
+  padding:32px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  margin-bottom:25px;
+}
 
-    .container{
-      max-width:1000px;
-      margin:55px auto;
-      padding:0 20px;
-    }
+.categoryHero h1{font-size:34px;font-weight:900}
+.categoryHero p{margin-top:10px;opacity:.6;font-size:14px}
 
-    .categoryHero{
-      padding:28px;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
-      margin-bottom:30px;
-    }
+.actionBar{
+  margin-top:22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+}
 
-    .categoryHero h1{
-      font-size:36px;
-      font-weight:900;
-    }
+.meta{font-size:13px;opacity:.5}
 
-    .categoryHero p{
-      margin-top:10px;
-      opacity:.65;
-      font-size:14px;
-    }
+/* SORT */
+.sortSelect{
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  color:white;
+  font-size:13px;
+}
 
-    .actionBar{
-      margin-top:18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap:wrap;
-      gap:12px;
-    }
+.newBtn{
+  border:none;
+  cursor:pointer;
+  padding:10px 18px;
+  border-radius:14px;
+  font-weight:800;
+  font-size:13px;
+  color:white;
+  background:linear-gradient(135deg,#2f6fff,#4da3ff);
+  transition:.2s;
+}
+.newBtn:hover{transform:scale(1.05)}
 
-    .meta{
-      font-size:13px;
-      opacity:.55;
-    }
+/* TOPICS */
+.topicCard{
+  padding:22px;
+  border-radius:18px;
+  margin-bottom:14px;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.03);
+  cursor:pointer;
+  transition:.2s;
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+}
+.topicCard:hover{
+  border-color:rgba(77,163,255,.5);
+  transform:translateY(-3px);
+}
 
-    .newBtn{
-      border:none;
-      cursor:pointer;
-      padding:10px 16px;
-      border-radius:14px;
-      font-weight:800;
-      font-size:13px;
-      color:white;
-      background:linear-gradient(135deg,#2f6fff,#4da3ff);
-    }
+.topicLeft{flex:1}
+.topicTitle{font-size:17px;font-weight:850}
+.topicMeta{
+  margin-top:8px;
+  font-size:13px;
+  opacity:.6;
+}
 
-    .topicCard{
-      padding:18px 20px;
-      border-radius:18px;
-      margin-bottom:14px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      cursor:pointer;
-      transition:.2s;
-      display:flex;
-      justify-content:space-between;
-      gap:18px;
-    }
+.topicRight{
+  text-align:right;
+  font-size:12px;
+  opacity:.7;
+}
 
-    .topicCard:hover{
-      border-color:rgba(77,163,255,.45);
-      transform:translateY(-2px);
-    }
+.replyBadge{
+  background:rgba(255,255,255,.08);
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:700;
+}
 
-    .topicTitle{
-      font-size:16px;
-      font-weight:850;
-      margin-bottom:6px;
-    }
+.pin{
+  font-size:12px;
+  background:#ffcc00;
+  color:black;
+  padding:4px 8px;
+  border-radius:999px;
+  margin-right:8px;
+}
 
-    .topicInfo{
-      opacity:.55;
-      font-size:13px;
-    }
+/* PAGINATION */
+.pagination{
+  margin-top:25px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
 
-    .empty{
-      text-align:center;
-      opacity:.55;
-      padding:45px;
-      border:1px dashed rgba(255,255,255,.15);
-      border-radius:18px;
-      margin-top:25px;
-    }
+.pageBtn{
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.05);
+  cursor:pointer;
+}
 
-    /* MODAL */
-    .modalOverlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.65);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      z-index:999;
-    }
+/* EMPTY */
+.empty{
+  text-align:center;
+  opacity:.5;
+  padding:45px;
+  border:1px dashed rgba(255,255,255,.15);
+  border-radius:18px;
+}
 
-    .modal{
-      width:100%;
-      max-width:560px;
-      padding:25px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(15,20,35,.95);
-    }
+/* MODAL */
+.modalOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+  animation:fadeIn .2s ease;
+}
 
-    .modal input,
-    .modal textarea{
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      color:white;
-      margin-top:10px;
-      font-size:14px;
-      outline:none;
-    }
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
 
-    textarea{
-      min-height:160px;
-      resize:none;
-      line-height:1.6;
-    }
+.modal{
+  width:100%;
+  max-width:600px;
+  padding:25px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(15,20,35,.98);
+  animation:scaleIn .2s ease;
+}
 
-    /* TOOLBAR */
-    .toolbar{
-      margin-top:12px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
+@keyframes scaleIn{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
 
-    .toolBtn{
-      padding:7px 10px;
-      font-size:13px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:white;
-      cursor:pointer;
-      font-weight:750;
-      transition:.2s;
-    }
+.modal input,
+.modal textarea{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  color:white;
+  margin-top:10px;
+  font-size:14px;
+}
 
-    .toolBtn:hover{
-      transform:scale(1.05);
-      border-color:rgba(77,163,255,.5);
-    }
+textarea{min-height:180px}
 
-    /* Counter */
-    .counter{
-      margin-top:8px;
-      font-size:12px;
-      opacity:.55;
-      text-align:right;
-    }
+.counter{
+  margin-top:6px;
+  font-size:12px;
+  opacity:.5;
+  text-align:right;
+}
 
-    /* Preview */
-    .previewBox{
-      display:none;
-      margin-top:14px;
-      padding:14px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.03);
-      font-size:14px;
-      line-height:1.7;
-      white-space:pre-wrap;
-    }
-
-    .modalActions{
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
-      margin-top:18px;
-    }
-
-    footer{
-      text-align:center;
-      padding:35px;
-      opacity:.4;
-      font-size:13px;
-      margin-top:90px;
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-  </style>
+footer{
+  text-align:center;
+  padding:40px;
+  opacity:.4;
+  margin-top:80px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+</style>
 </head>
 
 <body>
@@ -245,216 +235,176 @@
     <p id="catDesc"></p>
 
     <div class="actionBar">
-      <div class="meta" id="topicCount">Loading topics…</div>
-      <button class="newBtn" id="newTopicBtn">+ New Topic</button>
+      <div>
+        <span class="meta" id="topicCount">Loading…</span>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;">
+        <select class="sortSelect" id="sortSelect">
+          <option value="latest">Latest</option>
+          <option value="oldest">Oldest</option>
+          <option value="replies">Most Replies</option>
+        </select>
+        <button class="newBtn" id="newTopicBtn">+ New Topic</button>
+      </div>
     </div>
   </div>
 
-  <div id="topicList">Loading discussions…</div>
+  <div id="topicList"></div>
+  <div class="pagination" id="pagination"></div>
 
 </div>
 
 <footer>
-  © 2026 StudentStreamHQ • Category View
+© 2026 StudentStreamHQ • Category
 </footer>
 
 <!-- MODAL -->
 <div class="modalOverlay" id="modalOverlay">
   <div class="modal">
-    <h2>Start a New Topic</h2>
-
-    <input id="topicTitleInput" placeholder="Topic title..." />
-
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <button class="toolBtn" onclick="formatText('**','**')"><b>B</b></button>
-      <button class="toolBtn" onclick="formatText('*','*')"><i>I</i></button>
-      <button class="toolBtn" onclick="formatText('`','`')">Code</button>
-      <button class="toolBtn" onclick="formatText('\n- ','')">• List</button>
-      <button class="toolBtn" onclick="formatText('\n> ','')">Quote</button>
-      <button class="toolBtn" onclick="insertLink()">🔗 Link</button>
-      <button class="toolBtn" onclick="togglePreview()">👁 Preview</button>
-    </div>
-
-    <textarea id="topicBodyInput" placeholder="Write your post..."></textarea>
-
-    <div class="counter" id="charCount">0 characters</div>
-
-    <!-- Preview Box -->
-    <div class="previewBox" id="previewBox"></div>
-
-    <div class="modalActions">
+    <h2>Create Topic</h2>
+    <input id="titleInput" placeholder="Topic title..." maxlength="120"/>
+    <textarea id="bodyInput" placeholder="Write your post..." maxlength="5000"></textarea>
+    <div class="counter" id="charCount">0 / 5000</div>
+    <div style="margin-top:18px;text-align:right;">
       <button class="newBtn" onclick="closeModal()">Cancel</button>
-      <button class="newBtn" onclick="submitTopic()">Post Topic</button>
+      <button class="newBtn" onclick="submitTopic()">Post</button>
     </div>
   </div>
 </div>
 
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabase = createClient(
-    "https://iabzmoxzbqzcqgypxctr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-  );
+const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
-  const params = new URLSearchParams(window.location.search);
-  const categoryId = params.get("id");
+const categoryId = new URLSearchParams(location.search).get("id");
+const topicList = document.getElementById("topicList");
+const topicCount = document.getElementById("topicCount");
+const pagination = document.getElementById("pagination");
 
-  const catTitle = document.getElementById("catTitle");
-  const catDesc = document.getElementById("catDesc");
-  const topicList = document.getElementById("topicList");
-  const topicCount = document.getElementById("topicCount");
+const sortSelect = document.getElementById("sortSelect");
 
-  const modalOverlay = document.getElementById("modalOverlay");
-  const titleInput = document.getElementById("topicTitleInput");
-  const bodyInput = document.getElementById("topicBodyInput");
+let currentPage = 1;
+const perPage = 10;
 
-  const previewBox = document.getElementById("previewBox");
-  const charCount = document.getElementById("charCount");
+/* LOAD CATEGORY */
+async function loadCategory(){
+  const { data } = await supabase.from("forum_categories")
+    .select("*")
+    .eq("id", categoryId)
+    .single();
 
-  async function loadCategory(){
-    const { data } = await supabase
-      .from("forum_categories")
-      .select("*")
-      .eq("id", categoryId)
-      .single();
+  document.getElementById("catTitle").textContent=data?.name||"Category";
+  document.getElementById("catDesc").textContent=data?.description||"";
+}
 
-    catTitle.textContent = data.name;
-    catDesc.textContent = data.description;
+/* LOAD TOPICS */
+async function loadTopics(){
+  topicList.innerHTML="";
+
+  let orderColumn="created_at";
+  let ascending=false;
+
+  if(sortSelect.value==="oldest"){ ascending=true; }
+  if(sortSelect.value==="replies"){ orderColumn="reply_count"; }
+
+  const from = (currentPage-1)*perPage;
+  const to = from + perPage -1;
+
+  const { data, count } = await supabase
+    .from("forum_topics")
+    .select(`
+      id,title,created_at,is_pinned,
+      forum_replies ( id )
+    `,{count:"exact"})
+    .eq("category_id", categoryId)
+    .order("is_pinned",{ascending:false})
+    .order(orderColumn,{ascending})
+    .range(from,to);
+
+  if(!data || data.length===0){
+    topicList.innerHTML=`<div class="empty">No discussions yet.</div>`;
+    topicCount.textContent="0 discussions";
+    return;
   }
 
-  async function loadTopics(){
-    const { data: topics } = await supabase
-      .from("forum_topics")
-      .select("*")
-      .eq("category_id", categoryId)
-      .order("created_at", { ascending:false });
+  topicCount.textContent=`${count} discussions`;
 
-    if(!topics || topics.length === 0){
-      topicCount.textContent = "0 discussions";
-      topicList.innerHTML = `<div class="empty">No topics yet.</div>`;
-      return;
-    }
+  data.forEach(topic=>{
+    const replies = topic.forum_replies?.length || 0;
 
-    topicCount.textContent = `${topics.length} discussions`;
-    topicList.innerHTML = "";
-
-    topics.forEach(topic => {
-      const card = document.createElement("div");
-      card.className = "topicCard";
-
-      card.innerHTML = `
-        <div>
-          <div class="topicTitle">${topic.title}</div>
-          <div class="topicInfo">
-            Posted ${new Date(topic.created_at).toLocaleString()}
-          </div>
+    const card=document.createElement("div");
+    card.className="topicCard";
+    card.innerHTML=`
+      <div class="topicLeft">
+        <div class="topicTitle">
+          ${topic.is_pinned ? `<span class="pin">Pinned</span>` : ""}
+          ${topic.title}
         </div>
-      `;
+        <div class="topicMeta">
+          ${new Date(topic.created_at).toLocaleString()}
+        </div>
+      </div>
+      <div class="topicRight">
+        <div class="replyBadge">${replies} Replies</div>
+      </div>
+    `;
+    card.onclick=()=>location.href="topic.html?id="+topic.id;
+    topicList.appendChild(card);
+  });
 
-      card.onclick = () => {
-        window.location.href = "topic.html?id=" + topic.id;
-      };
+  renderPagination(count);
+}
 
-      topicList.appendChild(card);
-    });
+/* PAGINATION */
+function renderPagination(total){
+  pagination.innerHTML="";
+  const pages = Math.ceil(total/perPage);
+
+  for(let i=1;i<=pages;i++){
+    const btn=document.createElement("div");
+    btn.className="pageBtn";
+    btn.textContent=i;
+    btn.onclick=()=>{
+      currentPage=i;
+      loadTopics();
+    };
+    pagination.appendChild(btn);
   }
+}
 
-  async function requireLogin(){
-    const { data } = await supabase.auth.getUser();
+/* MODAL */
+const modalOverlay=document.getElementById("modalOverlay");
+document.getElementById("newTopicBtn").onclick=()=>modalOverlay.style.display="flex";
+window.closeModal=()=>modalOverlay.style.display="none";
+window.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+modalOverlay.onclick=e=>{ if(e.target===modalOverlay) closeModal(); };
 
-    if(!data.user){
-      alert("Login required to post.");
-      window.location.href = "/login.html";
-      return null;
-    }
-    return data.user;
-  }
+/* CHARACTER COUNT */
+const bodyInput=document.getElementById("bodyInput");
+const charCount=document.getElementById("charCount");
+bodyInput.addEventListener("input",()=>{
+  charCount.textContent=bodyInput.value.length+" / 5000";
+});
 
-  window.closeModal = function(){
-    modalOverlay.style.display = "none";
-    previewBox.style.display = "none";
-  };
+/* SUBMIT */
+window.submitTopic=async()=>{
+  const title=document.getElementById("titleInput").value.trim();
+  const content=bodyInput.value.trim();
+  if(title.length<3) return alert("Title too short");
 
-  function openModal(){
-    modalOverlay.style.display = "flex";
-  }
+  await supabase.from("forum_topics")
+    .insert([{title,content,category_id:categoryId}]);
 
-  /* TOOLBAR FUNCTIONS */
-  window.formatText = function(before, after){
-    const start = bodyInput.selectionStart;
-    const end = bodyInput.selectionEnd;
-    const selected = bodyInput.value.substring(start, end);
-
-    bodyInput.setRangeText(before + selected + after);
-    bodyInput.focus();
-    updateCounter();
-  };
-
-  window.insertLink = function(){
-    const url = prompt("Enter link URL:");
-    if(!url) return;
-    bodyInput.value += `\n[Link Text](${url})\n`;
-    updateCounter();
-  };
-
-  window.togglePreview = function(){
-    if(previewBox.style.display === "block"){
-      previewBox.style.display = "none";
-    } else {
-      previewBox.textContent = bodyInput.value;
-      previewBox.style.display = "block";
-    }
-  };
-
-  function updateCounter(){
-    charCount.textContent = bodyInput.value.length + " characters";
-  }
-
-  bodyInput.addEventListener("input", updateCounter);
-
-  window.submitTopic = async function(){
-    const user = await requireLogin();
-    if(!user) return;
-
-    const title = titleInput.value.trim();
-    const content = bodyInput.value.trim();
-
-    if(title.length < 3){
-      alert("Title too short.");
-      return;
-    }
-
-    const { error } = await supabase
-      .from("forum_topics")
-      .insert([
-        {
-          title,
-          content,
-          category_id: categoryId,
-          user_id: user.id
-        }
-      ]);
-
-    if(error){
-      alert("❌ Failed: " + error.message);
-      return;
-    }
-
-    closeModal();
-    titleInput.value = "";
-    bodyInput.value = "";
-    loadTopics();
-  };
-
-  document.getElementById("newTopicBtn").onclick = async () => {
-    const user = await requireLogin();
-    if(user) openModal();
-  };
-
-  loadCategory();
+  closeModal();
   loadTopics();
+};
+
+sortSelect.onchange=()=>{currentPage=1;loadTopics();};
+
+loadCategory();
+loadTopics();
 </script>
 
 </body>
