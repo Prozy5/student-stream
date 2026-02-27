@@ -62,7 +62,6 @@ header{
 
 .meta{font-size:13px;opacity:.5}
 
-/* SORT */
 .sortSelect{
   padding:8px 12px;
   border-radius:10px;
@@ -84,6 +83,7 @@ header{
   transition:.2s;
 }
 .newBtn:hover{transform:scale(1.05)}
+.newBtn:disabled{opacity:.5;cursor:not-allowed}
 
 /* TOPICS */
 .topicCard{
@@ -105,17 +105,9 @@ header{
 
 .topicLeft{flex:1}
 .topicTitle{font-size:17px;font-weight:850}
-.topicMeta{
-  margin-top:8px;
-  font-size:13px;
-  opacity:.6;
-}
+.topicMeta{margin-top:8px;font-size:13px;opacity:.6}
 
-.topicRight{
-  text-align:right;
-  font-size:12px;
-  opacity:.7;
-}
+.topicRight{text-align:right;font-size:12px;opacity:.7}
 
 .replyBadge{
   background:rgba(255,255,255,.08);
@@ -139,6 +131,7 @@ header{
   display:flex;
   justify-content:center;
   gap:10px;
+  flex-wrap:wrap;
 }
 
 .pageBtn{
@@ -147,6 +140,10 @@ header{
   border:1px solid rgba(255,255,255,.15);
   background:rgba(255,255,255,.05);
   cursor:pointer;
+}
+.pageBtn.active{
+  background:#4da3ff;
+  border-color:#4da3ff;
 }
 
 /* EMPTY */
@@ -167,12 +164,6 @@ header{
   justify-content:center;
   align-items:center;
   z-index:999;
-  animation:fadeIn .2s ease;
-}
-
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
 }
 
 .modal{
@@ -182,12 +173,6 @@ header{
   border-radius:18px;
   border:1px solid rgba(255,255,255,.12);
   background:rgba(15,20,35,.98);
-  animation:scaleIn .2s ease;
-}
-
-@keyframes scaleIn{
-  from{transform:scale(.9);opacity:0}
-  to{transform:scale(1);opacity:1}
 }
 
 .modal input,
@@ -235,9 +220,7 @@ footer{
     <p id="catDesc"></p>
 
     <div class="actionBar">
-      <div>
-        <span class="meta" id="topicCount">Loading…</span>
-      </div>
+      <span class="meta" id="topicCount">Loading…</span>
 
       <div style="display:flex;gap:10px;align-items:center;">
         <select class="sortSelect" id="sortSelect">
@@ -268,7 +251,7 @@ footer{
     <div class="counter" id="charCount">0 / 5000</div>
     <div style="margin-top:18px;text-align:right;">
       <button class="newBtn" onclick="closeModal()">Cancel</button>
-      <button class="newBtn" onclick="submitTopic()">Post</button>
+      <button class="newBtn" id="submitBtn" onclick="submitTopic()">Post</button>
     </div>
   </div>
 </div>
@@ -282,46 +265,59 @@ const categoryId = new URLSearchParams(location.search).get("id");
 const topicList = document.getElementById("topicList");
 const topicCount = document.getElementById("topicCount");
 const pagination = document.getElementById("pagination");
-
 const sortSelect = document.getElementById("sortSelect");
+const newTopicBtn = document.getElementById("newTopicBtn");
 
 let currentPage = 1;
 const perPage = 10;
+let currentUser = null;
+
+/* AUTH CHECK */
+async function checkUser(){
+  const { data:{user} } = await supabase.auth.getUser();
+  currentUser = user;
+  if(!user){
+    newTopicBtn.disabled = true;
+    newTopicBtn.textContent = "Login to Post";
+  }
+}
 
 /* LOAD CATEGORY */
 async function loadCategory(){
-  const { data } = await supabase.from("forum_categories")
+  const { data,error } = await supabase
+    .from("forum_categories")
     .select("*")
     .eq("id", categoryId)
     .single();
 
-  document.getElementById("catTitle").textContent=data?.name||"Category";
-  document.getElementById("catDesc").textContent=data?.description||"";
+  if(error || !data) return;
+
+  document.getElementById("catTitle").textContent=data.name;
+  document.getElementById("catDesc").textContent=data.description||"";
 }
 
 /* LOAD TOPICS */
 async function loadTopics(){
   topicList.innerHTML="";
 
-  let orderColumn="created_at";
-  let ascending=false;
-
-  if(sortSelect.value==="oldest"){ ascending=true; }
-  if(sortSelect.value==="replies"){ orderColumn="reply_count"; }
+  let ascending = sortSelect.value==="oldest";
+  let orderColumn = sortSelect.value==="replies" ? "reply_count" : "created_at";
 
   const from = (currentPage-1)*perPage;
   const to = from + perPage -1;
 
-  const { data, count } = await supabase
+  const { data, count, error } = await supabase
     .from("forum_topics")
     .select(`
-      id,title,created_at,is_pinned,
-      forum_replies ( id )
+      id,title,created_at,pinned,
+      forum_replies(count)
     `,{count:"exact"})
     .eq("category_id", categoryId)
-    .order("is_pinned",{ascending:false})
+    .order("pinned",{ascending:false})
     .order(orderColumn,{ascending})
     .range(from,to);
+
+  if(error) return console.error(error);
 
   if(!data || data.length===0){
     topicList.innerHTML=`<div class="empty">No discussions yet.</div>`;
@@ -332,14 +328,14 @@ async function loadTopics(){
   topicCount.textContent=`${count} discussions`;
 
   data.forEach(topic=>{
-    const replies = topic.forum_replies?.length || 0;
+    const replies = topic.forum_replies?.[0]?.count || 0;
 
     const card=document.createElement("div");
     card.className="topicCard";
     card.innerHTML=`
       <div class="topicLeft">
         <div class="topicTitle">
-          ${topic.is_pinned ? `<span class="pin">Pinned</span>` : ""}
+          ${topic.pinned ? `<span class="pin">Pinned</span>` : ""}
           ${topic.title}
         </div>
         <div class="topicMeta">
@@ -365,6 +361,7 @@ function renderPagination(total){
   for(let i=1;i<=pages;i++){
     const btn=document.createElement("div");
     btn.className="pageBtn";
+    if(i===currentPage) btn.classList.add("active");
     btn.textContent=i;
     btn.onclick=()=>{
       currentPage=i;
@@ -376,10 +373,8 @@ function renderPagination(total){
 
 /* MODAL */
 const modalOverlay=document.getElementById("modalOverlay");
-document.getElementById("newTopicBtn").onclick=()=>modalOverlay.style.display="flex";
+newTopicBtn.onclick=()=>{ if(currentUser) modalOverlay.style.display="flex"; };
 window.closeModal=()=>modalOverlay.style.display="none";
-window.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
-modalOverlay.onclick=e=>{ if(e.target===modalOverlay) closeModal(); };
 
 /* CHARACTER COUNT */
 const bodyInput=document.getElementById("bodyInput");
@@ -390,12 +385,25 @@ bodyInput.addEventListener("input",()=>{
 
 /* SUBMIT */
 window.submitTopic=async()=>{
+  if(!currentUser) return alert("Login required.");
+
   const title=document.getElementById("titleInput").value.trim();
   const content=bodyInput.value.trim();
   if(title.length<3) return alert("Title too short");
 
-  await supabase.from("forum_topics")
-    .insert([{title,content,category_id:categoryId}]);
+  document.getElementById("submitBtn").disabled=true;
+
+  const { error } = await supabase.from("forum_topics")
+    .insert([{
+      title,
+      content,
+      category_id:categoryId,
+      user_id:currentUser.id
+    }]);
+
+  document.getElementById("submitBtn").disabled=false;
+
+  if(error) return alert(error.message);
 
   closeModal();
   loadTopics();
@@ -403,8 +411,11 @@ window.submitTopic=async()=>{
 
 sortSelect.onchange=()=>{currentPage=1;loadTopics();};
 
-loadCategory();
-loadTopics();
+(async()=>{
+  await checkUser();
+  await loadCategory();
+  await loadTopics();
+})();
 </script>
 
 </body>
