@@ -7,145 +7,207 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
-  font-family:system-ui;
-  background:radial-gradient(circle at top,#0d1b3a,#05070c);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:radial-gradient(circle at top,#0d1b3a,#05070c 60%);
   color:white;
   min-height:100vh;
 }
+
+/* HEADER */
 header{
   position:sticky;
   top:0;
   z-index:100;
-  padding:18px 26px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(18px);
+  padding:18px 30px;
+  backdrop-filter:blur(16px);
   background:rgba(5,7,12,.75);
+  border-bottom:1px solid rgba(255,255,255,.08);
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-.logo{font-size:20px;font-weight:900}
+
+.logo{
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:.5px;
+}
 .logo span{color:#4da3ff}
-.actions{display:flex;gap:10px;align-items:center}
+
+.actions{display:flex;gap:12px;align-items:center}
+
 .btn{
-  background:linear-gradient(135deg,#2f6fff,#4da3ff);
-  border:none;
   padding:10px 18px;
   border-radius:14px;
   font-weight:800;
-  color:white;
-  cursor:pointer;
   font-size:14px;
-  transition:.2s;
+  cursor:pointer;
+  border:none;
+  transition:.2s ease;
 }
-.btn:hover{transform:scale(1.04);opacity:.9}
+
+.btn.primary{
+  background:linear-gradient(135deg,#2f6fff,#4da3ff);
+  color:white;
+}
 .btn.secondary{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10);
-}
-.container{
-  max-width:1100px;
-  margin:50px auto;
-  padding:0 20px;
-}
-.hero{
-  padding:30px;
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.03);
-  margin-bottom:30px;
-}
-.hero h1{font-size:48px;font-weight:950}
-.hero p{opacity:.7;margin-top:10px;max-width:750px;line-height:1.6}
-.stats{
-  display:flex;gap:14px;margin-top:18px;flex-wrap:wrap
-}
-.statBox{
-  padding:10px 16px;
-  border-radius:999px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
-  font-size:13px;
-  opacity:.8;
-}
-.searchBar{margin:25px 0}
-.searchBar input{
-  width:100%;
-  padding:14px;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.04);
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
   color:white;
-  outline:none;
-  font-size:14px;
 }
-.tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.tab{
-  padding:10px 16px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:800;
-  cursor:pointer;
+.btn:hover{transform:translateY(-2px);opacity:.9}
+
+/* CONTAINER */
+.container{
+  max-width:1200px;
+  margin:60px auto;
+  padding:0 24px;
+}
+
+/* HERO */
+.hero{
+  padding:40px;
+  border-radius:26px;
+  background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.03);
+  margin-bottom:40px;
+}
+
+.hero h1{
+  font-size:52px;
+  font-weight:950;
+  margin-bottom:12px;
+}
+
+.hero p{
   opacity:.65;
-  transition:.2s;
+  max-width:800px;
+  line-height:1.6;
+  margin-bottom:25px;
 }
-.tab.active{
-  opacity:1;
-  border-color:rgba(77,163,255,.55);
-  background:rgba(77,163,255,.15);
+
+.stats{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
 }
-.card{
-  background:rgba(255,255,255,.03);
+
+.stat{
+  padding:14px 20px;
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.08);
-  border-radius:20px;
-  padding:20px;
-  margin-top:14px;
-  cursor:pointer;
-  transition:.25s;
 }
-.card:hover{
-  transform:translateY(-3px);
-  border-color:rgba(77,163,255,.35);
+
+.stat strong{
+  font-size:20px;
+  display:block;
 }
-.row{
+
+.stat span{
+  font-size:12px;
+  opacity:.6;
+}
+
+/* SEARCH + TABS */
+.topControls{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:15px;
+  flex-wrap:wrap;
+  gap:16px;
+  margin-bottom:25px;
 }
-.left{
+
+.search{
+  flex:1;
+}
+
+.search input{
+  width:100%;
+  padding:14px 18px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:white;
+  font-size:14px;
+}
+
+.tabs{
   display:flex;
-  gap:14px;
-  align-items:flex-start;
+  gap:10px;
 }
-.icon{font-size:22px;margin-top:2px}
-.name{font-size:18px;font-weight:850}
-.desc{opacity:.55;font-size:13px;margin-top:4px;line-height:1.4}
-.count{
-  font-size:13px;
-  opacity:.7;
-  background:rgba(255,255,255,.06);
-  padding:7px 14px;
+
+.tab{
+  padding:10px 16px;
   border-radius:999px;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  opacity:.6;
 }
-.loading{text-align:center;opacity:.6;padding:35px}
-.empty{
+
+.tab.active{
+  opacity:1;
+  background:rgba(77,163,255,.15);
+  border-color:rgba(77,163,255,.4);
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:20px;
+}
+
+/* CARD */
+.card{
+  padding:22px;
+  border-radius:22px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  cursor:pointer;
+  transition:.25s ease;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(77,163,255,.4);
+}
+
+.card h3{
+  font-size:18px;
+  margin-bottom:6px;
+}
+
+.card p{
+  font-size:13px;
+  opacity:.6;
+  margin-bottom:12px;
+}
+
+.meta{
+  font-size:12px;
+  opacity:.5;
+}
+
+/* STATES */
+.loading,.empty{
   text-align:center;
-  opacity:.55;
-  padding:40px;
-  border:1px dashed rgba(255,255,255,.15);
-  border-radius:18px;
-  margin-top:25px;
+  padding:60px 0;
+  opacity:.5;
 }
+
 footer{
+  margin-top:80px;
+  padding:40px;
   text-align:center;
-  padding:35px;
-  opacity:.35;
-  margin-top:70px;
   border-top:1px solid rgba(255,255,255,.08);
+  opacity:.35;
 }
 </style>
 </head>
@@ -156,35 +218,38 @@ footer{
   <div class="logo">StudentStream <span>DevForum</span></div>
   <div class="actions">
     <button class="btn secondary" id="newTopicBtn">+ Post Topic</button>
-    <button class="btn" id="accountBtn">Login</button>
+    <button class="btn primary" id="accountBtn">Login</button>
   </div>
 </header>
 
 <div class="container">
+
   <div class="hero">
     <h1>Developer Forums</h1>
     <p>
-      Official StudentStreamHQ forum for announcements, updates,
-      bug reports, and creator support discussions.
+      Platform announcements, creator updates, engineering discussions,
+      bug reports, and support for StudentStream.
     </p>
+
     <div class="stats">
-      <div class="statBox" id="totalTopics">0 Topics</div>
-      <div class="statBox" id="totalReplies">0 Replies</div>
-      <div class="statBox" id="totalCategories">0 Categories</div>
+      <div class="stat"><strong id="statTopics">0</strong><span>Total Topics</span></div>
+      <div class="stat"><strong id="statReplies">0</strong><span>Total Replies</span></div>
+      <div class="stat"><strong id="statCategories">0</strong><span>Categories</span></div>
     </div>
   </div>
 
-  <div class="searchBar">
-    <input id="searchInput" placeholder="Search topics..." />
+  <div class="topControls">
+    <div class="search">
+      <input id="searchInput" placeholder="Search topics..." />
+    </div>
+    <div class="tabs">
+      <div class="tab active" data-view="categories">Categories</div>
+      <div class="tab" data-view="latest">Latest</div>
+    </div>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" data-tab="categories">Categories</div>
-    <div class="tab" data-tab="latest">Latest Topics</div>
-  </div>
+  <div id="contentArea"></div>
 
-  <div id="loadingState" class="loading">Loading DevForum…</div>
-  <div id="mainContent"></div>
 </div>
 
 <footer>
@@ -199,102 +264,67 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const mainContent = document.getElementById("mainContent");
-const loadingState = document.getElementById("loadingState");
+const contentArea = document.getElementById("contentArea");
 const tabs = document.querySelectorAll(".tab");
-const accountBtn = document.getElementById("accountBtn");
-
-const totalTopicsEl = document.getElementById("totalTopics");
-const totalRepliesEl = document.getElementById("totalReplies");
-const totalCategoriesEl = document.getElementById("totalCategories");
 
 /* AUTH */
 async function updateAuth(){
   const { data } = await supabase.auth.getUser();
+  const btn = document.getElementById("accountBtn");
+
   if(data.user){
-    accountBtn.textContent="Logout";
-    accountBtn.onclick=async()=>{
-      await supabase.auth.signOut();
-      location.reload();
-    };
+    btn.textContent="Logout";
+    btn.onclick=async()=>{ await supabase.auth.signOut(); location.reload(); };
   } else {
-    accountBtn.textContent="Login";
-    accountBtn.onclick=()=>location.href="/login.html";
+    btn.textContent="Login";
+    btn.onclick=()=>location.href="/login.html";
   }
 }
 updateAuth();
 
-/* GLOBAL STATS */
+/* STATS */
 async function loadStats(){
-  const { count: topicCount } = await supabase
-    .from("forum_topics")
-    .select("*",{count:"exact",head:true});
+  const [{count:topics},{count:replies},{count:categories}] = await Promise.all([
+    supabase.from("forum_topics").select("*",{count:"exact",head:true}),
+    supabase.from("forum_replies").select("*",{count:"exact",head:true}),
+    supabase.from("forum_categories").select("*",{count:"exact",head:true})
+  ]);
 
-  const { count: replyCount } = await supabase
-    .from("forum_replies")
-    .select("*",{count:"exact",head:true});
-
-  const { count: categoryCount } = await supabase
-    .from("forum_categories")
-    .select("*",{count:"exact",head:true});
-
-  totalTopicsEl.textContent = `${topicCount || 0} Topics`;
-  totalRepliesEl.textContent = `${replyCount || 0} Replies`;
-  totalCategoriesEl.textContent = `${categoryCount || 0} Categories`;
+  document.getElementById("statTopics").textContent = topics || 0;
+  document.getElementById("statReplies").textContent = replies || 0;
+  document.getElementById("statCategories").textContent = categories || 0;
 }
 
-/* CATEGORIES (Optimized single query) */
+/* CATEGORIES */
 async function loadCategories(){
-  loadingState.style.display="block";
-  mainContent.innerHTML="";
+  contentArea.innerHTML='<div class="loading">Loading categories...</div>';
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("forum_categories")
-    .select(`
-      id,
-      name,
-      description,
-      forum_topics ( id )
-    `);
+    .select("id,name,description,forum_topics(id)");
 
-  loadingState.style.display="none";
-
-  if(error || !data){
-    mainContent.innerHTML=`<div class="empty">Error loading categories.</div>`;
+  if(!data || data.length===0){
+    contentArea.innerHTML='<div class="empty">No categories yet.</div>';
     return;
   }
 
-  if(data.length===0){
-    mainContent.innerHTML=`<div class="empty">No categories found.</div>`;
-    return;
-  }
-
+  let html='<div class="grid">';
   data.forEach(cat=>{
-    const topicCount = cat.forum_topics?.length || 0;
-
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`
-      <div class="row">
-        <div class="left">
-          <div class="icon">💬</div>
-          <div>
-            <div class="name">${cat.name}</div>
-            <div class="desc">${cat.description || ""}</div>
-          </div>
-        </div>
-        <div class="count">${topicCount} Topics</div>
+    html+=`
+      <div class="card" onclick="location.href='/devforum/category.html?id=${cat.id}'">
+        <h3>${cat.name}</h3>
+        <p>${cat.description || ""}</p>
+        <div class="meta">${cat.forum_topics?.length || 0} topics</div>
       </div>
     `;
-    card.onclick=()=>location.href="/devforum/category.html?id="+cat.id;
-    mainContent.appendChild(card);
   });
+  html+='</div>';
+  contentArea.innerHTML=html;
 }
 
 /* LATEST */
 async function loadLatest(){
-  loadingState.style.display="block";
-  mainContent.innerHTML="";
+  contentArea.innerHTML='<div class="loading">Loading topics...</div>';
 
   const { data } = await supabase
     .from("forum_topics")
@@ -302,60 +332,55 @@ async function loadLatest(){
     .order("created_at",{ascending:false})
     .limit(15);
 
-  loadingState.style.display="none";
-
   if(!data || data.length===0){
-    mainContent.innerHTML=`<div class="empty">No topics yet.</div>`;
+    contentArea.innerHTML='<div class="empty">No topics yet.</div>';
     return;
   }
 
+  let html='<div class="grid">';
   data.forEach(topic=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`
-      <div class="name">${topic.title}</div>
-      <div class="desc">
-        ${new Date(topic.created_at).toLocaleString()}
+    html+=`
+      <div class="card" onclick="location.href='/devforum/topic.html?id=${topic.id}'">
+        <h3>${topic.title}</h3>
+        <div class="meta">${new Date(topic.created_at).toLocaleString()}</div>
       </div>
     `;
-    card.onclick=()=>location.href="/devforum/topic.html?id="+topic.id;
-    mainContent.appendChild(card);
   });
+  html+='</div>';
+  contentArea.innerHTML=html;
 }
 
-/* REALTIME */
-supabase.channel("forum-live")
-  .on("postgres_changes",{event:"INSERT",schema:"public",table:"forum_topics"},
-    payload=>{
-      loadLatest();
-      loadStats();
+/* SEARCH (debounced) */
+let timeout;
+document.getElementById("searchInput").addEventListener("input", e=>{
+  clearTimeout(timeout);
+  timeout=setTimeout(async()=>{
+    const q=e.target.value.trim();
+    if(!q){ loadLatest(); return; }
+
+    const { data } = await supabase
+      .from("forum_topics")
+      .select("id,title")
+      .ilike("title",`%${q}%`)
+      .limit(20);
+
+    if(!data || data.length===0){
+      contentArea.innerHTML='<div class="empty">No matches found.</div>';
+      return;
     }
-  )
-  .subscribe();
 
-/* SEARCH */
-document.getElementById("searchInput").addEventListener("input", async e=>{
-  const q=e.target.value.trim();
-  if(!q){ loadLatest(); return; }
+    let html='<div class="grid">';
+    data.forEach(topic=>{
+      html+=`
+        <div class="card" onclick="location.href='/devforum/topic.html?id=${topic.id}'">
+          <h3>${topic.title}</h3>
+        </div>
+      `;
+    });
+    html+='</div>';
+    contentArea.innerHTML=html;
 
-  const { data }=await supabase
-    .from("forum_topics")
-    .select("id,title")
-    .ilike("title",`%${q}%`)
-    .limit(20);
-
-  mainContent.innerHTML="";
-  if(!data || data.length===0){
-    mainContent.innerHTML=`<div class="empty">No matches found.</div>`;
-    return;
-  }
-
-  data.forEach(topic=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`<div class="name">${topic.title}</div>`;
-    mainContent.appendChild(card);
-  });
+  },300);
 });
 
 /* TABS */
@@ -363,14 +388,20 @@ tabs.forEach(tab=>{
   tab.onclick=()=>{
     tabs.forEach(t=>t.classList.remove("active"));
     tab.classList.add("active");
-    if(tab.dataset.tab==="categories") loadCategories();
-    if(tab.dataset.tab==="latest") loadLatest();
+    if(tab.dataset.view==="categories") loadCategories();
+    if(tab.dataset.view==="latest") loadLatest();
   };
 });
 
+/* REALTIME */
+supabase.channel("forum-live")
+.on("postgres_changes",{event:"INSERT",schema:"public",table:"forum_topics"},
+  ()=>{ loadStats(); loadLatest(); }
+).subscribe();
+
 /* INIT */
-loadCategories();
 loadStats();
+loadCategories();
 </script>
 
 </body>
