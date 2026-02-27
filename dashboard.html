@@ -9,30 +9,30 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif;}
+
 body{
-  background:radial-gradient(circle at top,#0a1425,#05070c);
+  background:radial-gradient(circle at top,#0c162b,#05070c);
   color:white;
   min-height:100vh;
   display:flex;
   overflow-x:hidden;
 }
 
-/* Glow background */
+/* Glow */
 body::before{
   content:"";
   position:fixed;
-  width:500px;
-  height:500px;
+  width:600px;
+  height:600px;
   background:linear-gradient(45deg,#4da3ff,#6cf2c2);
-  filter:blur(160px);
-  opacity:.08;
-  top:-100px;
-  left:-100px;
+  filter:blur(180px);
+  opacity:.07;
+  top:-120px;
+  left:-120px;
   z-index:-1;
 }
 
 /* SIDEBAR */
-
 .sidebar{
   width:260px;
   background:rgba(255,255,255,.03);
@@ -41,18 +41,16 @@ body::before{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  transition:.3s;
+  transition:.3s ease;
 }
 
-.sidebar.collapsed{
-  width:80px;
-}
+.sidebar.collapsed{width:80px;}
 
 .logo{
   font-size:18px;
   font-weight:900;
+  letter-spacing:.5px;
 }
-
 .logo span{color:#4da3ff;}
 
 .nav{
@@ -71,25 +69,17 @@ body::before{
   font-size:14px;
   transition:.2s;
 }
-
-.nav a:hover{
-  background:rgba(77,163,255,.1);
-}
+.nav a:hover{background:rgba(77,163,255,.12);}
 
 /* MAIN */
+.main{flex:1;padding:35px 45px;}
 
-.main{
-  flex:1;
-  padding:35px 40px;
-}
-
-/* TOP BAR */
-
+/* TOPBAR */
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:20px;
+  margin-bottom:25px;
 }
 
 .toggleBtn{
@@ -105,7 +95,6 @@ body::before{
   font-size:20px;
   cursor:pointer;
 }
-
 .notif span{
   position:absolute;
   top:-6px;
@@ -117,23 +106,22 @@ body::before{
 }
 
 /* HERO */
-
 .hero{
-  padding:30px;
+  padding:32px;
   border-radius:24px;
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.08);
-  margin-bottom:25px;
+  margin-bottom:30px;
 }
 
 .hero h2{
-  font-size:28px;
+  font-size:30px;
   font-weight:900;
 }
 
 .badge{
-  margin-left:10px;
-  padding:5px 12px;
+  margin-left:12px;
+  padding:6px 14px;
   border-radius:999px;
   font-size:12px;
   font-weight:800;
@@ -141,51 +129,64 @@ body::before{
   border:1px solid rgba(77,163,255,.35);
 }
 
-.hero p{opacity:.7;font-size:14px;margin-top:6px;}
+.hero p{opacity:.7;font-size:14px;margin-top:8px;}
 
-/* STATS */
-
+/* STATS GRID */
 .stats{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:18px;
-  margin-bottom:30px;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:20px;
+  margin-bottom:35px;
 }
 
 .statCard{
-  padding:20px;
+  padding:22px;
   border-radius:18px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.07);
-  transition:.2s;
+  transition:.25s;
 }
-
 .statCard:hover{
-  transform:translateY(-4px);
+  transform:translateY(-5px);
   border-color:rgba(77,163,255,.4);
 }
 
+.statLabel{opacity:.65;font-size:13px;}
 .statValue{
-  font-size:26px;
+  font-size:28px;
   font-weight:900;
   margin-top:6px;
 }
 
-/* CHART */
+.growth{font-size:12px;margin-top:4px;color:#6cf2c2;}
 
+/* CHART */
 .chartWrap{
-  padding:22px;
+  padding:25px;
   border-radius:22px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.07);
-  margin-bottom:30px;
+  margin-bottom:35px;
 }
 
-/* STAFF */
+/* ACTIVITY */
+.activity{
+  padding:22px;
+  border-radius:18px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+}
 
+.activityItem{
+  font-size:13px;
+  opacity:.75;
+  margin-bottom:8px;
+}
+
+/* STAFF PANEL */
 .staffPanel{
   margin-top:30px;
-  padding:20px;
+  padding:22px;
   border-radius:18px;
   background:rgba(255,215,0,.08);
   border:1px solid rgba(255,215,0,.3);
@@ -207,14 +208,16 @@ body::before{
       <a href="/settings.html">⚙ Settings</a>
     </div>
   </div>
-  <button onclick="logout()" style="padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:white;">Logout</button>
+  <button onclick="logout()" style="padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:white;">
+    Logout
+  </button>
 </div>
 
 <div class="main">
 
   <div class="topbar">
     <button class="toggleBtn" onclick="toggleSidebar()">☰</button>
-    <div class="notif">🔔 <span>3</span></div>
+    <div class="notif">🔔 <span id="notifCount">0</span></div>
   </div>
 
   <div class="hero">
@@ -227,18 +230,19 @@ body::before{
 
   <div class="stats">
     <div class="statCard">
-      <div>Total Earnings</div>
+      <div class="statLabel">Total Earnings</div>
       <div class="statValue" id="earningsTotal">$0.00</div>
+      <div class="growth" id="growthPercent">+0%</div>
     </div>
 
     <div class="statCard">
-      <div>Monetization</div>
-      <div class="statValue" id="monetizationStatus">Checking...</div>
-    </div>
-
-    <div class="statCard">
-      <div>Active Divisions</div>
+      <div class="statLabel">Active Divisions</div>
       <div class="statValue">3</div>
+    </div>
+
+    <div class="statCard">
+      <div class="statLabel">Monetization Status</div>
+      <div class="statValue" id="monetizationStatus">Checking...</div>
     </div>
   </div>
 
@@ -247,9 +251,14 @@ body::before{
     <canvas id="earningsChart"></canvas>
   </div>
 
+  <div class="activity">
+    <h3 style="margin-bottom:12px;">Recent Activity</h3>
+    <div id="activityFeed"></div>
+  </div>
+
   <div class="staffPanel" id="staffPanel">
-    <h3>👑 Staff Control Panel</h3>
-    <p>Leadership tools enabled.</p>
+    <h3>👑 Executive Control Panel</h3>
+    <p>Advanced management tools enabled for leadership.</p>
   </div>
 
 </div>
@@ -262,22 +271,19 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* Sidebar */
 window.toggleSidebar = function(){
   document.getElementById("sidebar").classList.toggle("collapsed");
 };
 
-/* Chart */
 const ctx=document.getElementById("earningsChart");
 const chart=new Chart(ctx,{
   type:"line",
   data:{
     labels:["Jan","Feb","Mar","Apr","May","Jun"],
     datasets:[{
-      label:"Earnings",
       data:[0,0,0,0,0,0],
       borderColor:"#4da3ff",
-      backgroundColor:"rgba(77,163,255,.1)",
+      backgroundColor:"rgba(77,163,255,.12)",
       tension:.4,
       fill:true
     }]
@@ -289,8 +295,8 @@ const chart=new Chart(ctx,{
 });
 
 async function loadDashboard(){
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session){ location.href="/login.html"; return; }
+  const { data:{session} }=await supabase.auth.getSession();
+  if(!session){location.href="/login.html";return;}
 
   const user=session.user;
 
@@ -302,16 +308,18 @@ async function loadDashboard(){
 
   document.getElementById("username").textContent=profile.username;
 
-  let badge="👤 Member";
-  if(profile.role==="owner") badge="👑 Owner";
-  if(profile.role==="admin") badge="🛡 Admin";
-  if(profile.role==="staff") badge="⭐ Staff";
+  const roleMap={
+    owner:"👑 Owner",
+    admin:"🛡 Admin",
+    staff:"⭐ Staff",
+    member:"👤 Member"
+  };
 
-  document.getElementById("roleBadge").textContent=badge;
+  document.getElementById("roleBadge").textContent=roleMap[profile.role]||"👤 Member";
   document.getElementById("memberLine").textContent=
     `Role: ${profile.role.toUpperCase()} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
 
-  if(profile.role==="owner"||profile.role==="admin"){
+  if(["owner","admin"].includes(profile.role)){
     document.getElementById("staffPanel").style.display="block";
   }
 
@@ -322,23 +330,26 @@ async function loadDashboard(){
     .single();
 
   if(earnings){
-    document.getElementById("earningsTotal").textContent=
-      "$"+Number(earnings.total_boost_earnings).toFixed(2);
+    const total=Number(earnings.total_boost_earnings||0);
+    document.getElementById("earningsTotal").textContent="$"+total.toFixed(2);
 
-    chart.data.datasets[0].data=[0,5,15,25,40,earnings.total_boost_earnings];
+    chart.data.datasets[0].data=[0,10,25,40,60,total];
     chart.update();
+
+    const growth=((total-40)/40*100).toFixed(1);
+    document.getElementById("growthPercent").textContent=`+${growth}%`;
+    document.getElementById("monetizationStatus").textContent=
+      total>0?"Active":"Not Active";
   }
 
-  /* Real-time */
-  supabase.channel("earnings_updates")
-    .on("postgres_changes",{event:"UPDATE",schema:"public",table:"creator_earnings"},
-      payload=>{
-        if(payload.new.creator_id===user.id){
-          document.getElementById("earningsTotal").textContent=
-            "$"+Number(payload.new.total_boost_earnings).toFixed(2);
-        }
-      }
-    ).subscribe();
+  document.getElementById("notifCount").textContent=3;
+
+  const feed=document.getElementById("activityFeed");
+  feed.innerHTML=`
+    <div class="activityItem">Boost earnings updated</div>
+    <div class="activityItem">New division activity detected</div>
+    <div class="activityItem">System sync complete</div>
+  `;
 }
 
 loadDashboard();
