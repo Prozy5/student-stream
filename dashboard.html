@@ -11,7 +11,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif;}
 
 body{
-  background:radial-gradient(circle at top,#0c162b,#05070c);
+  background:radial-gradient(circle at top,#0f1c35,#05070c 60%);
   color:white;
   min-height:100vh;
   display:flex;
@@ -22,13 +22,13 @@ body{
 body::before{
   content:"";
   position:fixed;
-  width:600px;
-  height:600px;
+  width:800px;
+  height:800px;
   background:linear-gradient(45deg,#4da3ff,#6cf2c2);
-  filter:blur(180px);
-  opacity:.07;
-  top:-120px;
-  left:-120px;
+  filter:blur(200px);
+  opacity:.05;
+  top:-200px;
+  left:-200px;
   z-index:-1;
 }
 
@@ -41,15 +41,14 @@ body::before{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+  backdrop-filter:blur(20px);
   transition:.3s ease;
 }
-
 .sidebar.collapsed{width:80px;}
 
 .logo{
   font-size:18px;
   font-weight:900;
-  letter-spacing:.5px;
 }
 .logo span{color:#4da3ff;}
 
@@ -67,9 +66,12 @@ body::before{
   color:white;
   font-weight:600;
   font-size:14px;
-  transition:.2s;
+  transition:.25s;
 }
-.nav a:hover{background:rgba(77,163,255,.12);}
+.nav a:hover{
+  background:rgba(77,163,255,.15);
+  transform:translateX(4px);
+}
 
 /* MAIN */
 .main{flex:1;padding:35px 45px;}
@@ -79,7 +81,7 @@ body::before{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:25px;
+  margin-bottom:30px;
 }
 
 .toggleBtn{
@@ -90,28 +92,24 @@ body::before{
   cursor:pointer;
 }
 
-.notif{
-  position:relative;
-  font-size:20px;
-  cursor:pointer;
-}
-.notif span{
-  position:absolute;
-  top:-6px;
-  right:-6px;
-  background:#ff4d6d;
-  font-size:11px;
-  padding:3px 6px;
+.systemStatus{
+  font-size:12px;
+  padding:6px 12px;
   border-radius:999px;
+  background:rgba(108,242,194,.15);
+  border:1px solid rgba(108,242,194,.4);
+  color:#6cf2c2;
+  font-weight:700;
 }
 
 /* HERO */
 .hero{
-  padding:32px;
+  padding:35px;
   border-radius:24px;
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.08);
-  margin-bottom:30px;
+  margin-bottom:35px;
+  backdrop-filter:blur(15px);
 }
 
 .hero h2{
@@ -135,62 +133,75 @@ body::before{
 .stats{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:20px;
-  margin-bottom:35px;
+  gap:22px;
+  margin-bottom:40px;
 }
 
 .statCard{
-  padding:22px;
-  border-radius:18px;
+  padding:24px;
+  border-radius:20px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.07);
   transition:.25s;
 }
 .statCard:hover{
-  transform:translateY(-5px);
-  border-color:rgba(77,163,255,.4);
+  transform:translateY(-6px);
+  border-color:rgba(77,163,255,.5);
 }
 
 .statLabel{opacity:.65;font-size:13px;}
 .statValue{
-  font-size:28px;
+  font-size:30px;
   font-weight:900;
-  margin-top:6px;
+  margin-top:8px;
 }
 
-.growth{font-size:12px;margin-top:4px;color:#6cf2c2;}
+.growth{
+  font-size:12px;
+  margin-top:6px;
+  color:#6cf2c2;
+}
 
 /* CHART */
 .chartWrap{
-  padding:25px;
-  border-radius:22px;
+  padding:28px;
+  border-radius:24px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.07);
-  margin-bottom:35px;
+  margin-bottom:40px;
 }
 
 /* ACTIVITY */
 .activity{
-  padding:22px;
-  border-radius:18px;
+  padding:25px;
+  border-radius:20px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.07);
 }
 
 .activityItem{
   font-size:13px;
-  opacity:.75;
-  margin-bottom:8px;
+  opacity:.8;
+  margin-bottom:10px;
 }
 
 /* STAFF PANEL */
 .staffPanel{
-  margin-top:30px;
-  padding:22px;
-  border-radius:18px;
-  background:rgba(255,215,0,.08);
-  border:1px solid rgba(255,215,0,.3);
+  margin-top:40px;
+  padding:25px;
+  border-radius:20px;
+  background:rgba(255,215,0,.07);
+  border:1px solid rgba(255,215,0,.35);
   display:none;
+}
+
+/* Counter animation */
+.fadeIn{
+  animation:fade .8s ease forwards;
+  opacity:0;
+}
+@keyframes fade{
+  to{opacity:1}
 }
 </style>
 </head>
@@ -205,6 +216,7 @@ body::before{
       <a href="/sswatch/">🎥 SS:Watch</a>
       <a href="/devforum/">💬 DevForum</a>
       <a href="/boosts.html">💰 Boosts</a>
+      <a href="/boph.html">🎺 Project B.O.P.H</a>
       <a href="/settings.html">⚙ Settings</a>
     </div>
   </div>
@@ -217,48 +229,48 @@ body::before{
 
   <div class="topbar">
     <button class="toggleBtn" onclick="toggleSidebar()">☰</button>
-    <div class="notif">🔔 <span id="notifCount">0</span></div>
+    <div class="systemStatus">System Operational</div>
   </div>
 
-  <div class="hero">
+  <div class="hero fadeIn">
     <h2>
       Welcome, <span id="username">Loading...</span>
       <span class="badge" id="roleBadge">...</span>
     </h2>
-    <p id="memberLine">Loading dashboard...</p>
+    <p id="memberLine">Syncing dashboard...</p>
   </div>
 
   <div class="stats">
-    <div class="statCard">
+    <div class="statCard fadeIn">
       <div class="statLabel">Total Earnings</div>
       <div class="statValue" id="earningsTotal">$0.00</div>
       <div class="growth" id="growthPercent">+0%</div>
     </div>
 
-    <div class="statCard">
-      <div class="statLabel">Active Divisions</div>
-      <div class="statValue">3</div>
+    <div class="statCard fadeIn">
+      <div class="statLabel">Monthly Revenue</div>
+      <div class="statValue" id="monthlyRevenue">$0</div>
     </div>
 
-    <div class="statCard">
+    <div class="statCard fadeIn">
       <div class="statLabel">Monetization Status</div>
       <div class="statValue" id="monetizationStatus">Checking...</div>
     </div>
   </div>
 
-  <div class="chartWrap">
-    <h3 style="margin-bottom:15px;">Earnings Overview</h3>
+  <div class="chartWrap fadeIn">
+    <h3 style="margin-bottom:18px;">Earnings Overview</h3>
     <canvas id="earningsChart"></canvas>
   </div>
 
-  <div class="activity">
-    <h3 style="margin-bottom:12px;">Recent Activity</h3>
-    <div id="activityFeed"></div>
+  <div class="activity fadeIn">
+    <h3 style="margin-bottom:15px;">Live Activity</h3>
+    <div id="activityFeed">Loading activity...</div>
   </div>
 
   <div class="staffPanel" id="staffPanel">
     <h3>👑 Executive Control Panel</h3>
-    <p>Advanced management tools enabled for leadership.</p>
+    <p>Advanced platform management tools unlocked.</p>
   </div>
 
 </div>
@@ -266,33 +278,27 @@ body::before{
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
-window.toggleSidebar = function(){
-  document.getElementById("sidebar").classList.toggle("collapsed");
-};
+window.toggleSidebar=()=>document.getElementById("sidebar").classList.toggle("collapsed");
 
-const ctx=document.getElementById("earningsChart");
-const chart=new Chart(ctx,{
+const chart=new Chart(document.getElementById("earningsChart"),{
   type:"line",
-  data:{
-    labels:["Jan","Feb","Mar","Apr","May","Jun"],
-    datasets:[{
-      data:[0,0,0,0,0,0],
-      borderColor:"#4da3ff",
-      backgroundColor:"rgba(77,163,255,.12)",
-      tension:.4,
-      fill:true
-    }]
-  },
-  options:{
-    plugins:{legend:{display:false}},
-    scales:{x:{ticks:{color:"#aaa"}},y:{ticks:{color:"#aaa"}}}
-  }
+  data:{labels:[],datasets:[{data:[],borderColor:"#4da3ff",backgroundColor:"rgba(77,163,255,.15)",tension:.4,fill:true}]},
+  options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#aaa"}},y:{ticks:{color:"#aaa"}}}}
 });
+
+function animateValue(id,end){
+  let start=0;
+  const duration=800;
+  const step=end/(duration/16);
+  const el=document.getElementById(id);
+  const counter=setInterval(()=>{
+    start+=step;
+    if(start>=end){start=end;clearInterval(counter);}
+    el.textContent="$"+start.toFixed(2);
+  },16);
+}
 
 async function loadDashboard(){
   const { data:{session} }=await supabase.auth.getSession();
@@ -300,61 +306,48 @@ async function loadDashboard(){
 
   const user=session.user;
 
-  const { data:profile }=await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id",user.id)
-    .single();
+  const { data:profile }=await supabase.from("profiles").select("*").eq("id",user.id).single();
 
   document.getElementById("username").textContent=profile.username;
-
-  const roleMap={
-    owner:"👑 Owner",
-    admin:"🛡 Admin",
-    staff:"⭐ Staff",
-    member:"👤 Member"
-  };
-
-  document.getElementById("roleBadge").textContent=roleMap[profile.role]||"👤 Member";
+  document.getElementById("roleBadge").textContent=profile.role.toUpperCase();
   document.getElementById("memberLine").textContent=
-    `Role: ${profile.role.toUpperCase()} • Joined ${new Date(profile.created_at).toLocaleDateString()}`;
+    `Member since ${new Date(profile.created_at).toLocaleDateString()}`;
 
   if(["owner","admin"].includes(profile.role)){
     document.getElementById("staffPanel").style.display="block";
   }
 
-  const { data:earnings }=await supabase
-    .from("creator_earnings")
-    .select("*")
-    .eq("creator_id",user.id)
-    .single();
+  const { data:earnings }=await supabase.from("creator_earnings")
+    .select("*").eq("creator_id",user.id).single();
 
   if(earnings){
     const total=Number(earnings.total_boost_earnings||0);
-    document.getElementById("earningsTotal").textContent="$"+total.toFixed(2);
-
-    chart.data.datasets[0].data=[0,10,25,40,60,total];
-    chart.update();
-
-    const growth=((total-40)/40*100).toFixed(1);
-    document.getElementById("growthPercent").textContent=`+${growth}%`;
+    animateValue("earningsTotal",total);
+    document.getElementById("monthlyRevenue").textContent="$"+(total/6).toFixed(0);
+    document.getElementById("growthPercent").textContent="+18%";
     document.getElementById("monetizationStatus").textContent=
       total>0?"Active":"Not Active";
+
+    chart.data.labels=["Jan","Feb","Mar","Apr","May","Jun"];
+    chart.data.datasets[0].data=[5,15,28,35,50,total];
+    chart.update();
   }
 
-  document.getElementById("notifCount").textContent=3;
-
   const feed=document.getElementById("activityFeed");
-  feed.innerHTML=`
-    <div class="activityItem">Boost earnings updated</div>
-    <div class="activityItem">New division activity detected</div>
-    <div class="activityItem">System sync complete</div>
-  `;
+  const { data:activity }=await supabase.from("activity_log")
+    .select("*").order("created_at",{ascending:false}).limit(5);
+
+  feed.innerHTML="";
+  if(activity){
+    activity.forEach(a=>{
+      feed.innerHTML+=`<div class="activityItem">${a.description}</div>`;
+    });
+  }
 }
 
 loadDashboard();
 
-window.logout=async function(){
+window.logout=async()=>{
   await supabase.auth.signOut();
   location.href="/login.html";
 };
