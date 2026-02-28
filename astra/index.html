@@ -311,46 +311,191 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
-/* ===== THREE JS ORBITAL GLOBE ===== */
+/* =====================================================
+   🌍 THREE JS ORBITAL GLOBE UPGRADE
+===================================================== */
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75,1,0.1,1000);
-const renderer = new THREE.WebGLRenderer({alpha:true});
+const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
 renderer.setSize(320,320);
+renderer.setPixelRatio(window.devicePixelRatio);
 document.getElementById("globePanel").appendChild(renderer.domElement);
 
-const geometry = new THREE.SphereGeometry(2,64,64);
-const material = new THREE.MeshBasicMaterial({
-  wireframe:true,
-  color:0x4da3ff
+camera.position.z = 6;
+
+/* Core globe */
+const geometry = new THREE.SphereGeometry(2,128,128);
+const material = new THREE.MeshStandardMaterial({
+  color:0x4da3ff,
+  emissive:0x0a1a2f,
+  metalness:0.3,
+  roughness:0.6,
+  wireframe:false
 });
 const sphere = new THREE.Mesh(geometry,material);
 scene.add(sphere);
 
-camera.position.z = 5;
+/* Wire overlay */
+const wireGeo = new THREE.SphereGeometry(2.02,64,64);
+const wireMat = new THREE.MeshBasicMaterial({
+  color:0x00ffc8,
+  wireframe:true,
+  transparent:true,
+  opacity:0.2
+});
+const wireSphere = new THREE.Mesh(wireGeo,wireMat);
+scene.add(wireSphere);
+
+/* Atmospheric glow */
+const glowGeo = new THREE.SphereGeometry(2.3,64,64);
+const glowMat = new THREE.MeshBasicMaterial({
+  color:0x4da3ff,
+  transparent:true,
+  opacity:0.08
+});
+const glowSphere = new THREE.Mesh(glowGeo,glowMat);
+scene.add(glowSphere);
+
+/* Lighting */
+const light1 = new THREE.PointLight(0x00ffc8,1.5);
+light1.position.set(5,5,5);
+scene.add(light1);
+
+const light2 = new THREE.PointLight(0x4da3ff,1);
+light2.position.set(-5,-3,4);
+scene.add(light2);
+
+/* Orbiting satellites */
+const satellites = [];
+for(let i=0;i<5;i++){
+  const satGeo = new THREE.SphereGeometry(0.08,16,16);
+  const satMat = new THREE.MeshBasicMaterial({color:0xff5eff});
+  const sat = new THREE.Mesh(satGeo,satMat);
+  scene.add(sat);
+  satellites.push({
+    mesh:sat,
+    radius:3 + Math.random(),
+    speed:0.002 + Math.random()*0.002,
+    angle:Math.random()*Math.PI*2
+  });
+}
+
+/* =====================================================
+   🧠 LIVE AI DEBATE NODE NETWORK
+===================================================== */
+
+const debateScene = new THREE.Scene();
+const debateCamera = new THREE.PerspectiveCamera(75,1,0.1,1000);
+const debateRenderer = new THREE.WebGLRenderer({alpha:true});
+debateRenderer.setSize(300,300);
+debateRenderer.domElement.style.position = "fixed";
+debateRenderer.domElement.style.bottom = "30px";
+debateRenderer.domElement.style.left = "30px";
+document.body.appendChild(debateRenderer.domElement);
+
+debateCamera.position.z = 6;
+
+/* Debate Nodes */
+const nodes = [];
+const nodePositions = [];
+
+for(let i=0;i<8;i++){
+  const nodeGeo = new THREE.SphereGeometry(0.25,32,32);
+  const nodeMat = new THREE.MeshBasicMaterial({
+    color:0x00ffc8
+  });
+  const node = new THREE.Mesh(nodeGeo,nodeMat);
+
+  const x = (Math.random()-0.5)*6;
+  const y = (Math.random()-0.5)*6;
+  const z = (Math.random()-0.5)*6;
+
+  node.position.set(x,y,z);
+  debateScene.add(node);
+
+  nodes.push(node);
+  nodePositions.push(new THREE.Vector3(x,y,z));
+}
+
+/* Beams between nodes */
+const beamMaterial = new THREE.LineBasicMaterial({
+  color:0x4da3ff,
+  transparent:true,
+  opacity:0.4
+});
+
+const beams = [];
+
+for(let i=0;i<nodes.length;i++){
+  for(let j=i+1;j<nodes.length;j++){
+    if(Math.random() > 0.6){
+      const points = [];
+      points.push(nodes[i].position);
+      points.push(nodes[j].position);
+
+      const geo = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geo,beamMaterial);
+      debateScene.add(line);
+      beams.push(line);
+    }
+  }
+}
+
+/* =====================================================
+   🔁 ANIMATION LOOP
+===================================================== */
 
 function animate(){
   requestAnimationFrame(animate);
-  sphere.rotation.y += 0.003;
-  sphere.rotation.x += 0.001;
+
+  /* Globe rotation */
+  sphere.rotation.y += 0.002;
+  wireSphere.rotation.y += 0.002;
+  glowSphere.rotation.y += 0.002;
+
+  /* Satellite orbit */
+  satellites.forEach(s=>{
+    s.angle += s.speed;
+    s.mesh.position.x = Math.cos(s.angle) * s.radius;
+    s.mesh.position.z = Math.sin(s.angle) * s.radius;
+    s.mesh.position.y = Math.sin(s.angle*2)*0.5;
+  });
+
+  /* Node pulse */
+  nodes.forEach((node,i)=>{
+    const scale = 1 + Math.sin(Date.now()*0.003 + i)*0.2;
+    node.scale.set(scale,scale,scale);
+  });
+
   renderer.render(scene,camera);
+  debateRenderer.render(debateScene,debateCamera);
 }
+
 animate();
 
-/* ===== LOAD DATA ===== */
+/* =====================================================
+   📊 LIVE METRICS
+===================================================== */
+
 async function loadMetrics(){
   const { data } = await supabase
     .from("astra_reports")
     .select("threat_score");
 
-  if(!data) return;
-  const avg = Math.round(data.reduce((a,b)=>a+(b.threat_score||0),0)/data.length);
+  if(!data || data.length===0) return;
+
+  const avg = Math.round(
+    data.reduce((a,b)=>a+(b.threat_score||0),0)/data.length
+  );
+
   document.getElementById("globalThreat").innerText = avg;
-  document.getElementById("anomalyLevel").innerText = avg>70?"HIGH":avg>40?"ELEVATED":"LOW";
+  document.getElementById("anomalyLevel").innerText =
+    avg>70?"HIGH":avg>40?"ELEVATED":"LOW";
   document.getElementById("sectorActivity").innerText = data.length;
 }
 
 loadMetrics();
-</script>
+setInterval(loadMetrics,10000);
 
-</body>
-</html>
+</script>
