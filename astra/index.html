@@ -6,13 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-
 <style>
-/* ===============================
-   EVERYTHING YOU HAD (UNCHANGED)
-================================== */
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
   font-family:Inter,system-ui;
   background:#02040a;
@@ -21,7 +17,7 @@ body{
   overflow-x:hidden;
 }
 
-/* nebula glow */
+/* BACKGROUND */
 body::before{
   content:"";
   position:fixed;
@@ -34,7 +30,6 @@ body::before{
   z-index:-3;
 }
 
-/* starfield */
 .starfield{
   position:fixed;
   width:200%;
@@ -50,7 +45,6 @@ body::before{
   to{transform:translateY(-2000px)}
 }
 
-/* grid */
 .grid{
   position:fixed;
   inset:0;
@@ -101,25 +95,13 @@ header{
   100%{box-shadow:0 0 0 0 rgba(0,255,200,0)}
 }
 
-/* ===== NEW TOP METRICS BAR ===== */
-.metricsBar{
-  display:flex;
-  justify-content:center;
-  gap:60px;
-  padding:20px;
-  font-family:Orbitron;
-  letter-spacing:2px;
-  font-size:13px;
-  opacity:.8;
-}
-
-/* ===== LAYOUT (extended) ===== */
+/* LAYOUT */
 .layout{
-  max-width:1700px;
-  margin:60px auto;
+  max-width:1600px;
+  margin:80px auto;
   padding:0 40px;
   display:grid;
-  grid-template-columns:2fr 1fr;
+  grid-template-columns:2.2fr 1fr;
   gap:50px;
 }
 
@@ -142,6 +124,7 @@ header{
   cursor:pointer;
   position:relative;
 }
+
 .report:hover{
   transform:translateY(-8px) scale(1.01);
   border-color:#4da3ff;
@@ -162,7 +145,6 @@ header{
   margin-top:8px;
 }
 
-/* Threat bar */
 .threatBar{
   height:6px;
   margin-top:15px;
@@ -188,39 +170,21 @@ header{
   background:rgba(77,163,255,.12);
 }
 
-/* ===== NEW ORBITAL GLOBE PANEL ===== */
-.globePanel{
+/* ORBITAL PANEL */
+#orbitalPanel{
   position:fixed;
-  bottom:30px;
-  right:30px;
+  right:40px;
+  bottom:40px;
   width:320px;
   height:320px;
-  border-radius:50%;
-  border:1px solid rgba(77,163,255,.3);
-  background:rgba(5,15,30,.6);
-  backdrop-filter:blur(15px);
-  box-shadow:0 0 60px rgba(77,163,255,.3);
-}
-
-/* ===== AI DEBATE VISUALIZER ===== */
-.debateVisualizer{
-  margin-top:30px;
-  padding:25px;
   border-radius:20px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-}
-
-.waveBar{
-  height:6px;
-  background:#00ffc8;
-  margin:8px 0;
-  animation:wave 1.2s infinite ease-in-out;
-}
-@keyframes wave{
-  0%{width:20%}
-  50%{width:80%}
-  100%{width:20%}
+  background:rgba(10,20,35,.6);
+  border:1px solid rgba(77,163,255,.25);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 50px rgba(77,163,255,.2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 /* MODAL */
@@ -245,6 +209,13 @@ header{
   max-height:90vh;
   overflow:auto;
 }
+
+.closeBtn{
+  float:right;
+  cursor:pointer;
+  opacity:.6;
+}
+.closeBtn:hover{opacity:1}
 
 footer{
   text-align:center;
@@ -271,23 +242,10 @@ footer{
   </div>
 </header>
 
-<div class="metricsBar">
-  <div>GLOBAL THREAT INDEX: <span id="globalThreat">--</span></div>
-  <div>ANOMALY LEVEL: <span id="anomalyLevel">--</span></div>
-  <div>SECTOR ACTIVITY: <span id="sectorActivity">--</span></div>
-</div>
-
 <div class="layout">
   <div>
     <div class="sectionTitle">INTELLIGENCE STREAM</div>
     <div id="reports"></div>
-
-    <div class="debateVisualizer">
-      <div class="sectionTitle">AI DEBATE SIGNAL</div>
-      <div class="waveBar"></div>
-      <div class="waveBar"></div>
-      <div class="waveBar"></div>
-    </div>
   </div>
 
   <div>
@@ -296,7 +254,7 @@ footer{
   </div>
 </div>
 
-<div class="globePanel" id="globePanel"></div>
+<div id="orbitalPanel"></div>
 
 <div class="modal" id="modal">
   <div class="modalContent" id="modalContent"></div>
@@ -306,196 +264,196 @@ footer{
 © 2026 ASTRA Autonomous Orbital Intelligence Network
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
-/* =====================================================
-   🌍 THREE JS ORBITAL GLOBE UPGRADE
-===================================================== */
+const reportsContainer=document.getElementById("reports");
+const scientistContainer=document.getElementById("scientists");
+const modal=document.getElementById("modal");
+const modalContent=document.getElementById("modalContent");
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75,1,0.1,1000);
-const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
-renderer.setSize(320,320);
-renderer.setPixelRatio(window.devicePixelRatio);
-document.getElementById("globePanel").appendChild(renderer.domElement);
+/* =========================
+   ORBITAL GLOBE ENGINE
+========================= */
 
-camera.position.z = 6;
+let avgThreat=0;
 
-/* Core globe */
-const geometry = new THREE.SphereGeometry(2,128,128);
-const material = new THREE.MeshStandardMaterial({
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,1,0.1,1000);
+const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+renderer.setSize(280,280);
+document.getElementById("orbitalPanel").appendChild(renderer.domElement);
+camera.position.z=5;
+
+const globeGeo=new THREE.SphereGeometry(1.8,64,64);
+const globeMat=new THREE.MeshStandardMaterial({
   color:0x4da3ff,
-  emissive:0x0a1a2f,
-  metalness:0.3,
-  roughness:0.6,
-  wireframe:false
+  emissive:0x000000,
+  metalness:.4,
+  roughness:.5
 });
-const sphere = new THREE.Mesh(geometry,material);
-scene.add(sphere);
+const globe=new THREE.Mesh(globeGeo,globeMat);
+scene.add(globe);
 
-/* Wire overlay */
-const wireGeo = new THREE.SphereGeometry(2.02,64,64);
-const wireMat = new THREE.MeshBasicMaterial({
+const glowGeo=new THREE.SphereGeometry(2,64,64);
+const glowMat=new THREE.MeshBasicMaterial({
   color:0x00ffc8,
-  wireframe:true,
   transparent:true,
-  opacity:0.2
+  opacity:.05
 });
-const wireSphere = new THREE.Mesh(wireGeo,wireMat);
-scene.add(wireSphere);
+const glow=new THREE.Mesh(glowGeo,glowMat);
+scene.add(glow);
 
-/* Atmospheric glow */
-const glowGeo = new THREE.SphereGeometry(2.3,64,64);
-const glowMat = new THREE.MeshBasicMaterial({
-  color:0x4da3ff,
-  transparent:true,
-  opacity:0.08
-});
-const glowSphere = new THREE.Mesh(glowGeo,glowMat);
-scene.add(glowSphere);
+const light=new THREE.PointLight(0x4da3ff,1.5);
+light.position.set(5,5,5);
+scene.add(light);
 
-/* Lighting */
-const light1 = new THREE.PointLight(0x00ffc8,1.5);
-light1.position.set(5,5,5);
-scene.add(light1);
+const satellites=[];
 
-const light2 = new THREE.PointLight(0x4da3ff,1);
-light2.position.set(-5,-3,4);
-scene.add(light2);
+function updateSatellites(count){
+  satellites.forEach(s=>scene.remove(s.mesh));
+  satellites.length=0;
 
-/* Orbiting satellites */
-const satellites = [];
-for(let i=0;i<5;i++){
-  const satGeo = new THREE.SphereGeometry(0.08,16,16);
-  const satMat = new THREE.MeshBasicMaterial({color:0xff5eff});
-  const sat = new THREE.Mesh(satGeo,satMat);
-  scene.add(sat);
-  satellites.push({
-    mesh:sat,
-    radius:3 + Math.random(),
-    speed:0.002 + Math.random()*0.002,
-    angle:Math.random()*Math.PI*2
-  });
-}
-
-/* =====================================================
-   🧠 LIVE AI DEBATE NODE NETWORK
-===================================================== */
-
-const debateScene = new THREE.Scene();
-const debateCamera = new THREE.PerspectiveCamera(75,1,0.1,1000);
-const debateRenderer = new THREE.WebGLRenderer({alpha:true});
-debateRenderer.setSize(300,300);
-debateRenderer.domElement.style.position = "fixed";
-debateRenderer.domElement.style.bottom = "30px";
-debateRenderer.domElement.style.left = "30px";
-document.body.appendChild(debateRenderer.domElement);
-
-debateCamera.position.z = 6;
-
-/* Debate Nodes */
-const nodes = [];
-const nodePositions = [];
-
-for(let i=0;i<8;i++){
-  const nodeGeo = new THREE.SphereGeometry(0.25,32,32);
-  const nodeMat = new THREE.MeshBasicMaterial({
-    color:0x00ffc8
-  });
-  const node = new THREE.Mesh(nodeGeo,nodeMat);
-
-  const x = (Math.random()-0.5)*6;
-  const y = (Math.random()-0.5)*6;
-  const z = (Math.random()-0.5)*6;
-
-  node.position.set(x,y,z);
-  debateScene.add(node);
-
-  nodes.push(node);
-  nodePositions.push(new THREE.Vector3(x,y,z));
-}
-
-/* Beams between nodes */
-const beamMaterial = new THREE.LineBasicMaterial({
-  color:0x4da3ff,
-  transparent:true,
-  opacity:0.4
-});
-
-const beams = [];
-
-for(let i=0;i<nodes.length;i++){
-  for(let j=i+1;j<nodes.length;j++){
-    if(Math.random() > 0.6){
-      const points = [];
-      points.push(nodes[i].position);
-      points.push(nodes[j].position);
-
-      const geo = new THREE.BufferGeometry().setFromPoints(points);
-      const line = new THREE.Line(geo,beamMaterial);
-      debateScene.add(line);
-      beams.push(line);
-    }
+  for(let i=0;i<Math.min(count,6);i++){
+    const geo=new THREE.SphereGeometry(.08,16,16);
+    const mat=new THREE.MeshBasicMaterial({color:0xff5e5e});
+    const mesh=new THREE.Mesh(geo,mat);
+    scene.add(mesh);
+    satellites.push({mesh,angle:Math.random()*Math.PI*2,radius:2.5});
   }
 }
-
-/* =====================================================
-   🔁 ANIMATION LOOP
-===================================================== */
 
 function animate(){
   requestAnimationFrame(animate);
 
-  /* Globe rotation */
-  sphere.rotation.y += 0.002;
-  wireSphere.rotation.y += 0.002;
-  glowSphere.rotation.y += 0.002;
+  globe.rotation.y+=.003;
+  glow.rotation.y+=.003;
 
-  /* Satellite orbit */
+  globeMat.emissiveIntensity=avgThreat/100;
+
   satellites.forEach(s=>{
-    s.angle += s.speed;
-    s.mesh.position.x = Math.cos(s.angle) * s.radius;
-    s.mesh.position.z = Math.sin(s.angle) * s.radius;
-    s.mesh.position.y = Math.sin(s.angle*2)*0.5;
-  });
-
-  /* Node pulse */
-  nodes.forEach((node,i)=>{
-    const scale = 1 + Math.sin(Date.now()*0.003 + i)*0.2;
-    node.scale.set(scale,scale,scale);
+    s.angle+=.01;
+    s.mesh.position.x=Math.cos(s.angle)*s.radius;
+    s.mesh.position.z=Math.sin(s.angle)*s.radius;
   });
 
   renderer.render(scene,camera);
-  debateRenderer.render(debateScene,debateCamera);
 }
-
 animate();
 
-/* =====================================================
-   📊 LIVE METRICS
-===================================================== */
+/* =========================
+   DATA LOGIC
+========================= */
 
-async function loadMetrics(){
-  const { data } = await supabase
-    .from("astra_reports")
-    .select("threat_score");
-
-  if(!data || data.length===0) return;
-
-  const avg = Math.round(
-    data.reduce((a,b)=>a+(b.threat_score||0),0)/data.length
-  );
-
-  document.getElementById("globalThreat").innerText = avg;
-  document.getElementById("anomalyLevel").innerText =
-    avg>70?"HIGH":avg>40?"ELEVATED":"LOW";
-  document.getElementById("sectorActivity").innerText = data.length;
+function threatColor(level){
+  if(level==="Critical") return "#ff2e2e";
+  if(level==="Elevated") return "#ff5e5e";
+  if(level==="Moderate") return "#ffc857";
+  return "#00ffc8";
 }
 
-loadMetrics();
-setInterval(loadMetrics,10000);
+async function loadReports(){
+  const { data: reports } = await supabase
+    .from("astra_reports")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(20);
 
+  document.getElementById("reportCount").innerText=
+    "Reports: "+(reports?.length || 0);
+
+  reportsContainer.innerHTML="";
+
+  if(reports?.length){
+    avgThreat=Math.round(
+      reports.reduce((a,b)=>a+(b.threat_score||0),0)/reports.length
+    );
+    updateSatellites(reports.length);
+  }
+
+  reports?.forEach(r=>{
+    const color=threatColor(r.threat_level);
+    const percent=Math.min(r.threat_score||0,100);
+
+    const div=document.createElement("div");
+    div.className="report";
+    div.innerHTML=`
+      <div class="badge" style="color:${color}">
+        ${r.threat_level}
+      </div>
+      <h2>${r.event_title}</h2>
+      <div class="meta">
+        ${new Date(r.created_at).toLocaleString()} • Score ${r.threat_score}
+      </div>
+      <div style="margin-top:12px;opacity:.8">
+        ${r.summary}
+      </div>
+      <div class="threatBar">
+        <div class="threatFill" style="width:${percent}%;background:${color}"></div>
+      </div>
+    `;
+    div.onclick=()=>openReport(r.id);
+    reportsContainer.appendChild(div);
+  });
+}
+
+async function openReport(id){
+  const { data: report } = await supabase
+    .from("astra_reports")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+  modalContent.innerHTML=`
+    <div class="closeBtn" onclick="document.getElementById('modal').style.display='none'">✖</div>
+    <h2>${report.event_title}</h2>
+    <div class="meta">${new Date(report.created_at).toLocaleString()}</div>
+    <p style="margin-top:25px">${report.full_article}</p>
+  `;
+  modal.style.display="flex";
+}
+
+async function loadScientists(){
+  const { data: scientists } = await supabase
+    .from("astra_scientists")
+    .select("*")
+    .order("reputation_score",{ascending:false})
+    .limit(10);
+
+  document.getElementById("scientistCount").innerText=
+    "Scientists: "+(scientists?.length || 0);
+
+  scientistContainer.innerHTML="";
+
+  scientists?.forEach((s,index)=>{
+    const div=document.createElement("div");
+    div.className="leaderCard";
+    div.innerHTML=`
+      <div><strong>${s.name}</strong></div>
+      <div style="font-size:12px;opacity:.6">
+        #${index+1} • Reputation ${Number(s.reputation_score||0).toFixed(1)}
+      </div>
+      <div style="font-size:12px;margin-top:6px;opacity:.7">
+        ${s.specialty}
+      </div>
+    `;
+    scientistContainer.appendChild(div);
+  });
+}
+
+supabase.channel("astra-realtime")
+  .on("postgres_changes",{event:"INSERT",schema:"public",table:"astra_reports"},
+    ()=>loadReports()
+  )
+  .subscribe();
+
+loadReports();
+loadScientists();
 </script>
+
+</body>
+</html>
