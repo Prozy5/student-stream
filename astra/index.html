@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>ASTRA • AI Space Intelligence</title>
+<title>ASTRA • Autonomous Space Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
@@ -15,14 +15,13 @@ body{
   overflow-x:hidden;
 }
 
-/* 🌌 STARFIELD */
+/* STARFIELD */
 body::before{
   content:"";
   position:fixed;
   width:200%;
   height:200%;
-  background:
-    radial-gradient(white 1px,transparent 1px);
+  background:radial-gradient(white 1px,transparent 1px);
   background-size:40px 40px;
   opacity:.05;
   animation:stars 120s linear infinite;
@@ -33,20 +32,6 @@ body::before{
   to{transform:translateY(-1000px)}
 }
 
-/* ORBIT GLOW */
-body::after{
-  content:"";
-  position:fixed;
-  width:900px;
-  height:900px;
-  background:radial-gradient(circle,#4da3ff20,transparent 70%);
-  top:-300px;
-  left:-300px;
-  filter:blur(120px);
-  z-index:-1;
-}
-
-/* HEADER */
 header{
   position:sticky;
   top:0;
@@ -57,7 +42,6 @@ header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  z-index:100;
 }
 
 .logo{
@@ -77,19 +61,14 @@ header{
   font-weight:700;
 }
 
-/* CONTAINER */
 .container{
-  max-width:1200px;
+  max-width:1100px;
   margin:50px auto;
   padding:0 20px;
 }
 
-/* HERO */
-.hero{
-  margin-bottom:40px;
-}
 .hero h1{
-  font-size:44px;
+  font-size:42px;
   font-weight:900;
 }
 .hero p{
@@ -97,58 +76,33 @@ header{
   opacity:.6;
 }
 
-/* NETWORK PANEL */
-.network{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  margin:25px 0 40px;
-}
-.node{
-  padding:10px 16px;
-  font-size:12px;
-  border-radius:999px;
-  background:rgba(77,163,255,.12);
-  border:1px solid rgba(77,163,255,.35);
-}
-
-/* INTEL STATS */
-.stats{
-  display:flex;
-  gap:25px;
-  margin-bottom:35px;
-  opacity:.7;
-  font-size:13px;
-}
-
-/* ARTICLE */
-.article{
+.report{
   padding:28px;
-  border-radius:22px;
-  margin-bottom:22px;
+  border-radius:20px;
+  margin-top:30px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(12px);
   transition:.25s;
 }
-.article:hover{
-  transform:translateY(-6px);
+.report:hover{
+  transform:translateY(-5px);
   border-color:rgba(77,163,255,.6);
   box-shadow:0 0 40px rgba(77,163,255,.2);
 }
 
-.article h2{
-  font-size:22px;
+.threat{
+  float:right;
   font-weight:800;
+  font-size:13px;
 }
 
 .meta{
-  font-size:13px;
   opacity:.6;
-  margin-top:8px;
+  margin-top:6px;
+  font-size:13px;
 }
 
-.summary{
+.section{
   margin-top:14px;
   line-height:1.6;
   opacity:.85;
@@ -160,15 +114,8 @@ header{
   border-radius:999px;
   font-size:11px;
   background:rgba(77,163,255,.15);
-  margin-right:6px;
   margin-top:12px;
-}
-
-.confidence{
-  float:right;
-  font-size:12px;
-  font-weight:700;
-  color:#6cf2c2;
+  margin-right:6px;
 }
 
 .empty{
@@ -178,12 +125,7 @@ header{
   border:1px dashed rgba(255,255,255,.2);
   border-radius:25px;
   font-size:14px;
-  animation:pulse 2s infinite;
-}
-@keyframes pulse{
-  0%{opacity:.3}
-  50%{opacity:.6}
-  100%{opacity:.3}
+  margin-top:40px;
 }
 
 footer{
@@ -200,36 +142,22 @@ footer{
 
 <header>
   <div class="logo">ASTRA <span>AI</span></div>
-  <div class="statusBar">🛰 Research Network Operational</div>
+  <div class="statusBar">🛰 Autonomous Monitoring Active</div>
 </header>
 
 <div class="container">
 
   <div class="hero">
-    <h1>AI-Curated Space Intelligence</h1>
-    <p>Autonomous monitoring of global research networks, orbital launches, and deep space discoveries.</p>
+    <h1>AI Space Intelligence Reports</h1>
+    <p>Real-time autonomous monitoring powered by NASA data streams.</p>
   </div>
 
-  <div class="network">
-    <div class="node">NASA Connected</div>
-    <div class="node">ESA Synced</div>
-    <div class="node">JAXA Online</div>
-    <div class="node">arXiv Feed Active</div>
-    <div class="node">Launch Monitor Enabled</div>
-  </div>
-
-  <div class="stats">
-    <div>Live Sources: 12</div>
-    <div>AI Confidence Avg: 82%</div>
-    <div>Reports Processed Today: 37</div>
-  </div>
-
-  <div id="articles"></div>
+  <div id="reports"></div>
 
 </div>
 
 <footer>
-© 2026 Astra Intelligence Network • Orbital Node Alpha
+© 2026 ASTRA Intelligence Network • Orbital Node Alpha
 </footer>
 
 <script type="module">
@@ -240,66 +168,85 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const articlesContainer = document.getElementById("articles");
+const reportsContainer = document.getElementById("reports");
 
-async function loadArticles(){
-  articlesContainer.innerHTML =
-    "<div class='empty'>🔄 Scanning global research networks... AI processing live feeds.</div>";
+async function loadReports(){
+
+  reportsContainer.innerHTML =
+    "<div class='empty'>🔄 ASTRA scanning space environment...</div>";
 
   const { data, error } = await supabase
-    .from("astra_articles")
-    .select(`
-      *,
-      astra_sources(name),
-      astra_article_tags(
-        astra_tags(name)
-      )
-    `)
-    .eq("is_published", true)
-    .order("published_at", { ascending:false });
+    .from("astra_reports")
+    .select("*")
+    .order("created_at", { ascending:false })
+    .limit(10);
 
   if(error){
-    articlesContainer.innerHTML =
-      "<div class='empty'>Signal disruption detected.</div>";
+    reportsContainer.innerHTML =
+      "<div class='empty'>Signal interference detected.</div>";
     return;
   }
 
   if(!data || data.length === 0){
-    articlesContainer.innerHTML =
-      "<div class='empty'>No new intelligence reports. Monitoring continues...</div>";
+    reportsContainer.innerHTML =
+      "<div class='empty'>No reports generated yet. Awaiting first intelligence cycle...</div>";
     return;
   }
 
-  articlesContainer.innerHTML = "";
+  reportsContainer.innerHTML = "";
 
-  data.forEach(article=>{
-    const tagNames = article.astra_article_tags?.map(t=>t.astra_tags?.name) || [];
+  data.forEach(report => {
+
+    const threatColor =
+      report.threat_level === "Elevated" ? "#ff5e5e" :
+      report.threat_level === "Moderate" ? "#ffc857" :
+      "#6cf2c2";
 
     const div = document.createElement("div");
-    div.className = "article";
+    div.className = "report";
 
     div.innerHTML = `
-      <div class="confidence">
-        Confidence: ${article.confidence_score || 75}%
+      <div class="threat" style="color:${threatColor}">
+        Threat Level: ${report.threat_level}
       </div>
-      <h2>${article.title}</h2>
+
+      <h2>${report.title}</h2>
+
       <div class="meta">
-        Source: ${article.astra_sources?.name || "Unknown"} • 
-        ${new Date(article.published_at).toLocaleString()}
+        ${new Date(report.created_at).toLocaleString()}
       </div>
-      <div class="summary">
-        ${article.summary || ""}
+
+      <div class="section">
+        <strong>🌌 APOD:</strong> ${report.apod_title}
       </div>
+
+      <div class="section">
+        ${report.apod_summary || ""}
+      </div>
+
+      <div class="section">
+        <strong>☄ Near Earth Objects:</strong> ${report.near_earth_object_count}
+      </div>
+
+      <div class="section">
+        <strong>⚠ Hazardous Asteroids:</strong> ${report.hazardous_asteroids}
+      </div>
+
+      <div class="section">
+        <strong>☀ Solar Events:</strong> ${report.solar_events_detected}
+      </div>
+
       <div>
-        ${tagNames.map(t=>`<span class="tag">${t}</span>`).join("")}
+        <span class="tag">${report.classification}</span>
       </div>
     `;
 
-    articlesContainer.appendChild(div);
+    reportsContainer.appendChild(div);
   });
+
 }
 
-loadArticles();
+loadReports();
 </script>
 
 </body>
