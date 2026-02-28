@@ -2,16 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Astra • AI Space Intelligence</title>
+<title>ASTRA • AI Space Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   font-family:system-ui,-apple-system;
-  background:radial-gradient(circle at top,#0b1220,#05070c 60%);
+  background:#05070c;
   color:white;
   min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* 🌌 STARFIELD */
+body::before{
+  content:"";
+  position:fixed;
+  width:200%;
+  height:200%;
+  background:
+    radial-gradient(white 1px,transparent 1px);
+  background-size:40px 40px;
+  opacity:.05;
+  animation:stars 120s linear infinite;
+  z-index:-2;
+}
+@keyframes stars{
+  from{transform:translateY(0)}
+  to{transform:translateY(-1000px)}
+}
+
+/* ORBIT GLOW */
+body::after{
+  content:"";
+  position:fixed;
+  width:900px;
+  height:900px;
+  background:radial-gradient(circle,#4da3ff20,transparent 70%);
+  top:-300px;
+  left:-300px;
+  filter:blur(120px);
+  z-index:-1;
 }
 
 /* HEADER */
@@ -20,7 +52,7 @@ header{
   top:0;
   padding:18px 28px;
   backdrop-filter:blur(16px);
-  background:rgba(10,15,25,.85);
+  background:rgba(10,15,25,.8);
   border-bottom:1px solid rgba(255,255,255,.08);
   display:flex;
   justify-content:space-between;
@@ -31,57 +63,82 @@ header{
 .logo{
   font-weight:900;
   font-size:22px;
-  letter-spacing:1px;
+  letter-spacing:2px;
 }
 .logo span{color:#4da3ff}
 
-.tagFilter{
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  color:white;
-  padding:8px 12px;
-  border-radius:10px;
+.statusBar{
+  font-size:12px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(108,242,194,.15);
+  border:1px solid rgba(108,242,194,.4);
+  color:#6cf2c2;
+  font-weight:700;
 }
 
 /* CONTAINER */
 .container{
-  max-width:1100px;
+  max-width:1200px;
   margin:50px auto;
   padding:0 20px;
 }
 
 /* HERO */
 .hero{
-  margin-bottom:35px;
+  margin-bottom:40px;
 }
-
 .hero h1{
-  font-size:40px;
+  font-size:44px;
   font-weight:900;
 }
-
 .hero p{
   margin-top:10px;
   opacity:.6;
 }
 
-/* ARTICLE CARD */
-.article{
-  padding:26px;
-  border-radius:20px;
-  margin-bottom:18px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  transition:.2s;
+/* NETWORK PANEL */
+.network{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:25px 0 40px;
+}
+.node{
+  padding:10px 16px;
+  font-size:12px;
+  border-radius:999px;
+  background:rgba(77,163,255,.12);
+  border:1px solid rgba(77,163,255,.35);
 }
 
+/* INTEL STATS */
+.stats{
+  display:flex;
+  gap:25px;
+  margin-bottom:35px;
+  opacity:.7;
+  font-size:13px;
+}
+
+/* ARTICLE */
+.article{
+  padding:28px;
+  border-radius:22px;
+  margin-bottom:22px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(12px);
+  transition:.25s;
+}
 .article:hover{
-  transform:translateY(-4px);
-  border-color:rgba(77,163,255,.5);
+  transform:translateY(-6px);
+  border-color:rgba(77,163,255,.6);
+  box-shadow:0 0 40px rgba(77,163,255,.2);
 }
 
 .article h2{
-  font-size:20px;
+  font-size:22px;
   font-weight:800;
 }
 
@@ -99,33 +156,41 @@ header{
 
 .tag{
   display:inline-block;
-  padding:5px 10px;
+  padding:6px 12px;
   border-radius:999px;
   font-size:11px;
   background:rgba(77,163,255,.15);
   margin-right:6px;
-  margin-top:10px;
+  margin-top:12px;
 }
 
 .confidence{
   float:right;
   font-size:12px;
-  opacity:.6;
+  font-weight:700;
+  color:#6cf2c2;
 }
 
 .empty{
   text-align:center;
-  padding:60px;
+  padding:80px;
   opacity:.5;
-  border:1px dashed rgba(255,255,255,.15);
-  border-radius:20px;
+  border:1px dashed rgba(255,255,255,.2);
+  border-radius:25px;
+  font-size:14px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{opacity:.3}
+  50%{opacity:.6}
+  100%{opacity:.3}
 }
 
 footer{
   text-align:center;
-  padding:50px;
-  opacity:.4;
-  margin-top:80px;
+  padding:60px;
+  opacity:.3;
+  margin-top:100px;
   border-top:1px solid rgba(255,255,255,.08);
 }
 </style>
@@ -135,16 +200,28 @@ footer{
 
 <header>
   <div class="logo">ASTRA <span>AI</span></div>
-  <select class="tagFilter" id="tagFilter">
-    <option value="">All Topics</option>
-  </select>
+  <div class="statusBar">🛰 Research Network Operational</div>
 </header>
 
 <div class="container">
 
   <div class="hero">
     <h1>AI-Curated Space Intelligence</h1>
-    <p>Real-time automated analysis of global space research and discoveries.</p>
+    <p>Autonomous monitoring of global research networks, orbital launches, and deep space discoveries.</p>
+  </div>
+
+  <div class="network">
+    <div class="node">NASA Connected</div>
+    <div class="node">ESA Synced</div>
+    <div class="node">JAXA Online</div>
+    <div class="node">arXiv Feed Active</div>
+    <div class="node">Launch Monitor Enabled</div>
+  </div>
+
+  <div class="stats">
+    <div>Live Sources: 12</div>
+    <div>AI Confidence Avg: 82%</div>
+    <div>Reports Processed Today: 37</div>
   </div>
 
   <div id="articles"></div>
@@ -152,7 +229,7 @@ footer{
 </div>
 
 <footer>
-© 2026 Astra Intelligence Network
+© 2026 Astra Intelligence Network • Orbital Node Alpha
 </footer>
 
 <script type="module">
@@ -164,30 +241,12 @@ const supabase = createClient(
 );
 
 const articlesContainer = document.getElementById("articles");
-const tagFilter = document.getElementById("tagFilter");
 
-/* LOAD TAGS */
-async function loadTags(){
-  const { data } = await supabase
-    .from("astra_tags")
-    .select("*")
-    .order("name");
+async function loadArticles(){
+  articlesContainer.innerHTML =
+    "<div class='empty'>🔄 Scanning global research networks... AI processing live feeds.</div>";
 
-  if(!data) return;
-
-  data.forEach(tag=>{
-    const opt = document.createElement("option");
-    opt.value = tag.name;
-    opt.textContent = tag.name;
-    tagFilter.appendChild(opt);
-  });
-}
-
-/* LOAD ARTICLES */
-async function loadArticles(tag=null){
-  articlesContainer.innerHTML = "<div class='empty'>Loading intelligence feed...</div>";
-
-  let query = supabase
+  const { data, error } = await supabase
     .from("astra_articles")
     .select(`
       *,
@@ -199,32 +258,30 @@ async function loadArticles(tag=null){
     .eq("is_published", true)
     .order("published_at", { ascending:false });
 
-  const { data, error } = await query;
-
   if(error){
-    articlesContainer.innerHTML = "<div class='empty'>Error loading feed.</div>";
-    console.error(error);
+    articlesContainer.innerHTML =
+      "<div class='empty'>Signal disruption detected.</div>";
     return;
   }
 
   if(!data || data.length === 0){
-    articlesContainer.innerHTML = "<div class='empty'>No intelligence reports yet.</div>";
+    articlesContainer.innerHTML =
+      "<div class='empty'>No new intelligence reports. Monitoring continues...</div>";
     return;
   }
 
   articlesContainer.innerHTML = "";
 
   data.forEach(article=>{
-
     const tagNames = article.astra_article_tags?.map(t=>t.astra_tags?.name) || [];
-
-    if(tag && !tagNames.includes(tag)) return;
 
     const div = document.createElement("div");
     div.className = "article";
 
     div.innerHTML = `
-      <div class="confidence">Confidence: ${article.confidence_score || 75}%</div>
+      <div class="confidence">
+        Confidence: ${article.confidence_score || 75}%
+      </div>
       <h2>${article.title}</h2>
       <div class="meta">
         Source: ${article.astra_sources?.name || "Unknown"} • 
@@ -242,14 +299,7 @@ async function loadArticles(tag=null){
   });
 }
 
-tagFilter.onchange = ()=>{
-  loadArticles(tagFilter.value || null);
-};
-
-(async ()=>{
-  await loadTags();
-  await loadArticles();
-})();
+loadArticles();
 </script>
 
 </body>
