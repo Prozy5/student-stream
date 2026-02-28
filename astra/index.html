@@ -2,44 +2,56 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>ASTRA • Autonomous Space Intelligence</title>
+<title>ASTRA • Orbital Intelligence Network</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
-  font-family:system-ui,-apple-system;
-  background:#04060c;
+  font-family:Inter,system-ui,-apple-system;
+  background:radial-gradient(circle at 20% 20%, #0c1224 0%, #05070c 40%, #02030a 100%);
   color:white;
   min-height:100vh;
   overflow-x:hidden;
 }
 
-/* Animated Nebula Background */
+/* Moving star layer */
 body::before{
   content:"";
   position:fixed;
   width:200%;
   height:200%;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(77,163,255,.15), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255,94,94,.12), transparent 40%);
-  animation:nebula 25s linear infinite alternate;
+  background:radial-gradient(white 1px,transparent 1px);
+  background-size:60px 60px;
+  opacity:.04;
+  animation:stars 180s linear infinite;
   z-index:-2;
 }
-@keyframes nebula{
-  from{transform:translate(0,0)}
-  to{transform:translate(-100px,-80px)}
+@keyframes stars{
+  from{transform:translateY(0)}
+  to{transform:translateY(-1500px)}
 }
 
-/* HEADER */
+/* glowing sun */
+body::after{
+  content:"";
+  position:fixed;
+  top:-200px;
+  right:-200px;
+  width:600px;
+  height:600px;
+  background:radial-gradient(circle, rgba(77,163,255,.35), transparent 70%);
+  filter:blur(120px);
+  z-index:-3;
+}
+
 header{
   position:sticky;
   top:0;
-  padding:20px 30px;
+  padding:18px 28px;
   backdrop-filter:blur(18px);
-  background:rgba(8,12,20,.85);
+  background:rgba(10,15,25,.85);
   border-bottom:1px solid rgba(255,255,255,.08);
   display:flex;
   justify-content:space-between;
@@ -63,91 +75,114 @@ header{
   font-weight:700;
 }
 
-/* LAYOUT */
-.container{
-  max-width:1200px;
+.layout{
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  gap:40px;
+  max-width:1400px;
   margin:60px auto;
-  padding:0 20px;
+  padding:0 30px;
 }
 
-.hero h1{
-  font-size:48px;
-  font-weight:900;
-  letter-spacing:-1px;
-}
-.hero p{
-  margin-top:12px;
-  opacity:.6;
+.sectionTitle{
+  font-size:14px;
+  letter-spacing:2px;
+  opacity:.5;
+  margin-bottom:20px;
 }
 
 /* REPORT CARD */
 .report{
-  padding:30px;
+  padding:24px;
   border-radius:20px;
-  margin-top:30px;
+  margin-bottom:24px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);
   transition:.25s;
   cursor:pointer;
 }
+
 .report:hover{
-  transform:translateY(-6px);
+  transform:translateY(-5px);
   border-color:#4da3ff;
-  box-shadow:0 0 40px rgba(77,163,255,.25);
+  box-shadow:0 0 60px rgba(77,163,255,.25);
 }
 
-.threatBadge{
-  float:right;
-  padding:6px 14px;
-  border-radius:999px;
+.meta{
   font-size:12px;
+  opacity:.6;
+  margin-top:8px;
+}
+
+.threat{
+  float:right;
   font-weight:800;
+  font-size:12px;
+}
+
+/* SCIENTIST DIRECTORY */
+.scientistCard{
+  padding:18px;
+  border-radius:16px;
+  background:rgba(77,163,255,.06);
+  border:1px solid rgba(77,163,255,.25);
+  margin-bottom:16px;
+  transition:.2s;
+}
+
+.scientistCard:hover{
+  background:rgba(77,163,255,.12);
+  transform:translateY(-3px);
+}
+
+.scientistName{
+  font-weight:800;
+  font-size:14px;
+}
+
+.specialty{
+  font-size:12px;
+  opacity:.6;
+  margin-top:4px;
 }
 
 /* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(12px);
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(10px);
   display:none;
   align-items:center;
   justify-content:center;
-  padding:20px;
-  z-index:999;
+  padding:30px;
 }
 
 .modalContent{
-  max-width:900px;
+  background:#0c1224;
+  max-width:800px;
   width:100%;
-  max-height:90vh;
-  overflow-y:auto;
-  background:#0c111c;
   padding:40px;
   border-radius:20px;
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.1);
+  max-height:90vh;
+  overflow:auto;
 }
 
 .closeBtn{
   float:right;
   cursor:pointer;
-  opacity:.6;
+  opacity:.5;
 }
 
-.analysisCard{
-  margin-top:25px;
-  padding:20px;
-  border-radius:16px;
-  background:rgba(77,163,255,.08);
-  border:1px solid rgba(77,163,255,.3);
-}
+.closeBtn:hover{opacity:1}
 
 footer{
   text-align:center;
   padding:60px;
   opacity:.3;
-  margin-top:100px;
   border-top:1px solid rgba(255,255,255,.08);
+  margin-top:80px;
 }
 </style>
 </head>
@@ -156,26 +191,29 @@ footer{
 
 <header>
   <div class="logo">ASTRA <span>CORE</span></div>
-  <div class="statusBar">🛰 Monitoring Active</div>
+  <div class="statusBar">🛰 Orbital Monitoring Active</div>
 </header>
 
-<div class="container">
-  <div class="hero">
-    <h1>Mission Control Intelligence Feed</h1>
-    <p>Autonomous anomaly detection powered by NASA telemetry.</p>
+<div class="layout">
+
+  <div>
+    <div class="sectionTitle">INTELLIGENCE REPORTS</div>
+    <div id="reports"></div>
   </div>
-  <div id="reports"></div>
+
+  <div>
+    <div class="sectionTitle">AI SCIENTIST DIRECTORY</div>
+    <div id="scientists"></div>
+  </div>
+
 </div>
 
-<div id="modal" class="modal">
-  <div class="modalContent" id="modalContent">
-    <div class="closeBtn" onclick="closeModal()">✖ Close</div>
-    <div id="fullReport"></div>
-  </div>
+<div class="modal" id="modal">
+  <div class="modalContent" id="modalContent"></div>
 </div>
 
 <footer>
-© 2026 ASTRA Intelligence Network • Orbital Node Alpha
+© 2026 ASTRA Orbital Node Alpha • Autonomous Intelligence Network
 </footer>
 
 <script type="module">
@@ -187,108 +225,109 @@ const supabase = createClient(
 );
 
 const reportsContainer = document.getElementById("reports");
+const scientistContainer = document.getElementById("scientists");
 const modal = document.getElementById("modal");
-const fullReport = document.getElementById("fullReport");
+const modalContent = document.getElementById("modalContent");
 
-function threatColor(level){
-  if(level==="Critical") return "#ff2e2e";
-  if(level==="Elevated") return "#ff5e5e";
-  if(level==="Moderate") return "#ffc857";
-  return "#6cf2c2";
-}
-
-window.closeModal = () => modal.style.display="none";
+/* LOAD REPORTS */
 
 async function loadReports(){
-
   const { data: reports } = await supabase
     .from("astra_reports")
     .select("*")
-    .order("created_at", { ascending:false })
+    .order("created_at",{ascending:false})
     .limit(10);
 
-  reportsContainer.innerHTML="";
+  reportsContainer.innerHTML = "";
 
-  for(const report of reports){
+  reports.forEach(report=>{
+    const threatColor =
+      report.threat_level === "Critical" ? "#ff2e2e" :
+      report.threat_level === "Elevated" ? "#ff5e5e" :
+      report.threat_level === "Moderate" ? "#ffc857" :
+      "#6cf2c2";
 
-    const div=document.createElement("div");
+    const div = document.createElement("div");
     div.className="report";
 
     div.innerHTML=`
-      <div class="threatBadge"
-        style="background:${threatColor(report.threat_level)}20;
-               border:1px solid ${threatColor(report.threat_level)};
-               color:${threatColor(report.threat_level)}">
+      <div class="threat" style="color:${threatColor}">
         ${report.threat_level}
       </div>
       <h2>${report.event_title}</h2>
-      <div style="opacity:.6;margin-top:6px">
-        ${new Date(report.created_at).toLocaleString()}
-        • Score: ${report.threat_score}
+      <div class="meta">
+        ${new Date(report.created_at).toLocaleString()} • Score ${report.threat_score}
       </div>
-      <p style="margin-top:15px;opacity:.8">
+      <div style="margin-top:12px;opacity:.8">
         ${report.summary}
-      </p>
+      </div>
     `;
 
-    div.onclick=()=>openFullReport(report);
+    div.onclick=()=>openReport(report.id);
 
     reportsContainer.appendChild(div);
-  }
+  });
 }
 
-async function openFullReport(report){
+/* FULL REPORT VIEW */
+
+async function openReport(id){
+  const { data: report } = await supabase
+    .from("astra_reports")
+    .select("*")
+    .eq("id",id)
+    .single();
 
   const { data: analyses } = await supabase
     .from("astra_analyses")
     .select("*")
-    .eq("report_id", report.id);
+    .eq("report_id",id);
 
-  const { data: alerts } = await supabase
-    .from("astra_alerts")
-    .select("*")
-    .eq("report_id", report.id);
-
-  fullReport.innerHTML=`
-    <h1>${report.event_title}</h1>
-    <div style="opacity:.6;margin:10px 0">
-      ${new Date(report.created_at).toLocaleString()}
-    </div>
-    <p style="margin-top:20px;font-size:18px">
-      ${report.summary}
-    </p>
+  modalContent.innerHTML=`
+    <div class="closeBtn" onclick="document.getElementById('modal').style.display='none'">✖</div>
+    <h2>${report.event_title}</h2>
+    <div class="meta">${new Date(report.created_at).toLocaleString()}</div>
+    <p style="margin-top:20px">${report.summary}</p>
   `;
 
-  if(alerts?.length){
-    alerts.forEach(a=>{
-      fullReport.innerHTML+=`
-        <div style="margin-top:15px;color:#ff5e5e">
-          ⚠ ${a.message}
-        </div>
-      `;
-    });
-  }
-
-  if(analyses){
-    analyses.forEach(a=>{
-      fullReport.innerHTML+=`
-        <div class="analysisCard">
-          <strong>${a.scientist_name}</strong>
-          <div style="opacity:.6;font-size:12px">
-            Confidence: ${a.confidence}%
-          </div>
-          <div style="margin-top:10px;opacity:.85">
-            ${a.analysis}
-          </div>
-        </div>
-      `;
-    });
-  }
+  analyses.forEach(a=>{
+    modalContent.innerHTML+=`
+      <div class="scientistCard" style="margin-top:20px">
+        <div class="scientistName">${a.scientist_name}</div>
+        <div class="specialty">Confidence ${a.confidence}%</div>
+        <div style="margin-top:10px">${a.analysis}</div>
+      </div>
+    `;
+  });
 
   modal.style.display="flex";
 }
 
+/* LOAD SCIENTIST DIRECTORY */
+
+async function loadScientists(){
+  const { data: scientists } = await supabase
+    .from("astra_scientists")
+    .select("*");
+
+  scientistContainer.innerHTML="";
+
+  scientists.forEach(s=>{
+    const div=document.createElement("div");
+    div.className="scientistCard";
+    div.innerHTML=`
+      <div class="scientistName">${s.name}</div>
+      <div class="specialty">${s.specialty}</div>
+      <div style="margin-top:8px;font-size:12px;opacity:.7">
+        ${s.description || "Autonomous AI Intelligence Module"}
+      </div>
+    `;
+    scientistContainer.appendChild(div);
+  });
+}
+
 loadReports();
+loadScientists();
 </script>
 
 </body>
