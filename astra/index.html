@@ -83,6 +83,7 @@ header{
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);
   transition:.25s;
+  cursor:pointer;
 }
 .report:hover{
   transform:translateY(-5px);
@@ -108,14 +109,31 @@ header{
   opacity:.85;
 }
 
-.tag{
-  display:inline-block;
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:11px;
-  background:rgba(77,163,255,.15);
+.analysisBox{
+  margin-top:20px;
+  padding:16px;
+  border-radius:16px;
+  background:rgba(77,163,255,.08);
+  border:1px solid rgba(77,163,255,.3);
+}
+
+.scientistName{
+  font-weight:800;
+  font-size:14px;
+}
+
+.confidence{
+  font-size:12px;
+  opacity:.6;
+}
+
+.alert{
   margin-top:12px;
-  margin-right:6px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:rgba(255,94,94,.15);
+  border:1px solid rgba(255,94,94,.4);
+  font-size:13px;
 }
 
 .empty{
@@ -141,15 +159,15 @@ footer{
 <body>
 
 <header>
-  <div class="logo">ASTRA <span>AI</span></div>
+  <div class="logo">ASTRA <span>CORE</span></div>
   <div class="statusBar">🛰 Autonomous Monitoring Active</div>
 </header>
 
 <div class="container">
 
   <div class="hero">
-    <h1>AI Space Intelligence Reports</h1>
-    <p>Real-time autonomous monitoring powered by NASA data streams.</p>
+    <h1>Autonomous Space Intelligence Reports</h1>
+    <p>Multi-scientist AI analysis powered by NASA telemetry streams.</p>
   </div>
 
   <div id="reports"></div>
@@ -173,21 +191,21 @@ const reportsContainer = document.getElementById("reports");
 async function loadReports(){
 
   reportsContainer.innerHTML =
-    "<div class='empty'>🔄 ASTRA scanning space environment...</div>";
+    "<div class='empty'>🔄 ASTRA scanning orbital environment...</div>";
 
-  const { data, error } = await supabase
+  const { data: reports, error } = await supabase
     .from("astra_reports")
     .select("*")
     .order("created_at", { ascending:false })
     .limit(10);
 
-  if(error){
+  if(error || !reports){
     reportsContainer.innerHTML =
       "<div class='empty'>Signal interference detected.</div>";
     return;
   }
 
-  if(!data || data.length === 0){
+  if(reports.length === 0){
     reportsContainer.innerHTML =
       "<div class='empty'>No reports generated yet. Awaiting first intelligence cycle...</div>";
     return;
@@ -195,9 +213,20 @@ async function loadReports(){
 
   reportsContainer.innerHTML = "";
 
-  data.forEach(report => {
+  for(const report of reports){
+
+    const { data: analyses } = await supabase
+      .from("astra_analyses")
+      .select("analysis, confidence, astra_scientists(name)")
+      .eq("report_id", report.id);
+
+    const { data: alerts } = await supabase
+      .from("astra_alerts")
+      .select("*")
+      .eq("report_id", report.id);
 
     const threatColor =
+      report.threat_level === "Critical" ? "#ff2e2e" :
       report.threat_level === "Elevated" ? "#ff5e5e" :
       report.threat_level === "Moderate" ? "#ffc857" :
       "#6cf2c2";
@@ -207,43 +236,51 @@ async function loadReports(){
 
     div.innerHTML = `
       <div class="threat" style="color:${threatColor}">
-        Threat Level: ${report.threat_level}
+        Threat: ${report.threat_level}
       </div>
 
-      <h2>${report.title}</h2>
+      <h2>${report.event_title}</h2>
 
       <div class="meta">
         ${new Date(report.created_at).toLocaleString()}
+        • Threat Score: ${report.threat_score}
       </div>
 
       <div class="section">
-        <strong>🌌 APOD:</strong> ${report.apod_title}
-      </div>
-
-      <div class="section">
-        ${report.apod_summary || ""}
-      </div>
-
-      <div class="section">
-        <strong>☄ Near Earth Objects:</strong> ${report.near_earth_object_count}
-      </div>
-
-      <div class="section">
-        <strong>⚠ Hazardous Asteroids:</strong> ${report.hazardous_asteroids}
-      </div>
-
-      <div class="section">
-        <strong>☀ Solar Events:</strong> ${report.solar_events_detected}
-      </div>
-
-      <div>
-        <span class="tag">${report.classification}</span>
+        ${report.summary}
       </div>
     `;
 
-    reportsContainer.appendChild(div);
-  });
+    if(alerts && alerts.length > 0){
+      alerts.forEach(alert=>{
+        div.innerHTML += `
+          <div class="alert">
+            ⚠ ${alert.message}
+          </div>
+        `;
+      });
+    }
 
+    if(analyses){
+      analyses.forEach(a=>{
+        div.innerHTML += `
+          <div class="analysisBox">
+            <div class="scientistName">
+              ${a.astra_scientists?.name || "AI Scientist"}
+            </div>
+            <div class="confidence">
+              Confidence: ${a.confidence}%
+            </div>
+            <div class="section">
+              ${a.analysis}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    reportsContainer.appendChild(div);
+  }
 }
 
 loadReports();
