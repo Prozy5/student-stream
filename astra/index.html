@@ -7,9 +7,10 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
-  font-family:system-ui,-apple-system;
-  background:#05070c;
+  font-family:Inter,system-ui,-apple-system;
+  background:radial-gradient(ellipse at top,#08101c 0%,#04060a 60%);
   color:white;
   min-height:100vh;
   overflow-x:hidden;
@@ -22,9 +23,9 @@ body::before{
   width:200%;
   height:200%;
   background:radial-gradient(white 1px,transparent 1px);
-  background-size:40px 40px;
-  opacity:.05;
-  animation:stars 120s linear infinite;
+  background-size:50px 50px;
+  opacity:.04;
+  animation:stars 140s linear infinite;
   z-index:-2;
 }
 @keyframes stars{
@@ -35,13 +36,14 @@ body::before{
 header{
   position:sticky;
   top:0;
-  padding:18px 28px;
-  backdrop-filter:blur(16px);
-  background:rgba(10,15,25,.8);
+  padding:18px 30px;
+  backdrop-filter:blur(20px);
+  background:rgba(8,15,25,.85);
   border-bottom:1px solid rgba(255,255,255,.08);
   display:flex;
   justify-content:space-between;
   align-items:center;
+  z-index:100;
 }
 
 .logo{
@@ -53,7 +55,7 @@ header{
 
 .statusBar{
   font-size:12px;
-  padding:6px 12px;
+  padding:6px 14px;
   border-radius:999px;
   background:rgba(108,242,194,.15);
   border:1px solid rgba(108,242,194,.4);
@@ -62,13 +64,17 @@ header{
 }
 
 .container{
-  max-width:1100px;
+  max-width:1200px;
   margin:50px auto;
   padding:0 20px;
 }
 
+.hero{
+  margin-bottom:40px;
+}
+
 .hero h1{
-  font-size:42px;
+  font-size:44px;
   font-weight:900;
 }
 .hero p{
@@ -76,31 +82,40 @@ header{
   opacity:.6;
 }
 
-.report{
-  padding:28px;
-  border-radius:20px;
-  margin-top:30px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  transition:.25s;
-  cursor:pointer;
-}
-.report:hover{
-  transform:translateY(-5px);
-  border-color:rgba(77,163,255,.6);
-  box-shadow:0 0 40px rgba(77,163,255,.2);
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:30px;
 }
 
-.threat{
-  float:right;
+.report{
+  padding:28px;
+  border-radius:22px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.3s;
+  cursor:pointer;
+  margin-bottom:25px;
+}
+.report:hover{
+  transform:translateY(-6px);
+  border-color:#4da3ff;
+  box-shadow:0 0 50px rgba(77,163,255,.25);
+}
+
+.threatBadge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
   font-weight:800;
-  font-size:13px;
+  margin-bottom:12px;
 }
 
 .meta{
   opacity:.6;
-  margin-top:6px;
   font-size:13px;
+  margin-top:8px;
 }
 
 .section{
@@ -109,41 +124,28 @@ header{
   opacity:.85;
 }
 
-.analysisBox{
-  margin-top:20px;
-  padding:16px;
+.sidePanel{
+  padding:22px;
+  border-radius:22px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.sidePanel h3{
+  margin-bottom:15px;
+  font-size:18px;
+}
+
+.scientistCard{
+  padding:14px;
   border-radius:16px;
   background:rgba(77,163,255,.08);
   border:1px solid rgba(77,163,255,.3);
+  margin-bottom:12px;
 }
 
-.scientistName{
-  font-weight:800;
-  font-size:14px;
-}
-
-.confidence{
-  font-size:12px;
-  opacity:.6;
-}
-
-.alert{
-  margin-top:12px;
-  padding:10px 14px;
-  border-radius:12px;
-  background:rgba(255,94,94,.15);
-  border:1px solid rgba(255,94,94,.4);
-  font-size:13px;
-}
-
-.empty{
-  text-align:center;
-  padding:80px;
-  opacity:.5;
-  border:1px dashed rgba(255,255,255,.2);
-  border-radius:25px;
-  font-size:14px;
-  margin-top:40px;
+.scientistCard strong{
+  display:block;
 }
 
 footer{
@@ -153,6 +155,41 @@ footer{
   margin-top:100px;
   border-top:1px solid rgba(255,255,255,.08);
 }
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(10px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  z-index:999;
+}
+.modalContent{
+  background:#0b1220;
+  padding:30px;
+  border-radius:25px;
+  max-width:800px;
+  width:100%;
+  max-height:85vh;
+  overflow:auto;
+  border:1px solid rgba(255,255,255,.1);
+}
+.closeBtn{
+  float:right;
+  cursor:pointer;
+  font-weight:bold;
+  opacity:.5;
+}
+.closeBtn:hover{opacity:1}
+a{
+  color:#4da3ff;
+  text-decoration:none;
+}
+a:hover{text-decoration:underline}
 </style>
 </head>
 
@@ -166,12 +203,39 @@ footer{
 <div class="container">
 
   <div class="hero">
-    <h1>Autonomous Space Intelligence Reports</h1>
-    <p>Multi-scientist AI analysis powered by NASA telemetry streams.</p>
+    <h1>Orbital Intelligence Reports</h1>
+    <p>Autonomous anomaly detection powered by NASA telemetry & AI scientist consensus.</p>
   </div>
 
-  <div id="reports"></div>
+  <div class="grid">
+    <div id="reports"></div>
 
+    <div class="sidePanel">
+      <h3>AI Scientist Network</h3>
+
+      <div class="scientistCard">
+        <strong>Dr. Nova Kade</strong>
+        Astrophysics Modeling Engine
+      </div>
+
+      <div class="scientistCard">
+        <strong>Dr. Orion Vale</strong>
+        Planetary Defense Analyst
+      </div>
+
+      <div class="scientistCard">
+        <strong>Dr. Lyra Solis</strong>
+        Solar Dynamics Specialist
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modalContent" id="modalContent">
+    <span class="closeBtn" onclick="closeModal()">✕</span>
+    <div id="modalBody"></div>
+  </div>
 </div>
 
 <footer>
@@ -187,97 +251,85 @@ const supabase = createClient(
 );
 
 const reportsContainer = document.getElementById("reports");
+const modal = document.getElementById("modal");
+const modalBody = document.getElementById("modalBody");
+
+function closeModal(){
+  modal.style.display="none";
+}
 
 async function loadReports(){
 
-  reportsContainer.innerHTML =
-    "<div class='empty'>🔄 ASTRA scanning orbital environment...</div>";
-
-  const { data: reports, error } = await supabase
+  const { data: reports } = await supabase
     .from("astra_reports")
     .select("*")
     .order("created_at", { ascending:false })
     .limit(10);
 
-  if(error || !reports){
-    reportsContainer.innerHTML =
-      "<div class='empty'>Signal interference detected.</div>";
-    return;
-  }
-
-  if(reports.length === 0){
-    reportsContainer.innerHTML =
-      "<div class='empty'>No reports generated yet. Awaiting first intelligence cycle...</div>";
-    return;
-  }
-
-  reportsContainer.innerHTML = "";
+  reportsContainer.innerHTML="";
 
   for(const report of reports){
 
     const { data: analyses } = await supabase
       .from("astra_analyses")
-      .select("analysis, confidence, astra_scientists(name)")
-      .eq("report_id", report.id);
-
-    const { data: alerts } = await supabase
-      .from("astra_alerts")
       .select("*")
       .eq("report_id", report.id);
 
-    const threatColor =
-      report.threat_level === "Critical" ? "#ff2e2e" :
-      report.threat_level === "Elevated" ? "#ff5e5e" :
-      report.threat_level === "Moderate" ? "#ffc857" :
+    const badgeColor =
+      report.threat_level==="Critical"?"#ff2e2e":
+      report.threat_level==="Elevated"?"#ff5e5e":
+      report.threat_level==="Moderate"?"#ffc857":
       "#6cf2c2";
 
-    const div = document.createElement("div");
-    div.className = "report";
+    const div=document.createElement("div");
+    div.className="report";
 
-    div.innerHTML = `
-      <div class="threat" style="color:${threatColor}">
-        Threat: ${report.threat_level}
+    div.innerHTML=`
+      <div class="threatBadge" style="background:${badgeColor}20;color:${badgeColor};border:1px solid ${badgeColor}">
+        ${report.threat_level} THREAT
       </div>
 
       <h2>${report.event_title}</h2>
 
       <div class="meta">
-        ${new Date(report.created_at).toLocaleString()}
-        • Threat Score: ${report.threat_score}
+        ${new Date(report.created_at).toLocaleString()} • Score: ${report.threat_score}
       </div>
 
-      <div class="section">
-        ${report.summary}
-      </div>
+      <div class="section">${report.summary}</div>
     `;
 
-    if(alerts && alerts.length > 0){
-      alerts.forEach(alert=>{
-        div.innerHTML += `
-          <div class="alert">
-            ⚠ ${alert.message}
-          </div>
-        `;
-      });
-    }
+    div.onclick=()=>{
+      modal.style.display="flex";
+      modalBody.innerHTML=`
+        <h2>${report.event_title}</h2>
+        <p><strong>Threat Level:</strong> ${report.threat_level}</p>
+        <p><strong>Total Risk Score:</strong> ${report.threat_score}</p>
+        <hr style="margin:20px 0;opacity:.2">
 
-    if(analyses){
-      analyses.forEach(a=>{
-        div.innerHTML += `
-          <div class="analysisBox">
-            <div class="scientistName">
-              ${a.astra_scientists?.name || "AI Scientist"}
+        <p>${report.summary}</p>
+
+        <hr style="margin:20px 0;opacity:.2">
+        <h3>AI Scientist Analysis</h3>
+
+        ${
+          analyses?.map(a=>`
+            <div style="margin-top:15px;padding:15px;background:rgba(77,163,255,.08);border-radius:12px;">
+              <strong>${a.scientist_name}</strong>
+              <div style="font-size:12px;opacity:.6">Confidence: ${a.confidence}%</div>
+              <div style="margin-top:8px">${a.analysis}</div>
             </div>
-            <div class="confidence">
-              Confidence: ${a.confidence}%
-            </div>
-            <div class="section">
-              ${a.analysis}
-            </div>
-          </div>
-        `;
-      });
-    }
+          `).join("")
+        }
+
+        <hr style="margin:20px 0;opacity:.2">
+        <h3>Related Articles</h3>
+        <p>
+          <a href="https://apod.nasa.gov/apod/astropix.html" target="_blank">
+            View NASA APOD Full Article
+          </a>
+        </p>
+      `;
+    };
 
     reportsContainer.appendChild(div);
   }
