@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>ASTRA • Orbital Intelligence Network</title>
+<title>ASTRA • Orbital Event Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -16,7 +16,6 @@ color:white;
 overflow-x:hidden;
 }
 
-/* BACKGROUND */
 body::before{
 content:"";
 position:fixed;
@@ -56,17 +55,13 @@ font-size:13px;
 opacity:.85;
 }
 
-/* GLOBAL STATUS STRIP */
-
 .globalStatus{
 padding:18px 40px;
 background:rgba(15,23,42,.7);
 border-bottom:1px solid rgba(255,255,255,.08);
 display:flex;
-justify-content:space-between;
-align-items:center;
+gap:40px;
 flex-wrap:wrap;
-gap:20px;
 }
 
 .statusMetric{
@@ -78,13 +73,6 @@ display:block;
 font-size:16px;
 margin-top:3px;
 }
-
-.critical{color:#ff3b3b}
-.elevated{color:#ff884d}
-.moderate{color:#ffc857}
-.low{color:#00ffc8}
-
-/* LAYOUT */
 
 .layout{
 display:grid;
@@ -111,8 +99,6 @@ border-radius:16px;
 padding:20px;
 }
 
-/* REPORT */
-
 .report{
 padding:20px;
 border-radius:14px;
@@ -126,12 +112,6 @@ cursor:pointer;
 .report:hover{
 transform:translateY(-4px);
 box-shadow:0 0 25px rgba(0,255,200,.35);
-}
-
-.badge{
-font-size:11px;
-font-weight:700;
-float:right;
 }
 
 .meta{
@@ -152,24 +132,13 @@ overflow:hidden;
 height:100%;
 }
 
-/* SCIENTISTS */
-
 .leaderCard{
 padding:15px;
 border-radius:12px;
 margin-bottom:12px;
 background:rgba(15,23,42,.6);
 border:1px solid rgba(255,255,255,.08);
-cursor:pointer;
-transition:.3s;
 }
-
-.leaderCard:hover{
-box-shadow:0 0 20px rgba(77,163,255,.4);
-transform:translateY(-3px);
-}
-
-/* MODALS */
 
 .modal{
 position:fixed;
@@ -201,14 +170,6 @@ opacity:.6;
 }
 .closeBtn:hover{opacity:1}
 
-.analysisCard{
-margin-top:15px;
-padding:12px;
-border-radius:10px;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.06);
-}
-
 footer{
 text-align:center;
 padding:40px;
@@ -223,41 +184,38 @@ font-size:12px;
 <header>
 <div class="logo">ASTRA ORBITAL INTELLIGENCE</div>
 <div class="statusBar">
-<div id="cycleStatus">Awaiting Cycle...</div>
+<div id="cycleStatus">Awaiting Data...</div>
 <div id="reportCount">Reports: 0</div>
 <div id="scientistCount">Scientists: 0</div>
 </div>
 </header>
 
 <div class="globalStatus">
-<div class="statusMetric">Threat Level<strong id="gThreat">—</strong></div>
-<div class="statusMetric">Consensus Risk<strong id="gRisk">—</strong></div>
+<div class="statusMetric">Latest Threat Level<strong id="gThreat">—</strong></div>
+<div class="statusMetric">Current Risk Score<strong id="gRisk">—</strong></div>
 <div class="statusMetric">Forecast Risk<strong id="gForecast">—</strong></div>
-<div class="statusMetric">Defense Level<strong id="gDefense">—</strong></div>
-<div class="statusMetric">Tracking Mode<strong id="gTracking">—</strong></div>
-<div class="statusMetric">Satellites Required<strong id="gSatellites">—</strong></div>
+<div class="statusMetric">Last Updated<strong id="gUpdated">—</strong></div>
 </div>
 
 <div class="layout">
 
 <div class="glass">
-<div class="sectionTitle">ORBITAL INTELLIGENCE STREAM</div>
+<div class="sectionTitle">ORBITAL EVENT STREAM</div>
 <div id="reports"></div>
 </div>
 
 <div class="glass">
-<div class="sectionTitle">AI SCIENTIST CONSENSUS RANKING</div>
+<div class="sectionTitle">SCIENTIST ANALYSIS RANKING</div>
 <div id="scientists"></div>
 </div>
 
 </div>
 
-<footer>© 2026 ASTRA Orbital Intelligence Network</footer>
+<footer>Data derived from official space agency feeds. © 2026 ASTRA</footer>
 
-<!-- ARTICLE MODAL -->
 <div id="articleModal" class="modal">
 <div class="modalBox">
-<div class="closeBtn" onclick="closeModal('articleModal')">✕ Close</div>
+<div class="closeBtn" onclick="closeModal()">✕ Close</div>
 <h2 id="articleTitle"></h2>
 <p id="articleMeta" style="opacity:.6;margin-bottom:15px;"></p>
 <div id="articleContent"></div>
@@ -276,77 +234,48 @@ const supabase=createClient(
 const reportsContainer=document.getElementById("reports");
 const scientistContainer=document.getElementById("scientists");
 
-function threatColor(level){
-if(level==="Critical") return "#ff3b3b";
-if(level==="Elevated") return "#ff884d";
-if(level==="Moderate") return "#ffc857";
-return "#00ffc8";
-}
-
-/* LOAD REPORTS */
-
 async function loadReports(){
-const {data}=await supabase.from("astra_reports")
-.select("*").order("created_at",{ascending:false});
+const {data}=await supabase
+.from("astra_reports")
+.select("*")
+.order("created_at",{ascending:false});
 
 if(!data) return;
 
 document.getElementById("reportCount").innerText="Reports: "+data.length;
-renderReports(data);
 
-if(data.length>0) updateGlobalStatus(data[0]);
-}
-
-function renderReports(data){
 reportsContainer.innerHTML="";
 data.forEach(r=>{
 const div=document.createElement("div");
 div.className="report";
 div.innerHTML=`
-<div class="badge" style="color:${threatColor(r.threat_level)}">${r.threat_level}</div>
 <h3>${r.event_title}</h3>
 <div class="meta">${new Date(r.created_at).toLocaleString()}</div>
 <div style="margin-top:10px">${r.summary}</div>
 <div class="threatBar">
-<div class="threatFill" style="width:${r.threat_score}%;background:${threatColor(r.threat_level)}"></div>
+<div class="threatFill" style="width:${r.threat_score}%;background:#00ffc8"></div>
 </div>
 `;
 div.onclick=()=>openArticle(r);
 reportsContainer.appendChild(div);
 });
-}
 
-/* GLOBAL STATUS */
-
-function updateGlobalStatus(r){
-document.getElementById("gThreat").innerText=r.threat_level;
-document.getElementById("gThreat").className=r.threat_level.toLowerCase();
-document.getElementById("gRisk").innerText=r.threat_score;
-document.getElementById("gForecast").innerText=r.forecast_risk||"—";
-
-document.getElementById("gDefense").innerText=
-r.threat_score>130?"Planetary Shield Protocol":
-r.threat_score>90?"Heightened":"Nominal";
-
-document.getElementById("gTracking").innerText=
-r.threat_score>130?"Maximum Deep Scan":
-r.threat_score>80?"High-Resolution":"Standard";
-
-document.getElementById("gSatellites").innerText=
-r.threat_score>130?12:
-r.threat_score>80?6:3;
-
+if(data.length>0){
+const latest=data[0];
+document.getElementById("gThreat").innerText=latest.threat_level;
+document.getElementById("gRisk").innerText=latest.threat_score;
+document.getElementById("gForecast").innerText=latest.forecast_risk||"—";
+document.getElementById("gUpdated").innerText=new Date(latest.created_at).toLocaleString();
 document.getElementById("cycleStatus").innerText=
-"Last Cycle: "+new Date(r.created_at).toLocaleTimeString();
+"Last Update: "+new Date(latest.created_at).toLocaleTimeString();
 }
-
-/* ARTICLE */
+}
 
 async function openArticle(r){
 document.getElementById("articleModal").style.display="flex";
 document.getElementById("articleTitle").innerText=r.event_title;
 document.getElementById("articleMeta").innerText=
-new Date(r.created_at).toLocaleString()+" • Threat "+r.threat_level;
+new Date(r.created_at).toLocaleString();
 document.getElementById("articleContent").innerText=r.full_article;
 
 const {data:analyses}=await supabase
@@ -355,25 +284,25 @@ const {data:analyses}=await supabase
 .eq("report_id",r.id);
 
 const container=document.getElementById("articleAnalyses");
-container.innerHTML="<h3 style='margin-top:20px'>Scientist Consensus</h3>";
+container.innerHTML="<h3 style='margin-top:20px'>Scientific Analyses</h3>";
 
 analyses?.forEach(a=>{
-const card=document.createElement("div");
-card.className="analysisCard";
-card.innerHTML=`
-<strong>${a.astra_scientists?.name||"Unknown"}</strong><br>
+const div=document.createElement("div");
+div.style.marginTop="10px";
+div.innerHTML=`
+<strong>${a.astra_scientists?.name||"Research Analyst"}</strong><br>
 ${a.analysis}<br>
-<small>Confidence ${a.confidence}%</small>
+<small>Confidence: ${a.confidence}%</small>
 `;
-container.appendChild(card);
+container.appendChild(div);
 });
 }
 
-/* SCIENTISTS */
-
 async function loadScientists(){
-const {data}=await supabase.from("astra_scientists")
-.select("*").order("reputation_score",{ascending:false});
+const {data}=await supabase
+.from("astra_scientists")
+.select("*")
+.order("reputation_score",{ascending:false});
 
 if(!data) return;
 
@@ -385,29 +314,16 @@ const div=document.createElement("div");
 div.className="leaderCard";
 div.innerHTML=`
 <strong>#${i+1} ${s.name}</strong><br>
-Reputation ${Number(s.reputation_score).toFixed(1)}<br>
+Reputation Score: ${Number(s.reputation_score).toFixed(1)}<br>
 ${s.specialty}
 `;
 scientistContainer.appendChild(div);
 });
 }
 
-/* REALTIME */
-
-supabase.channel("live-reports")
-.on("postgres_changes",{event:"*",schema:"public",table:"astra_reports"},
-()=>loadReports())
-.subscribe();
-
-/* UTIL */
-
-window.closeModal=function(id){
-document.getElementById(id).style.display="none";
+window.closeModal=function(){
+document.getElementById("articleModal").style.display="none";
 }
-
-window.addEventListener("keydown",(e)=>{
-if(e.key==="Escape") closeModal("articleModal");
-});
 
 loadReports();
 loadScientists();
