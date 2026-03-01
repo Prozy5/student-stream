@@ -8,7 +8,6 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 body{
 font-family:Inter,system-ui;
 background:#020617;
@@ -16,6 +15,7 @@ color:white;
 overflow-x:hidden;
 }
 
+/* Dynamic animated background */
 body::before{
 content:"";
 position:fixed;
@@ -26,6 +26,11 @@ radial-gradient(circle at 80% 70%, rgba(255,0,150,.15), transparent 40%),
 radial-gradient(circle at 50% 50%, rgba(0,255,200,.1), transparent 60%),
 #020617;
 z-index:-3;
+animation: pulseBg 12s infinite alternate ease-in-out;
+}
+@keyframes pulseBg{
+0%{filter:hue-rotate(0deg)}
+100%{filter:hue-rotate(25deg)}
 }
 
 header{
@@ -62,10 +67,6 @@ border-bottom:1px solid rgba(255,255,255,.08);
 display:flex;
 gap:40px;
 flex-wrap:wrap;
-}
-
-.statusMetric{
-font-size:13px;
 }
 
 .statusMetric strong{
@@ -114,12 +115,6 @@ transform:translateY(-4px);
 box-shadow:0 0 25px rgba(0,255,200,.35);
 }
 
-.meta{
-font-size:12px;
-opacity:.6;
-margin-top:5px;
-}
-
 .threatBar{
 height:6px;
 background:#111827;
@@ -127,9 +122,9 @@ border-radius:4px;
 margin-top:10px;
 overflow:hidden;
 }
-
 .threatFill{
 height:100%;
+transition:width .6s ease;
 }
 
 .leaderCard{
@@ -138,6 +133,12 @@ border-radius:12px;
 margin-bottom:12px;
 background:rgba(15,23,42,.6);
 border:1px solid rgba(255,255,255,.08);
+cursor:pointer;
+transition:.3s;
+}
+.leaderCard:hover{
+transform:translateY(-3px);
+box-shadow:0 0 20px rgba(0,150,255,.35);
 }
 
 .modal{
@@ -150,7 +151,9 @@ align-items:center;
 justify-content:center;
 padding:40px;
 z-index:999;
+animation:fadeIn .4s ease;
 }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .modalBox{
 max-width:950px;
@@ -184,21 +187,20 @@ font-size:12px;
 <header>
 <div class="logo">ASTRA ORBITAL INTELLIGENCE</div>
 <div class="statusBar">
-<div id="cycleStatus">Awaiting Data...</div>
+<div id="cycleStatus">Initializing...</div>
 <div id="reportCount">Reports: 0</div>
 <div id="scientistCount">Scientists: 0</div>
 </div>
 </header>
 
 <div class="globalStatus">
-<div class="statusMetric">Latest Threat Level<strong id="gThreat">—</strong></div>
-<div class="statusMetric">Current Risk Score<strong id="gRisk">—</strong></div>
-<div class="statusMetric">Forecast Risk<strong id="gForecast">—</strong></div>
-<div class="statusMetric">Last Updated<strong id="gUpdated">—</strong></div>
+<div class="statusMetric">Latest Threat<strong id="gThreat">—</strong></div>
+<div class="statusMetric">Risk Score<strong id="gRisk">—</strong></div>
+<div class="statusMetric">Forecast<strong id="gForecast">—</strong></div>
+<div class="statusMetric">Updated<strong id="gUpdated">—</strong></div>
 </div>
 
 <div class="layout">
-
 <div class="glass">
 <div class="sectionTitle">ORBITAL EVENT STREAM</div>
 <div id="reports"></div>
@@ -208,18 +210,17 @@ font-size:12px;
 <div class="sectionTitle">SCIENTIST ANALYSIS RANKING</div>
 <div id="scientists"></div>
 </div>
-
 </div>
 
 <footer>Data derived from official space agency feeds. © 2026 ASTRA</footer>
 
-<div id="articleModal" class="modal">
+<div id="modal" class="modal">
 <div class="modalBox">
 <div class="closeBtn" onclick="closeModal()">✕ Close</div>
-<h2 id="articleTitle"></h2>
-<p id="articleMeta" style="opacity:.6;margin-bottom:15px;"></p>
-<div id="articleContent"></div>
-<div id="articleAnalyses"></div>
+<h2 id="modalTitle"></h2>
+<p id="modalMeta" style="opacity:.6;margin-bottom:15px;"></p>
+<div id="modalContent"></div>
+<div id="modalExtra"></div>
 </div>
 </div>
 
@@ -234,6 +235,13 @@ const supabase=createClient(
 const reportsContainer=document.getElementById("reports");
 const scientistContainer=document.getElementById("scientists");
 
+function threatColor(score){
+if(score>=75) return "#ff3b3b";
+if(score>=50) return "#ff9f43";
+if(score>=25) return "#ffd32a";
+return "#00ffc8";
+}
+
 async function loadReports(){
 const {data}=await supabase
 .from("astra_reports")
@@ -242,59 +250,58 @@ const {data}=await supabase
 
 if(!data) return;
 
+reportsContainer.innerHTML="";
 document.getElementById("reportCount").innerText="Reports: "+data.length;
 
-reportsContainer.innerHTML="";
 data.forEach(r=>{
 const div=document.createElement("div");
 div.className="report";
+
 div.innerHTML=`
 <h3>${r.event_title}</h3>
-<div class="meta">${new Date(r.created_at).toLocaleString()}</div>
+<div style="opacity:.6;font-size:12px">${new Date(r.created_at).toLocaleString()}</div>
 <div style="margin-top:10px">${r.summary}</div>
 <div class="threatBar">
-<div class="threatFill" style="width:${r.threat_score}%;background:#00ffc8"></div>
+<div class="threatFill" style="width:${r.threat_score}%;background:${threatColor(r.threat_score)}"></div>
 </div>
 `;
-div.onclick=()=>openArticle(r);
+
+div.onclick=()=>openReport(r);
 reportsContainer.appendChild(div);
 });
 
-if(data.length>0){
+if(data.length){
 const latest=data[0];
 document.getElementById("gThreat").innerText=latest.threat_level;
 document.getElementById("gRisk").innerText=latest.threat_score;
 document.getElementById("gForecast").innerText=latest.forecast_risk||"—";
-document.getElementById("gUpdated").innerText=new Date(latest.created_at).toLocaleString();
-document.getElementById("cycleStatus").innerText=
-"Last Update: "+new Date(latest.created_at).toLocaleTimeString();
+document.getElementById("gUpdated").innerText=new Date(latest.created_at).toLocaleTimeString();
+document.getElementById("cycleStatus").innerText="Live Monitoring Active";
 }
 }
 
-async function openArticle(r){
-document.getElementById("articleModal").style.display="flex";
-document.getElementById("articleTitle").innerText=r.event_title;
-document.getElementById("articleMeta").innerText=
-new Date(r.created_at).toLocaleString();
-document.getElementById("articleContent").innerText=r.full_article;
+async function openReport(r){
+document.getElementById("modal").style.display="flex";
+document.getElementById("modalTitle").innerText=r.event_title;
+document.getElementById("modalMeta").innerText=new Date(r.created_at).toLocaleString();
+document.getElementById("modalContent").innerText=r.full_article;
 
 const {data:analyses}=await supabase
 .from("astra_analyses")
 .select("analysis,confidence,astra_scientists(name)")
 .eq("report_id",r.id);
 
-const container=document.getElementById("articleAnalyses");
-container.innerHTML="<h3 style='margin-top:20px'>Scientific Analyses</h3>";
+const extra=document.getElementById("modalExtra");
+extra.innerHTML="<h3 style='margin-top:20px'>Scientific Analyses</h3>";
 
 analyses?.forEach(a=>{
-const div=document.createElement("div");
-div.style.marginTop="10px";
-div.innerHTML=`
+extra.innerHTML+=`
+<div style="margin-top:10px">
 <strong>${a.astra_scientists?.name||"Research Analyst"}</strong><br>
 ${a.analysis}<br>
 <small>Confidence: ${a.confidence}%</small>
+</div>
 `;
-container.appendChild(div);
 });
 }
 
@@ -306,24 +313,43 @@ const {data}=await supabase
 
 if(!data) return;
 
-document.getElementById("scientistCount").innerText="Scientists: "+data.length;
 scientistContainer.innerHTML="";
+document.getElementById("scientistCount").innerText="Scientists: "+data.length;
 
 data.forEach((s,i)=>{
 const div=document.createElement("div");
 div.className="leaderCard";
 div.innerHTML=`
 <strong>#${i+1} ${s.name}</strong><br>
-Reputation Score: ${Number(s.reputation_score).toFixed(1)}<br>
+Reputation: ${Number(s.reputation_score).toFixed(1)}<br>
 ${s.specialty}
 `;
+div.onclick=()=>openScientist(s);
 scientistContainer.appendChild(div);
 });
 }
 
-window.closeModal=function(){
-document.getElementById("articleModal").style.display="none";
+function openScientist(s){
+document.getElementById("modal").style.display="flex";
+document.getElementById("modalTitle").innerText=s.name;
+document.getElementById("modalMeta").innerText="Specialty: "+s.specialty;
+document.getElementById("modalContent").innerHTML=`
+Reputation Score: ${Number(s.reputation_score).toFixed(1)}<br><br>
+${s.bio||"No biography available."}
+`;
+document.getElementById("modalExtra").innerHTML="";
 }
+
+window.closeModal=function(){
+document.getElementById("modal").style.display="none";
+}
+
+/* REAL-TIME SUBSCRIPTIONS */
+supabase.channel("live-reports")
+.on("postgres_changes",
+{event:"INSERT",schema:"public",table:"astra_reports"},
+payload=>loadReports()
+).subscribe();
 
 loadReports();
 loadScientists();
