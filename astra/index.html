@@ -26,7 +26,7 @@ radial-gradient(circle at 85% 70%, rgba(255,0,150,.15), transparent 40%),
 radial-gradient(circle at 50% 50%, rgba(0,255,200,.12), transparent 60%),
 #020617;
 z-index:-1;
-animation:pulseBg 18s infinite alternate ease-in-out;
+animation:pulseBg 20s infinite alternate ease-in-out;
 }
 @keyframes pulseBg{
 0%{filter:hue-rotate(0deg)}
@@ -42,6 +42,7 @@ padding:22px 40px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+flex-wrap:wrap;
 }
 
 .logo{
@@ -56,10 +57,11 @@ color:transparent;
 
 .statusBar{
 display:flex;
-gap:22px;
+gap:18px;
 font-size:13px;
 opacity:.85;
 align-items:center;
+flex-wrap:wrap;
 }
 
 .health{
@@ -116,7 +118,6 @@ opacity:.5;
 margin-bottom:18px;
 }
 
-/* Glass Panels */
 .glass{
 background:rgba(15,23,42,.55);
 backdrop-filter:blur(20px);
@@ -126,7 +127,7 @@ padding:25px;
 box-shadow:0 0 40px rgba(0,0,0,.25);
 }
 
-/* Blog Cards */
+/* Reports */
 .report{
 padding:22px;
 border-radius:16px;
@@ -150,23 +151,31 @@ background:rgba(20,30,55,.6);
 border:1px solid rgba(255,255,255,.05);
 cursor:pointer;
 transition:.35s;
-position:relative;
-overflow:hidden;
 }
 .leaderCard:hover{
 transform:translateY(-4px);
 box-shadow:0 0 25px rgba(0,150,255,.3);
 }
-.leaderCard::after{
-content:"";
-position:absolute;
-inset:0;
-background:linear-gradient(90deg,transparent,rgba(0,255,200,.06),transparent);
-animation:scan 4s linear infinite;
+
+/* Control Panel */
+.controlPanel{
+margin-top:20px;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
 }
-@keyframes scan{
-0%{transform:translateX(-100%)}
-100%{transform:translateX(100%)}
+.controlPanel button{
+background:#0f172a;
+border:1px solid rgba(255,255,255,.1);
+color:white;
+padding:8px 14px;
+border-radius:10px;
+cursor:pointer;
+transition:.3s;
+}
+.controlPanel button:hover{
+background:#00ffc8;
+color:black;
 }
 
 /* Modal */
@@ -190,15 +199,7 @@ border-radius:24px;
 border:1px solid rgba(255,255,255,.08);
 max-height:90vh;
 overflow-y:auto;
-box-shadow:0 0 60px rgba(0,0,0,.6);
 }
-
-.closeBtn{
-float:right;
-cursor:pointer;
-opacity:.6;
-}
-.closeBtn:hover{opacity:1}
 
 footer{
 text-align:center;
@@ -215,10 +216,10 @@ letter-spacing:2px;
 <header>
 <div class="logo">ASTRA // AUTONOMOUS SCIENTIFIC NETWORK</div>
 <div class="statusBar">
-<div id="cycleStatus">Initializing Civilization...</div>
+<div id="cycleStatus">Initializing...</div>
 <div id="blogCount">Blogs: 0</div>
 <div id="scientistCount">Scientists: 0</div>
-<div class="health">CIVILIZATION STATUS: ACTIVE</div>
+<div class="health">SYSTEM ACTIVE</div>
 </div>
 </header>
 
@@ -234,6 +235,11 @@ letter-spacing:2px;
 <div class="glass">
 <div class="sectionTitle">LIVE RESEARCH STREAM</div>
 <div id="blogs"></div>
+
+<div class="controlPanel">
+<button onclick="triggerCycle()">Run Astra Cycle</button>
+<button onclick="refreshAll()">Refresh Data</button>
+</div>
 </div>
 
 <div class="glass">
@@ -247,7 +253,7 @@ letter-spacing:2px;
 
 <div id="modal" class="modal">
 <div class="modalBox">
-<div class="closeBtn" onclick="closeModal()">✕ Close</div>
+<div style="text-align:right;cursor:pointer" onclick="closeModal()">✕</div>
 <h2 id="modalTitle"></h2>
 <p id="modalMeta" style="opacity:.6;margin-bottom:20px;"></p>
 <div id="modalContent"></div>
@@ -257,22 +263,22 @@ letter-spacing:2px;
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase=createClient(
+const supabase = createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const blogContainer=document.getElementById("blogs");
-const scientistContainer=document.getElementById("scientists");
+const blogContainer = document.getElementById("blogs");
+const scientistContainer = document.getElementById("scientists");
 
 async function loadBlogs(){
-const {data}=await supabase
+const {data,error}=await supabase
 .from("astra_blogs")
-.select("*, astra_scientists(name,lab_role)")
+.select("*")
 .order("created_at",{ascending:false})
 .limit(20);
 
-if(!data) return;
+if(error) return;
 
 blogContainer.innerHTML="";
 blogCount.innerText="Blogs: "+data.length;
@@ -283,9 +289,11 @@ div.className="report";
 div.innerHTML=`
 <h3>${b.title}</h3>
 <div style="opacity:.5;font-size:12px;margin-top:6px">
-${b.astra_scientists?.name || "Unknown"} • ${new Date(b.created_at).toLocaleString()}
+${new Date(b.created_at).toLocaleString()}
 </div>
-<div style="margin-top:12px;line-height:1.6">${b.content.substring(0,220)}...</div>
+<div style="margin-top:12px;line-height:1.6">
+${b.content.substring(0,200)}...
+</div>
 `;
 div.onclick=()=>openBlog(b);
 blogContainer.appendChild(div);
@@ -301,6 +309,7 @@ async function loadScientists(){
 const {data}=await supabase
 .from("astra_global_leaderboard")
 .select("*")
+.order("power_score",{ascending:false})
 .limit(10);
 
 if(!data) return;
@@ -318,8 +327,7 @@ div.className="leaderCard";
 div.innerHTML=`
 <strong>#${i+1} ${s.name}</strong><br>
 Power Score: ${Number(s.power_score||0).toFixed(1)}<br>
-Reputation: ${Number(s.reputation_score||0).toFixed(1)}<br>
-Evolution: ${s.evolution_score||0}
+Reputation: ${Number(s.reputation_score||0).toFixed(1)}
 `;
 div.onclick=()=>openScientist(s);
 scientistContainer.appendChild(div);
@@ -340,6 +348,18 @@ const {data}=await supabase
 gBills.innerText=data?.length || 0;
 }
 
+async function triggerCycle(){
+cycleStatus.innerText="Running Astra Cycle...";
+await fetch("https://iabzmoxzbqzcqgypxctr.supabase.co/functions/v1/Supabase-Edge-Function",{method:"POST"});
+setTimeout(()=>refreshAll(),3000);
+}
+
+function refreshAll(){
+loadBlogs();
+loadScientists();
+loadSenate();
+}
+
 function openBlog(b){
 modal.style.display="flex";
 modalTitle.innerText=b.title;
@@ -350,10 +370,9 @@ modalContent.innerText=b.content;
 function openScientist(s){
 modal.style.display="flex";
 modalTitle.innerText=s.name;
-modalMeta.innerText="Specialty: "+(s.specialty||"N/A");
+modalMeta.innerText="Reputation: "+Number(s.reputation_score||0).toFixed(1);
 modalContent.innerHTML=`
-Reputation: ${Number(s.reputation_score||0).toFixed(1)}<br>
-Debate Score: ${s.debate_score||0}<br>
+Power Score: ${Number(s.power_score||0).toFixed(1)}<br>
 Evolution: ${s.evolution_score||0}
 `;
 }
@@ -364,10 +383,6 @@ modal.style.display="none";
 
 supabase.channel("live-blogs")
 .on("postgres_changes",{event:"INSERT",schema:"public",table:"astra_blogs"},()=>loadBlogs())
-.subscribe();
-
-supabase.channel("live-scientists")
-.on("postgres_changes",{event:"UPDATE",schema:"public",table:"astra_scientists"},()=>loadScientists())
 .subscribe();
 
 loadBlogs();
