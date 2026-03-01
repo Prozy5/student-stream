@@ -16,9 +16,7 @@ body{
   overflow-x:hidden;
 }
 
-/* ===========================
-   SPACE BACKGROUND
-=========================== */
+/* ================= SPACE BACKGROUND ================= */
 
 body::before{
   content:"";
@@ -47,9 +45,7 @@ body::after{
   to{background-position:1000px 1000px}
 }
 
-/* ===========================
-   ORBIT CORE
-=========================== */
+/* ================= ORBIT CORE ================= */
 
 .orbit-core{
   position:fixed;
@@ -78,9 +74,7 @@ body::after{
   to{transform:rotate(360deg)}
 }
 
-/* ===========================
-   HEADER
-=========================== */
+/* ================= HEADER ================= */
 
 header{
   backdrop-filter:blur(20px);
@@ -109,19 +103,7 @@ header{
   opacity:.8;
 }
 
-button{
-  background:linear-gradient(90deg,#4da3ff,#00ffc8);
-  border:none;
-  padding:8px 14px;
-  border-radius:20px;
-  font-weight:600;
-  cursor:pointer;
-  color:black;
-}
-
-/* ===========================
-   LAYOUT
-=========================== */
+/* ================= LAYOUT ================= */
 
 .layout{
   display:grid;
@@ -140,8 +122,6 @@ button{
   margin-bottom:20px;
 }
 
-/* GLASS PANELS */
-
 .glass{
   background:rgba(15,23,42,.5);
   backdrop-filter:blur(15px);
@@ -150,24 +130,7 @@ button{
   padding:20px;
 }
 
-/* FILTERS */
-
-.filters{
-  display:flex;
-  gap:15px;
-  margin-bottom:20px;
-}
-
-.filters input,
-.filters select{
-  padding:8px 10px;
-  background:#0f172a;
-  border:1px solid rgba(255,255,255,.1);
-  color:white;
-  border-radius:20px;
-}
-
-/* REPORT */
+/* ================= REPORT CARDS ================= */
 
 .report{
   padding:20px;
@@ -176,7 +139,7 @@ button{
   margin-bottom:15px;
   background:rgba(15,23,42,.6);
   transition:.3s;
-  box-shadow:0 0 0 rgba(0,255,200,0);
+  cursor:pointer;
 }
 
 .report:hover{
@@ -196,20 +159,44 @@ button{
   margin-top:5px;
 }
 
-.threatBar{
-  height:6px;
-  background:#111827;
-  border-radius:4px;
-  margin-top:10px;
-  overflow:hidden;
+/* ================= ARTICLE MODAL ================= */
+
+#articleModal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(20px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  z-index:999;
 }
 
-.threatFill{
-  height:100%;
-  transition:.4s;
+.articleBox{
+  max-width:900px;
+  width:100%;
+  background:#0f172a;
+  padding:40px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.1);
+  animation:fadeIn .4s ease;
 }
 
-/* SCIENTISTS */
+@keyframes fadeIn{
+  from{opacity:0;transform:scale(.95)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.closeBtn{
+  float:right;
+  cursor:pointer;
+  opacity:.6;
+}
+
+.closeBtn:hover{opacity:1}
+
+/* ================= SCIENTISTS ================= */
 
 .leaderCard{
   padding:15px;
@@ -217,6 +204,7 @@ button{
   margin-bottom:12px;
   background:rgba(15,23,42,.6);
   border:1px solid rgba(255,255,255,.08);
+  cursor:pointer;
   transition:.3s;
 }
 
@@ -225,32 +213,11 @@ button{
   transform:translateY(-3px);
 }
 
-/* FOOTER */
-
 footer{
   text-align:center;
   padding:40px;
   opacity:.4;
   font-size:12px;
-}
-
-/* LOGIN MODAL */
-
-#authPanel{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.8);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.authBox{
-  background:#0f172a;
-  padding:40px;
-  border-radius:20px;
-  width:350px;
-  border:1px solid rgba(255,255,255,.1);
 }
 </style>
 </head>
@@ -268,8 +235,6 @@ footer{
   <div class="systemBar">
     <div id="reportCount">Reports: 0</div>
     <div id="scientistCount">Scientists: 0</div>
-    <div id="userEmail"></div>
-    <button id="logoutBtn" style="display:none">Logout</button>
   </div>
 </header>
 
@@ -277,19 +242,6 @@ footer{
 
   <div class="glass">
     <div class="sectionTitle">ORBITAL INTELLIGENCE STREAM</div>
-    <div class="filters">
-      <input type="text" id="searchInput" placeholder="Search anomalies...">
-      <select id="threatFilter">
-        <option value="">All Threat Levels</option>
-        <option>Critical</option>
-        <option>Elevated</option>
-        <option>Moderate</option>
-        <option>Low</option>
-      </select>
-      <select id="sectorFilter">
-        <option value="">All Sectors</option>
-      </select>
-    </div>
     <div id="reports"></div>
   </div>
 
@@ -304,6 +256,16 @@ footer{
 © 2026 ASTRA Orbital Research Network
 </footer>
 
+<!-- ARTICLE MODAL -->
+<div id="articleModal">
+  <div class="articleBox">
+    <div class="closeBtn" onclick="closeArticle()">✕ Close</div>
+    <h2 id="articleTitle"></h2>
+    <p id="articleMeta" style="opacity:.6;margin-bottom:20px;"></p>
+    <div id="articleContent"></div>
+  </div>
+</div>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -314,18 +276,6 @@ const supabase = createClient(
 
 const reportsContainer=document.getElementById("reports");
 const scientistContainer=document.getElementById("scientists");
-
-async function checkSession(){
-  loadReports();
-  loadScientists();
-  loadSectors();
-
-  const { data:{session} } = await supabase.auth.getSession();
-  if(session){
-    document.getElementById("userEmail").innerText=session.user.email;
-    document.getElementById("logoutBtn").style.display="block";
-  }
-}
 
 function threatColor(level){
   if(level==="Critical") return "#ff3b3b";
@@ -350,12 +300,23 @@ async function loadReports(){
       <h3>${r.event_title}</h3>
       <div class="meta">${new Date(r.created_at).toLocaleString()} • Sector ${r.orbital_sector||"Unknown"}</div>
       <div style="margin-top:10px">${r.summary}</div>
-      <div class="threatBar">
-        <div class="threatFill" style="width:${r.threat_score}%;background:${threatColor(r.threat_level)}"></div>
-      </div>
     `;
+    div.onclick=()=>openArticle(r);
     reportsContainer.appendChild(div);
   });
+}
+
+function openArticle(r){
+  document.getElementById("articleModal").style.display="flex";
+  document.getElementById("articleTitle").innerText=r.event_title;
+  document.getElementById("articleMeta").innerText=
+    new Date(r.created_at).toLocaleString()+" • Threat "+r.threat_level;
+  document.getElementById("articleContent").innerHTML=
+    r.full_report || r.summary;
+}
+
+window.closeArticle=function(){
+  document.getElementById("articleModal").style.display="none";
 }
 
 async function loadScientists(){
@@ -378,18 +339,6 @@ async function loadScientists(){
   });
 }
 
-async function loadSectors(){
-  const {data}=await supabase.from("astra_reports").select("orbital_sector");
-  const sectors=[...new Set(data.map(d=>d.orbital_sector).filter(Boolean))];
-  const select=document.getElementById("sectorFilter");
-  sectors.forEach(s=>{
-    const opt=document.createElement("option");
-    opt.value=s;
-    opt.innerText=s;
-    select.appendChild(opt);
-  });
-}
-
 supabase.channel("live-reports")
   .on("postgres_changes",{event:"*",schema:"public",table:"astra_reports"},
     ()=>loadReports())
@@ -400,7 +349,8 @@ supabase.channel("live-scientists")
     ()=>loadScientists())
   .subscribe();
 
-checkSession();
+loadReports();
+loadScientists();
 </script>
 
 </body>
