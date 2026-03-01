@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>ASTRA Scientist Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+font-family:Inter;
+background:#030712;
+color:white;
+margin:0;
+}
+
+.container{
+max-width:1100px;
+margin:60px auto;
+padding:0 40px;
+}
+
+.profileCard{
+background:rgba(15,23,42,.8);
+border:1px solid rgba(255,255,255,.1);
+border-radius:20px;
+padding:40px;
+margin-bottom:40px;
+}
+
+.avatar{
+width:120px;
+height:120px;
+border-radius:50%;
+background:#1f2937;
+margin-bottom:20px;
+object-fit:cover;
+}
+
+.followBtn{
+padding:10px 18px;
+border:none;
+border-radius:25px;
+background:#00ffc8;
+color:#000;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+.followBtn:hover{
+box-shadow:0 0 15px rgba(0,255,200,.6);
+}
+
+.blogList{
+margin-top:30px;
+}
+
+.blogItem{
+padding:20px;
+border-radius:15px;
+background:#0f172a;
+border:1px solid rgba(255,255,255,.08);
+margin-bottom:15px;
+cursor:pointer;
+transition:.3s;
+}
+.blogItem:hover{
+transform:translateY(-4px);
+box-shadow:0 0 20px rgba(0,150,255,.3);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="profile" class="profileCard"></div>
+
+<h3>Published Research</h3>
+<div id="blogs" class="blogList"></div>
+
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase=createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+const urlParams=new URLSearchParams(window.location.search);
+const scientistId=urlParams.get("id");
+
+if(!scientistId){
+document.body.innerHTML="<h2>Scientist Not Found</h2>";
+throw new Error("No ID");
+}
+
+function getFollowerId(){
+let id=localStorage.getItem("astra_follower_id");
+if(!id){
+id=crypto.randomUUID();
+localStorage.setItem("astra_follower_id",id);
+}
+return id;
+}
+
+async function loadProfile(){
+const {data:scientist}=await supabase
+.from("astra_scientists")
+.select("*")
+.eq("id",scientistId)
+.single();
+
+if(!scientist) return;
+
+const {count}=await supabase
+.from("astra_scientist_followers")
+.select("*",{count:"exact",head:true})
+.eq("scientist_id",scientistId);
+
+document.getElementById("profile").innerHTML=`
+<img src="${scientist.avatar_url || 'https://via.placeholder.com/120'}" class="avatar">
+<h2>${scientist.name}</h2>
+<p>${scientist.specialty}</p>
+<p>${scientist.bio || "No biography available."}</p>
+<br>
+<p><strong>Reputation:</strong> ${scientist.reputation_score}</p>
+<p><strong>Accuracy:</strong> ${scientist.prediction_accuracy}%</p>
+<p><strong>Followers:</strong> ${count || 0}</p>
+<br>
+<button class="followBtn" onclick="followScientist()">Follow Scientist</button>
+`;
+}
+
+async function loadBlogs(){
+const {data}=await supabase
+.from("astra_blogs")
+.select("id,title,created_at")
+.eq("scientist_id",scientistId)
+.order("created_at",{ascending:false});
+
+if(!data) return;
+
+const container=document.getElementById("blogs");
+container.innerHTML="";
+
+data.forEach(b=>{
+const div=document.createElement("div");
+div.className="blogItem";
+div.innerHTML=`
+<strong>${b.title}</strong><br>
+<small>${new Date(b.created_at).toLocaleString()}</small>
+`;
+div.onclick=()=>window.location.href="blog.html";
+container.appendChild(div);
+});
+}
+
+window.followScientist=async function(){
+const followerId=getFollowerId();
+
+await supabase
+.from("astra_scientist_followers")
+.insert({
+scientist_id:scientistId,
+follower_id:followerId
+})
+.onConflict("scientist_id,follower_id")
+.ignore();
+
+alert("You are now following this scientist.");
+}
+
+loadProfile();
+loadBlogs();
+</script>
+
+</body>
+</html>
