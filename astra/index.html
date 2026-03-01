@@ -15,7 +15,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* Dynamic animated background */
+/* Animated Background */
 body::before{
 content:"";
 position:fixed;
@@ -26,16 +26,17 @@ radial-gradient(circle at 80% 70%, rgba(255,0,150,.15), transparent 40%),
 radial-gradient(circle at 50% 50%, rgba(0,255,200,.1), transparent 60%),
 #020617;
 z-index:-3;
-animation: pulseBg 12s infinite alternate ease-in-out;
+animation:pulseBg 15s infinite alternate ease-in-out;
 }
 @keyframes pulseBg{
 0%{filter:hue-rotate(0deg)}
-100%{filter:hue-rotate(25deg)}
+100%{filter:hue-rotate(35deg)}
 }
 
+/* Header */
 header{
 backdrop-filter:blur(20px);
-background:rgba(10,15,30,.7);
+background:rgba(10,15,30,.75);
 border-bottom:1px solid rgba(255,255,255,.08);
 padding:20px 40px;
 display:flex;
@@ -60,6 +61,20 @@ font-size:13px;
 opacity:.85;
 }
 
+.health{
+padding:4px 10px;
+border-radius:20px;
+font-size:12px;
+background:#062e2e;
+color:#00ffc8;
+animation:pulseHealth 2s infinite alternate;
+}
+@keyframes pulseHealth{
+0%{box-shadow:0 0 0 rgba(0,255,200,0)}
+100%{box-shadow:0 0 12px rgba(0,255,200,.6)}
+}
+
+/* Global Status */
 .globalStatus{
 padding:18px 40px;
 background:rgba(15,23,42,.7);
@@ -75,6 +90,7 @@ font-size:16px;
 margin-top:3px;
 }
 
+/* Layout */
 .layout{
 display:grid;
 grid-template-columns:2fr 1fr;
@@ -100,6 +116,7 @@ border-radius:16px;
 padding:20px;
 }
 
+/* Reports */
 .report{
 padding:20px;
 border-radius:14px;
@@ -109,24 +126,24 @@ background:rgba(15,23,42,.7);
 transition:.3s;
 cursor:pointer;
 }
-
 .report:hover{
 transform:translateY(-4px);
-box-shadow:0 0 25px rgba(0,255,200,.35);
+box-shadow:0 0 30px rgba(0,255,200,.35);
 }
 
 .threatBar{
 height:6px;
 background:#111827;
 border-radius:4px;
-margin-top:10px;
+margin-top:12px;
 overflow:hidden;
 }
 .threatFill{
 height:100%;
-transition:width .6s ease;
+transition:width .8s ease;
 }
 
+/* Scientist Cards */
 .leaderCard{
 padding:15px;
 border-radius:12px;
@@ -141,6 +158,19 @@ transform:translateY(-3px);
 box-shadow:0 0 20px rgba(0,150,255,.35);
 }
 
+.metricBar{
+height:5px;
+background:#1f2937;
+border-radius:3px;
+margin-top:8px;
+overflow:hidden;
+}
+.metricFill{
+height:100%;
+background:#4da3ff;
+}
+
+/* Modal */
 .modal{
 position:fixed;
 inset:0;
@@ -151,10 +181,7 @@ align-items:center;
 justify-content:center;
 padding:40px;
 z-index:999;
-animation:fadeIn .4s ease;
 }
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
 .modalBox{
 max-width:950px;
 width:100%;
@@ -165,7 +192,6 @@ border:1px solid rgba(255,255,255,.1);
 max-height:90vh;
 overflow-y:auto;
 }
-
 .closeBtn{
 float:right;
 cursor:pointer;
@@ -190,6 +216,7 @@ font-size:12px;
 <div id="cycleStatus">Initializing...</div>
 <div id="reportCount">Reports: 0</div>
 <div id="scientistCount">Scientists: 0</div>
+<div class="health" id="systemHealth">SYSTEM HEALTH: OPTIMAL</div>
 </div>
 </header>
 
@@ -207,12 +234,12 @@ font-size:12px;
 </div>
 
 <div class="glass">
-<div class="sectionTitle">SCIENTIST ANALYSIS RANKING</div>
+<div class="sectionTitle">SCIENTIST PERFORMANCE RANKING</div>
 <div id="scientists"></div>
 </div>
 </div>
 
-<footer>Data derived from official space agency feeds. © 2026 ASTRA</footer>
+<footer>Live orbital intelligence stream • © 2026 ASTRA</footer>
 
 <div id="modal" class="modal">
 <div class="modalBox">
@@ -246,7 +273,8 @@ async function loadReports(){
 const {data}=await supabase
 .from("astra_reports")
 .select("*")
-.order("created_at",{ascending:false});
+.order("created_at",{ascending:false})
+.limit(20);
 
 if(!data) return;
 
@@ -256,7 +284,6 @@ document.getElementById("reportCount").innerText="Reports: "+data.length;
 data.forEach(r=>{
 const div=document.createElement("div");
 div.className="report";
-
 div.innerHTML=`
 <h3>${r.event_title}</h3>
 <div style="opacity:.6;font-size:12px">${new Date(r.created_at).toLocaleString()}</div>
@@ -265,44 +292,18 @@ div.innerHTML=`
 <div class="threatFill" style="width:${r.threat_score}%;background:${threatColor(r.threat_score)}"></div>
 </div>
 `;
-
 div.onclick=()=>openReport(r);
 reportsContainer.appendChild(div);
 });
 
 if(data.length){
 const latest=data[0];
-document.getElementById("gThreat").innerText=latest.threat_level;
-document.getElementById("gRisk").innerText=latest.threat_score;
-document.getElementById("gForecast").innerText=latest.forecast_risk||"—";
-document.getElementById("gUpdated").innerText=new Date(latest.created_at).toLocaleTimeString();
-document.getElementById("cycleStatus").innerText="Live Monitoring Active";
+gThreat.innerText=latest.threat_level;
+gRisk.innerText=latest.threat_score;
+gForecast.innerText=latest.forecast_risk||"—";
+gUpdated.innerText=new Date(latest.created_at).toLocaleTimeString();
+cycleStatus.innerText="Live Monitoring Active";
 }
-}
-
-async function openReport(r){
-document.getElementById("modal").style.display="flex";
-document.getElementById("modalTitle").innerText=r.event_title;
-document.getElementById("modalMeta").innerText=new Date(r.created_at).toLocaleString();
-document.getElementById("modalContent").innerText=r.full_article;
-
-const {data:analyses}=await supabase
-.from("astra_analyses")
-.select("analysis,confidence,astra_scientists(name)")
-.eq("report_id",r.id);
-
-const extra=document.getElementById("modalExtra");
-extra.innerHTML="<h3 style='margin-top:20px'>Scientific Analyses</h3>";
-
-analyses?.forEach(a=>{
-extra.innerHTML+=`
-<div style="margin-top:10px">
-<strong>${a.astra_scientists?.name||"Research Analyst"}</strong><br>
-${a.analysis}<br>
-<small>Confidence: ${a.confidence}%</small>
-</div>
-`;
-});
 }
 
 async function loadScientists(){
@@ -314,7 +315,7 @@ const {data}=await supabase
 if(!data) return;
 
 scientistContainer.innerHTML="";
-document.getElementById("scientistCount").innerText="Scientists: "+data.length;
+scientistCount.innerText="Scientists: "+data.length;
 
 data.forEach((s,i)=>{
 const div=document.createElement("div");
@@ -322,34 +323,64 @@ div.className="leaderCard";
 div.innerHTML=`
 <strong>#${i+1} ${s.name}</strong><br>
 Reputation: ${Number(s.reputation_score).toFixed(1)}<br>
-${s.specialty}
+Accuracy: ${s.prediction_accuracy||0}%<br>
+Active Cases: ${s.active_cases||0}
+<div class="metricBar">
+<div class="metricFill" style="width:${s.prediction_accuracy||0}%"></div>
+</div>
 `;
 div.onclick=()=>openScientist(s);
 scientistContainer.appendChild(div);
 });
 }
 
+async function openReport(r){
+modal.style.display="flex";
+modalTitle.innerText=r.event_title;
+modalMeta.innerText=new Date(r.created_at).toLocaleString();
+modalContent.innerText=r.full_article;
+
+const {data:analyses}=await supabase
+.from("astra_analyses")
+.select("analysis,confidence,astra_scientists(name)")
+.eq("report_id",r.id);
+
+modalExtra.innerHTML="<h3 style='margin-top:20px'>Scientific Analyses</h3>";
+
+analyses?.forEach(a=>{
+modalExtra.innerHTML+=`
+<div style="margin-top:10px">
+<strong>${a.astra_scientists?.name||"Research Analyst"}</strong><br>
+${a.analysis}<br>
+<small>Confidence: ${a.confidence}%</small>
+</div>
+`;
+});
+}
+
 function openScientist(s){
-document.getElementById("modal").style.display="flex";
-document.getElementById("modalTitle").innerText=s.name;
-document.getElementById("modalMeta").innerText="Specialty: "+s.specialty;
-document.getElementById("modalContent").innerHTML=`
-Reputation Score: ${Number(s.reputation_score).toFixed(1)}<br><br>
+modal.style.display="flex";
+modalTitle.innerText=s.name;
+modalMeta.innerText="Specialty: "+s.specialty;
+modalContent.innerHTML=`
+Reputation Score: ${Number(s.reputation_score).toFixed(1)}<br>
+Accuracy: ${s.prediction_accuracy||0}%<br>
+Active Cases: ${s.active_cases||0}<br><br>
 ${s.bio||"No biography available."}
 `;
-document.getElementById("modalExtra").innerHTML="";
+modalExtra.innerHTML="";
 }
 
 window.closeModal=function(){
-document.getElementById("modal").style.display="none";
-}
+modal.style.display="none";
+};
 
-/* REAL-TIME SUBSCRIPTIONS */
+/* Realtime + Fallback */
 supabase.channel("live-reports")
-.on("postgres_changes",
-{event:"INSERT",schema:"public",table:"astra_reports"},
-payload=>loadReports()
-).subscribe();
+.on("postgres_changes",{event:"INSERT",schema:"public",table:"astra_reports"},()=>loadReports())
+.subscribe();
+
+setInterval(loadReports,60000);
 
 loadReports();
 loadScientists();
