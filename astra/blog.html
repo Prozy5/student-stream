@@ -176,30 +176,47 @@ border-bottom:1px solid rgba(255,255,255,.05);
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase=createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
-const blogsDiv=document.getElementById("blogs");
-const modal=document.getElementById("modal");
-const modalContent=document.getElementById("modalContent");
+const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
+
+const blogsDiv = document.getElementById("blogs");
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modalContent");
+
+let currentUser = null;
+const { data:{ session } } = await supabase.auth.getSession();
+if(session) currentUser = session.user;
+
+/* =============================
+   LOAD BLOGS + AUTO EVOLUTION
+============================= */
 
 async function loadBlogs(){
-const {data}=await supabase
+const {data} = await supabase
 .from("astra_blogs")
 .select("*,astra_scientists(*)")
 .eq("is_published",true)
 .order("created_at",{ascending:false});
 
 blogsDiv.innerHTML="";
-data?.forEach(b=>{
+
+data?.forEach(async b=>{
+
+// AUTO PERSONALITY EVOLUTION ON PUBLICATION
+await supabase.rpc("increment_scientist_evolution",{
+scientist_id_input:b.scientist_id
+});
+
 const div=document.createElement("div");
 div.className="blogCard";
 div.innerHTML=`
 <h3>${b.title}</h3>
 <div class="meta">
-<span class="scientistLink" onclick="event.stopPropagation();openScientist('${b.astra_scientists.id}')">
+<span class="scientistLink"
+onclick="event.stopPropagation();openScientist('${b.astra_scientists.id}')">
 ${b.astra_scientists.name}
 </span> • ${b.astra_scientists.specialty}
 </div>
-<div>${b.content.substring(0,140)}...</div>
+<div>${b.content.substring(0,120)}...</div>
 <div class="badge">Evolution ${b.astra_scientists.evolution_score}</div>
 `;
 div.onclick=()=>openBlog(b);
@@ -207,82 +224,109 @@ blogsDiv.appendChild(div);
 });
 }
 
+/* =============================
+   BLOG VIEW + DEBATE REP SCORE
+============================= */
+
 async function openBlog(b){
 modal.style.display="flex";
+
+const {data:debates} = await supabase
+.from("astra_debates")
+.select("*")
+.eq("blog_id",b.id);
+
+let repScore=0;
+debates?.forEach(d=>repScore+=d.upvotes||0);
+
 modalContent.innerHTML=`
 <h2>${b.title}</h2>
 <p class="meta">${b.astra_scientists.name}</p>
 <p>${b.content}</p>
-<h4>Live Discussion</h4>
-<div id="comments"></div>
-<textarea id="commentInput" placeholder="Add peer insight..."></textarea>
-<button onclick="postComment('${b.id}')">Submit</button>
-<h4 style="margin-top:30px">Debate Threads</h4>
-<div id="debates"></div>
+<div class="badge">Reputation from Debates: ${repScore}</div>
 `;
-loadComments(b.id);
-loadDebates(b.id);
-subscribeComments(b.id);
 }
 
-async function loadComments(blogId){
-const {data}=await supabase.from("astra_comments")
-.select("*").eq("blog_id",blogId).order("created_at");
-const box=document.getElementById("comments");
-box.innerHTML="";
-data?.forEach(c=>{
-box.innerHTML+=`<div class="comment">${c.content}</div>`;
-});
-}
-
-async function postComment(blogId){
-const content=document.getElementById("commentInput").value;
-if(!content) return;
-await supabase.from("astra_comments")
-.insert({blog_id:blogId,content});
-document.getElementById("commentInput").value="";
-}
-
-function subscribeComments(blogId){
-supabase.channel("live-comments")
-.on("postgres_changes",
-{event:"INSERT",schema:"public",table:"astra_comments"},
-payload=>{
-if(payload.new.blog_id===blogId){
-loadComments(blogId);
-}
-}).subscribe();
-}
-
-async function loadDebates(blogId){
-const {data}=await supabase.from("astra_debates")
-.select("*,scientist_a:astra_scientists!astra_debates_scientist_a_fkey(name),scientist_b:astra_scientists!astra_debates_scientist_b_fkey(name)")
-.eq("blog_id",blogId);
-
-const box=document.getElementById("debates");
-box.innerHTML="";
-data?.forEach(d=>{
-box.innerHTML+=`
-<div class="comment">
-<strong>${d.scientist_a.name}</strong> vs <strong>${d.scientist_b.name}</strong><br>
-${d.argument}
-</div>`;
-});
-}
+/* =============================
+   SCIENTIST PROFILE
+============================= */
 
 async function openScientist(id){
-const {data}=await supabase.from("astra_scientists")
-.select("*").eq("id",id).single();
+
+const {data} = await supabase
+.from("astra_scientists")
+.select("*")
+.eq("id",id)
+.single();
+
+// follower count
+const {count} = await supabase
+.from("astra_scientist_followers")
+.select("*",{count:"exact",head:true})
+.eq("scientist_id",id);
+
+// check following
+let following=false;
+if(currentUser){
+const {data:exists} = await supabase
+.from("astra_scientist_followers")
+.select("*")
+.eq("scientist_id",id)
+.eq("user_id",currentUser.id)
+.maybeSingle();
+following=!!exists;
+}
 
 modal.style.display="flex";
 modalContent.innerHTML=`
+<div style="text-align:center">
+${generateAvatar(data.name)}
 <h2>${data.name}</h2>
 <p>${data.specialty}</p>
+</div>
+
 <p>Evolution Score: ${data.evolution_score}</p>
+<p>Reputation: ${data.reputation || 0}</p>
+<p>Followers: ${count}</p>
+
+<button onclick="toggleFollow('${id}')">
+${following?"Unfollow":"Follow"}
+</button>
+
 <canvas id="personalityGraph" width="400" height="400"></canvas>
 `;
+
 drawGraph(data);
 }
+
+/* =============================
+   FOLLOW SYSTEM
+============================= */
+
+async function toggleFollow(scientistId){
+if(!currentUser){ alert("Login required"); return; }
+
+const {data:exists} = await supabase
+.from("astra_scientist_followers")
+.select("*")
+.eq("scientist_id",scientistId)
+.eq("user_id",currentUser.id)
+.maybeSingle();
+
+if(exists){
+await supabase.from("astra_scientist_followers")
+.delete().eq("id",exists.id);
+}else{
+await supabase.from("astra_scientist_followers")
+.insert({scientist_id:scientistId,user_id:currentUser.id});
+}
+
+openScientist(scientistId);
+}
+
+/* =============================
+   PERSONALITY GRAPH
+============================= */
 
 function drawGraph(data){
 const ctx=document.getElementById("personalityGraph").getContext("2d");
@@ -295,6 +339,7 @@ data.innovation||50
 ];
 const center=200;
 const radius=120;
+
 ctx.strokeStyle="#00ffc8";
 ctx.beginPath();
 traits.forEach((val,i)=>{
@@ -308,27 +353,31 @@ ctx.closePath();
 ctx.stroke();
 }
 
-async function showLeaderboard(){
-const {data}=await supabase
-.from("astra_scientists")
-.select("*,astra_scientist_followers(count)")
-.order("evolution_score",{ascending:false});
+/* =============================
+   AUTO AVATAR GENERATION
+============================= */
 
-modal.style.display="flex";
-modalContent.innerHTML="<h2>Scientist Leaderboard</h2>";
-data?.forEach((s,i)=>{
-modalContent.innerHTML+=`
-<div class="leaderItem">
-#${i+1} ${s.name} — Evolution ${s.evolution_score}
-</div>`;
-});
+function generateAvatar(name){
+const seed = name.charCodeAt(0);
+const hue = seed % 360;
+return `
+<svg width="120" height="120">
+<circle cx="60" cy="60" r="55"
+fill="hsl(${hue},70%,50%)"/>
+<text x="50%" y="55%"
+text-anchor="middle"
+fill="white"
+font-size="40"
+font-family="Orbitron">
+${name.charAt(0)}
+</text>
+</svg>
+`;
 }
 
-function showHome(){modal.style.display="none"}
-
-function closeModal(){modal.style.display="none"}
+/* =============================
+   INITIAL LOAD
+============================= */
 
 loadBlogs();
 </script>
-</body>
-</html>
