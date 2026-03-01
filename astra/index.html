@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>ASTRA • Orbital Command Node</title>
+<title>ASTRA • Orbital Intelligence Index</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 body{
   font-family:Inter,system-ui;
   background:#02040a;
@@ -17,7 +16,7 @@ body{
   overflow-x:hidden;
 }
 
-/* BACKGROUND */
+/* Background */
 body::before{
   content:"";
   position:fixed;
@@ -29,7 +28,6 @@ body::before{
   filter:blur(100px);
   z-index:-3;
 }
-
 .starfield{
   position:fixed;
   width:200%;
@@ -44,7 +42,6 @@ body::before{
   from{transform:translateY(0)}
   to{transform:translateY(-2000px)}
 }
-
 .grid{
   position:fixed;
   inset:0;
@@ -56,7 +53,7 @@ body::before{
   z-index:-1;
 }
 
-/* HEADER */
+/* Header */
 header{
   position:sticky;
   top:0;
@@ -67,8 +64,8 @@ header{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  z-index:5;
 }
-
 .logo{
   font-family:Orbitron;
   font-weight:900;
@@ -76,14 +73,13 @@ header{
   letter-spacing:3px;
 }
 .logo span{color:#4da3ff}
-
 .systemBar{
   display:flex;
-  gap:30px;
+  gap:25px;
   font-size:13px;
   opacity:.8;
+  align-items:center;
 }
-
 .pulse{
   width:8px;height:8px;border-radius:50%;
   background:#00ffc8;
@@ -95,25 +91,39 @@ header{
   100%{box-shadow:0 0 0 0 rgba(0,255,200,0)}
 }
 
-/* LAYOUT */
+/* Layout */
 .layout{
   max-width:1600px;
-  margin:80px auto;
+  margin:60px auto;
   padding:0 40px;
   display:grid;
   grid-template-columns:2.2fr 1fr;
   gap:50px;
 }
-
 .sectionTitle{
   font-family:Orbitron;
   font-size:14px;
   letter-spacing:3px;
   opacity:.5;
-  margin-bottom:25px;
+  margin-bottom:20px;
 }
 
-/* REPORT CARDS */
+/* Filters */
+.filters{
+  display:flex;
+  gap:15px;
+  margin-bottom:30px;
+  flex-wrap:wrap;
+}
+.filters input, .filters select{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(77,163,255,.2);
+  color:white;
+  padding:10px 14px;
+  border-radius:10px;
+}
+
+/* Report Cards */
 .report{
   padding:28px;
   border-radius:20px;
@@ -124,13 +134,11 @@ header{
   cursor:pointer;
   position:relative;
 }
-
 .report:hover{
-  transform:translateY(-8px) scale(1.01);
+  transform:translateY(-8px);
   border-color:#4da3ff;
   box-shadow:0 0 60px rgba(77,163,255,.35);
 }
-
 .badge{
   position:absolute;
   top:20px;
@@ -138,13 +146,11 @@ header{
   font-weight:700;
   font-size:12px;
 }
-
 .meta{
   font-size:12px;
   opacity:.6;
   margin-top:8px;
 }
-
 .threatBar{
   height:6px;
   margin-top:15px;
@@ -152,25 +158,18 @@ header{
   background:rgba(255,255,255,.1);
   overflow:hidden;
 }
-.threatFill{
-  height:100%;
-  transition:.4s;
-}
+.threatFill{height:100%}
 
-/* LEADERBOARD */
+/* Leaderboard */
 .leaderCard{
   padding:18px;
   border-radius:16px;
   background:rgba(77,163,255,.05);
   border:1px solid rgba(77,163,255,.2);
   margin-bottom:18px;
-  transition:.3s;
-}
-.leaderCard:hover{
-  background:rgba(77,163,255,.12);
 }
 
-/* ORBITAL PANEL */
+/* Orbital Panel */
 #orbitalPanel{
   position:fixed;
   right:40px;
@@ -186,8 +185,14 @@ header{
   align-items:center;
   justify-content:center;
 }
+#threatMeter{
+  position:absolute;
+  bottom:15px;
+  font-size:12px;
+  opacity:.8;
+}
 
-/* MODAL */
+/* Modal */
 .modal{
   position:fixed;
   inset:0;
@@ -198,7 +203,6 @@ header{
   justify-content:center;
   padding:50px;
 }
-
 .modalContent{
   background:#050c18;
   width:100%;
@@ -210,18 +214,12 @@ header{
   overflow:auto;
 }
 
-.closeBtn{
-  float:right;
-  cursor:pointer;
-  opacity:.6;
-}
-.closeBtn:hover{opacity:1}
-
 footer{
   text-align:center;
-  padding:80px;
+  padding:60px;
   opacity:.3;
   border-top:1px solid rgba(77,163,255,.2);
+  margin-top:80px;
 }
 </style>
 </head>
@@ -232,10 +230,10 @@ footer{
 <div class="grid"></div>
 
 <header>
-  <div class="logo">ASTRA <span>CORE</span></div>
+  <div class="logo">ASTRA <span>INDEX</span></div>
   <div class="systemBar">
     <div style="display:flex;align-items:center;gap:6px">
-      <div class="pulse"></div> LIVE MONITORING
+      <div class="pulse"></div> LIVE
     </div>
     <div id="reportCount">Reports: 0</div>
     <div id="scientistCount">Scientists: 0</div>
@@ -245,7 +243,23 @@ footer{
 <div class="layout">
   <div>
     <div class="sectionTitle">INTELLIGENCE STREAM</div>
+
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Search events...">
+      <select id="threatFilter">
+        <option value="">All Threat Levels</option>
+        <option>Critical</option>
+        <option>Elevated</option>
+        <option>Moderate</option>
+        <option>Low</option>
+      </select>
+      <select id="sectorFilter">
+        <option value="">All Sectors</option>
+      </select>
+    </div>
+
     <div id="reports"></div>
+    <button id="loadMore" style="display:none;margin-top:20px;padding:10px 20px;background:#4da3ff;border:none;border-radius:8px;color:black;font-weight:600;cursor:pointer;">Load More</button>
   </div>
 
   <div>
@@ -254,101 +268,34 @@ footer{
   </div>
 </div>
 
-<div id="orbitalPanel"></div>
+<div id="orbitalPanel">
+  <div id="threatMeter">Avg Threat: 0</div>
+</div>
 
 <div class="modal" id="modal">
   <div class="modalContent" id="modalContent"></div>
 </div>
 
 <footer>
-© 2026 ASTRA Autonomous Orbital Intelligence Network
+© 2026 ASTRA Orbital Intelligence Network
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
 const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
-const reportsContainer=document.getElementById("reports");
-const scientistContainer=document.getElementById("scientists");
-const modal=document.getElementById("modal");
-const modalContent=document.getElementById("modalContent");
-
-/* =========================
-   ORBITAL GLOBE ENGINE
-========================= */
-
+/* GLOBAL STATE */
+let page=0;
+let pageSize=10;
 let avgThreat=0;
 
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(75,1,0.1,1000);
-const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
-renderer.setSize(280,280);
-document.getElementById("orbitalPanel").appendChild(renderer.domElement);
-camera.position.z=5;
+/* ELEMENTS */
+const reportsContainer=document.getElementById("reports");
+const scientistContainer=document.getElementById("scientists");
 
-const globeGeo=new THREE.SphereGeometry(1.8,64,64);
-const globeMat=new THREE.MeshStandardMaterial({
-  color:0x4da3ff,
-  emissive:0x000000,
-  metalness:.4,
-  roughness:.5
-});
-const globe=new THREE.Mesh(globeGeo,globeMat);
-scene.add(globe);
-
-const glowGeo=new THREE.SphereGeometry(2,64,64);
-const glowMat=new THREE.MeshBasicMaterial({
-  color:0x00ffc8,
-  transparent:true,
-  opacity:.05
-});
-const glow=new THREE.Mesh(glowGeo,glowMat);
-scene.add(glow);
-
-const light=new THREE.PointLight(0x4da3ff,1.5);
-light.position.set(5,5,5);
-scene.add(light);
-
-const satellites=[];
-
-function updateSatellites(count){
-  satellites.forEach(s=>scene.remove(s.mesh));
-  satellites.length=0;
-
-  for(let i=0;i<Math.min(count,6);i++){
-    const geo=new THREE.SphereGeometry(.08,16,16);
-    const mat=new THREE.MeshBasicMaterial({color:0xff5e5e});
-    const mesh=new THREE.Mesh(geo,mat);
-    scene.add(mesh);
-    satellites.push({mesh,angle:Math.random()*Math.PI*2,radius:2.5});
-  }
-}
-
-function animate(){
-  requestAnimationFrame(animate);
-
-  globe.rotation.y+=.003;
-  glow.rotation.y+=.003;
-
-  globeMat.emissiveIntensity=avgThreat/100;
-
-  satellites.forEach(s=>{
-    s.angle+=.01;
-    s.mesh.position.x=Math.cos(s.angle)*s.radius;
-    s.mesh.position.z=Math.sin(s.angle)*s.radius;
-  });
-
-  renderer.render(scene,camera);
-}
-animate();
-
-/* =========================
-   DATA LOGIC
-========================= */
-
+/* THREAT COLOR */
 function threatColor(level){
   if(level==="Critical") return "#ff2e2e";
   if(level==="Elevated") return "#ff5e5e";
@@ -356,102 +303,100 @@ function threatColor(level){
   return "#00ffc8";
 }
 
-async function loadReports(){
-  const { data: reports } = await supabase
-    .from("astra_reports")
+/* LOAD REPORTS */
+async function loadReports(reset=false){
+  if(reset){page=0;reportsContainer.innerHTML=""}
+  const search=document.getElementById("searchInput").value;
+  const threat=document.getElementById("threatFilter").value;
+  const sector=document.getElementById("sectorFilter").value;
+
+  let query=supabase.from("astra_reports")
     .select("*")
     .order("created_at",{ascending:false})
-    .limit(20);
+    .range(page*pageSize,(page+1)*pageSize-1);
 
-  document.getElementById("reportCount").innerText=
-    "Reports: "+(reports?.length || 0);
+  if(search) query=query.ilike("event_title",`%${search}%`);
+  if(threat) query=query.eq("threat_level",threat);
+  if(sector) query=query.eq("orbital_sector",sector);
 
-  reportsContainer.innerHTML="";
+  const {data}=await query;
+  if(!data?.length) return;
 
-  if(reports?.length){
-    avgThreat=Math.round(
-      reports.reduce((a,b)=>a+(b.threat_score||0),0)/reports.length
-    );
-    updateSatellites(reports.length);
-  }
+  avgThreat=Math.round(data.reduce((a,b)=>a+(b.threat_score||0),0)/data.length);
+  document.getElementById("threatMeter").innerText="Avg Threat: "+avgThreat;
 
-  reports?.forEach(r=>{
-    const color=threatColor(r.threat_level);
-    const percent=Math.min(r.threat_score||0,100);
-
+  data.forEach(r=>{
     const div=document.createElement("div");
     div.className="report";
     div.innerHTML=`
-      <div class="badge" style="color:${color}">
+      <div class="badge" style="color:${threatColor(r.threat_level)}">
         ${r.threat_level}
       </div>
       <h2>${r.event_title}</h2>
       <div class="meta">
-        ${new Date(r.created_at).toLocaleString()} • Score ${r.threat_score}
+        ${new Date(r.created_at).toLocaleString()} • Sector ${r.orbital_sector||"Unknown"}
       </div>
-      <div style="margin-top:12px;opacity:.8">
-        ${r.summary}
-      </div>
+      <div style="margin-top:12px;opacity:.8">${r.summary}</div>
       <div class="threatBar">
-        <div class="threatFill" style="width:${percent}%;background:${color}"></div>
+        <div class="threatFill" style="width:${r.threat_score}%;background:${threatColor(r.threat_level)}"></div>
       </div>
     `;
     div.onclick=()=>openReport(r.id);
     reportsContainer.appendChild(div);
   });
+
+  page++;
+  document.getElementById("loadMore").style.display="block";
 }
 
+/* OPEN REPORT */
 async function openReport(id){
-  const { data: report } = await supabase
-    .from("astra_reports")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-  modalContent.innerHTML=`
-    <div class="closeBtn" onclick="document.getElementById('modal').style.display='none'">✖</div>
-    <h2>${report.event_title}</h2>
-    <div class="meta">${new Date(report.created_at).toLocaleString()}</div>
-    <p style="margin-top:25px">${report.full_article}</p>
+  const {data}=await supabase.from("astra_reports").select("*").eq("id",id).single();
+  document.getElementById("modalContent").innerHTML=`
+    <div style="text-align:right;cursor:pointer" onclick="document.getElementById('modal').style.display='none'">✖</div>
+    <h2>${data.event_title}</h2>
+    <div style="opacity:.6;margin-top:8px">${new Date(data.created_at).toLocaleString()}</div>
+    <p style="margin-top:25px;line-height:1.7">${data.full_article}</p>
   `;
-  modal.style.display="flex";
+  document.getElementById("modal").style.display="flex";
 }
 
+/* LOAD SCIENTISTS */
 async function loadScientists(){
-  const { data: scientists } = await supabase
-    .from("astra_scientists")
+  const {data}=await supabase.from("astra_scientists")
     .select("*")
     .order("reputation_score",{ascending:false})
     .limit(10);
 
-  document.getElementById("scientistCount").innerText=
-    "Scientists: "+(scientists?.length || 0);
-
   scientistContainer.innerHTML="";
-
-  scientists?.forEach((s,index)=>{
+  data?.forEach((s,i)=>{
     const div=document.createElement("div");
     div.className="leaderCard";
     div.innerHTML=`
-      <div><strong>${s.name}</strong></div>
+      <strong>#${i+1} ${s.name}</strong>
       <div style="font-size:12px;opacity:.6">
-        #${index+1} • Reputation ${Number(s.reputation_score||0).toFixed(1)}
+        Reputation ${Number(s.reputation_score||0).toFixed(1)}
       </div>
-      <div style="font-size:12px;margin-top:6px;opacity:.7">
-        ${s.specialty}
-      </div>
+      <div style="font-size:12px;opacity:.7">${s.specialty}</div>
     `;
     scientistContainer.appendChild(div);
   });
 }
 
-supabase.channel("astra-realtime")
+/* FILTER EVENTS */
+document.getElementById("searchInput").oninput=()=>loadReports(true);
+document.getElementById("threatFilter").onchange=()=>loadReports(true);
+document.getElementById("sectorFilter").onchange=()=>loadReports(true);
+document.getElementById("loadMore").onclick=()=>loadReports();
+
+/* REALTIME */
+supabase.channel("astra-live")
   .on("postgres_changes",{event:"INSERT",schema:"public",table:"astra_reports"},
-    ()=>loadReports()
-  )
+    ()=>loadReports(true))
   .subscribe();
 
-loadReports();
+/* INIT */
+loadReports(true);
 loadScientists();
 </script>
 
