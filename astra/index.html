@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>ASTRA • Orbital Research Division</title>
+<title>ASTRA • Orbital Intelligence Network</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -10,224 +10,210 @@
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
-  font-family:Inter,system-ui;
-  background:#020617;
-  color:white;
-  overflow-x:hidden;
+font-family:Inter,system-ui;
+background:#020617;
+color:white;
+overflow-x:hidden;
 }
 
-/* ================= BACKGROUND ================= */
-
+/* BACKGROUND */
 body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(0,150,255,.25), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255,0,150,.15), transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(0,255,200,.1), transparent 60%),
-    #020617;
-  z-index:-3;
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at 20% 30%, rgba(0,150,255,.25), transparent 40%),
+radial-gradient(circle at 80% 70%, rgba(255,0,150,.15), transparent 40%),
+radial-gradient(circle at 50% 50%, rgba(0,255,200,.1), transparent 60%),
+#020617;
+z-index:-3;
 }
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background-image:url("https://www.transparenttextures.com/patterns/stardust.png");
-  opacity:.2;
-  animation:stars 60s linear infinite;
-  z-index:-2;
-}
-
-@keyframes stars{
-  from{background-position:0 0}
-  to{background-position:1000px 1000px}
-}
-
-/* ================= HEADER ================= */
 
 header{
-  backdrop-filter:blur(20px);
-  background:rgba(10,15,30,.6);
-  border-bottom:1px solid rgba(255,255,255,.08);
-  padding:20px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+backdrop-filter:blur(20px);
+background:rgba(10,15,30,.7);
+border-bottom:1px solid rgba(255,255,255,.08);
+padding:20px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 .logo{
-  font-family:Orbitron;
-  font-weight:800;
-  letter-spacing:4px;
-  font-size:22px;
-  background:linear-gradient(90deg,#4da3ff,#00ffc8);
-  -webkit-background-clip:text;
-  color:transparent;
+font-family:Orbitron;
+font-weight:800;
+letter-spacing:4px;
+font-size:22px;
+background:linear-gradient(90deg,#4da3ff,#00ffc8);
+-webkit-background-clip:text;
+color:transparent;
 }
 
-.systemBar{
-  display:flex;
-  gap:20px;
-  font-size:13px;
-  opacity:.8;
+.statusBar{
+display:flex;
+gap:30px;
+font-size:13px;
+opacity:.85;
 }
 
-/* ================= LAYOUT ================= */
+/* GLOBAL STATUS STRIP */
+
+.globalStatus{
+padding:18px 40px;
+background:rgba(15,23,42,.7);
+border-bottom:1px solid rgba(255,255,255,.08);
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.statusMetric{
+font-size:13px;
+}
+
+.statusMetric strong{
+display:block;
+font-size:16px;
+margin-top:3px;
+}
+
+.critical{color:#ff3b3b}
+.elevated{color:#ff884d}
+.moderate{color:#ffc857}
+.low{color:#00ffc8}
+
+/* LAYOUT */
 
 .layout{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:40px;
-  max-width:1500px;
-  margin:60px auto;
-  padding:0 40px;
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:40px;
+max-width:1500px;
+margin:50px auto;
+padding:0 40px;
 }
 
 .sectionTitle{
-  font-family:Orbitron;
-  font-size:13px;
-  letter-spacing:3px;
-  opacity:.6;
-  margin-bottom:15px;
+font-family:Orbitron;
+font-size:13px;
+letter-spacing:3px;
+opacity:.6;
+margin-bottom:15px;
 }
 
 .glass{
-  background:rgba(15,23,42,.6);
-  backdrop-filter:blur(15px);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
-  padding:20px;
+background:rgba(15,23,42,.65);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,.08);
+border-radius:16px;
+padding:20px;
 }
 
-/* ================= FILTERS ================= */
-
-.filters{
-  display:flex;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-.filters input,
-.filters select{
-  background:#0f172a;
-  border:1px solid rgba(255,255,255,.1);
-  color:white;
-  padding:6px 10px;
-  border-radius:20px;
-}
-
-/* ================= REPORT ================= */
+/* REPORT */
 
 .report{
-  padding:20px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.08);
-  margin-bottom:15px;
-  background:rgba(15,23,42,.7);
-  transition:.3s;
-  cursor:pointer;
+padding:20px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,.08);
+margin-bottom:15px;
+background:rgba(15,23,42,.7);
+transition:.3s;
+cursor:pointer;
 }
 
 .report:hover{
-  transform:translateY(-4px);
-  box-shadow:0 0 25px rgba(0,255,200,.35);
+transform:translateY(-4px);
+box-shadow:0 0 25px rgba(0,255,200,.35);
 }
 
 .badge{
-  font-size:11px;
-  font-weight:700;
-  float:right;
+font-size:11px;
+font-weight:700;
+float:right;
 }
 
 .meta{
-  font-size:12px;
-  opacity:.6;
-  margin-top:5px;
+font-size:12px;
+opacity:.6;
+margin-top:5px;
 }
 
 .threatBar{
-  height:6px;
-  background:#111827;
-  border-radius:4px;
-  margin-top:10px;
-  overflow:hidden;
+height:6px;
+background:#111827;
+border-radius:4px;
+margin-top:10px;
+overflow:hidden;
 }
 
 .threatFill{
-  height:100%;
-  transition:.4s;
+height:100%;
 }
 
-/* ================= SCIENTISTS ================= */
+/* SCIENTISTS */
 
 .leaderCard{
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:12px;
-  background:rgba(15,23,42,.6);
-  border:1px solid rgba(255,255,255,.08);
-  cursor:pointer;
-  transition:.3s;
+padding:15px;
+border-radius:12px;
+margin-bottom:12px;
+background:rgba(15,23,42,.6);
+border:1px solid rgba(255,255,255,.08);
+cursor:pointer;
+transition:.3s;
 }
 
 .leaderCard:hover{
-  box-shadow:0 0 20px rgba(77,163,255,.4);
-  transform:translateY(-3px);
+box-shadow:0 0 20px rgba(77,163,255,.4);
+transform:translateY(-3px);
 }
 
-/* ================= MODALS ================= */
+/* MODALS */
 
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  backdrop-filter:blur(20px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:40px;
-  z-index:999;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+backdrop-filter:blur(20px);
+display:none;
+align-items:center;
+justify-content:center;
+padding:40px;
+z-index:999;
 }
 
 .modalBox{
-  max-width:900px;
-  width:100%;
-  background:#0f172a;
-  padding:40px;
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,.1);
-  animation:fadeIn .3s ease;
-  max-height:90vh;
-  overflow-y:auto;
-}
-
-@keyframes fadeIn{
-  from{opacity:0;transform:scale(.95)}
-  to{opacity:1;transform:scale(1)}
+max-width:950px;
+width:100%;
+background:#0f172a;
+padding:40px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,.1);
+max-height:90vh;
+overflow-y:auto;
 }
 
 .closeBtn{
-  float:right;
-  cursor:pointer;
-  opacity:.6;
+float:right;
+cursor:pointer;
+opacity:.6;
 }
 .closeBtn:hover{opacity:1}
 
 .analysisCard{
-  margin-top:15px;
-  padding:12px;
-  border-radius:10px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.06);
+margin-top:15px;
+padding:12px;
+border-radius:10px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.06);
 }
 
 footer{
-  text-align:center;
-  padding:40px;
-  opacity:.4;
-  font-size:12px;
+text-align:center;
+padding:40px;
+opacity:.4;
+font-size:12px;
 }
 </style>
 </head>
@@ -235,62 +221,48 @@ footer{
 <body>
 
 <header>
-  <div class="logo">ASTRA RESEARCH DIVISION</div>
-  <div class="systemBar">
-    <div id="reportCount">Reports: 0</div>
-    <div id="scientistCount">Scientists: 0</div>
-  </div>
+<div class="logo">ASTRA ORBITAL INTELLIGENCE</div>
+<div class="statusBar">
+<div id="cycleStatus">Awaiting Cycle...</div>
+<div id="reportCount">Reports: 0</div>
+<div id="scientistCount">Scientists: 0</div>
+</div>
 </header>
+
+<div class="globalStatus">
+<div class="statusMetric">Threat Level<strong id="gThreat">—</strong></div>
+<div class="statusMetric">Consensus Risk<strong id="gRisk">—</strong></div>
+<div class="statusMetric">Forecast Risk<strong id="gForecast">—</strong></div>
+<div class="statusMetric">Defense Level<strong id="gDefense">—</strong></div>
+<div class="statusMetric">Tracking Mode<strong id="gTracking">—</strong></div>
+<div class="statusMetric">Satellites Required<strong id="gSatellites">—</strong></div>
+</div>
 
 <div class="layout">
 
-  <div class="glass">
-    <div class="sectionTitle">ORBITAL INTELLIGENCE STREAM</div>
+<div class="glass">
+<div class="sectionTitle">ORBITAL INTELLIGENCE STREAM</div>
+<div id="reports"></div>
+</div>
 
-    <div class="filters">
-      <input id="searchInput" placeholder="Search reports..." />
-      <select id="threatFilter">
-        <option value="">All Threats</option>
-        <option>Critical</option>
-        <option>Elevated</option>
-        <option>Moderate</option>
-        <option>Low</option>
-      </select>
-    </div>
-
-    <div id="reports"></div>
-  </div>
-
-  <div class="glass">
-    <div class="sectionTitle">AI SCIENTIST COMMAND RANKING</div>
-    <div id="scientists"></div>
-  </div>
+<div class="glass">
+<div class="sectionTitle">AI SCIENTIST CONSENSUS RANKING</div>
+<div id="scientists"></div>
+</div>
 
 </div>
 
-<footer>© 2026 ASTRA Orbital Research Network</footer>
+<footer>© 2026 ASTRA Orbital Intelligence Network</footer>
 
 <!-- ARTICLE MODAL -->
 <div id="articleModal" class="modal">
-  <div class="modalBox">
-    <div class="closeBtn" onclick="closeModal('articleModal')">✕ Close</div>
-    <h2 id="articleTitle"></h2>
-    <p id="articleMeta" style="opacity:.6;margin-bottom:15px;"></p>
-    <div id="articleContent"></div>
-    <div id="articleAnalyses"></div>
-  </div>
+<div class="modalBox">
+<div class="closeBtn" onclick="closeModal('articleModal')">✕ Close</div>
+<h2 id="articleTitle"></h2>
+<p id="articleMeta" style="opacity:.6;margin-bottom:15px;"></p>
+<div id="articleContent"></div>
+<div id="articleAnalyses"></div>
 </div>
-
-<!-- SCIENTIST MODAL -->
-<div id="scientistModal" class="modal">
-  <div class="modalBox">
-    <div class="closeBtn" onclick="closeModal('scientistModal')">✕ Close</div>
-    <h2 id="sName"></h2>
-    <p id="sMeta" style="opacity:.6;margin-bottom:15px;"></p>
-    <div id="sBio"></div>
-    <h3 style="margin-top:20px;">Published Analyses</h3>
-    <div id="sAnalyses"></div>
-  </div>
 </div>
 
 <script type="module">
@@ -311,25 +283,23 @@ if(level==="Moderate") return "#ffc857";
 return "#00ffc8";
 }
 
-/* ================= REPORTS ================= */
+/* LOAD REPORTS */
 
 async function loadReports(){
 const {data}=await supabase.from("astra_reports")
 .select("*").order("created_at",{ascending:false});
 
-document.getElementById("reportCount").innerText="Reports: "+(data?.length||0);
-renderReports(data||[]);
+if(!data) return;
+
+document.getElementById("reportCount").innerText="Reports: "+data.length;
+renderReports(data);
+
+if(data.length>0) updateGlobalStatus(data[0]);
 }
 
 function renderReports(data){
 reportsContainer.innerHTML="";
-const search=document.getElementById("searchInput").value.toLowerCase();
-const threat=document.getElementById("threatFilter").value;
-
-data.filter(r=>{
-return (!search||r.event_title.toLowerCase().includes(search)) &&
-(!threat||r.threat_level===threat);
-}).forEach(r=>{
+data.forEach(r=>{
 const div=document.createElement("div");
 div.className="report";
 div.innerHTML=`
@@ -346,12 +316,38 @@ reportsContainer.appendChild(div);
 });
 }
 
+/* GLOBAL STATUS */
+
+function updateGlobalStatus(r){
+document.getElementById("gThreat").innerText=r.threat_level;
+document.getElementById("gThreat").className=r.threat_level.toLowerCase();
+document.getElementById("gRisk").innerText=r.threat_score;
+document.getElementById("gForecast").innerText=r.forecast_risk||"—";
+
+document.getElementById("gDefense").innerText=
+r.threat_score>130?"Planetary Shield Protocol":
+r.threat_score>90?"Heightened":"Nominal";
+
+document.getElementById("gTracking").innerText=
+r.threat_score>130?"Maximum Deep Scan":
+r.threat_score>80?"High-Resolution":"Standard";
+
+document.getElementById("gSatellites").innerText=
+r.threat_score>130?12:
+r.threat_score>80?6:3;
+
+document.getElementById("cycleStatus").innerText=
+"Last Cycle: "+new Date(r.created_at).toLocaleTimeString();
+}
+
+/* ARTICLE */
+
 async function openArticle(r){
 document.getElementById("articleModal").style.display="flex";
 document.getElementById("articleTitle").innerText=r.event_title;
 document.getElementById("articleMeta").innerText=
 new Date(r.created_at).toLocaleString()+" • Threat "+r.threat_level;
-document.getElementById("articleContent").innerHTML=r.full_report||r.summary;
+document.getElementById("articleContent").innerText=r.full_article;
 
 const {data:analyses}=await supabase
 .from("astra_analyses")
@@ -359,7 +355,7 @@ const {data:analyses}=await supabase
 .eq("report_id",r.id);
 
 const container=document.getElementById("articleAnalyses");
-container.innerHTML="<h3 style='margin-top:20px'>Scientist Analyses</h3>";
+container.innerHTML="<h3 style='margin-top:20px'>Scientist Consensus</h3>";
 
 analyses?.forEach(a=>{
 const card=document.createElement("div");
@@ -373,74 +369,45 @@ container.appendChild(card);
 });
 }
 
-/* ================= SCIENTISTS ================= */
+/* SCIENTISTS */
 
 async function loadScientists(){
 const {data}=await supabase.from("astra_scientists")
 .select("*").order("reputation_score",{ascending:false});
 
-document.getElementById("scientistCount").innerText="Scientists: "+(data?.length||0);
+if(!data) return;
+
+document.getElementById("scientistCount").innerText="Scientists: "+data.length;
 scientistContainer.innerHTML="";
 
-data?.forEach((s,i)=>{
+data.forEach((s,i)=>{
 const div=document.createElement("div");
 div.className="leaderCard";
 div.innerHTML=`
 <strong>#${i+1} ${s.name}</strong><br>
-Reputation ${Number(s.reputation_score||0).toFixed(1)}<br>
+Reputation ${Number(s.reputation_score).toFixed(1)}<br>
 ${s.specialty}
 `;
-div.onclick=()=>openScientist(s.id);
 scientistContainer.appendChild(div);
 });
 }
 
-async function openScientist(id){
-const {data:scientist}=await supabase.from("astra_scientists")
-.select("*").eq("id",id).single();
+/* REALTIME */
 
-const {data:analyses}=await supabase.from("astra_analyses")
-.select("analysis,confidence,astra_reports(event_title)")
-.eq("scientist_id",id);
+supabase.channel("live-reports")
+.on("postgres_changes",{event:"*",schema:"public",table:"astra_reports"},
+()=>loadReports())
+.subscribe();
 
-document.getElementById("sName").innerText=scientist.name;
-document.getElementById("sMeta").innerText=
-scientist.specialty+" • Reputation "+scientist.reputation_score;
-document.getElementById("sBio").innerText=
-scientist.bio||"No biography available.";
-
-const container=document.getElementById("sAnalyses");
-container.innerHTML="";
-
-analyses?.forEach(a=>{
-const card=document.createElement("div");
-card.className="analysisCard";
-card.innerHTML=`
-<strong>${a.astra_reports?.event_title||"Unknown Report"}</strong><br>
-${a.analysis}<br>
-<small>Confidence ${a.confidence}%</small>
-`;
-container.appendChild(card);
-});
-
-document.getElementById("scientistModal").style.display="flex";
-}
-
-/* ================= UTIL ================= */
+/* UTIL */
 
 window.closeModal=function(id){
 document.getElementById(id).style.display="none";
 }
 
 window.addEventListener("keydown",(e)=>{
-if(e.key==="Escape"){
-closeModal("articleModal");
-closeModal("scientistModal");
-}
+if(e.key==="Escape") closeModal("articleModal");
 });
-
-document.getElementById("searchInput").addEventListener("input",loadReports);
-document.getElementById("threatFilter").addEventListener("change",loadReports);
 
 loadReports();
 loadScientists();
