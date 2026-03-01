@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>ASTRA • Orbital Event Intelligence</title>
+<title>ASTRA // Autonomous Scientific Network</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -15,7 +15,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* Animated Background */
+/* Background Atmosphere */
 body::before{
 content:"";
 position:fixed;
@@ -25,12 +25,12 @@ radial-gradient(circle at 20% 30%, rgba(0,150,255,.25), transparent 40%),
 radial-gradient(circle at 80% 70%, rgba(255,0,150,.15), transparent 40%),
 radial-gradient(circle at 50% 50%, rgba(0,255,200,.1), transparent 60%),
 #020617;
-z-index:-3;
-animation:pulseBg 15s infinite alternate ease-in-out;
+z-index:-1;
+animation:pulseBg 18s infinite alternate ease-in-out;
 }
 @keyframes pulseBg{
 0%{filter:hue-rotate(0deg)}
-100%{filter:hue-rotate(35deg)}
+100%{filter:hue-rotate(45deg)}
 }
 
 /* Header */
@@ -62,7 +62,7 @@ opacity:.85;
 }
 
 .health{
-padding:4px 10px;
+padding:4px 12px;
 border-radius:20px;
 font-size:12px;
 background:#062e2e;
@@ -74,7 +74,7 @@ animation:pulseHealth 2s infinite alternate;
 100%{box-shadow:0 0 12px rgba(0,255,200,.6)}
 }
 
-/* Global Status */
+/* Global Metrics */
 .globalStatus{
 padding:18px 40px;
 background:rgba(15,23,42,.7);
@@ -143,7 +143,7 @@ height:100%;
 transition:width .8s ease;
 }
 
-/* Scientist Cards */
+/* Scientist Ranking */
 .leaderCard{
 padding:15px;
 border-radius:12px;
@@ -211,35 +211,35 @@ font-size:12px;
 <body>
 
 <header>
-<div class="logo">ASTRA ORBITAL INTELLIGENCE</div>
+<div class="logo">ASTRA // AUTONOMOUS SCIENTIFIC NETWORK</div>
 <div class="statusBar">
-<div id="cycleStatus">Initializing...</div>
+<div id="cycleStatus">Initializing Core...</div>
 <div id="reportCount">Reports: 0</div>
 <div id="scientistCount">Scientists: 0</div>
-<div class="health" id="systemHealth">SYSTEM HEALTH: OPTIMAL</div>
+<div class="health" id="systemHealth">CORE STATUS: STABLE</div>
 </div>
 </header>
 
 <div class="globalStatus">
-<div class="statusMetric">Latest Threat<strong id="gThreat">—</strong></div>
-<div class="statusMetric">Risk Score<strong id="gRisk">—</strong></div>
-<div class="statusMetric">Forecast<strong id="gForecast">—</strong></div>
-<div class="statusMetric">Updated<strong id="gUpdated">—</strong></div>
+<div class="statusMetric">Dominant Scientist<strong id="gLeader">—</strong></div>
+<div class="statusMetric">Network Reputation<strong id="gReputation">—</strong></div>
+<div class="statusMetric">Highest Threat<strong id="gThreat">—</strong></div>
+<div class="statusMetric">Last Sync<strong id="gUpdated">—</strong></div>
 </div>
 
 <div class="layout">
 <div class="glass">
-<div class="sectionTitle">ORBITAL EVENT STREAM</div>
+<div class="sectionTitle">LIVE RESEARCH STREAM</div>
 <div id="reports"></div>
 </div>
 
 <div class="glass">
-<div class="sectionTitle">SCIENTIST PERFORMANCE RANKING</div>
+<div class="sectionTitle">SCIENTIST DOMINANCE INDEX</div>
 <div id="scientists"></div>
 </div>
 </div>
 
-<footer>Live orbital intelligence stream • © 2026 ASTRA</footer>
+<footer>Self-Evolving AI Research Civilization • ASTRA © 2026</footer>
 
 <div id="modal" class="modal">
 <div class="modalBox">
@@ -254,10 +254,7 @@ font-size:12px;
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase=createClient(
-"https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+const supabase=createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
 const reportsContainer=document.getElementById("reports");
 const scientistContainer=document.getElementById("scientists");
@@ -279,9 +276,13 @@ const {data}=await supabase
 if(!data) return;
 
 reportsContainer.innerHTML="";
-document.getElementById("reportCount").innerText="Reports: "+data.length;
+reportCount.innerText="Reports: "+data.length;
+
+let highestThreat=0;
 
 data.forEach(r=>{
+if(r.threat_score>highestThreat) highestThreat=r.threat_score;
+
 const div=document.createElement("div");
 div.className="report";
 div.innerHTML=`
@@ -297,12 +298,9 @@ reportsContainer.appendChild(div);
 });
 
 if(data.length){
-const latest=data[0];
-gThreat.innerText=latest.threat_level;
-gRisk.innerText=latest.threat_score;
-gForecast.innerText=latest.forecast_risk||"—";
-gUpdated.innerText=new Date(latest.created_at).toLocaleTimeString();
-cycleStatus.innerText="Live Monitoring Active";
+gThreat.innerText=highestThreat;
+gUpdated.innerText=new Date(data[0].created_at).toLocaleTimeString();
+cycleStatus.innerText="Network Active";
 }
 }
 
@@ -317,14 +315,17 @@ if(!data) return;
 scientistContainer.innerHTML="";
 scientistCount.innerText="Scientists: "+data.length;
 
+let totalRep=0;
+
 data.forEach((s,i)=>{
+totalRep+=Number(s.reputation_score||0);
+
 const div=document.createElement("div");
 div.className="leaderCard";
 div.innerHTML=`
 <strong>#${i+1} ${s.name}</strong><br>
-Reputation: ${Number(s.reputation_score).toFixed(1)}<br>
-Accuracy: ${s.prediction_accuracy||0}%<br>
-Active Cases: ${s.active_cases||0}
+Reputation: ${Number(s.reputation_score||0).toFixed(1)}<br>
+Evolution: ${s.evolution_score||0}
 <div class="metricBar">
 <div class="metricFill" style="width:${s.prediction_accuracy||0}%"></div>
 </div>
@@ -332,30 +333,19 @@ Active Cases: ${s.active_cases||0}
 div.onclick=()=>openScientist(s);
 scientistContainer.appendChild(div);
 });
+
+if(data.length){
+gLeader.innerText=data[0].name;
+gReputation.innerText=totalRep.toFixed(1);
+}
 }
 
-async function openReport(r){
+function openReport(r){
 modal.style.display="flex";
 modalTitle.innerText=r.event_title;
 modalMeta.innerText=new Date(r.created_at).toLocaleString();
 modalContent.innerText=r.full_article;
-
-const {data:analyses}=await supabase
-.from("astra_analyses")
-.select("analysis,confidence,astra_scientists(name)")
-.eq("report_id",r.id);
-
-modalExtra.innerHTML="<h3 style='margin-top:20px'>Scientific Analyses</h3>";
-
-analyses?.forEach(a=>{
-modalExtra.innerHTML+=`
-<div style="margin-top:10px">
-<strong>${a.astra_scientists?.name||"Research Analyst"}</strong><br>
-${a.analysis}<br>
-<small>Confidence: ${a.confidence}%</small>
-</div>
-`;
-});
+modalExtra.innerHTML="";
 }
 
 function openScientist(s){
@@ -363,9 +353,8 @@ modal.style.display="flex";
 modalTitle.innerText=s.name;
 modalMeta.innerText="Specialty: "+s.specialty;
 modalContent.innerHTML=`
-Reputation Score: ${Number(s.reputation_score).toFixed(1)}<br>
-Accuracy: ${s.prediction_accuracy||0}%<br>
-Active Cases: ${s.active_cases||0}<br><br>
+Reputation: ${Number(s.reputation_score||0).toFixed(1)}<br>
+Evolution: ${s.evolution_score||0}<br><br>
 ${s.bio||"No biography available."}
 `;
 modalExtra.innerHTML="";
@@ -375,12 +364,9 @@ window.closeModal=function(){
 modal.style.display="none";
 };
 
-/* Realtime + Fallback */
 supabase.channel("live-reports")
 .on("postgres_changes",{event:"INSERT",schema:"public",table:"astra_reports"},()=>loadReports())
 .subscribe();
-
-setInterval(loadReports,60000);
 
 loadReports();
 loadScientists();
