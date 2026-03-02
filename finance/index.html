@@ -9,71 +9,86 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 body{
 font-family:Inter;
-background:#060b16;
+background:#040811;
 color:white;
 min-height:100vh;
 overflow-x:hidden;
 }
 
-/* ===== BACKGROUND LAYERS ===== */
+/* =============================
+   CINEMATIC BACKGROUND SYSTEM
+============================= */
 
-.bg-gradient{
+.bg-base{
 position:fixed;
-width:100%;
-height:100%;
+inset:0;
 background:
-radial-gradient(circle at 20% 30%, rgba(212,175,55,.12), transparent 40%),
-radial-gradient(circle at 80% 70%, rgba(59,130,246,.08), transparent 40%),
-linear-gradient(180deg,#060b16,#0a0f1c);
-z-index:-3;
+radial-gradient(circle at 15% 20%, rgba(212,175,55,.12), transparent 45%),
+radial-gradient(circle at 85% 80%, rgba(59,130,246,.08), transparent 50%),
+linear-gradient(180deg,#040811,#0a0f1c 70%);
+z-index:-5;
 }
 
 .bg-grid{
 position:fixed;
-width:100%;
-height:100%;
+inset:0;
 background-image:
-linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-background-size:80px 80px;
-z-index:-2;
+linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+background-size:90px 90px;
+animation:gridShift 60s linear infinite;
+z-index:-4;
 }
 
-.bg-glow{
+@keyframes gridShift{
+0%{transform:translateY(0)}
+100%{transform:translateY(-90px)}
+}
+
+.bg-aurora{
 position:fixed;
-width:600px;
-height:600px;
-background:radial-gradient(circle, rgba(212,175,55,.15), transparent 60%);
-filter:blur(100px);
+width:900px;
+height:900px;
+background:radial-gradient(circle, rgba(212,175,55,.18), transparent 65%);
+filter:blur(120px);
 top:10%;
-left:60%;
-z-index:-1;
-animation:float 18s ease-in-out infinite alternate;
+left:55%;
+z-index:-3;
+animation:auroraMove 25s ease-in-out infinite alternate;
 }
 
-@keyframes float{
-0%{transform:translateY(0px) translateX(0px)}
-100%{transform:translateY(-60px) translateX(-40px)}
+@keyframes auroraMove{
+0%{transform:translateY(0) translateX(0)}
+100%{transform:translateY(-80px) translateX(-60px)}
 }
 
-/* ===== HEADER ===== */
+/* =============================
+   HEADER
+============================= */
 
 header{
-padding:30px 70px;
+position:sticky;
+top:0;
+padding:30px 80px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+backdrop-filter:blur(40px);
 border-bottom:1px solid rgba(255,255,255,.06);
-backdrop-filter:blur(30px);
+transition:.4s;
+z-index:10;
+}
+
+header.scrolled{
+box-shadow:0 10px 40px rgba(0,0,0,.5);
 }
 
 .logo{
 font-size:22px;
 font-weight:900;
-letter-spacing:5px;
+letter-spacing:6px;
 color:#d4af37;
 }
 
@@ -99,40 +114,61 @@ animation:pulse 1.5s infinite;
 100%{opacity:1}
 }
 
-/* ===== CONTAINER ===== */
+/* =============================
+   HERO MONUMENT
+============================= */
 
 .container{
-max-width:1250px;
-margin:120px auto;
-padding:0 50px;
+max-width:1300px;
+margin:140px auto;
+padding:0 70px;
 }
 
-/* ===== HERO ===== */
+.hero{
+margin-bottom:160px;
+}
 
 .hero h1{
-font-size:64px;
+font-size:78px;
 font-weight:900;
-letter-spacing:-1px;
-margin-bottom:20px;
-background:linear-gradient(to right,#ffffff,#d4af37);
+line-height:1.05;
+background:linear-gradient(to right,#ffffff,#d4af37,#ffffff);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
+position:relative;
+}
+
+.hero h1::after{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,.3),transparent);
+animation:shine 6s infinite;
+}
+
+@keyframes shine{
+0%{left:-100%}
+100%{left:200%}
 }
 
 .hero p{
+margin-top:30px;
+font-size:22px;
 opacity:.65;
-font-size:20px;
-max-width:700px;
+max-width:750px;
 line-height:1.6;
 }
 
 button{
-margin-top:40px;
+margin-top:50px;
 background:#d4af37;
 border:none;
 color:black;
-padding:15px 34px;
-border-radius:10px;
+padding:16px 38px;
+border-radius:12px;
 font-weight:800;
 font-size:15px;
 cursor:pointer;
@@ -140,8 +176,8 @@ transition:.3s;
 }
 
 button:hover{
-transform:translateY(-3px);
-box-shadow:0 20px 40px rgba(212,175,55,.25);
+transform:translateY(-4px);
+box-shadow:0 25px 60px rgba(212,175,55,.3);
 }
 
 .restricted{
@@ -150,16 +186,18 @@ color:#666;
 cursor:not-allowed;
 }
 
-/* ===== SECTIONS ===== */
+/* =============================
+   SECTIONS
+============================= */
 
 .section{
-margin-top:120px;
+margin-top:160px;
 }
 
 .section h2{
-margin-bottom:35px;
-font-size:16px;
-letter-spacing:3px;
+margin-bottom:40px;
+font-size:15px;
+letter-spacing:4px;
 text-transform:uppercase;
 color:#d4af37;
 opacity:.8;
@@ -167,28 +205,45 @@ opacity:.8;
 
 .statusGrid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:30px;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:35px;
 }
 
 .card{
 background:rgba(255,255,255,.04);
 border:1px solid rgba(255,255,255,.08);
-border-radius:20px;
-padding:35px;
-backdrop-filter:blur(30px);
+border-radius:24px;
+padding:45px;
+backdrop-filter:blur(40px);
+transition:.4s;
+position:relative;
+overflow:hidden;
+}
+
+.card::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(212,175,55,.08),transparent);
+opacity:0;
 transition:.4s;
 }
 
+.card:hover::before{
+opacity:1;
+}
+
 .card:hover{
-transform:translateY(-6px);
-border-color:rgba(212,175,55,.4);
-box-shadow:0 20px 50px rgba(0,0,0,.4);
+transform:translateY(-8px);
+box-shadow:0 30px 70px rgba(0,0,0,.5);
 }
 
 .card strong{
 display:block;
-margin-bottom:20px;
+margin-bottom:25px;
 font-size:13px;
 letter-spacing:1px;
 opacity:.6;
@@ -196,26 +251,30 @@ text-transform:uppercase;
 }
 
 .value{
-font-size:32px;
-font-weight:800;
+font-size:36px;
+font-weight:900;
 }
 
-/* ===== DIVIDER ===== */
-
 .divider{
-margin-top:120px;
+margin-top:160px;
 height:1px;
-background:linear-gradient(to right, transparent, rgba(212,175,55,.3), transparent);
+background:linear-gradient(to right, transparent, rgba(212,175,55,.5), transparent);
+animation:dividerGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes dividerGlow{
+0%{opacity:.3}
+100%{opacity:1}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-gradient"></div>
+<div class="bg-base"></div>
 <div class="bg-grid"></div>
-<div class="bg-glow"></div>
+<div class="bg-aurora"></div>
 
-<header>
+<header id="header">
 <div class="logo">SS FINANCE</div>
 <div class="auth">
 <div class="pulse" id="livePulse"></div>
@@ -227,7 +286,7 @@ background:linear-gradient(to right, transparent, rgba(212,175,55,.3), transpare
 
 <div class="hero">
 <h1>Treasury Authority</h1>
-<p>SS Finance governs capital allocation, revenue architecture, and sovereign financial control across StudentStreamHQ.</p>
+<p>SS Finance governs sovereign capital flow, revenue architecture, and institutional monetary control across StudentStreamHQ.</p>
 <div id="entryButton"></div>
 </div>
 
@@ -255,22 +314,6 @@ background:linear-gradient(to right, transparent, rgba(212,175,55,.3), transpare
 
 <div class="divider"></div>
 
-<div class="section">
-<h2>Mandate</h2>
-<div class="card">
-Revenue intake. Capital deployment. Creator payout governance.
-Monetization control. Immutable financial logging.
-</div>
-</div>
-
-<div class="section">
-<h2>Governance Framework</h2>
-<div class="card">
-Owner-enforced authority. Role-based permission architecture.
-Audit-verified transactions. Reserve protection mechanisms.
-</div>
-</div>
-
 </div>
 
 <script type="module">
@@ -281,29 +324,28 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const authStatus = document.getElementById("authStatus");
-const entryButton = document.getElementById("entryButton");
-const dbStatus = document.getElementById("dbStatus");
-const ledgerCount = document.getElementById("ledgerCount");
-const divisionCount = document.getElementById("divisionCount");
-const lastTransaction = document.getElementById("lastTransaction");
-const pulse = document.getElementById("livePulse");
+const authStatus=document.getElementById("authStatus");
+const entryButton=document.getElementById("entryButton");
+const dbStatus=document.getElementById("dbStatus");
+const ledgerCount=document.getElementById("ledgerCount");
+const divisionCount=document.getElementById("divisionCount");
+const lastTransaction=document.getElementById("lastTransaction");
+const pulse=document.getElementById("livePulse");
+const header=document.getElementById("header");
+
+window.addEventListener("scroll",()=>{
+if(window.scrollY>50){header.classList.add("scrolled")}
+else{header.classList.remove("scrolled")}
+});
 
 async function checkAuth(){
-const {data:{session}} = await supabase.auth.getSession();
-
+const {data:{session}}=await supabase.auth.getSession();
 if(!session){
 authStatus.innerText="Not Logged In";
 entryButton.innerHTML='<button class="restricted">Restricted Access</button>';
 return;
 }
-
-const {data:profile} = await supabase
-.from("profiles")
-.select("role")
-.eq("id",session.user.id)
-.single();
-
+const {data:profile}=await supabase.from("profiles").select("role").eq("id",session.user.id).single();
 if(profile?.role==="owner"){
 authStatus.innerText="Owner Authenticated";
 entryButton.innerHTML='<button onclick="location.href=\'/ss-finance/control\'">Enter Treasury</button>';
@@ -315,33 +357,15 @@ entryButton.innerHTML='<button class="restricted">Restricted Access</button>';
 
 async function loadStats(){
 try{
-const {count} = await supabase
-.from("ss_finance_ledger")
-.select("*",{count:"exact",head:true});
-
-ledgerCount.innerText=count ?? 0;
-
-const {data:divisions} = await supabase
-.from("ss_finance_division_summary")
-.select("*");
-
-divisionCount.innerText=divisions?.length ?? 0;
-
-const {data:last} = await supabase
-.from("ss_finance_ledger")
-.select("created_at")
-.order("created_at",{ascending:false})
-.limit(1)
-.single();
-
-lastTransaction.innerText = last?.created_at
-? new Date(last.created_at).toLocaleString()
-: "No transactions yet";
-
+const {count}=await supabase.from("ss_finance_ledger").select("*",{count:"exact",head:true});
+ledgerCount.innerText=count??0;
+const {data:divisions}=await supabase.from("ss_finance_division_summary").select("*");
+divisionCount.innerText=divisions?.length??0;
+const {data:last}=await supabase.from("ss_finance_ledger").select("created_at").order("created_at",{ascending:false}).limit(1).single();
+lastTransaction.innerText=last?.created_at?new Date(last.created_at).toLocaleString():"No transactions yet";
 dbStatus.innerText="Connected";
 pulse.style.background="#22c55e";
-
-}catch(e){
+}catch{
 dbStatus.innerText="Connection Error";
 pulse.style.background="#ef4444";
 }
