@@ -11,15 +11,17 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Inter;background:#020617;color:white;overflow-x:hidden}
 
+/* Background */
 body::before{
 content:"";position:fixed;inset:0;
 background:
-radial-gradient(circle at 15% 20%, rgba(0,150,255,.2), transparent 40%),
-radial-gradient(circle at 85% 70%, rgba(0,255,200,.15), transparent 40%),
+radial-gradient(circle at 20% 30%, rgba(0,150,255,.2), transparent 40%),
+radial-gradient(circle at 80% 70%, rgba(0,255,200,.15), transparent 40%),
 #020617;
 z-index:-1;
 }
 
+/* Header */
 header{
 padding:25px 50px;
 display:flex;
@@ -31,10 +33,31 @@ border-bottom:1px solid rgba(255,255,255,.05);
 }
 
 .logo{font-family:Orbitron;font-size:22px;letter-spacing:4px}
-.meta{font-size:12px;opacity:.6}
 
+.meta{font-size:12px;opacity:.6;margin-right:15px}
+
+button{
+background:#0ea5e9;border:none;color:white;
+padding:8px 14px;border-radius:8px;cursor:pointer;
+}
+
+/* Global Threat */
+.threatIndex{
+text-align:center;
+padding:25px 0;
+font-family:Orbitron;
+font-size:26px;
+letter-spacing:3px;
+transition:.3s;
+}
+
+.threatIndex.low{color:#00ffc8}
+.threatIndex.medium{color:#ffd000}
+.threatIndex.high{color:#ff4d6d}
+
+/* Layout */
 .wrapper{
-max-width:1400px;margin:50px auto;padding:0 50px;
+max-width:1500px;margin:40px auto;padding:0 50px;
 display:grid;grid-template-columns:2fr 1fr;gap:40px;
 }
 
@@ -50,6 +73,7 @@ font-family:Orbitron;font-size:11px;letter-spacing:3px;
 opacity:.5;margin-bottom:20px;
 }
 
+/* Reports */
 .report{
 padding:22px;border-radius:16px;margin-bottom:18px;
 background:rgba(20,30,55,.6);
@@ -58,41 +82,57 @@ cursor:pointer;transition:.2s;
 }
 .report:hover{transform:scale(1.02)}
 
+.threatLow{border-left:4px solid #00ffc8}
+.threatMedium{border-left:4px solid #ffd000}
+.threatHigh{border-left:4px solid #ff4d6d}
+
+/* Scientists */
 .scientist{
 padding:18px;border-radius:14px;margin-bottom:15px;
 background:rgba(20,30,55,.5);
 border:1px solid rgba(255,255,255,.05);
 }
 
-.threatLow{border-left:4px solid #00ffc8}
-.threatMedium{border-left:4px solid #ffd000}
-.threatHigh{border-left:4px solid #ff4d6d}
-
-button{
-background:#0ea5e9;border:none;color:white;
-padding:8px 14px;border-radius:8px;cursor:pointer;
+.rankBadge{
+font-size:10px;
+padding:3px 8px;
+border-radius:8px;
+margin-left:8px;
 }
 
-.pagination{
-display:flex;justify-content:space-between;margin-top:15px;
+.Rookie{background:#334155}
+.Elite{background:#0ea5e9}
+.Legendary{background:#ff4d6d}
+
+/* Reputation Bar */
+.repBar{
+height:6px;
+background:rgba(255,255,255,.1);
+border-radius:5px;
+margin-top:8px;
+overflow:hidden;
+}
+.repFill{
+height:6px;
+background:linear-gradient(90deg,#00ffc8,#0ea5e9);
 }
 
+/* Modal */
 .modal{
 position:fixed;inset:0;background:rgba(0,0,0,.7);
 display:none;align-items:center;justify-content:center;
 }
-
 .modalContent{
 background:#0f172a;padding:30px;border-radius:15px;
 max-width:700px;width:90%;max-height:80vh;overflow:auto;
 }
-
 .modal.show{display:flex}
 
+/* Debug */
 .debugPanel{
 position:fixed;bottom:0;left:0;right:0;
 background:#000;color:#00ff88;font-family:monospace;
-font-size:12px;padding:12px;max-height:200px;
+font-size:12px;padding:12px;max-height:150px;
 overflow:auto;z-index:9999;
 }
 </style>
@@ -107,21 +147,21 @@ overflow:auto;z-index:9999;
 </div>
 </header>
 
+<div class="threatIndex low" id="globalThreat">GLOBAL THREAT INDEX: 0</div>
+
 <div class="wrapper">
 
 <div class="panel">
 <div class="sectionTitle">INTELLIGENCE STREAM</div>
 <div id="reportContainer"></div>
-
-<div class="pagination">
-<button id="prevBtn">Prev</button>
-<button id="nextBtn">Next</button>
-</div>
 </div>
 
 <div class="panel">
 <div class="sectionTitle">AI SCIENTISTS</div>
 <div id="scientistContainer"></div>
+
+<div class="sectionTitle" style="margin-top:30px">LEADERBOARD</div>
+<div id="leaderboard"></div>
 </div>
 
 </div>
@@ -135,20 +175,16 @@ overflow:auto;z-index:9999;
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-"https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
 
 const reportContainer=document.getElementById("reportContainer");
 const scientistContainer=document.getElementById("scientistContainer");
-const systemStatus=document.getElementById("systemStatus");
+const leaderboard=document.getElementById("leaderboard");
+const globalThreat=document.getElementById("globalThreat");
 const debugContent=document.getElementById("debugContent");
+const systemStatus=document.getElementById("systemStatus");
 const modal=document.getElementById("modal");
 const modalContent=document.getElementById("modalContent");
-
-let page=0;
-const pageSize=10;
 
 function debug(msg){debugContent.innerHTML+="<div>> "+msg+"</div>";}
 
@@ -158,17 +194,19 @@ if(score>=40) return "threatMedium";
 return "threatLow";
 }
 
-async function loadReports(){
-debug("Loading publications page "+page);
+function threatLevel(score){
+if(score>=500) return "high";
+if(score>=200) return "medium";
+return "low";
+}
 
-const {data,error}=await supabase
+async function loadReports(){
+const {data}=await supabase
 .from("astra_publications")
 .select("*, astra_scientists(name)")
 .eq("published",true)
 .order("created_at",{ascending:false})
-.range(page*pageSize,(page+1)*pageSize-1);
-
-if(error){debug("ERROR: "+error.message);return;}
+.limit(20);
 
 reportContainer.innerHTML="";
 data.forEach(r=>{
@@ -176,8 +214,7 @@ const div=document.createElement("div");
 div.className="report "+threatClass(r.threat_score||0);
 div.innerHTML=`
 <strong>${r.title}</strong><br>
-<small>Scientist: ${r.astra_scientists?.name||"Unknown"}</small><br>
-<small>${new Date(r.created_at).toLocaleString()}</small>
+<small>${r.astra_scientists?.name||"Unknown"}</small>
 `;
 div.onclick=()=>openModal(r);
 reportContainer.appendChild(div);
@@ -207,47 +244,58 @@ scientistContainer.innerHTML="";
 data.forEach(s=>{
 scientistContainer.innerHTML+=`
 <div class="scientist">
-<strong>${s.name}</strong><br>
-<small>${s.specialization}</small><br>
+<strong>${s.name}</strong>
+<span class="rankBadge ${s.rank}">${s.rank}</span><br>
+<small>${s.specialization||""}</small><br>
 <small>Reputation: ${s.reputation}</small>
+<div class="repBar">
+<div class="repFill" style="width:${Math.min(s.reputation,100)}%"></div>
+</div>
 </div>`;
 });
 }
 
-function setupRealtime(){
-supabase
-.channel("astra-live")
-.on("postgres_changes",
-{event:"INSERT",schema:"public",table:"astra_publications"},
-payload=>{
-debug("Realtime publication inserted");
-loadReports();
-})
-.subscribe();
-}
+async function loadLeaderboard(){
+const {data}=await supabase.from("astra_leaderboard").select("*");
 
-async function ingestNow(){
-debug("Triggering ingestion...");
-await fetch("https://iabzmoxzbqzcqgypxctr.supabase.co/functions/v1/astra-ingest",{
-method:"POST",
-headers:{Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwODM3MCwiZXhwIjoyMDgyNjg0MzcwfQ.CsPZH8iEu--QB8Zcug4TaqBS8T-g_eqWBbnx9zJH7yA"}
+leaderboard.innerHTML="";
+data.forEach(s=>{
+leaderboard.innerHTML+=`
+<div style="margin-bottom:10px">
+<strong>${s.name}</strong> — ${s.dominance_score}
+</div>`;
 });
 }
 
-document.getElementById("ingestBtn").onclick=ingestNow;
-document.getElementById("nextBtn").onclick=()=>{page++;loadReports();}
-document.getElementById("prevBtn").onclick=()=>{if(page>0)page--;loadReports();}
-modal.onclick=e=>{if(e.target===modal)modal.classList.remove("show");}
+async function loadGlobalThreat(){
+const {data}=await supabase
+.from("astra_publications")
+.select("threat_score")
+.gt("created_at", new Date(Date.now()-7*24*60*60*1000).toISOString());
 
-setInterval(loadReports,60000);
+const total=data.reduce((sum,r)=>sum+(r.threat_score||0),0);
+
+globalThreat.innerText="GLOBAL THREAT INDEX: "+total;
+globalThreat.className="threatIndex "+threatLevel(total);
+}
+
+function setupRealtime(){
+supabase.channel("astra-live")
+.on("postgres_changes",
+{event:"INSERT",schema:"public",table:"astra_publications"},
+()=>{loadReports();loadGlobalThreat();loadLeaderboard();})
+.subscribe();
+}
 
 async function init(){
 systemStatus.innerText="LOADING...";
 await loadReports();
 await loadScientists();
+await loadLeaderboard();
+await loadGlobalThreat();
 setupRealtime();
 systemStatus.innerText="LIVE";
-debug("ASTRA READY");
+debug("ASTRA ONLINE");
 }
 
 init();
