@@ -3,185 +3,175 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>StudentStream HQ | Meeting Command</title>
+<title>StudentStream HQ Staff Meetings</title>
 
 <style>
 body{
-margin:0;
-font-family:Inter,Arial,sans-serif;
-background:#05070d;
-color:white;
-overflow:hidden;
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:#0b0b0f;
+  color:white;
+  overflow:hidden;
 }
 
 /* TOP BAR */
 .topbar{
-height:60px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:0 24px;
-background:rgba(0,0,0,.85);
-border-bottom:1px solid rgba(255,255,255,.08);
-font-size:14px;
+  height:55px;
+  background:rgba(0,0,0,.75);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .live{
-display:flex;
-align-items:center;
-gap:8px;
-color:#ff4d4d;
-font-weight:bold;
-}
-
-.dot{
-width:8px;
-height:8px;
-background:#ff2e2e;
-border-radius:50%;
-animation:pulse 1.4s infinite;
-}
-
-@keyframes pulse{
-0%{opacity:1}
-50%{opacity:.4}
-100%{opacity:1}
-}
-
-.timer{
-opacity:.7;
+  color:#00ff99;
+  font-weight:bold;
 }
 
 /* LAYOUT */
 .layout{
-display:flex;
-height:calc(100vh - 60px);
+  display:flex;
+  height:calc(100vh - 55px);
 }
 
-/* LEFT SIDE */
+/* MAIN */
 .main-video{
-flex:3;
-display:flex;
-flex-direction:column;
-background:black;
+  flex:3;
+  display:flex;
+  flex-direction:column;
+  background:black;
 }
 
 .video-box{
-flex:1;
-position:relative;
-background:#111;
+  flex:1;
+  position:relative;
+  background:#111;
 }
 
-.video-box video{
-width:100%;
-height:100%;
-object-fit:cover;
+video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-.overlay{
-position:absolute;
-bottom:18px;
-left:18px;
-background:rgba(0,0,0,.6);
-padding:12px 16px;
-border-radius:12px;
-font-size:14px;
-font-weight:600;
+.video-overlay{
+  position:absolute;
+  bottom:18px;
+  left:18px;
+  background:rgba(0,0,0,.65);
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+/* VIDEO SWITCH BAR */
+.video-switch{
+  height:70px;
+  display:flex;
+  gap:12px;
+  padding:12px;
+  background:rgba(0,0,0,.6);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.switch-btn{
+  flex:1;
+  background:rgba(255,255,255,.05);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.switch-btn:hover{
+  background:rgba(0,255,153,.15);
+}
+
+.active-meeting{
+  background:rgba(0,255,153,.2);
+  border:1px solid #00ff99;
 }
 
 /* PARTICIPANTS */
 .participants{
-height:150px;
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:12px;
-padding:14px;
-background:#0b0f18;
-border-top:1px solid rgba(255,255,255,.08);
+  height:120px;
+  display:flex;
+  gap:12px;
+  padding:12px;
+  background:rgba(0,0,0,.55);
 }
 
 .tile{
-background:rgba(255,255,255,.05);
-border-radius:14px;
-padding:14px;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-font-size:13px;
-transition:.3s;
-}
-
-.speaking{
-border:1px solid #00ff99;
-box-shadow:0 0 20px rgba(0,255,153,.2);
+  flex:1;
+  background:rgba(255,255,255,.05);
+  border-radius:12px;
+  padding:10px;
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
 .status{
-opacity:.6;
-font-size:12px;
+  font-size:11px;
+  opacity:.7;
 }
 
-/* RIGHT PANEL */
+.unmuted{
+  color:#00ff99;
+  font-weight:bold;
+}
+
+/* SIDE PANEL */
 .sidepanel{
-flex:1;
-display:flex;
-flex-direction:column;
-background:#0a0d14;
-border-left:1px solid rgba(255,255,255,.08);
+  flex:1;
+  border-left:1px solid rgba(255,255,255,.08);
+  display:flex;
+  flex-direction:column;
+  background:rgba(15,15,20,.95);
 }
 
-/* ARCHIVE */
-.archive{
-max-height:180px;
-overflow-y:auto;
-border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.archive-item{
-padding:14px;
-cursor:pointer;
-border-bottom:1px solid rgba(255,255,255,.05);
-font-size:13px;
-transition:.2s;
-}
-
-.archive-item:hover{
-background:rgba(255,255,255,.05);
-}
-
-/* AGENDA */
 .agenda{
-padding:16px;
-border-bottom:1px solid rgba(255,255,255,.08);
+  padding:16px;
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .agenda h3{
-margin:0 0 10px;
-color:#00ff99;
-font-size:14px;
+  margin:0 0 10px;
+  font-size:15px;
+  color:#00ff99;
 }
 
-/* CHAT */
-.chat{
-flex:1;
-padding:16px;
-overflow-y:auto;
-font-size:13px;
+.agenda ul{
+  margin:0;
+  padding-left:18px;
+  font-size:13px;
+  line-height:1.6;
+  opacity:.85;
 }
 
-.msg{
-margin-bottom:10px;
+.chatbox{
+  flex:1;
+  padding:16px;
+  overflow-y:auto;
+  font-size:13px;
 }
 
-.msg b{
-color:#00ff99;
-}
+.msg{ margin-bottom:10px; }
+.msg b{ color:#00ff99; }
 
 .system{
-opacity:.5;
-font-style:italic;
-font-size:12px;
-margin-bottom:8px;
+  font-size:12px;
+  opacity:.55;
+  font-style:italic;
+  margin-bottom:10px;
 }
 </style>
 </head>
@@ -189,111 +179,144 @@ margin-bottom:8px;
 <body>
 
 <div class="topbar">
-<div class="live"><div class="dot"></div> Recording</div>
-<div>StudentStream HQ Staff Meeting</div>
-<div class="timer" id="timer">00:00</div>
+  <span class="live">● Live • Recording</span>
+  <span id="meetingTitle">SS Films Content Strategy</span>
+  <span>Host: Deondre</span>
 </div>
 
 <div class="layout">
 
-<!-- LEFT -->
 <div class="main-video">
 
 <div class="video-box">
-<video id="mainVideo" autoplay muted loop>
-<source src="dance.mp4" type="video/mp4">
-</video>
-<div class="overlay">Deondre • Founder • Screen Sharing</div>
+  <video id="mainVideo" autoplay muted loop>
+    <source src="meeting1.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay" id="overlayText">
+    Deondre • Founder • Screen Sharing
+  </div>
 </div>
 
-<div class="participants" id="participants">
-<div class="tile">Mike<div class="status">Muted</div></div>
-<div class="tile">Rebecca<div class="status">Muted</div></div>
-<div class="tile">Edward<div class="status">Muted</div></div>
-<div class="tile">Jason<div class="status">Muted</div></div>
+<div class="video-switch">
+  <div class="switch-btn active-meeting" onclick="switchMeeting(0)">SS Films Strategy</div>
+  <div class="switch-btn" onclick="switchMeeting(1)">Marketing Brainstorm</div>
+  <div class="switch-btn" onclick="switchMeeting(2)">Creator Review</div>
+</div>
+
+<div class="participants">
+  <div class="tile"><div>Mike</div><div class="status" id="mike">Muted</div></div>
+  <div class="tile"><div>Rebecca</div><div class="status" id="rebecca">Muted</div></div>
+  <div class="tile"><div>Edward</div><div class="status" id="edward">Muted</div></div>
+  <div class="tile"><div>Jason</div><div class="status" id="jason">Muted</div></div>
 </div>
 
 </div>
 
-<!-- RIGHT -->
 <div class="sidepanel">
 
-<div class="archive">
-<div class="archive-item" onclick="switchVideo('dance.mp4')">Staff Meeting – SS Films Rollout</div>
-<div class="archive-item" onclick="switchVideo('meeting2.mp4')">Marketing Strategy Sync</div>
-<div class="archive-item" onclick="switchVideo('meeting3.mp4')">Creator Platform Review</div>
-</div>
-
 <div class="agenda">
-<h3>Agenda</h3>
-<ul>
-<li>Content rollout updates</li>
-<li>Creator growth metrics</li>
-<li>Marketing expansion</li>
-<li>Next week execution</li>
-</ul>
+  <h3>📌 Meeting Agenda</h3>
+  <ul id="agendaList">
+    <li>SS Films rollout</li>
+    <li>Monetization update</li>
+    <li>Content pipeline</li>
+    <li>Next week execution</li>
+  </ul>
 </div>
 
-<div class="chat" id="chatBox"></div>
+<div class="chatbox" id="chatBox"></div>
 
 </div>
-
 </div>
 
 <script>
 
-/* TIMER */
-let seconds=0;
-setInterval(()=>{
-seconds++;
-let m=Math.floor(seconds/60).toString().padStart(2,'0');
-let s=(seconds%60).toString().padStart(2,'0');
-document.getElementById("timer").innerText=`${m}:${s}`;
-},1000);
-
-/* SWITCH VIDEO */
-function switchVideo(src){
-const video=document.getElementById("mainVideo");
-video.src=src;
-video.play();
+/* MEETING DATA */
+const meetings = [
+{
+  title:"SS Films Content Strategy",
+  video:"meeting1.mp4",
+  agenda:["SS Films rollout","Monetization update","Content pipeline","Next week execution"]
+},
+{
+  title:"Marketing Brainstorm",
+  video:"meeting2.mp4",
+  agenda:["TikTok campaign","Instagram reels push","Brand visuals","Ad strategy"]
+},
+{
+  title:"Creator Review Session",
+  video:"meeting3.mp4",
+  agenda:["Creator onboarding","Upload system","Performance metrics","Feature requests"]
 }
-
-/* CHAT SIMULATION */
-const chatBox=document.getElementById("chatBox");
-const messages=[
-{system:true,text:"Mike joined"},
-{name:"Rebecca",text:"Marketing clips look strong"},
-{name:"Edward",text:"Platform stability improved"},
-{name:"Jason",text:"We should increase uploads this week"},
-{system:true,text:"Recording continues..."}
 ];
 
-let i=0;
-setInterval(()=>{
-if(i>=messages.length)return;
-const m=messages[i];
-const div=document.createElement("div");
-if(m.system){
-div.className="system";
-div.innerText=m.text;
-}else{
-div.className="msg";
-div.innerHTML=`<b>${m.name}:</b> ${m.text}`;
-}
-chatBox.appendChild(div);
-chatBox.scrollTop=chatBox.scrollHeight;
-i++;
-},3500);
+let currentMeeting = 0;
 
-/* RANDOM SPEAKING EFFECT */
-const tiles=document.querySelectorAll(".tile");
-setInterval(()=>{
-tiles.forEach(t=>t.classList.remove("speaking"));
-if(Math.random()>0.5){
-const rand=tiles[Math.floor(Math.random()*tiles.length)];
-rand.classList.add("speaking");
+function switchMeeting(index){
+  currentMeeting = index;
+  document.getElementById("mainVideo").src = meetings[index].video;
+  document.getElementById("meetingTitle").innerText = meetings[index].title;
+
+  const agenda = document.getElementById("agendaList");
+  agenda.innerHTML="";
+  meetings[index].agenda.forEach(item=>{
+    const li=document.createElement("li");
+    li.innerText=item;
+    agenda.appendChild(li);
+  });
+
+  document.querySelectorAll(".switch-btn").forEach(btn=>btn.classList.remove("active-meeting"));
+  document.querySelectorAll(".switch-btn")[index].classList.add("active-meeting");
 }
-},5000);
+
+/* AUTO ROTATE EVERY 45s */
+setInterval(()=>{
+  let next = (currentMeeting+1)%meetings.length;
+  switchMeeting(next);
+},45000);
+
+/* CHAT SIM */
+const chatBox=document.getElementById("chatBox");
+
+const messages=[
+"That rollout looks clean",
+"Marketing clips will go crazy",
+"We should push creators harder next week",
+"Analytics are looking strong",
+"StudentStream HQ growth is steady",
+"This UI looks elite 😭",
+"Next update should include notifications",
+"Let’s double down on short-form"
+];
+
+function dropMessage(){
+  const div=document.createElement("div");
+  div.className="msg";
+  div.innerHTML=`<b>Team:</b> ${messages[Math.floor(Math.random()*messages.length)]}`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+setInterval(dropMessage,4000);
+
+/* RANDOM UNMUTE */
+const people=["mike","rebecca","edward","jason"];
+
+function randomUnmute(){
+  const id=people[Math.floor(Math.random()*people.length)];
+  const el=document.getElementById(id);
+  el.innerText="🎤 Speaking...";
+  el.classList.add("unmuted");
+
+  setTimeout(()=>{
+    el.innerText="Muted";
+    el.classList.remove("unmuted");
+  },2000+Math.random()*2000);
+}
+
+setInterval(()=>{
+  if(Math.random()>.5) randomUnmute();
+},7000);
 
 </script>
 
