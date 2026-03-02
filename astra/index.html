@@ -17,7 +17,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* Animated background */
+/* Background */
 body::before{
 content:"";
 position:fixed;
@@ -34,7 +34,6 @@ animation:pulseBg 20s infinite alternate ease-in-out;
 100%{filter:hue-rotate(45deg)}
 }
 
-/* Header */
 header{
 padding:28px 50px;
 display:flex;
@@ -60,7 +59,6 @@ font-size:12px;
 opacity:.6;
 }
 
-/* Layout */
 .wrapper{
 max-width:1400px;
 margin:60px auto;
@@ -70,7 +68,6 @@ grid-template-columns:2fr 1fr;
 gap:40px;
 }
 
-/* Panels */
 .panel{
 background:rgba(15,23,42,.6);
 border:1px solid rgba(255,255,255,.05);
@@ -87,7 +84,6 @@ opacity:.5;
 margin-bottom:20px;
 }
 
-/* Reports */
 .report{
 padding:22px;
 border-radius:16px;
@@ -102,21 +98,10 @@ transform:translateY(-6px);
 box-shadow:0 0 30px rgba(0,255,200,.25);
 }
 
-.report h3{
-font-weight:600;
-margin-bottom:6px;
-}
-
-.report small{
-opacity:.5;
-font-size:12px;
-}
-
 .threatLow{color:#00ffc8}
 .threatMedium{color:#ffd000}
 .threatHigh{color:#ff4d6d}
 
-/* Scientist Board */
 .scientist{
 padding:18px;
 border-radius:14px;
@@ -125,16 +110,6 @@ background:rgba(20,30,55,.5);
 border:1px solid rgba(255,255,255,.05);
 }
 
-.scientist h4{
-font-size:14px;
-margin-bottom:6px;
-}
-
-.scientist small{
-opacity:.6;
-}
-
-/* Modal */
 .modal{
 position:fixed;
 inset:0;
@@ -154,14 +129,6 @@ border-radius:24px;
 max-height:90vh;
 overflow-y:auto;
 }
-
-.closeBtn{
-text-align:right;
-cursor:pointer;
-opacity:.6;
-margin-bottom:20px;
-}
-.closeBtn:hover{opacity:1}
 </style>
 </head>
 
@@ -169,18 +136,16 @@ margin-bottom:20px;
 
 <header>
 <div class="logo">ASTRA</div>
-<div class="meta" id="systemStatus">INDEX ONLINE</div>
+<div class="meta" id="systemStatus">CONNECTING...</div>
 </header>
 
 <div class="wrapper">
 
-<!-- LEFT: Intelligence Stream -->
 <div class="panel">
 <div class="sectionTitle">INTELLIGENCE STREAM</div>
 <div id="reportContainer"></div>
 </div>
 
-<!-- RIGHT: AI Scientists -->
 <div class="panel">
 <div class="sectionTitle">AI SCIENTISTS</div>
 <div id="scientistContainer"></div>
@@ -188,13 +153,12 @@ margin-bottom:20px;
 
 </div>
 
-<!-- Modal -->
 <div id="modal" class="modal">
 <div class="modalBox">
-<div class="closeBtn" onclick="closeModal()">✕ CLOSE</div>
+<div style="text-align:right;cursor:pointer" onclick="closeModal()">✕ CLOSE</div>
 <h2 id="modalTitle"></h2>
 <p id="modalMeta" style="opacity:.6;margin-bottom:25px;"></p>
-<div id="modalContent" style="line-height:1.7;"></div>
+<div id="modalContent"></div>
 </div>
 </div>
 
@@ -206,37 +170,44 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const reportContainer=document.getElementById("reportContainer");
-const scientistContainer=document.getElementById("scientistContainer");
+const reportContainer = document.getElementById("reportContainer");
+const scientistContainer = document.getElementById("scientistContainer");
+const systemStatus = document.getElementById("systemStatus");
 
-/* LOAD REPORTS */
 async function loadReports(){
-const {data,error}=await supabase
+const {data,error} = await supabase
 .from("astra_blogs")
 .select("*")
 .order("created_at",{ascending:false})
 .limit(25);
 
 if(error){
-systemStatus.innerText="DATABASE ERROR";
+console.error("BLOG ERROR:", error);
+systemStatus.innerText = "BLOG ERROR";
 return;
 }
 
-reportContainer.innerHTML="";
+if(!data || data.length === 0){
+reportContainer.innerHTML = "<div style='opacity:.5'>No reports yet.</div>";
+return;
+}
+
+reportContainer.innerHTML = "";
 
 data.forEach(r=>{
+const level = (r.threat_level || "low").toLowerCase();
 const threatClass =
-r.threat_level === "high" ? "threatHigh" :
-r.threat_level === "medium" ? "threatMedium" :
+level === "high" ? "threatHigh" :
+level === "medium" ? "threatMedium" :
 "threatLow";
 
-const div=document.createElement("div");
+const div = document.createElement("div");
 div.className="report";
 div.innerHTML=`
-<h3>${r.title}</h3>
+<h3>${r.title || "Untitled Report"}</h3>
 <small>${new Date(r.created_at).toLocaleString()}</small>
 <div style="margin-top:10px" class="${threatClass}">
-Threat Level: ${r.threat_level?.toUpperCase() || "LOW"}
+Threat Level: ${level.toUpperCase()}
 </div>
 `;
 div.onclick=()=>openReport(r);
@@ -244,21 +215,26 @@ reportContainer.appendChild(div);
 });
 }
 
-/* LOAD SCIENTISTS */
 async function loadScientists(){
-const {data}=await supabase
+const {data,error} = await supabase
 .from("astra_scientists")
 .select("*")
 .order("reputation",{ascending:false});
 
-scientistContainer.innerHTML="";
+if(error){
+console.error("SCIENTIST ERROR:", error);
+systemStatus.innerText = "SCIENTIST ERROR";
+return;
+}
+
+scientistContainer.innerHTML = "";
 
 data?.forEach(s=>{
 const div=document.createElement("div");
 div.className="scientist";
 div.innerHTML=`
-<h4>${s.name}</h4>
-<small>Specialization: ${s.specialization}</small><br>
+<strong>${s.name}</strong><br>
+<small>${s.specialization}</small><br>
 <small>Reputation: ${s.reputation}</small>
 `;
 scientistContainer.appendChild(div);
@@ -276,8 +252,14 @@ window.closeModal=function(){
 modal.style.display="none";
 };
 
-loadReports();
-loadScientists();
+async function init(){
+systemStatus.innerText="LOADING...";
+await loadReports();
+await loadScientists();
+systemStatus.innerText="INDEX ONLINE";
+}
+
+init();
 </script>
 
 </body>
