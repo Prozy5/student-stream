@@ -9,13 +9,25 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
 font-family:Inter;
-background:#0a0f1c;
+background:radial-gradient(circle at 20% 20%, #111827, #0a0f1c 60%);
 color:white;
 min-height:100vh;
-display:flex;
-flex-direction:column;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+background-image:linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+background-size:60px 60px;
+pointer-events:none;
+z-index:0;
 }
 
 header{
@@ -23,77 +35,137 @@ padding:30px 60px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:rgba(0,0,0,.4);
 backdrop-filter:blur(20px);
-border-bottom:1px solid rgba(255,255,255,.05);
+border-bottom:1px solid rgba(255,255,255,.06);
+position:relative;
+z-index:1;
 }
 
 .logo{
 font-size:22px;
 font-weight:800;
-letter-spacing:3px;
+letter-spacing:4px;
 color:#d4af37;
+}
+
+.auth{
+font-size:14px;
+display:flex;
+align-items:center;
+gap:10px;
+opacity:.8;
+}
+
+.pulse{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#d4af37;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:1}
+50%{opacity:.3}
+100%{opacity:1}
 }
 
 .container{
 max-width:1200px;
-margin:80px auto;
+margin:100px auto;
 padding:0 40px;
+position:relative;
+z-index:1;
 }
 
 .hero{
-margin-bottom:60px;
+margin-bottom:80px;
 }
 
 .hero h1{
-font-size:42px;
+font-size:52px;
 font-weight:800;
-margin-bottom:10px;
+margin-bottom:15px;
 }
 
 .hero p{
-opacity:.7;
+opacity:.65;
 font-size:18px;
-}
-
-.section{
-margin-bottom:60px;
-}
-
-.section h2{
-margin-bottom:20px;
-font-size:20px;
-font-weight:600;
-color:#d4af37;
-}
-
-.card{
-background:rgba(255,255,255,.03);
-padding:25px;
-border-radius:14px;
-margin-bottom:15px;
-border:1px solid rgba(255,255,255,.05);
-}
-
-.statusGrid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
+max-width:600px;
 }
 
 button{
 background:#d4af37;
 border:none;
 color:black;
-padding:12px 20px;
+padding:14px 28px;
 border-radius:8px;
-font-weight:600;
+font-weight:700;
 cursor:pointer;
-margin-top:20px;
+margin-top:30px;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 25px rgba(212,175,55,.25);
 }
 
 .restricted{
-opacity:.5;
+background:#333;
+color:#777;
+cursor:not-allowed;
+}
+
+.section{
+margin-bottom:80px;
+}
+
+.section h2{
+margin-bottom:25px;
+font-size:18px;
+letter-spacing:2px;
+text-transform:uppercase;
+color:#d4af37;
+}
+
+.statusGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.card{
+background:rgba(255,255,255,.04);
+padding:30px;
+border-radius:16px;
+border:1px solid rgba(255,255,255,.06);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+border-color:rgba(212,175,55,.4);
+}
+
+.card strong{
+display:block;
+margin-bottom:15px;
+font-size:14px;
+opacity:.6;
+text-transform:uppercase;
+letter-spacing:1px;
+}
+
+.value{
+font-size:26px;
+font-weight:700;
+}
+
+.divider{
+height:1px;
+background:linear-gradient(to right, transparent, rgba(255,255,255,.1), transparent);
+margin:80px 0;
 }
 </style>
 </head>
@@ -101,52 +173,59 @@ opacity:.5;
 
 <header>
 <div class="logo">SS FINANCE</div>
-<div id="authStatus">Checking authentication...</div>
+<div class="auth">
+<div class="pulse" id="livePulse"></div>
+<span id="authStatus">Initializing...</span>
+</div>
 </header>
 
 <div class="container">
 
 <div class="hero">
-<h1>Treasury Division</h1>
-<p>SS Finance governs all capital flow across StudentStreamHQ.</p>
+<h1>Treasury Authority</h1>
+<p>SS Finance governs capital allocation, revenue control, and monetary infrastructure across StudentStreamHQ.</p>
 <div id="entryButton"></div>
 </div>
 
+<div class="divider"></div>
+
 <div class="section">
-<h2>Live System Status</h2>
+<h2>Live Infrastructure Status</h2>
 <div class="statusGrid">
 <div class="card">
-<strong>Database Status</strong>
-<div id="dbStatus">Checking...</div>
+<strong>Database Connection</strong>
+<div class="value" id="dbStatus">Connecting...</div>
 </div>
 <div class="card">
 <strong>Total Ledger Entries</strong>
-<div id="ledgerCount">Loading...</div>
+<div class="value" id="ledgerCount">0</div>
 </div>
 <div class="card">
 <strong>Tracked Divisions</strong>
-<div id="divisionCount">Loading...</div>
+<div class="value" id="divisionCount">0</div>
 </div>
 <div class="card">
 <strong>Last Transaction</strong>
-<div id="lastTransaction">Loading...</div>
+<div class="value" id="lastTransaction">--</div>
 </div>
 </div>
 </div>
+
+<div class="divider"></div>
 
 <div class="section">
 <h2>Mandate</h2>
 <div class="card">
-Revenue intake. Capital allocation. Creator payout governance. 
-Monetization perk distribution. Immutable financial logging.
+Revenue intake. Capital allocation. Creator payout governance.
+Monetization distribution. Immutable transaction logging.
 </div>
 </div>
 
 <div class="section">
-<h2>Governance</h2>
+<h2>Governance Framework</h2>
 <div class="card">
-Owner-controlled access. Immutable ledger architecture.
-Capital reserve protection mechanisms. Audit-verified transaction flow.
+Owner-controlled access. Role-enforced permissions.
+Immutable ledger architecture. Audit-verified financial operations.
 </div>
 </div>
 
@@ -166,13 +245,14 @@ const dbStatus = document.getElementById("dbStatus");
 const ledgerCount = document.getElementById("ledgerCount");
 const divisionCount = document.getElementById("divisionCount");
 const lastTransaction = document.getElementById("lastTransaction");
+const pulse = document.getElementById("livePulse");
 
 async function checkAuth(){
 const {data:{session}} = await supabase.auth.getSession();
 
 if(!session){
 authStatus.innerText="Not Logged In";
-entryButton.innerHTML='<button class="restricted">Restricted</button>';
+entryButton.innerHTML='<button class="restricted">Restricted Access</button>';
 return;
 }
 
@@ -187,11 +267,12 @@ authStatus.innerText="Owner Authenticated";
 entryButton.innerHTML='<button onclick="location.href=\'/ss-finance/control\'">Enter Treasury</button>';
 }else{
 authStatus.innerText="Access Restricted";
-entryButton.innerHTML='<button class="restricted">Restricted</button>';
+entryButton.innerHTML='<button class="restricted">Restricted Access</button>';
 }
 }
 
 async function loadStats(){
+try{
 const {count} = await supabase
 .from("ss_finance_ledger")
 .select("*",{count:"exact",head:true});
@@ -216,20 +297,18 @@ lastTransaction.innerText = last?.created_at
 : "No transactions yet";
 
 dbStatus.innerText="Connected";
-}
+pulse.style.background="#22c55e";
 
-async function init(){
-try{
-await checkAuth();
-await loadStats();
 }catch(e){
 dbStatus.innerText="Connection Error";
+pulse.style.background="#ef4444";
 }
 }
 
 setInterval(loadStats,30000);
 
-init();
+checkAuth();
+loadStats();
 </script>
 
 </body>
