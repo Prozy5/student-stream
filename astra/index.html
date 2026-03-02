@@ -17,7 +17,6 @@ color:white;
 overflow-x:hidden;
 }
 
-/* Background */
 body::before{
 content:"";
 position:fixed;
@@ -54,10 +53,7 @@ background:linear-gradient(90deg,#4da3ff,#00ffc8);
 color:transparent;
 }
 
-.meta{
-font-size:12px;
-opacity:.6;
-}
+.meta{font-size:12px;opacity:.6;}
 
 .wrapper{
 max-width:1400px;
@@ -90,7 +86,6 @@ border-radius:16px;
 margin-bottom:18px;
 background:rgba(20,30,55,.6);
 border:1px solid rgba(255,255,255,.05);
-cursor:pointer;
 }
 
 .scientist{
@@ -101,11 +96,6 @@ background:rgba(20,30,55,.5);
 border:1px solid rgba(255,255,255,.05);
 }
 
-.threatLow{color:#00ffc8}
-.threatMedium{color:#ffd000}
-.threatHigh{color:#ff4d6d}
-
-/* DEBUG PANEL */
 .debugPanel{
 position:fixed;
 bottom:0;
@@ -148,7 +138,6 @@ z-index:9999;
 
 </div>
 
-<!-- DEBUG PANEL -->
 <div id="debugPanel" class="debugPanel">
 <h4>ASTRA DEBUG</h4>
 <div id="debugContent"></div>
@@ -174,40 +163,43 @@ debugContent.innerHTML += `<div>> ${msg}</div>`;
 }
 
 async function loadReports(){
-debug("Loading astra_blogs...");
+debug("Loading astra_publications...");
+
 const {data,error} = await supabase
-.from("astra_blogs")
-.select("*")
+.from("astra_publications")
+.select(`
+id,
+title,
+body,
+created_at,
+astra_scientists ( name )
+`)
+.eq("published", true)
 .order("created_at",{ascending:false})
 .limit(25);
 
 if(error){
-debug("BLOG ERROR: " + error.message);
-systemStatus.innerText="BLOG ERROR";
+debug("PUBLICATION ERROR: " + error.message);
+systemStatus.innerText="ERROR";
 return;
 }
 
-debug("Blogs loaded: " + (data?.length || 0));
+debug("Publications loaded: " + (data?.length || 0));
 
 if(!data || data.length===0){
-reportContainer.innerHTML="<div style='opacity:.5'>No reports yet.</div>";
+reportContainer.innerHTML="<div style='opacity:.5'>No publications yet.</div>";
 return;
 }
 
 reportContainer.innerHTML="";
-data.forEach(r=>{
-const level=(r.threat_level||"low").toLowerCase();
-const threatClass=
-level==="high"?"threatHigh":
-level==="medium"?"threatMedium":
-"threatLow";
 
+data.forEach(r=>{
 const div=document.createElement("div");
 div.className="report";
 div.innerHTML=`
 <strong>${r.title}</strong><br>
-<small>${new Date(r.created_at).toLocaleString()}</small><br>
-<div class="${threatClass}">Threat: ${level.toUpperCase()}</div>
+<small>Scientist: ${r.astra_scientists?.name || "Unknown"}</small><br>
+<small>${new Date(r.created_at).toLocaleString()}</small>
 `;
 reportContainer.appendChild(div);
 });
@@ -215,20 +207,22 @@ reportContainer.appendChild(div);
 
 async function loadScientists(){
 debug("Loading astra_scientists...");
-const {data,error}=await supabase
+
+const {data,error} = await supabase
 .from("astra_scientists")
-.select("*")
+.select("name, specialization, reputation")
+.eq("active", true)
 .order("reputation",{ascending:false});
 
 if(error){
 debug("SCIENTIST ERROR: " + error.message);
-systemStatus.innerText="SCIENTIST ERROR";
 return;
 }
 
 debug("Scientists loaded: " + (data?.length || 0));
 
 scientistContainer.innerHTML="";
+
 data?.forEach(s=>{
 const div=document.createElement("div");
 div.className="scientist";
@@ -244,8 +238,10 @@ scientistContainer.appendChild(div);
 async function init(){
 debug("Connecting to Supabase...");
 systemStatus.innerText="LOADING...";
+
 await loadReports();
 await loadScientists();
+
 systemStatus.innerText="INDEX ONLINE";
 debug("Initialization complete.");
 }
