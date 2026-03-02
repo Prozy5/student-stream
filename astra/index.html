@@ -9,119 +9,102 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
-body{
-font-family:Inter,system-ui;
-background:#020617;
-color:white;
-overflow-x:hidden;
-}
+body{font-family:Inter;background:#020617;color:white;overflow-x:hidden}
 
 body::before{
-content:"";
-position:fixed;
-inset:0;
+content:"";position:fixed;inset:0;
 background:
 radial-gradient(circle at 15% 20%, rgba(0,150,255,.2), transparent 40%),
 radial-gradient(circle at 85% 70%, rgba(0,255,200,.15), transparent 40%),
 #020617;
 z-index:-1;
-animation:pulseBg 20s infinite alternate ease-in-out;
-}
-@keyframes pulseBg{
-0%{filter:hue-rotate(0deg)}
-100%{filter:hue-rotate(45deg)}
 }
 
 header{
-padding:28px 50px;
+padding:25px 50px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-border-bottom:1px solid rgba(255,255,255,.05);
 background:rgba(10,15,30,.8);
 backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.05);
 }
 
-.logo{
-font-family:Orbitron;
-font-weight:800;
-font-size:22px;
-letter-spacing:4px;
-background:linear-gradient(90deg,#4da3ff,#00ffc8);
--webkit-background-clip:text;
-color:transparent;
-}
-
-.meta{font-size:12px;opacity:.6;}
+.logo{font-family:Orbitron;font-size:22px;letter-spacing:4px}
+.meta{font-size:12px;opacity:.6}
 
 .wrapper{
-max-width:1400px;
-margin:60px auto;
-padding:0 50px;
-display:grid;
-grid-template-columns:2fr 1fr;
-gap:40px;
+max-width:1400px;margin:50px auto;padding:0 50px;
+display:grid;grid-template-columns:2fr 1fr;gap:40px;
 }
 
 .panel{
 background:rgba(15,23,42,.6);
 border:1px solid rgba(255,255,255,.05);
-border-radius:20px;
-padding:30px;
+border-radius:20px;padding:30px;
 backdrop-filter:blur(25px);
 }
 
 .sectionTitle{
-font-family:Orbitron;
-font-size:11px;
-letter-spacing:3px;
-opacity:.5;
-margin-bottom:20px;
+font-family:Orbitron;font-size:11px;letter-spacing:3px;
+opacity:.5;margin-bottom:20px;
 }
 
 .report{
-padding:22px;
-border-radius:16px;
-margin-bottom:18px;
+padding:22px;border-radius:16px;margin-bottom:18px;
 background:rgba(20,30,55,.6);
 border:1px solid rgba(255,255,255,.05);
+cursor:pointer;transition:.2s;
 }
+.report:hover{transform:scale(1.02)}
 
 .scientist{
-padding:18px;
-border-radius:14px;
-margin-bottom:15px;
+padding:18px;border-radius:14px;margin-bottom:15px;
 background:rgba(20,30,55,.5);
 border:1px solid rgba(255,255,255,.05);
 }
 
-.debugPanel{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#000;
-color:#00ff88;
-font-family:monospace;
-font-size:12px;
-padding:12px;
-max-height:220px;
-overflow:auto;
-display:none;
-border-top:2px solid #00ff88;
-z-index:9999;
+.threatLow{border-left:4px solid #00ffc8}
+.threatMedium{border-left:4px solid #ffd000}
+.threatHigh{border-left:4px solid #ff4d6d}
+
+button{
+background:#0ea5e9;border:none;color:white;
+padding:8px 14px;border-radius:8px;cursor:pointer;
 }
-.debugPanel.show{display:block;}
-.debugPanel h4{color:#00ffc8;margin-bottom:8px;}
+
+.pagination{
+display:flex;justify-content:space-between;margin-top:15px;
+}
+
+.modal{
+position:fixed;inset:0;background:rgba(0,0,0,.7);
+display:none;align-items:center;justify-content:center;
+}
+
+.modalContent{
+background:#0f172a;padding:30px;border-radius:15px;
+max-width:700px;width:90%;max-height:80vh;overflow:auto;
+}
+
+.modal.show{display:flex}
+
+.debugPanel{
+position:fixed;bottom:0;left:0;right:0;
+background:#000;color:#00ff88;font-family:monospace;
+font-size:12px;padding:12px;max-height:200px;
+overflow:auto;z-index:9999;
+}
 </style>
 </head>
-
 <body>
 
 <header>
 <div class="logo">ASTRA</div>
-<div class="meta" id="systemStatus">CONNECTING...</div>
+<div>
+<span class="meta" id="systemStatus">CONNECTING...</span>
+<button id="ingestBtn">INGEST NOW</button>
+</div>
 </header>
 
 <div class="wrapper">
@@ -129,6 +112,11 @@ z-index:9999;
 <div class="panel">
 <div class="sectionTitle">INTELLIGENCE STREAM</div>
 <div id="reportContainer"></div>
+
+<div class="pagination">
+<button id="prevBtn">Prev</button>
+<button id="nextBtn">Next</button>
+</div>
 </div>
 
 <div class="panel">
@@ -138,10 +126,11 @@ z-index:9999;
 
 </div>
 
-<div id="debugPanel" class="debugPanel">
-<h4>ASTRA DEBUG</h4>
-<div id="debugContent"></div>
+<div id="modal" class="modal">
+<div class="modalContent" id="modalContent"></div>
 </div>
+
+<div class="debugPanel" id="debugContent"></div>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -151,99 +140,114 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const reportContainer = document.getElementById("reportContainer");
-const scientistContainer = document.getElementById("scientistContainer");
-const systemStatus = document.getElementById("systemStatus");
-const debugPanel = document.getElementById("debugPanel");
-const debugContent = document.getElementById("debugContent");
+const reportContainer=document.getElementById("reportContainer");
+const scientistContainer=document.getElementById("scientistContainer");
+const systemStatus=document.getElementById("systemStatus");
+const debugContent=document.getElementById("debugContent");
+const modal=document.getElementById("modal");
+const modalContent=document.getElementById("modalContent");
 
-function debug(msg){
-debugPanel.classList.add("show");
-debugContent.innerHTML += `<div>> ${msg}</div>`;
+let page=0;
+const pageSize=10;
+
+function debug(msg){debugContent.innerHTML+="<div>> "+msg+"</div>";}
+
+function threatClass(score){
+if(score>=70) return "threatHigh";
+if(score>=40) return "threatMedium";
+return "threatLow";
 }
 
 async function loadReports(){
-debug("Loading astra_publications...");
+debug("Loading publications page "+page);
 
-const {data,error} = await supabase
+const {data,error}=await supabase
 .from("astra_publications")
-.select(`
-id,
-title,
-body,
-created_at,
-astra_scientists ( name )
-`)
-.eq("published", true)
+.select("*, astra_scientists(name)")
+.eq("published",true)
 .order("created_at",{ascending:false})
-.limit(25);
+.range(page*pageSize,(page+1)*pageSize-1);
 
-if(error){
-debug("PUBLICATION ERROR: " + error.message);
-systemStatus.innerText="ERROR";
-return;
-}
-
-debug("Publications loaded: " + (data?.length || 0));
-
-if(!data || data.length===0){
-reportContainer.innerHTML="<div style='opacity:.5'>No publications yet.</div>";
-return;
-}
+if(error){debug("ERROR: "+error.message);return;}
 
 reportContainer.innerHTML="";
-
 data.forEach(r=>{
 const div=document.createElement("div");
-div.className="report";
+div.className="report "+threatClass(r.threat_score||0);
 div.innerHTML=`
 <strong>${r.title}</strong><br>
-<small>Scientist: ${r.astra_scientists?.name || "Unknown"}</small><br>
+<small>Scientist: ${r.astra_scientists?.name||"Unknown"}</small><br>
 <small>${new Date(r.created_at).toLocaleString()}</small>
 `;
+div.onclick=()=>openModal(r);
 reportContainer.appendChild(div);
 });
 }
 
-async function loadScientists(){
-debug("Loading astra_scientists...");
-
-const {data,error} = await supabase
-.from("astra_scientists")
-.select("name, specialization, reputation")
-.eq("active", true)
-.order("reputation",{ascending:false});
-
-if(error){
-debug("SCIENTIST ERROR: " + error.message);
-return;
+function openModal(r){
+modalContent.innerHTML=`
+<h2>${r.title}</h2>
+<p><strong>Scientist:</strong> ${r.astra_scientists?.name||"Unknown"}</p>
+<p><strong>Threat Score:</strong> ${r.threat_score||0}</p>
+<hr>
+<p>${r.body||""}</p>
+<br><button onclick="document.getElementById('modal').classList.remove('show')">Close</button>
+`;
+modal.classList.add("show");
 }
 
-debug("Scientists loaded: " + (data?.length || 0));
+async function loadScientists(){
+const {data}=await supabase
+.from("astra_scientists")
+.select("*")
+.eq("active",true)
+.order("reputation",{ascending:false});
 
 scientistContainer.innerHTML="";
-
-data?.forEach(s=>{
-const div=document.createElement("div");
-div.className="scientist";
-div.innerHTML=`
+data.forEach(s=>{
+scientistContainer.innerHTML+=`
+<div class="scientist">
 <strong>${s.name}</strong><br>
 <small>${s.specialization}</small><br>
 <small>Reputation: ${s.reputation}</small>
-`;
-scientistContainer.appendChild(div);
+</div>`;
 });
 }
 
-async function init(){
-debug("Connecting to Supabase...");
-systemStatus.innerText="LOADING...";
+function setupRealtime(){
+supabase
+.channel("astra-live")
+.on("postgres_changes",
+{event:"INSERT",schema:"public",table:"astra_publications"},
+payload=>{
+debug("Realtime publication inserted");
+loadReports();
+})
+.subscribe();
+}
 
+async function ingestNow(){
+debug("Triggering ingestion...");
+await fetch("https://iabzmoxzbqzcqgypxctr.supabase.co/functions/v1/astra-ingest",{
+method:"POST",
+headers:{Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwODM3MCwiZXhwIjoyMDgyNjg0MzcwfQ.CsPZH8iEu--QB8Zcug4TaqBS8T-g_eqWBbnx9zJH7yA"}
+});
+}
+
+document.getElementById("ingestBtn").onclick=ingestNow;
+document.getElementById("nextBtn").onclick=()=>{page++;loadReports();}
+document.getElementById("prevBtn").onclick=()=>{if(page>0)page--;loadReports();}
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove("show");}
+
+setInterval(loadReports,60000);
+
+async function init(){
+systemStatus.innerText="LOADING...";
 await loadReports();
 await loadScientists();
-
-systemStatus.innerText="INDEX ONLINE";
-debug("Initialization complete.");
+setupRealtime();
+systemStatus.innerText="LIVE";
+debug("ASTRA READY");
 }
 
 init();
