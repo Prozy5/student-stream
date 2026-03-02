@@ -5,60 +5,89 @@
 <title>SS Finance | StudentStreamHQ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
 font-family:Inter;
-background:radial-gradient(circle at 20% 20%, #111827, #0a0f1c 60%);
+background:#060b16;
 color:white;
 min-height:100vh;
 overflow-x:hidden;
 }
 
-body::before{
-content:"";
+/* ===== BACKGROUND LAYERS ===== */
+
+.bg-gradient{
 position:fixed;
 width:100%;
 height:100%;
-background-image:linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-background-size:60px 60px;
-pointer-events:none;
-z-index:0;
+background:
+radial-gradient(circle at 20% 30%, rgba(212,175,55,.12), transparent 40%),
+radial-gradient(circle at 80% 70%, rgba(59,130,246,.08), transparent 40%),
+linear-gradient(180deg,#060b16,#0a0f1c);
+z-index:-3;
 }
 
+.bg-grid{
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+background-size:80px 80px;
+z-index:-2;
+}
+
+.bg-glow{
+position:fixed;
+width:600px;
+height:600px;
+background:radial-gradient(circle, rgba(212,175,55,.15), transparent 60%);
+filter:blur(100px);
+top:10%;
+left:60%;
+z-index:-1;
+animation:float 18s ease-in-out infinite alternate;
+}
+
+@keyframes float{
+0%{transform:translateY(0px) translateX(0px)}
+100%{transform:translateY(-60px) translateX(-40px)}
+}
+
+/* ===== HEADER ===== */
+
 header{
-padding:30px 60px;
+padding:30px 70px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-backdrop-filter:blur(20px);
 border-bottom:1px solid rgba(255,255,255,.06);
-position:relative;
-z-index:1;
+backdrop-filter:blur(30px);
 }
 
 .logo{
 font-size:22px;
-font-weight:800;
-letter-spacing:4px;
+font-weight:900;
+letter-spacing:5px;
 color:#d4af37;
 }
 
 .auth{
-font-size:14px;
 display:flex;
 align-items:center;
 gap:10px;
-opacity:.8;
+font-size:14px;
+opacity:.85;
 }
 
 .pulse{
-width:8px;
-height:8px;
+width:9px;
+height:9px;
 border-radius:50%;
 background:#d4af37;
 animation:pulse 1.5s infinite;
@@ -70,106 +99,121 @@ animation:pulse 1.5s infinite;
 100%{opacity:1}
 }
 
+/* ===== CONTAINER ===== */
+
 .container{
-max-width:1200px;
-margin:100px auto;
-padding:0 40px;
-position:relative;
-z-index:1;
+max-width:1250px;
+margin:120px auto;
+padding:0 50px;
 }
 
-.hero{
-margin-bottom:80px;
-}
+/* ===== HERO ===== */
 
 .hero h1{
-font-size:52px;
-font-weight:800;
-margin-bottom:15px;
+font-size:64px;
+font-weight:900;
+letter-spacing:-1px;
+margin-bottom:20px;
+background:linear-gradient(to right,#ffffff,#d4af37);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
 .hero p{
 opacity:.65;
-font-size:18px;
-max-width:600px;
+font-size:20px;
+max-width:700px;
+line-height:1.6;
 }
 
 button{
+margin-top:40px;
 background:#d4af37;
 border:none;
 color:black;
-padding:14px 28px;
-border-radius:8px;
-font-weight:700;
+padding:15px 34px;
+border-radius:10px;
+font-weight:800;
+font-size:15px;
 cursor:pointer;
-margin-top:30px;
 transition:.3s;
 }
 
 button:hover{
-transform:translateY(-2px);
-box-shadow:0 10px 25px rgba(212,175,55,.25);
+transform:translateY(-3px);
+box-shadow:0 20px 40px rgba(212,175,55,.25);
 }
 
 .restricted{
-background:#333;
-color:#777;
+background:#222;
+color:#666;
 cursor:not-allowed;
 }
 
+/* ===== SECTIONS ===== */
+
 .section{
-margin-bottom:80px;
+margin-top:120px;
 }
 
 .section h2{
-margin-bottom:25px;
-font-size:18px;
-letter-spacing:2px;
+margin-bottom:35px;
+font-size:16px;
+letter-spacing:3px;
 text-transform:uppercase;
 color:#d4af37;
+opacity:.8;
 }
 
 .statusGrid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:25px;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:30px;
 }
 
 .card{
 background:rgba(255,255,255,.04);
-padding:30px;
-border-radius:16px;
-border:1px solid rgba(255,255,255,.06);
-transition:.3s;
+border:1px solid rgba(255,255,255,.08);
+border-radius:20px;
+padding:35px;
+backdrop-filter:blur(30px);
+transition:.4s;
 }
 
 .card:hover{
-transform:translateY(-5px);
+transform:translateY(-6px);
 border-color:rgba(212,175,55,.4);
+box-shadow:0 20px 50px rgba(0,0,0,.4);
 }
 
 .card strong{
 display:block;
-margin-bottom:15px;
-font-size:14px;
+margin-bottom:20px;
+font-size:13px;
+letter-spacing:1px;
 opacity:.6;
 text-transform:uppercase;
-letter-spacing:1px;
 }
 
 .value{
-font-size:26px;
-font-weight:700;
+font-size:32px;
+font-weight:800;
 }
 
+/* ===== DIVIDER ===== */
+
 .divider{
+margin-top:120px;
 height:1px;
-background:linear-gradient(to right, transparent, rgba(255,255,255,.1), transparent);
-margin:80px 0;
+background:linear-gradient(to right, transparent, rgba(212,175,55,.3), transparent);
 }
 </style>
 </head>
 <body>
+
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
 
 <header>
 <div class="logo">SS FINANCE</div>
@@ -183,11 +227,9 @@ margin:80px 0;
 
 <div class="hero">
 <h1>Treasury Authority</h1>
-<p>SS Finance governs capital allocation, revenue control, and monetary infrastructure across StudentStreamHQ.</p>
+<p>SS Finance governs capital allocation, revenue architecture, and sovereign financial control across StudentStreamHQ.</p>
 <div id="entryButton"></div>
 </div>
-
-<div class="divider"></div>
 
 <div class="section">
 <h2>Live Infrastructure Status</h2>
@@ -216,16 +258,16 @@ margin:80px 0;
 <div class="section">
 <h2>Mandate</h2>
 <div class="card">
-Revenue intake. Capital allocation. Creator payout governance.
-Monetization distribution. Immutable transaction logging.
+Revenue intake. Capital deployment. Creator payout governance.
+Monetization control. Immutable financial logging.
 </div>
 </div>
 
 <div class="section">
 <h2>Governance Framework</h2>
 <div class="card">
-Owner-controlled access. Role-enforced permissions.
-Immutable ledger architecture. Audit-verified financial operations.
+Owner-enforced authority. Role-based permission architecture.
+Audit-verified transactions. Reserve protection mechanisms.
 </div>
 </div>
 
@@ -306,7 +348,6 @@ pulse.style.background="#ef4444";
 }
 
 setInterval(loadStats,30000);
-
 checkAuth();
 loadStats();
 </script>
