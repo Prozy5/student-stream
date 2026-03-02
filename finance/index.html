@@ -2,126 +2,154 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SS Finance — Treasury</title>
+<title>SS Finance | StudentStreamHQ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
 font-family:Inter;
-background:#0a0f1a;
+background:#0a0f1c;
 color:white;
-padding:40px;
+min-height:100vh;
+display:flex;
+flex-direction:column;
 }
 
-h1{font-weight:600;margin-bottom:30px}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-margin-bottom:40px;
+header{
+padding:30px 60px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.4);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.05);
 }
 
-.card{
-background:#111827;
-padding:25px;
-border-radius:12px;
-border:1px solid rgba(255,255,255,.05);
+.logo{
+font-size:22px;
+font-weight:800;
+letter-spacing:3px;
+color:#d4af37;
 }
 
-.card h2{
-font-size:14px;
-opacity:.6;
+.container{
+max-width:1200px;
+margin:80px auto;
+padding:0 40px;
+}
+
+.hero{
+margin-bottom:60px;
+}
+
+.hero h1{
+font-size:42px;
+font-weight:800;
 margin-bottom:10px;
 }
 
-.card .value{
-font-size:26px;
-font-weight:700;
+.hero p{
+opacity:.7;
+font-size:18px;
 }
 
 .section{
-margin-top:50px;
+margin-bottom:60px;
 }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:15px;
+.section h2{
+margin-bottom:20px;
+font-size:20px;
+font-weight:600;
+color:#d4af37;
 }
 
-th,td{
-text-align:left;
-padding:12px;
-border-bottom:1px solid rgba(255,255,255,.05);
-font-size:14px;
+.card{
+background:rgba(255,255,255,.03);
+padding:25px;
+border-radius:14px;
+margin-bottom:15px;
+border:1px solid rgba(255,255,255,.05);
 }
 
-th{opacity:.6}
-
-.status{
-padding:4px 8px;
-border-radius:6px;
-font-size:12px;
+.statusGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
 }
 
-.completed{background:#064e3b}
-.pending{background:#78350f}
-.reserved{background:#1e3a8a}
+button{
+background:#d4af37;
+border:none;
+color:black;
+padding:12px 20px;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+margin-top:20px;
+}
+
+.restricted{
+opacity:.5;
+}
 </style>
 </head>
 <body>
 
-<h1>SS Finance Treasury</h1>
+<header>
+<div class="logo">SS FINANCE</div>
+<div id="authStatus">Checking authentication...</div>
+</header>
 
-<div class="grid">
-<div class="card">
-<h2>Master Balance</h2>
-<div class="value" id="masterBalance">$0</div>
+<div class="container">
+
+<div class="hero">
+<h1>Treasury Division</h1>
+<p>SS Finance governs all capital flow across StudentStreamHQ.</p>
+<div id="entryButton"></div>
 </div>
 
+<div class="section">
+<h2>Live System Status</h2>
+<div class="statusGrid">
 <div class="card">
-<h2>Available Balance</h2>
-<div class="value" id="availableBalance">$0</div>
+<strong>Database Status</strong>
+<div id="dbStatus">Checking...</div>
 </div>
-
 <div class="card">
-<h2>Reserved Balance</h2>
-<div class="value" id="reservedBalance">$0</div>
+<strong>Total Ledger Entries</strong>
+<div id="ledgerCount">Loading...</div>
+</div>
+<div class="card">
+<strong>Tracked Divisions</strong>
+<div id="divisionCount">Loading...</div>
+</div>
+<div class="card">
+<strong>Last Transaction</strong>
+<div id="lastTransaction">Loading...</div>
+</div>
 </div>
 </div>
 
 <div class="section">
-<h2>Division Summary</h2>
-<table>
-<thead>
-<tr>
-<th>Division</th>
-<th>Total Flow</th>
-<th>Transactions</th>
-</tr>
-</thead>
-<tbody id="divisionTable"></tbody>
-</table>
+<h2>Mandate</h2>
+<div class="card">
+Revenue intake. Capital allocation. Creator payout governance. 
+Monetization perk distribution. Immutable financial logging.
+</div>
 </div>
 
 <div class="section">
-<h2>Recent Ledger Activity</h2>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Division</th>
-<th>Amount</th>
-<th>Status</th>
-<th>Date</th>
-</tr>
-</thead>
-<tbody id="ledgerTable"></tbody>
-</table>
+<h2>Governance</h2>
+<div class="card">
+Owner-controlled access. Immutable ledger architecture.
+Capital reserve protection mechanisms. Audit-verified transaction flow.
+</div>
+</div>
+
 </div>
 
 <script type="module">
@@ -132,104 +160,76 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const masterEl = document.getElementById("masterBalance");
-const availableEl = document.getElementById("availableBalance");
-const reservedEl = document.getElementById("reservedBalance");
-const divisionTable = document.getElementById("divisionTable");
-const ledgerTable = document.getElementById("ledgerTable");
+const authStatus = document.getElementById("authStatus");
+const entryButton = document.getElementById("entryButton");
+const dbStatus = document.getElementById("dbStatus");
+const ledgerCount = document.getElementById("ledgerCount");
+const divisionCount = document.getElementById("divisionCount");
+const lastTransaction = document.getElementById("lastTransaction");
 
-function formatMoney(num){
-return "$" + Number(num).toLocaleString(undefined,{minimumFractionDigits:2});
-}
+async function checkAuth(){
+const {data:{session}} = await supabase.auth.getSession();
 
-async function verifyOwner(){
-const { data: { user } } = await supabase.auth.getUser();
-if(!user){
-alert("Not authenticated.");
-window.location.href="/login.html";
+if(!session){
+authStatus.innerText="Not Logged In";
+entryButton.innerHTML='<button class="restricted">Restricted</button>';
 return;
 }
 
-const { data } = await supabase
+const {data:profile} = await supabase
 .from("profiles")
 .select("role")
-.eq("id", user.id)
+.eq("id",session.user.id)
 .single();
 
-if(!data || data.role !== "owner"){
-alert("Unauthorized.");
-document.body.innerHTML = "<h2>Access Denied</h2>";
+if(profile?.role==="owner"){
+authStatus.innerText="Owner Authenticated";
+entryButton.innerHTML='<button onclick="location.href=\'/ss-finance/control\'">Enter Treasury</button>';
+}else{
+authStatus.innerText="Access Restricted";
+entryButton.innerHTML='<button class="restricted">Restricted</button>';
 }
 }
 
-async function loadBalances(){
-const { data } = await supabase
-.from("ss_finance_balances")
-.select("*")
-.single();
+async function loadStats(){
+const {count} = await supabase
+.from("ss_finance_ledger")
+.select("*",{count:"exact",head:true});
 
-if(!data) return;
+ledgerCount.innerText=count ?? 0;
 
-masterEl.textContent = formatMoney(data.master_balance);
-availableEl.textContent = formatMoney(data.available_balance);
-reservedEl.textContent = formatMoney(data.reserved_balance);
-}
-
-async function loadDivisionSummary(){
-const { data } = await supabase
+const {data:divisions} = await supabase
 .from("ss_finance_division_summary")
 .select("*");
 
-divisionTable.innerHTML = "";
+divisionCount.innerText=divisions?.length ?? 0;
 
-data?.forEach(d=>{
-divisionTable.innerHTML += `
-<tr>
-<td>${d.division || "General"}</td>
-<td>${formatMoney(d.total_flow)}</td>
-<td>${d.transaction_count}</td>
-</tr>
-`;
-});
-}
-
-async function loadLedger(){
-const { data } = await supabase
+const {data:last} = await supabase
 .from("ss_finance_ledger")
-.select("*")
+.select("created_at")
 .order("created_at",{ascending:false})
-.limit(20);
+.limit(1)
+.single();
 
-ledgerTable.innerHTML = "";
+lastTransaction.innerText = last?.created_at
+? new Date(last.created_at).toLocaleString()
+: "No transactions yet";
 
-data?.forEach(l=>{
-ledgerTable.innerHTML += `
-<tr>
-<td>${l.transaction_type}</td>
-<td>${l.division || "-"}</td>
-<td>${formatMoney(l.amount)}</td>
-<td><span class="status ${l.status}">${l.status}</span></td>
-<td>${new Date(l.created_at).toLocaleString()}</td>
-</tr>
-`;
-});
+dbStatus.innerText="Connected";
 }
 
 async function init(){
-await verifyOwner();
-await loadBalances();
-await loadDivisionSummary();
-await loadLedger();
+try{
+await checkAuth();
+await loadStats();
+}catch(e){
+dbStatus.innerText="Connection Error";
+}
 }
 
-init();
+setInterval(loadStats,30000);
 
-// Auto refresh every 30 seconds
-setInterval(()=>{
-loadBalances();
-loadDivisionSummary();
-loadLedger();
-},30000);
+init();
 </script>
 
 </body>
