@@ -3,52 +3,84 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>StudentStream HQ Staff Meetings</title>
+<title>StudentStream HQ • Live Meetings</title>
 
 <style>
+*{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Inter,Arial,sans-serif;
-  background:#0b0b0f;
   color:white;
   overflow:hidden;
+  background:linear-gradient(135deg,#0a0a0f,#111827,#0f172a);
+  background-size:400% 400%;
+  animation:bgMove 18s ease infinite;
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
 /* TOP BAR */
 .topbar{
-  height:55px;
-  background:rgba(0,0,0,.75);
+  height:60px;
+  backdrop-filter:blur(12px);
+  background:rgba(0,0,0,.5);
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 18px;
-  font-size:14px;
+  padding:0 20px;
   border-bottom:1px solid rgba(255,255,255,.08);
+  font-size:14px;
 }
 
 .live{
   color:#00ff99;
-  font-weight:bold;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  background:#00ff99;
+  border-radius:50%;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:1}
+  50%{opacity:.3}
+  100%{opacity:1}
+}
+
+.clock{
+  opacity:.7;
+  font-size:13px;
 }
 
 /* LAYOUT */
 .layout{
   display:flex;
-  height:calc(100vh - 55px);
+  height:calc(100vh - 60px);
 }
 
-/* MAIN */
+/* MAIN VIDEO */
 .main-video{
   flex:3;
   display:flex;
   flex-direction:column;
-  background:black;
 }
 
 .video-box{
   flex:1;
   position:relative;
-  background:#111;
+  background:black;
 }
 
 video{
@@ -59,35 +91,36 @@ video{
 
 .video-overlay{
   position:absolute;
-  bottom:18px;
-  left:18px;
-  background:rgba(0,0,0,.65);
-  padding:10px 14px;
-  border-radius:12px;
+  bottom:20px;
+  left:20px;
+  background:rgba(0,0,0,.6);
+  padding:12px 16px;
+  border-radius:14px;
   font-size:14px;
-  font-weight:bold;
+  font-weight:600;
+  backdrop-filter:blur(8px);
 }
 
-/* VIDEO SWITCH BAR */
+/* SWITCH BAR */
 .video-switch{
-  height:70px;
+  height:75px;
   display:flex;
   gap:12px;
   padding:12px;
-  background:rgba(0,0,0,.6);
-  border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(12px);
 }
 
 .switch-btn{
   flex:1;
   background:rgba(255,255,255,.05);
-  border-radius:12px;
+  border-radius:14px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:13px;
   cursor:pointer;
-  transition:.2s;
+  transition:.25s;
+  font-size:13px;
 }
 
 .switch-btn:hover{
@@ -95,8 +128,8 @@ video{
 }
 
 .active-meeting{
-  background:rgba(0,255,153,.2);
   border:1px solid #00ff99;
+  background:rgba(0,255,153,.2);
 }
 
 /* PARTICIPANTS */
@@ -105,28 +138,29 @@ video{
   display:flex;
   gap:12px;
   padding:12px;
-  background:rgba(0,0,0,.55);
+  background:rgba(0,0,0,.4);
 }
 
 .tile{
   flex:1;
   background:rgba(255,255,255,.05);
-  border-radius:12px;
-  padding:10px;
-  font-size:12px;
+  border-radius:14px;
+  padding:12px;
+  font-size:13px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+  transition:.3s;
+}
+
+.speaking{
+  box-shadow:0 0 15px rgba(0,255,153,.5);
+  border:1px solid #00ff99;
 }
 
 .status{
-  font-size:11px;
-  opacity:.7;
-}
-
-.unmuted{
-  color:#00ff99;
-  font-weight:bold;
+  font-size:12px;
+  opacity:.6;
 }
 
 /* SIDE PANEL */
@@ -135,43 +169,47 @@ video{
   border-left:1px solid rgba(255,255,255,.08);
   display:flex;
   flex-direction:column;
-  background:rgba(15,15,20,.95);
+  background:rgba(10,10,15,.85);
+  backdrop-filter:blur(15px);
 }
 
 .agenda{
-  padding:16px;
+  padding:18px;
   border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .agenda h3{
   margin:0 0 10px;
-  font-size:15px;
   color:#00ff99;
 }
 
 .agenda ul{
   margin:0;
   padding-left:18px;
-  font-size:13px;
   line-height:1.6;
+  font-size:13px;
   opacity:.85;
 }
 
 .chatbox{
   flex:1;
-  padding:16px;
+  padding:18px;
   overflow-y:auto;
   font-size:13px;
 }
 
-.msg{ margin-bottom:10px; }
-.msg b{ color:#00ff99; }
+.msg{
+  margin-bottom:14px;
+}
 
-.system{
-  font-size:12px;
-  opacity:.55;
-  font-style:italic;
-  margin-bottom:10px;
+.msg b{
+  color:#00ff99;
+}
+
+.timestamp{
+  font-size:11px;
+  opacity:.4;
+  margin-left:6px;
 }
 </style>
 </head>
@@ -179,9 +217,9 @@ video{
 <body>
 
 <div class="topbar">
-  <span class="live">● Live • Recording</span>
-  <span id="meetingTitle">SS Films Content Strategy</span>
-  <span>Host: Deondre</span>
+  <div class="live"><div class="dot"></div>Live • Recording</div>
+  <div id="meetingTitle">SS Films Content Strategy</div>
+  <div class="clock" id="clock"></div>
 </div>
 
 <div class="layout">
@@ -189,12 +227,8 @@ video{
 <div class="main-video">
 
 <div class="video-box">
-  <video id="mainVideo" autoplay muted loop>
-    <source src="meeting1.mp4" type="video/mp4">
-  </video>
-  <div class="video-overlay" id="overlayText">
-    Deondre • Founder • Screen Sharing
-  </div>
+  <video id="mainVideo" autoplay muted loop></video>
+  <div class="video-overlay">Deondre • Founder • Screen Sharing</div>
 </div>
 
 <div class="video-switch">
@@ -204,10 +238,10 @@ video{
 </div>
 
 <div class="participants">
-  <div class="tile"><div>Mike</div><div class="status" id="mike">Muted</div></div>
-  <div class="tile"><div>Rebecca</div><div class="status" id="rebecca">Muted</div></div>
-  <div class="tile"><div>Edward</div><div class="status" id="edward">Muted</div></div>
-  <div class="tile"><div>Jason</div><div class="status" id="jason">Muted</div></div>
+  <div class="tile" id="Mike"><div>Mike</div><div class="status">Muted</div></div>
+  <div class="tile" id="Rebecca"><div>Rebecca</div><div class="status">Muted</div></div>
+  <div class="tile" id="Edward"><div>Edward</div><div class="status">Muted</div></div>
+  <div class="tile" id="Jason"><div>Jason</div><div class="status">Muted</div></div>
 </div>
 
 </div>
@@ -216,12 +250,7 @@ video{
 
 <div class="agenda">
   <h3>📌 Meeting Agenda</h3>
-  <ul id="agendaList">
-    <li>SS Films rollout</li>
-    <li>Monetization update</li>
-    <li>Content pipeline</li>
-    <li>Next week execution</li>
-  </ul>
+  <ul id="agendaList"></ul>
 </div>
 
 <div class="chatbox" id="chatBox"></div>
@@ -231,92 +260,117 @@ video{
 
 <script>
 
-/* MEETING DATA */
-const meetings = [
+/* CLOCK */
+function updateClock(){
+  const now=new Date();
+  document.getElementById("clock").innerText=
+    now.toLocaleTimeString();
+}
+setInterval(updateClock,1000);
+updateClock();
+
+/* MEETINGS */
+const meetings=[
 {
-  title:"SS Films Content Strategy",
-  video:"meeting1.mp4",
-  agenda:["SS Films rollout","Monetization update","Content pipeline","Next week execution"]
+title:"SS Films Content Strategy",
+video:"meeting1.mp4",
+agenda:["SS Films rollout","Monetization update","Content pipeline","Execution timeline"]
 },
 {
-  title:"Marketing Brainstorm",
-  video:"meeting2.mp4",
-  agenda:["TikTok campaign","Instagram reels push","Brand visuals","Ad strategy"]
+title:"Marketing Brainstorm",
+video:"meeting2.mp4",
+agenda:["TikTok campaign","Influencer partnerships","Ad spend allocation","Creative testing"]
 },
 {
-  title:"Creator Review Session",
-  video:"meeting3.mp4",
-  agenda:["Creator onboarding","Upload system","Performance metrics","Feature requests"]
+title:"Creator Review Session",
+video:"meeting3.mp4",
+agenda:["Creator onboarding","Platform improvements","Feature roadmap","Q2 projections"]
 }
 ];
 
-let currentMeeting = 0;
+let currentMeeting=0;
+const video=document.getElementById("mainVideo");
 
 function switchMeeting(index){
-  currentMeeting = index;
-  document.getElementById("mainVideo").src = meetings[index].video;
-  document.getElementById("meetingTitle").innerText = meetings[index].title;
+currentMeeting=index;
+video.src=meetings[index].video;
+video.play();
+document.getElementById("meetingTitle").innerText=meetings[index].title;
 
-  const agenda = document.getElementById("agendaList");
-  agenda.innerHTML="";
-  meetings[index].agenda.forEach(item=>{
-    const li=document.createElement("li");
-    li.innerText=item;
-    agenda.appendChild(li);
-  });
+const agenda=document.getElementById("agendaList");
+agenda.innerHTML="";
+meetings[index].agenda.forEach(item=>{
+const li=document.createElement("li");
+li.innerText=item;
+agenda.appendChild(li);
+});
 
-  document.querySelectorAll(".switch-btn").forEach(btn=>btn.classList.remove("active-meeting"));
-  document.querySelectorAll(".switch-btn")[index].classList.add("active-meeting");
+document.querySelectorAll(".switch-btn")
+.forEach(btn=>btn.classList.remove("active-meeting"));
+document.querySelectorAll(".switch-btn")[index]
+.classList.add("active-meeting");
 }
 
-/* AUTO ROTATE EVERY 45s */
-setInterval(()=>{
-  let next = (currentMeeting+1)%meetings.length;
-  switchMeeting(next);
-},45000);
+switchMeeting(0);
 
-/* CHAT SIM */
-const chatBox=document.getElementById("chatBox");
-
+/* SMART CHAT (no spam repeat) */
+const names=["Mike","Rebecca","Edward","Jason"];
 const messages=[
-"That rollout looks clean",
-"Marketing clips will go crazy",
-"We should push creators harder next week",
-"Analytics are looking strong",
-"StudentStream HQ growth is steady",
-"This UI looks elite 😭",
-"Next update should include notifications",
-"Let’s double down on short-form"
+"Analytics are trending upward this week.",
+"That rollout design looks polished.",
+"We should increase short-form volume.",
+"Monetization metrics improved 12%.",
+"The creator onboarding flow feels smoother.",
+"Let’s test two headline variations.",
+"Brand visuals look premium.",
+"Engagement retention is stronger this month.",
+"Upload pipeline latency dropped.",
+"We need stronger CTA placement."
 ];
 
-function dropMessage(){
-  const div=document.createElement("div");
-  div.className="msg";
-  div.innerHTML=`<b>Team:</b> ${messages[Math.floor(Math.random()*messages.length)]}`;
-  chatBox.appendChild(div);
-  chatBox.scrollTop=chatBox.scrollHeight;
+let usedMessages=[];
+
+function addMessage(){
+if(usedMessages.length===messages.length){
+usedMessages=[];
 }
 
-setInterval(dropMessage,4000);
+let msg;
+do{
+msg=messages[Math.floor(Math.random()*messages.length)];
+}while(usedMessages.includes(msg));
 
-/* RANDOM UNMUTE */
-const people=["mike","rebecca","edward","jason"];
+usedMessages.push(msg);
 
-function randomUnmute(){
-  const id=people[Math.floor(Math.random()*people.length)];
-  const el=document.getElementById(id);
-  el.innerText="🎤 Speaking...";
-  el.classList.add("unmuted");
+const name=names[Math.floor(Math.random()*names.length)];
+const div=document.createElement("div");
+div.className="msg";
 
-  setTimeout(()=>{
-    el.innerText="Muted";
-    el.classList.remove("unmuted");
-  },2000+Math.random()*2000);
+const time=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+div.innerHTML=`<b>${name}</b> <span class="timestamp">${time}</span><br>${msg}`;
+chatBox.appendChild(div);
+chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+setInterval(addMessage,5000);
+
+/* SPEAKING EFFECT */
+function randomSpeaker(){
+const person=names[Math.floor(Math.random()*names.length)];
+const tile=document.getElementById(person);
+tile.classList.add("speaking");
+tile.querySelector(".status").innerText="Speaking...";
+
+setTimeout(()=>{
+tile.classList.remove("speaking");
+tile.querySelector(".status").innerText="Muted";
+},2000+Math.random()*2000);
 }
 
 setInterval(()=>{
-  if(Math.random()>.5) randomUnmute();
-},7000);
+if(Math.random()>.4) randomSpeaker();
+},6000);
 
 </script>
 
