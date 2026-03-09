@@ -2,56 +2,57 @@
 <html lang="en">
 <head>
 
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="theme-color" content="#04060f" />
-<meta name="robots" content="index, follow" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="theme-color" content="#04060f"/>
+<meta name="robots" content="index, follow"/>
 
-<meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8" />
+<meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8"/>
 
 <title>StudentStreamHQ — The Next Generation Creator Network</title>
 
-<meta name="description" content="StudentStreamHQ is a creator-driven entertainment ecosystem empowering filmmakers, streamers, developers, and digital innovators. Official launch April 4, 2026." />
-<meta name="keywords" content="StudentStreamHQ, StudentStream, SS Films, creator platform, streaming network, entertainment ecosystem, creator tools, monetization network, digital production studio" />
-<meta name="author" content="StudentStreamHQ" />
+<meta name="description" content="StudentStreamHQ is a creator-driven entertainment ecosystem empowering filmmakers, streamers, developers, and digital innovators. Official launch April 4, 2026."/>
 
-<link rel="canonical" href="https://studentstream.online/" />
+<link rel="canonical" href="https://studentstream.online/"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 
-<meta property="og:title" content="StudentStreamHQ — The Next Generation Creator Network" />
-<meta property="og:description" content="Infrastructure for serious creators. Official launch April 4, 2026." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://studentstream.online/" />
-<meta property="og:image" content="https://studentstream.online/preview.png" />
+<meta property="og:title" content="StudentStreamHQ — The Next Generation Creator Network"/>
+<meta property="og:description" content="Infrastructure for serious creators. Official launch April 4, 2026."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://studentstream.online/"/>
+<meta property="og:image" content="https://studentstream.online/preview.png"/>
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="StudentStreamHQ — The Next Generation Creator Network" />
-<meta name="twitter:description" content="Built for the future of creators." />
-<meta name="twitter:image" content="https://studentstream.online/preview.png" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="StudentStreamHQ — The Next Generation Creator Network"/>
+<meta name="twitter:description" content="Built for the future of creators."/>
+<meta name="twitter:image" content="https://studentstream.online/preview.png"/>
 
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
  "@type": "Organization",
  "name": "StudentStreamHQ",
- "alternateName": "StudentStream",
  "url": "https://studentstream.online",
  "logo": "https://studentstream.online/logo.png",
- "description": "StudentStreamHQ is a next-generation creator-driven entertainment ecosystem.",
- "founder": {
-   "@type": "Person",
-   "name": "Deondre Chambers"
+ "description": "StudentStreamHQ is a next generation creator network.",
+ "founder":{
+ "@type":"Person",
+ "name":"Deondre Chambers"
  },
- "foundingDate": "2026"
+ "foundingDate":"2026"
 }
 </script>
 
 <style>
+
+/* ===========================
+GLOBAL
+=========================== */
 
 *{
 margin:0;
@@ -70,42 +71,54 @@ color:white;
 overflow-x:hidden;
 }
 
-/* GRID OVERLAY */
+/* ===========================
+BACKGROUND GLOW
+=========================== */
 
 body::before{
 content:"";
 position:fixed;
+width:900px;
+height:900px;
+background:radial-gradient(circle,#4da3ff40,transparent 60%);
+top:-200px;
+left:-200px;
+filter:blur(120px);
+z-index:-2;
+}
+
+body::after{
+content:"";
+position:fixed;
+width:900px;
+height:900px;
+background:radial-gradient(circle,#6cf2c240,transparent 60%);
+bottom:-200px;
+right:-200px;
+filter:blur(120px);
+z-index:-2;
+}
+
+/* ===========================
+GRID BACKGROUND
+=========================== */
+
+.grid{
+position:fixed;
+top:0;
+left:0;
 width:100%;
 height:100%;
 background-image:
 linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
 linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-background-size:80px 80px;
+background-size:60px 60px;
 z-index:-3;
 }
 
-/* GLOW LIGHTS */
-
-body::after{
-content:"";
-position:fixed;
-width:1200px;
-height:1200px;
-background:radial-gradient(circle,#4da3ff40,transparent 60%);
-top:-300px;
-left:-200px;
-filter:blur(140px);
-z-index:-2;
-animation:float 18s infinite linear;
-}
-
-@keyframes float{
-0%{transform:translateY(0)}
-50%{transform:translateY(80px)}
-100%{transform:translateY(0)}
-}
-
-/* PARTICLES */
+/* ===========================
+PARTICLE CANVAS
+=========================== */
 
 canvas{
 position:fixed;
@@ -114,7 +127,9 @@ left:0;
 z-index:-1;
 }
 
-/* NAV */
+/* ===========================
+NAV
+=========================== */
 
 .nav{
 position:fixed;
@@ -143,15 +158,21 @@ background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-text-fill-color:transparent;
 }
 
-/* BUTTONS */
+.navButtons button{
+margin-left:10px;
+}
+
+/* ===========================
+BUTTONS
+=========================== */
 
 .btn{
-padding:14px 32px;
+padding:14px 30px;
 border-radius:999px;
 border:none;
 cursor:pointer;
 font-weight:700;
-transition:.35s;
+transition:.3s;
 }
 
 .primary{
@@ -160,43 +181,33 @@ color:black;
 }
 
 .primary:hover{
-transform:translateY(-4px) scale(1.03);
-box-shadow:0 12px 35px rgba(0,0,0,.6);
+transform:translateY(-4px);
+box-shadow:0 10px 35px rgba(0,0,0,.6);
 }
 
 .secondary{
 background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.2);
 color:white;
+border:1px solid rgba(255,255,255,.2);
 }
 
 .secondary:hover{
 border-color:#6cf2c2;
 }
 
-/* HERO */
+/* ===========================
+HERO
+=========================== */
 
 .hero{
-padding:190px 25px 120px;
+padding:200px 25px 120px;
 max-width:1100px;
 margin:auto;
 text-align:center;
-animation:fadeUp 1s ease;
-}
-
-@keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(30px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
 }
 
 .hero h1{
-font-size:clamp(2.5rem,4vw,4rem);
+font-size:clamp(2.6rem,4vw,4rem);
 margin-bottom:25px;
 }
 
@@ -213,33 +224,38 @@ margin:auto;
 font-size:1.1rem;
 }
 
-/* SECTIONS */
+.btnRow{
+margin-top:50px;
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+/* ===========================
+SECTION
+=========================== */
 
 .section{
 padding:110px 25px;
 max-width:1100px;
 margin:auto;
 text-align:center;
-opacity:0;
-transform:translateY(40px);
-transition:.8s;
-}
-
-.section.visible{
-opacity:1;
-transform:translateY(0);
 }
 
 .section h2{
 font-size:2.2rem;
+margin-bottom:20px;
 }
 
-/* CARDS */
+/* ===========================
+CARDS
+=========================== */
 
 .cards{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:28px;
+gap:25px;
 margin-top:50px;
 }
 
@@ -250,24 +266,6 @@ background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.08);
 backdrop-filter:blur(16px);
 transition:.35s;
-position:relative;
-overflow:hidden;
-}
-
-.card::before{
-content:"";
-position:absolute;
-width:200%;
-height:200%;
-background:radial-gradient(circle,#6cf2c240,transparent 60%);
-top:-50%;
-left:-50%;
-opacity:0;
-transition:.5s;
-}
-
-.card:hover::before{
-opacity:1;
 }
 
 .card:hover{
@@ -275,7 +273,25 @@ transform:translateY(-10px);
 border-color:#6cf2c2;
 }
 
-/* COUNTDOWN */
+/* ===========================
+STATS
+=========================== */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:30px;
+margin-top:60px;
+}
+
+.stat{
+font-size:2rem;
+font-weight:900;
+}
+
+/* ===========================
+COUNTDOWN
+=========================== */
 
 .countdown{
 display:flex;
@@ -295,10 +311,11 @@ min-width:110px;
 .time b{
 display:block;
 font-size:2rem;
-font-weight:900;
 }
 
-/* SUPPORT */
+/* ===========================
+SUPPORT
+=========================== */
 
 .support{
 margin-top:80px;
@@ -308,10 +325,12 @@ background:linear-gradient(135deg,rgba(77,163,255,.18),rgba(108,242,194,.12));
 border:1px solid rgba(255,255,255,.1);
 }
 
-/* FOOTER */
+/* ===========================
+FOOTER
+=========================== */
 
 .footer{
-padding:70px 25px;
+padding:80px 25px;
 text-align:center;
 opacity:.6;
 font-size:.9rem;
@@ -322,7 +341,12 @@ font-size:.9rem;
 
 <body>
 
+<div class="grid"></div>
 <canvas id="bg"></canvas>
+
+<!-- ===========================
+NAV
+=========================== -->
 
 <nav class="nav" id="nav">
 
@@ -339,6 +363,10 @@ font-size:.9rem;
 
 </nav>
 
+<!-- ===========================
+HERO
+=========================== -->
+
 <section class="hero">
 
 <h1>The <span class="highlight">Next Generation</span> Creator Network</h1>
@@ -346,9 +374,7 @@ font-size:.9rem;
 <p>
 
 StudentStreamHQ is structured infrastructure for serious creators.
-
 We empower filmmakers, streamers, developers, and innovators
-
 to build brands, launch productions, and monetize inside organized divisions.
 
 <br><br>
@@ -359,18 +385,22 @@ This is not just a content platform — this is a creator ecosystem.
 
 <div class="btnRow">
 
-<button class="btn primary" onclick="location.href='/login.html'">
-Enter Platform
-</button>
+<button class="btn primary" onclick="location.href='/login.html'">Enter Platform</button>
 
 <button class="btn secondary"
 onclick="window.open('https://www.instagram.com/studentstreamhq')">
+
 Instagram
+
 </button>
 
 </div>
 
 </section>
+
+<!-- ===========================
+ECOSYSTEM
+=========================== -->
 
 <section class="section">
 
@@ -380,27 +410,65 @@ Instagram
 
 <div class="card">
 <h3>SS Films</h3>
-<p>Production division focused on films, series, and digital media.</p>
+<p>Production division focused on films and digital media.</p>
 </div>
 
 <div class="card">
 <h3>Creator Divisions</h3>
-<p>Organized teams that collaborate on projects and innovations.</p>
+<p>Organized teams collaborating on productions and projects.</p>
 </div>
 
 <div class="card">
 <h3>Monetization</h3>
-<p>Stripe powered revenue tools enabling creators to earn.</p>
+<p>Stripe powered tools enabling creators to earn.</p>
 </div>
 
 <div class="card">
 <h3>Developer Tools</h3>
-<p>Internal DevForum and platform tools for building the ecosystem.</p>
+<p>Internal DevForum powering platform innovation.</p>
 </div>
 
 </div>
 
 </section>
+
+<!-- ===========================
+STATS
+=========================== -->
+
+<section class="section">
+
+<h2>Platform Vision</h2>
+
+<div class="stats">
+
+<div>
+<div class="stat">100+</div>
+<p>Creators Target</p>
+</div>
+
+<div>
+<div class="stat">10+</div>
+<p>Divisions</p>
+</div>
+
+<div>
+<div class="stat">25+</div>
+<p>Productions</p>
+</div>
+
+<div>
+<div class="stat">1</div>
+<p>Creator Ecosystem</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+COUNTDOWN
+=========================== -->
 
 <section class="section">
 
@@ -417,6 +485,44 @@ Instagram
 
 </section>
 
+<!-- ===========================
+ROADMAP
+=========================== -->
+
+<section class="section">
+
+<h2>Platform Roadmap</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>Phase 1</h3>
+<p>Core platform infrastructure.</p>
+</div>
+
+<div class="card">
+<h3>Phase 2</h3>
+<p>Division system and staff structure.</p>
+</div>
+
+<div class="card">
+<h3>Phase 3</h3>
+<p>Creator monetization rollout.</p>
+</div>
+
+<div class="card">
+<h3>Launch</h3>
+<p>Public ecosystem opening.</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+SUPPORT
+=========================== -->
+
 <section class="section">
 
 <div class="support">
@@ -424,8 +530,10 @@ Instagram
 <h2>Support The Ecosystem</h2>
 
 <p>
-Supporters help expand infrastructure, creator programs,
-and original productions inside StudentStreamHQ.
+
+Supporters help expand infrastructure,
+creator programs, and original productions.
+
 </p>
 
 <br>
@@ -442,32 +550,18 @@ Support StudentStream
 </section>
 
 <footer class="footer">
+
 © 2026 StudentStreamHQ — All rights reserved.
+
 </footer>
 
 <script>
 
-/* NAV */
+/* NAV SCROLL */
 
 window.addEventListener("scroll",()=>{
 document.getElementById("nav")
 .classList.toggle("scrolled",window.scrollY>20)
-})
-
-/* SECTION REVEAL */
-
-const sections=document.querySelectorAll(".section")
-
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.classList.add("visible")
-}
-})
-})
-
-sections.forEach(section=>{
-observer.observe(section)
 })
 
 /* COUNTDOWN */
@@ -478,12 +572,13 @@ setInterval(()=>{
 
 const now=Date.now()
 const diff=launchDate-now
+
 if(diff<=0)return
 
-days.textContent=Math.floor(diff/(1000*60*60*24))
-hours.textContent=Math.floor((diff/(1000*60*60))%24)
-minutes.textContent=Math.floor((diff/(1000*60))%60)
-seconds.textContent=Math.floor((diff/1000)%60)
+document.getElementById("days").textContent=Math.floor(diff/(1000*60*60*24))
+document.getElementById("hours").textContent=Math.floor((diff/(1000*60*60))%24)
+document.getElementById("minutes").textContent=Math.floor((diff/(1000*60))%60)
+document.getElementById("seconds").textContent=Math.floor((diff/1000)%60)
 
 },1000)
 
@@ -502,12 +597,14 @@ resize()
 let particles=[]
 
 for(let i=0;i<80;i++){
+
 particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 r:Math.random()*2+1,
 speed:Math.random()*0.6+0.2
 })
+
 }
 
 function animate(){
@@ -523,6 +620,7 @@ ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
 ctx.fill()
 
 p.y+=p.speed
+
 if(p.y>canvas.height)p.y=0
 
 })
