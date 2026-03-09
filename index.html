@@ -338,7 +338,337 @@ font-size:.9rem;
 
 </style>
 </head>
+<!-- =================================================
+ADDED SECTIONS FOR STUDENTSTREAMHQ HOMEPAGE
+These are appended upgrades. Nothing above is modified.
+================================================= -->
 
+<style>
+
+/* =========================================
+SCROLL REVEAL ANIMATION
+========================================= */
+
+.reveal{
+opacity:0;
+transform:translateY(40px);
+transition:all .8s ease;
+}
+
+.reveal.visible{
+opacity:1;
+transform:translateY(0);
+}
+
+/* =========================================
+SECTION DIVIDER
+========================================= */
+
+.divider{
+height:1px;
+width:100%;
+margin:100px auto;
+max-width:900px;
+background:linear-gradient(90deg,transparent,#4da3ff,#6cf2c2,transparent);
+opacity:.4;
+}
+
+/* =========================================
+FOUNDER SECTION
+========================================= */
+
+.founder{
+max-width:1000px;
+margin:auto;
+text-align:center;
+padding:120px 25px;
+}
+
+.founder h2{
+font-size:2.4rem;
+margin-bottom:20px;
+}
+
+.founderCard{
+margin-top:40px;
+background:rgba(255,255,255,.05);
+padding:40px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(12px);
+}
+
+/* =========================================
+SS FILMS SECTION
+========================================= */
+
+.ssfilms{
+padding:120px 25px;
+max-width:1100px;
+margin:auto;
+text-align:center;
+}
+
+.ssfilms p{
+opacity:.85;
+max-width:750px;
+margin:auto;
+}
+
+/* =========================================
+CREATOR CTA
+========================================= */
+
+.join{
+padding:120px 25px;
+text-align:center;
+}
+
+.joinBox{
+margin-top:40px;
+padding:50px;
+border-radius:25px;
+background:linear-gradient(135deg,rgba(77,163,255,.2),rgba(108,242,194,.15));
+border:1px solid rgba(255,255,255,.1);
+}
+
+/* =========================================
+ARCHITECTURE SECTION
+========================================= */
+
+.architecture{
+padding:120px 25px;
+max-width:1100px;
+margin:auto;
+text-align:center;
+}
+
+.archGrid{
+margin-top:60px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.archCard{
+background:rgba(255,255,255,.05);
+padding:35px;
+border-radius:18px;
+border:1px solid rgba(255,255,255,.08);
+}
+
+/* =========================================
+PRESS SECTION
+========================================= */
+
+.press{
+padding:120px 25px;
+text-align:center;
+}
+
+.pressLinks{
+margin-top:40px;
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.pressLinks a{
+color:white;
+text-decoration:none;
+padding:14px 26px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.15);
+transition:.3s;
+}
+
+.pressLinks a:hover{
+border-color:#6cf2c2;
+}
+
+</style>
+
+
+<div class="divider"></div>
+
+<!-- =========================================
+FOUNDER SECTION
+========================================= -->
+
+<section class="founder reveal">
+
+<h2>Founder</h2>
+
+<div class="founderCard">
+
+<h3>Deondre Chambers</h3>
+
+<p>
+
+Founder of StudentStreamHQ.
+
+Focused on building a creator-first ecosystem combining production,
+technology, and monetization into one structured network.
+
+</p>
+
+</div>
+
+</section>
+
+
+<div class="divider"></div>
+
+<!-- =========================================
+SS FILMS DIVISION
+========================================= -->
+
+<section class="ssfilms reveal">
+
+<h2>SS Films</h2>
+
+<p>
+
+SS Films is the production division of StudentStreamHQ focused on
+films, episodic series, documentaries, and experimental media.
+
+Creators collaborate inside divisions to develop and launch productions
+within the ecosystem.
+
+</p>
+
+</section>
+
+
+<div class="divider"></div>
+
+<!-- =========================================
+CREATOR JOIN SECTION
+========================================= -->
+
+<section class="join reveal">
+
+<h2>Join The Ecosystem</h2>
+
+<div class="joinBox">
+
+<p>
+
+StudentStreamHQ is building the infrastructure for serious creators.
+Join divisions, collaborate on productions, and build within the network.
+
+</p>
+
+<br>
+
+<button class="btn primary"
+onclick="location.href='/login.html'">
+
+Apply For Access
+
+</button>
+
+</div>
+
+</section>
+
+
+<div class="divider"></div>
+
+<!-- =========================================
+PLATFORM ARCHITECTURE
+========================================= -->
+
+<section class="architecture reveal">
+
+<h2>Platform Architecture</h2>
+
+<div class="archGrid">
+
+<div class="archCard">
+<h3>Creator Network</h3>
+<p>Structured ecosystem connecting creators, teams, and productions.</p>
+</div>
+
+<div class="archCard">
+<h3>Division Infrastructure</h3>
+<p>Teams collaborate within organized divisions.</p>
+</div>
+
+<div class="archCard">
+<h3>Production Studios</h3>
+<p>SS Films and media teams create original content.</p>
+</div>
+
+<div class="archCard">
+<h3>Developer Layer</h3>
+<p>DevForum and internal tools expand platform capabilities.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<div class="divider"></div>
+
+<!-- =========================================
+PRESS / SOCIAL
+========================================= -->
+
+<section class="press reveal">
+
+<h2>Connect With StudentStreamHQ</h2>
+
+<div class="pressLinks">
+
+<a href="https://www.instagram.com/studentstreamhq" target="_blank">
+Instagram
+</a>
+
+<a href="https://www.tiktok.com/@studentstreamhq" target="_blank">
+TikTok
+</a>
+
+<a href="mailto:press@studentstream.online">
+Press Contact
+</a>
+
+</div>
+
+</section>
+
+
+<script>
+
+/* =========================================
+SCROLL REVEAL
+========================================= */
+
+const revealElements=document.querySelectorAll(".reveal")
+
+function revealOnScroll(){
+
+const windowHeight=window.innerHeight
+
+revealElements.forEach(el=>{
+
+const elementTop=el.getBoundingClientRect().top
+
+if(elementTop < windowHeight - 80){
+el.classList.add("visible")
+}
+
+})
+
+}
+
+window.addEventListener("scroll",revealOnScroll)
+revealOnScroll()
+
+</script>
 <body>
 
 <div class="grid"></div>
