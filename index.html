@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -49,20 +50,11 @@
 
 <style>
 
-/* ===========================
-GLOBAL
-=========================== */
+/* GLOBAL */
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',system-ui;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',system-ui;}
 
-html{
-scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth;}
 
 body{
 background:#04060f;
@@ -70,9 +62,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* ===========================
-BACKGROUND GLOW
-=========================== */
+/* BACKGROUND */
 
 body::before{
 content:"";
@@ -98,10 +88,6 @@ filter:blur(120px);
 z-index:-2;
 }
 
-/* ===========================
-GRID BACKGROUND
-=========================== */
-
 .grid{
 position:fixed;
 top:0;
@@ -115,10 +101,6 @@ background-size:60px 60px;
 z-index:-3;
 }
 
-/* ===========================
-PARTICLE CANVAS
-=========================== */
-
 canvas{
 position:fixed;
 top:0;
@@ -126,9 +108,7 @@ left:0;
 z-index:-1;
 }
 
-/* ===========================
-NAV
-=========================== */
+/* NAV */
 
 .nav{
 position:fixed;
@@ -145,9 +125,7 @@ z-index:100;
 transition:.3s;
 }
 
-.nav.scrolled{
-background:rgba(0,0,0,.8);
-}
+.nav.scrolled{background:rgba(0,0,0,.8);}
 
 .nav h2{
 font-weight:900;
@@ -157,13 +135,9 @@ background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-text-fill-color:transparent;
 }
 
-.navButtons button{
-margin-left:10px;
-}
+.navButtons button{margin-left:10px}
 
-/* ===========================
-BUTTONS
-=========================== */
+/* BUTTONS */
 
 .btn{
 padding:14px 30px;
@@ -190,13 +164,9 @@ color:white;
 border:1px solid rgba(255,255,255,.2);
 }
 
-.secondary:hover{
-border-color:#6cf2c2;
-}
+.secondary:hover{border-color:#6cf2c2}
 
-/* ===========================
-HERO
-=========================== */
+/* HERO */
 
 .hero{
 padding:200px 25px 120px;
@@ -231,9 +201,7 @@ flex-wrap:wrap;
 justify-content:center;
 }
 
-/* ===========================
-SECTION
-=========================== */
+/* SECTIONS */
 
 .section{
 padding:110px 25px;
@@ -241,15 +209,6 @@ max-width:1100px;
 margin:auto;
 text-align:center;
 }
-
-.section h2{
-font-size:2.2rem;
-margin-bottom:20px;
-}
-
-/* ===========================
-CARDS
-=========================== */
 
 .cards{
 display:grid;
@@ -272,25 +231,7 @@ transform:translateY(-10px);
 border-color:#6cf2c2;
 }
 
-/* ===========================
-STATS
-=========================== */
-
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:30px;
-margin-top:60px;
-}
-
-.stat{
-font-size:2rem;
-font-weight:900;
-}
-
-/* ===========================
-COUNTDOWN
-=========================== */
+/* COUNTDOWN */
 
 .countdown{
 display:flex;
@@ -307,14 +248,9 @@ border-radius:16px;
 min-width:110px;
 }
 
-.time b{
-display:block;
-font-size:2rem;
-}
+.time b{font-size:2rem}
 
-/* ===========================
-SUPPORT
-=========================== */
+/* SUPPORT */
 
 .support{
 margin-top:80px;
@@ -324,44 +260,7 @@ background:linear-gradient(135deg,rgba(77,163,255,.18),rgba(108,242,194,.12));
 border:1px solid rgba(255,255,255,.1);
 }
 
-/* ===========================
-FOOTER
-=========================== */
-
-.footer{
-padding:80px 25px;
-text-align:center;
-opacity:.6;
-font-size:.9rem;
-}
-
-</style>
-</head>
-<!-- =================================================
-ADDED SECTIONS FOR STUDENTSTREAMHQ HOMEPAGE
-These are appended upgrades. Nothing above is modified.
-================================================= -->
-
-<style>
-
-/* =========================================
-SCROLL REVEAL ANIMATION
-========================================= */
-
-.reveal{
-opacity:0;
-transform:translateY(40px);
-transition:all .8s ease;
-}
-
-.reveal.visible{
-opacity:1;
-transform:translateY(0);
-}
-
-/* =========================================
-SECTION DIVIDER
-========================================= */
+/* DIVIDER */
 
 .divider{
 height:1px;
@@ -372,329 +271,48 @@ background:linear-gradient(90deg,transparent,#4da3ff,#6cf2c2,transparent);
 opacity:.4;
 }
 
-/* =========================================
-FOUNDER SECTION
-========================================= */
+/* SCROLL ANIMATION */
 
-.founder{
-max-width:1000px;
-margin:auto;
+.reveal{
+opacity:0;
+transform:translateY(40px);
+transition:.8s;
+}
+
+.reveal.visible{
+opacity:1;
+transform:translateY(0);
+}
+
+/* FOOTER */
+
+.footer{
+padding:80px 25px;
 text-align:center;
-padding:120px 25px;
-}
-
-.founder h2{
-font-size:2.4rem;
-margin-bottom:20px;
-}
-
-.founderCard{
-margin-top:40px;
-background:rgba(255,255,255,.05);
-padding:40px;
-border-radius:20px;
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(12px);
-}
-
-/* =========================================
-SS FILMS SECTION
-========================================= */
-
-.ssfilms{
-padding:120px 25px;
-max-width:1100px;
-margin:auto;
-text-align:center;
-}
-
-.ssfilms p{
-opacity:.85;
-max-width:750px;
-margin:auto;
-}
-
-/* =========================================
-CREATOR CTA
-========================================= */
-
-.join{
-padding:120px 25px;
-text-align:center;
-}
-
-.joinBox{
-margin-top:40px;
-padding:50px;
-border-radius:25px;
-background:linear-gradient(135deg,rgba(77,163,255,.2),rgba(108,242,194,.15));
-border:1px solid rgba(255,255,255,.1);
-}
-
-/* =========================================
-ARCHITECTURE SECTION
-========================================= */
-
-.architecture{
-padding:120px 25px;
-max-width:1100px;
-margin:auto;
-text-align:center;
-}
-
-.archGrid{
-margin-top:60px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:25px;
-}
-
-.archCard{
-background:rgba(255,255,255,.05);
-padding:35px;
-border-radius:18px;
-border:1px solid rgba(255,255,255,.08);
-}
-
-/* =========================================
-PRESS SECTION
-========================================= */
-
-.press{
-padding:120px 25px;
-text-align:center;
-}
-
-.pressLinks{
-margin-top:40px;
-display:flex;
-justify-content:center;
-gap:20px;
-flex-wrap:wrap;
-}
-
-.pressLinks a{
-color:white;
-text-decoration:none;
-padding:14px 26px;
-border-radius:999px;
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.15);
-transition:.3s;
-}
-
-.pressLinks a:hover{
-border-color:#6cf2c2;
+opacity:.6;
+font-size:.9rem;
 }
 
 </style>
+</head>
 
-
-<div class="divider"></div>
-
-<!-- =========================================
-FOUNDER SECTION
-========================================= -->
-
-<section class="founder reveal">
-
-<h2>Founder</h2>
-
-<div class="founderCard">
-
-<h3>Deondre Chambers</h3>
-
-<p>
-
-Founder of StudentStreamHQ.
-
-Focused on building a creator-first ecosystem combining production,
-technology, and monetization into one structured network.
-
-</p>
-
-</div>
-
-</section>
-
-
-<div class="divider"></div>
-
-<!-- =========================================
-SS FILMS DIVISION
-========================================= -->
-
-<section class="ssfilms reveal">
-
-<h2>SS Films</h2>
-
-<p>
-
-SS Films is the production division of StudentStreamHQ focused on
-films, episodic series, documentaries, and experimental media.
-
-Creators collaborate inside divisions to develop and launch productions
-within the ecosystem.
-
-</p>
-
-</section>
-
-
-<div class="divider"></div>
-
-<!-- =========================================
-CREATOR JOIN SECTION
-========================================= -->
-
-<section class="join reveal">
-
-<h2>Join The Ecosystem</h2>
-
-<div class="joinBox">
-
-<p>
-
-StudentStreamHQ is building the infrastructure for serious creators.
-Join divisions, collaborate on productions, and build within the network.
-
-</p>
-
-<br>
-
-<button class="btn primary"
-onclick="location.href='/login.html'">
-
-Apply For Access
-
-</button>
-
-</div>
-
-</section>
-
-
-<div class="divider"></div>
-
-<!-- =========================================
-PLATFORM ARCHITECTURE
-========================================= -->
-
-<section class="architecture reveal">
-
-<h2>Platform Architecture</h2>
-
-<div class="archGrid">
-
-<div class="archCard">
-<h3>Creator Network</h3>
-<p>Structured ecosystem connecting creators, teams, and productions.</p>
-</div>
-
-<div class="archCard">
-<h3>Division Infrastructure</h3>
-<p>Teams collaborate within organized divisions.</p>
-</div>
-
-<div class="archCard">
-<h3>Production Studios</h3>
-<p>SS Films and media teams create original content.</p>
-</div>
-
-<div class="archCard">
-<h3>Developer Layer</h3>
-<p>DevForum and internal tools expand platform capabilities.</p>
-</div>
-
-</div>
-
-</section>
-
-
-<div class="divider"></div>
-
-<!-- =========================================
-PRESS / SOCIAL
-========================================= -->
-
-<section class="press reveal">
-
-<h2>Connect With StudentStreamHQ</h2>
-
-<div class="pressLinks">
-
-<a href="https://www.instagram.com/studentstreamhq" target="_blank">
-Instagram
-</a>
-
-<a href="https://www.tiktok.com/@studentstreamhq" target="_blank">
-TikTok
-</a>
-
-<a href="mailto:press@studentstream.online">
-Press Contact
-</a>
-
-</div>
-
-</section>
-
-
-<script>
-
-/* =========================================
-SCROLL REVEAL
-========================================= */
-
-const revealElements=document.querySelectorAll(".reveal")
-
-function revealOnScroll(){
-
-const windowHeight=window.innerHeight
-
-revealElements.forEach(el=>{
-
-const elementTop=el.getBoundingClientRect().top
-
-if(elementTop < windowHeight - 80){
-el.classList.add("visible")
-}
-
-})
-
-}
-
-window.addEventListener("scroll",revealOnScroll)
-revealOnScroll()
-
-</script>
 <body>
 
 <div class="grid"></div>
 <canvas id="bg"></canvas>
-
-<!-- ===========================
-NAV
-=========================== -->
 
 <nav class="nav" id="nav">
 
 <h2>StudentStreamHQ</h2>
 
 <div class="navButtons">
-
 <button class="btn secondary" onclick="location.href='/staff-directory.html'">Staff</button>
 <button class="btn secondary" onclick="location.href='/division-directory.html'">Divisions</button>
 <button class="btn secondary" onclick="location.href='/devforum/'">DevForum</button>
 <button class="btn primary" onclick="location.href='/login.html'">Login</button>
-
 </div>
 
 </nav>
-
-<!-- ===========================
-HERO
-=========================== -->
 
 <section class="hero">
 
@@ -718,20 +336,30 @@ This is not just a content platform — this is a creator ecosystem.
 
 <button class="btn secondary"
 onclick="window.open('https://www.instagram.com/studentstreamhq')">
-
 Instagram
-
 </button>
 
 </div>
 
 </section>
 
-<!-- ===========================
-ECOSYSTEM
-=========================== -->
+<div class="divider"></div>
 
-<section class="section">
+<section class="section reveal">
+<h2>Founder</h2>
+
+<div class="card">
+<h3>Deondre Chambers</h3>
+<p>
+Founder of StudentStreamHQ building a creator-first ecosystem combining
+production, technology, and monetization infrastructure.
+</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section reveal">
 
 <h2>The Ecosystem</h2>
 
@@ -761,96 +389,18 @@ ECOSYSTEM
 
 </section>
 
-<!-- ===========================
-STATS
-=========================== -->
-
-<section class="section">
-
-<h2>Platform Vision</h2>
-
-<div class="stats">
-
-<div>
-<div class="stat">100+</div>
-<p>Creators Target</p>
-</div>
-
-<div>
-<div class="stat">10+</div>
-<p>Divisions</p>
-</div>
-
-<div>
-<div class="stat">25+</div>
-<p>Productions</p>
-</div>
-
-<div>
-<div class="stat">1</div>
-<p>Creator Ecosystem</p>
-</div>
-
-</div>
-
-</section>
-
-<!-- ===========================
-COUNTDOWN
-=========================== -->
-
 <section class="section">
 
 <h2>Launch Countdown — April 4, 2026</h2>
 
 <div class="countdown">
-
 <div class="time"><b id="days">--</b>Days</div>
 <div class="time"><b id="hours">--</b>Hours</div>
 <div class="time"><b id="minutes">--</b>Mins</div>
 <div class="time"><b id="seconds">--</b>Secs</div>
-
 </div>
 
 </section>
-
-<!-- ===========================
-ROADMAP
-=========================== -->
-
-<section class="section">
-
-<h2>Platform Roadmap</h2>
-
-<div class="cards">
-
-<div class="card">
-<h3>Phase 1</h3>
-<p>Core platform infrastructure.</p>
-</div>
-
-<div class="card">
-<h3>Phase 2</h3>
-<p>Division system and staff structure.</p>
-</div>
-
-<div class="card">
-<h3>Phase 3</h3>
-<p>Creator monetization rollout.</p>
-</div>
-
-<div class="card">
-<h3>Launch</h3>
-<p>Public ecosystem opening.</p>
-</div>
-
-</div>
-
-</section>
-
-<!-- ===========================
-SUPPORT
-=========================== -->
 
 <section class="section">
 
@@ -859,19 +409,15 @@ SUPPORT
 <h2>Support The Ecosystem</h2>
 
 <p>
-
-Supporters help expand infrastructure,
-creator programs, and original productions.
-
+Supporters help expand infrastructure, creator programs,
+and original productions.
 </p>
 
 <br>
 
 <button class="btn primary"
 onclick="window.open('https://buy.stripe.com/bJe00je7g6K269l7nI8Ra04')">
-
 Support StudentStream
-
 </button>
 
 </div>
@@ -879,14 +425,12 @@ Support StudentStream
 </section>
 
 <footer class="footer">
-
 © 2026 StudentStreamHQ — All rights reserved.
-
 </footer>
 
 <script>
 
-/* NAV SCROLL */
+/* NAV */
 
 window.addEventListener("scroll",()=>{
 document.getElementById("nav")
@@ -899,15 +443,14 @@ const launchDate=new Date("2026-04-04T00:00:00").getTime()
 
 setInterval(()=>{
 
-const now=Date.now()
-const diff=launchDate-now
+const diff=launchDate-Date.now()
 
 if(diff<=0)return
 
-document.getElementById("days").textContent=Math.floor(diff/(1000*60*60*24))
-document.getElementById("hours").textContent=Math.floor((diff/(1000*60*60))%24)
-document.getElementById("minutes").textContent=Math.floor((diff/(1000*60))%60)
-document.getElementById("seconds").textContent=Math.floor((diff/1000)%60)
+days.textContent=Math.floor(diff/86400000)
+hours.textContent=Math.floor(diff/3600000)%24
+minutes.textContent=Math.floor(diff/60000)%60
+seconds.textContent=Math.floor(diff/1000)%60
 
 },1000)
 
@@ -926,14 +469,12 @@ resize()
 let particles=[]
 
 for(let i=0;i<80;i++){
-
 particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 r:Math.random()*2+1,
 speed:Math.random()*0.6+0.2
 })
-
 }
 
 function animate(){
@@ -943,7 +484,6 @@ ctx.clearRect(0,0,canvas.width,canvas.height)
 ctx.fillStyle="rgba(108,242,194,.35)"
 
 particles.forEach(p=>{
-
 ctx.beginPath()
 ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
 ctx.fill()
@@ -951,16 +491,31 @@ ctx.fill()
 p.y+=p.speed
 
 if(p.y>canvas.height)p.y=0
-
 })
 
 requestAnimationFrame(animate)
-
 }
 
 animate()
 
-window.addEventListener("resize",resize)
+/* SCROLL REVEAL */
+
+const reveals=document.querySelectorAll(".reveal")
+
+function reveal(){
+
+const h=window.innerHeight
+
+reveals.forEach(el=>{
+if(el.getBoundingClientRect().top < h-80){
+el.classList.add("visible")
+}
+})
+
+}
+
+window.addEventListener("scroll",reveal)
+reveal()
 
 </script>
 
