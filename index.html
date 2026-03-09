@@ -8,7 +8,6 @@
 <meta name="theme-color" content="#04060f" />
 <meta name="robots" content="index, follow" />
 
-<!-- GOOGLE VERIFICATION -->
 <meta name="google-site-verification" content="5vkwTwId_aia8HWkJAwq6hJa0fIgxrHp8-HGG-R6YD8" />
 
 <title>StudentStreamHQ — The Next Generation Creator Network</title>
@@ -35,7 +34,6 @@
 <meta name="twitter:description" content="Built for the future of creators." />
 <meta name="twitter:image" content="https://studentstream.online/preview.png" />
 
-<!-- STRUCTURED DATA -->
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -72,33 +70,42 @@ color:white;
 overflow-x:hidden;
 }
 
-/* GLOW BACKGROUND */
+/* GRID OVERLAY */
 
 body::before{
 content:"";
 position:fixed;
-width:900px;
-height:900px;
-background:radial-gradient(circle,#4da3ff40,transparent 60%);
-top:-200px;
-left:-200px;
-filter:blur(120px);
-z-index:-2;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+background-size:80px 80px;
+z-index:-3;
 }
+
+/* GLOW LIGHTS */
 
 body::after{
 content:"";
 position:fixed;
-width:900px;
-height:900px;
-background:radial-gradient(circle,#6cf2c240,transparent 60%);
-bottom:-200px;
-right:-200px;
-filter:blur(120px);
+width:1200px;
+height:1200px;
+background:radial-gradient(circle,#4da3ff40,transparent 60%);
+top:-300px;
+left:-200px;
+filter:blur(140px);
 z-index:-2;
+animation:float 18s infinite linear;
 }
 
-/* PARTICLE CANVAS */
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(80px)}
+100%{transform:translateY(0)}
+}
+
+/* PARTICLES */
 
 canvas{
 position:fixed;
@@ -107,7 +114,7 @@ left:0;
 z-index:-1;
 }
 
-/* NAVBAR */
+/* NAV */
 
 .nav{
 position:fixed;
@@ -136,8 +143,35 @@ background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-text-fill-color:transparent;
 }
 
-.navButtons button{
-margin-left:10px;
+/* BUTTONS */
+
+.btn{
+padding:14px 32px;
+border-radius:999px;
+border:none;
+cursor:pointer;
+font-weight:700;
+transition:.35s;
+}
+
+.primary{
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+color:black;
+}
+
+.primary:hover{
+transform:translateY(-4px) scale(1.03);
+box-shadow:0 12px 35px rgba(0,0,0,.6);
+}
+
+.secondary{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.2);
+color:white;
+}
+
+.secondary:hover{
+border-color:#6cf2c2;
 }
 
 /* HERO */
@@ -147,6 +181,18 @@ padding:190px 25px 120px;
 max-width:1100px;
 margin:auto;
 text-align:center;
+animation:fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 .hero h1{
@@ -167,52 +213,21 @@ margin:auto;
 font-size:1.1rem;
 }
 
-/* BUTTONS */
-
-.btnRow{
-margin-top:50px;
-display:flex;
-gap:15px;
-justify-content:center;
-flex-wrap:wrap;
-}
-
-.btn{
-padding:14px 32px;
-border-radius:999px;
-border:none;
-cursor:pointer;
-font-weight:700;
-transition:.3s;
-}
-
-.primary{
-background:linear-gradient(90deg,#4da3ff,#6cf2c2);
-color:black;
-}
-
-.primary:hover{
-transform:translateY(-4px);
-box-shadow:0 12px 35px rgba(0,0,0,.6);
-}
-
-.secondary{
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.2);
-color:white;
-}
-
-.secondary:hover{
-border-color:#6cf2c2;
-}
-
-/* SECTION */
+/* SECTIONS */
 
 .section{
 padding:110px 25px;
 max-width:1100px;
 margin:auto;
 text-align:center;
+opacity:0;
+transform:translateY(40px);
+transition:.8s;
+}
+
+.section.visible{
+opacity:1;
+transform:translateY(0);
 }
 
 .section h2{
@@ -235,6 +250,24 @@ background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.08);
 backdrop-filter:blur(16px);
 transition:.35s;
+position:relative;
+overflow:hidden;
+}
+
+.card::before{
+content:"";
+position:absolute;
+width:200%;
+height:200%;
+background:radial-gradient(circle,#6cf2c240,transparent 60%);
+top:-50%;
+left:-50%;
+opacity:0;
+transition:.5s;
+}
+
+.card:hover::before{
+opacity:1;
 }
 
 .card:hover{
@@ -298,11 +331,8 @@ font-size:.9rem;
 <div class="navButtons">
 
 <button class="btn secondary" onclick="location.href='/staff-directory.html'">Staff</button>
-
 <button class="btn secondary" onclick="location.href='/division-directory.html'">Divisions</button>
-
 <button class="btn secondary" onclick="location.href='/devforum/'">DevForum</button>
-
 <button class="btn primary" onclick="location.href='/login.html'">Login</button>
 
 </div>
@@ -330,17 +360,12 @@ This is not just a content platform — this is a creator ecosystem.
 <div class="btnRow">
 
 <button class="btn primary" onclick="location.href='/login.html'">
-
 Enter Platform
-
 </button>
 
 <button class="btn secondary"
-
 onclick="window.open('https://www.instagram.com/studentstreamhq')">
-
 Instagram
-
 </button>
 
 </div>
@@ -354,35 +379,23 @@ Instagram
 <div class="cards">
 
 <div class="card">
-
 <h3>SS Films</h3>
-
 <p>Production division focused on films, series, and digital media.</p>
-
 </div>
 
 <div class="card">
-
 <h3>Creator Divisions</h3>
-
 <p>Organized teams that collaborate on projects and innovations.</p>
-
 </div>
 
 <div class="card">
-
 <h3>Monetization</h3>
-
 <p>Stripe powered revenue tools enabling creators to earn.</p>
-
 </div>
 
 <div class="card">
-
 <h3>Developer Tools</h3>
-
 <p>Internal DevForum and platform tools for building the ecosystem.</p>
-
 </div>
 
 </div>
@@ -396,11 +409,8 @@ Instagram
 <div class="countdown">
 
 <div class="time"><b id="days">--</b>Days</div>
-
 <div class="time"><b id="hours">--</b>Hours</div>
-
 <div class="time"><b id="minutes">--</b>Mins</div>
-
 <div class="time"><b id="seconds">--</b>Secs</div>
 
 </div>
@@ -414,17 +424,13 @@ Instagram
 <h2>Support The Ecosystem</h2>
 
 <p>
-
 Supporters help expand infrastructure, creator programs,
-
 and original productions inside StudentStreamHQ.
-
 </p>
 
 <br>
 
 <button class="btn primary"
-
 onclick="window.open('https://buy.stripe.com/bJe00je7g6K269l7nI8Ra04')">
 
 Support StudentStream
@@ -436,21 +442,32 @@ Support StudentStream
 </section>
 
 <footer class="footer">
-
 © 2026 StudentStreamHQ — All rights reserved.
-
 </footer>
 
 <script>
 
-/* NAV SCROLL */
+/* NAV */
 
 window.addEventListener("scroll",()=>{
-
 document.getElementById("nav")
-
 .classList.toggle("scrolled",window.scrollY>20)
+})
 
+/* SECTION REVEAL */
+
+const sections=document.querySelectorAll(".section")
+
+const observer=new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add("visible")
+}
+})
+})
+
+sections.forEach(section=>{
+observer.observe(section)
 })
 
 /* COUNTDOWN */
@@ -460,33 +477,24 @@ const launchDate=new Date("2026-04-04T00:00:00").getTime()
 setInterval(()=>{
 
 const now=Date.now()
-
 const diff=launchDate-now
-
 if(diff<=0)return
 
-document.getElementById("days").textContent=Math.floor(diff/(1000*60*60*24))
-
-document.getElementById("hours").textContent=Math.floor((diff/(1000*60*60))%24)
-
-document.getElementById("minutes").textContent=Math.floor((diff/(1000*60))%60)
-
-document.getElementById("seconds").textContent=Math.floor((diff/1000)%60)
+days.textContent=Math.floor(diff/(1000*60*60*24))
+hours.textContent=Math.floor((diff/(1000*60*60))%24)
+minutes.textContent=Math.floor((diff/(1000*60))%60)
+seconds.textContent=Math.floor((diff/1000)%60)
 
 },1000)
 
 /* PARTICLES */
 
 const canvas=document.getElementById("bg")
-
 const ctx=canvas.getContext("2d")
 
 function resize(){
-
 canvas.width=window.innerWidth
-
 canvas.height=window.innerHeight
-
 }
 
 resize()
@@ -494,19 +502,12 @@ resize()
 let particles=[]
 
 for(let i=0;i<80;i++){
-
 particles.push({
-
 x:Math.random()*canvas.width,
-
 y:Math.random()*canvas.height,
-
 r:Math.random()*2+1,
-
 speed:Math.random()*0.6+0.2
-
 })
-
 }
 
 function animate(){
@@ -518,13 +519,10 @@ ctx.fillStyle="rgba(108,242,194,.35)"
 particles.forEach(p=>{
 
 ctx.beginPath()
-
 ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
-
 ctx.fill()
 
 p.y+=p.speed
-
 if(p.y>canvas.height)p.y=0
 
 })
