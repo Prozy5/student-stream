@@ -25,26 +25,22 @@ display:flex;
 overflow-x:hidden;
 }
 
-/* ============================= */
-/* GLOBAL GLOW */
-/* ============================= */
+/* glow */
 
 body::before{
 content:"";
 position:fixed;
-width:900px;
-height:900px;
+width:800px;
+height:800px;
 background:linear-gradient(45deg,#4da3ff,#6cf2c2);
-filter:blur(200px);
+filter:blur(180px);
 opacity:.05;
 top:-200px;
 left:-200px;
 z-index:-1;
 }
 
-/* ============================= */
-/* SIDEBAR */
-/* ============================= */
+/* sidebar */
 
 .sidebar{
 width:260px;
@@ -93,18 +89,14 @@ background:rgba(77,163,255,.15);
 transform:translateX(4px);
 }
 
-/* ============================= */
-/* MAIN AREA */
-/* ============================= */
+/* main */
 
 .main{
 flex:1;
 padding:35px 45px;
 }
 
-/* ============================= */
-/* TOPBAR */
-/* ============================= */
+/* topbar */
 
 .topbar{
 display:flex;
@@ -138,9 +130,7 @@ justify-content:center;
 font-weight:900;
 }
 
-/* ============================= */
-/* HERO */
-/* ============================= */
+/* hero */
 
 .hero{
 padding:35px;
@@ -148,33 +138,9 @@ border-radius:24px;
 background:rgba(255,255,255,.04);
 border:1px solid rgba(255,255,255,.08);
 margin-bottom:35px;
-backdrop-filter:blur(15px);
 }
 
-.hero h2{
-font-size:28px;
-font-weight:900;
-}
-
-.badge{
-margin-left:12px;
-padding:6px 14px;
-border-radius:999px;
-font-size:12px;
-font-weight:800;
-background:rgba(77,163,255,.15);
-border:1px solid rgba(77,163,255,.35);
-}
-
-.hero p{
-opacity:.7;
-font-size:14px;
-margin-top:8px;
-}
-
-/* ============================= */
-/* STATS */
-/* ============================= */
+/* stats */
 
 .stats{
 display:grid;
@@ -207,15 +173,7 @@ font-weight:900;
 margin-top:8px;
 }
 
-.growth{
-font-size:12px;
-margin-top:6px;
-color:#6cf2c2;
-}
-
-/* ============================= */
-/* CHART */
-/* ============================= */
+/* chart */
 
 .chartWrap{
 padding:28px;
@@ -225,9 +183,7 @@ border:1px solid rgba(255,255,255,.07);
 margin-bottom:40px;
 }
 
-/* ============================= */
-/* ACTIVITY */
-/* ============================= */
+/* activity */
 
 .activity{
 padding:25px;
@@ -242,10 +198,6 @@ opacity:.85;
 margin-bottom:10px;
 }
 
-/* ============================= */
-/* STAFF PANEL */
-/* ============================= */
-
 .staffPanel{
 margin-top:40px;
 padding:25px;
@@ -255,25 +207,10 @@ border:1px solid rgba(255,215,0,.35);
 display:none;
 }
 
-/* ============================= */
-/* ANIMATIONS */
-/* ============================= */
-
-.fadeIn{
-animation:fade .8s ease forwards;
-opacity:0;
-}
-
-@keyframes fade{
-to{opacity:1}
-}
-
 </style>
 </head>
 
 <body>
-
-<!-- SIDEBAR -->
 
 <div class="sidebar" id="sidebar">
 
@@ -282,14 +219,12 @@ to{opacity:1}
 <div class="logo">StudentStream<span>HQ</span></div>
 
 <div class="nav">
-
 <a href="#">🏠 Overview</a>
 <a href="/sswatch/">🎥 SS Watch</a>
 <a href="/devforum/">💬 DevForum</a>
 <a href="/boosts.html">💰 Boosts</a>
 <a href="/boph.html">🎺 Project BOPH</a>
 <a href="/settings.html">⚙ Settings</a>
-
 </div>
 
 </div>
@@ -300,8 +235,6 @@ Logout
 
 </div>
 
-<!-- MAIN -->
-
 <div class="main">
 
 <div class="topbar">
@@ -309,35 +242,22 @@ Logout
 <button class="toggleBtn" onclick="toggleSidebar()">☰</button>
 
 <div class="profile">
-
 <div class="avatar" id="avatar">?</div>
 <div id="username">Loading...</div>
-
 </div>
 
 </div>
 
-<div class="hero fadeIn">
-
-<h2>
-
-Welcome, <span id="nameLine">Creator</span>
-<span class="badge" id="roleBadge">...</span>
-
-</h2>
-
+<div class="hero">
+<h2>Welcome, <span id="nameLine">Creator</span> <span id="roleBadge"></span></h2>
 <p id="memberLine">Loading membership...</p>
-
 </div>
-
-<!-- STATS -->
 
 <div class="stats">
 
 <div class="statCard">
 <div class="statLabel">Total Earnings</div>
 <div class="statValue" id="earningsTotal">$0</div>
-<div class="growth">+18%</div>
 </div>
 
 <div class="statCard">
@@ -357,61 +277,43 @@ Welcome, <span id="nameLine">Creator</span>
 
 </div>
 
-<!-- CHART -->
-
 <div class="chartWrap">
-
-<h3 style="margin-bottom:18px;">Earnings Overview</h3>
-
+<h3>Earnings Overview</h3>
 <canvas id="earningsChart"></canvas>
-
 </div>
-
-<!-- ACTIVITY -->
 
 <div class="activity">
-
-<h3 style="margin-bottom:15px;">Live Activity</h3>
-
-<div id="activityFeed">Loading activity...</div>
-
+<h3>Live Activity</h3>
+<div id="activityFeed">Loading...</div>
 </div>
 
-<!-- STAFF PANEL -->
-
 <div class="staffPanel" id="staffPanel">
-
 <h3>👑 Executive Control Panel</h3>
-
 <p>Admin level tools enabled.</p>
-
 </div>
 
 </div>
 
 <script type="module">
 
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
 
 const supabase=createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+)
 
-/* Sidebar */
+let chart
 
-window.toggleSidebar=()=>{
-document.getElementById("sidebar").classList.toggle("collapsed")
-}
+function initChart(){
+const ctx=document.getElementById("earningsChart")
 
-/* Chart */
-
-const chart=new Chart(document.getElementById("earningsChart"),{
+chart=new Chart(ctx,{
 type:"line",
 data:{
-labels:["Jan","Feb","Mar","Apr","May","Jun"],
+labels:[],
 datasets:[{
-data:[10,20,35,40,60,80],
+data:[],
 borderColor:"#4da3ff",
 backgroundColor:"rgba(77,163,255,.15)",
 tension:.4,
@@ -420,14 +322,20 @@ fill:true
 },
 options:{
 plugins:{legend:{display:false}},
-scales:{
-x:{ticks:{color:"#aaa"}},
-y:{ticks:{color:"#aaa"}}
-}
+responsive:true
 }
 })
+}
 
-/* Dashboard */
+function updateChart(values){
+chart.data.labels=["Jan","Feb","Mar","Apr","May","Jun"]
+chart.data.datasets[0].data=values
+chart.update()
+}
+
+window.toggleSidebar=()=>{
+document.getElementById("sidebar").classList.toggle("collapsed")
+}
 
 async function loadDashboard(){
 
@@ -440,33 +348,26 @@ return
 
 const user=session.user
 
-const {data:profile}=await supabase
+const {data:profile,error:profileError}=await supabase
 .from("profiles")
 .select("*")
 .eq("id",user.id)
 .single()
 
-if(profile){
+if(profileError)return console.error(profileError)
 
 document.getElementById("username").textContent=profile.username
 document.getElementById("nameLine").textContent=profile.username
-
-document.getElementById("avatar").textContent=
-profile.username.charAt(0).toUpperCase()
-
-document.getElementById("roleBadge").textContent=
-profile.role.toUpperCase()
+document.getElementById("avatar").textContent=profile.username.charAt(0).toUpperCase()
 
 document.getElementById("memberLine").textContent=
 `Member since ${new Date(profile.created_at).toLocaleDateString()}`
 
+document.getElementById("roleBadge").textContent=profile.role.toUpperCase()
+
 if(["owner","admin"].includes(profile.role)){
 document.getElementById("staffPanel").style.display="block"
 }
-
-}
-
-/* Earnings */
 
 const {data:earnings}=await supabase
 .from("creator_earnings")
@@ -478,18 +379,12 @@ if(earnings){
 
 const total=Number(earnings.total_boost_earnings||0)
 
-document.getElementById("earningsTotal").textContent=
-"$"+total.toFixed(2)
+document.getElementById("earningsTotal").textContent="$"+total.toFixed(2)
+document.getElementById("monthlyRevenue").textContent="$"+(total/6).toFixed(0)
+document.getElementById("monetizationStatus").textContent=total>0?"Active":"Inactive"
 
-document.getElementById("monthlyRevenue").textContent=
-"$"+(total/6).toFixed(0)
-
-document.getElementById("monetizationStatus").textContent=
-total>0?"Active":"Inactive"
-
+updateChart([5,15,25,40,55,total])
 }
-
-/* Activity */
 
 const {data:activity}=await supabase
 .from("activity_log")
@@ -498,33 +393,30 @@ const {data:activity}=await supabase
 .limit(6)
 
 const feed=document.getElementById("activityFeed")
-
 feed.innerHTML=""
 
 if(activity){
+const fragment=document.createDocumentFragment()
 
 activity.forEach(a=>{
-
-feed.innerHTML+=
-`<div class="activityItem">${a.description}</div>`
-
+const div=document.createElement("div")
+div.className="activityItem"
+div.textContent=a.description
+fragment.appendChild(div)
 })
 
+feed.appendChild(fragment)
 }
 
 }
-
-loadDashboard()
-
-/* Logout */
 
 window.logout=async()=>{
-
 await supabase.auth.signOut()
-
 location.href="/login.html"
-
 }
+
+initChart()
+loadDashboard()
 
 </script>
 
