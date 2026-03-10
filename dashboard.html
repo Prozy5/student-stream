@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 
-<meta charset="UTF-8"/>
+<meta charset="UTF-8">
 <title>Dashboard • StudentStreamHQ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -25,7 +25,9 @@ display:flex;
 overflow-x:hidden;
 }
 
-/* glow */
+/* ============================= */
+/* GLOBAL GLOW */
+/* ============================= */
 
 body::before{
 content:"";
@@ -40,7 +42,9 @@ left:-200px;
 z-index:-1;
 }
 
+/* ============================= */
 /* SIDEBAR */
+/* ============================= */
 
 .sidebar{
 width:260px;
@@ -67,8 +71,6 @@ font-weight:900;
 color:#4da3ff;
 }
 
-/* NAV */
-
 .nav{
 margin-top:35px;
 display:flex;
@@ -91,14 +93,18 @@ background:rgba(77,163,255,.15);
 transform:translateX(4px);
 }
 
-/* MAIN */
+/* ============================= */
+/* MAIN AREA */
+/* ============================= */
 
 .main{
 flex:1;
 padding:35px 45px;
 }
 
+/* ============================= */
 /* TOPBAR */
+/* ============================= */
 
 .topbar{
 display:flex;
@@ -115,23 +121,26 @@ font-size:22px;
 cursor:pointer;
 }
 
-.systemStatus{
-font-size:12px;
-padding:6px 12px;
-border-radius:999px;
-background:rgba(108,242,194,.15);
-border:1px solid rgba(108,242,194,.4);
-color:#6cf2c2;
-font-weight:700;
+.profile{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
-.clock{
-font-size:13px;
-opacity:.7;
-margin-left:15px;
+.avatar{
+width:34px;
+height:34px;
+border-radius:50%;
+background:linear-gradient(135deg,#4da3ff,#6cf2c2);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:900;
 }
 
+/* ============================= */
 /* HERO */
+/* ============================= */
 
 .hero{
 padding:35px;
@@ -143,7 +152,7 @@ backdrop-filter:blur(15px);
 }
 
 .hero h2{
-font-size:30px;
+font-size:28px;
 font-weight:900;
 }
 
@@ -153,24 +162,8 @@ padding:6px 14px;
 border-radius:999px;
 font-size:12px;
 font-weight:800;
-}
-
-.badge.owner{
-background:#ffb34720;
-border:1px solid #ffb34780;
-color:#ffb347;
-}
-
-.badge.admin{
-background:#ff6b6b20;
-border:1px solid #ff6b6b80;
-color:#ff6b6b;
-}
-
-.badge.creator{
-background:#4da3ff20;
-border:1px solid #4da3ff80;
-color:#4da3ff;
+background:rgba(77,163,255,.15);
+border:1px solid rgba(77,163,255,.35);
 }
 
 .hero p{
@@ -179,7 +172,9 @@ font-size:14px;
 margin-top:8px;
 }
 
+/* ============================= */
 /* STATS */
+/* ============================= */
 
 .stats{
 display:grid;
@@ -218,7 +213,9 @@ margin-top:6px;
 color:#6cf2c2;
 }
 
+/* ============================= */
 /* CHART */
+/* ============================= */
 
 .chartWrap{
 padding:28px;
@@ -228,32 +225,9 @@ border:1px solid rgba(255,255,255,.07);
 margin-bottom:40px;
 }
 
-/* QUICK ACTIONS */
-
-.quick{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-margin-bottom:40px;
-}
-
-.quick button{
-padding:18px;
-border-radius:16px;
-border:1px solid rgba(255,255,255,.08);
-background:rgba(255,255,255,.03);
-color:white;
-font-weight:700;
-cursor:pointer;
-transition:.25s;
-}
-
-.quick button:hover{
-background:rgba(77,163,255,.2);
-transform:translateY(-3px);
-}
-
+/* ============================= */
 /* ACTIVITY */
+/* ============================= */
 
 .activity{
 padding:25px;
@@ -264,11 +238,13 @@ border:1px solid rgba(255,255,255,.07);
 
 .activityItem{
 font-size:13px;
-opacity:.8;
+opacity:.85;
 margin-bottom:10px;
 }
 
+/* ============================= */
 /* STAFF PANEL */
+/* ============================= */
 
 .staffPanel{
 margin-top:40px;
@@ -279,27 +255,25 @@ border:1px solid rgba(255,215,0,.35);
 display:none;
 }
 
-/* MOBILE */
+/* ============================= */
+/* ANIMATIONS */
+/* ============================= */
 
-@media(max-width:900px){
-
-.sidebar{
-position:fixed;
-height:100vh;
-z-index:100;
+.fadeIn{
+animation:fade .8s ease forwards;
+opacity:0;
 }
 
-.main{
-padding:25px;
-}
-
+@keyframes fade{
+to{opacity:1}
 }
 
 </style>
-
 </head>
 
 <body>
+
+<!-- SIDEBAR -->
 
 <div class="sidebar" id="sidebar">
 
@@ -310,10 +284,10 @@ padding:25px;
 <div class="nav">
 
 <a href="#">🏠 Overview</a>
-<a href="/sswatch/">🎥 SS:Watch</a>
+<a href="/sswatch/">🎥 SS Watch</a>
 <a href="/devforum/">💬 DevForum</a>
 <a href="/boosts.html">💰 Boosts</a>
-<a href="/boph.html">🎺 Project B.O.P.H</a>
+<a href="/boph.html">🎺 Project BOPH</a>
 <a href="/settings.html">⚙ Settings</a>
 
 </div>
@@ -326,6 +300,7 @@ Logout
 
 </div>
 
+<!-- MAIN -->
 
 <div class="main">
 
@@ -333,42 +308,36 @@ Logout
 
 <button class="toggleBtn" onclick="toggleSidebar()">☰</button>
 
-<div style="display:flex;align-items:center;">
-<div class="systemStatus">System Operational</div>
-<div class="clock" id="clock"></div>
-</div>
+<div class="profile">
+
+<div class="avatar" id="avatar">?</div>
+<div id="username">Loading...</div>
 
 </div>
 
+</div>
 
-<div class="hero">
+<div class="hero fadeIn">
 
 <h2>
-Welcome, <span id="username">Loading...</span>
-<span class="badge creator" id="roleBadge">...</span>
+
+Welcome, <span id="nameLine">Creator</span>
+<span class="badge" id="roleBadge">...</span>
+
 </h2>
 
-<p id="memberLine">Syncing dashboard...</p>
+<p id="memberLine">Loading membership...</p>
 
 </div>
 
-
-<div class="quick">
-
-<button onclick="location.href='/sswatch/'">🎬 Upload Content</button>
-<button onclick="location.href='/boosts.html'">💰 View Earnings</button>
-<button onclick="location.href='/devforum/'">💬 DevForum</button>
-<button onclick="location.href='/settings.html'">⚙ Account Settings</button>
-
-</div>
-
+<!-- STATS -->
 
 <div class="stats">
 
 <div class="statCard">
 <div class="statLabel">Total Earnings</div>
 <div class="statValue" id="earningsTotal">$0</div>
-<div class="growth" id="growthPercent">+0%</div>
+<div class="growth">+18%</div>
 </div>
 
 <div class="statCard">
@@ -377,38 +346,48 @@ Welcome, <span id="username">Loading...</span>
 </div>
 
 <div class="statCard">
-<div class="statLabel">Monetization Status</div>
+<div class="statLabel">Monetization</div>
 <div class="statValue" id="monetizationStatus">Checking...</div>
 </div>
 
+<div class="statCard">
+<div class="statLabel">Creator Rank</div>
+<div class="statValue" id="creatorRank">#--</div>
 </div>
 
+</div>
+
+<!-- CHART -->
 
 <div class="chartWrap">
 
 <h3 style="margin-bottom:18px;">Earnings Overview</h3>
+
 <canvas id="earningsChart"></canvas>
 
 </div>
 
+<!-- ACTIVITY -->
 
 <div class="activity">
 
 <h3 style="margin-bottom:15px;">Live Activity</h3>
+
 <div id="activityFeed">Loading activity...</div>
 
 </div>
 
+<!-- STAFF PANEL -->
 
 <div class="staffPanel" id="staffPanel">
 
 <h3>👑 Executive Control Panel</h3>
-<p>Advanced platform management tools unlocked.</p>
+
+<p>Admin level tools enabled.</p>
 
 </div>
 
 </div>
-
 
 <script type="module">
 
@@ -419,27 +398,20 @@ const supabase=createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
+/* Sidebar */
+
 window.toggleSidebar=()=>{
-document.getElementById("sidebar").classList.toggle("collapsed");
-};
+document.getElementById("sidebar").classList.toggle("collapsed")
+}
 
-/* CLOCK */
+/* Chart */
 
-setInterval(()=>{
-document.getElementById("clock").textContent=
-new Date().toLocaleTimeString();
-},1000);
-
-/* CHART */
-
-const chart=new Chart(
-document.getElementById("earningsChart"),
-{
+const chart=new Chart(document.getElementById("earningsChart"),{
 type:"line",
 data:{
-labels:[],
+labels:["Jan","Feb","Mar","Apr","May","Jun"],
 datasets:[{
-data:[],
+data:[10,20,35,40,60,80],
 borderColor:"#4da3ff",
 backgroundColor:"rgba(77,163,255,.15)",
 tension:.4,
@@ -453,133 +425,106 @@ x:{ticks:{color:"#aaa"}},
 y:{ticks:{color:"#aaa"}}
 }
 }
-}
-);
+})
 
-function animateValue(id,end){
-
-let start=0;
-
-const duration=800;
-
-const step=end/(duration/16);
-
-const el=document.getElementById(id);
-
-const counter=setInterval(()=>{
-
-start+=step;
-
-if(start>=end){
-start=end;
-clearInterval(counter);
-}
-
-el.textContent="$"+start.toFixed(2);
-
-},16);
-
-}
-
-/* LOAD DASHBOARD */
+/* Dashboard */
 
 async function loadDashboard(){
 
-const { data:{session} }=await supabase.auth.getSession();
+const {data:{session}}=await supabase.auth.getSession()
 
 if(!session){
-location.href="/login.html";
-return;
+location.href="/login.html"
+return
 }
 
-const user=session.user;
+const user=session.user
 
-const { data:profile }=await supabase
+const {data:profile}=await supabase
 .from("profiles")
 .select("*")
 .eq("id",user.id)
-.single();
+.single()
 
-if(!profile){
-location.href="/login.html";
-return;
-}
+if(profile){
 
-document.getElementById("username").textContent=profile.username;
+document.getElementById("username").textContent=profile.username
+document.getElementById("nameLine").textContent=profile.username
 
-const roleBadge=document.getElementById("roleBadge");
+document.getElementById("avatar").textContent=
+profile.username.charAt(0).toUpperCase()
 
-roleBadge.textContent=profile.role.toUpperCase();
-roleBadge.className="badge "+profile.role;
+document.getElementById("roleBadge").textContent=
+profile.role.toUpperCase()
 
 document.getElementById("memberLine").textContent=
-`Member since ${new Date(profile.created_at).toLocaleDateString()}`;
+`Member since ${new Date(profile.created_at).toLocaleDateString()}`
 
 if(["owner","admin"].includes(profile.role)){
-document.getElementById("staffPanel").style.display="block";
+document.getElementById("staffPanel").style.display="block"
 }
 
-/* EARNINGS */
+}
 
-const { data:earnings }=await supabase
+/* Earnings */
+
+const {data:earnings}=await supabase
 .from("creator_earnings")
 .select("*")
 .eq("creator_id",user.id)
-.single();
+.single()
 
 if(earnings){
 
-const total=Number(earnings.total_boost_earnings||0);
+const total=Number(earnings.total_boost_earnings||0)
 
-animateValue("earningsTotal",total);
+document.getElementById("earningsTotal").textContent=
+"$"+total.toFixed(2)
 
-document.getElementById("monthlyRevenue").textContent="$"+(total/6).toFixed(0);
-
-document.getElementById("growthPercent").textContent="+18%";
+document.getElementById("monthlyRevenue").textContent=
+"$"+(total/6).toFixed(0)
 
 document.getElementById("monetizationStatus").textContent=
-total>0?"Active":"Not Active";
-
-chart.data.labels=["Jan","Feb","Mar","Apr","May","Jun"];
-
-chart.data.datasets[0].data=[5,15,28,35,50,total];
-
-chart.update();
+total>0?"Active":"Inactive"
 
 }
 
-/* ACTIVITY */
+/* Activity */
 
-const feed=document.getElementById("activityFeed");
-
-const { data:activity }=await supabase
+const {data:activity}=await supabase
 .from("activity_log")
 .select("*")
 .order("created_at",{ascending:false})
-.limit(5);
+.limit(6)
 
-feed.innerHTML="";
+const feed=document.getElementById("activityFeed")
 
-if(activity && activity.length){
+feed.innerHTML=""
+
+if(activity){
 
 activity.forEach(a=>{
-feed.innerHTML+=`<div class="activityItem">${a.description}</div>`;
-});
 
-}else{
+feed.innerHTML+=
+`<div class="activityItem">${a.description}</div>`
 
-feed.innerHTML="<div class='activityItem'>No recent activity</div>";
-
-}
+})
 
 }
 
-loadDashboard();
+}
+
+loadDashboard()
+
+/* Logout */
 
 window.logout=async()=>{
-await supabase.auth.signOut();
-location.href="/login.html";
-};
+
+await supabase.auth.signOut()
+
+location.href="/login.html"
+
+}
 
 </script>
 
