@@ -19,7 +19,12 @@
 
 <style>
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',system-ui;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',system-ui;
+}
 
 body{
 background:#04060f;
@@ -29,7 +34,7 @@ overflow-x:hidden;
 padding:60px 20px;
 }
 
-/* glow */
+/* background */
 
 body::before{
 content:"";
@@ -54,8 +59,6 @@ right:-200px;
 filter:blur(120px);
 z-index:-2;
 }
-
-/* grid */
 
 .grid{
 position:fixed;
@@ -88,7 +91,7 @@ text-align:center;
 /* logo */
 
 .logo{
-font-size:36px;
+font-size:34px;
 font-weight:800;
 margin-bottom:25px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
@@ -145,7 +148,7 @@ margin-top:12px;
 height:100%;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 width:0%;
-transition:width 1s ease;
+transition:width 1.5s ease;
 }
 
 /* modules */
@@ -169,10 +172,8 @@ text-align:left;
 display:block;
 margin-top:6px;
 font-size:.9rem;
-opacity:.8;
+opacity:.7;
 }
-
-/* colors */
 
 .good{color:#6cf2c2;}
 .warn{color:#ffc857;}
@@ -209,16 +210,8 @@ margin-bottom:4px;
 footer{
 margin-top:80px;
 text-align:center;
-opacity:.6;
+opacity:.5;
 font-size:.9rem;
-}
-
-.statusLink{
-margin-top:20px;
-display:inline-block;
-color:#6cf2c2;
-text-decoration:none;
-font-weight:600;
 }
 
 </style>
@@ -241,13 +234,13 @@ font-weight:600;
 <h1>Infrastructure Upgrade Underway</h1>
 
 <p>
-StudentStreamHQ is undergoing a full platform rebuild to improve
-creator tools, performance, and long-term ecosystem scalability.
-</p>
 
-<a class="statusLink" href="/status">
-View Full System Status →
-</a>
+StudentStreamHQ is currently undergoing a full platform rebuild to improve
+creator tools, infrastructure performance, and long-term ecosystem scalability.
+
+Development progress and system updates appear below in real time.
+
+</p>
 
 <div class="progressBox">
 
@@ -257,7 +250,7 @@ View Full System Status →
 <div class="progressFill" id="progressFill"></div>
 </div>
 
-<div style="margin-top:10px;font-size:.9rem;opacity:.7">
+<div style="margin-top:10px;opacity:.7;font-size:.9rem">
 <span id="progressText"></span>
 </div>
 
@@ -267,22 +260,22 @@ View Full System Status →
 
 <div class="module">
 <b>Core Infrastructure</b>
-<span id="coreStatus"></span>
+<span class="warn">Rebuilding</span>
 </div>
 
 <div class="module">
 <b>Creator Platform</b>
-<span id="creatorStatus"></span>
+<span class="warn">Redesigning</span>
 </div>
 
 <div class="module">
 <b>Database Systems</b>
-<span id="dbStatus"></span>
+<span class="good">Upgrading</span>
 </div>
 
 <div class="module">
 <b>Developer Tools</b>
-<span id="devStatus"></span>
+<span class="warn">Migrating</span>
 </div>
 
 </div>
@@ -303,54 +296,43 @@ Last updated: <span id="lastUpdated"></span>
 
 <script>
 
-/* LOAD STATUS FROM API */
+/* REBUILD PROGRESS */
 
-async function loadStatus(){
+const progress = 38
 
-try{
+document.getElementById("progressFill").style.width = progress + "%"
+document.getElementById("progressText").textContent = progress + "% complete"
 
-const res = await fetch("/status.json")
-const data = await res.json()
 
-/* progress */
+/* DEVELOPMENT FEED */
 
-document.getElementById("progressFill").style.width =
-data.progress + "%"
+const updates = [
 
-document.getElementById("progressText").textContent =
-data.progress + "% complete"
+{
+time:"Today",
+text:"Platform rebuild initiated. Core infrastructure restructuring has started."
+},
 
-/* module status */
+{
+time:"Today",
+text:"Database architecture migrating to improved scalable systems."
+},
 
-function statusClass(status){
+{
+time:"Today",
+text:"Creator platform interface entering redesign phase."
+},
 
-if(status==="upgrading") return "good"
-if(status==="rebuilding") return "warn"
-if(status==="redesigning") return "warn"
-return "off"
-
+{
+time:"Today",
+text:"Internal developer tools being migrated for new platform architecture."
 }
 
-function setModule(id,value){
-
-const el=document.getElementById(id)
-
-el.textContent=value
-el.className=statusClass(value)
-
-}
-
-setModule("coreStatus",data.modules.core)
-setModule("creatorStatus",data.modules.creator)
-setModule("dbStatus",data.modules.database)
-setModule("devStatus",data.modules.devtools)
-
-/* updates */
+]
 
 const container=document.getElementById("updates")
-container.innerHTML=""
 
-data.updates.forEach(u=>{
+updates.forEach(u=>{
 
 const el=document.createElement("div")
 el.className="update"
@@ -364,21 +346,11 @@ container.appendChild(el)
 
 })
 
-}catch(err){
 
-console.error("Status fetch failed")
-
-}
+/* LAST UPDATED */
 
 document.getElementById("lastUpdated").textContent =
 new Date().toLocaleString()
-
-}
-
-/* refresh every 30s */
-
-loadStatus()
-setInterval(loadStatus,30000)
 
 
 /* PARTICLES */
@@ -392,6 +364,7 @@ canvas.height=window.innerHeight
 }
 
 resize()
+
 window.addEventListener("resize",resize)
 
 let particles=[]
