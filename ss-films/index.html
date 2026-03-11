@@ -1,447 +1,557 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SS Films</title>
-
-  <!-- ✅ Supabase Module Import -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    /* ================================
-       ✅ SUPABASE CONFIG
-    ================================ */
-    const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-    const supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    /* ================================
-       ELEMENTS
-    ================================ */
-    const moviesRow = document.getElementById("moviesRow");
-    const seriesRow = document.getElementById("seriesRow");
-    const docRow = document.getElementById("docRow");
-    const trendingRow = document.getElementById("trendingRow");
-
-    const searchInput = document.getElementById("searchInput");
-    const filterSelect = document.getElementById("filterSelect");
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    const userStatus = document.getElementById("userStatus");
-
-    const dashboardBtn = document.getElementById("dashboardBtn");
-
-    let spotlightFilm = null;
-    let allFilms = [];
-
-    /* ================================
-       ✅ REQUIRE LOGIN BEFORE WATCHING
-    ================================ */
-    async function requireLogin(destination) {
-      const { data } = await supabase.auth.getSession();
-
-      if (!data.session) {
-        window.location.href =
-          `login.html?redirect=${encodeURIComponent(destination)}`;
-        return false;
-      }
-
-      return true;
-    }
-
-    /* ================================
-       ✅ GO TO WATCH PAGE (LOGIN GATE)
-    ================================ */
-    async function goWatch(film) {
-      const target = `watch.html?id=${film.id}`;
-
-      const allowed = await requireLogin(target);
-      if (!allowed) return;
-
-      window.location.href = target;
-    }
-
-    /* ================================
-       ✅ CREATOR DASHBOARD BUTTON
-    ================================ */
-    dashboardBtn.onclick = () => {
-      window.location.href = "dashboard.html";
-    };
-
-    /* ================================
-       ✅ LOGOUT SUPPORT
-    ================================ */
-    logoutBtn.onclick = async () => {
-      await supabase.auth.signOut();
-      window.location.href = "login.html";
-    };
-
-    /* ================================
-       ✅ SHOW USER STATUS + ROLE CHECK
-    ================================ */
-    async function checkUser() {
-      const { data } = await supabase.auth.getSession();
-
-      if (!data.session) {
-        logoutBtn.style.display = "none";
-        dashboardBtn.style.display = "none";
-        userStatus.innerText =
-          "Guest Mode (Login required to watch)";
-        return;
-      }
-
-      // ✅ Logged in
-      logoutBtn.style.display = "block";
-      userStatus.innerText =
-        "Signed in as " + data.session.user.email;
-
-      // ✅ Get Profile Role
-      const userId = data.session.user.id;
-
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", userId)
-        .single();
-
-      if (error) {
-        console.log("Profile fetch error:", error);
-        dashboardBtn.style.display = "none";
-        return;
-      }
-
-      // ✅ Only show dashboard if creator OR owner
-      const allowedRoles = ["creator", "owner"];
-
-      if (allowedRoles.includes(profile.role)) {
-        dashboardBtn.style.display = "block";
-      } else {
-        dashboardBtn.style.display = "none";
-      }
-    }
-
-    /* ================================
-       LOAD FILMS
-    ================================ */
-    async function loadFilms() {
-      const { data, error } = await supabase
-        .from("films")
-        .select("*")
-        .eq("visibility", "public")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        alert("Error loading films.");
-        console.log(error);
-        return;
-      }
-
-      allFilms = data;
-      renderFilms(data);
-    }
-
-    /* ================================
-       RENDER FILMS
-    ================================ */
-    function renderFilms(films) {
-      moviesRow.innerHTML = "";
-      seriesRow.innerHTML = "";
-      docRow.innerHTML = "";
-      trendingRow.innerHTML = "";
-
-      spotlightFilm = null;
-
-      films.forEach((film, index) => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <img src="${film.thumbnail_url}" />
-          <div class="overlay">
-            <h4>${film.title}</h4>
-            <p>${film.genre || "SS Films Original"}</p>
-          </div>
-        `;
-
-        card.onclick = () => goWatch(film);
-
-        const cat = film.category?.toLowerCase();
-
-        if (film.featured && !spotlightFilm) spotlightFilm = film;
-
-        if (index < 6) trendingRow.appendChild(card);
-
-        if (cat === "movie") moviesRow.appendChild(card);
-        else if (cat === "series") seriesRow.appendChild(card);
-        else if (cat === "documentary") docRow.appendChild(card);
-      });
-
-      /* Spotlight */
-      if (spotlightFilm) {
-        document.getElementById("spotlightTitle").innerText =
-          spotlightFilm.title;
-
-        document.getElementById("spotlightDesc").innerText =
-          spotlightFilm.description;
-
-        document.querySelector(".hero").style.background =
-          `url('${spotlightFilm.thumbnail_url}') center/cover`;
-      }
-    }
-
-    /* ================================
-       SEARCH + FILTER
-    ================================ */
-    function applyFilters() {
-      const query = searchInput.value.toLowerCase();
-      const category = filterSelect.value;
-
-      let filtered = allFilms.filter(f =>
-        f.title.toLowerCase().includes(query)
-      );
-
-      if (category !== "all") {
-        filtered = filtered.filter(f =>
-          f.category?.toLowerCase() === category
-        );
-      }
-
-      renderFilms(filtered);
-    }
-
-    searchInput.addEventListener("input", applyFilters);
-    filterSelect.addEventListener("change", applyFilters);
-
-    /* ================================
-       SPOTLIGHT CLICK (LOGIN GATE)
-    ================================ */
-    window.openSpotlight = async function () {
-      if (!spotlightFilm) return;
-
-      const target = `watch.html?id=${spotlightFilm.id}`;
-
-      const allowed = await requireLogin(target);
-      if (!allowed) return;
-
-      window.location.href = target;
-    };
-
-    /* ================================
-       INIT LOAD
-    ================================ */
-    checkUser();
-    loadFilms();
-  </script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: "Inter", Arial, sans-serif;
-      background: #050507;
-      color: white;
-    }
-
-    header {
-      padding: 18px 20px;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 999;
-      background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(12px);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 20px;
-      color: #00ff99;
-      font-weight: 900;
-    }
-
-    #userStatus {
-      font-size: 12px;
-      opacity: 0.6;
-      margin-top: 4px;
-    }
-
-    #logoutBtn,
-    #dashboardBtn {
-      display: none;
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    input, select {
-      flex: 1;
-      padding: 12px;
-      border-radius: 14px;
-      border: none;
-      outline: none;
-      background: rgba(255,255,255,0.08);
-      color: white;
-      font-size: 14px;
-    }
-
-    /* HERO Spotlight */
-    .hero {
-      height: 70vh;
-      display: flex;
-      align-items: flex-end;
-      padding: 110px 20px 40px;
-      position: relative;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, #050507 25%, transparent);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 520px;
-    }
-
-    .hero h2 {
-      font-size: 44px;
-      margin: 0;
-      font-weight: 900;
-    }
-
-    .hero p {
-      opacity: 0.8;
-      line-height: 1.4;
-      font-size: 15px;
-    }
-
-    .hero button {
-      margin-top: 18px;
-      padding: 14px 22px;
-      border: none;
-      border-radius: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #00ff99;
-    }
-
-    /* Sections */
-    .section {
-      padding: 25px 20px;
-    }
-
-    .row {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
-
-    .row::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Cards */
-    .card {
-      min-width: 170px;
-      height: 240px;
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .card:hover {
-      transform: scale(1.08);
-    }
-
-    .overlay {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
-    }
-  </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SS Films</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* ============================
+SUPABASE
+============================ */
+
+const supabaseUrl = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabase = createClient(supabaseUrl,supabaseKey);
+
+/* ============================
+ELEMENTS
+============================ */
+
+const moviesRow = document.getElementById("moviesRow");
+const seriesRow = document.getElementById("seriesRow");
+const docRow = document.getElementById("docRow");
+const trendingRow = document.getElementById("trendingRow");
+
+const searchInput = document.getElementById("searchInput");
+const filterSelect = document.getElementById("filterSelect");
+
+const logoutBtn = document.getElementById("logoutBtn");
+const dashboardBtn = document.getElementById("dashboardBtn");
+const userStatus = document.getElementById("userStatus");
+
+let spotlightFilm = null;
+let allFilms = [];
+
+/* ============================
+LOGIN GATE
+============================ */
+
+async function requireLogin(dest){
+
+const {data} = await supabase.auth.getSession();
+
+if(!data.session){
+
+window.location.href =
+`login.html?redirect=${encodeURIComponent(dest)}`;
+
+return false;
+
+}
+
+return true;
+
+}
+
+/* ============================
+WATCH PAGE
+============================ */
+
+async function goWatch(film){
+
+const target = `watch.html?id=${film.id}`;
+
+const allowed = await requireLogin(target);
+
+if(!allowed) return;
+
+window.location.href = target;
+
+}
+
+/* ============================
+USER CHECK
+============================ */
+
+async function checkUser(){
+
+const {data} = await supabase.auth.getSession();
+
+if(!data.session){
+
+userStatus.innerText = "Guest Mode";
+logoutBtn.style.display = "none";
+dashboardBtn.style.display = "none";
+
+return;
+
+}
+
+logoutBtn.style.display="block";
+
+userStatus.innerText =
+"Signed in as "+data.session.user.email;
+
+}
+
+/* ============================
+LOGOUT
+============================ */
+
+logoutBtn.onclick = async ()=>{
+
+await supabase.auth.signOut();
+
+window.location.href="login.html";
+
+}
+
+/* ============================
+LOAD FILMS
+============================ */
+
+async function loadFilms(){
+
+const {data,error} = await supabase
+.from("films")
+.select("*")
+.eq("visibility","public")
+.order("created_at",{ascending:false});
+
+if(error){
+
+alert("Error loading films");
+console.log(error);
+
+return;
+
+}
+
+allFilms = data;
+
+renderFilms(data);
+
+}
+
+/* ============================
+RENDER
+============================ */
+
+function renderFilms(films){
+
+moviesRow.innerHTML="";
+seriesRow.innerHTML="";
+docRow.innerHTML="";
+trendingRow.innerHTML="";
+
+spotlightFilm=null;
+
+/* trending algorithm */
+
+let trending = [...films]
+.sort((a,b)=> (b.views||0)-(a.views||0))
+.slice(0,6);
+
+trending.forEach(f=>{
+
+trendingRow.appendChild(createCard(f));
+
+});
+
+films.forEach(film=>{
+
+const cat = film.category?.toLowerCase();
+
+if(!spotlightFilm && film.featured){
+
+spotlightFilm = film;
+
+}
+
+const card = createCard(film);
+
+if(cat==="movie") moviesRow.appendChild(card);
+
+if(cat==="series") seriesRow.appendChild(card);
+
+if(cat==="documentary") docRow.appendChild(card);
+
+});
+
+/* spotlight */
+
+if(spotlightFilm){
+
+document.getElementById("spotlightTitle").innerText =
+spotlightFilm.title;
+
+document.getElementById("spotlightDesc").innerText =
+spotlightFilm.description;
+
+document.querySelector(".hero").style.background =
+`url('${spotlightFilm.thumbnail_url}') center/cover`;
+
+}
+
+}
+
+/* ============================
+CARD
+============================ */
+
+function createCard(film){
+
+const card = document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+
+<img src="${film.thumbnail_url}">
+
+<div class="overlay">
+
+<h4>${film.title}</h4>
+
+<p>${film.genre || "SS Films Original"}</p>
+
+<div class="meta">
+
+⭐ ${film.rating || "N/A"}  
+👀 ${film.views || 0}
+
+</div>
+
+</div>
+
+`;
+
+card.onclick=()=>goWatch(film);
+
+return card;
+
+}
+
+/* ============================
+SEARCH
+============================ */
+
+function applyFilters(){
+
+const query = searchInput.value.toLowerCase();
+
+const cat = filterSelect.value;
+
+let filtered = allFilms.filter(f=>
+f.title.toLowerCase().includes(query)
+);
+
+if(cat!=="all"){
+
+filtered = filtered.filter(f=>
+f.category?.toLowerCase()===cat
+);
+
+}
+
+renderFilms(filtered);
+
+}
+
+searchInput.addEventListener("input",applyFilters);
+filterSelect.addEventListener("change",applyFilters);
+
+/* ============================
+SPOTLIGHT CLICK
+============================ */
+
+window.openSpotlight = async ()=>{
+
+if(!spotlightFilm) return;
+
+goWatch(spotlightFilm);
+
+};
+
+/* ============================
+INIT
+============================ */
+
+checkUser();
+loadFilms();
+
+</script>
+
+<style>
+
+body{
+
+margin:0;
+font-family:Inter;
+background:#050507;
+color:white;
+
+}
+
+/* header */
+
+header{
+
+position:fixed;
+top:0;
+width:100%;
+background:rgba(0,0,0,0.65);
+backdrop-filter:blur(12px);
+padding:18px;
+z-index:999;
+
+}
+
+header h1{
+
+margin:0;
+font-size:22px;
+color:#00ff99;
+font-weight:900;
+
+}
+
+#userStatus{
+
+font-size:12px;
+opacity:.6;
+
+}
+
+.controls{
+
+margin-top:10px;
+display:flex;
+gap:10px;
+
+}
+
+input,select{
+
+padding:12px;
+border:none;
+border-radius:12px;
+background:rgba(255,255,255,.08);
+color:white;
+flex:1;
+
+}
+
+button{
+
+background:#00ff99;
+border:none;
+padding:10px 16px;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+
+}
+
+/* hero */
+
+.hero{
+
+height:70vh;
+display:flex;
+align-items:flex-end;
+padding:110px 20px 40px;
+
+}
+
+.hero h2{
+
+font-size:46px;
+margin:0;
+font-weight:900;
+
+}
+
+.hero p{
+
+opacity:.8;
+
+}
+
+/* sections */
+
+.section{
+
+padding:20px;
+
+}
+
+.row{
+
+display:flex;
+gap:14px;
+overflow-x:auto;
+
+}
+
+.row::-webkit-scrollbar{
+
+display:none;
+
+}
+
+/* cards */
+
+.card{
+
+min-width:170px;
+height:240px;
+border-radius:14px;
+overflow:hidden;
+position:relative;
+cursor:pointer;
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:scale(1.08);
+
+}
+
+.card img{
+
+width:100%;
+height:100%;
+object-fit:cover;
+
+}
+
+.overlay{
+
+position:absolute;
+bottom:0;
+width:100%;
+padding:10px;
+background:linear-gradient(to top,rgba(0,0,0,.85),transparent);
+
+}
+
+.overlay h4{
+
+margin:0;
+font-size:14px;
+
+}
+
+.overlay p{
+
+margin:2px 0;
+font-size:12px;
+opacity:.7;
+
+}
+
+.meta{
+
+font-size:11px;
+opacity:.8;
+
+}
+
+</style>
+
 </head>
 
 <body>
 
 <header>
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <div>
-      <h1>🎬 SS Films</h1>
-      <div id="userStatus">Loading...</div>
-    </div>
 
-    <!-- ✅ Creator Dashboard + Logout -->
-    <div style="display:flex;gap:10px;align-items:center;">
-      <button id="dashboardBtn">Creator Dashboard</button>
-      <button id="logoutBtn">Logout</button>
-    </div>
-  </div>
+<div style="display:flex;justify-content:space-between;align-items:center">
 
-  <div class="controls">
-    <input id="searchInput" placeholder="Search SS Films..." />
-    <select id="filterSelect">
-      <option value="all">All</option>
-      <option value="movie">Movies</option>
-      <option value="series">Series</option>
-      <option value="documentary">Documentary</option>
-    </select>
-  </div>
+<div>
+
+<h1>🎬 SS Films</h1>
+<div id="userStatus">Loading...</div>
+
+</div>
+
+<div>
+
+<button id="dashboardBtn">Creator Dashboard</button>
+<button id="logoutBtn">Logout</button>
+
+</div>
+
+</div>
+
+<div class="controls">
+
+<input id="searchInput" placeholder="Search SS Films">
+
+<select id="filterSelect">
+
+<option value="all">All</option>
+<option value="movie">Movies</option>
+<option value="series">Series</option>
+<option value="documentary">Documentary</option>
+
+</select>
+
+</div>
+
 </header>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-content">
-    <h2 id="spotlightTitle">Spotlight Premiere</h2>
-    <p id="spotlightDesc">Featured SS Films Original</p>
-    <button onclick="openSpotlight()">▶ Watch Spotlight</button>
-  </div>
-</section>
 
-<!-- Trending -->
-<section class="section">
-  <h3>🔥 Trending Now</h3>
-  <div class="row" id="trendingRow"></div>
-</section>
+<div>
 
-<section class="section">
-  <h3>🍿 Movies</h3>
-  <div class="row" id="moviesRow"></div>
+<h2 id="spotlightTitle">Spotlight</h2>
+
+<p id="spotlightDesc">Featured film</p>
+
+<button onclick="openSpotlight()">▶ Watch</button>
+
+</div>
+
 </section>
 
 <section class="section">
-  <h3>📺 Series</h3>
-  <div class="row" id="seriesRow"></div>
+
+<h3>🔥 Trending</h3>
+<div class="row" id="trendingRow"></div>
+
 </section>
 
 <section class="section">
-  <h3>🎥 Documentary</h3>
-  <div class="row" id="docRow"></div>
+
+<h3>🍿 Movies</h3>
+<div class="row" id="moviesRow"></div>
+
+</section>
+
+<section class="section">
+
+<h3>📺 Series</h3>
+<div class="row" id="seriesRow"></div>
+
+</section>
+
+<section class="section">
+
+<h3>🎥 Documentary</h3>
+<div class="row" id="docRow"></div>
+
 </section>
 
 </body>
