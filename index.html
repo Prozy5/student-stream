@@ -19,12 +19,7 @@
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',system-ui;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',system-ui;}
 
 body{
 background:#04060f;
@@ -34,7 +29,7 @@ overflow-x:hidden;
 padding:60px 20px;
 }
 
-/* glowing background */
+/* glow */
 
 body::before{
 content:"";
@@ -60,7 +55,7 @@ filter:blur(120px);
 z-index:-2;
 }
 
-/* grid background */
+/* grid */
 
 .grid{
 position:fixed;
@@ -75,6 +70,13 @@ background-size:60px 60px;
 z-index:-3;
 }
 
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
 /* layout */
 
 .container{
@@ -86,15 +88,15 @@ text-align:center;
 /* logo */
 
 .logo{
-font-size:32px;
+font-size:36px;
 font-weight:800;
-margin-bottom:30px;
+margin-bottom:25px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
-/* status badge */
+/* status */
 
 .status{
 display:inline-block;
@@ -102,7 +104,7 @@ padding:10px 22px;
 border-radius:999px;
 background:rgba(255,180,0,.15);
 border:1px solid rgba(255,180,0,.4);
-margin-bottom:30px;
+margin-bottom:25px;
 font-weight:600;
 }
 
@@ -120,10 +122,10 @@ margin:auto;
 line-height:1.6;
 }
 
-/* progress bar */
+/* progress */
 
 .progressBox{
-margin-top:40px;
+margin-top:45px;
 background:rgba(255,255,255,.05);
 border-radius:20px;
 padding:25px;
@@ -136,13 +138,14 @@ height:12px;
 border-radius:999px;
 background:rgba(255,255,255,.08);
 overflow:hidden;
-margin-top:10px;
+margin-top:12px;
 }
 
 .progressFill{
 height:100%;
-width:35%;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+width:0%;
+transition:width 1s ease;
 }
 
 /* modules */
@@ -166,8 +169,10 @@ text-align:left;
 display:block;
 margin-top:6px;
 font-size:.9rem;
-opacity:.7;
+opacity:.8;
 }
+
+/* colors */
 
 .good{color:#6cf2c2;}
 .warn{color:#ffc857;}
@@ -204,8 +209,16 @@ margin-bottom:4px;
 footer{
 margin-top:80px;
 text-align:center;
-opacity:.5;
+opacity:.6;
 font-size:.9rem;
+}
+
+.statusLink{
+margin-top:20px;
+display:inline-block;
+color:#6cf2c2;
+text-decoration:none;
+font-weight:600;
 }
 
 </style>
@@ -215,6 +228,7 @@ font-size:.9rem;
 <body>
 
 <div class="grid"></div>
+<canvas id="bg"></canvas>
 
 <div class="container">
 
@@ -227,20 +241,24 @@ font-size:.9rem;
 <h1>Infrastructure Upgrade Underway</h1>
 
 <p>
-
-StudentStreamHQ is currently undergoing a full platform rebuild to improve
-creator tools, infrastructure performance, and long-term ecosystem scalability.
-
-Development progress and system updates will appear below in real time.
-
+StudentStreamHQ is undergoing a full platform rebuild to improve
+creator tools, performance, and long-term ecosystem scalability.
 </p>
+
+<a class="statusLink" href="/status">
+View Full System Status →
+</a>
 
 <div class="progressBox">
 
 <b>Platform Rebuild Progress</b>
 
 <div class="progressBar">
-<div class="progressFill"></div>
+<div class="progressFill" id="progressFill"></div>
+</div>
+
+<div style="margin-top:10px;font-size:.9rem;opacity:.7">
+<span id="progressText"></span>
 </div>
 
 </div>
@@ -249,22 +267,22 @@ Development progress and system updates will appear below in real time.
 
 <div class="module">
 <b>Core Infrastructure</b>
-<span class="warn">Rebuilding</span>
+<span id="coreStatus"></span>
 </div>
 
 <div class="module">
 <b>Creator Platform</b>
-<span class="warn">Redesigning</span>
+<span id="creatorStatus"></span>
 </div>
 
 <div class="module">
 <b>Database Systems</b>
-<span class="good">Upgrading</span>
+<span id="dbStatus"></span>
 </div>
 
 <div class="module">
 <b>Developer Tools</b>
-<span class="warn">Migrating</span>
+<span id="devStatus"></span>
 </div>
 
 </div>
@@ -277,39 +295,62 @@ Development progress and system updates will appear below in real time.
 
 © 2026 StudentStreamHQ — Platform Rebuild
 
+<br><br>
+
+Last updated: <span id="lastUpdated"></span>
+
 </footer>
 
 <script>
 
-/* DEVELOPMENT FEED */
+/* LOAD STATUS FROM API */
 
-const updates = [
+async function loadStatus(){
 
-{
-time:"Today",
-text:"Platform rebuild initiated. Core infrastructure restructuring has started."
-},
+try{
 
-{
-time:"Today",
-text:"Database architecture migrating to improved scalable systems."
-},
+const res = await fetch("/status.json")
+const data = await res.json()
 
-{
-time:"Today",
-text:"Creator platform interface entering redesign phase."
-},
+/* progress */
 
-{
-time:"Today",
-text:"Internal developer tools being migrated for new platform architecture."
+document.getElementById("progressFill").style.width =
+data.progress + "%"
+
+document.getElementById("progressText").textContent =
+data.progress + "% complete"
+
+/* module status */
+
+function statusClass(status){
+
+if(status==="upgrading") return "good"
+if(status==="rebuilding") return "warn"
+if(status==="redesigning") return "warn"
+return "off"
+
 }
 
-]
+function setModule(id,value){
+
+const el=document.getElementById(id)
+
+el.textContent=value
+el.className=statusClass(value)
+
+}
+
+setModule("coreStatus",data.modules.core)
+setModule("creatorStatus",data.modules.creator)
+setModule("dbStatus",data.modules.database)
+setModule("devStatus",data.modules.devtools)
+
+/* updates */
 
 const container=document.getElementById("updates")
+container.innerHTML=""
 
-updates.forEach(u=>{
+data.updates.forEach(u=>{
 
 const el=document.createElement("div")
 el.className="update"
@@ -322,6 +363,74 @@ el.innerHTML=`
 container.appendChild(el)
 
 })
+
+}catch(err){
+
+console.error("Status fetch failed")
+
+}
+
+document.getElementById("lastUpdated").textContent =
+new Date().toLocaleString()
+
+}
+
+/* refresh every 30s */
+
+loadStatus()
+setInterval(loadStatus,30000)
+
+
+/* PARTICLES */
+
+const canvas=document.getElementById("bg")
+const ctx=canvas.getContext("2d")
+
+function resize(){
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+}
+
+resize()
+window.addEventListener("resize",resize)
+
+let particles=[]
+
+for(let i=0;i<70;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2+1,
+speed:Math.random()*0.5+0.2
+})
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="rgba(108,242,194,.35)"
+
+particles.forEach(p=>{
+
+ctx.beginPath()
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
+ctx.fill()
+
+p.y+=p.speed
+
+if(p.y>canvas.height){
+p.y=0
+p.x=Math.random()*canvas.width
+}
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
 
 </script>
 
