@@ -18,13 +18,16 @@ color:white;
 
 .sidebar{
 position:fixed;
-width:230px;
+width:240px;
 height:100vh;
 background:#020617;
 padding:20px;
+box-shadow:2px 0 10px rgba(0,0,0,0.4);
 }
 
-.sidebar h2{
+.logo{
+font-size:20px;
+font-weight:bold;
 color:#22c55e;
 margin-bottom:30px;
 }
@@ -37,6 +40,7 @@ cursor:pointer;
 border-radius:6px;
 color:#cbd5f5;
 text-decoration:none;
+transition:0.2s;
 }
 
 .sidebar a:hover{
@@ -44,8 +48,12 @@ background:#1e293b;
 }
 
 .main{
-margin-left:250px;
+margin-left:260px;
 padding:30px;
+}
+
+h1{
+margin-top:0;
 }
 
 .cards{
@@ -68,7 +76,7 @@ color:#94a3b8;
 }
 
 .card p{
-font-size:28px;
+font-size:30px;
 margin-top:10px;
 }
 
@@ -87,6 +95,7 @@ border-collapse:collapse;
 th,td{
 padding:10px;
 border-bottom:1px solid #334155;
+text-align:left;
 }
 
 button{
@@ -95,12 +104,22 @@ border:none;
 padding:6px 12px;
 border-radius:6px;
 cursor:pointer;
+margin-right:6px;
+}
+
+button:hover{
+opacity:0.8;
+}
+
+.statusbar{
+margin-bottom:20px;
 }
 
 .status{
-padding:6px 10px;
+padding:5px 10px;
 border-radius:6px;
 font-size:12px;
+margin-right:10px;
 }
 
 .online{background:#16a34a}
@@ -115,7 +134,7 @@ font-size:12px;
 
 <div class="sidebar">
 
-<h2>👑 Command</h2>
+<div class="logo">👑 Command</div>
 
 <a onclick="dashboard()">Dashboard</a>
 <a onclick="users()">Users</a>
@@ -139,15 +158,23 @@ font-size:12px;
 const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co"
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 
-const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
+const supabase = supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
+window.onload = function(){
 dashboard()
+}
 
 async function dashboard(){
 
 const main=document.getElementById("main")
 
 main.innerHTML=`
+
+<div class="statusbar">
+<span class="status online">Database</span>
+<span class="status online">API</span>
+<span class="status warning">AI Workers</span>
+</div>
 
 <h1>Dashboard</h1>
 
@@ -192,13 +219,11 @@ main.innerHTML=`
 <table>
 
 <thead>
-
 <tr>
 <th>Event</th>
 <th>Module</th>
 <th>Time</th>
 </tr>
-
 </thead>
 
 <tbody id="events"></tbody>
@@ -208,23 +233,10 @@ main.innerHTML=`
 </div>
 `
 
-let {count:users}=await supabase
-.from("users")
-.select("*",{count:"exact",head:true})
-
-let {count:admins}=await supabase
-.from("users")
-.select("*",{count:"exact",head:true})
-.eq("role","admin")
-
-let {count:modules}=await supabase
-.from("modules")
-.select("*",{count:"exact",head:true})
-.eq("status","active")
-
-let {count:alerts}=await supabase
-.from("security_alerts")
-.select("*",{count:"exact",head:true})
+let {count:users}=await supabase.from("users").select("*",{count:"exact",head:true})
+let {count:admins}=await supabase.from("users").select("*",{count:"exact",head:true}).eq("role","admin")
+let {count:modules}=await supabase.from("modules").select("*",{count:"exact",head:true}).eq("status","active")
+let {count:alerts}=await supabase.from("security_alerts").select("*",{count:"exact",head:true})
 
 document.getElementById("users").innerText=users||0
 document.getElementById("admins").innerText=admins||0
@@ -246,19 +258,14 @@ let {data}=await supabase
 let html=""
 
 if(data){
-
 data.forEach(e=>{
-
 html+=`
 <tr>
 <td>${e.event_type}</td>
 <td>${e.module}</td>
 <td>${new Date(e.created_at).toLocaleString()}</td>
-</tr>
-`
-
+</tr>`
 })
-
 }
 
 document.getElementById("events").innerHTML=html
@@ -278,13 +285,11 @@ main.innerHTML=`
 <table>
 
 <thead>
-
 <tr>
 <th>Email</th>
 <th>Status</th>
 <th>Actions</th>
 </tr>
-
 </thead>
 
 <tbody id="userTable"></tbody>
@@ -292,21 +297,15 @@ main.innerHTML=`
 </table>
 
 </div>
-
 `
 
-let {data}=await supabase
-.from("users")
-.select("*")
+let {data}=await supabase.from("users").select("*")
 
 let html=""
 
 if(data){
-
 data.forEach(u=>{
-
 html+=`
-
 <tr>
 <td>${u.email}</td>
 <td>${u.status}</td>
@@ -314,12 +313,8 @@ html+=`
 <button onclick="ban('${u.id}')">Ban</button>
 <button onclick="suspend('${u.id}')">Suspend</button>
 </td>
-</tr>
-
-`
-
+</tr>`
 })
-
 }
 
 document.getElementById("userTable").innerHTML=html
@@ -328,9 +323,10 @@ document.getElementById("userTable").innerHTML=html
 
 async function admins(){
 
-const main=document.getElementById("main")
-
-main.innerHTML="<h1>Admins Panel</h1><p>Admin monitoring coming soon</p>"
+document.getElementById("main").innerHTML=`
+<h1>Admins</h1>
+<p>Admin monitoring system coming soon.</p>
+`
 
 }
 
@@ -358,28 +354,20 @@ main.innerHTML=`
 </table>
 
 </div>
-
 `
 
-let {data}=await supabase
-.from("modules")
-.select("*")
+let {data}=await supabase.from("modules").select("*")
 
 let html=""
 
 if(data){
-
 data.forEach(m=>{
-
 html+=`
 <tr>
 <td>${m.name}</td>
 <td>${m.status}</td>
-</tr>
-`
-
+</tr>`
 })
-
 }
 
 document.getElementById("modulesTable").innerHTML=html
@@ -399,13 +387,11 @@ main.innerHTML=`
 <table>
 
 <thead>
-
 <tr>
 <th>Type</th>
 <th>Severity</th>
 <th>Time</th>
 </tr>
-
 </thead>
 
 <tbody id="securityTable"></tbody>
@@ -413,7 +399,6 @@ main.innerHTML=`
 </table>
 
 </div>
-
 `
 
 let {data}=await supabase
@@ -424,44 +409,32 @@ let {data}=await supabase
 let html=""
 
 if(data){
-
 data.forEach(a=>{
-
 html+=`
 <tr>
 <td>${a.alert_type}</td>
 <td>${a.severity}</td>
 <td>${new Date(a.created_at).toLocaleString()}</td>
-</tr>
-`
-
+</tr>`
 })
-
 }
 
 document.getElementById("securityTable").innerHTML=html
 
 }
 
-async function ai(){
+function ai(){
 
-const main=document.getElementById("main")
-
-main.innerHTML=`
-
+document.getElementById("main").innerHTML=`
 <h1>AI Lab</h1>
-
-<p>AI system testing and automation will appear here.</p>
-
+<p>AI automation and testing tools will appear here.</p>
 `
 
 }
 
-async function system(){
+function system(){
 
-const main=document.getElementById("main")
-
-main.innerHTML=`
+document.getElementById("main").innerHTML=`
 
 <h1>System Status</h1>
 
@@ -488,11 +461,12 @@ main.innerHTML=`
 
 }
 
-async function settings(){
+function settings(){
 
-const main=document.getElementById("main")
-
-main.innerHTML="<h1>Platform Settings</h1>"
+document.getElementById("main").innerHTML=`
+<h1>Platform Settings</h1>
+<p>Platform configuration tools will appear here.</p>
+`
 
 }
 
