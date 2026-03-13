@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
-<title>Owner Control Room • StudentStreamHQ</title>
+<title>StudentStreamHQ Command Center</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
 
 body{
-font-family:Arial;
 margin:0;
+font-family:Arial;
 background:#0f172a;
 color:white;
 }
 
 .sidebar{
-width:240px;
-height:100vh;
-background:#111827;
 position:fixed;
+width:230px;
+height:100vh;
+background:#020617;
 padding:20px;
 }
 
 .sidebar h2{
 color:#22c55e;
+margin-bottom:30px;
 }
 
 .sidebar a{
 display:block;
-padding:10px;
-margin-top:10px;
+padding:12px;
+margin-bottom:6px;
+cursor:pointer;
+border-radius:6px;
 color:#cbd5f5;
 text-decoration:none;
 }
 
 .sidebar a:hover{
-background:#1f2937;
-border-radius:6px;
+background:#1e293b;
 }
 
 .main{
-margin-left:260px;
+margin-left:250px;
 padding:30px;
 }
 
@@ -73,7 +76,7 @@ margin-top:10px;
 background:#1e293b;
 padding:20px;
 border-radius:10px;
-margin-top:30px;
+margin-top:20px;
 }
 
 table{
@@ -94,6 +97,16 @@ border-radius:6px;
 cursor:pointer;
 }
 
+.status{
+padding:6px 10px;
+border-radius:6px;
+font-size:12px;
+}
+
+.online{background:#16a34a}
+.warning{background:#ca8a04}
+.offline{background:#dc2626}
+
 </style>
 
 </head>
@@ -102,22 +115,41 @@ cursor:pointer;
 
 <div class="sidebar">
 
-<h2>👑 Owner</h2>
+<h2>👑 Command</h2>
 
-<a>Dashboard</a>
-<a>Users</a>
-<a>Admins</a>
-<a>Modules</a>
-<a>Security</a>
-<a>AI Lab</a>
-<a>System</a>
-<a>Settings</a>
+<a onclick="dashboard()">Dashboard</a>
+<a onclick="users()">Users</a>
+<a onclick="admins()">Admins</a>
+<a onclick="modules()">Modules</a>
+<a onclick="security()">Security</a>
+<a onclick="ai()">AI Lab</a>
+<a onclick="system()">System</a>
+<a onclick="settings()">Settings</a>
 
 </div>
 
-<div class="main">
+<div class="main" id="main">
 
-<h1>Owner Control Room</h1>
+<h1>StudentStreamHQ Command Center</h1>
+
+</div>
+
+<script>
+
+const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co"
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
+
+dashboard()
+
+async function dashboard(){
+
+const main=document.getElementById("main")
+
+main.innerHTML=`
+
+<h1>Dashboard</h1>
 
 <div class="cards">
 
@@ -174,39 +206,7 @@ cursor:pointer;
 </table>
 
 </div>
-
-<div class="table">
-
-<h2>Users</h2>
-
-<table>
-
-<thead>
-
-<tr>
-<th>Email</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-
-</thead>
-
-<tbody id="userTable"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<script>
-
-const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co"
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-
-const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
-
-async function loadStats(){
+`
 
 let {count:users}=await supabase
 .from("users")
@@ -226,38 +226,12 @@ let {count:alerts}=await supabase
 .from("security_alerts")
 .select("*",{count:"exact",head:true})
 
-document.getElementById("users").innerText=users
-document.getElementById("admins").innerText=admins
-document.getElementById("modules").innerText=modules
-document.getElementById("alerts").innerText=alerts
+document.getElementById("users").innerText=users||0
+document.getElementById("admins").innerText=admins||0
+document.getElementById("modules").innerText=modules||0
+document.getElementById("alerts").innerText=alerts||0
 
-}
-
-async function loadUsers(){
-
-let {data}=await supabase
-.from("users")
-.select("*")
-.limit(10)
-
-let html=""
-
-data.forEach(u=>{
-
-html+=`
-<tr>
-<td>${u.email}</td>
-<td>${u.status}</td>
-<td>
-<button onclick="ban('${u.id}')">Ban</button>
-<button onclick="suspend('${u.id}')">Suspend</button>
-</td>
-</tr>
-`
-
-})
-
-document.getElementById("userTable").innerHTML=html
+loadEvents()
 
 }
 
@@ -271,6 +245,8 @@ let {data}=await supabase
 
 let html=""
 
+if(data){
+
 data.forEach(e=>{
 
 html+=`
@@ -283,7 +259,240 @@ html+=`
 
 })
 
+}
+
 document.getElementById("events").innerHTML=html
+
+}
+
+async function users(){
+
+const main=document.getElementById("main")
+
+main.innerHTML=`
+
+<h1>User Management</h1>
+
+<div class="table">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Email</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="userTable"></tbody>
+
+</table>
+
+</div>
+
+`
+
+let {data}=await supabase
+.from("users")
+.select("*")
+
+let html=""
+
+if(data){
+
+data.forEach(u=>{
+
+html+=`
+
+<tr>
+<td>${u.email}</td>
+<td>${u.status}</td>
+<td>
+<button onclick="ban('${u.id}')">Ban</button>
+<button onclick="suspend('${u.id}')">Suspend</button>
+</td>
+</tr>
+
+`
+
+})
+
+}
+
+document.getElementById("userTable").innerHTML=html
+
+}
+
+async function admins(){
+
+const main=document.getElementById("main")
+
+main.innerHTML="<h1>Admins Panel</h1><p>Admin monitoring coming soon</p>"
+
+}
+
+async function modules(){
+
+const main=document.getElementById("main")
+
+main.innerHTML=`
+
+<h1>Platform Modules</h1>
+
+<div class="table">
+
+<table>
+
+<thead>
+<tr>
+<th>Module</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="modulesTable"></tbody>
+
+</table>
+
+</div>
+
+`
+
+let {data}=await supabase
+.from("modules")
+.select("*")
+
+let html=""
+
+if(data){
+
+data.forEach(m=>{
+
+html+=`
+<tr>
+<td>${m.name}</td>
+<td>${m.status}</td>
+</tr>
+`
+
+})
+
+}
+
+document.getElementById("modulesTable").innerHTML=html
+
+}
+
+async function security(){
+
+const main=document.getElementById("main")
+
+main.innerHTML=`
+
+<h1>Security Alerts</h1>
+
+<div class="table">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Type</th>
+<th>Severity</th>
+<th>Time</th>
+</tr>
+
+</thead>
+
+<tbody id="securityTable"></tbody>
+
+</table>
+
+</div>
+
+`
+
+let {data}=await supabase
+.from("security_alerts")
+.select("*")
+.order("created_at",{ascending:false})
+
+let html=""
+
+if(data){
+
+data.forEach(a=>{
+
+html+=`
+<tr>
+<td>${a.alert_type}</td>
+<td>${a.severity}</td>
+<td>${new Date(a.created_at).toLocaleString()}</td>
+</tr>
+`
+
+})
+
+}
+
+document.getElementById("securityTable").innerHTML=html
+
+}
+
+async function ai(){
+
+const main=document.getElementById("main")
+
+main.innerHTML=`
+
+<h1>AI Lab</h1>
+
+<p>AI system testing and automation will appear here.</p>
+
+`
+
+}
+
+async function system(){
+
+const main=document.getElementById("main")
+
+main.innerHTML=`
+
+<h1>System Status</h1>
+
+<div class="cards">
+
+<div class="card">
+<h3>Database</h3>
+<p class="status online">ONLINE</p>
+</div>
+
+<div class="card">
+<h3>API</h3>
+<p class="status online">ONLINE</p>
+</div>
+
+<div class="card">
+<h3>Auth</h3>
+<p class="status online">ONLINE</p>
+</div>
+
+</div>
+
+`
+
+}
+
+async function settings(){
+
+const main=document.getElementById("main")
+
+main.innerHTML="<h1>Platform Settings</h1>"
 
 }
 
@@ -294,6 +503,8 @@ await supabase
 .update({status:"banned"})
 .eq("id",id)
 
+users()
+
 }
 
 async function suspend(id){
@@ -303,29 +514,9 @@ await supabase
 .update({status:"suspended"})
 .eq("id",id)
 
+users()
+
 }
-
-supabase
-.channel("users_live")
-.on(
-"postgres_changes",
-{event:"*",schema:"public",table:"users"},
-()=>loadUsers()
-)
-.subscribe()
-
-supabase
-.channel("events_live")
-.on(
-"postgres_changes",
-{event:"INSERT",schema:"public",table:"platform_events"},
-()=>loadEvents()
-)
-.subscribe()
-
-loadStats()
-loadUsers()
-loadEvents()
 
 </script>
 
