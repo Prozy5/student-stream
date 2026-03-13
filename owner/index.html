@@ -1,113 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Owner Control Room • StudentStreamHQ</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',system-ui;
-}
-
 body{
-background:#05060a;
+font-family:Arial;
+margin:0;
+background:#0f172a;
 color:white;
-display:flex;
-min-height:100vh;
 }
-
-/* Sidebar */
 
 .sidebar{
-width:250px;
-background:#0b0d14;
-padding:25px;
-border-right:1px solid rgba(255,255,255,.08);
+width:240px;
+height:100vh;
+background:#111827;
+position:fixed;
+padding:20px;
 }
 
 .sidebar h2{
-font-size:20px;
-margin-bottom:25px;
-color:#00ffa6;
+color:#22c55e;
 }
 
 .sidebar a{
 display:block;
-color:white;
+padding:10px;
+margin-top:10px;
+color:#cbd5f5;
 text-decoration:none;
-margin-bottom:15px;
-opacity:.7;
 }
 
 .sidebar a:hover{
-opacity:1;
+background:#1f2937;
+border-radius:6px;
 }
 
-/* Main */
-
 .main{
-flex:1;
+margin-left:260px;
 padding:30px;
 }
 
-/* Cards */
-
-.grid{
+.cards{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(3,1fr);
 gap:20px;
-margin-bottom:40px;
+margin-bottom:30px;
 }
 
 .card{
-background:rgba(255,255,255,.04);
+background:#1e293b;
 padding:20px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,.08);
+border-radius:10px;
 }
 
 .card h3{
-margin-bottom:10px;
-font-size:16px;
-opacity:.7;
+margin:0;
+font-size:14px;
+color:#94a3b8;
 }
 
-.card span{
+.card p{
 font-size:28px;
-font-weight:800;
+margin-top:10px;
 }
 
-/* tables */
+.table{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+margin-top:30px;
+}
 
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:20px;
 }
 
 th,td{
 padding:10px;
-text-align:left;
-border-bottom:1px solid rgba(255,255,255,.08);
-font-size:14px;
+border-bottom:1px solid #334155;
 }
 
 button{
-background:#00ffa6;
+background:#22c55e;
 border:none;
-padding:6px 10px;
+padding:6px 12px;
 border-radius:6px;
 cursor:pointer;
-font-weight:600;
 }
 
 </style>
@@ -120,14 +104,14 @@ font-weight:600;
 
 <h2>👑 Owner</h2>
 
-<a href="#">Dashboard</a>
-<a href="#">Users</a>
-<a href="#">Admins</a>
-<a href="#">Modules</a>
-<a href="#">Security</a>
-<a href="#">AI Lab</a>
-<a href="#">System</a>
-<a href="#">Settings</a>
+<a>Dashboard</a>
+<a>Users</a>
+<a>Admins</a>
+<a>Modules</a>
+<a>Security</a>
+<a>AI Lab</a>
+<a>System</a>
+<a>Settings</a>
 
 </div>
 
@@ -135,155 +119,213 @@ font-weight:600;
 
 <h1>Owner Control Room</h1>
 
-<br>
-
-<!-- PLATFORM STATS -->
-
-<div class="grid">
+<div class="cards">
 
 <div class="card">
 <h3>Total Users</h3>
-<span id="usersCount">0</span>
+<p id="users">0</p>
 </div>
 
 <div class="card">
 <h3>Admins</h3>
-<span id="adminsCount">0</span>
+<p id="admins">0</p>
+</div>
+
+<div class="card">
+<h3>Modules Online</h3>
+<p id="modules">0</p>
 </div>
 
 <div class="card">
 <h3>Security Alerts</h3>
-<span id="alertsCount">0</span>
+<p id="alerts">0</p>
 </div>
 
 <div class="card">
-<h3>Active Modules</h3>
-<span id="modulesCount">0</span>
+<h3>AI Tasks</h3>
+<p id="ai">0</p>
+</div>
+
+<div class="card">
+<h3>Active Users</h3>
+<p id="active">0</p>
 </div>
 
 </div>
 
-<!-- USER CONTROL -->
+<div class="table">
 
-<h2>User Management</h2>
+<h2>Recent Platform Events</h2>
 
 <table>
 
 <thead>
+
 <tr>
-<th>Email</th>
-<th>Status</th>
-<th>Actions</th>
+<th>Event</th>
+<th>Module</th>
+<th>Time</th>
 </tr>
+
 </thead>
 
-<tbody id="usersTable"></tbody>
+<tbody id="events"></tbody>
 
 </table>
 
 </div>
 
-<script type="module">
+<div class="table">
 
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+<h2>Users</h2>
 
-const supabase = createClient(
-"https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-)
+<table>
+
+<thead>
+
+<tr>
+<th>Email</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="userTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co"
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
 async function loadStats(){
 
-const { count:users } = await supabase
+let {count:users}=await supabase
 .from("users")
 .select("*",{count:"exact",head:true})
 
-document.getElementById("usersCount").innerText = users
-
-const { data:admins } = await supabase
-.from("profiles")
-.select("*")
+let {count:admins}=await supabase
+.from("users")
+.select("*",{count:"exact",head:true})
 .eq("role","admin")
 
-document.getElementById("adminsCount").innerText = admins.length
-
-const { data:alerts } = await supabase
-.from("security_events")
-.select("*")
-
-document.getElementById("alertsCount").innerText = alerts.length
-
-const { data:modules } = await supabase
-.from("platform_modules")
-.select("*")
+let {count:modules}=await supabase
+.from("modules")
+.select("*",{count:"exact",head:true})
 .eq("status","active")
 
-document.getElementById("modulesCount").innerText = modules.length
+let {count:alerts}=await supabase
+.from("security_alerts")
+.select("*",{count:"exact",head:true})
+
+document.getElementById("users").innerText=users
+document.getElementById("admins").innerText=admins
+document.getElementById("modules").innerText=modules
+document.getElementById("alerts").innerText=alerts
 
 }
 
 async function loadUsers(){
 
-const { data } = await supabase
+let {data}=await supabase
 .from("users")
 .select("*")
-.limit(20)
+.limit(10)
 
-const table = document.getElementById("usersTable")
+let html=""
 
-table.innerHTML=""
+data.forEach(u=>{
 
-data.forEach(user=>{
-
-const row=document.createElement("tr")
-
-row.innerHTML=`
-<td>${user.email}</td>
-<td>${user.status}</td>
-
+html+=`
+<tr>
+<td>${u.email}</td>
+<td>${u.status}</td>
 <td>
-
-<button onclick="banUser('${user.id}')">Ban</button>
-
-<button onclick="lockUser('${user.id}')">Lock</button>
-
-<button onclick="suspendUser('${user.id}')">Suspend</button>
-
+<button onclick="ban('${u.id}')">Ban</button>
+<button onclick="suspend('${u.id}')">Suspend</button>
 </td>
+</tr>
 `
-
-table.appendChild(row)
 
 })
 
-}
-
-window.banUser = async function(id){
-
-await supabase.rpc("ban_user",{target:id,reason:"Owner action"})
-
-loadUsers()
+document.getElementById("userTable").innerHTML=html
 
 }
 
-window.lockUser = async function(id){
+async function loadEvents(){
 
-await supabase.rpc("lock_user",{target:id,reason:"Owner action"})
+let {data}=await supabase
+.from("platform_events")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(10)
 
-loadUsers()
+let html=""
+
+data.forEach(e=>{
+
+html+=`
+<tr>
+<td>${e.event_type}</td>
+<td>${e.module}</td>
+<td>${new Date(e.created_at).toLocaleString()}</td>
+</tr>
+`
+
+})
+
+document.getElementById("events").innerHTML=html
 
 }
 
-window.suspendUser = async function(id){
+async function ban(id){
 
-await supabase.rpc("suspend_user",{target:id,reason:"Owner action"})
-
-loadUsers()
+await supabase
+.from("users")
+.update({status:"banned"})
+.eq("id",id)
 
 }
+
+async function suspend(id){
+
+await supabase
+.from("users")
+.update({status:"suspended"})
+.eq("id",id)
+
+}
+
+supabase
+.channel("users_live")
+.on(
+"postgres_changes",
+{event:"*",schema:"public",table:"users"},
+()=>loadUsers()
+)
+.subscribe()
+
+supabase
+.channel("events_live")
+.on(
+"postgres_changes",
+{event:"INSERT",schema:"public",table:"platform_events"},
+()=>loadEvents()
+)
+.subscribe()
 
 loadStats()
 loadUsers()
+loadEvents()
 
 </script>
 
