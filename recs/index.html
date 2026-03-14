@@ -27,28 +27,28 @@ color:white;
 overflow-x:hidden;
 }
 
-/* BACKGROUND LIGHTING */
+/* PARTICLE BACKGROUND */
 
-.bg-light{
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-3;
+}
+
+/* GLOW LIGHTS */
+
+.light{
 position:fixed;
 width:900px;
 height:900px;
-filter:blur(140px);
-opacity:.35;
+filter:blur(170px);
+opacity:.4;
 z-index:-2;
 }
 
-.light1{
-background:#4da3ff;
-top:-300px;
-left:-300px;
-}
-
-.light2{
-background:#6cf2c2;
-bottom:-300px;
-right:-300px;
-}
+.blue{background:#4da3ff;top:-250px;left:-250px;}
+.green{background:#6cf2c2;bottom:-250px;right:-250px;}
 
 /* NAVBAR */
 
@@ -59,9 +59,9 @@ width:100%;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:18px 50px;
-background:rgba(10,12,20,.65);
-backdrop-filter:blur(16px);
+padding:18px 60px;
+background:rgba(10,12,20,.75);
+backdrop-filter:blur(14px);
 border-bottom:1px solid rgba(255,255,255,.06);
 z-index:50;
 }
@@ -75,21 +75,21 @@ background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 }
 
 .search{
-padding:10px 14px;
+padding:10px 16px;
 border-radius:10px;
 border:none;
-background:#0f1324;
+background:#11162a;
 color:white;
-width:220px;
+width:240px;
 }
 
 /* HERO */
 
 .hero{
-height:85vh;
+height:90vh;
 display:flex;
 align-items:flex-end;
-padding:80px;
+padding:100px;
 background-size:cover;
 background-position:center;
 position:relative;
@@ -105,22 +105,23 @@ background:linear-gradient(to top,#05060f 10%,transparent);
 .heroContent{
 position:relative;
 z-index:5;
-max-width:600px;
+max-width:700px;
 }
 
 .hero h1{
-font-size:60px;
+font-size:68px;
 font-weight:800;
-margin-bottom:12px;
+margin-bottom:14px;
 }
 
 .hero p{
-opacity:.8;
-margin-bottom:20px;
+opacity:.85;
+margin-bottom:24px;
+font-size:18px;
 }
 
 .hero button{
-padding:14px 28px;
+padding:14px 30px;
 border:none;
 border-radius:10px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
@@ -129,14 +130,37 @@ font-weight:700;
 cursor:pointer;
 }
 
-/* SECTIONS */
+/* CATEGORY BAR */
+
+.categories{
+margin-top:90px;
+padding:20px 60px;
+display:flex;
+gap:12px;
+overflow-x:auto;
+}
+
+.cat{
+padding:10px 18px;
+border-radius:20px;
+background:#101426;
+border:1px solid rgba(255,255,255,.05);
+cursor:pointer;
+white-space:nowrap;
+}
+
+.cat:hover{
+background:#182040;
+}
+
+/* SECTION */
 
 .section{
-padding:60px 60px;
+padding:60px;
 }
 
 .section h2{
-font-size:24px;
+font-size:26px;
 margin-bottom:20px;
 }
 
@@ -144,9 +168,9 @@ margin-bottom:20px;
 
 .row{
 display:flex;
-gap:18px;
+gap:20px;
 overflow-x:auto;
-scroll-behavior:smooth;
+scroll-snap-type:x mandatory;
 }
 
 .row::-webkit-scrollbar{
@@ -156,20 +180,15 @@ display:none;
 /* CARD */
 
 .card{
-min-width:220px;
-height:320px;
-border-radius:16px;
+min-width:240px;
+height:340px;
+border-radius:18px;
 overflow:hidden;
 position:relative;
-cursor:pointer;
-background:#101426;
+background:#0f1426;
 border:1px solid rgba(255,255,255,.05);
-transition:.3s;
-}
-
-.card:hover{
-transform:translateY(-8px) scale(1.05);
-box-shadow:0 15px 40px rgba(0,0,0,.6);
+scroll-snap-align:start;
+transition:.35s;
 }
 
 .card img{
@@ -178,24 +197,9 @@ height:100%;
 object-fit:cover;
 }
 
-/* CARD OVERLAY */
-
-.overlay{
-position:absolute;
-bottom:0;
-padding:14px;
-width:100%;
-background:linear-gradient(to top,rgba(0,0,0,.9),transparent);
-}
-
-.overlay h3{
-font-size:15px;
-margin-bottom:4px;
-}
-
-.overlay span{
-font-size:12px;
-opacity:.7;
+.card:hover{
+transform:scale(1.08) translateY(-10px);
+box-shadow:0 20px 50px rgba(0,0,0,.7);
 }
 
 /* LIVE BADGE */
@@ -205,29 +209,39 @@ position:absolute;
 top:12px;
 left:12px;
 background:#ff3b3b;
-color:white;
+padding:5px 10px;
 font-size:11px;
-padding:4px 8px;
 border-radius:6px;
 font-weight:700;
 }
 
-/* MOBILE */
+/* OVERLAY */
 
-@media(max-width:700px){
+.overlay{
+position:absolute;
+bottom:0;
+padding:16px;
+width:100%;
+background:linear-gradient(to top,rgba(0,0,0,.9),transparent);
+}
 
-.hero{
+.overlay h3{
+font-size:16px;
+margin-bottom:4px;
+}
+
+.overlay span{
+font-size:12px;
+opacity:.7;
+}
+
+/* FOOTER */
+
+footer{
 padding:40px;
-}
-
-.hero h1{
-font-size:36px;
-}
-
-.section{
-padding:40px 25px;
-}
-
+text-align:center;
+opacity:.6;
+font-size:14px;
 }
 
 </style>
@@ -236,14 +250,16 @@ padding:40px 25px;
 
 <body>
 
-<div class="bg-light light1"></div>
-<div class="bg-light light2"></div>
+<canvas id="particles"></canvas>
+
+<div class="light blue"></div>
+<div class="light green"></div>
 
 <nav>
 
 <div class="logo">SSRecs</div>
 
-<input id="search" class="search" placeholder="Search creators, rooms, events">
+<input class="search" placeholder="Search creators, rooms, events">
 
 </nav>
 
@@ -263,10 +279,19 @@ Explore live conversations, creators, and events across StudentStreamHQ.
 
 </section>
 
+<div class="categories">
+
+<div class="cat">Trending</div>
+<div class="cat">Live Rooms</div>
+<div class="cat">Creators</div>
+<div class="cat">Events</div>
+<div class="cat">Communities</div>
+
+</div>
+
 <section class="section">
 
 <h2>🔥 Trending</h2>
-
 <div class="row" id="trendingRow"></div>
 
 </section>
@@ -274,7 +299,6 @@ Explore live conversations, creators, and events across StudentStreamHQ.
 <section class="section">
 
 <h2>🎙 Live Rooms</h2>
-
 <div class="row" id="roomsRow"></div>
 
 </section>
@@ -282,42 +306,35 @@ Explore live conversations, creators, and events across StudentStreamHQ.
 <section class="section">
 
 <h2>⭐ Creators</h2>
-
 <div class="row" id="creatorRow"></div>
 
 </section>
 
-<section class="section">
+<footer>
 
-<h2>📅 Events</h2>
+SSRecs • Discovery Engine for StudentStreamHQ
 
-<div class="row" id="eventsRow"></div>
-
-</section>
+</footer>
 
 <script>
+
+/* SUPABASE */
 
 const supabase = window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-const trendingRow=document.getElementById("trendingRow")
-const roomsRow=document.getElementById("roomsRow")
-const creatorRow=document.getElementById("creatorRow")
-const eventsRow=document.getElementById("eventsRow")
+/* CREATE CARD */
 
-let heroItems=[]
-let heroIndex=0
-
-function createCard(item,isLive=false){
+function createCard(item,live=false){
 
 const card=document.createElement("div")
 card.className="card"
 
 card.innerHTML=`
 
-${isLive ? `<div class="live">LIVE</div>` : ""}
+${live?'<div class="live">LIVE</div>':''}
 
 <img src="${item.thumbnail_url || 'https://picsum.photos/400/600'}">
 
@@ -332,25 +349,6 @@ return card
 
 }
 
-/* HERO ROTATION */
-
-function rotateHero(){
-
-if(heroItems.length==0)return
-
-heroIndex=(heroIndex+1)%heroItems.length
-
-const item=heroItems[heroIndex]
-
-document.getElementById("heroTitle").innerText=item.title || item.name
-document.getElementById("heroDesc").innerText=item.description || ""
-
-document.getElementById("hero").style.backgroundImage=`url(${item.thumbnail_url})`
-
-}
-
-setInterval(rotateHero,7000)
-
 /* LOAD TRENDING */
 
 async function loadTrending(){
@@ -360,12 +358,12 @@ const {data}=await supabase
 .select("*")
 .limit(12)
 
-heroItems=data || []
+const row=document.getElementById("trendingRow")
 
-trendingRow.innerHTML=""
+row.innerHTML=""
 
 data.forEach(item=>{
-trendingRow.appendChild(createCard(item))
+row.appendChild(createCard(item))
 })
 
 }
@@ -381,10 +379,12 @@ const {data}=await supabase
 .select("*")
 .limit(10)
 
-roomsRow.innerHTML=""
+const row=document.getElementById("roomsRow")
+
+row.innerHTML=""
 
 data.forEach(item=>{
-roomsRow.appendChild(createCard(item,true))
+row.appendChild(createCard(item,true))
 })
 
 }
@@ -400,34 +400,60 @@ const {data}=await supabase
 .select("*")
 .limit(10)
 
-creatorRow.innerHTML=""
+const row=document.getElementById("creatorRow")
+
+row.innerHTML=""
 
 data.forEach(item=>{
-creatorRow.appendChild(createCard(item))
+row.appendChild(createCard(item))
 })
 
 }
 
 loadCreators()
 
-/* EVENTS */
+/* PARTICLES */
 
-async function loadEvents(){
+const canvas=document.getElementById("particles")
+const ctx=canvas.getContext("2d")
 
-const {data}=await supabase
-.from("events")
-.select("*")
-.limit(10)
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
 
-eventsRow.innerHTML=""
+let particles=[]
 
-data.forEach(item=>{
-eventsRow.appendChild(createCard(item))
+for(let i=0;i<80;i++){
+
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+vx:(Math.random()-.5)*0.5,
+vy:(Math.random()-.5)*0.5
 })
 
 }
 
-loadEvents()
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+particles.forEach(p=>{
+
+p.x+=p.vx
+p.y+=p.vy
+
+ctx.beginPath()
+ctx.arc(p.x,p.y,1.5,0,Math.PI*2)
+ctx.fillStyle="rgba(255,255,255,.3)"
+ctx.fill()
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
 
 </script>
 
