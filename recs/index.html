@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>StudentStreamHQ • SSRecs Division</title>
+<title>SSRecs • StudentStreamHQ</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -17,100 +18,151 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:'Inter',system-ui;
+font-family:Inter,system-ui;
 }
 
 body{
-background:#060914;
+background:#05060f;
 color:white;
-display:flex;
-height:100vh;
-overflow:hidden;
 }
 
-/* SIDEBAR */
+/* NAVBAR */
 
-.sidebar{
-width:260px;
-background:#0b1020;
-padding:30px 20px;
-border-right:1px solid rgba(255,255,255,.05);
+nav{
+position:fixed;
+top:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 40px;
+background:rgba(0,0,0,.6);
+backdrop-filter:blur(10px);
+z-index:10;
 }
 
 .logo{
-font-size:20px;
+font-size:22px;
 font-weight:800;
-margin-bottom:30px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
-.nav a{
-display:block;
-padding:12px;
+.search{
+padding:10px 14px;
 border-radius:8px;
-text-decoration:none;
-color:#cbd5e1;
-margin-bottom:8px;
+border:none;
+background:#111;
+color:white;
 }
 
-.nav a:hover{
-background:#111733;
+/* HERO */
+
+.hero{
+height:75vh;
+display:flex;
+align-items:end;
+padding:60px;
+background-size:cover;
+background-position:center;
+position:relative;
 }
 
-/* MAIN */
-
-.main{
-flex:1;
-padding:30px;
-overflow:auto;
+.hero::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(to top,#05060f 10%,transparent);
 }
 
-/* METRICS */
-
-.metrics{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-margin-bottom:30px;
+.heroContent{
+position:relative;
+z-index:2;
+max-width:600px;
 }
+
+.hero h1{
+font-size:48px;
+font-weight:800;
+margin-bottom:10px;
+}
+
+.hero p{
+opacity:.8;
+margin-bottom:20px;
+}
+
+.hero button{
+padding:12px 20px;
+border:none;
+border-radius:8px;
+background:#4da3ff;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+/* SECTIONS */
+
+.section{
+padding:40px;
+}
+
+.section h2{
+margin-bottom:20px;
+}
+
+/* ROW */
+
+.row{
+display:flex;
+gap:16px;
+overflow-x:auto;
+}
+
+.row::-webkit-scrollbar{
+display:none;
+}
+
+/* CARD */
 
 .card{
-background:#0d1326;
-padding:20px;
+min-width:200px;
+height:260px;
 border-radius:12px;
-border:1px solid rgba(255,255,255,.05);
+overflow:hidden;
+position:relative;
+cursor:pointer;
+background:#111;
+transition:.25s;
 }
 
-.card h3{
+.card img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.card:hover{
+transform:scale(1.06);
+}
+
+.overlay{
+position:absolute;
+bottom:0;
+padding:12px;
+width:100%;
+background:linear-gradient(to top,rgba(0,0,0,.9),transparent);
+}
+
+.overlay h3{
 font-size:14px;
-opacity:.7;
-margin-bottom:6px;
 }
 
-.value{
-font-size:26px;
-font-weight:700;
-}
-
-/* RECOMMENDATIONS */
-
-.feed{
-margin-top:20px;
-}
-
-.item{
-background:#0d1326;
-padding:16px;
-border-radius:10px;
-margin-bottom:10px;
-border:1px solid rgba(255,255,255,.05);
-}
-
-.time{
+.overlay span{
 font-size:12px;
-opacity:.6;
+opacity:.7;
 }
 
 </style>
@@ -119,152 +171,195 @@ opacity:.6;
 
 <body>
 
-<div class="sidebar">
+<nav>
 
 <div class="logo">SSRecs</div>
 
-<div class="nav">
-<a href="#">Dashboard</a>
-<a href="#">Live Feed</a>
-<a href="#">Recommendations</a>
-<a href="#">Creators</a>
-<a href="#">Analytics</a>
-</div>
+<input id="search" class="search" placeholder="Search creators, rooms, events">
 
-</div>
+</nav>
 
-<div class="main">
+<section class="hero" id="hero">
 
-<h1>SSRecs Division</h1>
-<p style="opacity:.7;margin-bottom:30px;">
-Recommendation engine for StudentStreamHQ
+<div class="heroContent">
+
+<h1 id="heroTitle">Discover What's Trending</h1>
+
+<p id="heroDesc">
+SSRecs helps you discover creators, events, and live conversations across StudentStreamHQ.
 </p>
 
-<div class="metrics">
-
-<div class="card">
-<h3>Total Recommendations</h3>
-<div class="value" id="recCount">0</div>
-</div>
-
-<div class="card">
-<h3>Active Creators</h3>
-<div class="value" id="creatorCount">0</div>
-</div>
-
-<div class="card">
-<h3>Trending Items</h3>
-<div class="value" id="trendCount">0</div>
-</div>
-
-<div class="card">
-<h3>Live Activity</h3>
-<div class="value" id="activityCount">0</div>
-</div>
+<button onclick="openHero()">Explore</button>
 
 </div>
 
-<h2>Live Recommendation Feed</h2>
+</section>
 
-<div class="feed" id="feed"></div>
+<section class="section">
 
-</div>
+<h2>🔥 Trending Now</h2>
+
+<div class="row" id="trendingRow"></div>
+
+</section>
+
+<section class="section">
+
+<h2>🎙 Live Rooms</h2>
+
+<div class="row" id="roomsRow"></div>
+
+</section>
+
+<section class="section">
+
+<h2>⭐ Creators</h2>
+
+<div class="row" id="creatorRow"></div>
+
+</section>
+
+<section class="section">
+
+<h2>📅 Upcoming Events</h2>
+
+<div class="row" id="eventsRow"></div>
+
+</section>
 
 <script>
 
-/* SUPABASE CONFIG */
+/* SUPABASE */
 
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co"
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co"
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 
 const supabase = window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 )
 
-/* LOAD METRICS */
+/* ROWS */
 
-async function loadMetrics(){
+const trendingRow=document.getElementById("trendingRow")
+const roomsRow=document.getElementById("roomsRow")
+const creatorRow=document.getElementById("creatorRow")
+const eventsRow=document.getElementById("eventsRow")
 
-let { data:recs } = await supabase
-.from("recommendations")
-.select("*")
+let heroItem=null
 
-let { data:creators } = await supabase
-.from("profiles")
-.select("*")
+/* CREATE CARD */
 
-let { data:activity } = await supabase
-.from("global_activity")
-.select("*")
+function createCard(item){
 
-document.getElementById("recCount").textContent =
-recs ? recs.length : 0
+let card=document.createElement("div")
 
-document.getElementById("creatorCount").textContent =
-creators ? creators.length : 0
+card.className="card"
 
-document.getElementById("activityCount").textContent =
-activity ? activity.length : 0
+card.innerHTML=`
 
-document.getElementById("trendCount").textContent =
-Math.floor(Math.random()*20)
+<img src="${item.thumbnail_url || 'https://picsum.photos/300/400'}">
+
+<div class="overlay">
+<h3>${item.title || item.name}</h3>
+<span>${item.category || ''}</span>
+</div>
+
+`
+
+return card
 
 }
 
-loadMetrics()
+/* LOAD TRENDING */
 
-/* LOAD FEED */
+async function loadTrending(){
 
-async function loadFeed(){
-
-const { data } = await supabase
+const {data}=await supabase
 .from("recommendations")
 .select("*")
-.order("created_at",{ascending:false})
-.limit(20)
+.limit(12)
 
-const container = document.getElementById("feed")
+trendingRow.innerHTML=""
 
-container.innerHTML=""
+data.forEach((item,i)=>{
 
-data.forEach(item=>{
+let card=createCard(item)
 
-let div=document.createElement("div")
+trendingRow.appendChild(card)
 
-div.className="item"
+if(i==0){
+heroItem=item
 
-div.innerHTML=`
-<b>${item.title}</b>
-<div>${item.description || ""}</div>
-<div class="time">${new Date(item.created_at).toLocaleString()}</div>
-`
+document.getElementById("heroTitle").innerText=item.title
+document.getElementById("heroDesc").innerText=item.description
 
-container.appendChild(div)
+document.getElementById("hero").style.backgroundImage=
+`url(${item.thumbnail_url})`
+}
 
 })
 
 }
 
-loadFeed()
+loadTrending()
 
-/* REALTIME */
+/* LOAD ROOMS */
 
-supabase
-.channel("recs-feed")
-.on(
-'postgres_changes',
-{
-event:"INSERT",
-schema:"public",
-table:"recommendations"
-},
-payload=>{
-loadFeed()
-loadMetrics()
+async function loadRooms(){
+
+const {data}=await supabase
+.from("rooms")
+.select("*")
+.limit(10)
+
+roomsRow.innerHTML=""
+
+data.forEach(r=>{
+roomsRow.appendChild(createCard(r))
+})
+
 }
-)
-.subscribe()
+
+loadRooms()
+
+/* LOAD CREATORS */
+
+async function loadCreators(){
+
+const {data}=await supabase
+.from("profiles")
+.select("*")
+.limit(10)
+
+creatorRow.innerHTML=""
+
+data.forEach(c=>{
+creatorRow.appendChild(createCard(c))
+})
+
+}
+
+loadCreators()
+
+/* LOAD EVENTS */
+
+async function loadEvents(){
+
+const {data}=await supabase
+.from("events")
+.select("*")
+.limit(10)
+
+eventsRow.innerHTML=""
+
+data.forEach(e=>{
+eventsRow.appendChild(createCard(e))
+})
+
+}
+
+loadEvents()
 
 </script>
 
