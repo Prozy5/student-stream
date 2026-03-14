@@ -10,7 +10,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
@@ -22,38 +22,35 @@ font-family:Inter,system-ui;
 }
 
 body{
-background:#04050c;
+background:#05060f;
 color:white;
 overflow-x:hidden;
 }
 
-/* animated gradient background */
+/* BACKGROUND LIGHTING */
 
-body::before{
-content:"";
+.bg-light{
 position:fixed;
 width:900px;
 height:900px;
-background:radial-gradient(circle,#4da3ff30,transparent 60%);
-top:-200px;
-left:-200px;
-filter:blur(120px);
+filter:blur(140px);
+opacity:.35;
 z-index:-2;
 }
 
-body::after{
-content:"";
-position:fixed;
-width:900px;
-height:900px;
-background:radial-gradient(circle,#6cf2c230,transparent 60%);
-bottom:-200px;
-right:-200px;
-filter:blur(120px);
-z-index:-2;
+.light1{
+background:#4da3ff;
+top:-300px;
+left:-300px;
 }
 
-/* NAV */
+.light2{
+background:#6cf2c2;
+bottom:-300px;
+right:-300px;
+}
+
+/* NAVBAR */
 
 nav{
 position:fixed;
@@ -62,15 +59,15 @@ width:100%;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:16px 40px;
-background:rgba(10,12,20,.7);
-backdrop-filter:blur(12px);
-border-bottom:1px solid rgba(255,255,255,.05);
+padding:18px 50px;
+background:rgba(10,12,20,.65);
+backdrop-filter:blur(16px);
+border-bottom:1px solid rgba(255,255,255,.06);
 z-index:50;
 }
 
 .logo{
-font-size:22px;
+font-size:24px;
 font-weight:800;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-background-clip:text;
@@ -79,43 +76,42 @@ background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 
 .search{
 padding:10px 14px;
-border-radius:8px;
+border-radius:10px;
 border:none;
 background:#0f1324;
 color:white;
-width:200px;
+width:220px;
 }
 
 /* HERO */
 
 .hero{
-height:80vh;
+height:85vh;
 display:flex;
 align-items:flex-end;
-padding:80px 60px;
+padding:80px;
 background-size:cover;
 background-position:center;
 position:relative;
-transition:background 1s ease;
 }
 
 .hero::after{
 content:"";
 position:absolute;
 inset:0;
-background:linear-gradient(to top,#04050c 15%,transparent);
+background:linear-gradient(to top,#05060f 10%,transparent);
 }
 
 .heroContent{
 position:relative;
-z-index:3;
+z-index:5;
 max-width:600px;
 }
 
 .hero h1{
-font-size:52px;
+font-size:60px;
 font-weight:800;
-margin-bottom:10px;
+margin-bottom:12px;
 }
 
 .hero p{
@@ -124,31 +120,31 @@ margin-bottom:20px;
 }
 
 .hero button{
-padding:12px 24px;
+padding:14px 28px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 color:white;
-font-weight:600;
+font-weight:700;
 cursor:pointer;
 }
 
 /* SECTIONS */
 
 .section{
-padding:50px 40px;
+padding:60px 60px;
 }
 
 .section h2{
+font-size:24px;
 margin-bottom:20px;
-font-size:22px;
 }
 
 /* ROW */
 
 .row{
 display:flex;
-gap:16px;
+gap:18px;
 overflow-x:auto;
 scroll-behavior:smooth;
 }
@@ -160,26 +156,26 @@ display:none;
 /* CARD */
 
 .card{
-min-width:210px;
-height:300px;
-border-radius:14px;
+min-width:220px;
+height:320px;
+border-radius:16px;
 overflow:hidden;
 position:relative;
 cursor:pointer;
-background:#0f1426;
-transition:.35s;
+background:#101426;
 border:1px solid rgba(255,255,255,.05);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px) scale(1.05);
+box-shadow:0 15px 40px rgba(0,0,0,.6);
 }
 
 .card img{
 width:100%;
 height:100%;
 object-fit:cover;
-}
-
-.card:hover{
-transform:translateY(-6px) scale(1.05);
-box-shadow:0 10px 35px rgba(0,0,0,.5);
 }
 
 /* CARD OVERLAY */
@@ -189,7 +185,7 @@ position:absolute;
 bottom:0;
 padding:14px;
 width:100%;
-background:linear-gradient(to top,rgba(0,0,0,.95),transparent);
+background:linear-gradient(to top,rgba(0,0,0,.9),transparent);
 }
 
 .overlay h3{
@@ -202,17 +198,36 @@ font-size:12px;
 opacity:.7;
 }
 
-/* skeleton loaders */
+/* LIVE BADGE */
 
-.skeleton{
-background:linear-gradient(90deg,#101426,#1a1f38,#101426);
-background-size:200%;
-animation:load 1.4s infinite;
+.live{
+position:absolute;
+top:12px;
+left:12px;
+background:#ff3b3b;
+color:white;
+font-size:11px;
+padding:4px 8px;
+border-radius:6px;
+font-weight:700;
 }
 
-@keyframes load{
-0%{background-position:200%}
-100%{background-position:-200%}
+/* MOBILE */
+
+@media(max-width:700px){
+
+.hero{
+padding:40px;
+}
+
+.hero h1{
+font-size:36px;
+}
+
+.section{
+padding:40px 25px;
+}
+
 }
 
 </style>
@@ -220,6 +235,9 @@ animation:load 1.4s infinite;
 </head>
 
 <body>
+
+<div class="bg-light light1"></div>
+<div class="bg-light light2"></div>
 
 <nav>
 
@@ -246,49 +264,60 @@ Explore live conversations, creators, and events across StudentStreamHQ.
 </section>
 
 <section class="section">
+
 <h2>🔥 Trending</h2>
+
 <div class="row" id="trendingRow"></div>
+
 </section>
 
 <section class="section">
+
 <h2>🎙 Live Rooms</h2>
+
 <div class="row" id="roomsRow"></div>
+
 </section>
 
 <section class="section">
+
 <h2>⭐ Creators</h2>
+
 <div class="row" id="creatorRow"></div>
+
 </section>
 
 <section class="section">
+
 <h2>📅 Events</h2>
+
 <div class="row" id="eventsRow"></div>
+
 </section>
 
 <script>
-
-/* SUPABASE */
 
 const supabase = window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-/* ROWS */
-
 const trendingRow=document.getElementById("trendingRow")
 const roomsRow=document.getElementById("roomsRow")
 const creatorRow=document.getElementById("creatorRow")
 const eventsRow=document.getElementById("eventsRow")
 
-/* CREATE CARD */
+let heroItems=[]
+let heroIndex=0
 
-function createCard(item){
+function createCard(item,isLive=false){
 
 const card=document.createElement("div")
 card.className="card"
 
 card.innerHTML=`
+
+${isLive ? `<div class="live">LIVE</div>` : ""}
 
 <img src="${item.thumbnail_url || 'https://picsum.photos/400/600'}">
 
@@ -305,9 +334,6 @@ return card
 
 /* HERO ROTATION */
 
-let heroItems=[]
-let heroIndex=0
-
 function rotateHero(){
 
 if(heroItems.length==0)return
@@ -319,12 +345,11 @@ const item=heroItems[heroIndex]
 document.getElementById("heroTitle").innerText=item.title || item.name
 document.getElementById("heroDesc").innerText=item.description || ""
 
-document.getElementById("hero").style.backgroundImage=
-`url(${item.thumbnail_url})`
+document.getElementById("hero").style.backgroundImage=`url(${item.thumbnail_url})`
 
 }
 
-setInterval(rotateHero,8000)
+setInterval(rotateHero,7000)
 
 /* LOAD TRENDING */
 
@@ -347,7 +372,7 @@ trendingRow.appendChild(createCard(item))
 
 loadTrending()
 
-/* LOAD ROOMS */
+/* ROOMS */
 
 async function loadRooms(){
 
@@ -359,14 +384,14 @@ const {data}=await supabase
 roomsRow.innerHTML=""
 
 data.forEach(item=>{
-roomsRow.appendChild(createCard(item))
+roomsRow.appendChild(createCard(item,true))
 })
 
 }
 
 loadRooms()
 
-/* LOAD CREATORS */
+/* CREATORS */
 
 async function loadCreators(){
 
@@ -385,7 +410,7 @@ creatorRow.appendChild(createCard(item))
 
 loadCreators()
 
-/* LOAD EVENTS */
+/* EVENTS */
 
 async function loadEvents(){
 
@@ -403,19 +428,6 @@ eventsRow.appendChild(createCard(item))
 }
 
 loadEvents()
-
-/* REALTIME */
-
-supabase
-.channel("realtime-recs")
-.on(
-"postgres_changes",
-{event:"INSERT",schema:"public",table:"recommendations"},
-payload=>{
-loadTrending()
-}
-)
-.subscribe()
 
 </script>
 
