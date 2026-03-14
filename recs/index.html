@@ -22,11 +22,38 @@ font-family:Inter,system-ui;
 }
 
 body{
-background:#05060f;
+background:#04050c;
 color:white;
+overflow-x:hidden;
 }
 
-/* NAVBAR */
+/* animated gradient background */
+
+body::before{
+content:"";
+position:fixed;
+width:900px;
+height:900px;
+background:radial-gradient(circle,#4da3ff30,transparent 60%);
+top:-200px;
+left:-200px;
+filter:blur(120px);
+z-index:-2;
+}
+
+body::after{
+content:"";
+position:fixed;
+width:900px;
+height:900px;
+background:radial-gradient(circle,#6cf2c230,transparent 60%);
+bottom:-200px;
+right:-200px;
+filter:blur(120px);
+z-index:-2;
+}
+
+/* NAV */
 
 nav{
 position:fixed;
@@ -35,10 +62,11 @@ width:100%;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:18px 40px;
-background:rgba(0,0,0,.6);
-backdrop-filter:blur(10px);
-z-index:10;
+padding:16px 40px;
+background:rgba(10,12,20,.7);
+backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(255,255,255,.05);
+z-index:50;
 }
 
 .logo{
@@ -53,37 +81,39 @@ background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 padding:10px 14px;
 border-radius:8px;
 border:none;
-background:#111;
+background:#0f1324;
 color:white;
+width:200px;
 }
 
 /* HERO */
 
 .hero{
-height:75vh;
+height:80vh;
 display:flex;
-align-items:end;
-padding:60px;
+align-items:flex-end;
+padding:80px 60px;
 background-size:cover;
 background-position:center;
 position:relative;
+transition:background 1s ease;
 }
 
 .hero::after{
 content:"";
 position:absolute;
 inset:0;
-background:linear-gradient(to top,#05060f 10%,transparent);
+background:linear-gradient(to top,#04050c 15%,transparent);
 }
 
 .heroContent{
 position:relative;
-z-index:2;
+z-index:3;
 max-width:600px;
 }
 
 .hero h1{
-font-size:48px;
+font-size:52px;
 font-weight:800;
 margin-bottom:10px;
 }
@@ -94,10 +124,10 @@ margin-bottom:20px;
 }
 
 .hero button{
-padding:12px 20px;
+padding:12px 24px;
 border:none;
 border-radius:8px;
-background:#4da3ff;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 color:white;
 font-weight:600;
 cursor:pointer;
@@ -106,11 +136,12 @@ cursor:pointer;
 /* SECTIONS */
 
 .section{
-padding:40px;
+padding:50px 40px;
 }
 
 .section h2{
 margin-bottom:20px;
+font-size:22px;
 }
 
 /* ROW */
@@ -119,6 +150,7 @@ margin-bottom:20px;
 display:flex;
 gap:16px;
 overflow-x:auto;
+scroll-behavior:smooth;
 }
 
 .row::-webkit-scrollbar{
@@ -128,14 +160,15 @@ display:none;
 /* CARD */
 
 .card{
-min-width:200px;
-height:260px;
-border-radius:12px;
+min-width:210px;
+height:300px;
+border-radius:14px;
 overflow:hidden;
 position:relative;
 cursor:pointer;
-background:#111;
-transition:.25s;
+background:#0f1426;
+transition:.35s;
+border:1px solid rgba(255,255,255,.05);
 }
 
 .card img{
@@ -145,24 +178,41 @@ object-fit:cover;
 }
 
 .card:hover{
-transform:scale(1.06);
+transform:translateY(-6px) scale(1.05);
+box-shadow:0 10px 35px rgba(0,0,0,.5);
 }
+
+/* CARD OVERLAY */
 
 .overlay{
 position:absolute;
 bottom:0;
-padding:12px;
+padding:14px;
 width:100%;
-background:linear-gradient(to top,rgba(0,0,0,.9),transparent);
+background:linear-gradient(to top,rgba(0,0,0,.95),transparent);
 }
 
 .overlay h3{
-font-size:14px;
+font-size:15px;
+margin-bottom:4px;
 }
 
 .overlay span{
 font-size:12px;
 opacity:.7;
+}
+
+/* skeleton loaders */
+
+.skeleton{
+background:linear-gradient(90deg,#101426,#1a1f38,#101426);
+background-size:200%;
+animation:load 1.4s infinite;
+}
+
+@keyframes load{
+0%{background-position:200%}
+100%{background-position:-200%}
 }
 
 </style>
@@ -186,57 +236,42 @@ opacity:.7;
 <h1 id="heroTitle">Discover What's Trending</h1>
 
 <p id="heroDesc">
-SSRecs helps you discover creators, events, and live conversations across StudentStreamHQ.
+Explore live conversations, creators, and events across StudentStreamHQ.
 </p>
 
-<button onclick="openHero()">Explore</button>
+<button>Explore</button>
 
 </div>
 
 </section>
 
 <section class="section">
-
-<h2>🔥 Trending Now</h2>
-
+<h2>🔥 Trending</h2>
 <div class="row" id="trendingRow"></div>
-
 </section>
 
 <section class="section">
-
 <h2>🎙 Live Rooms</h2>
-
 <div class="row" id="roomsRow"></div>
-
 </section>
 
 <section class="section">
-
 <h2>⭐ Creators</h2>
-
 <div class="row" id="creatorRow"></div>
-
 </section>
 
 <section class="section">
-
-<h2>📅 Upcoming Events</h2>
-
+<h2>📅 Events</h2>
 <div class="row" id="eventsRow"></div>
-
 </section>
 
 <script>
 
 /* SUPABASE */
 
-const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co"
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-
 const supabase = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
 /* ROWS */
@@ -246,23 +281,20 @@ const roomsRow=document.getElementById("roomsRow")
 const creatorRow=document.getElementById("creatorRow")
 const eventsRow=document.getElementById("eventsRow")
 
-let heroItem=null
-
 /* CREATE CARD */
 
 function createCard(item){
 
-let card=document.createElement("div")
-
+const card=document.createElement("div")
 card.className="card"
 
 card.innerHTML=`
 
-<img src="${item.thumbnail_url || 'https://picsum.photos/300/400'}">
+<img src="${item.thumbnail_url || 'https://picsum.photos/400/600'}">
 
 <div class="overlay">
-<h3>${item.title || item.name}</h3>
-<span>${item.category || ''}</span>
+<h3>${item.title || item.name || "Untitled"}</h3>
+<span>${item.category || ""}</span>
 </div>
 
 `
@@ -270,6 +302,29 @@ card.innerHTML=`
 return card
 
 }
+
+/* HERO ROTATION */
+
+let heroItems=[]
+let heroIndex=0
+
+function rotateHero(){
+
+if(heroItems.length==0)return
+
+heroIndex=(heroIndex+1)%heroItems.length
+
+const item=heroItems[heroIndex]
+
+document.getElementById("heroTitle").innerText=item.title || item.name
+document.getElementById("heroDesc").innerText=item.description || ""
+
+document.getElementById("hero").style.backgroundImage=
+`url(${item.thumbnail_url})`
+
+}
+
+setInterval(rotateHero,8000)
 
 /* LOAD TRENDING */
 
@@ -280,24 +335,12 @@ const {data}=await supabase
 .select("*")
 .limit(12)
 
+heroItems=data || []
+
 trendingRow.innerHTML=""
 
-data.forEach((item,i)=>{
-
-let card=createCard(item)
-
-trendingRow.appendChild(card)
-
-if(i==0){
-heroItem=item
-
-document.getElementById("heroTitle").innerText=item.title
-document.getElementById("heroDesc").innerText=item.description
-
-document.getElementById("hero").style.backgroundImage=
-`url(${item.thumbnail_url})`
-}
-
+data.forEach(item=>{
+trendingRow.appendChild(createCard(item))
 })
 
 }
@@ -315,8 +358,8 @@ const {data}=await supabase
 
 roomsRow.innerHTML=""
 
-data.forEach(r=>{
-roomsRow.appendChild(createCard(r))
+data.forEach(item=>{
+roomsRow.appendChild(createCard(item))
 })
 
 }
@@ -334,8 +377,8 @@ const {data}=await supabase
 
 creatorRow.innerHTML=""
 
-data.forEach(c=>{
-creatorRow.appendChild(createCard(c))
+data.forEach(item=>{
+creatorRow.appendChild(createCard(item))
 })
 
 }
@@ -353,13 +396,26 @@ const {data}=await supabase
 
 eventsRow.innerHTML=""
 
-data.forEach(e=>{
-eventsRow.appendChild(createCard(e))
+data.forEach(item=>{
+eventsRow.appendChild(createCard(item))
 })
 
 }
 
 loadEvents()
+
+/* REALTIME */
+
+supabase
+.channel("realtime-recs")
+.on(
+"postgres_changes",
+{event:"INSERT",schema:"public",table:"recommendations"},
+payload=>{
+loadTrending()
+}
+)
+.subscribe()
 
 </script>
 
