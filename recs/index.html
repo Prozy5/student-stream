@@ -20,20 +20,34 @@ background:#050505;
 color:white;
 display:flex;
 min-height:100vh;
+overflow-x:hidden;
 }
 
-/* GRADIENT GLOW */
+/* BACKGROUND GLOWS */
 
 body::before{
 content:"";
 position:fixed;
-top:-200px;
-left:-200px;
 width:800px;
 height:800px;
 background:radial-gradient(circle,#ff1d48,transparent 60%);
+top:-200px;
+left:-200px;
 opacity:.15;
 filter:blur(120px);
+z-index:-1;
+}
+
+body::after{
+content:"";
+position:fixed;
+width:900px;
+height:900px;
+background:radial-gradient(circle,#6b4dff,transparent 70%);
+bottom:-300px;
+right:-200px;
+opacity:.12;
+filter:blur(150px);
 z-index:-1;
 }
 
@@ -42,15 +56,15 @@ z-index:-1;
 .sidebar{
 width:260px;
 background:#0b0b0b;
-border-right:1px solid rgba(255,255,255,.06);
-padding:35px 25px;
+border-right:1px solid rgba(255,255,255,.05);
+padding:40px 25px;
 display:flex;
 flex-direction:column;
-gap:35px;
+gap:40px;
 }
 
 .logo{
-font-size:24px;
+font-size:26px;
 font-weight:900;
 letter-spacing:.5px;
 }
@@ -61,11 +75,12 @@ color:#ff1d48;
 
 .menu a{
 display:block;
-padding:10px 0;
+padding:12px 0;
 text-decoration:none;
 color:white;
 opacity:.7;
 font-size:15px;
+transition:.2s;
 }
 
 .menu a:hover{
@@ -77,35 +92,43 @@ color:#ff1d48;
 
 .main{
 flex:1;
-padding-bottom:120px;
+padding-bottom:140px;
 }
 
 /* HEADER */
 
 .header{
-padding:30px 50px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+padding:30px 50px;
 }
 
 .search{
-width:320px;
-background:#111;
+width:350px;
+background:#101010;
 border:none;
-padding:12px 15px;
+padding:13px 16px;
 border-radius:12px;
 color:white;
+font-size:14px;
+}
+
+.profile{
+background:#ff1d48;
+padding:10px 16px;
+border-radius:8px;
+font-size:13px;
 }
 
 /* HERO */
 
 .hero{
-padding:20px 50px 50px;
+padding:20px 50px 40px;
 }
 
 .hero h1{
-font-size:52px;
+font-size:54px;
 font-weight:900;
 }
 
@@ -117,44 +140,44 @@ margin-top:8px;
 /* SECTIONS */
 
 .section{
-padding:0 50px 50px;
+padding:0 50px 60px;
 }
 
 .section h2{
-margin-bottom:25px;
-font-size:22px;
+margin-bottom:28px;
+font-size:24px;
 }
 
 /* GRID */
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-gap:28px;
+grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+gap:30px;
 }
 
 /* CARD */
 
 .card{
 background:#0e0e0e;
-border-radius:16px;
+border-radius:18px;
 padding:14px;
-transition:.25s;
 cursor:pointer;
+transition:.25s;
 position:relative;
 }
 
 .card:hover{
-transform:translateY(-6px);
-background:#141414;
+transform:translateY(-7px);
+background:#151515;
 }
 
 /* COVER */
 
 .cover{
 width:100%;
-height:180px;
-border-radius:10px;
+height:190px;
+border-radius:12px;
 background-size:cover;
 background-position:center;
 margin-bottom:10px;
@@ -164,11 +187,11 @@ margin-bottom:10px;
 
 .playBtn{
 position:absolute;
-bottom:70px;
+bottom:80px;
 right:18px;
 background:#ff1d48;
-width:45px;
-height:45px;
+width:48px;
+height:48px;
 border-radius:50%;
 display:flex;
 align-items:center;
@@ -176,13 +199,14 @@ justify-content:center;
 font-size:18px;
 opacity:0;
 transition:.25s;
+box-shadow:0 0 15px rgba(255,29,72,.6);
 }
 
 .card:hover .playBtn{
 opacity:1;
 }
 
-/* TEXT */
+/* SONG TEXT */
 
 .songTitle{
 font-weight:700;
@@ -192,6 +216,13 @@ font-size:15px;
 .artist{
 font-size:13px;
 opacity:.6;
+margin-top:3px;
+}
+
+.plays{
+font-size:12px;
+opacity:.4;
+margin-top:2px;
 }
 
 /* PLAYER */
@@ -203,7 +234,7 @@ left:260px;
 right:0;
 background:#0b0b0b;
 border-top:1px solid rgba(255,255,255,.08);
-padding:18px 35px;
+padding:20px 40px;
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -216,6 +247,32 @@ opacity:.8;
 
 audio{
 height:36px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+.sidebar{
+display:none;
+}
+
+.player{
+left:0;
+}
+
+.header{
+padding:25px;
+}
+
+.hero{
+padding:25px;
+}
+
+.section{
+padding:25px;
+}
+
 }
 
 </style>
@@ -241,12 +298,14 @@ SSHQ <span>Records</span>
 </div>
 
 
-
 <div class="main">
+
 
 <div class="header">
 
-<input class="search" placeholder="Search music...">
+<input class="search" id="searchInput" placeholder="Search music...">
+
+<div class="profile">Creator</div>
 
 </div>
 
@@ -259,31 +318,25 @@ SSHQ <span>Records</span>
 </div>
 
 
-
 <div class="section">
 
 <h2>🔥 Trending Songs</h2>
-
 <div class="grid" id="trendingSongs"></div>
 
 </div>
 
 
-
 <div class="section">
 
 <h2>🎵 Latest Releases</h2>
-
 <div class="grid" id="latestSongs"></div>
 
 </div>
 
 
-
 <div class="section">
 
 <h2>⭐ Top Artists</h2>
-
 <div class="grid" id="topArtists"></div>
 
 </div>
@@ -308,13 +361,15 @@ Nothing playing
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
 
-const supabase = createClient(
+const supabase=createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
 const audioPlayer=document.getElementById("audioPlayer")
 const nowPlaying=document.getElementById("nowPlaying")
+
+let allSongs=[]
 
 async function playSong(song){
 
@@ -372,6 +427,8 @@ card.innerHTML=`
 
 <div class="artist">${song.genre || "Artist"}</div>
 
+<div class="plays">${song.plays || 0} plays</div>
+
 `
 
 card.onclick=()=>playSong(song)
@@ -419,9 +476,11 @@ container.appendChild(card)
 async function init(){
 
 const trending=await loadSongs("trending")
-renderSongs(trending,"trendingSongs")
-
 const latest=await loadSongs("latest")
+
+allSongs=[...trending,...latest]
+
+renderSongs(trending,"trendingSongs")
 renderSongs(latest,"latestSongs")
 
 loadArtists()
@@ -430,8 +489,23 @@ loadArtists()
 
 init()
 
-</script>
 
+
+/* SEARCH */
+
+document.getElementById("searchInput").addEventListener("input",e=>{
+
+const q=e.target.value.toLowerCase()
+
+const filtered=allSongs.filter(s=>
+s.title.toLowerCase().includes(q)
+)
+
+renderSongs(filtered,"latestSongs")
+
+})
+
+</script>
 
 </body>
 </html>
