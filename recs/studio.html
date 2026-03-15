@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Artist Studio • SSHQ Records</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui;
+}
+
+body{
+background:#050505;
+color:white;
+min-height:100vh;
+}
+
+/* HEADER */
+
+.header{
+padding:30px 40px;
+border-bottom:1px solid rgba(255,255,255,.08);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.title{
+font-size:26px;
+font-weight:900;
+}
+
+.stats{
+display:flex;
+gap:30px;
+margin-top:30px;
+padding:0 40px;
+}
+
+.stat{
+background:#111;
+padding:20px;
+border-radius:10px;
+width:200px;
+}
+
+.statNumber{
+font-size:26px;
+font-weight:700;
+}
+
+.statLabel{
+opacity:.6;
+font-size:13px;
+}
+
+/* UPLOAD FORM */
+
+.section{
+padding:40px;
+}
+
+.uploadBox{
+background:#111;
+padding:30px;
+border-radius:14px;
+max-width:600px;
+}
+
+.uploadBox input,
+.uploadBox select{
+width:100%;
+margin-top:10px;
+margin-bottom:15px;
+padding:10px;
+border:none;
+border-radius:6px;
+background:#181818;
+color:white;
+}
+
+.uploadBtn{
+background:#ff1d48;
+border:none;
+padding:12px;
+border-radius:8px;
+width:100%;
+font-weight:600;
+cursor:pointer;
+}
+
+/* SONG LIST */
+
+.song{
+background:#111;
+padding:16px;
+border-radius:10px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<div class="header">
+
+<div class="title">
+SSHQ Records • Artist Studio
+</div>
+
+</div>
+
+
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="statNumber" id="totalSongs">
+0
+</div>
+
+<div class="statLabel">
+Songs
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="statNumber" id="totalStreams">
+0
+</div>
+
+<div class="statLabel">
+Streams
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="statNumber" id="revenue">
+$0
+</div>
+
+<div class="statLabel">
+Revenue
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="section">
+
+<h2>Upload New Song</h2>
+
+<div class="uploadBox">
+
+<input id="songTitle" placeholder="Song title">
+
+<select id="genre">
+
+<option>Hip Hop</option>
+<option>R&B</option>
+<option>Pop</option>
+<option>Trap</option>
+
+</select>
+
+<input type="file" id="songFile">
+
+<input type="file" id="coverFile">
+
+<button class="uploadBtn" onclick="uploadSong()">
+Upload Song
+</button>
+
+</div>
+
+</div>
+
+
+
+<div class="section">
+
+<h2>Your Songs</h2>
+
+<div id="songList"></div>
+
+</div>
+
+
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase=createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+)
+
+let currentUser=null
+let artistId=null
+
+
+async function loadUser(){
+
+const {data}=await supabase.auth.getUser()
+
+currentUser=data.user
+
+}
+
+
+async function loadArtist(){
+
+const {data}=await supabase
+.from("artists")
+.select("*")
+.eq("user_id",currentUser.id)
+.single()
+
+artistId=data.id
+
+}
+
+
+async function uploadSong(){
+
+const title=document.getElementById("songTitle").value
+const genre=document.getElementById("genre").value
+
+const songFile=document.getElementById("songFile").files[0]
+const coverFile=document.getElementById("coverFile").files[0]
+
+/* upload audio */
+
+const songPath=`${Date.now()}_${songFile.name}`
+
+await supabase.storage
+.from("song-files")
+.upload(songPath,songFile)
+
+/* upload cover */
+
+const coverPath=`${Date.now()}_${coverFile.name}`
+
+await supabase.storage
+.from("song-covers")
+.upload(coverPath,coverFile)
+
+/* get public urls */
+
+const {data:songURL}=supabase
+.storage
+.from("song-files")
+.getPublicUrl(songPath)
+
+const {data:coverURL}=supabase
+.storage
+.from("song-covers")
+.getPublicUrl(coverPath)
+
+/* insert song */
+
+await supabase.from("songs").insert({
+
+title:title,
+genre:genre,
+artist_id:artistId,
+audio_url:songURL.publicUrl,
+cover_url:coverURL.publicUrl,
+plays:0
+
+})
+
+alert("Song uploaded")
+
+loadSongs()
+
+}
+
+
+async function loadSongs(){
+
+const {data}=await supabase
+.from("songs")
+.select("*")
+.eq("artist_id",artistId)
+
+const container=document.getElementById("songList")
+
+container.innerHTML=""
+
+let streams=0
+
+data.forEach(song=>{
+
+streams+=song.plays
+
+const row=document.createElement("div")
+
+row.className="song"
+
+row.innerHTML=`
+
+<div>
+
+<div>${song.title}</div>
+
+<div style="opacity:.6;font-size:13px">${song.plays} plays</div>
+
+</div>
+
+`
+
+container.appendChild(row)
+
+})
+
+document.getElementById("totalSongs").textContent=data.length
+document.getElementById("totalStreams").textContent=streams
+
+}
+
+
+async function init(){
+
+await loadUser()
+
+await loadArtist()
+
+loadSongs()
+
+}
+
+init()
+
+</script>
+
+</body>
+</html>
