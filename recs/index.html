@@ -1,16 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SSRecs • StudentStreamHQ</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>SSHQ Records • StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 
@@ -22,438 +16,304 @@ font-family:Inter,system-ui;
 }
 
 body{
-background:#05060f;
+background:radial-gradient(circle at top,#0f1c35,#05070c 70%);
 color:white;
-overflow-x:hidden;
+min-height:100vh;
 }
 
-/* PARTICLE BACKGROUND */
+/* glow */
 
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-3;
-}
-
-/* GLOW LIGHTS */
-
-.light{
+body::before{
+content:"";
 position:fixed;
 width:900px;
 height:900px;
-filter:blur(170px);
-opacity:.4;
-z-index:-2;
+background:linear-gradient(45deg,#4da3ff,#6cf2c2);
+filter:blur(200px);
+opacity:.05;
+top:-300px;
+left:-200px;
+z-index:-1;
 }
 
-.blue{background:#4da3ff;top:-250px;left:-250px;}
-.green{background:#6cf2c2;bottom:-250px;right:-250px;}
+/* header */
 
-/* NAVBAR */
-
-nav{
-position:fixed;
-top:0;
-width:100%;
+.header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:18px 60px;
-background:rgba(10,12,20,.75);
-backdrop-filter:blur(14px);
-border-bottom:1px solid rgba(255,255,255,.06);
-z-index:50;
+padding:25px 40px;
+border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .logo{
 font-size:24px;
-font-weight:800;
-background:linear-gradient(90deg,#4da3ff,#6cf2c2);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+font-weight:900;
 }
 
-.search{
-padding:10px 16px;
-border-radius:10px;
-border:none;
-background:#11162a;
+.logo span{
+color:#4da3ff;
+}
+
+.nav{
+display:flex;
+gap:20px;
+}
+
+.nav a{
+text-decoration:none;
 color:white;
-width:240px;
+opacity:.8;
+font-size:14px;
 }
 
-/* HERO */
+.nav a:hover{
+opacity:1;
+}
+
+/* hero */
 
 .hero{
-height:90vh;
-display:flex;
-align-items:flex-end;
-padding:100px;
-background-size:cover;
-background-position:center;
-position:relative;
-}
-
-.hero::after{
-content:"";
-position:absolute;
-inset:0;
-background:linear-gradient(to top,#05060f 10%,transparent);
-}
-
-.heroContent{
-position:relative;
-z-index:5;
-max-width:700px;
+padding:50px 40px;
 }
 
 .hero h1{
-font-size:68px;
-font-weight:800;
-margin-bottom:14px;
+font-size:46px;
+font-weight:900;
 }
 
 .hero p{
-opacity:.85;
-margin-bottom:24px;
-font-size:18px;
+opacity:.7;
+margin-top:10px;
 }
 
-.hero button{
-padding:14px 30px;
-border:none;
-border-radius:10px;
-background:linear-gradient(90deg,#4da3ff,#6cf2c2);
-color:white;
-font-weight:700;
-cursor:pointer;
-}
-
-/* CATEGORY BAR */
-
-.categories{
-margin-top:90px;
-padding:20px 60px;
-display:flex;
-gap:12px;
-overflow-x:auto;
-}
-
-.cat{
-padding:10px 18px;
-border-radius:20px;
-background:#101426;
-border:1px solid rgba(255,255,255,.05);
-cursor:pointer;
-white-space:nowrap;
-}
-
-.cat:hover{
-background:#182040;
-}
-
-/* SECTION */
+/* sections */
 
 .section{
-padding:60px;
+padding:40px;
 }
 
 .section h2{
-font-size:26px;
-margin-bottom:20px;
+margin-bottom:25px;
 }
 
-/* ROW */
+/* grid */
 
-.row{
-display:flex;
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
 gap:20px;
-overflow-x:auto;
-scroll-snap-type:x mandatory;
 }
 
-.row::-webkit-scrollbar{
-display:none;
-}
-
-/* CARD */
+/* cards */
 
 .card{
-min-width:240px;
-height:340px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
 border-radius:18px;
-overflow:hidden;
-position:relative;
-background:#0f1426;
-border:1px solid rgba(255,255,255,.05);
-scroll-snap-align:start;
-transition:.35s;
-}
-
-.card img{
-width:100%;
-height:100%;
-object-fit:cover;
+padding:15px;
+transition:.25s;
+cursor:pointer;
 }
 
 .card:hover{
-transform:scale(1.08) translateY(-10px);
-box-shadow:0 20px 50px rgba(0,0,0,.7);
+transform:translateY(-5px);
+border-color:#4da3ff;
 }
 
-/* LIVE BADGE */
-
-.live{
-position:absolute;
-top:12px;
-left:12px;
-background:#ff3b3b;
-padding:5px 10px;
-font-size:11px;
-border-radius:6px;
-font-weight:700;
-}
-
-/* OVERLAY */
-
-.overlay{
-position:absolute;
-bottom:0;
-padding:16px;
+.cover{
 width:100%;
-background:linear-gradient(to top,rgba(0,0,0,.9),transparent);
+height:150px;
+background:#111;
+border-radius:10px;
+background-size:cover;
+background-position:center;
 }
 
-.overlay h3{
-font-size:16px;
-margin-bottom:4px;
+.songTitle{
+margin-top:10px;
+font-weight:700;
+font-size:14px;
 }
 
-.overlay span{
+.artist{
 font-size:12px;
 opacity:.7;
 }
 
-/* FOOTER */
+/* music player */
 
-footer{
-padding:40px;
-text-align:center;
-opacity:.6;
-font-size:14px;
+.player{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#05070c;
+border-top:1px solid rgba(255,255,255,.08);
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<canvas id="particles"></canvas>
+<div class="header">
 
-<div class="light blue"></div>
-<div class="light green"></div>
+<div class="logo">
+SSHQ <span>Records</span>
+</div>
 
-<nav>
-
-<div class="logo">SSRecs</div>
-
-<input class="search" placeholder="Search creators, rooms, events">
-
-</nav>
-
-<section class="hero" id="hero">
-
-<div class="heroContent">
-
-<h1 id="heroTitle">Discover What's Trending</h1>
-
-<p id="heroDesc">
-Explore live conversations, creators, and events across StudentStreamHQ.
-</p>
-
-<button>Explore</button>
+<div class="nav">
+<a href="#">Home</a>
+<a href="#">Artists</a>
+<a href="#">Upload</a>
+<a href="#">Charts</a>
+</div>
 
 </div>
 
-</section>
 
-<div class="categories">
+<div class="hero">
 
-<div class="cat">Trending</div>
-<div class="cat">Live Rooms</div>
-<div class="cat">Creators</div>
-<div class="cat">Events</div>
-<div class="cat">Communities</div>
+<h1>Discover New Music</h1>
+<p>SSHQ Records • A StudentStreamHQ Music Division</p>
 
 </div>
 
-<section class="section">
 
-<h2>🔥 Trending</h2>
-<div class="row" id="trendingRow"></div>
+<div class="section">
 
-</section>
+<h2>🔥 Trending Songs</h2>
 
-<section class="section">
+<div class="grid" id="trendingSongs"></div>
 
-<h2>🎙 Live Rooms</h2>
-<div class="row" id="roomsRow"></div>
+</div>
 
-</section>
 
-<section class="section">
+<div class="section">
 
-<h2>⭐ Creators</h2>
-<div class="row" id="creatorRow"></div>
+<h2>🎵 Latest Releases</h2>
 
-</section>
+<div class="grid" id="latestSongs"></div>
 
-<footer>
+</div>
 
-SSRecs • Discovery Engine for StudentStreamHQ
 
-</footer>
+<div class="player">
 
-<script>
+<div id="nowPlaying">Nothing playing</div>
 
-/* SUPABASE */
+<audio id="audioPlayer" controls></audio>
 
-const supabase = window.supabase.createClient(
+</div>
+
+
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase = createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-/* CREATE CARD */
 
-function createCard(item,live=false){
+const audioPlayer = document.getElementById("audioPlayer")
+const nowPlaying = document.getElementById("nowPlaying")
 
-const card=document.createElement("div")
+
+function playSong(title,url){
+
+audioPlayer.src = url
+audioPlayer.play()
+
+nowPlaying.textContent = "Now Playing: " + title
+
+}
+
+
+
+async function loadTrending(){
+
+const { data } = await supabase
+.from("songs")
+.select("*")
+.order("release_date",{ascending:false})
+.limit(8)
+
+const container = document.getElementById("trendingSongs")
+
+container.innerHTML=""
+
+data.forEach(song=>{
+
+const card = document.createElement("div")
 card.className="card"
 
 card.innerHTML=`
 
-${live?'<div class="live">LIVE</div>':''}
+<div class="cover" style="background-image:url('${song.cover_url}')"></div>
 
-<img src="${item.thumbnail_url || 'https://picsum.photos/400/600'}">
+<div class="songTitle">${song.title}</div>
 
-<div class="overlay">
-<h3>${item.title || item.name || "Untitled"}</h3>
-<span>${item.category || ""}</span>
-</div>
+<div class="artist">${song.genre || "Artist"}</div>
 
 `
 
-return card
+card.onclick=()=>playSong(song.title,song.audio_url)
 
-}
+container.appendChild(card)
 
-/* LOAD TRENDING */
-
-async function loadTrending(){
-
-const {data}=await supabase
-.from("recommendations")
-.select("*")
-.limit(12)
-
-const row=document.getElementById("trendingRow")
-
-row.innerHTML=""
-
-data.forEach(item=>{
-row.appendChild(createCard(item))
 })
 
 }
+
+
+
+async function loadLatest(){
+
+const { data } = await supabase
+.from("songs")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(8)
+
+const container = document.getElementById("latestSongs")
+
+container.innerHTML=""
+
+data.forEach(song=>{
+
+const card = document.createElement("div")
+card.className="card"
+
+card.innerHTML=`
+
+<div class="cover" style="background-image:url('${song.cover_url}')"></div>
+
+<div class="songTitle">${song.title}</div>
+
+<div class="artist">${song.genre || "Artist"}</div>
+
+`
+
+card.onclick=()=>playSong(song.title,song.audio_url)
+
+container.appendChild(card)
+
+})
+
+}
+
+
 
 loadTrending()
-
-/* ROOMS */
-
-async function loadRooms(){
-
-const {data}=await supabase
-.from("rooms")
-.select("*")
-.limit(10)
-
-const row=document.getElementById("roomsRow")
-
-row.innerHTML=""
-
-data.forEach(item=>{
-row.appendChild(createCard(item,true))
-})
-
-}
-
-loadRooms()
-
-/* CREATORS */
-
-async function loadCreators(){
-
-const {data}=await supabase
-.from("profiles")
-.select("*")
-.limit(10)
-
-const row=document.getElementById("creatorRow")
-
-row.innerHTML=""
-
-data.forEach(item=>{
-row.appendChild(createCard(item))
-})
-
-}
-
-loadCreators()
-
-/* PARTICLES */
-
-const canvas=document.getElementById("particles")
-const ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
-
-let particles=[]
-
-for(let i=0;i<80;i++){
-
-particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-vx:(Math.random()-.5)*0.5,
-vy:(Math.random()-.5)*0.5
-})
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-particles.forEach(p=>{
-
-p.x+=p.vx
-p.y+=p.vy
-
-ctx.beginPath()
-ctx.arc(p.x,p.y,1.5,0,Math.PI*2)
-ctx.fillStyle="rgba(255,255,255,.3)"
-ctx.fill()
-
-})
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
+loadLatest()
 
 </script>
 
