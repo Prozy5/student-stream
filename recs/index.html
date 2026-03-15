@@ -23,7 +23,7 @@ min-height:100vh;
 overflow-x:hidden;
 }
 
-/* BACKGROUND GLOW */
+/* GLOW BACKGROUND */
 
 body::before{
 content:"";
@@ -103,7 +103,7 @@ padding:30px 50px;
 }
 
 .search{
-width:350px;
+width:360px;
 background:#111;
 border:none;
 padding:13px 16px;
@@ -111,15 +111,33 @@ border-radius:12px;
 color:white;
 }
 
+.loginBtn{
+background:#ff1d48;
+border:none;
+color:white;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
+
 /* HERO */
 
 .hero{
-padding:20px 50px 40px;
+padding:40px 50px;
+background:linear-gradient(90deg,#ff1d48,#7b5cff);
+border-radius:20px;
+margin:0 50px 40px;
 }
 
 .hero h1{
 font-size:54px;
 font-weight:900;
+}
+
+.hero p{
+opacity:.8;
+margin-top:8px;
 }
 
 /* SECTIONS */
@@ -212,6 +230,22 @@ font-size:13px;
 opacity:.6;
 }
 
+/* ARTIST GRID */
+
+.artistCard{
+text-align:center;
+}
+
+.artistAvatar{
+width:120px;
+height:120px;
+border-radius:50%;
+background-size:cover;
+background-position:center;
+margin:auto;
+margin-bottom:10px;
+}
+
 /* PLAYER */
 
 .player{
@@ -250,7 +284,6 @@ flex:1;
 
 <body>
 
-
 <div class="sidebar">
 
 <div class="logo">
@@ -259,27 +292,28 @@ SSHQ <span>Records</span>
 
 <div class="menu">
 <a href="#">Home</a>
-<a href="#">Trending</a>
+<a href="charts.html">Charts</a>
 <a href="#">Artists</a>
-<a href="#">Charts</a>
+<a href="#">Trending</a>
 </div>
 
 </div>
-
 
 <div class="main">
 
 <div class="header">
 
-<input id="searchInput" class="search" placeholder="Search songs...">
+<input id="searchInput" class="search" placeholder="Search songs or artists">
+
+<button class="loginBtn">Login</button>
 
 </div>
 
 
 <div class="hero">
 
-<h1>Discover New Music</h1>
-<p>SSHQ Records • StudentStreamHQ Music Division</p>
+<h1>SSHQ Records</h1>
+<p>StudentStreamHQ Music Division • Discover New Artists</p>
 
 </div>
 
@@ -287,6 +321,7 @@ SSHQ <span>Records</span>
 <div class="section">
 
 <h2>🔥 Trending</h2>
+
 <div class="grid" id="trendingSongs"></div>
 
 </div>
@@ -295,6 +330,7 @@ SSHQ <span>Records</span>
 <div class="section">
 
 <h2>🎵 Latest Releases</h2>
+
 <div class="grid" id="latestSongs"></div>
 
 </div>
@@ -302,13 +338,13 @@ SSHQ <span>Records</span>
 
 <div class="section">
 
-<h2>📈 Charts</h2>
-<div class="grid" id="charts"></div>
+<h2>⭐ Featured Artists</h2>
+
+<div class="grid" id="artists"></div>
 
 </div>
 
 </div>
-
 
 
 <div class="player">
@@ -330,7 +366,6 @@ Nothing playing
 </div>
 
 
-
 <script type="module">
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
@@ -344,19 +379,9 @@ const audio=document.getElementById("audioPlayer")
 const nowPlaying=document.getElementById("nowPlaying")
 const progress=document.getElementById("progressBar")
 
-let currentSong=null
-
 function togglePlay(){
-
-if(audio.paused){
-audio.play()
-}else{
-audio.pause()
+audio.paused ? audio.play() : audio.pause()
 }
-
-}
-
-/* UPDATE PROGRESS */
 
 audio.ontimeupdate=()=>{
 progress.value=(audio.currentTime/audio.duration)*100
@@ -366,12 +391,7 @@ progress.oninput=()=>{
 audio.currentTime=(progress.value/100)*audio.duration
 }
 
-
-/* PLAY SONG */
-
 async function playSong(song){
-
-currentSong=song
 
 audio.src=song.audio_url
 audio.play()
@@ -385,27 +405,11 @@ await supabase
 
 }
 
-
-/* LIKE SONG */
-
-async function likeSong(song){
-
-await supabase
-.from("likes")
-.insert({
-song_id:song.id
-})
-
-alert("Song liked ❤️")
-
-}
-
-
-/* LOAD SONGS */
+/* SONG LOAD */
 
 async function loadSongs(type){
 
-let query=supabase.from("songs").select("*")
+let query=supabase.from("songs").select("*,artists(stage_name,verified)")
 
 if(type==="trending"){
 query=query.order("plays",{ascending:false})
@@ -421,9 +425,6 @@ return data
 
 }
 
-
-/* RENDER SONGS */
-
 function renderSongs(list,id){
 
 const container=document.getElementById(id)
@@ -433,7 +434,6 @@ container.innerHTML=""
 list.forEach(song=>{
 
 const card=document.createElement("div")
-
 card.className="card"
 
 card.innerHTML=`
@@ -446,13 +446,13 @@ card.innerHTML=`
 
 <div class="songTitle">${song.title}</div>
 
-<div class="artist">${song.genre || "Artist"}</div>
+<div class="artist">
+${song.artists.stage_name} ${song.artists.verified ? "✔" : ""}
+</div>
 
 `
 
 card.querySelector(".playBtn").onclick=()=>playSong(song)
-
-card.querySelector(".likeBtn").onclick=()=>likeSong(song)
 
 container.appendChild(card)
 
@@ -460,20 +460,50 @@ container.appendChild(card)
 
 }
 
+/* ARTISTS */
+
+async function loadArtists(){
+
+const {data}=await supabase
+.from("artists")
+.select("*")
+.limit(6)
+
+const container=document.getElementById("artists")
+
+data.forEach(artist=>{
+
+const card=document.createElement("div")
+
+card.className="artistCard"
+
+card.innerHTML=`
+
+<div class="artistAvatar"
+style="background-image:url('${artist.avatar_url}')">
+</div>
+
+<div>${artist.stage_name}</div>
+
+`
+
+container.appendChild(card)
+
+})
+
+}
 
 /* INIT */
 
 async function init(){
 
 const trending=await loadSongs("trending")
-
 const latest=await loadSongs("latest")
 
 renderSongs(trending,"trendingSongs")
-
 renderSongs(latest,"latestSongs")
 
-renderSongs(trending,"charts")
+loadArtists()
 
 }
 
