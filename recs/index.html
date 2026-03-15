@@ -16,133 +16,181 @@ font-family:Inter,system-ui;
 }
 
 body{
-background:radial-gradient(circle at top,#0f1c35,#05070c 70%);
+background:#050505;
 color:white;
-min-height:100vh;
 display:flex;
+min-height:100vh;
+}
+
+/* GRADIENT GLOW */
+
+body::before{
+content:"";
+position:fixed;
+top:-200px;
+left:-200px;
+width:800px;
+height:800px;
+background:radial-gradient(circle,#ff1d48,transparent 60%);
+opacity:.15;
+filter:blur(120px);
+z-index:-1;
 }
 
 /* SIDEBAR */
 
 .sidebar{
-width:230px;
-background:#04060c;
-border-right:1px solid rgba(255,255,255,.05);
-padding:30px 20px;
+width:260px;
+background:#0b0b0b;
+border-right:1px solid rgba(255,255,255,.06);
+padding:35px 25px;
 display:flex;
 flex-direction:column;
-gap:25px;
+gap:35px;
 }
 
 .logo{
-font-size:22px;
+font-size:24px;
 font-weight:900;
+letter-spacing:.5px;
 }
 
 .logo span{
-color:#4da3ff;
+color:#ff1d48;
 }
 
 .menu a{
 display:block;
-color:white;
+padding:10px 0;
 text-decoration:none;
-opacity:.75;
-margin:10px 0;
-font-size:14px;
+color:white;
+opacity:.7;
+font-size:15px;
 }
 
 .menu a:hover{
 opacity:1;
+color:#ff1d48;
 }
 
 /* MAIN */
 
 .main{
 flex:1;
-overflow:auto;
+padding-bottom:120px;
 }
 
 /* HEADER */
 
 .header{
+padding:30px 50px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:25px 40px;
-border-bottom:1px solid rgba(255,255,255,.05);
 }
 
 .search{
-background:#0d111b;
+width:320px;
+background:#111;
 border:none;
-padding:10px 14px;
-border-radius:10px;
+padding:12px 15px;
+border-radius:12px;
 color:white;
-width:250px;
 }
 
 /* HERO */
 
 .hero{
-padding:40px;
+padding:20px 50px 50px;
 }
 
 .hero h1{
-font-size:42px;
+font-size:52px;
 font-weight:900;
+}
+
+.hero p{
+opacity:.6;
+margin-top:8px;
 }
 
 /* SECTIONS */
 
 .section{
-padding:0 40px 40px;
+padding:0 50px 50px;
 }
 
 .section h2{
-margin-bottom:20px;
+margin-bottom:25px;
+font-size:22px;
 }
 
 /* GRID */
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+gap:28px;
 }
 
 /* CARD */
 
 .card{
-background:#0d111b;
-border-radius:14px;
+background:#0e0e0e;
+border-radius:16px;
 padding:14px;
-cursor:pointer;
 transition:.25s;
+cursor:pointer;
 position:relative;
 }
 
 .card:hover{
-transform:translateY(-5px);
-background:#12182a;
+transform:translateY(-6px);
+background:#141414;
 }
+
+/* COVER */
 
 .cover{
 width:100%;
-height:150px;
+height:180px;
 border-radius:10px;
 background-size:cover;
 background-position:center;
+margin-bottom:10px;
 }
 
+/* PLAY BUTTON */
+
+.playBtn{
+position:absolute;
+bottom:70px;
+right:18px;
+background:#ff1d48;
+width:45px;
+height:45px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+opacity:0;
+transition:.25s;
+}
+
+.card:hover .playBtn{
+opacity:1;
+}
+
+/* TEXT */
+
 .songTitle{
-margin-top:10px;
 font-weight:700;
-font-size:14px;
+font-size:15px;
 }
 
 .artist{
-font-size:12px;
+font-size:13px;
 opacity:.6;
 }
 
@@ -151,14 +199,14 @@ opacity:.6;
 .player{
 position:fixed;
 bottom:0;
-left:230px;
+left:260px;
 right:0;
-background:#05070c;
-border-top:1px solid rgba(255,255,255,.05);
-padding:15px 25px;
+background:#0b0b0b;
+border-top:1px solid rgba(255,255,255,.08);
+padding:18px 35px;
 display:flex;
-align-items:center;
 justify-content:space-between;
+align-items:center;
 }
 
 .nowPlaying{
@@ -167,16 +215,14 @@ opacity:.8;
 }
 
 audio{
-height:35px;
+height:36px;
 }
 
 </style>
 </head>
 
-
 <body>
 
-<!-- SIDEBAR -->
 
 <div class="sidebar">
 
@@ -195,7 +241,6 @@ SSHQ <span>Records</span>
 </div>
 
 
-<!-- MAIN -->
 
 <div class="main">
 
@@ -207,30 +252,38 @@ SSHQ <span>Records</span>
 
 
 <div class="hero">
+
 <h1>Discover New Music</h1>
 <p>SSHQ Records • A StudentStreamHQ Music Division</p>
+
 </div>
+
 
 
 <div class="section">
 
 <h2>🔥 Trending Songs</h2>
+
 <div class="grid" id="trendingSongs"></div>
 
 </div>
 
 
+
 <div class="section">
 
 <h2>🎵 Latest Releases</h2>
+
 <div class="grid" id="latestSongs"></div>
 
 </div>
 
 
+
 <div class="section">
 
 <h2>⭐ Top Artists</h2>
+
 <div class="grid" id="topArtists"></div>
 
 </div>
@@ -238,7 +291,6 @@ SSHQ <span>Records</span>
 </div>
 
 
-<!-- PLAYER -->
 
 <div class="player">
 
@@ -261,53 +313,65 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-const audioPlayer = document.getElementById("audioPlayer")
-const nowPlaying = document.getElementById("nowPlaying")
-
-
-/* PLAY SONG + COUNT STREAM */
+const audioPlayer=document.getElementById("audioPlayer")
+const nowPlaying=document.getElementById("nowPlaying")
 
 async function playSong(song){
 
-audioPlayer.src = song.audio_url
+audioPlayer.src=song.audio_url
 audioPlayer.play()
 
-nowPlaying.textContent = "Now Playing: " + song.title
-
-/* update stream count */
+nowPlaying.textContent="Now Playing: "+song.title
 
 await supabase
 .from("songs")
-.update({ plays: song.plays + 1 })
+.update({plays:song.plays+1})
 .eq("id",song.id)
 
 }
 
 
 
-/* LOAD TRENDING */
+async function loadSongs(type){
 
-async function loadTrending(){
+let query=supabase.from("songs").select("*")
 
-const { data } = await supabase
-.from("songs")
-.select("*")
-.order("plays",{ascending:false})
-.limit(8)
+if(type==="trending"){
+query=query.order("plays",{ascending:false})
+}
 
-const container=document.getElementById("trendingSongs")
+if(type==="latest"){
+query=query.order("created_at",{ascending:false})
+}
 
+const {data}=await query.limit(8)
+
+return data
+
+}
+
+
+
+function renderSongs(list,id){
+
+const container=document.getElementById(id)
 container.innerHTML=""
 
-data.forEach(song=>{
+list.forEach(song=>{
 
 const card=document.createElement("div")
 card.className="card"
 
 card.innerHTML=`
+
 <div class="cover" style="background-image:url('${song.cover_url}')"></div>
+
+<div class="playBtn">▶</div>
+
 <div class="songTitle">${song.title}</div>
+
 <div class="artist">${song.genre || "Artist"}</div>
+
 `
 
 card.onclick=()=>playSong(song)
@@ -319,54 +383,15 @@ container.appendChild(card)
 }
 
 
-
-/* LOAD LATEST */
-
-async function loadLatest(){
-
-const { data } = await supabase
-.from("songs")
-.select("*")
-.order("created_at",{ascending:false})
-.limit(8)
-
-const container=document.getElementById("latestSongs")
-
-container.innerHTML=""
-
-data.forEach(song=>{
-
-const card=document.createElement("div")
-card.className="card"
-
-card.innerHTML=`
-<div class="cover" style="background-image:url('${song.cover_url}')"></div>
-<div class="songTitle">${song.title}</div>
-<div class="artist">${song.genre || "Artist"}</div>
-`
-
-card.onclick=()=>playSong(song)
-
-container.appendChild(card)
-
-})
-
-}
-
-
-
-/* LOAD ARTISTS */
 
 async function loadArtists(){
 
-const { data } = await supabase
+const {data}=await supabase
 .from("artists")
 .select("*")
 .limit(6)
 
 const container=document.getElementById("topArtists")
-
-container.innerHTML=""
 
 data.forEach(artist=>{
 
@@ -374,9 +399,13 @@ const card=document.createElement("div")
 card.className="card"
 
 card.innerHTML=`
+
 <div class="cover" style="background-image:url('${artist.avatar_url || ""}')"></div>
+
 <div class="songTitle">${artist.stage_name}</div>
+
 <div class="artist">Artist</div>
+
 `
 
 container.appendChild(card)
@@ -386,11 +415,23 @@ container.appendChild(card)
 }
 
 
-loadTrending()
-loadLatest()
+
+async function init(){
+
+const trending=await loadSongs("trending")
+renderSongs(trending,"trendingSongs")
+
+const latest=await loadSongs("latest")
+renderSongs(latest,"latestSongs")
+
 loadArtists()
 
+}
+
+init()
+
 </script>
+
 
 </body>
 </html>
