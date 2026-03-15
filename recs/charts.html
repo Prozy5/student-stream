@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Charts • SSHQ Records</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+background:#050505;
+color:white;
+font-family:Inter,system-ui;
+padding:40px;
+}
+
+/* TITLE */
+
+.title{
+font-size:42px;
+font-weight:900;
+margin-bottom:40px;
+}
+
+/* CHART ROW */
+
+.song{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#111;
+padding:16px;
+border-radius:12px;
+margin-bottom:12px;
+}
+
+.song:hover{
+background:#181818;
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.rank{
+font-size:22px;
+width:40px;
+opacity:.7;
+}
+
+.cover{
+width:60px;
+height:60px;
+border-radius:10px;
+background-size:cover;
+background-position:center;
+}
+
+.songTitle{
+font-weight:600;
+}
+
+.artist{
+font-size:13px;
+opacity:.6;
+}
+
+.playBtn{
+background:#ff1d48;
+border:none;
+color:white;
+padding:8px 16px;
+border-radius:8px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="title">
+🔥 SSHQ Records Charts
+</div>
+
+<div id="charts"></div>
+
+<audio id="player" controls style="margin-top:30px;width:100%"></audio>
+
+
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase=createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+)
+
+const chartsDiv=document.getElementById("charts")
+
+const player=document.getElementById("player")
+
+
+async function loadCharts(){
+
+const {data}=await supabase
+.from("song_charts")
+.select("*")
+.limit(50)
+
+chartsDiv.innerHTML=""
+
+data.forEach((song,index)=>{
+
+const row=document.createElement("div")
+
+row.className="song"
+
+row.innerHTML=`
+
+<div class="left">
+
+<div class="rank">
+#${index+1}
+</div>
+
+<div class="cover"
+style="background-image:url('${song.cover_url}')">
+</div>
+
+<div>
+
+<div class="songTitle">
+${song.title}
+</div>
+
+<div class="artist">
+${song.stage_name}
+${song.verified ? "✔" : ""}
+</div>
+
+</div>
+
+</div>
+
+<button class="playBtn">Play</button>
+
+`
+
+row.querySelector(".playBtn").onclick=()=>{
+
+player.src=song.audio_url
+player.play()
+
+}
+
+chartsDiv.appendChild(row)
+
+})
+
+}
+
+loadCharts()
+
+</script>
+
+</body>
+</html>
