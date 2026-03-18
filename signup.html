@@ -3,10 +3,8 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Join • StudentStreamHQ</title>
+<title>Sign Up • StudentStreamHQ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
 
@@ -14,222 +12,208 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Inter,system-ui;
+font-family:system-ui,-apple-system;
 }
 
 body{
 min-height:100vh;
-background:#050506;
-color:white;
+background:radial-gradient(circle at top,#08142c,#02030a);
 display:flex;
 align-items:center;
 justify-content:center;
+color:white;
 overflow:hidden;
 }
 
-/* 🔥 BACKGROUND SYSTEM */
+/* GLOW (same system as login) */
 
-.bg{
-position:fixed;
-inset:0;
-z-index:-2;
-background:
-radial-gradient(circle at 20% 20%, #ff1d4830, transparent 40%),
-radial-gradient(circle at 80% 70%, #7b5cff30, transparent 40%),
-radial-gradient(circle at 50% 100%, #00ffd530, transparent 40%);
-filter:blur(80px);
-animation:moveBg 12s linear infinite alternate;
+.blurOrb{
+position:absolute;
+width:900px;
+height:900px;
+background:radial-gradient(circle,rgba(60,140,255,0.25),transparent 70%);
+filter:blur(120px);
+top:-300px;
+left:-250px;
 }
 
-@keyframes moveBg{
-0%{transform:translate(0,0)}
-100%{transform:translate(40px,-40px)}
-}
-
-/* GRID OVERLAY */
-
-.grid{
-position:fixed;
-inset:0;
-background-image:
-linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-background-size:40px 40px;
-z-index:-1;
+.blurOrb2{
+position:absolute;
+width:900px;
+height:900px;
+background:radial-gradient(circle,rgba(0,255,170,0.18),transparent 70%);
+filter:blur(130px);
+bottom:-320px;
+right:-250px;
 }
 
 /* CARD */
 
-.container{
+.signupBox{
 width:100%;
-max-width:520px;
+max-width:480px;
 padding:50px 45px;
-border-radius:30px;
-background:rgba(255,255,255,.05);
+border-radius:28px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.12);
 backdrop-filter:blur(25px);
-border:1px solid rgba(255,255,255,.1);
-box-shadow:0 0 100px rgba(0,0,0,.7);
+box-shadow:0 0 80px rgba(0,0,0,0.55);
+z-index:5;
 }
 
 /* LOGO */
 
-.logo{
-font-size:42px;
-font-weight:900;
-text-align:center;
+.logoTitle{
+font-size:48px;
+font-weight:950;
 letter-spacing:-1px;
+text-align:center;
 }
 
-.logo span{
-background:linear-gradient(90deg,#ff1d48,#7b5cff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.logoTitle span{
+color:#3c8cff;
 }
 
 /* SUB */
 
 .subtitle{
-text-align:center;
 margin-top:10px;
-opacity:.7;
 font-size:14px;
-line-height:1.6;
+opacity:.7;
+text-align:center;
 }
 
-/* PLAN BADGE */
+/* PLAN */
 
-.planBadge{
+.planBox{
 margin-top:20px;
 text-align:center;
 font-size:13px;
 opacity:.7;
 }
 
-.planHighlight{
-display:inline-block;
+.planBadge{
 margin-top:6px;
+display:inline-block;
 padding:6px 14px;
 border-radius:999px;
-background:linear-gradient(90deg,#ff1d48,#7b5cff);
+background:#3c8cff;
 font-weight:700;
 }
 
 /* FORM */
 
 .field{
-margin-top:20px;
+margin-top:22px;
 }
 
 label{
-font-size:12px;
-opacity:.7;
-font-weight:600;
+font-size:13px;
+font-weight:700;
+opacity:.75;
 }
 
 input{
 width:100%;
 margin-top:8px;
-padding:14px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,.12);
-background:rgba(255,255,255,.04);
+padding:15px;
+border-radius:16px;
+border:1px solid rgba(255,255,255,.14);
+background:rgba(255,255,255,.03);
 color:white;
+font-size:15px;
 outline:none;
 transition:.25s;
 }
 
 input:focus{
-border-color:#ff1d48;
-box-shadow:0 0 0 3px rgba(255,29,72,.2);
+border-color:rgba(60,140,255,.65);
+box-shadow:0 0 0 3px rgba(60,140,255,.18);
 }
 
 /* BUTTON */
 
 .signupBtn{
 width:100%;
-margin-top:28px;
+margin-top:30px;
 padding:15px;
+border-radius:18px;
 border:none;
-border-radius:16px;
-font-weight:900;
-font-size:15px;
 cursor:pointer;
-background:linear-gradient(90deg,#ff1d48,#7b5cff);
-color:white;
+font-weight:900;
+font-size:16px;
+background:linear-gradient(90deg,#3c8cff,#00ffae);
+color:black;
 transition:.25s;
 }
 
 .signupBtn:hover{
 transform:translateY(-2px);
-box-shadow:0 15px 40px rgba(0,0,0,.6);
+box-shadow:0 15px 40px rgba(0,0,0,.55);
 }
 
 /* STATUS */
 
 .status{
-margin-top:14px;
-font-size:13px;
+margin-top:16px;
+font-size:14px;
 opacity:.8;
 text-align:center;
-min-height:18px;
+min-height:20px;
 }
 
-/* FOOT */
+/* LINKS */
 
-.footer{
+.links{
 margin-top:25px;
-text-align:center;
 font-size:13px;
-opacity:.6;
+opacity:.65;
+text-align:center;
 }
 
-.footer a{
+.links a{
 color:white;
 font-weight:700;
 text-decoration:none;
 }
 
-.footer a:hover{
+.links a:hover{
 opacity:1;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div class="bg"></div>
-<div class="grid"></div>
+<div class="blurOrb"></div>
+<div class="blurOrb2"></div>
 
-<div class="container">
+<div class="signupBox">
 
-<div class="logo">
+<div class="logoTitle">
 StudentStream<span>HQ</span>
 </div>
 
 <div class="subtitle">
-Create your account and unlock the full platform.
+Create your account to access the platform.
 </div>
 
-<div class="planBadge">
+<div class="planBox">
 Selected Plan:
-<div class="planHighlight" id="planText">FREE</div>
+<div class="planBadge" id="planText">FREE</div>
 </div>
 
-<!-- USERNAME -->
 <div class="field">
 <label>Username</label>
 <input id="username" placeholder="yourname">
 </div>
 
-<!-- EMAIL -->
 <div class="field">
 <label>Email</label>
 <input id="email" type="email" placeholder="you@email.com">
 </div>
 
-<!-- PASSWORD -->
 <div class="field">
 <label>Password</label>
 <input id="password" type="password" placeholder="••••••••">
@@ -241,7 +225,7 @@ Create Account
 
 <div class="status" id="statusText"></div>
 
-<div class="footer">
+<div class="links">
 Already have an account? <a href="/login.html">Login</a>
 </div>
 
@@ -258,17 +242,16 @@ const supabase = createClient(
 
 const status = document.getElementById("statusText")
 
-// GET PLAN
 const selectedPlan = localStorage.getItem("selectedPlan") || "free"
 document.getElementById("planText").textContent = selectedPlan.toUpperCase()
 
 window.signupUser = async function(){
 
-const email = document.getElementById("email").value.trim()
-const password = document.getElementById("password").value.trim()
-const username = document.getElementById("username").value.trim()
+const email=document.getElementById("email").value.trim()
+const password=document.getElementById("password").value.trim()
+const username=document.getElementById("username").value.trim()
 
-if(!email || !password || !username){
+if(!email||!password||!username){
 status.textContent="⚠️ Fill all fields"
 return
 }
@@ -285,28 +268,22 @@ status.textContent="❌ "+error.message
 return
 }
 
-const user = data.user
+const user=data.user
 
 if(!user){
 status.textContent="Check your email to confirm signup"
 return
 }
 
-// SAVE PROFILE
-const { error: profileError } = await supabase
+await supabase
 .from("profiles")
 .update({
-username: username,
-plan: selectedPlan
+username:username,
+plan:selectedPlan
 })
-.eq("id", user.id)
+.eq("id",user.id)
 
-if(profileError){
-status.textContent="❌ Profile error"
-return
-}
-
-status.textContent="✅ Welcome to StudentStreamHQ"
+status.textContent="✅ Account created"
 
 localStorage.removeItem("selectedPlan")
 
