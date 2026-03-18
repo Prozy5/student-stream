@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Monetization Club • StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui;
+}
+
+body{
+background:radial-gradient(circle at top,#0b1d40,#02040a 70%);
+color:white;
+overflow-x:hidden;
+}
+
+/* BACKGROUND GLOW */
+
+body::before{
+content:"";
+position:fixed;
+width:1000px;
+height:1000px;
+background:radial-gradient(circle,#4da3ff33,transparent 70%);
+top:-250px;
+left:-200px;
+filter:blur(130px);
+z-index:-1;
+}
+
+body::after{
+content:"";
+position:fixed;
+width:1000px;
+height:1000px;
+background:radial-gradient(circle,#00ffc633,transparent 70%);
+bottom:-250px;
+right:-200px;
+filter:blur(140px);
+z-index:-1;
+}
+
+/* HERO */
+
+.hero{
+padding:80px 40px;
+text-align:center;
+}
+
+.logo{
+font-size:18px;
+font-weight:800;
+opacity:.7;
+}
+
+.hero h1{
+font-size:60px;
+font-weight:900;
+margin-top:10px;
+}
+
+.hero p{
+margin-top:10px;
+opacity:.7;
+font-size:16px;
+}
+
+/* HERO IMAGE */
+
+.heroImg{
+margin-top:40px;
+width:100%;
+max-width:900px;
+border-radius:20px;
+box-shadow:0 0 60px rgba(0,0,0,.5);
+}
+
+/* SECTIONS */
+
+.section{
+padding:70px 40px;
+max-width:1100px;
+margin:auto;
+}
+
+.section h2{
+font-size:32px;
+margin-bottom:20px;
+}
+
+.section p{
+opacity:.7;
+line-height:1.7;
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+margin-top:30px;
+}
+
+/* CARDS */
+
+.card{
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.1);
+border-radius:18px;
+padding:20px;
+transition:.25s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+border-color:#4da3ff;
+}
+
+/* ICON IMAGE */
+
+.icon{
+width:100%;
+height:160px;
+border-radius:12px;
+object-fit:cover;
+margin-bottom:15px;
+}
+
+/* APPLY */
+
+.applyBox{
+margin-top:60px;
+text-align:center;
+padding:40px;
+border-radius:22px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.1);
+}
+
+.applyBox h3{
+font-size:26px;
+}
+
+button{
+margin-top:20px;
+padding:15px 30px;
+border:none;
+border-radius:14px;
+background:linear-gradient(90deg,#4da3ff,#00ffc6);
+font-weight:900;
+cursor:pointer;
+}
+
+.status{
+margin-top:20px;
+opacity:.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+
+<div class="hero">
+
+<div class="logo">StudentStreamHQ • Monetization Club</div>
+
+<h1>Unlock Higher Earnings</h1>
+
+<p>Get 2x payouts without upgrading your plan.</p>
+
+<img class="heroImg" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7" />
+
+</div>
+
+
+<!-- WHAT IS IT -->
+
+<div class="section">
+
+<h2>What is Monetization Club?</h2>
+
+<p>
+Monetization Club is designed for creators who want to earn more without committing to a paid plan.
+It allows approved users to unlock higher payouts while staying on the free tier.
+</p>
+
+</div>
+
+
+<!-- BENEFITS -->
+
+<div class="section">
+
+<h2>Why It Matters</h2>
+
+<div class="grid">
+
+<div class="card">
+<img class="icon" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d">
+<h3>2x Earnings</h3>
+<p>Double your income across everything you do on the platform.</p>
+</div>
+
+<div class="card">
+<img class="icon" src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44">
+<h3>Stay Free</h3>
+<p>No monthly plan required. Keep full access and earn more.</p>
+</div>
+
+<div class="card">
+<img class="icon" src="https://images.unsplash.com/photo-1556761175-4b46a572b786">
+<h3>Creator Growth</h3>
+<p>Boost your performance and scale faster within StudentStreamHQ.</p>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- HOW IT HELPS PLATFORM -->
+
+<div class="section">
+
+<h2>How It Helps StudentStreamHQ</h2>
+
+<p>
+Monetization Club rewards active creators who bring value to the platform.
+By increasing payouts for high-performing users, it helps grow content quality, engagement, and overall platform success.
+</p>
+
+</div>
+
+
+<!-- APPLY -->
+
+<div class="section">
+
+<div class="applyBox">
+
+<h3>Apply for Monetization Club</h3>
+
+<p style="opacity:.7;margin-top:8px;">
+Approval may require a one-time fee and review process.
+</p>
+
+<button onclick="apply()">Submit Application</button>
+
+<div class="status" id="status"></div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase = createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+)
+
+const status = document.getElementById("status")
+
+window.apply = async () => {
+
+const { data:{ user } } = await supabase.auth.getUser()
+
+if(!user){
+status.textContent="Login required"
+return
+}
+
+await supabase.from("monetization_applications").insert({
+user_id:user.id,
+type:"club"
+})
+
+status.textContent="Application submitted"
+
+}
+
+</script>
+
+</body>
+</html>
