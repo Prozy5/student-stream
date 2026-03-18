@@ -16,152 +16,213 @@ font-family:Inter,system-ui;
 }
 
 body{
-background:radial-gradient(circle at top,#0b1d40,#02040a 70%);
+background:radial-gradient(circle at top,#08142c,#02030a 70%);
 color:white;
+min-height:100vh;
 overflow-x:hidden;
 }
 
-/* BACKGROUND GLOW */
+/* BACKGROUND LIGHTING */
 
-body::before{
-content:"";
+.glow1,.glow2{
 position:fixed;
-width:1000px;
-height:1000px;
-background:radial-gradient(circle,#4da3ff33,transparent 70%);
-top:-250px;
-left:-200px;
-filter:blur(130px);
+width:1200px;
+height:1200px;
+filter:blur(150px);
 z-index:-1;
 }
 
-body::after{
-content:"";
-position:fixed;
-width:1000px;
-height:1000px;
-background:radial-gradient(circle,#00ffc633,transparent 70%);
-bottom:-250px;
-right:-200px;
-filter:blur(140px);
-z-index:-1;
+.glow1{
+background:radial-gradient(circle,#3c8cff33,transparent 70%);
+top:-300px;
+left:-250px;
+}
+
+.glow2{
+background:radial-gradient(circle,#00ffae33,transparent 70%);
+bottom:-300px;
+right:-250px;
+}
+
+/* WRAPPER */
+
+.wrapper{
+max-width:1250px;
+margin:auto;
+padding:80px 25px;
 }
 
 /* HERO */
 
 .hero{
-padding:80px 40px;
-text-align:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:50px;
+flex-wrap:wrap;
+margin-bottom:90px;
 }
 
-.logo{
-font-size:18px;
-font-weight:800;
-opacity:.7;
+.heroText{
+max-width:520px;
 }
 
 .hero h1{
-font-size:60px;
+font-size:64px;
 font-weight:900;
-margin-top:10px;
+letter-spacing:-1px;
 }
 
 .hero p{
-margin-top:10px;
-opacity:.7;
-font-size:16px;
+margin-top:18px;
+opacity:.75;
+line-height:1.7;
 }
 
-/* HERO IMAGE */
+/* HERO VISUAL (REAL FEEL) */
 
-.heroImg{
-margin-top:40px;
-width:100%;
-max-width:900px;
+.heroVisual{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+/* floating cards */
+
+.visualCard{
+width:160px;
+height:160px;
 border-radius:20px;
-box-shadow:0 0 60px rgba(0,0,0,.5);
+background:linear-gradient(135deg,#3c8cff,#00ffae);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:900;
+font-size:18px;
+box-shadow:0 0 50px rgba(60,140,255,.3);
+animation:float 6s ease-in-out infinite;
 }
 
-/* SECTIONS */
+.visualCard:nth-child(2){
+animation-delay:1.5s;
+}
+
+.visualCard:nth-child(3){
+animation-delay:3s;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-15px)}
+}
+
+/* SECTION */
 
 .section{
-padding:70px 40px;
-max-width:1100px;
-margin:auto;
+margin-bottom:90px;
 }
 
 .section h2{
-font-size:32px;
-margin-bottom:20px;
-}
-
-.section p{
-opacity:.7;
-line-height:1.7;
+font-size:34px;
+margin-bottom:25px;
 }
 
 /* GRID */
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:25px;
-margin-top:30px;
 }
 
-/* CARDS */
+/* CARD */
 
 .card{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.1);
-border-radius:18px;
-padding:20px;
-transition:.25s;
-}
-
-.card:hover{
-transform:translateY(-6px);
-border-color:#4da3ff;
-}
-
-/* ICON IMAGE */
-
-.icon{
-width:100%;
-height:160px;
-border-radius:12px;
-object-fit:cover;
-margin-bottom:15px;
-}
-
-/* APPLY */
-
-.applyBox{
-margin-top:60px;
-text-align:center;
-padding:40px;
+padding:28px;
 border-radius:22px;
 background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.1);
+backdrop-filter:blur(20px);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+border-color:#3c8cff;
+box-shadow:0 0 40px rgba(60,140,255,.2);
+}
+
+/* IMAGE STYLE VISUAL */
+
+.visual{
+height:170px;
+border-radius:16px;
+margin-bottom:15px;
+background:linear-gradient(135deg,#3c8cff,#00ffae);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+font-weight:900;
+letter-spacing:.5px;
+}
+
+/* APPLY BOX */
+
+.applyBox{
+padding:50px;
+border-radius:26px;
+background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+border:1px solid rgba(255,255,255,.12);
+text-align:center;
+box-shadow:0 0 60px rgba(0,0,0,.4);
 }
 
 .applyBox h3{
-font-size:26px;
+font-size:34px;
 }
 
-button{
-margin-top:20px;
-padding:15px 30px;
-border:none;
-border-radius:14px;
-background:linear-gradient(90deg,#4da3ff,#00ffc6);
-font-weight:900;
-cursor:pointer;
+.applyBox p{
+margin-top:12px;
+opacity:.7;
 }
+
+/* BUTTON */
+
+button{
+margin-top:30px;
+padding:16px 28px;
+border:none;
+border-radius:16px;
+background:linear-gradient(90deg,#3c8cff,#00ffae);
+font-weight:900;
+font-size:15px;
+cursor:pointer;
+transition:.25s;
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 0 30px rgba(60,140,255,.4);
+}
+
+/* STATUS */
 
 .status{
 margin-top:20px;
-opacity:.8;
+opacity:.85;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:800px){
+.hero{
+flex-direction:column;
+text-align:center;
+}
+.heroVisual{
+justify-content:center;
+}
 }
 
 </style>
@@ -169,36 +230,70 @@ opacity:.8;
 
 <body>
 
+<div class="glow1"></div>
+<div class="glow2"></div>
+
+<div class="wrapper">
+
 <!-- HERO -->
 
 <div class="hero">
 
-<div class="logo">StudentStreamHQ • Monetization Club</div>
+<div class="heroText">
+<h1>Monetization Club</h1>
 
-<h1>Unlock Higher Earnings</h1>
+<p>
+Increase your earning power inside StudentStreamHQ without switching plans.  
+Built for creators who want more out of what they already do.
+</p>
+</div>
 
-<p>Get 2x payouts without upgrading your plan.</p>
+<div class="heroVisual">
 
-<img class="heroImg" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7" />
+<div class="visualCard">2X</div>
+<div class="visualCard">GROWTH</div>
+<div class="visualCard">EARN</div>
+
+</div>
 
 </div>
 
 
-<!-- WHAT IS IT -->
+<!-- WHAT IT IS -->
 
 <div class="section">
 
-<h2>What is Monetization Club?</h2>
+<h2>What You Get</h2>
 
+<div class="grid">
+
+<div class="card">
+<div class="visual">DOUBLE PAYOUT</div>
 <p>
-Monetization Club is designed for creators who want to earn more without committing to a paid plan.
-It allows approved users to unlock higher payouts while staying on the free tier.
+Your earnings are instantly boosted to a 2x multiplier across your activity.
 </p>
+</div>
+
+<div class="card">
+<div class="visual">MORE REACH</div>
+<p>
+Content gets stronger visibility across the platform ecosystem.
+</p>
+</div>
+
+<div class="card">
+<div class="visual">CREATOR STATUS</div>
+<p>
+Stand out as a serious creator contributing to platform growth.
+</p>
+</div>
+
+</div>
 
 </div>
 
 
-<!-- BENEFITS -->
+<!-- WHY IT MATTERS -->
 
 <div class="section">
 
@@ -207,55 +302,42 @@ It allows approved users to unlock higher payouts while staying on the free tier
 <div class="grid">
 
 <div class="card">
-<img class="icon" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d">
-<h3>2x Earnings</h3>
-<p>Double your income across everything you do on the platform.</p>
-</div>
-
-<div class="card">
-<img class="icon" src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44">
-<h3>Stay Free</h3>
-<p>No monthly plan required. Keep full access and earn more.</p>
-</div>
-
-<div class="card">
-<img class="icon" src="https://images.unsplash.com/photo-1556761175-4b46a572b786">
-<h3>Creator Growth</h3>
-<p>Boost your performance and scale faster within StudentStreamHQ.</p>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- HOW IT HELPS PLATFORM -->
-
-<div class="section">
-
-<h2>How It Helps StudentStreamHQ</h2>
-
+<div class="visual">💰</div>
 <p>
-Monetization Club rewards active creators who bring value to the platform.
-By increasing payouts for high-performing users, it helps grow content quality, engagement, and overall platform success.
+Turn effort into higher payouts without needing to upgrade your plan.
 </p>
+</div>
+
+<div class="card">
+<div class="visual">📈</div>
+<p>
+Grow faster as your content performs better and reaches more users.
+</p>
+</div>
+
+<div class="card">
+<div class="visual">⚡</div>
+<p>
+Accelerate your impact inside StudentStreamHQ’s ecosystem.
+</p>
+</div>
+
+</div>
 
 </div>
 
 
 <!-- APPLY -->
 
-<div class="section">
-
 <div class="applyBox">
 
 <h3>Apply for Monetization Club</h3>
 
-<p style="opacity:.7;margin-top:8px;">
-Approval may require a one-time fee and review process.
+<p>
+Applications are reviewed. Once approved, your payout increases instantly.
 </p>
 
-<button onclick="apply()">Submit Application</button>
+<button onclick="apply()">Apply Now</button>
 
 <div class="status" id="status"></div>
 
@@ -280,16 +362,17 @@ window.apply = async () => {
 const { data:{ user } } = await supabase.auth.getUser()
 
 if(!user){
-status.textContent="Login required"
+status.textContent = "You must be logged in."
 return
 }
 
 await supabase.from("monetization_applications").insert({
-user_id:user.id,
-type:"club"
+user_id: user.id,
+type: "club",
+status: "pending"
 })
 
-status.textContent="Application submitted"
+status.textContent = "Application submitted."
 
 }
 
