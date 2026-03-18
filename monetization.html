@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Monetization Club • StudentStreamHQ</title>
+<title>Monetization • StudentStreamHQ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -16,7 +16,7 @@ font-family:Inter,system-ui;
 }
 
 body{
-background:radial-gradient(circle at top,#0b1d40,#02040a 70%);
+background:radial-gradient(circle at top,#08142c,#02030a 70%);
 color:white;
 min-height:100vh;
 overflow-x:hidden;
@@ -26,21 +26,20 @@ overflow-x:hidden;
 
 .glow{
 position:fixed;
-width:1200px;
-height:1200px;
-filter:blur(160px);
+width:1000px;
+height:1000px;
+filter:blur(140px);
 z-index:-1;
-opacity:.5;
 }
 
 .glow.blue{
-background:radial-gradient(circle,#4da3ff55,transparent 70%);
+background:radial-gradient(circle,#3c8cff33,transparent 70%);
 top:-300px;
 left:-200px;
 }
 
 .glow.green{
-background:radial-gradient(circle,#00ffc655,transparent 70%);
+background:radial-gradient(circle,#00ffae33,transparent 70%);
 bottom:-300px;
 right:-200px;
 }
@@ -57,11 +56,11 @@ padding:80px 25px;
 
 .hero{
 display:flex;
-align-items:center;
 justify-content:space-between;
-gap:50px;
+align-items:center;
+gap:40px;
 flex-wrap:wrap;
-margin-bottom:90px;
+margin-bottom:100px;
 }
 
 .heroText{
@@ -69,7 +68,7 @@ max-width:520px;
 }
 
 .hero h1{
-font-size:64px;
+font-size:60px;
 font-weight:900;
 letter-spacing:-1px;
 }
@@ -80,35 +79,40 @@ opacity:.75;
 line-height:1.7;
 }
 
-/* VISUAL LOGO */
+/* VISUAL (REAL DESIGN, NOT TEXT BOX) */
 
-.logoVisual{
-width:240px;
-height:240px;
+.visualHero{
+width:320px;
+height:320px;
 border-radius:30px;
-background:linear-gradient(135deg,#4da3ff,#00ffc6);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:48px;
-font-weight:900;
-box-shadow:0 0 80px rgba(77,163,255,.45);
+background:linear-gradient(135deg,#3c8cff,#00ffae);
 position:relative;
 overflow:hidden;
+box-shadow:0 0 80px rgba(0,0,0,.6);
 }
 
-.logoVisual::after{
+/* layered shapes */
+
+.visualHero::before{
 content:"";
 position:absolute;
-width:200%;
-height:200%;
-background:linear-gradient(120deg,transparent,rgba(255,255,255,.2),transparent);
-animation:shine 5s linear infinite;
+width:200px;
+height:200px;
+background:rgba(255,255,255,.08);
+border-radius:50%;
+top:-40px;
+left:-40px;
 }
 
-@keyframes shine{
-0%{transform:translateX(-100%)}
-100%{transform:translateX(100%)}
+.visualHero::after{
+content:"";
+position:absolute;
+width:180px;
+height:180px;
+background:rgba(0,0,0,.3);
+border-radius:50%;
+bottom:-50px;
+right:-40px;
 }
 
 /* SECTION */
@@ -119,72 +123,83 @@ margin-bottom:90px;
 
 .section h2{
 font-size:34px;
-margin-bottom:30px;
+margin-bottom:25px;
 }
 
-/* GRID */
+/* BENEFITS LIST (NO BOX GRID SPAM) */
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:30px;
+.benefits{
+display:flex;
+flex-direction:column;
+gap:18px;
 }
 
-/* CARD */
+.benefit{
+padding:18px 22px;
+border-radius:16px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+}
 
-.card{
-padding:25px;
-border-radius:22px;
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.1);
-backdrop-filter:blur(25px);
-transition:.35s;
+.benefit strong{
+display:block;
+margin-bottom:5px;
+}
+
+/* SPLIT VISUAL SECTION */
+
+.split{
+display:flex;
+gap:40px;
+flex-wrap:wrap;
+align-items:center;
+}
+
+.splitVisual{
+flex:1;
+min-height:260px;
+border-radius:24px;
+background:linear-gradient(135deg,#0f1f45,#02030a);
+border:1px solid rgba(255,255,255,.08);
 position:relative;
 overflow:hidden;
 }
 
-.card:hover{
-transform:translateY(-10px) scale(1.02);
-border-color:#4da3ff;
-box-shadow:0 0 50px rgba(77,163,255,.2);
+/* animated bars */
+
+.bar{
+position:absolute;
+bottom:0;
+width:30px;
+background:linear-gradient(180deg,#3c8cff,#00ffae);
+border-radius:10px 10px 0 0;
+opacity:.8;
 }
 
-/* REAL VISUAL (SVG IMAGE STYLE) */
-
-.visual{
-height:170px;
-border-radius:16px;
-margin-bottom:18px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:linear-gradient(135deg,#4da3ff22,#00ffc622);
-}
-
-/* SVG ICON STYLE */
-
-.visual svg{
-width:80px;
-height:80px;
-}
+.bar:nth-child(1){height:40%;left:40px;}
+.bar:nth-child(2){height:65%;left:90px;}
+.bar:nth-child(3){height:85%;left:140px;}
+.bar:nth-child(4){height:55%;left:190px;}
 
 /* APPLY BOX */
 
 .applyBox{
+margin-top:60px;
 padding:45px;
 border-radius:28px;
-background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.1);
 text-align:center;
+backdrop-filter:blur(20px);
 }
 
 .applyBox h3{
-font-size:34px;
+font-size:32px;
 }
 
 .applyBox p{
-margin-top:12px;
-opacity:.75;
+margin-top:10px;
+opacity:.7;
 }
 
 /* BUTTON */
@@ -193,17 +208,16 @@ button{
 margin-top:25px;
 padding:16px 28px;
 border:none;
-border-radius:16px;
-background:linear-gradient(90deg,#4da3ff,#00ffc6);
+border-radius:14px;
+background:linear-gradient(90deg,#3c8cff,#00ffae);
 font-weight:900;
 font-size:15px;
 cursor:pointer;
-transition:.25s;
 }
 
 button:hover{
 transform:translateY(-2px);
-box-shadow:0 10px 30px rgba(77,163,255,.4);
+opacity:.95;
 }
 
 /* STATUS */
@@ -229,107 +243,75 @@ opacity:.85;
 
 <div class="heroText">
 <h1>Monetization Club</h1>
+
 <p>
-Increase your earning power across StudentStreamHQ.  
-Designed for creators ready to turn activity into real payout growth.
+Monetization on StudentStreamHQ is built around impact.  
+The more you contribute, the more you earn.  
+Monetization Club pushes that further — unlocking higher payouts without needing a full upgrade.
 </p>
-</div>
-
-<div class="logoVisual">
-MC
-</div>
 
 </div>
 
-<!-- WHAT IT IS -->
+<div class="visualHero"></div>
+
+</div>
+
+
+<!-- WHAT IT DOES -->
 
 <div class="section">
 
 <h2>What You Unlock</h2>
 
-<div class="grid">
+<div class="benefits">
 
-<div class="card">
-<div class="visual">
-
-<!-- MONEY ICON -->
-<svg viewBox="0 0 24 24" fill="#00ffc6">
-<path d="M12 1L15 8H22L16.5 12.5L18.5 20L12 15.5L5.5 20L7.5 12.5L2 8H9L12 1Z"/>
-</svg>
-
-</div>
-<p><strong>2x Earnings</strong><br>
-Double your payout across everything you do.</p>
+<div class="benefit">
+<strong>2x Earnings Boost</strong>
+Increase your payout multiplier instantly across your activity.
 </div>
 
-<div class="card">
-<div class="visual">
-
-<!-- GROWTH ICON -->
-<svg viewBox="0 0 24 24" fill="#4da3ff">
-<path d="M3 17L9 11L13 15L21 7V17H3Z"/>
-</svg>
-
-</div>
-<p><strong>Faster Growth</strong><br>
-Push your content further across the platform.</p>
+<div class="benefit">
+<strong>Performance-Based Growth</strong>
+Earnings scale with your impact — not just uploads.
 </div>
 
-<div class="card">
-<div class="visual">
-
-<!-- IMPACT ICON -->
-<svg viewBox="0 0 24 24" fill="#00ffc6">
-<circle cx="12" cy="12" r="10"/>
-</svg>
-
-</div>
-<p><strong>Platform Impact</strong><br>
-Your activity directly scales StudentStreamHQ.</p>
+<div class="benefit">
+<strong>Platform Visibility</strong>
+Higher engagement content gets pushed further across the platform.
 </div>
 
 </div>
 
 </div>
 
-<!-- WHY IT MATTERS -->
 
-<div class="section">
+<!-- HOW IT HELPS -->
 
-<h2>Why Creators Use It</h2>
+<div class="section split">
 
-<div class="grid">
+<div style="flex:1;min-width:300px;">
+<h2>How It Helps You</h2>
 
-<div class="card">
-<div class="visual">
-<svg viewBox="0 0 24 24" fill="#4da3ff">
-<path d="M12 2L19 21H5L12 2Z"/>
-</svg>
-</div>
-<p>Turn effort into real payouts.</p>
-</div>
+<p style="opacity:.75;line-height:1.7;margin-top:10px;">
+Instead of staying at base earnings, Monetization Club gives you leverage.  
+You don’t need to upgrade plans — you just need to perform.
 
-<div class="card">
-<div class="visual">
-<svg viewBox="0 0 24 24" fill="#00ffc6">
-<path d="M4 12H20M12 4V20"/>
-</svg>
-</div>
-<p>Scale faster without upgrading plans.</p>
+If your content hits, your payouts reflect it.
+</p>
+
 </div>
 
-<div class="card">
-<div class="visual">
-<svg viewBox="0 0 24 24" fill="#4da3ff">
-<path d="M3 12L12 3L21 12L12 21Z"/>
-</svg>
-</div>
-<p>Build momentum inside the ecosystem.</p>
-</div>
+<div class="splitVisual">
+
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
 
 </div>
 
 </div>
+
 
 <!-- APPLY -->
 
@@ -338,7 +320,8 @@ Your activity directly scales StudentStreamHQ.</p>
 <h3>Apply for Monetization Club</h3>
 
 <p>
-Approval unlocks <strong>2x payout multiplier</strong> on your account.
+Applications are reviewed based on activity and impact.  
+Once approved, your account unlocks higher earning potential instantly.
 </p>
 
 <button onclick="apply()">Apply Now</button>
@@ -348,6 +331,7 @@ Approval unlocks <strong>2x payout multiplier</strong> on your account.
 </div>
 
 </div>
+
 
 <script type="module">
 
@@ -362,14 +346,14 @@ const status=document.getElementById("status")
 
 window.apply = async () => {
 
-status.textContent="Submitting..."
-
 const { data:{ user } } = await supabase.auth.getUser()
 
 if(!user){
-status.textContent="You must log in first"
+status.textContent="You need to log in first."
 return
 }
+
+status.textContent="Submitting application..."
 
 const { error } = await supabase
 .from("monetization_applications")
@@ -384,7 +368,7 @@ status.textContent="Error: "+error.message
 return
 }
 
-status.textContent="Application submitted ✅"
+status.textContent="Application submitted successfully."
 
 }
 
