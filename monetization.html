@@ -16,38 +16,39 @@ font-family:Inter,system-ui;
 }
 
 body{
-background:radial-gradient(circle at top,#08142c,#02030a 70%);
+background:radial-gradient(circle at top,#0b1d40,#02040a 70%);
 color:white;
 min-height:100vh;
 overflow-x:hidden;
 }
 
-/* BACKGROUND LIGHTING */
+/* BACKGROUND GLOW */
 
-.glow1,.glow2{
+.glow{
 position:fixed;
 width:1200px;
 height:1200px;
-filter:blur(150px);
+filter:blur(160px);
 z-index:-1;
+opacity:.5;
 }
 
-.glow1{
-background:radial-gradient(circle,#3c8cff33,transparent 70%);
+.glow.blue{
+background:radial-gradient(circle,#4da3ff55,transparent 70%);
 top:-300px;
-left:-250px;
+left:-200px;
 }
 
-.glow2{
-background:radial-gradient(circle,#00ffae33,transparent 70%);
+.glow.green{
+background:radial-gradient(circle,#00ffc655,transparent 70%);
 bottom:-300px;
-right:-250px;
+right:-200px;
 }
 
 /* WRAPPER */
 
 .wrapper{
-max-width:1250px;
+max-width:1200px;
 margin:auto;
 padding:80px 25px;
 }
@@ -56,8 +57,8 @@ padding:80px 25px;
 
 .hero{
 display:flex;
-justify-content:space-between;
 align-items:center;
+justify-content:space-between;
 gap:50px;
 flex-wrap:wrap;
 margin-bottom:90px;
@@ -74,46 +75,40 @@ letter-spacing:-1px;
 }
 
 .hero p{
-margin-top:18px;
+margin-top:15px;
 opacity:.75;
 line-height:1.7;
 }
 
-/* HERO VISUAL (REAL FEEL) */
+/* VISUAL LOGO */
 
-.heroVisual{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-}
-
-/* floating cards */
-
-.visualCard{
-width:160px;
-height:160px;
-border-radius:20px;
-background:linear-gradient(135deg,#3c8cff,#00ffae);
+.logoVisual{
+width:240px;
+height:240px;
+border-radius:30px;
+background:linear-gradient(135deg,#4da3ff,#00ffc6);
 display:flex;
 align-items:center;
 justify-content:center;
+font-size:48px;
 font-weight:900;
-font-size:18px;
-box-shadow:0 0 50px rgba(60,140,255,.3);
-animation:float 6s ease-in-out infinite;
+box-shadow:0 0 80px rgba(77,163,255,.45);
+position:relative;
+overflow:hidden;
 }
 
-.visualCard:nth-child(2){
-animation-delay:1.5s;
+.logoVisual::after{
+content:"";
+position:absolute;
+width:200%;
+height:200%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,.2),transparent);
+animation:shine 5s linear infinite;
 }
 
-.visualCard:nth-child(3){
-animation-delay:3s;
-}
-
-@keyframes float{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(-15px)}
+@keyframes shine{
+0%{transform:translateX(-100%)}
+100%{transform:translateX(100%)}
 }
 
 /* SECTION */
@@ -124,7 +119,7 @@ margin-bottom:90px;
 
 .section h2{
 font-size:34px;
-margin-bottom:25px;
+margin-bottom:30px;
 }
 
 /* GRID */
@@ -132,50 +127,55 @@ margin-bottom:25px;
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:25px;
+gap:30px;
 }
 
 /* CARD */
 
 .card{
-padding:28px;
+padding:25px;
 border-radius:22px;
 background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.1);
-backdrop-filter:blur(20px);
-transition:.3s;
+backdrop-filter:blur(25px);
+transition:.35s;
+position:relative;
+overflow:hidden;
 }
 
 .card:hover{
-transform:translateY(-8px);
-border-color:#3c8cff;
-box-shadow:0 0 40px rgba(60,140,255,.2);
+transform:translateY(-10px) scale(1.02);
+border-color:#4da3ff;
+box-shadow:0 0 50px rgba(77,163,255,.2);
 }
 
-/* IMAGE STYLE VISUAL */
+/* REAL VISUAL (SVG IMAGE STYLE) */
 
 .visual{
 height:170px;
 border-radius:16px;
-margin-bottom:15px;
-background:linear-gradient(135deg,#3c8cff,#00ffae);
+margin-bottom:18px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:20px;
-font-weight:900;
-letter-spacing:.5px;
+background:linear-gradient(135deg,#4da3ff22,#00ffc622);
+}
+
+/* SVG ICON STYLE */
+
+.visual svg{
+width:80px;
+height:80px;
 }
 
 /* APPLY BOX */
 
 .applyBox{
-padding:50px;
-border-radius:26px;
-background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-border:1px solid rgba(255,255,255,.12);
+padding:45px;
+border-radius:28px;
+background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+border:1px solid rgba(255,255,255,.1);
 text-align:center;
-box-shadow:0 0 60px rgba(0,0,0,.4);
 }
 
 .applyBox h3{
@@ -184,17 +184,17 @@ font-size:34px;
 
 .applyBox p{
 margin-top:12px;
-opacity:.7;
+opacity:.75;
 }
 
 /* BUTTON */
 
 button{
-margin-top:30px;
+margin-top:25px;
 padding:16px 28px;
 border:none;
 border-radius:16px;
-background:linear-gradient(90deg,#3c8cff,#00ffae);
+background:linear-gradient(90deg,#4da3ff,#00ffc6);
 font-weight:900;
 font-size:15px;
 cursor:pointer;
@@ -203,7 +203,7 @@ transition:.25s;
 
 button:hover{
 transform:translateY(-2px);
-box-shadow:0 0 30px rgba(60,140,255,.4);
+box-shadow:0 10px 30px rgba(77,163,255,.4);
 }
 
 /* STATUS */
@@ -213,25 +213,13 @@ margin-top:20px;
 opacity:.85;
 }
 
-/* RESPONSIVE */
-
-@media(max-width:800px){
-.hero{
-flex-direction:column;
-text-align:center;
-}
-.heroVisual{
-justify-content:center;
-}
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="glow1"></div>
-<div class="glow2"></div>
+<div class="glow blue"></div>
+<div class="glow green"></div>
 
 <div class="wrapper">
 
@@ -241,91 +229,107 @@ justify-content:center;
 
 <div class="heroText">
 <h1>Monetization Club</h1>
-
 <p>
-Increase your earning power inside StudentStreamHQ without switching plans.  
-Built for creators who want more out of what they already do.
+Increase your earning power across StudentStreamHQ.  
+Designed for creators ready to turn activity into real payout growth.
 </p>
 </div>
 
-<div class="heroVisual">
-
-<div class="visualCard">2X</div>
-<div class="visualCard">GROWTH</div>
-<div class="visualCard">EARN</div>
-
+<div class="logoVisual">
+MC
 </div>
 
 </div>
-
 
 <!-- WHAT IT IS -->
 
 <div class="section">
 
-<h2>What You Get</h2>
+<h2>What You Unlock</h2>
 
 <div class="grid">
 
 <div class="card">
-<div class="visual">DOUBLE PAYOUT</div>
-<p>
-Your earnings are instantly boosted to a 2x multiplier across your activity.
-</p>
+<div class="visual">
+
+<!-- MONEY ICON -->
+<svg viewBox="0 0 24 24" fill="#00ffc6">
+<path d="M12 1L15 8H22L16.5 12.5L18.5 20L12 15.5L5.5 20L7.5 12.5L2 8H9L12 1Z"/>
+</svg>
+
+</div>
+<p><strong>2x Earnings</strong><br>
+Double your payout across everything you do.</p>
 </div>
 
 <div class="card">
-<div class="visual">MORE REACH</div>
-<p>
-Content gets stronger visibility across the platform ecosystem.
-</p>
+<div class="visual">
+
+<!-- GROWTH ICON -->
+<svg viewBox="0 0 24 24" fill="#4da3ff">
+<path d="M3 17L9 11L13 15L21 7V17H3Z"/>
+</svg>
+
+</div>
+<p><strong>Faster Growth</strong><br>
+Push your content further across the platform.</p>
 </div>
 
 <div class="card">
-<div class="visual">CREATOR STATUS</div>
-<p>
-Stand out as a serious creator contributing to platform growth.
-</p>
+<div class="visual">
+
+<!-- IMPACT ICON -->
+<svg viewBox="0 0 24 24" fill="#00ffc6">
+<circle cx="12" cy="12" r="10"/>
+</svg>
+
+</div>
+<p><strong>Platform Impact</strong><br>
+Your activity directly scales StudentStreamHQ.</p>
 </div>
 
 </div>
 
 </div>
-
 
 <!-- WHY IT MATTERS -->
 
 <div class="section">
 
-<h2>Why It Matters</h2>
+<h2>Why Creators Use It</h2>
 
 <div class="grid">
 
 <div class="card">
-<div class="visual">💰</div>
-<p>
-Turn effort into higher payouts without needing to upgrade your plan.
-</p>
+<div class="visual">
+<svg viewBox="0 0 24 24" fill="#4da3ff">
+<path d="M12 2L19 21H5L12 2Z"/>
+</svg>
+</div>
+<p>Turn effort into real payouts.</p>
 </div>
 
 <div class="card">
-<div class="visual">📈</div>
-<p>
-Grow faster as your content performs better and reaches more users.
-</p>
+<div class="visual">
+<svg viewBox="0 0 24 24" fill="#00ffc6">
+<path d="M4 12H20M12 4V20"/>
+</svg>
+</div>
+<p>Scale faster without upgrading plans.</p>
 </div>
 
 <div class="card">
-<div class="visual">⚡</div>
-<p>
-Accelerate your impact inside StudentStreamHQ’s ecosystem.
-</p>
+<div class="visual">
+<svg viewBox="0 0 24 24" fill="#4da3ff">
+<path d="M3 12L12 3L21 12L12 21Z"/>
+</svg>
+</div>
+<p>Build momentum inside the ecosystem.</p>
 </div>
 
 </div>
 
 </div>
-
 
 <!-- APPLY -->
 
@@ -334,7 +338,7 @@ Accelerate your impact inside StudentStreamHQ’s ecosystem.
 <h3>Apply for Monetization Club</h3>
 
 <p>
-Applications are reviewed. Once approved, your payout increases instantly.
+Approval unlocks <strong>2x payout multiplier</strong> on your account.
 </p>
 
 <button onclick="apply()">Apply Now</button>
@@ -345,7 +349,6 @@ Applications are reviewed. Once approved, your payout increases instantly.
 
 </div>
 
-
 <script type="module">
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
@@ -355,24 +358,33 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-const status = document.getElementById("status")
+const status=document.getElementById("status")
 
 window.apply = async () => {
+
+status.textContent="Submitting..."
 
 const { data:{ user } } = await supabase.auth.getUser()
 
 if(!user){
-status.textContent = "You must be logged in."
+status.textContent="You must log in first"
 return
 }
 
-await supabase.from("monetization_applications").insert({
-user_id: user.id,
-type: "club",
-status: "pending"
+const { error } = await supabase
+.from("monetization_applications")
+.insert({
+user_id:user.id,
+type:"club",
+status:"pending"
 })
 
-status.textContent = "Application submitted."
+if(error){
+status.textContent="Error: "+error.message
+return
+}
+
+status.textContent="Application submitted ✅"
 
 }
 
