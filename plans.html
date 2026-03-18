@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Plans • StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui;
+}
+
+body{
+min-height:100vh;
+background:radial-gradient(circle at top,#0b1d40,#03050c);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+/* BACKGROUND GLOW */
+
+body::before{
+content:"";
+position:fixed;
+width:900px;
+height:900px;
+background:radial-gradient(circle,#4da3ff33,transparent 70%);
+top:-250px;
+left:-200px;
+filter:blur(120px);
+}
+
+body::after{
+content:"";
+position:fixed;
+width:900px;
+height:900px;
+background:radial-gradient(circle,#00ffc633,transparent 70%);
+bottom:-250px;
+right:-200px;
+filter:blur(130px);
+}
+
+/* CONTAINER */
+
+.container{
+width:100%;
+max-width:1100px;
+text-align:center;
+padding:40px;
+}
+
+/* TITLE */
+
+h1{
+font-size:50px;
+font-weight:900;
+}
+
+.sub{
+opacity:.7;
+margin-top:10px;
+}
+
+/* PLANS */
+
+.plans{
+margin-top:50px;
+display:flex;
+gap:25px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+/* CARD */
+
+.plan{
+width:300px;
+padding:30px;
+border-radius:20px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.12);
+backdrop-filter:blur(20px);
+cursor:pointer;
+transition:.25s;
+}
+
+.plan:hover{
+transform:translateY(-6px);
+border-color:#4da3ff;
+}
+
+/* TEXT */
+
+.plan h2{
+font-size:26px;
+}
+
+.price{
+margin:10px 0;
+opacity:.8;
+}
+
+.features{
+font-size:14px;
+opacity:.75;
+line-height:1.6;
+margin-top:10px;
+}
+
+/* BUTTON */
+
+button{
+margin-top:20px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+background:linear-gradient(90deg,#4da3ff,#00ffc6);
+font-weight:800;
+cursor:pointer;
+}
+
+/* STATUS */
+
+.status{
+margin-top:20px;
+opacity:.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Choose Your Plan</h1>
+<div class="sub">Control your earnings & growth</div>
+
+<div class="plans">
+
+<div class="plan" onclick="selectPlan('free')">
+<h2>Free</h2>
+<div class="price">$0</div>
+<div class="features">
+Full access to platform<br>
+Upload content<br>
+Earn based on activity<br>
+1x payout
+</div>
+<button>Select Free</button>
+</div>
+
+<div class="plan" onclick="selectPlan('pro')">
+<h2>Pro</h2>
+<div class="price">$5/mo</div>
+<div class="features">
+Verified badge<br>
+Priority exposure<br>
+2x payout multiplier
+</div>
+<button>Upgrade</button>
+</div>
+
+<div class="plan" onclick="selectPlan('advanced')">
+<h2>Advanced</h2>
+<div class="price">$10/mo</div>
+<div class="features">
+Everything in Pro<br>
+Maximum exposure<br>
+3x payout multiplier
+</div>
+<button>Go Advanced</button>
+</div>
+
+</div>
+
+<div class="status" id="status"></div>
+
+</div>
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase = createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+)
+
+const status = document.getElementById("status")
+
+window.selectPlan = async function(plan){
+
+status.textContent="Saving..."
+
+const { data: { user } } = await supabase.auth.getUser()
+
+if(!user){
+status.textContent="Not logged in"
+return
+}
+
+let multiplier = 1
+
+if(plan==="pro") multiplier = 2
+if(plan==="advanced") multiplier = 3
+
+await supabase
+.from("profiles")
+.update({
+plan: plan,
+payout_multiplier: multiplier
+})
+.eq("id", user.id)
+
+status.textContent="Saved"
+
+setTimeout(()=>{
+window.location.href="/dashboard.html"
+},800)
+
+}
+
+</script>
+
+</body>
+</html>
