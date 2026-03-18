@@ -6,8 +6,6 @@
 <title>Plans • StudentStreamHQ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="https://js.stripe.com/v3/"></script>
-
 <style>
 
 *{
@@ -24,111 +22,111 @@ min-height:100vh;
 overflow-x:hidden;
 }
 
-/* BACKGROUND GLOW */
+/* BACKGROUND GLOW (ENHANCED) */
 
-body::before{
-content:"";
+.glow1,.glow2{
 position:fixed;
-width:1000px;
-height:1000px;
-background:radial-gradient(circle,#4da3ff33,transparent 70%);
-top:-250px;
-left:-200px;
-filter:blur(120px);
+width:1200px;
+height:1200px;
+filter:blur(140px);
 z-index:-1;
 }
 
-body::after{
-content:"";
-position:fixed;
-width:1000px;
-height:1000px;
+.glow1{
+background:radial-gradient(circle,#4da3ff33,transparent 70%);
+top:-300px;
+left:-200px;
+}
+
+.glow2{
 background:radial-gradient(circle,#00ffc633,transparent 70%);
-bottom:-250px;
+bottom:-300px;
 right:-200px;
-filter:blur(140px);
-z-index:-1;
 }
 
 /* WRAPPER */
 
 .wrapper{
-max-width:1200px;
+max-width:1300px;
 margin:auto;
-padding:80px 25px;
-text-align:center;
+padding:90px 30px;
 }
 
 /* HERO */
 
-h1{
-font-size:64px;
+.hero{
+text-align:center;
+margin-bottom:70px;
+}
+
+.hero h1{
+font-size:68px;
 font-weight:900;
 letter-spacing:-1px;
 }
 
-.sub{
+.hero p{
 margin-top:10px;
 opacity:.7;
+font-size:16px;
 }
 
 /* PLANS */
 
 .plans{
 display:flex;
-gap:30px;
-margin-top:70px;
+gap:35px;
 justify-content:center;
 flex-wrap:wrap;
 }
 
-/* PLAN CARD */
+/* CARD */
 
 .plan{
-width:320px;
-padding:35px;
-border-radius:24px;
-background:rgba(255,255,255,.05);
+width:340px;
+padding:40px 30px;
+border-radius:28px;
+background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
 border:1px solid rgba(255,255,255,.12);
-backdrop-filter:blur(20px);
+backdrop-filter:blur(25px);
 transition:.3s;
 position:relative;
 }
 
 .plan:hover{
-transform:translateY(-10px) scale(1.02);
+transform:translateY(-12px) scale(1.03);
+box-shadow:0 0 70px rgba(77,163,255,.25);
 border-color:#4da3ff;
-box-shadow:0 0 60px rgba(77,163,255,.25);
 }
 
 /* FEATURED */
 
 .featured{
 border:1px solid #4da3ff;
-box-shadow:0 0 70px rgba(77,163,255,.3);
+box-shadow:0 0 80px rgba(77,163,255,.3);
 }
 
 .badge{
 position:absolute;
 top:-14px;
-left:20px;
+left:25px;
 background:linear-gradient(90deg,#4da3ff,#00ffc6);
-padding:6px 14px;
+padding:7px 16px;
 border-radius:999px;
 font-size:12px;
-font-weight:700;
+font-weight:800;
 }
 
 /* TEXT */
 
 .plan h2{
-font-size:28px;
+font-size:30px;
 }
 
 .price{
-font-size:44px;
+font-size:48px;
 font-weight:900;
-margin-top:10px;
+margin-top:12px;
 }
 
 .price span{
@@ -137,62 +135,72 @@ opacity:.6;
 }
 
 .payout{
-margin-top:10px;
+margin-top:12px;
 font-size:18px;
 color:#00ffc6;
-font-weight:700;
+font-weight:800;
 }
 
 .desc{
-margin-top:12px;
+margin-top:15px;
 opacity:.75;
-font-size:14px;
 line-height:1.6;
+font-size:14px;
 }
 
 /* BUTTON */
 
 button{
-margin-top:25px;
+margin-top:30px;
 width:100%;
-padding:15px;
+padding:16px;
 border:none;
-border-radius:14px;
+border-radius:16px;
 background:linear-gradient(90deg,#4da3ff,#00ffc6);
-font-weight:800;
+font-weight:900;
 font-size:15px;
 cursor:pointer;
+transition:.25s;
+}
+
+button:hover{
+transform:translateY(-2px);
+opacity:.95;
 }
 
 /* CLUB */
 
 .club{
-margin-top:90px;
-padding:35px;
-border-radius:24px;
-background:rgba(255,255,255,.04);
+margin-top:100px;
+padding:45px;
+border-radius:28px;
+background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
 border:1px solid rgba(255,255,255,.1);
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.clubText{
+max-width:500px;
 }
 
 .club h3{
-font-size:22px;
+font-size:26px;
 }
 
 .club p{
-margin-top:10px;
+margin-top:8px;
 opacity:.7;
-}
-
-.club button{
-width:auto;
-padding:12px 20px;
-margin-top:15px;
 }
 
 /* STATUS */
 
 .status{
-margin-top:25px;
+margin-top:30px;
+text-align:center;
 opacity:.8;
 }
 
@@ -201,10 +209,15 @@ opacity:.8;
 
 <body>
 
+<div class="glow1"></div>
+<div class="glow2"></div>
+
 <div class="wrapper">
 
+<div class="hero">
 <h1>Choose Your Earning Power</h1>
-<div class="sub">Same platform. Your payout decides your level.</div>
+<p>Same platform. Same access. Your payout multiplier defines your level.</p>
+</div>
 
 <div class="plans">
 
@@ -213,51 +226,83 @@ opacity:.8;
 <div class="plan">
 <h2>Free</h2>
 <div class="price">$0 <span>/mo</span></div>
-<div class="payout">1x payout</div>
+<div class="payout">1x Earnings</div>
+
 <div class="desc">
-Full access to everything. Earn at the base rate.
+Full access to StudentStreamHQ.  
+You earn based on your real activity across the platform at the base payout level.
 </div>
-<button onclick="selectFree()">Start Free</button>
+
+<button onclick="selectFree()">Continue Free</button>
 </div>
+
 
 <!-- PRO -->
 
 <div class="plan featured">
+
 <div class="badge">Most Popular</div>
+
 <h2>Pro</h2>
-<div class="price">$7 <span>/mo</span></div>
-<div class="payout">2x payout</div>
+<div class="price">$8 <span>/mo</span></div>
+<div class="payout">2x Earnings</div>
+
 <div class="desc">
-Double everything you earn across the platform.
+Double everything you generate.  
+More visibility, faster growth, and verified creator presence.
 </div>
-<button onclick="startCheckout('pro')">Upgrade</button>
+
+<button onclick="goStripe('PRO_LINK')">
+Upgrade to Pro
+</button>
+
 </div>
+
 
 <!-- ADVANCED -->
 
 <div class="plan">
+
 <h2>Advanced</h2>
-<div class="price">$15 <span>/mo</span></div>
-<div class="payout">3x payout</div>
+<div class="price">$18 <span>/mo</span></div>
+<div class="payout">3x Earnings</div>
+
 <div class="desc">
-Maximum earning potential across all activity.
+Maximum earning potential across all divisions.  
+Built for serious creators scaling income.
 </div>
-<button onclick="startCheckout('advanced')">Go Advanced</button>
-</div>
+
+<button onclick="goStripe('ADVANCED_LINK')">
+Go Advanced
+</button>
 
 </div>
 
-<!-- CLUB -->
+</div>
+
+
+<!-- MONETIZATION CLUB -->
 
 <div class="club">
+
+<div class="clubText">
 <h3>Monetization Club</h3>
-<p>Free users can apply to unlock 2x payouts without upgrading plans.</p>
-<button onclick="applyClub()">Apply</button>
+<p>
+On Free? Apply to unlock 2x payouts without upgrading your plan.
+Approval required.
+</p>
+</div>
+
+<button onclick="goMonetization()">
+Apply Now
+</button>
+
 </div>
 
 <div class="status" id="status"></div>
 
 </div>
+
 
 <script type="module">
 
@@ -268,11 +313,7 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-const status=document.getElementById("status")
-
-/* STRIPE */
-
-const stripe = Stripe("YOUR_STRIPE_PUBLISHABLE_KEY")
+const status = document.getElementById("status")
 
 /* FREE PLAN */
 
@@ -280,46 +321,34 @@ window.selectFree = async () => {
 
 const { data:{ user } } = await supabase.auth.getUser()
 
+if(!user){
+status.textContent="Login required"
+return
+}
+
 await supabase.from("profiles").update({
 plan:"free",
 payout_multiplier:1
 }).eq("id",user.id)
 
+status.textContent="Free plan activated"
+
+setTimeout(()=>{
 window.location.href="/dashboard.html"
+},700)
 
 }
 
-/* CHECKOUT */
+/* STRIPE LINKS */
 
-window.startCheckout = async (plan) => {
-
-status.textContent="Redirecting..."
-
-const res = await fetch("https://YOUR_BACKEND_URL/create-checkout-session",{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({ plan })
-})
-
-const data = await res.json()
-
-window.location.href = data.url
-
+window.goStripe = (link) => {
+window.location.href = link
 }
 
-/* CLUB */
+/* MONETIZATION PAGE */
 
-window.applyClub = async () => {
-
-const { data:{ user } } = await supabase.auth.getUser()
-
-await supabase.from("monetization_applications").insert({
-user_id:user.id,
-type:"club"
-})
-
-status.textContent="Application sent"
-
+window.goMonetization = () => {
+window.location.href="/monetization.html"
 }
 
 </script>
