@@ -16,16 +16,12 @@ font-family:Inter,system-ui;
 }
 
 body{
-min-height:100vh;
-background:radial-gradient(circle at top,#0b1d40,#03050c);
+background:radial-gradient(circle at top,#0b1d40,#03050c 70%);
 color:white;
-display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden;
+min-height:100vh;
 }
 
-/* BACKGROUND GLOW */
+/* GLOW */
 
 body::before{
 content:"";
@@ -33,7 +29,7 @@ position:fixed;
 width:900px;
 height:900px;
 background:radial-gradient(circle,#4da3ff33,transparent 70%);
-top:-250px;
+top:-200px;
 left:-200px;
 filter:blur(120px);
 }
@@ -44,24 +40,24 @@ position:fixed;
 width:900px;
 height:900px;
 background:radial-gradient(circle,#00ffc633,transparent 70%);
-bottom:-250px;
+bottom:-200px;
 right:-200px;
 filter:blur(130px);
 }
 
-/* CONTAINER */
+/* WRAP */
 
-.container{
-width:100%;
-max-width:1100px;
+.wrapper{
+max-width:1000px;
+margin:auto;
+padding:70px 30px;
 text-align:center;
-padding:40px;
 }
 
 /* TITLE */
 
 h1{
-font-size:50px;
+font-size:52px;
 font-weight:900;
 }
 
@@ -73,28 +69,26 @@ margin-top:10px;
 /* PLANS */
 
 .plans{
-margin-top:50px;
 display:flex;
 gap:25px;
+margin-top:60px;
 justify-content:center;
 flex-wrap:wrap;
 }
 
-/* CARD */
+/* PLAN */
 
 .plan{
-width:300px;
+width:280px;
 padding:30px;
 border-radius:20px;
 background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.12);
-backdrop-filter:blur(20px);
-cursor:pointer;
 transition:.25s;
 }
 
 .plan:hover{
-transform:translateY(-6px);
+transform:translateY(-8px);
 border-color:#4da3ff;
 }
 
@@ -104,35 +98,59 @@ border-color:#4da3ff;
 font-size:26px;
 }
 
-.price{
-margin:10px 0;
-opacity:.8;
+.payout{
+margin-top:15px;
+font-size:34px;
+font-weight:900;
+color:#00ffc6;
 }
 
-.features{
-font-size:14px;
-opacity:.75;
-line-height:1.6;
+.desc{
 margin-top:10px;
+opacity:.7;
+font-size:14px;
 }
 
 /* BUTTON */
 
 button{
-margin-top:20px;
+margin-top:25px;
 width:100%;
 padding:14px;
 border:none;
-border-radius:14px;
+border-radius:12px;
 background:linear-gradient(90deg,#4da3ff,#00ffc6);
 font-weight:800;
 cursor:pointer;
 }
 
-/* STATUS */
+/* CLUB */
+
+.club{
+margin-top:80px;
+padding:30px;
+border-radius:20px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.1);
+}
+
+.club h3{
+font-size:22px;
+}
+
+.club p{
+opacity:.7;
+margin-top:10px;
+}
+
+.club button{
+margin-top:15px;
+width:auto;
+padding:12px 20px;
+}
 
 .status{
-margin-top:20px;
+margin-top:25px;
 opacity:.8;
 }
 
@@ -141,52 +159,95 @@ opacity:.8;
 
 <body>
 
-<div class="container">
+<div class="wrapper">
 
-<h1>Choose Your Plan</h1>
-<div class="sub">Control your earnings & growth</div>
+<h1>Your Earnings. Your Level.</h1>
+
+<div class="sub">
+Same platform. Same access. Different payouts.
+</div>
 
 <div class="plans">
 
-<div class="plan" onclick="selectPlan('free')">
+<!-- FREE -->
+
+<div class="plan">
+
 <h2>Free</h2>
-<div class="price">$0</div>
-<div class="features">
-Full access to platform<br>
-Upload content<br>
-Earn based on activity<br>
-1x payout
-</div>
-<button>Select Free</button>
+
+<div class="payout">1x</div>
+
+<div class="desc">
+Base payout across all activity on the platform.
 </div>
 
-<div class="plan" onclick="selectPlan('pro')">
+<button onclick="selectPlan('free')">
+Continue
+</button>
+
+</div>
+
+
+<!-- PRO -->
+
+<div class="plan">
+
 <h2>Pro</h2>
-<div class="price">$5/mo</div>
-<div class="features">
-Verified badge<br>
-Priority exposure<br>
-2x payout multiplier
-</div>
-<button>Upgrade</button>
+
+<div class="payout">2x</div>
+
+<div class="desc">
+Double everything you earn across the platform.
 </div>
 
-<div class="plan" onclick="selectPlan('advanced')">
+<button onclick="selectPlan('pro')">
+Upgrade
+</button>
+
+</div>
+
+
+<!-- ADVANCED -->
+
+<div class="plan">
+
 <h2>Advanced</h2>
-<div class="price">$10/mo</div>
-<div class="features">
-Everything in Pro<br>
-Maximum exposure<br>
-3x payout multiplier
+
+<div class="payout">3x</div>
+
+<div class="desc">
+Maximum payout. Highest earning potential.
 </div>
-<button>Go Advanced</button>
+
+<button onclick="selectPlan('advanced')">
+Go Advanced
+</button>
+
 </div>
+
+</div>
+
+
+<!-- MONETIZATION CLUB -->
+
+<div class="club">
+
+<h3>Monetization Club</h3>
+
+<p>
+On Free? Apply to unlock double payouts without upgrading.
+</p>
+
+<button onclick="applyClub()">
+Apply Now
+</button>
 
 </div>
 
 <div class="status" id="status"></div>
 
 </div>
+
 
 <script type="module">
 
@@ -197,7 +258,9 @@ const supabase = createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-const status = document.getElementById("status")
+const status=document.getElementById("status")
+
+/* SELECT PLAN */
 
 window.selectPlan = async function(plan){
 
@@ -211,23 +274,39 @@ return
 }
 
 let multiplier = 1
-
-if(plan==="pro") multiplier = 2
-if(plan==="advanced") multiplier = 3
+if(plan==="pro") multiplier=2
+if(plan==="advanced") multiplier=3
 
 await supabase
 .from("profiles")
 .update({
-plan: plan,
-payout_multiplier: multiplier
+plan:plan,
+payout_multiplier:multiplier
 })
-.eq("id", user.id)
+.eq("id",user.id)
 
-status.textContent="Saved"
+status.textContent="Done"
 
 setTimeout(()=>{
 window.location.href="/dashboard.html"
 },800)
+
+}
+
+/* APPLY CLUB */
+
+window.applyClub = async function(){
+
+const { data: { user } } = await supabase.auth.getUser()
+
+await supabase
+.from("monetization_applications")
+.insert({
+user_id:user.id,
+type:"club"
+})
+
+status.textContent="Application sent"
 
 }
 
