@@ -13,162 +13,164 @@
 body{
 background:#04060f;
 color:white;
-overflow-x:hidden;
+display:flex;
 }
 
-/* TOP BAR */
+/* SIDES */
+
+.feedWrap{
+flex:2;
+max-width:700px;
+margin:auto;
+padding:90px 20px;
+}
+
+.side{
+flex:1;
+border-left:1px solid rgba(255,255,255,.06);
+padding:20px;
+}
+
+/* TOP */
 
 .top{
 position:fixed;
 top:0;
 width:100%;
-padding:18px 25px;
+padding:15px 20px;
+background:rgba(0,0,0,.7);
+backdrop-filter:blur(10px);
 display:flex;
 justify-content:space-between;
-align-items:center;
-background:rgba(0,0,0,.6);
-backdrop-filter:blur(12px);
-border-bottom:1px solid rgba(255,255,255,.08);
 z-index:10;
 }
 
-.logo{
-font-weight:900;
-background:linear-gradient(90deg,#4da3ff,#6cf2c2);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-.top button{
-padding:8px 14px;
-border:none;
-border-radius:8px;
-background:linear-gradient(90deg,#4da3ff,#6cf2c2);
-cursor:pointer;
-}
-
-/* WRAP */
-
-.wrap{
-max-width:700px;
-margin:auto;
-padding:100px 20px 40px;
-}
-
-/* POST BOX */
+/* POST */
 
 .postBox{
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-border-radius:16px;
+background:rgba(255,255,255,.05);
 padding:15px;
-margin-bottom:25px;
+border-radius:14px;
+margin-bottom:20px;
 }
 
 textarea{
 width:100%;
-background:transparent;
+background:none;
 border:none;
 color:white;
-resize:none;
-font-size:15px;
 outline:none;
 }
 
-.postActions{
-display:flex;
-justify-content:space-between;
-margin-top:10px;
-}
-
-.postActions input{
-color:white;
-}
-
-.postActions button{
-padding:8px 16px;
-border:none;
-border-radius:8px;
+button{
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+border:none;
+padding:8px 14px;
+border-radius:8px;
 cursor:pointer;
+margin-top:10px;
 }
 
 /* FEED ITEM */
 
 .feedItem{
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-border-radius:16px;
+background:rgba(255,255,255,.05);
 padding:15px;
+border-radius:14px;
 margin-bottom:15px;
-transition:.3s;
 }
 
-.feedItem:hover{
-background:rgba(255,255,255,.06);
-}
-
-/* HEADER */
-
-.feedTop{
-display:flex;
-justify-content:space-between;
-font-size:13px;
+.meta{
+font-size:12px;
 opacity:.7;
 margin-bottom:8px;
 }
 
-/* CONTENT */
+.actions{
+margin-top:10px;
+display:flex;
+gap:15px;
+font-size:14px;
+cursor:pointer;
+}
 
-.feedText{
-font-size:15px;
+/* COMMENTS */
+
+.comments{
+margin-top:10px;
+}
+
+.comment{
+font-size:13px;
+opacity:.8;
+margin-top:5px;
+}
+
+/* MESSAGE PANEL */
+
+.chatBox{
+position:fixed;
+right:20px;
+bottom:20px;
+width:300px;
+background:#0b0f1c;
+border-radius:14px;
+padding:10px;
+display:none;
+}
+
+.chatMessages{
+height:200px;
+overflow-y:auto;
+font-size:13px;
 margin-bottom:10px;
 }
 
-/* IMAGE */
-
-.feedMedia{
+.chatInput{
 width:100%;
-border-radius:12px;
-margin-top:8px;
+padding:8px;
+border:none;
+background:#11172a;
+color:white;
 }
-
-/* TYPE COLORS */
-
-.type-post{border-left:3px solid #6cf2c2;}
-.type-upload{border-left:3px solid #4da3ff;}
-.type-earning{border-left:3px solid gold;}
 
 </style>
 </head>
 
 <body>
 
-<!-- TOP -->
-
 <div class="top">
-<div class="logo">StudentStreamHQ</div>
+<div>StudentStreamHQ</div>
 <button onclick="logout()">Logout</button>
 </div>
 
-<div class="wrap">
-
-<!-- POST BOX -->
+<div class="feedWrap">
 
 <div class="postBox">
-
-<textarea id="postText" rows="3" placeholder="Share something..."></textarea>
-
-<div class="postActions">
-<input type="text" id="mediaUrl" placeholder="Optional image URL">
+<textarea id="postText" placeholder="Share something..."></textarea>
 <button onclick="createPost()">Post</button>
 </div>
 
+<div id="feed"></div>
+
 </div>
 
-<!-- FEED -->
+<!-- MESSAGES SIDE -->
 
-<div id="feed"></div>
+<div class="side">
+
+<h3>Messages</h3>
+<div id="users"></div>
+
+</div>
+
+<!-- CHAT BOX -->
+
+<div class="chatBox" id="chatBox">
+
+<div class="chatMessages" id="chatMessages"></div>
+
+<input class="chatInput" id="chatInput" placeholder="Message..." onkeydown="sendMsg(event)">
 
 </div>
 
@@ -181,27 +183,24 @@ const supabase=createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
-const feed=document.getElementById("feed")
-
 let user=null
+let currentChat=null
+
+const feed=document.getElementById("feed")
 
 /* INIT */
 
 async function init(){
-
 const { data } = await supabase.auth.getUser()
 user=data.user
-
-if(!user){
-location.href="/login.html"
-return
-}
+if(!user) location.href="/login.html"
 
 loadFeed()
-
+loadUsers()
+subscribeRealtime()
 }
 
-/* LOAD FEED */
+/* FEED */
 
 async function loadFeed(){
 
@@ -209,92 +208,146 @@ const { data } = await supabase
 .from("feed")
 .select("*, profiles(username)")
 .order("created_at",{ascending:false})
-.limit(50)
 
 feed.innerHTML=""
 
-data.forEach(item=>{
+for(let item of data){
 
 const div=document.createElement("div")
+div.className="feedItem"
 
-div.className="feedItem type-"+item.type
+div.innerHTML=`
+<div class="meta">${item.profiles?.username} • ${new Date(item.created_at).toLocaleTimeString()}</div>
+<div>${item.text || ""}</div>
 
-let content=""
-
-/* USER POST */
-if(item.type==="post"){
-content=`
-<div class="feedTop">
-<div>${item.profiles?.username || "User"}</div>
-<div>${formatTime(item.created_at)}</div>
+<div class="actions">
+<span onclick="like('${item.id}')">❤️</span>
+<span onclick="toggleComments('${item.id}')">💬</span>
 </div>
 
-<div class="feedText">${item.text || ""}</div>
-
-${item.media_url ? `<img src="${item.media_url}" class="feedMedia">` : ""}
+<div id="comments-${item.id}" class="comments"></div>
 `
-}
-
-/* UPLOAD */
-if(item.type==="upload"){
-content=`
-<div class="feedTop">
-<div>🎬 ${item.profiles?.username}</div>
-<div>${formatTime(item.created_at)}</div>
-</div>
-
-<div class="feedText">uploaded new content</div>
-`
-}
-
-/* EARNING */
-if(item.type==="earning"){
-content=`
-<div class="feedTop">
-<div>💰 ${item.profiles?.username}</div>
-<div>${formatTime(item.created_at)}</div>
-</div>
-
-<div class="feedText">earned $${item.amount}</div>
-`
-}
-
-div.innerHTML=content
 
 feed.appendChild(div)
-
-})
+}
 
 }
 
-/* CREATE POST */
+/* POST */
 
 window.createPost=async ()=>{
-
 const text=document.getElementById("postText").value
-const media=document.getElementById("mediaUrl").value
-
-if(!text)return
-
 await supabase.from("feed").insert({
 user_id:user.id,
 type:"post",
-text:text,
-media_url:media
+text:text
+})
+}
+
+/* LIKE */
+
+window.like=async (id)=>{
+await supabase.from("likes").insert({
+user_id:user.id,
+feed_id:id
+})
+}
+
+/* COMMENTS */
+
+window.toggleComments=async (id)=>{
+
+const box=document.getElementById("comments-"+id)
+
+const { data } = await supabase
+.from("comments")
+.select("*, profiles(username)")
+.eq("feed_id",id)
+
+box.innerHTML=""
+
+data.forEach(c=>{
+box.innerHTML+=`<div class="comment">${c.profiles.username}: ${c.text}</div>`
 })
 
-document.getElementById("postText").value=""
-document.getElementById("mediaUrl").value=""
+box.innerHTML+=`
+<input placeholder="Comment..." onkeydown="addComment(event,'${id}')">
+`
+}
 
-loadFeed()
+window.addComment=async (e,id)=>{
+if(e.key==="Enter"){
+await supabase.from("comments").insert({
+user_id:user.id,
+feed_id:id,
+text:e.target.value
+})
+e.target.value=""
+}
+}
+
+/* REALTIME */
+
+function subscribeRealtime(){
+
+supabase.channel("feed")
+.on("postgres_changes",{event:"INSERT",schema:"public",table:"feed"},
+()=>loadFeed()
+).subscribe()
 
 }
 
-/* TIME FORMAT */
+/* USERS */
 
-function formatTime(date){
-const d=new Date(date)
-return d.toLocaleString()
+async function loadUsers(){
+
+const { data } = await supabase.from("profiles").select("*")
+
+const box=document.getElementById("users")
+
+data.forEach(u=>{
+const div=document.createElement("div")
+div.innerText=u.username
+div.onclick=()=>openChat(u.id)
+box.appendChild(div)
+})
+
+}
+
+/* CHAT */
+
+window.openChat=async (id)=>{
+currentChat=id
+document.getElementById("chatBox").style.display="block"
+loadMessages()
+}
+
+async function loadMessages(){
+
+const { data } = await supabase
+.from("messages")
+.select("*")
+.or(`sender.eq.${user.id},receiver.eq.${user.id}`)
+
+const box=document.getElementById("chatMessages")
+box.innerHTML=""
+
+data.forEach(m=>{
+box.innerHTML+=`<div>${m.text}</div>`
+})
+
+}
+
+window.sendMsg=async (e)=>{
+if(e.key==="Enter"){
+await supabase.from("messages").insert({
+sender:user.id,
+receiver:currentChat,
+text:e.target.value
+})
+e.target.value=""
+loadMessages()
+}
 }
 
 /* LOGOUT */
