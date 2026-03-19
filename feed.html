@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Dashboard • StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui;}
+
+body{
+background:#04060f;
+color:white;
+display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:230px;
+background:#060913;
+border-right:1px solid rgba(255,255,255,.05);
+padding:25px 18px;
+position:fixed;
+top:0;
+bottom:0;
+}
+
+.logo{
+font-weight:900;
+font-size:18px;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:30px;
+}
+
+.navItem{
+padding:10px;
+border-radius:8px;
+opacity:.7;
+cursor:pointer;
+}
+
+.navItem:hover{
+background:rgba(255,255,255,.06);
+opacity:1;
+}
+
+/* MAIN */
+
+.main{
+margin-left:230px;
+width:100%;
+}
+
+/* TOP */
+
+.top{
+padding:20px 30px;
+border-bottom:1px solid rgba(255,255,255,.06);
+display:flex;
+justify-content:space-between;
+}
+
+/* WRAP */
+
+.wrapper{
+max-width:700px;
+margin:auto;
+padding:30px;
+}
+
+/* POST BOX */
+
+.postBox{
+background:rgba(255,255,255,.05);
+padding:15px;
+border-radius:14px;
+margin-bottom:25px;
+}
+
+.postBox textarea{
+width:100%;
+background:#0b0f1c;
+border:none;
+padding:10px;
+border-radius:8px;
+color:white;
+resize:none;
+height:80px;
+}
+
+.postActions{
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+}
+
+button{
+padding:8px 14px;
+border:none;
+border-radius:8px;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+font-weight:700;
+cursor:pointer;
+}
+
+/* FEED */
+
+.feedItem{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.07);
+padding:14px;
+border-radius:14px;
+margin-bottom:15px;
+transition:.3s;
+}
+
+.feedItem:hover{
+background:rgba(255,255,255,.06);
+}
+
+/* HEADER */
+
+.feedHeader{
+font-size:13px;
+opacity:.7;
+margin-bottom:6px;
+}
+
+/* CONTENT */
+
+.feedText{
+font-size:15px;
+margin-bottom:10px;
+}
+
+/* MEDIA */
+
+.feedMedia{
+width:100%;
+border-radius:10px;
+margin-top:10px;
+}
+
+/* TAG COLORS */
+
+.tag{
+font-size:12px;
+padding:4px 8px;
+border-radius:6px;
+display:inline-block;
+margin-bottom:6px;
+}
+
+.postTag{background:#6cf2c220;color:#6cf2c2;}
+.systemTag{background:#4da3ff20;color:#4da3ff;}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div class="logo">SSHQ</div>
+
+<div class="navItem">Feed</div>
+<div class="navItem">Content</div>
+<div class="navItem">Earnings</div>
+<div class="navItem">Settings</div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="top">
+<div id="welcome">Welcome</div>
+</div>
+
+<div class="wrapper">
+
+<!-- POST BOX -->
+
+<div class="postBox">
+
+<textarea id="postText" placeholder="Share something..."></textarea>
+
+<div class="postActions">
+<div></div>
+<button onclick="createPost()">Post</button>
+</div>
+
+</div>
+
+<!-- FEED -->
+
+<div id="feed"></div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase=createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+)
+
+let user=null
+const feedDiv=document.getElementById("feed")
+
+/* INIT */
+
+async function init(){
+
+const { data } = await supabase.auth.getUser()
+user=data.user
+
+if(!user){
+location.href="/login.html"
+return
+}
+
+document.getElementById("welcome").textContent="Welcome, "+user.email.split("@")[0]
+
+loadFeed()
+
+}
+
+/* LOAD FEED */
+
+async function loadFeed(){
+
+const { data } = await supabase
+.from("feed")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(30)
+
+feedDiv.innerHTML=""
+
+data.forEach(item=>{
+
+const div=document.createElement("div")
+div.className="feedItem"
+
+let tagClass="systemTag"
+if(item.type==="post") tagClass="postTag"
+
+let text=""
+
+/* TYPE HANDLING */
+
+if(item.type==="post"){
+text=item.text
+}
+
+if(item.type==="upload"){
+text="🎬 Uploaded new content"
+}
+
+if(item.type==="earning"){
+text="💰 Earned $"+item.amount
+}
+
+if(item.type==="join"){
+text="🚀 Joined StudentStreamHQ"
+}
+
+/* RENDER */
+
+div.innerHTML=`
+<div class="tag ${tagClass}">${item.type.toUpperCase()}</div>
+
+<div class="feedHeader">${new Date(item.created_at).toLocaleString()}</div>
+
+<div class="feedText">${text}</div>
+
+${item.media_url ? `<img class="feedMedia" src="${item.media_url}">` : ""}
+`
+
+feedDiv.appendChild(div)
+
+})
+
+}
+
+/* CREATE POST */
+
+window.createPost=async ()=>{
+
+const text=document.getElementById("postText").value
+
+if(!text) return
+
+await supabase.from("feed").insert({
+user_id:user.id,
+type:"post",
+text:text
+})
+
+document.getElementById("postText").value=""
+
+loadFeed()
+
+}
+
+init()
+
+</script>
+
+</body>
+</html>
