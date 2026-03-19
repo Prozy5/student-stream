@@ -1,76 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>StudentStreamHQ Creator Dashboard</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<title>Dashboard • StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 
-body{
-font-family: Arial, sans-serif;
-background:#0f172a;
-color:white;
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui;
 }
 
-.sidebar{
-width:220px;
-height:100vh;
-background:#020617;
-position:fixed;
-padding:20px;
-}
-
-.sidebar h2{
-color:#38bdf8;
-}
-
-.sidebar a{
-display:block;
-margin:15px 0;
+body{
+background:#04060f;
 color:white;
-text-decoration:none;
+overflow-x:hidden;
 }
 
-.main{
-margin-left:240px;
-padding:40px;
+/* BACKGROUND GLOW */
+
+.glow1,.glow2{
+position:fixed;
+width:800px;
+height:800px;
+filter:blur(120px);
+z-index:-1;
+}
+
+.glow1{
+background:#4da3ff33;
+top:-200px;
+left:-200px;
+}
+
+.glow2{
+background:#6cf2c233;
+bottom:-200px;
+right:-200px;
+}
+
+/* NAV */
+
+.nav{
+padding:20px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid rgba(255,255,255,.08);
+background:rgba(0,0,0,.4);
+backdrop-filter:blur(12px);
+position:sticky;
+top:0;
+}
+
+.logo{
+font-weight:900;
+font-size:20px;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+/* WRAP */
+
+.wrapper{
+max-width:1200px;
+margin:auto;
+padding:40px 20px 100px;
+}
+
+/* STATS */
+
+.stats{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin-bottom:40px;
 }
 
 .card{
-background:#1e293b;
+flex:1;
+min-width:220px;
 padding:25px;
-border-radius:10px;
+border-radius:20px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(20px);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+border-color:#6cf2c2;
+}
+
+.card h3{
+font-size:14px;
+opacity:.7;
+}
+
+.value{
+font-size:28px;
+font-weight:900;
+margin-top:10px;
+}
+
+/* SECTION */
+
+.section{
+margin-top:50px;
+}
+
+.section h2{
 margin-bottom:20px;
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
+/* CONTENT */
+
+.contentItem{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#0b0f1c;
+padding:15px;
+border-radius:12px;
+margin-bottom:10px;
 }
+
+.contentItem:hover{
+background:#11172a;
+}
+
+/* EARNINGS */
+
+.earning{
+display:flex;
+justify-content:space-between;
+padding:12px;
+border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+/* BUTTON */
 
 button{
-background:#38bdf8;
+padding:10px 16px;
 border:none;
-padding:12px 20px;
 border-radius:8px;
-color:black;
-font-weight:bold;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+font-weight:700;
 cursor:pointer;
-}
-
-.activity{
-margin-top:20px;
-}
-
-.activity-item{
-background:#020617;
-padding:10px;
-margin:5px 0;
-border-radius:6px;
 }
 
 </style>
@@ -78,171 +160,199 @@ border-radius:6px;
 
 <body>
 
-<div class="sidebar">
-<h2>StudentStreamHQ</h2>
+<div class="glow1"></div>
+<div class="glow2"></div>
 
-<a href="#">Overview</a>
-<a href="#">Blue System</a>
-<a href="#">Settings</a>
+<!-- NAV -->
 
+<div class="nav">
+<div class="logo">StudentStreamHQ</div>
 <button onclick="logout()">Logout</button>
 </div>
 
+<div class="wrapper">
 
-<div class="main">
+<!-- STATS -->
 
-<h1>Creator Dashboard</h1>
-
-<div class="card">
-<h2 id="welcome">Welcome...</h2>
-<p id="rank">Rank: Loading...</p>
-<p id="monetized">Monetization: Checking...</p>
-</div>
-
-<div class="grid">
+<div class="stats">
 
 <div class="card">
 <h3>Total Earnings</h3>
-<h1 id="total">$0</h1>
+<div class="value" id="total">$0</div>
 </div>
 
 <div class="card">
-<h3>Monthly Revenue</h3>
-<h1 id="monthly">$0</h1>
+<h3>Pending</h3>
+<div class="value" id="pending">$0</div>
+</div>
+
+<div class="card">
+<h3>Plan</h3>
+<div class="value" id="plan">Free</div>
 </div>
 
 <div class="card">
 <h3>Monetization</h3>
-<button onclick="applyMonetization()">Apply</button>
-</div>
-
-</div>
-
-<div class="card activity">
-<h3>Activity</h3>
-<div id="activityLog"></div>
+<div class="value" id="monetization">None</div>
 </div>
 
 </div>
 
 
-<script>
+<!-- CONTENT -->
 
-const supabase = window.supabase.createClient(
+<div class="section">
+
+<h2>Your Content</h2>
+
+<div id="contentList"></div>
+
+</div>
+
+
+<!-- EARNINGS -->
+
+<div class="section">
+
+<h2>Recent Earnings</h2>
+
+<div id="earningsList"></div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase=createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+)
 
+const total=document.getElementById("total")
+const pending=document.getElementById("pending")
+const plan=document.getElementById("plan")
+const monetization=document.getElementById("monetization")
+const contentList=document.getElementById("contentList")
+const earningsList=document.getElementById("earningsList")
 
-async function loadDashboard(){
+let user=null
 
-const {data:{user}} = await supabase.auth.getUser()
+/* INIT */
+
+async function init(){
+
+const { data } = await supabase.auth.getUser()
+
+user=data.user
 
 if(!user){
-window.location.href="login.html"
+window.location.href="/login.html"
 return
 }
 
+loadProfile()
+loadContent()
+loadEarnings()
 
-const userId = user.id
-
+}
 
 /* PROFILE */
 
-let {data:profile} = await supabase
+async function loadProfile(){
+
+const { data } = await supabase
 .from("profiles")
 .select("*")
-.eq("id",userId)
+.eq("id",user.id)
 .single()
 
-document.getElementById("welcome").innerText =
-"Welcome, "+(profile.username || "Creator")
+total.textContent="$"+Number(data.total_earnings).toFixed(2)
+pending.textContent="$"+Number(data.pending_earnings).toFixed(2)
 
-document.getElementById("rank").innerText =
-"Rank: "+profile.rank
+plan.textContent=data.plan.toUpperCase()
 
-document.getElementById("monetized").innerText =
-profile.monetized ? "Monetized" : "Not Monetized"
+monetization.textContent=data.monetization_status.toUpperCase()
 
+}
+
+/* CONTENT */
+
+async function loadContent(){
+
+const { data } = await supabase
+.from("content")
+.select("*")
+.eq("user_id",user.id)
+.order("created_at",{ascending:false})
+
+contentList.innerHTML=""
+
+data.forEach(item=>{
+
+const div=document.createElement("div")
+div.className="contentItem"
+
+div.innerHTML=`
+<div>
+<div>${item.title}</div>
+<div style="opacity:.6;font-size:13px">${item.views} views</div>
+</div>
+<button onclick="play('${item.video_url}')">Play</button>
+`
+
+contentList.appendChild(div)
+
+})
+
+}
 
 /* EARNINGS */
 
-let {data:earnings} = await supabase
-.from("creator_earnings")
+async function loadEarnings(){
+
+const { data } = await supabase
+.from("earnings")
 .select("*")
-.eq("creator_id",userId)
-.single()
-
-if(earnings){
-
-document.getElementById("total").innerText =
-"$"+earnings.total_earnings
-
-document.getElementById("monthly").innerText =
-"$"+earnings.monthly_revenue
-
-}
-
-
-/* ACTIVITY */
-
-let {data:activity} = await supabase
-.from("activity_log")
-.select("*")
-.eq("user_id",userId)
+.eq("user_id",user.id)
 .order("created_at",{ascending:false})
 .limit(10)
 
-const log = document.getElementById("activityLog")
-log.innerHTML=""
+earningsList.innerHTML=""
 
-activity.forEach(a=>{
+data.forEach(e=>{
 
-let div=document.createElement("div")
-div.className="activity-item"
+const div=document.createElement("div")
+div.className="earning"
 
-div.innerText=a.description
+div.innerHTML=`
+<div>${e.source}</div>
+<div>+$${Number(e.final_amount).toFixed(2)}</div>
+`
 
-log.appendChild(div)
+earningsList.appendChild(div)
 
 })
 
-
 }
 
+/* PLAY */
 
-
-/* APPLY FOR MONETIZATION */
-
-async function applyMonetization(){
-
-const {data:{user}} = await supabase.auth.getUser()
-
-await supabase
-.from("monetization_applications")
-.insert({
-creator_id:user.id
-})
-
-
-alert("Application submitted!")
-
+window.play=(url)=>{
+window.open(url)
 }
-
-
 
 /* LOGOUT */
 
-async function logout(){
-
+window.logout=async ()=>{
 await supabase.auth.signOut()
-
-window.location.href="login.html"
-
+window.location.href="/login.html"
 }
 
-
-loadDashboard()
+init()
 
 </script>
 
