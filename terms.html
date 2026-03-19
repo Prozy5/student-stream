@@ -1,128 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<title>Agreement • StudentStreamHQ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>Agreement • StudentStreamHQ</title>
 
 <style>
-body{background:#04060f;color:white;font-family:Inter;padding:40px;}
-.wrap{max-width:700px;margin:auto;}
+
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui;}
+
+/* BACKGROUND */
+body{
+background:#04060f;
+color:white;
+overflow-x:hidden;
+}
+
+/* GLOW */
+.glow1,.glow2{
+position:fixed;
+width:800px;
+height:800px;
+filter:blur(120px);
+z-index:-1;
+}
+.glow1{background:#4da3ff33;top:-200px;left:-200px;}
+.glow2{background:#6cf2c233;bottom:-200px;right:-200px;}
+
+/* WRAPPER */
+.wrapper{
+max-width:950px;
+margin:auto;
+padding:50px 20px 100px;
+animation:fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(40px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+/* TITLE */
+h1{
+margin-bottom:20px;
+font-size:2.2rem;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+/* CONTRACT BOX */
+.contract{
+background:rgba(255,255,255,.04);
+padding:30px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,.1);
+line-height:1.7;
+max-height:450px;
+overflow-y:auto;
+}
+
+/* SCROLL */
+.contract::-webkit-scrollbar{width:6px;}
+.contract::-webkit-scrollbar-thumb{
+background:#6cf2c2;border-radius:10px;
+}
+
+.contract h3{
+margin-top:20px;
+margin-bottom:8px;
+}
+
+.contract p{
+opacity:.9;
+margin-bottom:12px;
+}
+
+/* SIGN BOX */
+.signBox{
+margin-top:40px;
+padding:25px;
+background:rgba(255,255,255,.05);
+border-radius:20px;
+border:1px solid rgba(255,255,255,.08);
+}
+
+/* INPUT */
+input{
+width:100%;
+padding:14px;
+border-radius:10px;
+border:none;
+margin-bottom:15px;
+font-size:16px;
+}
+
+/* CHECK */
+.check{
+display:flex;
+gap:10px;
+align-items:center;
+font-size:14px;
+margin-bottom:15px;
+}
+
+/* CANVAS */
 canvas{
 width:100%;
 height:180px;
 background:white;
 border-radius:10px;
 }
-button{
+
+/* BUTTONS */
+.buttons{
 margin-top:15px;
-padding:12px;
+display:flex;
+gap:10px;
+}
+
+button{
+padding:12px 20px;
 border:none;
 border-radius:10px;
-background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+font-weight:700;
 cursor:pointer;
 }
+
+.primary{
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+color:black;
+}
+.secondary{
+background:#222;color:white;
+}
+
+/* FOOTER */
+.footer{
+margin-top:40px;
+opacity:.5;
+font-size:13px;
+text-align:center;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="wrap">
+<div class="glow1"></div>
+<div class="glow2"></div>
 
-<h2>Sign Agreement</h2>
+<div class="wrapper">
 
-<input id="name" placeholder="Full Legal Name" style="width:100%;padding:12px;margin:10px 0">
+<h1>StudentStreamHQ Platform Agreement</h1>
 
-<canvas id="signature"></canvas>
+<div class="contract">
 
-<button onclick="clearSig()">Clear</button>
-<button onclick="submit()">Sign & Generate Contract</button>
+<p><b>Effective Date:</b> Upon Signature</p>
 
-<div id="status"></div>
+<p>
+This Agreement ("Agreement") is entered into between you ("User", "Creator") and StudentStreamHQ ("Company", "Platform"), including all associated systems, services, and divisions under its ecosystem.
+</p>
+
+<h3>1. Platform Scope</h3>
+<p>
+StudentStreamHQ operates as a multi-division digital ecosystem that includes content creation, distribution, monetization systems, communication networks, development platforms, artificial intelligence systems, and agency services, including but not limited to Astra AI, Forge Agency, and future divisions.
+</p>
+
+<h3>2. Acceptance of Terms</h3>
+<p>
+By accessing or using the platform, you agree to be legally bound by this Agreement. If you do not agree, you may not use the platform.
+</p>
+
+<h3>3. User Responsibilities</h3>
+<p>
+You agree to provide accurate information, maintain account security, and use the platform in compliance with all applicable laws.
+</p>
+
+<h3>4. Content Ownership & License</h3>
+<p>
+You retain ownership of your original content. By uploading or publishing content, you grant StudentStreamHQ a worldwide, non-exclusive, royalty-free license to host, display, distribute, modify, promote, and use such content within platform operations.
+</p>
+
+<h3>5. Platform Authority</h3>
+<p>
+StudentStreamHQ reserves full authority to manage, structure, distribute, or remove content, accounts, or system access to maintain platform integrity and growth.
+</p>
+
+<h3>6. Monetization & Financial Systems</h3>
+<p>
+Monetization features may include internal revenue systems, platform incentives, or third-party integrations. Eligibility is determined by platform criteria.
+</p>
+
+<p>
+StudentStreamHQ reserves the right to:
+- Approve or deny monetization access  
+- Hold, delay, or reverse payouts for review or violations  
+- Apply platform fees or operational costs  
+</p>
+
+<h3>7. Multi-Division Participation</h3>
+<p>
+Users may participate across various divisions and systems within the platform. Each division may operate under additional structures, rules, or expectations defined by StudentStreamHQ.
+</p>
+
+<h3>8. Intellectual Property Rights</h3>
+<p>
+All platform systems, branding, infrastructure, software, and technology are the exclusive property of StudentStreamHQ. Unauthorized use, reproduction, or exploitation is prohibited.
+</p>
+
+<h3>9. Prohibited Conduct</h3>
+<p>
+Users may not:
+- Upload illegal or harmful content  
+- Exploit platform systems  
+- Engage in fraud, abuse, or harassment  
+</p>
+
+<h3>10. Account Suspension & Termination</h3>
+<p>
+StudentStreamHQ may suspend or terminate accounts at any time for violations, risk, or misuse of the platform.
+</p>
+
+<h3>11. Liability Disclaimer</h3>
+<p>
+The platform is provided "as is." StudentStreamHQ is not liable for user-generated content, financial outcomes, or third-party systems.
+</p>
+
+<h3>12. Limitation of Liability</h3>
+<p>
+StudentStreamHQ shall not be liable for indirect, incidental, or consequential damages arising from platform use.
+</p>
+
+<h3>13. Data & System Usage</h3>
+<p>
+User data may be used to improve platform systems, analytics, and operations in accordance with internal policies.
+</p>
+
+<h3>14. Modifications to Agreement</h3>
+<p>
+StudentStreamHQ may update this Agreement at any time. Continued use constitutes acceptance of changes.
+</p>
+
+<h3>15. Legal Enforcement</h3>
+<p>
+This Agreement is legally binding and enforceable to the fullest extent permitted by law.
+</p>
+
+<h3>16. Digital Signature Consent</h3>
+<p>
+By signing below, you confirm that your electronic signature is valid and legally binding.
+</p>
 
 </div>
 
-<script type="module">
+<div class="signBox">
 
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
-const { jsPDF } = window.jspdf
+<h3>Sign Agreement</h3>
 
-const supabase=createClient(
-"https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-)
+<input id="name" placeholder="Full Legal Name">
 
-const canvas=document.getElementById("signature")
-const pad=new SignaturePad(canvas)
+<div class="check">
+<input type="checkbox" id="agree">
+<label for="agree">I agree to all terms of this Agreement</label>
+</div>
 
-function resize(){
-canvas.width=canvas.offsetWidth
-canvas.height=180
-}
-resize()
+<canvas id="pad"></canvas>
 
-window.clearSig=()=>pad.clear()
+<div class="buttons">
+<button class="secondary" onclick="clearPad()">Clear</button>
+<button class="primary" onclick="sign()">Sign & Continue</button>
+</div>
 
-window.submit=async ()=>{
+</div>
 
-if(pad.isEmpty()){
-alert("Sign first")
-return
-}
+<div class="footer">
+StudentStreamHQ • Platform Legal Agreement
+</div>
 
-const name=document.getElementById("name").value
-const sig=pad.toDataURL()
+</div>
 
-/* CREATE PDF */
+<script>
 
-const pdf=new jsPDF()
+/* CANVAS SIGN */
+const canvas=document.getElementById("pad");
+const ctx=canvas.getContext("2d");
 
-pdf.text("StudentStreamHQ Agreement",20,20)
-pdf.text(`Name: ${name}`,20,40)
-pdf.text(`Date: ${new Date().toLocaleString()}`,20,50)
+canvas.width=canvas.offsetWidth;
+canvas.height=canvas.offsetHeight;
 
-pdf.addImage(sig,"PNG",20,60,160,50)
+let drawing=false;
 
-const pdfBlob=pdf.output("blob")
+canvas.addEventListener("mousedown",()=>drawing=true);
+canvas.addEventListener("mouseup",()=>{drawing=false;ctx.beginPath()});
+canvas.addEventListener("mousemove",draw);
 
-/* UPLOAD SIGNATURE */
+canvas.addEventListener("touchstart",(e)=>{drawing=true;drawTouch(e)});
+canvas.addEventListener("touchend",()=>{drawing=false;ctx.beginPath()});
+canvas.addEventListener("touchmove",drawTouch);
 
-const { data:{ user } }=await supabase.auth.getUser()
-
-const sigPath=`signatures/${user.id}.png`
-const pdfPath=`contracts/${user.id}.pdf`
-
-await supabase.storage.from("contracts").upload(sigPath,dataURLtoBlob(sig),{upsert:true})
-await supabase.storage.from("contracts").upload(pdfPath,pdfBlob,{upsert:true})
-
-/* SAVE */
-
-await supabase.from("profiles").update({
-full_name:name,
-signature_url:sigPath,
-contract_pdf:pdfPath,
-agreed_to_terms:true,
-agreed_to_contract:true,
-signed_at:new Date()
-}).eq("id",user.id)
-
-document.getElementById("status").innerText="Signed ✔"
-
-setTimeout(()=>location.href="/feed.html",800)
-
+function draw(e){
+if(!drawing)return;
+ctx.lineWidth=2;
+ctx.lineCap="round";
+ctx.strokeStyle="#000";
+ctx.lineTo(e.offsetX,e.offsetY);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(e.offsetX,e.offsetY);
 }
 
-/* HELPER */
+function drawTouch(e){
+e.preventDefault();
+if(!drawing)return;
+const rect=canvas.getBoundingClientRect();
+const x=e.touches[0].clientX-rect.left;
+const y=e.touches[0].clientY-rect.top;
+ctx.lineWidth=2;
+ctx.lineCap="round";
+ctx.strokeStyle="#000";
+ctx.lineTo(x,y);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(x,y);
+}
 
-function dataURLtoBlob(dataurl){
-let arr=dataurl.split(','), mime=arr[0].match(/:(.*?);/)[1],
-bstr=atob(arr[1]), n=bstr.length, u8arr=new Uint8Array(n)
-while(n--) u8arr[n]=bstr.charCodeAt(n)
-return new Blob([u8arr],{type:mime})
+/* CLEAR */
+function clearPad(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* SIGN */
+function sign(){
+const name=document.getElementById("name").value;
+const agree=document.getElementById("agree").checked;
+
+if(!name){
+alert("Enter full legal name");
+return;
+}
+
+if(!agree){
+alert("You must agree to the terms");
+return;
+}
+
+const signature=canvas.toDataURL();
+
+console.log("SIGNED:",name,signature,new Date());
+
+alert("Agreement signed successfully");
+
+// next step: send to backend
 }
 
 </script>
