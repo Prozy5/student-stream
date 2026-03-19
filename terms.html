@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Agreement • StudentStreamHQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body{background:#04060f;color:white;font-family:Inter;padding:40px;}
+.wrap{max-width:700px;margin:auto;}
+canvas{
+width:100%;
+height:180px;
+background:white;
+border-radius:10px;
+}
+button{
+margin-top:15px;
+padding:12px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h2>Sign Agreement</h2>
+
+<input id="name" placeholder="Full Legal Name" style="width:100%;padding:12px;margin:10px 0">
+
+<canvas id="signature"></canvas>
+
+<button onclick="clearSig()">Clear</button>
+<button onclick="submit()">Sign & Generate Contract</button>
+
+<div id="status"></div>
+
+</div>
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+const { jsPDF } = window.jspdf
+
+const supabase=createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+)
+
+const canvas=document.getElementById("signature")
+const pad=new SignaturePad(canvas)
+
+function resize(){
+canvas.width=canvas.offsetWidth
+canvas.height=180
+}
+resize()
+
+window.clearSig=()=>pad.clear()
+
+window.submit=async ()=>{
+
+if(pad.isEmpty()){
+alert("Sign first")
+return
+}
+
+const name=document.getElementById("name").value
+const sig=pad.toDataURL()
+
+/* CREATE PDF */
+
+const pdf=new jsPDF()
+
+pdf.text("StudentStreamHQ Agreement",20,20)
+pdf.text(`Name: ${name}`,20,40)
+pdf.text(`Date: ${new Date().toLocaleString()}`,20,50)
+
+pdf.addImage(sig,"PNG",20,60,160,50)
+
+const pdfBlob=pdf.output("blob")
+
+/* UPLOAD SIGNATURE */
+
+const { data:{ user } }=await supabase.auth.getUser()
+
+const sigPath=`signatures/${user.id}.png`
+const pdfPath=`contracts/${user.id}.pdf`
+
+await supabase.storage.from("contracts").upload(sigPath,dataURLtoBlob(sig),{upsert:true})
+await supabase.storage.from("contracts").upload(pdfPath,pdfBlob,{upsert:true})
+
+/* SAVE */
+
+await supabase.from("profiles").update({
+full_name:name,
+signature_url:sigPath,
+contract_pdf:pdfPath,
+agreed_to_terms:true,
+agreed_to_contract:true,
+signed_at:new Date()
+}).eq("id",user.id)
+
+document.getElementById("status").innerText="Signed ✔"
+
+setTimeout(()=>location.href="/feed.html",800)
+
+}
+
+/* HELPER */
+
+function dataURLtoBlob(dataurl){
+let arr=dataurl.split(','), mime=arr[0].match(/:(.*?);/)[1],
+bstr=atob(arr[1]), n=bstr.length, u8arr=new Uint8Array(n)
+while(n--) u8arr[n]=bstr.charCodeAt(n)
+return new Blob([u8arr],{type:mime})
+}
+
+</script>
+
+</body>
+</html>
