@@ -6,12 +6,14 @@
 
 <title>Agreement • StudentStreamHQ</title>
 
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
 <style>
 
 /* RESET */
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui;}
 
-/* BACKGROUND */
+/* BODY */
 body{
 background:#04060f;
 color:white;
@@ -21,37 +23,42 @@ overflow-x:hidden;
 /* GLOW */
 .glow1,.glow2{
 position:fixed;
-width:800px;
-height:800px;
-filter:blur(120px);
+width:900px;
+height:900px;
+filter:blur(130px);
 z-index:-1;
 }
-.glow1{background:#4da3ff33;top:-200px;left:-200px;}
-.glow2{background:#6cf2c233;bottom:-200px;right:-200px;}
+.glow1{background:#4da3ff33;top:-250px;left:-200px;}
+.glow2{background:#6cf2c233;bottom:-250px;right:-200px;}
 
-/* WRAPPER */
+/* WRAP */
 .wrapper{
 max-width:950px;
 margin:auto;
 padding:50px 20px 100px;
-animation:fadeIn 1.2s ease;
-}
-
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(40px)}
-to{opacity:1;transform:translateY(0)}
 }
 
 /* TITLE */
 h1{
+font-size:2.4rem;
 margin-bottom:20px;
-font-size:2.2rem;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
-/* CONTRACT BOX */
+/* PROGRESS BAR */
+.progressBar{
+height:4px;
+width:0%;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
+position:fixed;
+top:0;
+left:0;
+z-index:999;
+}
+
+/* CONTRACT */
 .contract{
 background:rgba(255,255,255,.04);
 padding:30px;
@@ -62,15 +69,8 @@ max-height:450px;
 overflow-y:auto;
 }
 
-/* SCROLL */
-.contract::-webkit-scrollbar{width:6px;}
-.contract::-webkit-scrollbar-thumb{
-background:#6cf2c2;border-radius:10px;
-}
-
 .contract h3{
 margin-top:20px;
-margin-bottom:8px;
 }
 
 .contract p{
@@ -102,7 +102,6 @@ font-size:16px;
 display:flex;
 gap:10px;
 align-items:center;
-font-size:14px;
 margin-bottom:15px;
 }
 
@@ -133,22 +132,30 @@ cursor:pointer;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 color:black;
 }
+
 .secondary{
-background:#222;color:white;
+background:#222;
+color:white;
 }
 
-/* FOOTER */
+.primary:disabled{
+opacity:.4;
+cursor:not-allowed;
+}
+
 .footer{
 margin-top:40px;
 opacity:.5;
-font-size:13px;
 text-align:center;
+font-size:13px;
 }
 
 </style>
 </head>
 
 <body>
+
+<div class="progressBar" id="progress"></div>
 
 <div class="glow1"></div>
 <div class="glow2"></div>
@@ -157,135 +164,139 @@ text-align:center;
 
 <h1>StudentStreamHQ Platform Agreement</h1>
 
-<div class="contract">
+<div class="contract" id="contractBox">
 
 <p><b>Effective Date:</b> Upon Signature</p>
 
 <p>
-This Agreement ("Agreement") is entered into between you ("User", "Creator") and StudentStreamHQ ("Company", "Platform"), including all associated systems, services, and divisions under its ecosystem.
+This Agreement governs your access to and use of StudentStreamHQ, a multi-division digital ecosystem including all systems, services, infrastructure, tools, and affiliated operations.
 </p>
 
-<h3>1. Platform Scope</h3>
+<h3>1. Platform Structure</h3>
 <p>
-StudentStreamHQ operates as a multi-division digital ecosystem that includes content creation, distribution, monetization systems, communication networks, development platforms, artificial intelligence systems, and agency services, including but not limited to Astra AI, Forge Agency, and future divisions.
+StudentStreamHQ operates as a unified ecosystem including, but not limited to:
+content creation systems, monetization infrastructure, communication tools,
+AI systems, agency services, development environments, and future platform expansions.
 </p>
 
-<h3>2. Acceptance of Terms</h3>
+<h3>2. Legal Acceptance</h3>
 <p>
-By accessing or using the platform, you agree to be legally bound by this Agreement. If you do not agree, you may not use the platform.
+By using this platform, you enter a legally binding agreement with StudentStreamHQ.
 </p>
 
-<h3>3. User Responsibilities</h3>
+<h3>3. User Responsibility</h3>
 <p>
-You agree to provide accurate information, maintain account security, and use the platform in compliance with all applicable laws.
+You are responsible for your actions, content, account security, and compliance with laws.
 </p>
 
-<h3>4. Content Ownership & License</h3>
+<h3>4. Content Rights</h3>
 <p>
-You retain ownership of your original content. By uploading or publishing content, you grant StudentStreamHQ a worldwide, non-exclusive, royalty-free license to host, display, distribute, modify, promote, and use such content within platform operations.
+You retain ownership. You grant StudentStreamHQ a license to use, distribute, and promote content.
 </p>
 
 <h3>5. Platform Authority</h3>
 <p>
-StudentStreamHQ reserves full authority to manage, structure, distribute, or remove content, accounts, or system access to maintain platform integrity and growth.
+StudentStreamHQ reserves full control over platform operations, moderation, and system structure.
 </p>
 
-<h3>6. Monetization & Financial Systems</h3>
+<h3>6. Monetization Systems</h3>
 <p>
-Monetization features may include internal revenue systems, platform incentives, or third-party integrations. Eligibility is determined by platform criteria.
+All payouts, multipliers, and systems are controlled by platform rules and may change at any time.
 </p>
 
+<h3>7. Division Participation</h3>
 <p>
-StudentStreamHQ reserves the right to:
-- Approve or deny monetization access  
-- Hold, delay, or reverse payouts for review or violations  
-- Apply platform fees or operational costs  
+Users may engage in multiple divisions. Each may have additional rules and systems.
 </p>
 
-<h3>7. Multi-Division Participation</h3>
+<h3>8. Intellectual Property</h3>
 <p>
-Users may participate across various divisions and systems within the platform. Each division may operate under additional structures, rules, or expectations defined by StudentStreamHQ.
+All platform systems, branding, and infrastructure remain property of StudentStreamHQ.
 </p>
 
-<h3>8. Intellectual Property Rights</h3>
+<h3>9. Prohibited Actions</h3>
 <p>
-All platform systems, branding, infrastructure, software, and technology are the exclusive property of StudentStreamHQ. Unauthorized use, reproduction, or exploitation is prohibited.
+Illegal activity, fraud, abuse, exploitation, or harm to the platform is prohibited.
 </p>
 
-<h3>9. Prohibited Conduct</h3>
+<h3>10. Termination</h3>
 <p>
-Users may not:
-- Upload illegal or harmful content  
-- Exploit platform systems  
-- Engage in fraud, abuse, or harassment  
+Accounts may be suspended or removed at any time.
 </p>
 
-<h3>10. Account Suspension & Termination</h3>
+<h3>11. Liability</h3>
 <p>
-StudentStreamHQ may suspend or terminate accounts at any time for violations, risk, or misuse of the platform.
+Platform is provided “as is.” No guarantees on earnings or performance.
 </p>
 
-<h3>11. Liability Disclaimer</h3>
+<h3>12. Data Usage</h3>
 <p>
-The platform is provided "as is." StudentStreamHQ is not liable for user-generated content, financial outcomes, or third-party systems.
+Platform may use data for system improvement and analytics.
 </p>
 
-<h3>12. Limitation of Liability</h3>
+<h3>13. Updates</h3>
 <p>
-StudentStreamHQ shall not be liable for indirect, incidental, or consequential damages arising from platform use.
+Agreement may change at any time.
 </p>
 
-<h3>13. Data & System Usage</h3>
+<h3>14. Digital Signature</h3>
 <p>
-User data may be used to improve platform systems, analytics, and operations in accordance with internal policies.
-</p>
-
-<h3>14. Modifications to Agreement</h3>
-<p>
-StudentStreamHQ may update this Agreement at any time. Continued use constitutes acceptance of changes.
-</p>
-
-<h3>15. Legal Enforcement</h3>
-<p>
-This Agreement is legally binding and enforceable to the fullest extent permitted by law.
-</p>
-
-<h3>16. Digital Signature Consent</h3>
-<p>
-By signing below, you confirm that your electronic signature is valid and legally binding.
+Your signature is legally binding.
 </p>
 
 </div>
 
 <div class="signBox">
 
-<h3>Sign Agreement</h3>
-
 <input id="name" placeholder="Full Legal Name">
 
 <div class="check">
 <input type="checkbox" id="agree">
-<label for="agree">I agree to all terms of this Agreement</label>
+<label>I agree to all terms</label>
 </div>
 
 <canvas id="pad"></canvas>
 
 <div class="buttons">
 <button class="secondary" onclick="clearPad()">Clear</button>
-<button class="primary" onclick="sign()">Sign & Continue</button>
+<button id="signBtn" class="primary" onclick="sign()" disabled>Sign & Continue</button>
 </div>
 
 </div>
 
 <div class="footer">
-StudentStreamHQ • Platform Legal Agreement
+StudentStreamHQ Legal System
 </div>
 
 </div>
 
-<script>
+<script type="module">
 
-/* CANVAS SIGN */
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase = createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+)
+
+/* PROGRESS + SCROLL LOCK */
+const contractBox=document.getElementById("contractBox");
+const progress=document.getElementById("progress");
+const signBtn=document.getElementById("signBtn");
+
+contractBox.addEventListener("scroll",()=>{
+const scroll=contractBox.scrollTop;
+const height=contractBox.scrollHeight-contractBox.clientHeight;
+const percent=(scroll/height)*100;
+
+progress.style.width=percent+"%";
+
+if(percent>95){
+signBtn.disabled=false;
+}
+});
+
+/* CANVAS */
 const canvas=document.getElementById("pad");
 const ctx=canvas.getContext("2d");
 
@@ -294,67 +305,60 @@ canvas.height=canvas.offsetHeight;
 
 let drawing=false;
 
-canvas.addEventListener("mousedown",()=>drawing=true);
-canvas.addEventListener("mouseup",()=>{drawing=false;ctx.beginPath()});
-canvas.addEventListener("mousemove",draw);
-
-canvas.addEventListener("touchstart",(e)=>{drawing=true;drawTouch(e)});
-canvas.addEventListener("touchend",()=>{drawing=false;ctx.beginPath()});
-canvas.addEventListener("touchmove",drawTouch);
-
-function draw(e){
+canvas.onmousedown=()=>drawing=true;
+canvas.onmouseup=()=>{drawing=false;ctx.beginPath()};
+canvas.onmousemove=e=>{
 if(!drawing)return;
 ctx.lineWidth=2;
 ctx.lineCap="round";
-ctx.strokeStyle="#000";
 ctx.lineTo(e.offsetX,e.offsetY);
 ctx.stroke();
 ctx.beginPath();
 ctx.moveTo(e.offsetX,e.offsetY);
-}
+};
 
-function drawTouch(e){
-e.preventDefault();
-if(!drawing)return;
-const rect=canvas.getBoundingClientRect();
-const x=e.touches[0].clientX-rect.left;
-const y=e.touches[0].clientY-rect.top;
-ctx.lineWidth=2;
-ctx.lineCap="round";
-ctx.strokeStyle="#000";
-ctx.lineTo(x,y);
-ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(x,y);
-}
-
-/* CLEAR */
-function clearPad(){
+window.clearPad=()=>{
 ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
 /* SIGN */
-function sign(){
+window.sign=async()=>{
+
 const name=document.getElementById("name").value;
 const agree=document.getElementById("agree").checked;
 
-if(!name){
-alert("Enter full legal name");
-return;
-}
+if(!name) return alert("Enter name");
+if(!agree) return alert("Agree first");
 
-if(!agree){
-alert("You must agree to the terms");
-return;
-}
+const { data:{ user } } = await supabase.auth.getUser();
 
 const signature=canvas.toDataURL();
+const text=document.querySelector(".contract").innerText;
 
-console.log("SIGNED:",name,signature,new Date());
+/* SAVE */
+await supabase.from("contracts").insert({
+user_id:user.id,
+full_name:name,
+signature:signature,
+contract_text:text
+});
 
-alert("Agreement signed successfully");
+/* PDF */
+const { jsPDF } = window.jspdf;
+const doc=new jsPDF();
 
-// next step: send to backend
+const lines=doc.splitTextToSize(text,180);
+doc.text(lines,10,20);
+
+doc.text(`Signed: ${name}`,10,270);
+doc.addImage(signature,"PNG",130,250,60,25);
+
+doc.save("contract.pdf");
+
+alert("Signed");
+
+window.location.href="/dashboard.html";
+
 }
 
 </script>
