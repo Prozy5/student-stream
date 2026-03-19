@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Dashboard • StudentStreamHQ</title>
+<title>Feed • StudentStreamHQ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -13,84 +13,66 @@
 body{
 background:#04060f;
 color:white;
-display:flex;
+overflow-x:hidden;
 }
 
-/* SIDEBAR */
+/* TOP BAR */
 
-.sidebar{
-width:230px;
-background:#060913;
-border-right:1px solid rgba(255,255,255,.05);
-padding:25px 18px;
+.top{
 position:fixed;
 top:0;
-bottom:0;
+width:100%;
+padding:18px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.6);
+backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(255,255,255,.08);
+z-index:10;
 }
 
 .logo{
 font-weight:900;
-font-size:18px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-margin-bottom:30px;
 }
 
-.navItem{
-padding:10px;
+.top button{
+padding:8px 14px;
+border:none;
 border-radius:8px;
-opacity:.7;
+background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 cursor:pointer;
-}
-
-.navItem:hover{
-background:rgba(255,255,255,.06);
-opacity:1;
-}
-
-/* MAIN */
-
-.main{
-margin-left:230px;
-width:100%;
-}
-
-/* TOP */
-
-.top{
-padding:20px 30px;
-border-bottom:1px solid rgba(255,255,255,.06);
-display:flex;
-justify-content:space-between;
 }
 
 /* WRAP */
 
-.wrapper{
+.wrap{
 max-width:700px;
 margin:auto;
-padding:30px;
+padding:100px 20px 40px;
 }
 
 /* POST BOX */
 
 .postBox{
-background:rgba(255,255,255,.05);
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:16px;
 padding:15px;
-border-radius:14px;
 margin-bottom:25px;
 }
 
-.postBox textarea{
+textarea{
 width:100%;
-background:#0b0f1c;
+background:transparent;
 border:none;
-padding:10px;
-border-radius:8px;
 color:white;
 resize:none;
-height:80px;
+font-size:15px;
+outline:none;
 }
 
 .postActions{
@@ -99,22 +81,25 @@ justify-content:space-between;
 margin-top:10px;
 }
 
-button{
-padding:8px 14px;
+.postActions input{
+color:white;
+}
+
+.postActions button{
+padding:8px 16px;
 border:none;
 border-radius:8px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
-font-weight:700;
 cursor:pointer;
 }
 
-/* FEED */
+/* FEED ITEM */
 
 .feedItem{
 background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.07);
-padding:14px;
-border-radius:14px;
+border:1px solid rgba(255,255,255,.08);
+border-radius:16px;
+padding:15px;
 margin-bottom:15px;
 transition:.3s;
 }
@@ -125,10 +110,12 @@ background:rgba(255,255,255,.06);
 
 /* HEADER */
 
-.feedHeader{
+.feedTop{
+display:flex;
+justify-content:space-between;
 font-size:13px;
 opacity:.7;
-margin-bottom:6px;
+margin-bottom:8px;
 }
 
 /* CONTENT */
@@ -138,60 +125,42 @@ font-size:15px;
 margin-bottom:10px;
 }
 
-/* MEDIA */
+/* IMAGE */
 
 .feedMedia{
 width:100%;
-border-radius:10px;
-margin-top:10px;
+border-radius:12px;
+margin-top:8px;
 }
 
-/* TAG COLORS */
+/* TYPE COLORS */
 
-.tag{
-font-size:12px;
-padding:4px 8px;
-border-radius:6px;
-display:inline-block;
-margin-bottom:6px;
-}
-
-.postTag{background:#6cf2c220;color:#6cf2c2;}
-.systemTag{background:#4da3ff20;color:#4da3ff;}
+.type-post{border-left:3px solid #6cf2c2;}
+.type-upload{border-left:3px solid #4da3ff;}
+.type-earning{border-left:3px solid gold;}
 
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-<div class="logo">SSHQ</div>
-
-<div class="navItem">Feed</div>
-<div class="navItem">Content</div>
-<div class="navItem">Earnings</div>
-<div class="navItem">Settings</div>
-
-</div>
-
-<!-- MAIN -->
-<div class="main">
+<!-- TOP -->
 
 <div class="top">
-<div id="welcome">Welcome</div>
+<div class="logo">StudentStreamHQ</div>
+<button onclick="logout()">Logout</button>
 </div>
 
-<div class="wrapper">
+<div class="wrap">
 
 <!-- POST BOX -->
 
 <div class="postBox">
 
-<textarea id="postText" placeholder="Share something..."></textarea>
+<textarea id="postText" rows="3" placeholder="Share something..."></textarea>
 
 <div class="postActions">
-<div></div>
+<input type="text" id="mediaUrl" placeholder="Optional image URL">
 <button onclick="createPost()">Post</button>
 </div>
 
@@ -200,8 +169,6 @@ margin-bottom:6px;
 <!-- FEED -->
 
 <div id="feed"></div>
-
-</div>
 
 </div>
 
@@ -214,8 +181,9 @@ const supabase=createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
+const feed=document.getElementById("feed")
+
 let user=null
-const feedDiv=document.getElementById("feed")
 
 /* INIT */
 
@@ -229,8 +197,6 @@ location.href="/login.html"
 return
 }
 
-document.getElementById("welcome").textContent="Welcome, "+user.email.split("@")[0]
-
 loadFeed()
 
 }
@@ -241,53 +207,61 @@ async function loadFeed(){
 
 const { data } = await supabase
 .from("feed")
-.select("*")
+.select("*, profiles(username)")
 .order("created_at",{ascending:false})
-.limit(30)
+.limit(50)
 
-feedDiv.innerHTML=""
+feed.innerHTML=""
 
 data.forEach(item=>{
 
 const div=document.createElement("div")
-div.className="feedItem"
 
-let tagClass="systemTag"
-if(item.type==="post") tagClass="postTag"
+div.className="feedItem type-"+item.type
 
-let text=""
+let content=""
 
-/* TYPE HANDLING */
-
+/* USER POST */
 if(item.type==="post"){
-text=item.text
-}
+content=`
+<div class="feedTop">
+<div>${item.profiles?.username || "User"}</div>
+<div>${formatTime(item.created_at)}</div>
+</div>
 
-if(item.type==="upload"){
-text="🎬 Uploaded new content"
-}
+<div class="feedText">${item.text || ""}</div>
 
-if(item.type==="earning"){
-text="💰 Earned $"+item.amount
-}
-
-if(item.type==="join"){
-text="🚀 Joined StudentStreamHQ"
-}
-
-/* RENDER */
-
-div.innerHTML=`
-<div class="tag ${tagClass}">${item.type.toUpperCase()}</div>
-
-<div class="feedHeader">${new Date(item.created_at).toLocaleString()}</div>
-
-<div class="feedText">${text}</div>
-
-${item.media_url ? `<img class="feedMedia" src="${item.media_url}">` : ""}
+${item.media_url ? `<img src="${item.media_url}" class="feedMedia">` : ""}
 `
+}
 
-feedDiv.appendChild(div)
+/* UPLOAD */
+if(item.type==="upload"){
+content=`
+<div class="feedTop">
+<div>🎬 ${item.profiles?.username}</div>
+<div>${formatTime(item.created_at)}</div>
+</div>
+
+<div class="feedText">uploaded new content</div>
+`
+}
+
+/* EARNING */
+if(item.type==="earning"){
+content=`
+<div class="feedTop">
+<div>💰 ${item.profiles?.username}</div>
+<div>${formatTime(item.created_at)}</div>
+</div>
+
+<div class="feedText">earned $${item.amount}</div>
+`
+}
+
+div.innerHTML=content
+
+feed.appendChild(div)
 
 })
 
@@ -298,19 +272,36 @@ feedDiv.appendChild(div)
 window.createPost=async ()=>{
 
 const text=document.getElementById("postText").value
+const media=document.getElementById("mediaUrl").value
 
-if(!text) return
+if(!text)return
 
 await supabase.from("feed").insert({
 user_id:user.id,
 type:"post",
-text:text
+text:text,
+media_url:media
 })
 
 document.getElementById("postText").value=""
+document.getElementById("mediaUrl").value=""
 
 loadFeed()
 
+}
+
+/* TIME FORMAT */
+
+function formatTime(date){
+const d=new Date(date)
+return d.toLocaleString()
+}
+
+/* LOGOUT */
+
+window.logout=async ()=>{
+await supabase.auth.signOut()
+location.href="/login.html"
 }
 
 init()
