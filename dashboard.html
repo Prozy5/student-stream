@@ -8,115 +8,135 @@
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter,system-ui;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui;}
 
 body{
 background:#04060f;
 color:white;
 overflow-x:hidden;
-}
-
-/* BACKGROUND GLOW */
-
-.glow1,.glow2{
-position:fixed;
-width:800px;
-height:800px;
-filter:blur(120px);
-z-index:-1;
-}
-
-.glow1{
-background:#4da3ff33;
-top:-200px;
-left:-200px;
-}
-
-.glow2{
-background:#6cf2c233;
-bottom:-200px;
-right:-200px;
-}
-
-/* NAV */
-
-.nav{
-padding:20px 30px;
 display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid rgba(255,255,255,.08);
-background:rgba(0,0,0,.4);
-backdrop-filter:blur(12px);
-position:sticky;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:230px;
+background:#060913;
+border-right:1px solid rgba(255,255,255,.05);
+padding:25px 18px;
+display:flex;
+flex-direction:column;
+gap:25px;
+position:fixed;
 top:0;
+bottom:0;
+left:0;
 }
 
 .logo{
 font-weight:900;
-font-size:20px;
+font-size:18px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
+.navItem{
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+opacity:.7;
+}
+
+.navItem:hover{
+background:rgba(255,255,255,.06);
+opacity:1;
+}
+
+/* MAIN */
+
+.main{
+margin-left:230px;
+width:100%;
+}
+
+/* TOP */
+
+.top{
+padding:25px 35px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.userBox{
+font-size:14px;
+opacity:.8;
+}
+
 /* WRAP */
 
 .wrapper{
-max-width:1200px;
+max-width:1100px;
 margin:auto;
-padding:40px 20px 100px;
+padding:30px;
+}
+
+/* HEADER */
+
+.header h1{
+font-size:28px;
+}
+
+.rank{
+margin-top:6px;
+opacity:.7;
 }
 
 /* STATS */
 
 .stats{
 display:flex;
-gap:20px;
+gap:18px;
 flex-wrap:wrap;
-margin-bottom:40px;
+margin-top:25px;
 }
 
 .card{
 flex:1;
-min-width:220px;
-padding:25px;
-border-radius:20px;
+min-width:200px;
+padding:20px;
+border-radius:16px;
 background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.07);
 transition:.3s;
 }
 
 .card:hover{
-transform:translateY(-6px);
+transform:translateY(-5px);
 border-color:#6cf2c2;
 }
 
-.card h3{
-font-size:14px;
-opacity:.7;
+.label{
+font-size:13px;
+opacity:.6;
 }
 
 .value{
-font-size:28px;
+font-size:26px;
 font-weight:900;
-margin-top:10px;
+margin-top:6px;
 }
 
 /* SECTION */
 
 .section{
-margin-top:50px;
+margin-top:40px;
 }
 
 .section h2{
-margin-bottom:20px;
+margin-bottom:15px;
 }
 
 /* CONTENT */
@@ -124,15 +144,14 @@ margin-bottom:20px;
 .contentItem{
 display:flex;
 justify-content:space-between;
-align-items:center;
 background:#0b0f1c;
-padding:15px;
-border-radius:12px;
+padding:12px;
+border-radius:10px;
 margin-bottom:10px;
 }
 
 .contentItem:hover{
-background:#11172a;
+background:#121933;
 }
 
 /* EARNINGS */
@@ -140,19 +159,38 @@ background:#11172a;
 .earning{
 display:flex;
 justify-content:space-between;
-padding:12px;
+padding:10px;
 border-bottom:1px solid rgba(255,255,255,.05);
 }
 
-/* BUTTON */
+/* SETTINGS PANEL */
+
+.settings{
+display:none;
+margin-top:20px;
+padding:20px;
+background:#0b0f1c;
+border-radius:12px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
+border:none;
+background:#11172a;
+color:white;
+}
 
 button{
-padding:10px 16px;
+margin-top:12px;
+padding:10px 15px;
 border:none;
 border-radius:8px;
 background:linear-gradient(90deg,#4da3ff,#6cf2c2);
-font-weight:700;
 cursor:pointer;
+font-weight:700;
 }
 
 </style>
@@ -160,63 +198,95 @@ cursor:pointer;
 
 <body>
 
-<div class="glow1"></div>
-<div class="glow2"></div>
+<!-- SIDEBAR -->
 
-<!-- NAV -->
+<div class="sidebar">
 
-<div class="nav">
-<div class="logo">StudentStreamHQ</div>
-<button onclick="logout()">Logout</button>
+<div class="logo">SSHQ</div>
+
+<div class="navItem" onclick="showSection('dashboard')">Dashboard</div>
+<div class="navItem" onclick="showSection('content')">Content</div>
+<div class="navItem" onclick="showSection('earnings')">Earnings</div>
+<div class="navItem" onclick="showSection('settings')">Settings</div>
+
+<div class="navItem" onclick="logout()">Logout</div>
+
+</div>
+
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="top">
+<div class="userBox" id="userBox">Loading...</div>
 </div>
 
 <div class="wrapper">
+
+<!-- HEADER -->
+
+<div class="header">
+<h1 id="welcome">Welcome</h1>
+<div class="rank" id="rank">Rank: —</div>
+</div>
 
 <!-- STATS -->
 
 <div class="stats">
 
 <div class="card">
-<h3>Total Earnings</h3>
+<div class="label">Total Earnings</div>
 <div class="value" id="total">$0</div>
 </div>
 
 <div class="card">
-<h3>Pending</h3>
+<div class="label">Pending</div>
 <div class="value" id="pending">$0</div>
 </div>
 
 <div class="card">
-<h3>Plan</h3>
-<div class="value" id="plan">Free</div>
+<div class="label">Plan</div>
+<div class="value" id="plan">FREE</div>
 </div>
 
 <div class="card">
-<h3>Monetization</h3>
-<div class="value" id="monetization">None</div>
+<div class="label">Monetization</div>
+<div class="value" id="monetization">NONE</div>
 </div>
 
 </div>
-
 
 <!-- CONTENT -->
 
-<div class="section">
+<div class="section" id="contentSection">
 
 <h2>Your Content</h2>
-
 <div id="contentList"></div>
 
 </div>
 
-
 <!-- EARNINGS -->
 
-<div class="section">
+<div class="section" id="earningsSection">
 
 <h2>Recent Earnings</h2>
-
 <div id="earningsList"></div>
+
+</div>
+
+<!-- SETTINGS -->
+
+<div class="settings" id="settingsSection">
+
+<h2>Account Settings</h2>
+
+<input id="usernameInput" placeholder="Username">
+<input id="displayInput" placeholder="Display Name">
+
+<button onclick="saveSettings()">Save Changes</button>
+
+</div>
 
 </div>
 
@@ -232,27 +302,33 @@ const supabase=createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 )
 
+let user=null
+
+const welcome=document.getElementById("welcome")
+const userBox=document.getElementById("userBox")
+const rank=document.getElementById("rank")
+
 const total=document.getElementById("total")
 const pending=document.getElementById("pending")
 const plan=document.getElementById("plan")
 const monetization=document.getElementById("monetization")
+
 const contentList=document.getElementById("contentList")
 const earningsList=document.getElementById("earningsList")
-
-let user=null
 
 /* INIT */
 
 async function init(){
 
 const { data } = await supabase.auth.getUser()
-
 user=data.user
 
 if(!user){
-window.location.href="/login.html"
+location.href="/login.html"
 return
 }
+
+userBox.textContent=user.email
 
 loadProfile()
 loadContent()
@@ -270,12 +346,19 @@ const { data } = await supabase
 .eq("id",user.id)
 .single()
 
-total.textContent="$"+Number(data.total_earnings).toFixed(2)
-pending.textContent="$"+Number(data.pending_earnings).toFixed(2)
+welcome.textContent="Welcome, "+(data.username || "Creator")
 
 plan.textContent=data.plan.toUpperCase()
-
 monetization.textContent=data.monetization_status.toUpperCase()
+
+total.textContent="$"+data.total_earnings
+pending.textContent="$"+data.pending_earnings
+
+/* RANK LOGIC */
+let r="New Creator"
+if(data.total_earnings>100) r="Rising Creator"
+if(data.total_earnings>500) r="Top Creator"
+rank.textContent="Rank: "+r
 
 }
 
@@ -287,7 +370,6 @@ const { data } = await supabase
 .from("content")
 .select("*")
 .eq("user_id",user.id)
-.order("created_at",{ascending:false})
 
 contentList.innerHTML=""
 
@@ -297,10 +379,7 @@ const div=document.createElement("div")
 div.className="contentItem"
 
 div.innerHTML=`
-<div>
 <div>${item.title}</div>
-<div style="opacity:.6;font-size:13px">${item.views} views</div>
-</div>
 <button onclick="play('${item.video_url}')">Play</button>
 `
 
@@ -318,7 +397,6 @@ const { data } = await supabase
 .from("earnings")
 .select("*")
 .eq("user_id",user.id)
-.order("created_at",{ascending:false})
 .limit(10)
 
 earningsList.innerHTML=""
@@ -330,7 +408,7 @@ div.className="earning"
 
 div.innerHTML=`
 <div>${e.source}</div>
-<div>+$${Number(e.final_amount).toFixed(2)}</div>
+<div>+$${e.final_amount}</div>
 `
 
 earningsList.appendChild(div)
@@ -339,17 +417,51 @@ earningsList.appendChild(div)
 
 }
 
-/* PLAY */
+/* SETTINGS */
 
-window.play=(url)=>{
-window.open(url)
+window.saveSettings=async ()=>{
+
+const username=document.getElementById("usernameInput").value
+const display=document.getElementById("displayInput").value
+
+await supabase.from("profiles").update({
+username:username,
+display_name:display
+}).eq("id",user.id)
+
+alert("Saved")
+
 }
 
-/* LOGOUT */
+/* NAV SWITCH */
 
+window.showSection=(section)=>{
+
+document.getElementById("contentSection").style.display="none"
+document.getElementById("earningsSection").style.display="none"
+document.getElementById("settingsSection").style.display="none"
+
+if(section==="content"){
+document.getElementById("contentSection").style.display="block"
+}
+
+if(section==="earnings"){
+document.getElementById("earningsSection").style.display="block"
+}
+
+if(section==="settings"){
+document.getElementById("settingsSection").style.display="block"
+}
+
+}
+
+/* PLAY */
+window.play=(url)=>window.open(url)
+
+/* LOGOUT */
 window.logout=async ()=>{
 await supabase.auth.signOut()
-window.location.href="/login.html"
+location.href="/login.html"
 }
 
 init()
