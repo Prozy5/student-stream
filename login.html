@@ -23,31 +23,31 @@ color:white;
 overflow:hidden;
 }
 
-/* BACKGROUND ORBS */
+/* FLOATING GLOW ORBS */
 .blurOrb,.blurOrb2{
 position:absolute;
 width:900px;
 height:900px;
 filter:blur(120px);
+animation:float 12s ease-in-out infinite alternate;
 }
 
 .blurOrb{
 background:radial-gradient(circle,rgba(60,140,255,0.25),transparent 70%);
 top:-300px;
 left:-250px;
-animation:float 12s ease-in-out infinite;
 }
 
 .blurOrb2{
 background:radial-gradient(circle,rgba(0,255,170,0.18),transparent 70%);
 bottom:-320px;
 right:-250px;
-animation:float 14s ease-in-out infinite reverse;
+animation-delay:4s;
 }
 
 @keyframes float{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(40px)}
+from{transform:translateY(0px);}
+to{transform:translateY(60px);}
 }
 
 /* LOGIN CARD */
@@ -78,9 +78,12 @@ letter-spacing:-1px;
 }
 
 .logoTitle span{
-color:#3c8cff;
+background:linear-gradient(90deg,#3c8cff,#00ffae);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
+/* SUBTITLE */
 .subtitle{
 margin-top:10px;
 font-size:15px;
@@ -88,7 +91,7 @@ opacity:.7;
 line-height:1.6;
 }
 
-/* INPUTS */
+/* FORM */
 .field{
 text-align:left;
 margin-top:22px;
@@ -114,14 +117,15 @@ transition:.25s;
 }
 
 input:focus{
-border-color:rgba(60,140,255,.65);
-box-shadow:0 0 0 3px rgba(60,140,255,.18);
+border-color:#3c8cff;
+box-shadow:0 0 0 3px rgba(60,140,255,.2);
+transform:scale(1.01);
 }
 
 /* BUTTON */
 .loginBtn{
 width:100%;
-margin-top:25px;
+margin-top:30px;
 padding:15px;
 border-radius:18px;
 border:none;
@@ -134,8 +138,12 @@ transition:.25s;
 }
 
 .loginBtn:hover{
-transform:translateY(-2px);
-box-shadow:0 15px 40px rgba(0,0,0,.55);
+transform:translateY(-3px) scale(1.02);
+box-shadow:0 20px 50px rgba(0,0,0,.6);
+}
+
+.loginBtn:active{
+transform:scale(.98);
 }
 
 /* STATUS */
@@ -146,34 +154,42 @@ opacity:.8;
 min-height:20px;
 }
 
-/* TERMS */
-.terms{
-margin-top:20px;
-display:flex;
-gap:10px;
-align-items:center;
-font-size:13px;
-opacity:.8;
-text-align:left;
-}
-
-.terms a{
-color:#6cf2c2;
-font-weight:700;
-cursor:pointer;
-}
-
 /* LINKS */
 .links{
-margin-top:28px;
+margin-top:25px;
 font-size:13px;
 opacity:.65;
+display:flex;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap;
 }
 
 .links a{
 color:white;
 font-weight:700;
 text-decoration:none;
+opacity:.75;
+}
+
+.links a:hover{
+opacity:1;
+}
+
+/* TERMS LINK */
+.terms{
+margin-top:15px;
+font-size:12px;
+opacity:.5;
+}
+
+.terms a{
+color:#6cf2c2;
+text-decoration:none;
+}
+
+.terms a:hover{
+text-decoration:underline;
 }
 
 </style>
@@ -192,38 +208,35 @@ StudentStream<span>HQ</span>
 
 <div class="subtitle">
 One account for the entire platform.<br>
-<strong>All divisions. One system.</strong>
+<strong>Creator Network • Systems • Divisions</strong>
 </div>
 
 <!-- EMAIL -->
 <div class="field">
 <label>Email</label>
-<input id="email" type="email">
+<input id="email" type="email" placeholder="you@studentstream.com">
 </div>
 
 <!-- PASSWORD -->
 <div class="field">
 <label>Password</label>
-<input id="password" type="password">
+<input id="password" type="password" placeholder="••••••••••••">
 </div>
 
-<!-- TERMS -->
-<div class="terms">
-<input type="checkbox" id="agree">
-<label>
-I agree to the <a onclick="openAgreement()">Platform Agreement</a>
-</label>
-</div>
-
-<!-- LOGIN -->
-<button class="loginBtn" onclick="loginUser()">
+<!-- BUTTON -->
+<button class="loginBtn" id="loginBtn" onclick="loginUser()">
 Login to StudentStreamHQ
 </button>
 
 <div class="status" id="statusText"></div>
 
 <div class="links">
-New here? <a href="/signup.html">Create Account</a>
+<span>New here?</span>
+<a href="/signup.html">Create Account</a>
+</div>
+
+<div class="terms">
+<a href="/terms.html" target="_blank">View Terms & Agreement</a>
 </div>
 
 </div>
@@ -231,92 +244,64 @@ New here? <a href="/signup.html">Create Account</a>
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase=createClient(
+const supabase = createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-const status=document.getElementById("statusText");
+const status = document.getElementById("statusText");
+const btn = document.getElementById("loginBtn");
 
 /* REDIRECT */
-const params=new URLSearchParams(window.location.search);
-const nextPage=params.get("next")||"/dashboard.html";
+const params = new URLSearchParams(window.location.search);
+const nextPage = params.get("next") || "/dashboard.html";
 
-/* CHECK SESSION */
-const { data:sessionData }=await supabase.auth.getSession();
-
-if(sessionData.session){
-
-// CHECK IF CONTRACT SIGNED
-const { data:contract } = await supabase
-.from("contracts")
-.select("*")
-.eq("user_id",sessionData.session.user.id)
-.single();
-
-if(!contract){
-window.location.href="/agreement.html";
-}else{
-window.location.href=nextPage;
+/* AUTO LOGIN */
+const { data: sessionData } = await supabase.auth.getSession();
+if (sessionData.session) {
+window.location.href = nextPage;
 }
 
-}
-
-/* OPEN AGREEMENT */
-window.openAgreement=()=>{
-window.location.href="/agreement.html";
-};
+/* ENTER KEY SUPPORT */
+document.addEventListener("keydown",(e)=>{
+if(e.key==="Enter") loginUser();
+});
 
 /* LOGIN */
-window.loginUser=async()=>{
+window.loginUser = async function(){
 
-const email=document.getElementById("email").value.trim();
-const password=document.getElementById("password").value.trim();
-const agree=document.getElementById("agree").checked;
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
 
-if(!email||!password){
-status.textContent="⚠️ Enter email & password";
+if(!email || !password){
+status.textContent="⚠️ Enter your email and password.";
 return;
 }
 
-if(!agree){
-status.textContent="⚠️ You must accept the agreement";
-return;
-}
+btn.disabled=true;
+btn.textContent="Logging in...";
+status.textContent="";
 
-status.textContent="Logging in...";
-
-const { data,error }=await supabase.auth.signInWithPassword({
-email,password
+const { error } = await supabase.auth.signInWithPassword({
+email,
+password
 });
 
 if(error){
 status.textContent="❌ "+error.message;
+btn.disabled=false;
+btn.textContent="Login to StudentStreamHQ";
 return;
 }
 
-/* CHECK CONTRACT */
-const { data:contract }=await supabase
-.from("contracts")
-.select("*")
-.eq("user_id",data.user.id)
-.single();
-
-if(!contract){
-status.textContent="Redirecting to agreement...";
-setTimeout(()=>{
-window.location.href="/agreement.html";
-},800);
-return;
-}
-
-status.textContent="✅ Welcome back";
+status.textContent="✅ Welcome back.";
 
 setTimeout(()=>{
 window.location.href=nextPage;
-},700);
+},600);
 
 };
+
 </script>
 
 </body>
