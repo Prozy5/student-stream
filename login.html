@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Login • StudentStreamHQ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Inter,system-ui,-apple-system;
+font-family:system-ui,-apple-system,BlinkMacSystemFont;
 }
 
 body{
 min-height:100vh;
-background:#02030a;
+background:radial-gradient(circle at top,#08142c,#02030a);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -25,118 +23,75 @@ color:white;
 overflow:hidden;
 }
 
-/* Animated grid background */
-
-body::before{
-content:"";
-position:fixed;
-inset:0;
-background-image:
-linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-background-size:60px 60px;
-animation:gridMove 25s linear infinite;
-z-index:-3;
-}
-
-@keyframes gridMove{
-0%{transform:translateY(0)}
-100%{transform:translateY(60px)}
-}
-
-/* glow orbs */
-
-.orb{
+/* BACKGROUND ORBS */
+.blurOrb,.blurOrb2{
 position:absolute;
 width:900px;
 height:900px;
-border-radius:50%;
-filter:blur(140px);
-opacity:.35;
-z-index:-2;
+filter:blur(120px);
 }
 
-.orb1{
-background:#3c8cff;
-top:-350px;
-left:-300px;
+.blurOrb{
+background:radial-gradient(circle,rgba(60,140,255,0.25),transparent 70%);
+top:-300px;
+left:-250px;
+animation:float 12s ease-in-out infinite;
 }
 
-.orb2{
-background:#00ffae;
-bottom:-350px;
-right:-300px;
-}
-
-/* particles */
-
-.particle{
-position:absolute;
-width:2px;
-height:2px;
-background:white;
-opacity:.2;
-animation:float 20s linear infinite;
+.blurOrb2{
+background:radial-gradient(circle,rgba(0,255,170,0.18),transparent 70%);
+bottom:-320px;
+right:-250px;
+animation:float 14s ease-in-out infinite reverse;
 }
 
 @keyframes float{
-0%{transform:translateY(0)}
-100%{transform:translateY(-1000px)}
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(40px)}
 }
 
-/* login card */
-
+/* LOGIN CARD */
 .loginBox{
 width:100%;
-max-width:480px;
-padding:55px 45px;
-border-radius:30px;
-background:rgba(255,255,255,.05);
+max-width:470px;
+padding:50px 45px;
+border-radius:28px;
+background:rgba(255,255,255,.04);
 border:1px solid rgba(255,255,255,.12);
-backdrop-filter:blur(30px);
-box-shadow:0 40px 120px rgba(0,0,0,.8);
+backdrop-filter:blur(25px);
+box-shadow:0 0 80px rgba(0,0,0,.55);
 z-index:5;
-animation:fadeUp .8s ease;
-}
-
-@keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(40px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-/* logo */
-
-.logoTitle{
-font-size:54px;
-font-weight:900;
-letter-spacing:-1px;
 text-align:center;
+animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(40px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+/* TITLE */
+.logoTitle{
+font-size:52px;
+font-weight:950;
+letter-spacing:-1px;
 }
 
 .logoTitle span{
-background:linear-gradient(90deg,#3c8cff,#00ffae);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+color:#3c8cff;
 }
 
 .subtitle{
-text-align:center;
 margin-top:10px;
-font-size:14px;
-opacity:.75;
+font-size:15px;
+opacity:.7;
 line-height:1.6;
 }
 
-/* fields */
-
+/* INPUTS */
 .field{
-margin-top:24px;
+text-align:left;
+margin-top:22px;
 }
 
 label{
@@ -145,17 +100,13 @@ font-weight:700;
 opacity:.75;
 }
 
-.inputWrap{
-position:relative;
-}
-
 input{
 width:100%;
-margin-top:8px;
-padding:15px 16px;
+margin-top:9px;
+padding:15px;
 border-radius:16px;
-border:1px solid rgba(255,255,255,.15);
-background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.14);
+background:rgba(255,255,255,.03);
 color:white;
 font-size:15px;
 outline:none;
@@ -163,28 +114,15 @@ transition:.25s;
 }
 
 input:focus{
-border-color:#3c8cff;
-box-shadow:0 0 0 3px rgba(60,140,255,.2);
+border-color:rgba(60,140,255,.65);
+box-shadow:0 0 0 3px rgba(60,140,255,.18);
 }
 
-/* show password */
-
-.togglePass{
-position:absolute;
-right:12px;
-top:50%;
-transform:translateY(-50%);
-cursor:pointer;
-opacity:.6;
-font-size:13px;
-}
-
-/* button */
-
+/* BUTTON */
 .loginBtn{
 width:100%;
-margin-top:32px;
-padding:16px;
+margin-top:25px;
+padding:15px;
 border-radius:18px;
 border:none;
 cursor:pointer;
@@ -193,47 +131,41 @@ font-size:16px;
 background:linear-gradient(90deg,#3c8cff,#00ffae);
 color:black;
 transition:.25s;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
 }
 
 .loginBtn:hover{
 transform:translateY(-2px);
-box-shadow:0 15px 40px rgba(0,0,0,.6);
+box-shadow:0 15px 40px rgba(0,0,0,.55);
 }
 
-/* loading spinner */
-
-.spinner{
-width:16px;
-height:16px;
-border:3px solid rgba(0,0,0,.2);
-border-top:3px solid black;
-border-radius:50%;
-animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-to{transform:rotate(360deg)}
-}
-
-/* status */
-
+/* STATUS */
 .status{
 margin-top:16px;
 font-size:14px;
-opacity:.85;
+opacity:.8;
 min-height:20px;
-text-align:center;
 }
 
-/* links */
+/* TERMS */
+.terms{
+margin-top:20px;
+display:flex;
+gap:10px;
+align-items:center;
+font-size:13px;
+opacity:.8;
+text-align:left;
+}
 
+.terms a{
+color:#6cf2c2;
+font-weight:700;
+cursor:pointer;
+}
+
+/* LINKS */
 .links{
 margin-top:28px;
-text-align:center;
 font-size:13px;
 opacity:.65;
 }
@@ -244,29 +176,13 @@ font-weight:700;
 text-decoration:none;
 }
 
-.links a:hover{
-opacity:1;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-
-<!-- particles -->
-<script>
-for(let i=0;i<40;i++){
-let p=document.createElement("div")
-p.className="particle"
-p.style.left=Math.random()*100+"%"
-p.style.top=Math.random()*100+"%"
-p.style.animationDuration=(15+Math.random()*20)+"s"
-document.body.appendChild(p)
-}
-</script>
+<div class="blurOrb"></div>
+<div class="blurOrb2"></div>
 
 <div class="loginBox">
 
@@ -275,26 +191,32 @@ StudentStream<span>HQ</span>
 </div>
 
 <div class="subtitle">
-One account for the entire platform<br>
-<strong>SS:Watch • DevForum • Studio • Creator Hub</strong>
+One account for the entire platform.<br>
+<strong>All divisions. One system.</strong>
 </div>
 
+<!-- EMAIL -->
 <div class="field">
 <label>Email</label>
-<div class="inputWrap">
-<input id="email" type="email" placeholder="you@studentstream.com">
-</div>
+<input id="email" type="email">
 </div>
 
+<!-- PASSWORD -->
 <div class="field">
 <label>Password</label>
-<div class="inputWrap">
-<input id="password" type="password" placeholder="••••••••">
-<span class="togglePass" onclick="togglePass()">SHOW</span>
-</div>
+<input id="password" type="password">
 </div>
 
-<button class="loginBtn" id="loginBtn" onclick="loginUser()">
+<!-- TERMS -->
+<div class="terms">
+<input type="checkbox" id="agree">
+<label>
+I agree to the <a onclick="openAgreement()">Platform Agreement</a>
+</label>
+</div>
+
+<!-- LOGIN -->
+<button class="loginBtn" onclick="loginUser()">
 Login to StudentStreamHQ
 </button>
 
@@ -307,76 +229,94 @@ New here? <a href="/signup.html">Create Account</a>
 </div>
 
 <script type="module">
-
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabase=createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-)
+);
 
-const status=document.getElementById("statusText")
-const btn=document.getElementById("loginBtn")
+const status=document.getElementById("statusText");
 
-const params=new URLSearchParams(window.location.search)
-const nextPage=params.get("next") || "/dashboard.html"
+/* REDIRECT */
+const params=new URLSearchParams(window.location.search);
+const nextPage=params.get("next")||"/dashboard.html";
 
-/* auto redirect if logged in */
+/* CHECK SESSION */
+const { data:sessionData }=await supabase.auth.getSession();
 
-const {data:{session}}=await supabase.auth.getSession()
+if(sessionData.session){
 
-if(session){
-window.location.href=nextPage
+// CHECK IF CONTRACT SIGNED
+const { data:contract } = await supabase
+.from("contracts")
+.select("*")
+.eq("user_id",sessionData.session.user.id)
+.single();
+
+if(!contract){
+window.location.href="/agreement.html";
+}else{
+window.location.href=nextPage;
 }
 
-/* show password */
-
-window.togglePass=()=>{
-const input=document.getElementById("password")
-input.type=input.type==="password"?"text":"password"
 }
 
-/* enter key login */
+/* OPEN AGREEMENT */
+window.openAgreement=()=>{
+window.location.href="/agreement.html";
+};
 
-document.addEventListener("keypress",e=>{
-if(e.key==="Enter") loginUser()
-})
-
-/* login */
-
+/* LOGIN */
 window.loginUser=async()=>{
 
-const email=document.getElementById("email").value.trim()
-const password=document.getElementById("password").value.trim()
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value.trim();
+const agree=document.getElementById("agree").checked;
 
-if(!email || !password){
-status.textContent="⚠️ Enter email and password"
-return
+if(!email||!password){
+status.textContent="⚠️ Enter email & password";
+return;
 }
 
-btn.innerHTML=`<div class="spinner"></div> Signing in`
-btn.disabled=true
+if(!agree){
+status.textContent="⚠️ You must accept the agreement";
+return;
+}
 
-const {error}=await supabase.auth.signInWithPassword({
-email,
-password
-})
+status.textContent="Logging in...";
+
+const { data,error }=await supabase.auth.signInWithPassword({
+email,password
+});
 
 if(error){
-status.textContent="❌ "+error.message
-btn.innerHTML="Login to StudentStreamHQ"
-btn.disabled=false
-return
+status.textContent="❌ "+error.message;
+return;
 }
 
-status.textContent="✅ Welcome back"
+/* CHECK CONTRACT */
+const { data:contract }=await supabase
+.from("contracts")
+.select("*")
+.eq("user_id",data.user.id)
+.single();
+
+if(!contract){
+status.textContent="Redirecting to agreement...";
+setTimeout(()=>{
+window.location.href="/agreement.html";
+},800);
+return;
+}
+
+status.textContent="✅ Welcome back";
 
 setTimeout(()=>{
-window.location.href=nextPage
-},600)
+window.location.href=nextPage;
+},700);
 
-}
-
+};
 </script>
 
 </body>
