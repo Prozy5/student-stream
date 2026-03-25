@@ -19,247 +19,115 @@
   --border:rgba(255,255,255,0.08);
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
+/* (KEEPING ALL YOUR ORIGINAL STYLES ABOVE) */
 
-body{
-  font-family:system-ui;
-  background:radial-gradient(circle at top,#0c1b33,#05080f 75%);
-  color:var(--text);
-}
-
-/* STATUS BAR */
+/* NEW: SYSTEM STATUS BAR */
 .statusBar{
+  max-width:900px;
+  margin:20px auto 0;
+  padding:14px;
+  border-radius:14px;
+  background:rgba(0,255,170,.08);
+  border:1px solid rgba(0,255,170,.25);
   text-align:center;
-  padding:6px;
-  font-size:12px;
-  background:linear-gradient(90deg,#0a1c35,#07101f);
-  border-bottom:1px solid var(--border);
-  color:var(--muted);
-}
-
-/* NAV */
-nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 26px;
-  background:rgba(10,20,40,.85);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-}
-
-.brand{
-  font-weight:950;
-  font-size:16px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.nav-links a{
-  margin-left:18px;
-  color:var(--muted);
-  text-decoration:none;
-  font-size:14px;
-  font-weight:650;
-}
-
-.nav-links a:hover{
-  color:var(--text);
-}
-
-/* HERO */
-.hero{
-  max-width:1120px;
-  margin:auto;
-  padding:85px 22px 55px;
-  text-align:center;
-}
-
-.hero h1{
-  font-size:56px;
-  font-weight:990;
-}
-
-.hero span{
-  color:var(--accent);
-}
-
-.hero p{
-  max-width:880px;
-  margin:18px auto;
-  color:var(--muted);
-  font-size:15px;
-  line-height:1.75;
-}
-
-/* LIVE ACTIVITY */
-.activity{
-  margin:30px auto 0;
-  max-width:800px;
-  padding:16px;
-  border-radius:16px;
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--border);
   font-size:13px;
-  color:var(--muted);
 }
 
-/* METRICS */
-.metricsGrid{
-  margin:45px auto 0;
-  max-width:980px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:14px;
+.statusBar span{
+  color:#00ffae;
+  font-weight:900;
 }
 
-.metricCard{
-  padding:18px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.02);
-}
-
-.metricCard h2{
-  font-size:26px;
-  font-weight:990;
-  margin-top:6px;
-}
-
-/* QUICK PANEL */
-.quickPanel{
+/* NEW: ACTIVITY FEED */
+.activityFeed{
   margin:40px auto 0;
   max-width:900px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-}
-
-.quickBtn{
-  padding:10px 16px;
-  border-radius:12px;
-  background:rgba(255,93,93,.1);
-  border:1px solid rgba(255,93,93,.3);
-  font-size:13px;
-  cursor:pointer;
-}
-
-/* SECTION */
-.section{
-  max-width:1150px;
-  margin:auto;
-  padding:70px 22px;
-  opacity:0;
-  transform:translateY(40px);
-  transition:.5s;
-}
-
-.section.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:18px;
-}
-
-.card{
-  background:rgba(12,22,38,.88);
-  border:1px solid var(--border);
-  border-radius:18px;
   padding:20px;
+  border-radius:18px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
 }
 
-footer{
-  text-align:center;
-  padding:40px;
-  border-top:1px solid var(--border);
-  margin-top:70px;
+.activityFeed h3{
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.feedItem{
   font-size:13px;
   color:var(--muted);
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+/* NEW: TRUST BLOCK */
+.trustBlock{
+  margin:50px auto;
+  max-width:1000px;
+  padding:30px;
+  border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,93,93,.12),rgba(10,20,40,.9));
+  border:1px solid rgba(255,93,93,.3);
+  text-align:center;
+}
+
+.trustBlock h2{
+  font-size:24px;
+}
+
+.trustBlock p{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* NEW: STAFF BADGE GLOW */
+.staffPanel{
+  box-shadow:0 0 20px rgba(255,93,93,.3);
+}
+
+/* NEW: ANIMATION */
+.fadeIn{
+  animation:fade .6s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<div class="statusBar">
-🟢 Enforcement System Active • Evidence Vault Secure • Live Monitoring Enabled
+<!-- KEEP YOUR NAV + HERO EXACTLY THE SAME -->
+
+<!-- ADD BELOW HERO ACTIONS -->
+<div class="statusBar fadeIn">
+  System Status: <span>Operational</span> · Evidence Vault Secured · Monitoring Active
 </div>
 
-<nav>
-  <div class="brand">⚖️ StudentStream Law Division</div>
+<!-- KEEP YOUR METRICS -->
 
-  <div class="nav-links">
-    <a href="../index.html">Home</a>
-    <a href="report.html">Report</a>
-    <a href="my-reports.html">My Reports</a>
-    <a href="staff-transparency.html">Staff Registry</a>
-    <a href="law-login.html">Staff Access</a>
-  </div>
-</nav>
-
-<section class="hero">
-
-<h1>StudentStream <span>Law</span></h1>
-
-<p>
-Enforcement authority for StudentStreamHQ. Investigations, evidence security,
-creator protection, and platform integrity at scale.
-</p>
-
-<!-- LIVE ACTIVITY -->
-<div class="activity" id="activityFeed">
-Loading live activity...
+<!-- NEW ACTIVITY FEED -->
+<div class="activityFeed fadeIn">
+  <h3>📡 Live Enforcement Activity</h3>
+  <div id="feed"></div>
 </div>
 
-<!-- QUICK ACTIONS -->
-<div class="quickPanel">
-<div class="quickBtn" onclick="location.href='report.html'">🚨 Report</div>
-<div class="quickBtn" onclick="location.href='appeals.html'">⚠ Appeal</div>
-<div class="quickBtn" onclick="location.href='rights.html'">📜 Rights</div>
-<div class="quickBtn">🔐 Evidence Vault</div>
+<!-- KEEP NOTICE + STAFF PANEL -->
+
+<!-- NEW TRUST BLOCK -->
+<div class="trustBlock fadeIn">
+  <h2>Platform Protection System</h2>
+  <p>
+    StudentStream Law Division exists to protect the integrity of the platform,
+    safeguard the owner’s authority, and ensure all users operate within a secure,
+    monitored, and enforceable environment.
+  </p>
 </div>
 
-<!-- METRICS -->
-<div class="metricsGrid">
-<div class="metricCard">
-<span>Total Reports</span>
-<h2 id="metricReports">0</h2>
-</div>
-
-<div class="metricCard">
-<span>Cases Assigned</span>
-<h2 id="metricAssigned">0</h2>
-</div>
-
-<div class="metricCard">
-<span>System Status</span>
-<h2>ONLINE</h2>
-</div>
-</div>
-
-</section>
-
-<section class="section">
-<h2>Division Responsibilities</h2>
-
-<div class="grid">
-<div class="card"><h3>Fraud Enforcement</h3></div>
-<div class="card"><h3>Creator Protection</h3></div>
-<div class="card"><h3>Evidence Security</h3></div>
-<div class="card"><h3>Transparency</h3></div>
-</div>
-
-</section>
-
-<footer>
-© 2026 StudentStream Law Division
-</footer>
+<!-- KEEP RESPONSIBILITIES + FOOTER -->
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -269,58 +137,83 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* COUNT ANIMATION */
-function animateCount(id, value){
-  let i=0;
-  const step = Math.ceil(value/30);
-  const el=document.getElementById(id);
-  const interval=setInterval(()=>{
-    i+=step;
-    if(i>=value){
-      el.textContent=value;
-      clearInterval(interval);
-    } else {
-      el.textContent=i;
-    }
-  },20);
-}
-
-/* LOAD METRICS */
+/* METRICS */
 async function loadMetrics(){
-  const { count:r } = await supabase.from("law_cases").select("*",{count:"exact",head:true});
-  const { count:a } = await supabase.from("law_cases").select("*",{count:"exact",head:true}).not("assigned_to","is",null);
 
-  animateCount("metricReports", r||0);
-  animateCount("metricAssigned", a||0);
+  const { count:reports } = await supabase
+    .from("law_cases")
+    .select("*", { count:"exact", head:true });
+
+  const { count:assigned } = await supabase
+    .from("law_cases")
+    .select("*", { count:"exact", head:true })
+    .not("assigned_to", "is", null);
+
+  animateNumber("metricReports", reports || 0);
+  animateNumber("metricAssigned", assigned || 0);
 }
 
-/* LIVE ACTIVITY */
-function fakeActivity(){
-  const msgs=[
-    "New report submitted",
-    "Case assigned to investigator",
-    "Evidence uploaded",
-    "Appeal under review"
-  ];
-  setInterval(()=>{
-    const msg=msgs[Math.floor(Math.random()*msgs.length)];
-    document.getElementById("activityFeed").textContent="🟡 "+msg;
-  },3000);
+/* ANIMATION COUNTER */
+function animateNumber(id, end){
+  let start=0;
+  const el=document.getElementById(id);
+  const step=Math.ceil(end/30);
+
+  const interval=setInterval(()=>{
+    start+=step;
+    if(start>=end){
+      el.textContent=end;
+      clearInterval(interval);
+    }else{
+      el.textContent=start;
+    }
+  },30);
 }
 
-/* SCROLL ANIMATION */
-const sections=document.querySelectorAll(".section");
-window.addEventListener("scroll",()=>{
-sections.forEach(sec=>{
-if(sec.getBoundingClientRect().top < window.innerHeight-100){
-sec.classList.add("show");
+/* ACTIVITY FEED */
+async function loadFeed(){
+  const { data } = await supabase
+    .from("law_cases")
+    .select("id, created_at, status")
+    .order("created_at",{ascending:false})
+    .limit(5);
+
+  const feed=document.getElementById("feed");
+  feed.innerHTML="";
+
+  data?.forEach(c=>{
+    const item=document.createElement("div");
+    item.className="feedItem";
+    item.innerText=`Case #${c.id} • ${c.status || "Pending"} • ${new Date(c.created_at).toLocaleDateString()}`;
+    feed.appendChild(item);
+  });
 }
-})
-});
+
+/* STAFF DETECT */
+async function detectStaff(){
+  const { data:{user} } = await supabase.auth.getUser();
+  if(!user) return;
+
+  const { data:profile } = await supabase
+    .from("profiles")
+    .select("law_rank")
+    .eq("id", user.id)
+    .single();
+
+  if(profile?.law_rank && profile.law_rank !== "none"){
+    document.getElementById("staffPanel").style.display="block";
+  }
+}
+
+/* AUTO REFRESH */
+setInterval(()=>{
+  loadMetrics();
+  loadFeed();
+},8000);
 
 loadMetrics();
-fakeActivity();
-
+loadFeed();
+detectStaff();
 </script>
 
 </body>
