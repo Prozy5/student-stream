@@ -25,10 +25,14 @@ padding:15px 30px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:rgba(0,0,0,.35);
+background:rgba(0,0,0,.2);
 backdrop-filter:blur(12px);
 z-index:100;
-border-bottom:1px solid rgba(255,255,255,.08);
+transition:.3s;
+}
+
+.nav.scrolled{
+background:rgba(0,0,0,.6);
 }
 
 .logo{font-weight:900;font-size:20px;}
@@ -56,6 +60,12 @@ opacity:.5;
 .hero{
 text-align:center;
 padding:150px 20px 100px;
+animation:fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(30px);}
+to{opacity:1;transform:translateY(0);}
 }
 
 .hero h1{
@@ -77,6 +87,7 @@ max-width:700px;
 margin:auto;
 }
 
+/* CTA */
 .cta{
 margin-top:40px;
 display:flex;
@@ -91,6 +102,11 @@ border-radius:18px;
 border:none;
 font-weight:900;
 cursor:pointer;
+transition:.2s;
+}
+
+.cta button:hover{
+transform:translateY(-3px);
 }
 
 .primary{
@@ -161,7 +177,7 @@ transition:.25s;
 }
 
 .card:hover{
-transform:translateY(-6px);
+transform:translateY(-8px) scale(1.02);
 border-color:#3c8cff;
 }
 
@@ -214,9 +230,9 @@ opacity:.5;
 
 <body>
 
-<div class="nav">
+<div class="nav" id="nav">
 <div class="logo">SS Studio</div>
-<button onclick="window.location.href='/signup.html'">Get Started</button>
+<button onclick="goToSignup()">Get Started</button>
 </div>
 
 <div class="blurOrb"></div>
@@ -225,12 +241,12 @@ opacity:.5;
 <!-- HERO -->
 <div class="hero">
 <h1>Create. Build. <span>Launch.</span></h1>
-<p>
+<p id="heroText">
 Everything you need to turn ideas into brands, content, and products — all in one system.
 </p>
 
 <div class="cta">
-<button class="primary" onclick="window.location.href='/signup.html'">Start Creating</button>
+<button class="primary" onclick="goToSignup()">Start Creating</button>
 <button class="secondary">Explore</button>
 </div>
 </div>
@@ -238,50 +254,17 @@ Everything you need to turn ideas into brands, content, and products — all in 
 <!-- CREATOR SELECT -->
 <div class="section">
 <h2>Choose Your Path</h2>
-<p>Select what you want to create.</p>
 
 <div class="creatorTypes">
-<div class="creatorBtn active">Brand</div>
-<div class="creatorBtn">Artist</div>
-<div class="creatorBtn">Author</div>
-<div class="creatorBtn">Filmmaker</div>
-<div class="creatorBtn">Game Dev</div>
-<div class="creatorBtn">Creator</div>
+<div class="creatorBtn active" data-type="brand">Brand</div>
+<div class="creatorBtn" data-type="artist">Artist</div>
+<div class="creatorBtn" data-type="author">Author</div>
+<div class="creatorBtn" data-type="film">Filmmaker</div>
+<div class="creatorBtn" data-type="game">Game Dev</div>
+<div class="creatorBtn" data-type="creator">Creator</div>
 </div>
 
-<div class="grid">
-
-<div class="card">
-<h3>🏷️ Build a Brand</h3>
-<p>Create products, identity, and launch your own business.</p>
-</div>
-
-<div class="card">
-<h3>🎵 Music (SS Records)</h3>
-<p>Release music, grow your audience, and build your artist profile.</p>
-</div>
-
-<div class="card">
-<h3>📚 Books & Comics</h3>
-<p>Publish into a digital library and reach readers globally.</p>
-</div>
-
-<div class="card">
-<h3>🎬 Film & Media</h3>
-<p>Produce, distribute, and showcase your content.</p>
-</div>
-
-<div class="card">
-<h3>🎮 Game Design</h3>
-<p>Develop creative game ideas and interactive experiences.</p>
-</div>
-
-<div class="card">
-<h3>💻 Digital Products</h3>
-<p>Sell templates, courses, and assets.</p>
-</div>
-
-</div>
+<div class="grid" id="cards"></div>
 </div>
 
 <!-- PLATFORM POWER -->
@@ -289,11 +272,12 @@ Everything you need to turn ideas into brands, content, and products — all in 
 <h2>Platform Power</h2>
 
 <div class="strip">
-<div class="pill">💸 Built-in marketplace</div>
-<div class="pill">📚 Digital library</div>
-<div class="pill">🤝 Creator connections</div>
-<div class="pill">📊 Growth tracking</div>
-<div class="pill">🚀 Launch tools</div>
+<div class="pill">💸 Marketplace</div>
+<div class="pill">📚 Digital Library</div>
+<div class="pill">🎵 SS Records</div>
+<div class="pill">🤝 Creator Network</div>
+<div class="pill">📊 Analytics</div>
+<div class="pill">🚀 Launch Tools</div>
 </div>
 </div>
 
@@ -304,16 +288,17 @@ Everything you need to turn ideas into brands, content, and products — all in 
 <div class="strip">
 <div class="pill">Start an idea</div>
 <div class="pill">Build your identity</div>
-<div class="pill">Create content</div>
-<div class="pill">Publish & sell</div>
-<div class="pill">Scale your brand</div>
+<div class="pill">Create</div>
+<div class="pill">Publish</div>
+<div class="pill">Monetize</div>
+<div class="pill">Scale</div>
 </div>
 </div>
 
 <!-- CTA -->
 <div class="ctaBig">
 <h2>Turn Ideas Into Reality</h2>
-<button onclick="window.location.href='/signup.html'">Join SS Studio</button>
+<button onclick="goToSignup()">Join SS Studio</button>
 </div>
 
 <div class="footer">
@@ -321,13 +306,78 @@ SS Studio • Creative Division of StudentStreamHQ
 </div>
 
 <script>
-// ACTIVE BUTTON UI
+
+/* NAV SCROLL EFFECT */
+window.addEventListener("scroll",()=>{
+document.getElementById("nav").classList.toggle("scrolled",window.scrollY>20)
+})
+
+/* CREATOR DATA */
+const data = {
+brand:[
+"🏷️ Launch your own brand",
+"📦 Sell products",
+"📈 Grow a business"
+],
+artist:[
+"🎵 Release music",
+"🔥 Build fanbase",
+"💿 SS Records access"
+],
+author:[
+"📚 Publish books",
+"📝 Write comics",
+"🌍 Reach readers"
+],
+film:[
+"🎬 Create films",
+"📺 Distribute content",
+"🎥 Build portfolio"
+],
+game:[
+"🎮 Design games",
+"🧠 Build concepts",
+"🚀 Launch projects"
+],
+creator:[
+"💻 Sell digital products",
+"📊 Grow audience",
+"🤝 Collaborate"
+]
+}
+
+/* LOAD CARDS */
+function loadCards(type){
+const container=document.getElementById("cards")
+container.innerHTML=""
+data[type].forEach(item=>{
+container.innerHTML+=`
+<div class="card"><h3>${item}</h3></div>
+`
+})
+}
+
+/* BUTTON CLICK */
 document.querySelectorAll(".creatorBtn").forEach(btn=>{
 btn.onclick=()=>{
 document.querySelectorAll(".creatorBtn").forEach(b=>b.classList.remove("active"))
 btn.classList.add("active")
+
+const type=btn.dataset.type
+localStorage.setItem("ss_creator_type",type)
+
+loadCards(type)
 }
 })
+
+/* SIGNUP */
+function goToSignup(){
+window.location.href="/signup.html"
+}
+
+/* INIT */
+loadCards("brand")
+
 </script>
 
 </body>
