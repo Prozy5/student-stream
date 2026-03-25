@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>SS Studio • Creative Division</title>
+<title>SS Studio • Create. Build. Launch.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -12,34 +12,33 @@
 body{
 background:radial-gradient(circle at top,#08142c,#02030a);
 color:white;
-min-height:100vh;
 overflow-x:hidden;
 }
 
-/* GLOW BG */
+/* BACKGROUND GLOW */
 .blurOrb,.blurOrb2{
 position:absolute;
-width:800px;height:800px;
+width:900px;height:900px;
 filter:blur(120px);
 opacity:.6;
 }
 .blurOrb{
 background:radial-gradient(circle,rgba(60,140,255,.3),transparent 70%);
-top:-200px;left:-200px;
+top:-300px;left:-300px;
 }
 .blurOrb2{
 background:radial-gradient(circle,rgba(0,255,170,.2),transparent 70%);
-bottom:-200px;right:-200px;
+bottom:-300px;right:-300px;
 }
 
 /* HERO */
 .hero{
-padding:100px 20px 60px;
 text-align:center;
+padding:110px 20px 80px;
 }
 
 .hero h1{
-font-size:56px;
+font-size:60px;
 font-weight:900;
 }
 
@@ -50,23 +49,23 @@ background:linear-gradient(90deg,#3c8cff,#00ffae);
 }
 
 .hero p{
-margin-top:15px;
-opacity:.7;
+margin-top:18px;
 font-size:18px;
-max-width:600px;
+opacity:.75;
+max-width:700px;
 margin-left:auto;
 margin-right:auto;
 }
 
 .cta{
-margin-top:30px;
+margin-top:35px;
 }
 
 .cta button{
-padding:16px 28px;
+padding:16px 30px;
 border:none;
 border-radius:18px;
-font-weight:800;
+font-weight:900;
 font-size:16px;
 cursor:pointer;
 background:linear-gradient(90deg,#3c8cff,#00ffae);
@@ -75,69 +74,91 @@ transition:.25s;
 }
 
 .cta button:hover{
-transform:translateY(-3px);
-box-shadow:0 20px 50px rgba(0,0,0,.6);
+transform:translateY(-4px);
+box-shadow:0 20px 60px rgba(0,0,0,.6);
 }
 
 /* SECTION */
 .section{
-padding:60px 20px;
-max-width:1100px;
+max-width:1200px;
 margin:auto;
+padding:70px 20px;
 }
 
 .section h2{
-font-size:34px;
-margin-bottom:20px;
+font-size:38px;
+margin-bottom:15px;
 }
 
 .section p{
 opacity:.7;
-margin-bottom:30px;
+margin-bottom:35px;
 }
 
-/* SERVICES GRID */
+/* GRID */
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:22px;
 }
 
 .card{
-padding:25px;
-border-radius:20px;
+padding:28px;
+border-radius:22px;
 background:rgba(255,255,255,.04);
 border:1px solid rgba(255,255,255,.1);
 transition:.25s;
 }
 
 .card:hover{
-transform:translateY(-5px);
+transform:translateY(-6px);
 border-color:#3c8cff;
 }
 
 .card h3{
 margin-bottom:10px;
+font-size:20px;
 }
 
 .card p{
 font-size:14px;
-opacity:.7;
+opacity:.75;
 }
 
-/* CTA SECTION */
-.ctaSection{
+/* FLOW */
+.flow{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+justify-content:center;
+margin-top:30px;
+}
+
+.flowStep{
+padding:18px 25px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.1);
+}
+
+/* CTA BIG */
+.ctaBig{
 text-align:center;
-padding:80px 20px;
+padding:90px 20px;
 }
 
-.ctaSection h2{
-font-size:36px;
+.ctaBig h2{
+font-size:40px;
 }
 
-.ctaSection button{
-margin-top:20px;
-padding:16px 30px;
+.ctaBig p{
+opacity:.7;
+margin-top:10px;
+}
+
+.ctaBig button{
+margin-top:25px;
+padding:16px 35px;
 border:none;
 border-radius:18px;
 font-weight:900;
@@ -152,8 +173,8 @@ padding:30px;
 font-size:13px;
 opacity:.5;
 }
-
 </style>
+
 </head>
 
 <body>
@@ -164,70 +185,86 @@ opacity:.5;
 <!-- HERO -->
 <div class="hero">
 <h1>SS <span>Studio</span></h1>
+
 <p>
-Creative production for brands, authors, and creators.
-From visuals to digital products, we help you build and launch with impact.
+Build your brand. Create your content. Launch your vision.
+SS Studio is where creators, artists, and founders turn ideas into real platforms, products, and experiences.
 </p>
 
 <div class="cta">
 <button onclick="window.location.href='/signup.html'">
-Start Creating
+Start Your Journey
 </button>
 </div>
 </div>
 
-<!-- WHAT WE DO -->
+<!-- WHAT YOU CAN BUILD -->
 <div class="section">
-<h2>What We Create</h2>
-<p>SS Studio is built for creators at every stage — whether you're starting or scaling.</p>
+<h2>Create Anything</h2>
+<p>SS Studio supports every type of creator across multiple industries.</p>
 
 <div class="grid">
 
 <div class="card">
-<h3>🎨 Branding</h3>
-<p>Logos, brand kits, and identity systems designed to stand out.</p>
+<h3>🏷️ Brands</h3>
+<p>Start your own brand, design products, and build your identity from the ground up.</p>
 </div>
 
 <div class="card">
-<h3>📚 Author Assets</h3>
-<p>Book covers, promotional visuals, and publishing-ready designs.</p>
+<h3>🎵 Music (SS Records)</h3>
+<p>Artists can create, distribute, and grow under the SS Records music division.</p>
 </div>
 
 <div class="card">
-<h3>📱 Social Content</h3>
-<p>Posts, reels, and content packs to grow your audience.</p>
+<h3>📚 Books & Comics</h3>
+<p>Publish books, comics, and written content into a growing digital library.</p>
 </div>
 
 <div class="card">
-<h3>🎬 Media Production</h3>
-<p>Visual content, edits, and platform-ready media.</p>
+<h3>🎬 Film & Media</h3>
+<p>Create films, videos, and visual projects for distribution and exposure.</p>
 </div>
 
 <div class="card">
-<h3>💻 Digital Products</h3>
-<p>Templates, courses, and downloadable creator tools.</p>
+<h3>🎮 Games</h3>
+<p>Design and launch game concepts, visuals, and interactive experiences.</p>
 </div>
 
 <div class="card">
-<h3>⚙️ Platform Design</h3>
-<p>UI/UX systems and visual design for modern platforms.</p>
+<h3>🧠 Digital Products</h3>
+<p>Sell courses, templates, assets, and creative tools to other users.</p>
 </div>
 
 </div>
 </div>
 
-<!-- WHY SS STUDIO -->
+<!-- HOW IT WORKS -->
 <div class="section">
-<h2>Built for Creators</h2>
+<h2>How It Works</h2>
+<p>SS Studio gives you everything you need to go from idea to launch.</p>
+
+<div class="flow">
+<div class="flowStep">Start Your Idea</div>
+<div class="flowStep">Build Your Brand</div>
+<div class="flowStep">Create Content</div>
+<div class="flowStep">Publish & Sell</div>
+<div class="flowStep">Connect & Grow</div>
+</div>
+</div>
+
+<!-- ECOSYSTEM -->
+<div class="section">
+<h2>Connected Ecosystem</h2>
 <p>
-SS Studio is part of the StudentStream ecosystem, designed to help creators move from idea to execution faster.
-We combine design, content, and systems into one streamlined experience.
+SS Studio connects directly into the full StudentStream system, allowing creators to collaborate, monetize, and scale across multiple divisions.
 </p>
 </div>
 
 <!-- CTA -->
-<div class="ctaSection">
-<h2>Start Building Your Brand</h2>
+<div class="ctaBig">
+<h2>Turn Your Ideas Into Reality</h2>
+<p>Join SS Studio and start building your creative future.</p>
+
 <button onclick="window.location.href='/signup.html'">
 Join SS Studio
 </button>
@@ -235,7 +272,7 @@ Join SS Studio
 
 <!-- FOOTER -->
 <div class="footer">
-SS Studio • A Creative Division of StudentStreamHQ
+SS Studio • Creative Division of StudentStreamHQ
 </div>
 
 </body>
