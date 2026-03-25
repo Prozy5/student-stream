@@ -31,7 +31,9 @@ z-index:100;
 transition:.3s;
 }
 
-.nav.scrolled{background:rgba(0,0,0,.7);}
+.nav.scrolled{
+background:rgba(0,0,0,.7);
+}
 
 .logo{font-weight:900;font-size:20px;}
 
@@ -44,15 +46,20 @@ font-weight:800;
 cursor:pointer;
 }
 
-/* BG */
-.blurOrb,.blurOrb2{
-position:absolute;
-width:900px;height:900px;
-filter:blur(120px);
-opacity:.5;
+/* CONTINUE BAR */
+.continueBar{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,.6);
+padding:12px 20px;
+border-radius:999px;
+border:1px solid rgba(255,255,255,.1);
+backdrop-filter:blur(10px);
+display:none;
+z-index:200;
 }
-.blurOrb{background:radial-gradient(circle,rgba(60,140,255,.3),transparent 70%);top:-300px;left:-300px;}
-.blurOrb2{background:radial-gradient(circle,rgba(0,255,170,.2),transparent 70%);bottom:-300px;right:-300px;}
 
 /* HERO */
 .hero{
@@ -104,7 +111,9 @@ cursor:pointer;
 transition:.2s;
 }
 
-.cta button:hover{transform:translateY(-3px);}
+.cta button:hover{
+transform:translateY(-3px);
+}
 
 .primary{
 background:linear-gradient(90deg,#3c8cff,#00ffae);
@@ -122,6 +131,14 @@ border:1px solid rgba(255,255,255,.15);
 max-width:1200px;
 margin:auto;
 padding:90px 20px;
+opacity:0;
+transform:translateY(40px);
+transition:.6s;
+}
+
+.section.show{
+opacity:1;
+transform:translateY(0);
 }
 
 .section h2{
@@ -165,6 +182,7 @@ gap:22px;
 margin-top:40px;
 }
 
+/* CARD */
 .card{
 padding:28px;
 border-radius:22px;
@@ -176,6 +194,20 @@ transition:.25s;
 .card:hover{
 transform:translateY(-8px) scale(1.02);
 border-color:#3c8cff;
+}
+
+/* PREVIEW PANEL */
+.preview{
+margin-top:40px;
+padding:30px;
+border-radius:20px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.1);
+text-align:center;
+}
+
+.preview h3{
+margin-bottom:10px;
 }
 
 /* STRIP */
@@ -194,21 +226,15 @@ background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.1);
 }
 
-/* TRUST */
-.trust{
-text-align:center;
-opacity:.6;
-margin-top:30px;
-font-size:14px;
-}
-
 /* CTA BIG */
 .ctaBig{
 text-align:center;
 padding:110px 20px;
 }
 
-.ctaBig h2{font-size:44px;}
+.ctaBig h2{
+font-size:44px;
+}
 
 .ctaBig button{
 margin-top:25px;
@@ -238,8 +264,10 @@ opacity:.5;
 <button onclick="goToSignup()">Get Started</button>
 </div>
 
-<div class="blurOrb"></div>
-<div class="blurOrb2"></div>
+<div class="continueBar" id="continueBar">
+Continue as <b id="savedType"></b> →
+<button onclick="goToSignup()">Resume</button>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -250,16 +278,12 @@ Everything you need to turn ideas into brands, content, and products — all in 
 
 <div class="cta">
 <button class="primary" onclick="goToSignup()">Start Creating</button>
-<button class="secondary" onclick="scrollToSection()">Explore</button>
-</div>
-
-<div class="trust">
-Used by creators building brands, music, books, games, and more.
+<button class="secondary">Explore</button>
 </div>
 </div>
 
 <!-- CREATOR SELECT -->
-<div class="section" id="creatorSection">
+<div class="section">
 <h2>Choose Your Path</h2>
 
 <div class="creatorTypes">
@@ -272,11 +296,17 @@ Used by creators building brands, music, books, games, and more.
 </div>
 
 <div class="grid" id="cards"></div>
+
+<div class="preview" id="previewBox">
+<h3>Brand Builder</h3>
+<p>Launch products, create identity, and build a scalable business.</p>
 </div>
 
-<!-- PLATFORM -->
+</div>
+
+<!-- PLATFORM POWER -->
 <div class="section">
-<h2>Platform Ecosystem</h2>
+<h2>Platform Power</h2>
 
 <div class="strip">
 <div class="pill">💸 Marketplace</div>
@@ -319,24 +349,34 @@ window.addEventListener("scroll",()=>{
 nav.classList.toggle("scrolled",window.scrollY>20)
 })
 
+/* SCROLL ANIMATION */
+const sections=document.querySelectorAll(".section")
+window.addEventListener("scroll",()=>{
+sections.forEach(sec=>{
+const top=sec.getBoundingClientRect().top
+if(top<window.innerHeight-100){
+sec.classList.add("show")
+}
+})
+})
+
 /* DATA */
 const data={
-brand:["🏷️ Launch your brand","📦 Sell products","📈 Build a business"],
-artist:["🎵 Release music","🔥 Grow audience","💿 SS Records"],
-author:["📚 Publish books","📝 Write comics","🌍 Global reach"],
-film:["🎬 Create films","📺 Distribute","🎥 Build portfolio"],
-game:["🎮 Design games","🧠 Build ideas","🚀 Launch"],
-creator:["💻 Sell digital","📊 Grow","🤝 Collaborate"]
+brand:["🏷️ Launch brand","📦 Sell products","📈 Scale business"],
+artist:["🎵 Drop music","🔥 Build fanbase","💿 SS Records"],
+author:["📚 Publish books","📝 Comics","🌍 Readers"],
+film:["🎬 Create films","📺 Distribute","🎥 Portfolio"],
+game:["🎮 Build games","🧠 Concepts","🚀 Launch"],
+creator:["💻 Digital sales","📊 Grow","🤝 Collab"]
 }
 
-/* HERO TEXT MAP */
-const heroMap={
-brand:"Build and launch your own brand from idea to revenue.",
-artist:"Create music, grow your audience, and release with SS Records.",
-author:"Write, publish, and distribute books and comics globally.",
-film:"Produce and launch films and visual media projects.",
-game:"Design and launch interactive game experiences.",
-creator:"Create content, sell products, and build your audience."
+const heroTextMap={
+brand:"Build your brand and start selling.",
+artist:"Release music and grow your fanbase.",
+author:"Publish your stories to the world.",
+film:"Create and distribute your films.",
+game:"Design and launch your own games.",
+creator:"Build your digital creator business."
 }
 
 /* LOAD */
@@ -345,26 +385,26 @@ cards.innerHTML=""
 data[type].forEach(i=>{
 cards.innerHTML+=`<div class="card"><h3>${i}</h3></div>`
 })
-heroText.innerText=heroMap[type]
 }
 
-/* BUTTONS */
+/* UPDATE UI */
+function updateUI(type){
+heroText.innerText=heroTextMap[type]
+previewBox.innerHTML=`<h3>${type.toUpperCase()}</h3><p>${heroTextMap[type]}</p>`
+localStorage.setItem("ss_creator_type",type)
+}
+
+/* CLICK */
 document.querySelectorAll(".creatorBtn").forEach(btn=>{
 btn.onclick=()=>{
 document.querySelectorAll(".creatorBtn").forEach(b=>b.classList.remove("active"))
 btn.classList.add("active")
 
 const type=btn.dataset.type
-localStorage.setItem("ss_creator_type",type)
-
 loadCards(type)
+updateUI(type)
 }
 })
-
-/* SCROLL */
-function scrollToSection(){
-document.getElementById("creatorSection").scrollIntoView({behavior:"smooth"})
-}
 
 /* SIGNUP */
 function goToSignup(){
@@ -373,9 +413,15 @@ window.location.href="/signup.html?type="+type
 }
 
 /* INIT */
-const saved=localStorage.getItem("ss_creator_type")||"brand"
+const saved=localStorage.getItem("ss_creator_type")
+if(saved){
+updateUI(saved)
 loadCards(saved)
-document.querySelector(`[data-type="${saved}"]`).classList.add("active")
+savedType.innerText=saved
+continueBar.style.display="block"
+}else{
+loadCards("brand")
+}
 
 </script>
 
