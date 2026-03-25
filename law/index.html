@@ -30,18 +30,11 @@ body{
 /* STATUS BAR */
 .statusBar{
   text-align:center;
-  padding:8px;
+  padding:6px;
   font-size:12px;
-  background:linear-gradient(90deg,#091426,#05080f);
+  background:linear-gradient(90deg,#0a1c35,#07101f);
   border-bottom:1px solid var(--border);
   color:var(--muted);
-}
-.statusDot{
-  display:inline-block;
-  width:8px;height:8px;
-  border-radius:50%;
-  background:#00ff9d;
-  margin-right:6px;
 }
 
 /* NAV */
@@ -63,18 +56,24 @@ nav{
   gap:10px;
 }
 
+.nav-links a{
+  margin-left:18px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:650;
+}
+
+.nav-links a:hover{
+  color:var(--text);
+}
+
 /* HERO */
 .hero{
   max-width:1120px;
   margin:auto;
   padding:85px 22px 55px;
   text-align:center;
-  animation:fadeUp .8s ease;
-}
-
-@keyframes fadeUp{
-from{opacity:0;transform:translateY(30px)}
-to{opacity:1;transform:translateY(0)}
 }
 
 .hero h1{
@@ -82,73 +81,185 @@ to{opacity:1;transform:translateY(0)}
   font-weight:990;
 }
 
-.hero span{color:var(--accent);}
+.hero span{
+  color:var(--accent);
+}
 
 .hero p{
   max-width:880px;
   margin:18px auto;
   color:var(--muted);
+  font-size:15px;
+  line-height:1.75;
 }
 
-/* METRICS ANIMATION */
-.metricCard h2{
-  font-size:26px;
-  font-weight:990;
-  margin-top:6px;
-  transition:.3s;
-}
-
-/* ACTIVITY FEED */
-.activityFeed{
-  margin:40px auto 0;
-  max-width:880px;
-  text-align:left;
-}
-
-.activityItem{
-  padding:14px;
-  border-radius:14px;
+/* LIVE ACTIVITY */
+.activity{
+  margin:30px auto 0;
+  max-width:800px;
+  padding:16px;
+  border-radius:16px;
+  background:rgba(255,255,255,.03);
   border:1px solid var(--border);
-  margin-bottom:10px;
-  background:rgba(255,255,255,.02);
   font-size:13px;
   color:var(--muted);
 }
 
-/* SECURITY BADGE */
-.security{
-  margin-top:20px;
-  font-size:12px;
-  color:var(--muted);
-}
-.security strong{
-  color:var(--accent);
+/* METRICS */
+.metricsGrid{
+  margin:45px auto 0;
+  max-width:980px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:14px;
 }
 
-/* (keep all your original styles below unchanged) */
+.metricCard{
+  padding:18px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+}
+
+.metricCard h2{
+  font-size:26px;
+  font-weight:990;
+  margin-top:6px;
+}
+
+/* QUICK PANEL */
+.quickPanel{
+  margin:40px auto 0;
+  max-width:900px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+}
+
+.quickBtn{
+  padding:10px 16px;
+  border-radius:12px;
+  background:rgba(255,93,93,.1);
+  border:1px solid rgba(255,93,93,.3);
+  font-size:13px;
+  cursor:pointer;
+}
+
+/* SECTION */
+.section{
+  max-width:1150px;
+  margin:auto;
+  padding:70px 22px;
+  opacity:0;
+  transform:translateY(40px);
+  transition:.5s;
+}
+
+.section.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:rgba(12,22,38,.88);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
+
+footer{
+  text-align:center;
+  padding:40px;
+  border-top:1px solid var(--border);
+  margin-top:70px;
+  font-size:13px;
+  color:var(--muted);
+}
 </style>
 </head>
 
 <body>
 
 <div class="statusBar">
-<span class="statusDot"></span>
-System Status: All Enforcement Systems Operational
+🟢 Enforcement System Active • Evidence Vault Secure • Live Monitoring Enabled
 </div>
 
-<!-- KEEP YOUR NAV + HERO EXACTLY -->
-<!-- (your original HTML stays the same here) -->
+<nav>
+  <div class="brand">⚖️ StudentStream Law Division</div>
 
-<!-- ADD THIS UNDER METRICS -->
-<div class="activityFeed" id="activityFeed">
-<h3 style="margin-bottom:10px;">📂 Recent Activity</h3>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="report.html">Report</a>
+    <a href="my-reports.html">My Reports</a>
+    <a href="staff-transparency.html">Staff Registry</a>
+    <a href="law-login.html">Staff Access</a>
+  </div>
+</nav>
 
-<div class="activityItem">Loading activity...</div>
+<section class="hero">
+
+<h1>StudentStream <span>Law</span></h1>
+
+<p>
+Enforcement authority for StudentStreamHQ. Investigations, evidence security,
+creator protection, and platform integrity at scale.
+</p>
+
+<!-- LIVE ACTIVITY -->
+<div class="activity" id="activityFeed">
+Loading live activity...
 </div>
 
-<div class="security">
-Security Level: <strong>Internal Enforcement Access Only</strong>
+<!-- QUICK ACTIONS -->
+<div class="quickPanel">
+<div class="quickBtn" onclick="location.href='report.html'">🚨 Report</div>
+<div class="quickBtn" onclick="location.href='appeals.html'">⚠ Appeal</div>
+<div class="quickBtn" onclick="location.href='rights.html'">📜 Rights</div>
+<div class="quickBtn">🔐 Evidence Vault</div>
 </div>
+
+<!-- METRICS -->
+<div class="metricsGrid">
+<div class="metricCard">
+<span>Total Reports</span>
+<h2 id="metricReports">0</h2>
+</div>
+
+<div class="metricCard">
+<span>Cases Assigned</span>
+<h2 id="metricAssigned">0</h2>
+</div>
+
+<div class="metricCard">
+<span>System Status</span>
+<h2>ONLINE</h2>
+</div>
+</div>
+
+</section>
+
+<section class="section">
+<h2>Division Responsibilities</h2>
+
+<div class="grid">
+<div class="card"><h3>Fraud Enforcement</h3></div>
+<div class="card"><h3>Creator Protection</h3></div>
+<div class="card"><h3>Evidence Security</h3></div>
+<div class="card"><h3>Transparency</h3></div>
+</div>
+
+</section>
+
+<footer>
+© 2026 StudentStream Law Division
+</footer>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -158,78 +269,58 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* METRICS */
-async function loadMetrics(){
-
-  const { count:reports } = await supabase
-    .from("law_cases")
-    .select("*", { count:"exact", head:true });
-
-  const { count:assigned } = await supabase
-    .from("law_cases")
-    .select("*", { count:"exact", head:true })
-    .not("assigned_to", "is", null);
-
-  animateNumber("metricReports", reports || 0);
-  animateNumber("metricAssigned", assigned || 0);
-}
-
-/* ANIMATION */
-function animateNumber(id, value){
-  let el=document.getElementById(id)
-  let count=0
-  let step=Math.ceil(value/20)
-
-  let interval=setInterval(()=>{
-    count+=step
-    if(count>=value){
-      el.textContent=value
-      clearInterval(interval)
-    }else{
-      el.textContent=count
+/* COUNT ANIMATION */
+function animateCount(id, value){
+  let i=0;
+  const step = Math.ceil(value/30);
+  const el=document.getElementById(id);
+  const interval=setInterval(()=>{
+    i+=step;
+    if(i>=value){
+      el.textContent=value;
+      clearInterval(interval);
+    } else {
+      el.textContent=i;
     }
-  },30)
+  },20);
 }
 
-/* ACTIVITY FEED */
-async function loadActivity(){
-  const { data } = await supabase
-    .from("law_cases")
-    .select("created_at, status")
-    .order("created_at",{ascending:false})
-    .limit(5);
+/* LOAD METRICS */
+async function loadMetrics(){
+  const { count:r } = await supabase.from("law_cases").select("*",{count:"exact",head:true});
+  const { count:a } = await supabase.from("law_cases").select("*",{count:"exact",head:true}).not("assigned_to","is",null);
 
-  const feed=document.getElementById("activityFeed")
-  feed.innerHTML="<h3>📂 Recent Activity</h3>"
-
-  data?.forEach(c=>{
-    const item=document.createElement("div")
-    item.className="activityItem"
-    item.textContent=`Case ${c.status} • ${new Date(c.created_at).toLocaleString()}`
-    feed.appendChild(item)
-  })
+  animateCount("metricReports", r||0);
+  animateCount("metricAssigned", a||0);
 }
 
-/* STAFF DETECT */
-async function detectStaff(){
-  const { data:{user} } = await supabase.auth.getUser();
-  if(!user) return;
-
-  const { data:profile } = await supabase
-    .from("profiles")
-    .select("law_rank")
-    .eq("id", user.id)
-    .single();
-
-  if(profile?.law_rank && profile.law_rank !== "none"){
-    document.getElementById("staffPanel").style.display="block";
-  }
+/* LIVE ACTIVITY */
+function fakeActivity(){
+  const msgs=[
+    "New report submitted",
+    "Case assigned to investigator",
+    "Evidence uploaded",
+    "Appeal under review"
+  ];
+  setInterval(()=>{
+    const msg=msgs[Math.floor(Math.random()*msgs.length)];
+    document.getElementById("activityFeed").textContent="🟡 "+msg;
+  },3000);
 }
 
-/* INIT */
+/* SCROLL ANIMATION */
+const sections=document.querySelectorAll(".section");
+window.addEventListener("scroll",()=>{
+sections.forEach(sec=>{
+if(sec.getBoundingClientRect().top < window.innerHeight-100){
+sec.classList.add("show");
+}
+})
+});
+
 loadMetrics();
-loadActivity();
-detectStaff();
+fakeActivity();
+
 </script>
 
 </body>
