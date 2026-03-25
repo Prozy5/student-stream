@@ -13,6 +13,7 @@ body{
 background:radial-gradient(circle at top,#08142c,#02030a);
 color:white;
 overflow-x:hidden;
+scroll-behavior:smooth;
 }
 
 /* NAV */
@@ -24,16 +25,13 @@ padding:15px 30px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:rgba(0,0,0,.3);
-backdrop-filter:blur(10px);
-z-index:10;
+background:rgba(0,0,0,.35);
+backdrop-filter:blur(12px);
+z-index:100;
 border-bottom:1px solid rgba(255,255,255,.08);
 }
 
-.logo{
-font-weight:900;
-font-size:20px;
-}
+.logo{font-weight:900;font-size:20px;}
 
 .nav button{
 padding:10px 18px;
@@ -49,30 +47,23 @@ cursor:pointer;
 position:absolute;
 width:900px;height:900px;
 filter:blur(120px);
-opacity:.6;
+opacity:.5;
 }
-.blurOrb{
-background:radial-gradient(circle,rgba(60,140,255,.3),transparent 70%);
-top:-300px;left:-300px;
-}
-.blurOrb2{
-background:radial-gradient(circle,rgba(0,255,170,.2),transparent 70%);
-bottom:-300px;right:-300px;
-}
+.blurOrb{background:radial-gradient(circle,rgba(60,140,255,.3),transparent 70%);top:-300px;left:-300px;}
+.blurOrb2{background:radial-gradient(circle,rgba(0,255,170,.2),transparent 70%);bottom:-300px;right:-300px;}
 
 /* HERO */
 .hero{
 text-align:center;
-padding:140px 20px 90px;
+padding:150px 20px 100px;
 }
 
 .hero h1{
-font-size:64px;
+font-size:68px;
 font-weight:900;
-line-height:1.1;
 }
 
-.hero h1 span{
+.hero span{
 background:linear-gradient(90deg,#3c8cff,#00ffae);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
@@ -83,8 +74,7 @@ margin-top:20px;
 font-size:18px;
 opacity:.75;
 max-width:700px;
-margin-left:auto;
-margin-right:auto;
+margin:auto;
 }
 
 .cta{
@@ -96,16 +86,19 @@ flex-wrap:wrap;
 }
 
 .cta button{
-padding:16px 30px;
-border:none;
+padding:16px 32px;
 border-radius:18px;
+border:none;
 font-weight:900;
 cursor:pointer;
+}
+
+.primary{
 background:linear-gradient(90deg,#3c8cff,#00ffae);
 color:black;
 }
 
-.cta .secondary{
+.secondary{
 background:rgba(255,255,255,.06);
 color:white;
 border:1px solid rgba(255,255,255,.15);
@@ -115,17 +108,40 @@ border:1px solid rgba(255,255,255,.15);
 .section{
 max-width:1200px;
 margin:auto;
-padding:80px 20px;
+padding:90px 20px;
 }
 
 .section h2{
-font-size:38px;
+font-size:40px;
 margin-bottom:15px;
 }
 
 .section p{
 opacity:.7;
-margin-bottom:35px;
+margin-bottom:40px;
+}
+
+/* CREATOR SELECT */
+.creatorTypes{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+justify-content:center;
+}
+
+.creatorBtn{
+padding:14px 22px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.1);
+cursor:pointer;
+transition:.25s;
+}
+
+.creatorBtn.active,
+.creatorBtn:hover{
+background:linear-gradient(90deg,#3c8cff,#00ffae);
+color:black;
 }
 
 /* GRID */
@@ -133,6 +149,7 @@ margin-bottom:35px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:22px;
+margin-top:40px;
 }
 
 .card{
@@ -148,45 +165,35 @@ transform:translateY(-6px);
 border-color:#3c8cff;
 }
 
-.card h3{
-margin-bottom:10px;
-}
-
-/* FEATURE STRIP */
-.features{
+/* STRIP */
+.strip{
 display:flex;
 flex-wrap:wrap;
-gap:20px;
+gap:15px;
 justify-content:center;
 margin-top:40px;
 }
 
-.feature{
-padding:16px 22px;
+.pill{
+padding:14px 20px;
 border-radius:999px;
 background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.1);
-font-size:14px;
 }
 
 /* CTA BIG */
 .ctaBig{
 text-align:center;
-padding:100px 20px;
+padding:110px 20px;
 }
 
 .ctaBig h2{
-font-size:42px;
-}
-
-.ctaBig p{
-opacity:.7;
-margin-top:10px;
+font-size:44px;
 }
 
 .ctaBig button{
 margin-top:25px;
-padding:16px 35px;
+padding:18px 40px;
 border:none;
 border-radius:18px;
 font-weight:900;
@@ -218,97 +225,110 @@ opacity:.5;
 <!-- HERO -->
 <div class="hero">
 <h1>Create. Build. <span>Launch.</span></h1>
-
 <p>
-SS Studio is where creators build brands, publish content, and turn ideas into real products.
-From music to books, films to digital assets — everything starts here.
+Everything you need to turn ideas into brands, content, and products — all in one system.
 </p>
 
 <div class="cta">
-<button onclick="window.location.href='/signup.html'">Start Creating</button>
-<button class="secondary">Explore Platform</button>
+<button class="primary" onclick="window.location.href='/signup.html'">Start Creating</button>
+<button class="secondary">Explore</button>
 </div>
 </div>
 
-<!-- CREATOR PATHS -->
+<!-- CREATOR SELECT -->
 <div class="section">
-<h2>Built for Every Creator</h2>
-<p>Choose your lane — or build across all of them.</p>
+<h2>Choose Your Path</h2>
+<p>Select what you want to create.</p>
+
+<div class="creatorTypes">
+<div class="creatorBtn active">Brand</div>
+<div class="creatorBtn">Artist</div>
+<div class="creatorBtn">Author</div>
+<div class="creatorBtn">Filmmaker</div>
+<div class="creatorBtn">Game Dev</div>
+<div class="creatorBtn">Creator</div>
+</div>
 
 <div class="grid">
 
 <div class="card">
-<h3>🏷️ Brands</h3>
-<p>Launch your own brand, products, and identity.</p>
+<h3>🏷️ Build a Brand</h3>
+<p>Create products, identity, and launch your own business.</p>
 </div>
 
 <div class="card">
 <h3>🎵 Music (SS Records)</h3>
-<p>Create and grow as an artist under SS Records.</p>
+<p>Release music, grow your audience, and build your artist profile.</p>
 </div>
 
 <div class="card">
 <h3>📚 Books & Comics</h3>
-<p>Publish into a digital library and reach readers.</p>
+<p>Publish into a digital library and reach readers globally.</p>
 </div>
 
 <div class="card">
-<h3>🎬 Film</h3>
-<p>Produce and distribute visual content.</p>
+<h3>🎬 Film & Media</h3>
+<p>Produce, distribute, and showcase your content.</p>
 </div>
 
 <div class="card">
-<h3>🎮 Games</h3>
-<p>Build creative game concepts and experiences.</p>
+<h3>🎮 Game Design</h3>
+<p>Develop creative game ideas and interactive experiences.</p>
 </div>
 
 <div class="card">
 <h3>💻 Digital Products</h3>
-<p>Sell templates, courses, and creative tools.</p>
+<p>Sell templates, courses, and assets.</p>
 </div>
 
 </div>
 </div>
 
-<!-- FEATURES -->
+<!-- PLATFORM POWER -->
 <div class="section">
-<h2>Everything You Need</h2>
+<h2>Platform Power</h2>
 
-<div class="features">
-<div class="feature">🚀 Launch your brand</div>
-<div class="feature">💸 Sell your creations</div>
-<div class="feature">🤝 Connect with creators</div>
-<div class="feature">📊 Track growth</div>
-<div class="feature">🌐 Built-in platform exposure</div>
+<div class="strip">
+<div class="pill">💸 Built-in marketplace</div>
+<div class="pill">📚 Digital library</div>
+<div class="pill">🤝 Creator connections</div>
+<div class="pill">📊 Growth tracking</div>
+<div class="pill">🚀 Launch tools</div>
 </div>
 </div>
 
-<!-- HOW IT WORKS -->
+<!-- FLOW -->
 <div class="section">
 <h2>How It Works</h2>
 
-<div class="features">
-<div class="feature">Start an idea</div>
-<div class="feature">Build your identity</div>
-<div class="feature">Create content</div>
-<div class="feature">Publish & sell</div>
-<div class="feature">Grow your network</div>
+<div class="strip">
+<div class="pill">Start an idea</div>
+<div class="pill">Build your identity</div>
+<div class="pill">Create content</div>
+<div class="pill">Publish & sell</div>
+<div class="pill">Scale your brand</div>
 </div>
 </div>
 
 <!-- CTA -->
 <div class="ctaBig">
-<h2>Start Your Creative Journey</h2>
-<p>Join SS Studio and build something real.</p>
-
-<button onclick="window.location.href='/signup.html'">
-Join Now
-</button>
+<h2>Turn Ideas Into Reality</h2>
+<button onclick="window.location.href='/signup.html'">Join SS Studio</button>
 </div>
 
 <div class="footer">
 SS Studio • Creative Division of StudentStreamHQ
 </div>
+
+<script>
+// ACTIVE BUTTON UI
+document.querySelectorAll(".creatorBtn").forEach(btn=>{
+btn.onclick=()=>{
+document.querySelectorAll(".creatorBtn").forEach(b=>b.classList.remove("active"))
+btn.classList.add("active")
+}
+})
+</script>
 
 </body>
 </html>
