@@ -15,7 +15,36 @@ color:white;
 overflow-x:hidden;
 }
 
-/* BACKGROUND GLOW */
+/* NAV */
+.nav{
+position:fixed;
+top:0;
+width:100%;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.3);
+backdrop-filter:blur(10px);
+z-index:10;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+font-weight:900;
+font-size:20px;
+}
+
+.nav button{
+padding:10px 18px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#3c8cff,#00ffae);
+font-weight:800;
+cursor:pointer;
+}
+
+/* BG */
 .blurOrb,.blurOrb2{
 position:absolute;
 width:900px;height:900px;
@@ -34,12 +63,13 @@ bottom:-300px;right:-300px;
 /* HERO */
 .hero{
 text-align:center;
-padding:110px 20px 80px;
+padding:140px 20px 90px;
 }
 
 .hero h1{
-font-size:60px;
+font-size:64px;
 font-weight:900;
+line-height:1.1;
 }
 
 .hero h1 span{
@@ -49,7 +79,7 @@ background:linear-gradient(90deg,#3c8cff,#00ffae);
 }
 
 .hero p{
-margin-top:18px;
+margin-top:20px;
 font-size:18px;
 opacity:.75;
 max-width:700px;
@@ -58,7 +88,11 @@ margin-right:auto;
 }
 
 .cta{
-margin-top:35px;
+margin-top:40px;
+display:flex;
+gap:15px;
+justify-content:center;
+flex-wrap:wrap;
 }
 
 .cta button{
@@ -66,23 +100,22 @@ padding:16px 30px;
 border:none;
 border-radius:18px;
 font-weight:900;
-font-size:16px;
 cursor:pointer;
 background:linear-gradient(90deg,#3c8cff,#00ffae);
 color:black;
-transition:.25s;
 }
 
-.cta button:hover{
-transform:translateY(-4px);
-box-shadow:0 20px 60px rgba(0,0,0,.6);
+.cta .secondary{
+background:rgba(255,255,255,.06);
+color:white;
+border:1px solid rgba(255,255,255,.15);
 }
 
 /* SECTION */
 .section{
 max-width:1200px;
 margin:auto;
-padding:70px 20px;
+padding:80px 20px;
 }
 
 .section h2{
@@ -117,38 +150,33 @@ border-color:#3c8cff;
 
 .card h3{
 margin-bottom:10px;
-font-size:20px;
 }
 
-.card p{
-font-size:14px;
-opacity:.75;
-}
-
-/* FLOW */
-.flow{
+/* FEATURE STRIP */
+.features{
 display:flex;
 flex-wrap:wrap;
 gap:20px;
 justify-content:center;
-margin-top:30px;
+margin-top:40px;
 }
 
-.flowStep{
-padding:18px 25px;
+.feature{
+padding:16px 22px;
 border-radius:999px;
 background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.1);
+font-size:14px;
 }
 
 /* CTA BIG */
 .ctaBig{
 text-align:center;
-padding:90px 20px;
+padding:100px 20px;
 }
 
 .ctaBig h2{
-font-size:40px;
+font-size:42px;
 }
 
 .ctaBig p{
@@ -179,98 +207,105 @@ opacity:.5;
 
 <body>
 
+<div class="nav">
+<div class="logo">SS Studio</div>
+<button onclick="window.location.href='/signup.html'">Get Started</button>
+</div>
+
 <div class="blurOrb"></div>
 <div class="blurOrb2"></div>
 
 <!-- HERO -->
 <div class="hero">
-<h1>SS <span>Studio</span></h1>
+<h1>Create. Build. <span>Launch.</span></h1>
 
 <p>
-Build your brand. Create your content. Launch your vision.
-SS Studio is where creators, artists, and founders turn ideas into real platforms, products, and experiences.
+SS Studio is where creators build brands, publish content, and turn ideas into real products.
+From music to books, films to digital assets — everything starts here.
 </p>
 
 <div class="cta">
-<button onclick="window.location.href='/signup.html'">
-Start Your Journey
-</button>
+<button onclick="window.location.href='/signup.html'">Start Creating</button>
+<button class="secondary">Explore Platform</button>
 </div>
 </div>
 
-<!-- WHAT YOU CAN BUILD -->
+<!-- CREATOR PATHS -->
 <div class="section">
-<h2>Create Anything</h2>
-<p>SS Studio supports every type of creator across multiple industries.</p>
+<h2>Built for Every Creator</h2>
+<p>Choose your lane — or build across all of them.</p>
 
 <div class="grid">
 
 <div class="card">
 <h3>🏷️ Brands</h3>
-<p>Start your own brand, design products, and build your identity from the ground up.</p>
+<p>Launch your own brand, products, and identity.</p>
 </div>
 
 <div class="card">
 <h3>🎵 Music (SS Records)</h3>
-<p>Artists can create, distribute, and grow under the SS Records music division.</p>
+<p>Create and grow as an artist under SS Records.</p>
 </div>
 
 <div class="card">
 <h3>📚 Books & Comics</h3>
-<p>Publish books, comics, and written content into a growing digital library.</p>
+<p>Publish into a digital library and reach readers.</p>
 </div>
 
 <div class="card">
-<h3>🎬 Film & Media</h3>
-<p>Create films, videos, and visual projects for distribution and exposure.</p>
+<h3>🎬 Film</h3>
+<p>Produce and distribute visual content.</p>
 </div>
 
 <div class="card">
 <h3>🎮 Games</h3>
-<p>Design and launch game concepts, visuals, and interactive experiences.</p>
+<p>Build creative game concepts and experiences.</p>
 </div>
 
 <div class="card">
-<h3>🧠 Digital Products</h3>
-<p>Sell courses, templates, assets, and creative tools to other users.</p>
+<h3>💻 Digital Products</h3>
+<p>Sell templates, courses, and creative tools.</p>
 </div>
 
+</div>
+</div>
+
+<!-- FEATURES -->
+<div class="section">
+<h2>Everything You Need</h2>
+
+<div class="features">
+<div class="feature">🚀 Launch your brand</div>
+<div class="feature">💸 Sell your creations</div>
+<div class="feature">🤝 Connect with creators</div>
+<div class="feature">📊 Track growth</div>
+<div class="feature">🌐 Built-in platform exposure</div>
 </div>
 </div>
 
 <!-- HOW IT WORKS -->
 <div class="section">
 <h2>How It Works</h2>
-<p>SS Studio gives you everything you need to go from idea to launch.</p>
 
-<div class="flow">
-<div class="flowStep">Start Your Idea</div>
-<div class="flowStep">Build Your Brand</div>
-<div class="flowStep">Create Content</div>
-<div class="flowStep">Publish & Sell</div>
-<div class="flowStep">Connect & Grow</div>
+<div class="features">
+<div class="feature">Start an idea</div>
+<div class="feature">Build your identity</div>
+<div class="feature">Create content</div>
+<div class="feature">Publish & sell</div>
+<div class="feature">Grow your network</div>
 </div>
-</div>
-
-<!-- ECOSYSTEM -->
-<div class="section">
-<h2>Connected Ecosystem</h2>
-<p>
-SS Studio connects directly into the full StudentStream system, allowing creators to collaborate, monetize, and scale across multiple divisions.
-</p>
 </div>
 
 <!-- CTA -->
 <div class="ctaBig">
-<h2>Turn Your Ideas Into Reality</h2>
-<p>Join SS Studio and start building your creative future.</p>
+<h2>Start Your Creative Journey</h2>
+<p>Join SS Studio and build something real.</p>
 
 <button onclick="window.location.href='/signup.html'">
-Join SS Studio
+Join Now
 </button>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
 SS Studio • Creative Division of StudentStreamHQ
 </div>
