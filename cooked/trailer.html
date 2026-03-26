@@ -14,6 +14,19 @@ body{
   overflow:hidden;
 }
 
+/* 🎬 CINEMATIC BARS */
+body::before, body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  width:100%;
+  height:8%;
+  background:black;
+  z-index:20;
+}
+body::before{top:0;}
+body::after{bottom:0;}
+
 /* VIDEO */
 video{
   position:fixed;
@@ -21,26 +34,43 @@ video{
   height:100%;
   object-fit:cover;
   z-index:-2;
-  filter:brightness(.35) contrast(1.2);
+  filter:brightness(.3) contrast(1.3);
 }
 
-/* OVERLAY */
-.overlay{
+/* PARTICLES */
+.particles{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle,transparent,black 70%);
+  background:radial-gradient(circle at 30% 40%, rgba(0,255,157,.08), transparent 60%);
+  animation:move 12s linear infinite;
   z-index:-1;
 }
+@keyframes move{
+  0%{transform:translate(0)}
+  50%{transform:translate(-5%, -5%)}
+  100%{transform:translate(0)}
+}
 
-/* FLASH EFFECT */
+/* FLASH */
 .flash{
   position:fixed;
   inset:0;
   background:white;
   opacity:0;
-  pointer-events:none;
-  transition:.4s;
-  z-index:5;
+  z-index:15;
+  transition:.3s;
+}
+
+/* SHAKE */
+.shake{
+  animation:shake .4s;
+}
+@keyframes shake{
+  0%{transform:translate(0)}
+  25%{transform:translate(-3px,2px)}
+  50%{transform:translate(3px,-2px)}
+  75%{transform:translate(-2px,1px)}
+  100%{transform:translate(0)}
 }
 
 /* PROGRESS */
@@ -51,8 +81,7 @@ video{
   height:4px;
   background:linear-gradient(90deg,#4CAF50,#00ff9d);
   width:0%;
-  transition:width .2s linear;
-  z-index:10;
+  z-index:30;
 }
 
 /* SCENE */
@@ -64,19 +93,18 @@ video{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  font-size:3.2rem;
+  font-size:3.4rem;
   font-weight:900;
   text-align:center;
   opacity:0;
-  transform:scale(1.1);
+  transform:scale(1.15);
   transition:1s ease;
-  padding:20px;
 }
 
 .scene small{
   font-size:1rem;
-  margin-top:15px;
   color:#aaa;
+  margin-top:15px;
 }
 
 .active{
@@ -84,7 +112,7 @@ video{
   transform:scale(1);
 }
 
-/* TYPE EFFECT */
+/* TYPE */
 .type{
   border-right:2px solid white;
   white-space:nowrap;
@@ -101,26 +129,24 @@ video{
   align-items:center;
   justify-content:center;
   opacity:0;
-  transition:1s ease;
+  transition:1s;
 }
 
 .logoScene img{
-  width:130px;
-  margin-bottom:20px;
+  width:140px;
   opacity:0;
-  transform:scale(.6);
-  filter:drop-shadow(0 0 25px rgba(0,255,157,.7));
-  transition:1s ease;
+  transform:scale(.5);
+  filter:drop-shadow(0 0 30px rgba(0,255,157,.8));
+  transition:1s;
 }
 
 .logoScene h1{
-  font-size:52px;
-  letter-spacing:2px;
+  font-size:60px;
+  margin-top:10px;
 }
 
 .logoScene p{
   color:#aaa;
-  margin-top:10px;
 }
 
 .logoActive{
@@ -135,11 +161,11 @@ video{
 
 @keyframes pulse{
   0%{transform:scale(1)}
-  50%{transform:scale(1.05)}
+  50%{transform:scale(1.07)}
   100%{transform:scale(1)}
 }
 
-/* END FADE */
+/* FADE OUT */
 .fadeOut{
   animation:fadeOut 2s forwards;
 }
@@ -152,10 +178,9 @@ video{
 <body>
 
 <div class="progress" id="progress"></div>
-<div class="overlay"></div>
+<div class="particles"></div>
 <div class="flash" id="flash"></div>
 
-<!-- 🎵 MUSIC (optional replace file) -->
 <audio id="bgm" src="music.mp3"></audio>
 <audio id="hit" src="hit.mp3"></audio>
 
@@ -204,9 +229,10 @@ video{
 <script>
 let current = 1;
 const total = 6;
-const duration = 2600;
+const duration = 2400;
 const progress = document.getElementById("progress");
 const flash = document.getElementById("flash");
+const bgm = document.getElementById("bgm");
 
 let progressVal = 0;
 
@@ -217,45 +243,56 @@ function typeWriter(){
   if(i < text.length){
     document.getElementById("t1").innerHTML += text.charAt(i);
     i++;
-    setTimeout(typeWriter,50);
+    setTimeout(typeWriter,40);
   }
 }
 typeWriter();
 
-/* MUSIC START */
+/* MUSIC BUILD */
 setTimeout(()=>{
-  document.getElementById("bgm").play().catch(()=>{});
+  bgm.volume = 0;
+  bgm.play().catch(()=>{});
+  let vol = 0;
+  let fade = setInterval(()=>{
+    vol += 0.05;
+    if(vol >= 1) clearInterval(fade);
+    bgm.volume = vol;
+  },200);
 },1000);
 
 const interval = setInterval(()=>{
 
-  /* FLASH TRANSITION */
-  flash.style.opacity = "0.8";
-  setTimeout(()=>flash.style.opacity="0",200);
+  /* FLASH */
+  flash.style.opacity="0.7";
+  setTimeout(()=>flash.style.opacity="0",150);
+
+  /* SHAKE ON INTENSE SCENES */
+  if(current >= 4){
+    document.body.classList.add("shake");
+    setTimeout(()=>document.body.classList.remove("shake"),300);
+  }
 
   progressVal += (100/(total+1));
   progress.style.width = progressVal + "%";
 
   document.getElementById("s"+current).classList.remove("active");
-
   current++;
 
   if(current <= total){
     document.getElementById("s"+current).classList.add("active");
   }
 
-  /* LOGO REVEAL */
+  /* LOGO DROP */
   if(current === total+1){
     document.getElementById("hit").play().catch(()=>{});
-    
+
     setTimeout(()=>{
       document.getElementById("logoScene").classList.add("logoActive");
-    },600);
+    },400);
 
-    /* AUTO FADE OUT END */
     setTimeout(()=>{
       document.body.classList.add("fadeOut");
-    },4000);
+    },5000);
 
     clearInterval(interval);
   }
