@@ -1,220 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed Demo</title>
+<title>Cook’ed • Smart Cooking</title>
 
 <style>
 :root{
-  --bg:#0e1a12;
-  --panel:#13261a;
-  --accent:#5cff87;
-  --text:#eafff1;
-  --muted:#9cc3a7;
+--bg:#08110c;
+--panel:#0f1f16;
+--accent:#5cff87;
+--accent2:#00ffcc;
+--text:#ecfff3;
+--muted:#9bbca7;
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
 body{
-  font-family:system-ui;
-  background:linear-gradient(180deg,#0e1a12,#08110c);
-  color:var(--text);
+background:radial-gradient(circle at top,#0c1f14,#050806);
+color:var(--text);
+overflow-x:hidden;
 }
 
-/* HEADER */
-.header{
-  text-align:center;
-  padding:40px 20px 20px;
+/* NAV */
+.nav{
+position:fixed;
+top:0;
+width:100%;
+padding:15px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.3);
+backdrop-filter:blur(12px);
+z-index:100;
+}
+
+.logoWrap{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
 .logo{
-  width:80px;
-  margin-bottom:10px;
+width:38px;
+height:38px;
+object-fit:contain;
 }
 
-h1{
-  font-size:34px;
-  font-weight:900;
+.navTitle{
+font-weight:900;
+font-size:18px;
 }
 
-.tag{
-  font-size:14px;
-  color:var(--muted);
-  margin-top:6px;
+.nav button{
+padding:10px 18px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+font-weight:800;
+cursor:pointer;
 }
 
-/* INPUT AREA */
-.container{
-  max-width:500px;
-  margin:auto;
-  padding:20px;
+/* HERO */
+.hero{
+text-align:center;
+padding:140px 20px 90px;
 }
 
-.inputBox{
-  margin-top:25px;
+.hero img{
+width:90px;
+margin-bottom:15px;
 }
 
-input{
-  width:100%;
-  padding:16px;
-  border-radius:14px;
-  border:none;
-  background:var(--panel);
-  color:white;
-  font-size:15px;
+.hero h1{
+font-size:60px;
+font-weight:900;
 }
 
-button{
-  width:100%;
-  margin-top:12px;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:var(--accent);
-  color:#00210f;
-  font-weight:900;
-  font-size:15px;
-  cursor:pointer;
+.hero span{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
-/* MODES */
-.modes{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
+.hero p{
+margin-top:18px;
+opacity:.75;
+font-size:17px;
+max-width:650px;
+margin-left:auto;
+margin-right:auto;
 }
 
-.mode{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  border-radius:12px;
-  background:var(--panel);
-  font-size:13px;
-  cursor:pointer;
-  border:1px solid transparent;
+.cta{
+margin-top:35px;
+display:flex;
+gap:15px;
+justify-content:center;
+flex-wrap:wrap;
 }
 
-.mode.active{
-  border:1px solid var(--accent);
-  color:var(--accent);
+.cta button{
+padding:16px 30px;
+border-radius:16px;
+border:none;
+font-weight:900;
+cursor:pointer;
+transition:.2s;
 }
 
-/* RESULTS */
-.results{
-  margin-top:25px;
+.cta button:hover{
+transform:translateY(-3px);
+}
+
+.primary{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+color:#00210f;
+}
+
+.secondary{
+background:rgba(255,255,255,.05);
+color:white;
+border:1px solid rgba(255,255,255,.1);
+}
+
+/* SECTION */
+.section{
+max-width:1100px;
+margin:auto;
+padding:80px 20px;
+}
+
+.section h2{
+font-size:36px;
+margin-bottom:10px;
+}
+
+.section p{
+opacity:.7;
+margin-bottom:30px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
 }
 
 .card{
-  background:var(--panel);
-  padding:16px;
-  border-radius:16px;
-  margin-bottom:12px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.08);
+padding:22px;
+border-radius:18px;
+transition:.25s;
 }
 
-.card h3{
-  font-size:16px;
+.card:hover{
+transform:translateY(-6px);
+border-color:var(--accent);
+box-shadow:0 0 25px rgba(92,255,135,.15);
 }
 
-.card p{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:6px;
+/* DEMO BOX */
+.demo{
+margin-top:40px;
+background:var(--panel);
+padding:25px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.demo input{
+width:100%;
+padding:14px;
+border-radius:12px;
+border:none;
+background:#08140d;
+color:white;
+margin-bottom:10px;
+}
+
+.demo button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:var(--accent);
+font-weight:900;
+cursor:pointer;
+}
+
+.result{
+margin-top:15px;
+font-size:14px;
+color:var(--muted);
+}
+
+/* STRIP */
+.strip{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:20px;
+}
+
+.pill{
+padding:10px 16px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+font-size:13px;
+}
+
+/* CTA BIG */
+.ctaBig{
+text-align:center;
+padding:100px 20px;
+}
+
+.ctaBig h2{
+font-size:40px;
+}
+
+.ctaBig button{
+margin-top:20px;
+padding:16px 35px;
+border:none;
+border-radius:16px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+font-weight:900;
+cursor:pointer;
 }
 
 /* FOOTER */
 .footer{
-  text-align:center;
-  font-size:12px;
-  color:var(--muted);
-  padding:30px;
+text-align:center;
+padding:30px;
+font-size:12px;
+opacity:.5;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="header">
-  <img src="logo.png" class="logo">
-  <h1>Cook’ed</h1>
-  <div class="tag">Turn what you have into real meals</div>
+<!-- NAV -->
+<div class="nav">
+<div class="logoWrap">
+<img src="cooked-logo.jpg" class="logo">
+<div class="navTitle">Cook’ed</div>
 </div>
 
-<div class="container">
+<button onclick="scrollToDemo()">Try Demo</button>
+</div>
 
-  <!-- INPUT -->
-  <div class="inputBox">
-    <input id="ingredients" placeholder="Enter ingredients (e.g. eggs, rice, cheese)">
-    <button onclick="generateMeals()">Find Meals</button>
-  </div>
+<!-- HERO -->
+<div class="hero">
+<img src="cooked-logo.jpg">
+<h1>Cook Smarter. <span>Not Harder.</span></h1>
+<p>
+Turn whatever you have at home into real meals. Save money, reduce waste, and cook in minutes.
+</p>
 
-  <!-- MODES -->
-  <div class="modes">
-    <div class="mode active" onclick="setMode(this,'quick')">⚡ Quick</div>
-    <div class="mode" onclick="setMode(this,'budget')">💰 Budget</div>
-    <div class="mode" onclick="setMode(this,'eco')">🌱 Eco</div>
-  </div>
+<div class="cta">
+<button class="primary" onclick="scrollToDemo()">Try It Now</button>
+<button class="secondary">See Features</button>
+</div>
+</div>
 
-  <!-- RESULTS -->
-  <div class="results" id="results"></div>
+<!-- FEATURES -->
+<div class="section">
+<h2>Why Cook’ed?</h2>
+<p>Built for students, creators, and everyday life.</p>
 
+<div class="grid">
+<div class="card">🥚 Use ingredients you already have</div>
+<div class="card">⚡ Get meals in seconds</div>
+<div class="card">💰 Budget-friendly cooking</div>
+<div class="card">🌱 Reduce food waste</div>
+</div>
+</div>
+
+<!-- LIVE DEMO -->
+<div class="section" id="demoSection">
+<h2>Live Demo</h2>
+<p>Try entering ingredients below.</p>
+
+<div class="demo">
+<input id="demoInput" placeholder="eggs, rice, cheese">
+<button onclick="runDemo()">Generate Meal</button>
+<div class="result" id="demoResult"></div>
+</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+<h2>How It Works</h2>
+
+<div class="strip">
+<div class="pill">Enter ingredients</div>
+<div class="pill">AI suggests meals</div>
+<div class="pill">Cook instantly</div>
+<div class="pill">Save money</div>
+</div>
+</div>
+
+<!-- CTA -->
+<div class="ctaBig">
+<h2>Start Cooking Today</h2>
+<button onclick="scrollToDemo()">Try Cook’ed</button>
 </div>
 
 <div class="footer">
-  Cook’ed Demo • Prodigy Presentation
+Cook’ed • Prodigy App Presentation
 </div>
 
 <script>
-let currentMode = "quick";
-
-function setMode(el, mode){
-  document.querySelectorAll(".mode").forEach(m=>m.classList.remove("active"));
-  el.classList.add("active");
-  currentMode = mode;
+function scrollToDemo(){
+document.getElementById("demoSection").scrollIntoView({behavior:"smooth"});
 }
 
-function generateMeals(){
-  const input = document.getElementById("ingredients").value;
-  const results = document.getElementById("results");
+function runDemo(){
+let input = document.getElementById("demoInput").value;
+let result = document.getElementById("demoResult");
 
-  if(!input){
-    results.innerHTML = "<div class='card'>Enter ingredients first.</div>";
-    return;
-  }
+if(!input){
+result.innerHTML="Enter ingredients first.";
+return;
+}
 
-  let meals = [];
+let meals=[
+"Quick Egg Fried Rice 🍳",
+"Cheesy Comfort Bowl 🧀",
+"Lazy Stir Fry 🔥"
+];
 
-  if(currentMode === "quick"){
-    meals = [
-      {title:"5-Minute Scramble Bowl", desc:"Quick mix using " + input},
-      {title:"Fast Stir Fry", desc:"Simple and ready in minutes"},
-      {title:"Lazy Wrap", desc:"Wrap everything together and go"}
-    ];
-  }
+let random=meals[Math.floor(Math.random()*meals.length)];
 
-  if(currentMode === "budget"){
-    meals = [
-      {title:"Budget Rice Mix", desc:"Cheap and filling meal"},
-      {title:"Student Combo Plate", desc:"Max calories, low cost"},
-      {title:"Pan Toss Meal", desc:"Use everything efficiently"}
-    ];
-  }
-
-  if(currentMode === "eco"){
-    meals = [
-      {title:"Zero Waste Bowl", desc:"Uses all ingredients"},
-      {title:"Leftover Remix", desc:"Turn scraps into meals"},
-      {title:"Eco Plate", desc:"Reduce waste, maximize food"}
-    ];
-  }
-
-  results.innerHTML = meals.map(m => `
-    <div class="card">
-      <h3>${m.title}</h3>
-      <p>${m.desc}</p>
-    </div>
-  `).join("");
+result.innerHTML = "Meal Idea: <b>"+random+"</b><br>Using: "+input;
 }
 </script>
 
