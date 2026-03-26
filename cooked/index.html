@@ -25,7 +25,7 @@ body{
   overflow-x:hidden;
 }
 
-/* 🔥 BACKGROUND ORBS */
+/* 🔥 PARALLAX ORBS */
 .orb{
   position:absolute;
   width:500px;
@@ -33,6 +33,7 @@ body{
   border-radius:50%;
   filter:blur(120px);
   opacity:.2;
+  transition:0.3s;
 }
 .orb1{background:#4CAF50;top:-200px;left:-200px;}
 .orb2{background:#2e7d32;bottom:-200px;right:-200px;}
@@ -66,6 +67,14 @@ nav{
   border-bottom:1px solid var(--border);
   background:rgba(0,0,0,.5);
   backdrop-filter:blur(12px);
+  position:sticky;
+  top:0;
+  z-index:100;
+  transition:.3s;
+}
+
+nav.scrolled{
+  box-shadow:0 0 20px rgba(0,0,0,.6);
 }
 
 .logo{
@@ -130,7 +139,7 @@ nav{
 }
 
 .inputBox button:hover{
-  transform:translateY(-2px) scale(1.03);
+  transform:translateY(-2px) scale(1.05);
 }
 
 /* 🔥 FEED BUTTON */
@@ -172,47 +181,25 @@ nav{
   border-radius:18px;
   padding:18px;
   transition:.25s;
+  cursor:pointer;
 }
 
 .card:hover{
-  transform:translateY(-6px) scale(1.02);
+  transform:translateY(-6px) scale(1.03);
   border-color:#4CAF50;
-  box-shadow:0 0 20px rgba(76,175,80,.2);
+  box-shadow:0 0 25px rgba(76,175,80,.25);
 }
 
-.card h3{
-  font-size:16px;
-  font-weight:900;
+.card.active{
+  transform:scale(.95);
+  opacity:.6;
 }
 
-.card p{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:6px;
-}
-
-.badge{
-  display:inline-block;
-  margin-top:10px;
-  padding:5px 10px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:700;
-  background:rgba(76,175,80,.15);
-  color:var(--accent);
-}
-
-/* 🔥 TRENDING */
-.trending{
-  max-width:1000px;
-  margin:60px auto;
-  padding:0 20px;
-}
-
+/* 🔥 TRENDING AUTO SCROLL */
 .trendRow{
   display:flex;
   gap:12px;
-  overflow-x:auto;
+  overflow:hidden;
 }
 
 .trend{
@@ -221,6 +208,12 @@ nav{
   border-radius:14px;
   background:var(--panel);
   border:1px solid var(--border);
+  animation:scrollTrend 20s linear infinite;
+}
+
+@keyframes scrollTrend{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-300%)}
 }
 
 /* FEATURES */
@@ -241,6 +234,12 @@ nav{
   border-radius:16px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.02);
+  transition:.2s;
+}
+
+.feature:hover{
+  transform:translateY(-4px);
+  border-color:#4CAF50;
 }
 
 footer{
@@ -257,14 +256,13 @@ footer{
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 
-<!-- 🚨 BANNER -->
 <div class="banner">
   <span>
   🚨 Cook’ed Page Actively Being Built • HIGH PRIORITY • StudentStreamHQ • Founder: Deondre 🚀
   </span>
 </div>
 
-<nav>
+<nav id="nav">
   <div class="logo">🍳 Cook<span>’ed</span></div>
   <div>Live Demo</div>
 </nav>
@@ -288,7 +286,6 @@ footer{
 
 <section class="results" id="results"></section>
 
-<!-- 🔥 TRENDING -->
 <section class="trending">
   <h2>🔥 Trending Meals</h2>
   <div class="trendRow">
@@ -326,13 +323,16 @@ Cook’ed Demo • StudentStreamHQ Division
 
 <script>
 
-/* ✨ TYPING EFFECT */
-const words=["Already Have","Got at Home","Can Afford"];
-let i=0,j=0,word="";
-function type(){
-  word=words[i].slice(0,j++);
-  document.getElementById("typing").innerText=word;
+/* NAV GLOW */
+window.addEventListener("scroll",()=>{
+  document.getElementById("nav").classList.toggle("scrolled",window.scrollY>10)
+})
 
+/* ✨ TYPING */
+const words=["Already Have","Got at Home","Can Afford"];
+let i=0,j=0;
+function type(){
+  document.getElementById("typing").innerText=words[i].slice(0,j++);
   if(j>words[i].length){
     setTimeout(()=>{j=0;i=(i+1)%words.length},1200);
   }
@@ -340,50 +340,59 @@ function type(){
 }
 type();
 
-/* AI GENERATOR */
+/* AI GENERATOR (SMARTER RANDOM) */
 function generateMeals(){
   const input = document.getElementById("ingredients").value;
   const results = document.getElementById("results");
   const loader = document.getElementById("loader");
 
   if(!input){
-    results.innerHTML = "<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
+    results.innerHTML="<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
     return;
   }
 
-  results.innerHTML = "";
-  loader.style.display = "block";
+  loader.style.display="block";
+  results.innerHTML="";
+
+  const meals=[
+    "🔥 Street Style Bowl",
+    "🍳 Protein Scramble",
+    "🍜 Remix Noodles",
+    "🌯 Loaded Wrap",
+    "🧀 Melt Combo",
+    "🥗 Smart Mix"
+  ];
 
   setTimeout(()=>{
-    loader.style.display = "none";
+    loader.style.display="none";
 
-    results.innerHTML = `
-      <div class="card">
-        <h3>🍳 Cheesy Rice Bowl</h3>
-        <p>Generated from ${input}</p>
-        <div class="badge">10 min</div>
+    results.innerHTML = meals.slice(0,3).map(meal=>`
+      <div class="card" onclick="tapCard(this)">
+        <h3>${meal}</h3>
+        <p>Built from ${input}</p>
+        <div class="badge">${Math.floor(Math.random()*10+5)} min</div>
       </div>
+    `).join("");
 
-      <div class="card">
-        <h3>🍜 Remix Meal</h3>
-        <p>Creative combo using your ingredients</p>
-        <div class="badge">Budget</div>
-      </div>
-
-      <div class="card">
-        <h3>🌯 Quick Wrap</h3>
-        <p>Fast meal idea based on ${input}</p>
-        <div class="badge">5 min</div>
-      </div>
-    `;
-  },1400);
+  },1200);
 }
 
-/* GO TO FEED */
+/* CARD TAP EFFECT */
+function tapCard(el){
+  el.classList.add("active");
+  setTimeout(()=>el.classList.remove("active"),200);
+}
+
+/* GO FEED */
 function goFeed(){
   window.location.href="feed.html";
 }
 
+/* PARALLAX */
+document.addEventListener("mousemove",(e)=>{
+  document.querySelector(".orb1").style.transform=`translate(${e.clientX/30}px,${e.clientY/30}px)`
+  document.querySelector(".orb2").style.transform=`translate(-${e.clientX/30}px,-${e.clientY/30}px)`
+})
 </script>
 
 </body>
