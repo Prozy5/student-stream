@@ -7,7 +7,6 @@
 
 <style>
 :root{
-  --bg:#06110c;
   --accent:#4CAF50;
   --accent2:#00ff9d;
   --text:#eafef3;
@@ -22,22 +21,22 @@ body{
   font-family:system-ui;
   background:radial-gradient(circle at top,#0b1f16,#020705);
   color:var(--text);
-  overflow-x:hidden;
 }
 
-/* 🔥 BACKGROUND GLOW */
-body::before{
-  content:"";
-  position:fixed;
-  width:200%;
-  height:200%;
-  background:radial-gradient(circle, rgba(0,255,157,.08), transparent 60%);
-  animation:moveBg 18s linear infinite;
+/* 🔥 TOP BANNER */
+.banner{
+  text-align:center;
+  padding:8px;
+  font-size:14px;
+  background:linear-gradient(90deg,#00ff9d,#4CAF50,#00ff9d);
+  background-size:200%;
+  animation:slide 6s linear infinite;
+  color:black;
+  font-weight:700;
 }
-@keyframes moveBg{
-  0%{transform:translate(0,0)}
-  50%{transform:translate(-8%, -10%)}
-  100%{transform:translate(0,0)}
+@keyframes slide{
+  0%{background-position:0%}
+  100%{background-position:200%}
 }
 
 /* NAV */
@@ -45,54 +44,39 @@ nav{
   display:flex;
   justify-content:space-between;
   padding:20px 30px;
-  position:sticky;
-  top:0;
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
 }
 
-.logo{
-  font-weight:900;
-  font-size:20px;
+.navLinks{
+  display:flex;
+  gap:15px;
 }
-.logo span{color:var(--accent)}
+
+.navLinks button{
+  background:none;
+  border:none;
+  color:white;
+  cursor:pointer;
+  font-weight:700;
+}
 
 .navBtn{
-  padding:10px 20px;
+  padding:10px 18px;
   border-radius:999px;
   border:none;
   font-weight:800;
-  cursor:pointer;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  transition:.2s;
-}
-.navBtn:hover{
-  transform:scale(1.08);
-  box-shadow:0 0 20px rgba(0,255,157,.4);
+  cursor:pointer;
 }
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:130px 20px 90px;
-  animation:fadeUp 1s ease;
-}
-
-@keyframes fadeUp{
-  from{opacity:0; transform:translateY(30px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-.hero img{
-  width:85px;
-  margin-bottom:20px;
-  filter:drop-shadow(0 0 20px rgba(0,255,157,.5));
+  padding:120px 20px;
 }
 
 .hero h1{
-  font-size:66px;
-  font-weight:900;
-  line-height:1.1;
+  font-size:60px;
 }
 
 .highlight{
@@ -101,178 +85,62 @@ nav{
   -webkit-text-fill-color:transparent;
 }
 
-.hero p{
+/* LIVE USERS */
+.stats{
   margin-top:20px;
+  font-size:14px;
   color:var(--muted);
-  font-size:18px;
 }
 
-/* CTA */
-.cta{
-  margin-top:30px;
-  display:flex;
+/* JOIN MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
   justify-content:center;
-  gap:15px;
+  align-items:center;
 }
 
-.cta button{
-  padding:15px 24px;
-  border-radius:999px;
-  border:none;
-  cursor:pointer;
-  font-weight:800;
-  transition:.2s;
-}
-
-.primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-}
-.primary:hover{
-  transform:scale(1.08);
-  box-shadow:0 0 25px rgba(0,255,157,.4);
-}
-
-.secondary{
-  background:var(--card);
-  border:1px solid var(--border);
-  color:white;
-}
-.secondary:hover{
-  background:rgba(255,255,255,.08);
-}
-
-/* SECTION */
-.section{
-  max-width:1100px;
-  margin:100px auto;
-  padding:0 20px;
-}
-
-.section h2{
-  font-size:42px;
-}
-
-.section p{
-  color:var(--muted);
-  margin-top:5px;
-}
-
-/* CARDS */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-  margin-top:30px;
-}
-
-.card{
-  padding:22px;
-  border-radius:20px;
-  background:var(--card);
-  border:1px solid var(--border);
-  backdrop-filter:blur(10px);
-  transition:.3s;
-}
-
-.card:hover{
-  transform:translateY(-8px) scale(1.02);
-  border-color:var(--accent);
-  box-shadow:0 0 30px rgba(0,255,157,.15);
-}
-
-/* DEMO */
-.demo{
-  text-align:center;
-}
-
-.demo input{
-  padding:15px;
-  width:60%;
-  max-width:420px;
-  border-radius:12px;
-  border:1px solid var(--border);
+.modalContent{
   background:#0c1c14;
-  color:white;
+  padding:30px;
+  border-radius:20px;
+  width:300px;
 }
 
-.demo button{
-  padding:15px;
-  margin-left:10px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  font-weight:900;
-  cursor:pointer;
-}
-
-/* RESULTS */
-.results{
-  margin-top:30px;
-  display:grid;
-  gap:15px;
-}
-
-.resultCard{
-  padding:18px;
-  border-radius:16px;
-  background:var(--card);
-  border:1px solid var(--border);
-}
-
-.actions{
+.modal input{
+  width:100%;
+  padding:12px;
   margin-top:10px;
-  display:flex;
-  gap:10px;
+  border-radius:10px;
+  border:none;
 }
-.actions button{
-  flex:1;
-  padding:8px;
+
+.modal button{
+  margin-top:15px;
+  width:100%;
+  padding:12px;
   border:none;
   border-radius:10px;
-  background:rgba(255,255,255,.05);
-  color:white;
-  cursor:pointer;
-}
-.actions button:hover{
-  background:rgba(0,255,157,.2);
-}
-
-/* FEED */
-.feedGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
-  margin-top:20px;
-}
-
-.feedCard{
-  height:200px;
-  border-radius:16px;
-  position:relative;
-  overflow:hidden;
-  background:linear-gradient(135deg,#123,#000);
-  display:flex;
-  align-items:end;
-  padding:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
   font-weight:800;
 }
 
-.feedCard::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to top, rgba(0,0,0,.7), transparent);
+/* FEED BUTTON */
+.feedBtn{
+  margin-top:20px;
+  padding:14px 20px;
+  border:none;
+  border-radius:999px;
+  background:var(--card);
+  color:white;
+  cursor:pointer;
 }
 
-.feedCard span{
-  position:relative;
-  z-index:2;
-}
-
-/* FOOTER */
 footer{
   text-align:center;
-  padding:50px;
+  padding:40px;
   color:var(--muted);
 }
 </style>
@@ -280,105 +148,71 @@ footer{
 
 <body>
 
+<div class="banner">
+🚧 Page actively being upgraded • High Priority • From the Owner of StudentStreamHQ — Deondre
+</div>
+
 <nav>
-  <div class="logo">Cook<span>’ed</span></div>
-  <button class="navBtn" onclick="scrollToDemo()">Try Demo</button>
+  <div><b>Cook<span style="color:#4CAF50">’ed</span></b></div>
+
+  <div class="navLinks">
+    <button onclick="scrollToTop()">Home</button>
+    <button onclick="scrollToDemo()">Demo</button>
+    <button onclick="openModal()">Join</button>
+  </div>
+
+  <button class="navBtn" onclick="openModal()">Join Cook’ed</button>
 </nav>
 
 <section class="hero">
-  <img src="cooked-logo.PNG">
-  <h1>
-    Cook Smarter. <br>
-    <span class="highlight">Not Harder.</span>
-  </h1>
-  <p>Turn whatever you have into real meals. Save money. Reduce waste.</p>
+  <h1>Cook Smarter.<br><span class="highlight">Not Harder.</span></h1>
+  <p>AI-powered meals for Gen Z.</p>
 
-  <div class="cta">
-    <button class="primary" onclick="scrollToDemo()">Try It Now</button>
-    <button class="secondary">See Features</button>
+  <div class="stats">
+    🔥 <span id="users">2,184</span> students already using Cook’ed
   </div>
+
+  <button class="feedBtn">Explore Feed</button>
 </section>
 
-<section class="section">
-  <h2>Why Cook’ed?</h2>
-  <p>Built for students, creators, and everyday life.</p>
-
-  <div class="grid">
-    <div class="card">🥚 Use ingredients you already have</div>
-    <div class="card">⚡ Get meals instantly</div>
-    <div class="card">💰 Budget-friendly cooking</div>
-    <div class="card">🌱 Reduce food waste</div>
+<!-- JOIN MODAL -->
+<div class="modal" id="modal">
+  <div class="modalContent">
+    <h2>Join Cook’ed</h2>
+    <input placeholder="Username">
+    <input placeholder="Email">
+    <button onclick="join()">Create Account</button>
   </div>
-</section>
-
-<section class="section demo" id="demo">
-  <h2>Try the AI</h2>
-
-  <input id="ingredients" placeholder="eggs, rice, cheese">
-  <button onclick="generateMeals()">Generate</button>
-
-  <div class="results" id="results"></div>
-</section>
-
-<section class="section">
-  <h2>🔥 Trending Meals</h2>
-
-  <div class="feedGrid">
-    <div class="feedCard"><span>🍝 Viral Pasta</span></div>
-    <div class="feedCard"><span>🍳 Egg Hack</span></div>
-    <div class="feedCard"><span>🌯 Budget Wrap</span></div>
-    <div class="feedCard"><span>🍜 Ramen Upgrade</span></div>
-  </div>
-</section>
+</div>
 
 <footer>
 Cook’ed • A Prodigy Project
 </footer>
 
 <script>
+function scrollToTop(){
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
 function scrollToDemo(){
-  document.getElementById("demo").scrollIntoView({behavior:"smooth"});
+  alert("Demo section coming soon...");
 }
 
-document.getElementById("ingredients").addEventListener("keypress", e=>{
-  if(e.key==="Enter") generateMeals();
-});
-
-function generateMeals(){
-  const input=document.getElementById("ingredients").value;
-  const results=document.getElementById("results");
-
-  if(!input){
-    results.innerHTML="Enter ingredients first.";
-    return;
-  }
-
-  results.innerHTML=`
-    <div class="resultCard">
-      🍳 Cheesy Bowl using ${input}
-      <div class="actions">
-        <button onclick="this.innerText='❤️ Liked'">❤️ Like</button>
-        <button onclick="this.innerText='✅ Saved'">🔖 Save</button>
-      </div>
-    </div>
-
-    <div class="resultCard">
-      🌯 Quick Wrap idea
-      <div class="actions">
-        <button onclick="this.innerText='❤️ Liked'">❤️ Like</button>
-        <button onclick="this.innerText='✅ Saved'">🔖 Save</button>
-      </div>
-    </div>
-
-    <div class="resultCard">
-      🍜 Easy remix meal
-      <div class="actions">
-        <button onclick="this.innerText='❤️ Liked'">❤️ Like</button>
-        <button onclick="this.innerText='✅ Saved'">🔖 Save</button>
-      </div>
-    </div>
-  `;
+/* MODAL */
+function openModal(){
+  document.getElementById("modal").style.display="flex";
 }
+
+function join(){
+  document.getElementById("modal").innerHTML="<h2 style='color:white'>🎉 Welcome to Cook’ed</h2>";
+}
+
+/* FAKE LIVE USERS */
+let count = 2184;
+setInterval(()=>{
+  count += Math.floor(Math.random()*3);
+  document.getElementById("users").innerText = count.toLocaleString();
+},2000);
 </script>
 
 </body>
