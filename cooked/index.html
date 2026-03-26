@@ -12,7 +12,7 @@
   --accent2:#00ff9d;
   --text:#eafef3;
   --muted:#9fb3c8;
-  --card:rgba(255,255,255,0.04);
+  --card:rgba(255,255,255,0.05);
   --border:rgba(255,255,255,0.08);
 }
 
@@ -20,8 +20,24 @@
 
 body{
   font-family:system-ui;
-  background:radial-gradient(circle at top,#0b1f16,#030805);
+  background:radial-gradient(circle at top,#0b1f16,#020705);
   color:var(--text);
+  overflow-x:hidden;
+}
+
+/* 🔥 BACKGROUND GLOW */
+body::before{
+  content:"";
+  position:fixed;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle, rgba(0,255,157,.08), transparent 60%);
+  animation:moveBg 18s linear infinite;
+}
+@keyframes moveBg{
+  0%{transform:translate(0,0)}
+  50%{transform:translate(-8%, -10%)}
+  100%{transform:translate(0,0)}
 }
 
 /* NAV */
@@ -31,7 +47,8 @@ nav{
   padding:20px 30px;
   position:sticky;
   top:0;
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
 }
 
 .logo{
@@ -41,27 +58,39 @@ nav{
 .logo span{color:var(--accent)}
 
 .navBtn{
-  padding:10px 18px;
+  padding:10px 20px;
   border-radius:999px;
   border:none;
-  font-weight:700;
+  font-weight:800;
   cursor:pointer;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
+  transition:.2s;
+}
+.navBtn:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 20px rgba(0,255,157,.4);
 }
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:120px 20px 80px;
+  padding:130px 20px 90px;
+  animation:fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(30px)}
+  to{opacity:1; transform:translateY(0)}
 }
 
 .hero img{
-  width:80px;
+  width:85px;
   margin-bottom:20px;
+  filter:drop-shadow(0 0 20px rgba(0,255,157,.5));
 }
 
 .hero h1{
-  font-size:64px;
+  font-size:66px;
   font-weight:900;
   line-height:1.1;
 }
@@ -78,6 +107,7 @@ nav{
   font-size:18px;
 }
 
+/* CTA */
 .cta{
   margin-top:30px;
   display:flex;
@@ -86,15 +116,20 @@ nav{
 }
 
 .cta button{
-  padding:14px 22px;
+  padding:15px 24px;
   border-radius:999px;
   border:none;
   cursor:pointer;
   font-weight:800;
+  transition:.2s;
 }
 
 .primary{
   background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
+.primary:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 25px rgba(0,255,157,.4);
 }
 
 .secondary{
@@ -102,24 +137,27 @@ nav{
   border:1px solid var(--border);
   color:white;
 }
+.secondary:hover{
+  background:rgba(255,255,255,.08);
+}
 
 /* SECTION */
 .section{
   max-width:1100px;
-  margin:80px auto;
+  margin:100px auto;
   padding:0 20px;
 }
 
 .section h2{
-  font-size:40px;
-  margin-bottom:10px;
+  font-size:42px;
 }
 
 .section p{
   color:var(--muted);
+  margin-top:5px;
 }
 
-/* FEATURES */
+/* CARDS */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -128,28 +166,29 @@ nav{
 }
 
 .card{
-  padding:20px;
-  border-radius:18px;
+  padding:22px;
+  border-radius:20px;
   background:var(--card);
   border:1px solid var(--border);
+  backdrop-filter:blur(10px);
   transition:.3s;
 }
 
 .card:hover{
-  transform:translateY(-6px);
+  transform:translateY(-8px) scale(1.02);
   border-color:var(--accent);
+  box-shadow:0 0 30px rgba(0,255,157,.15);
 }
 
-/* DEMO BOX */
+/* DEMO */
 .demo{
-  margin-top:40px;
   text-align:center;
 }
 
 .demo input{
-  padding:14px;
+  padding:15px;
   width:60%;
-  max-width:400px;
+  max-width:420px;
   border-radius:12px;
   border:1px solid var(--border);
   background:#0c1c14;
@@ -157,46 +196,83 @@ nav{
 }
 
 .demo button{
-  padding:14px;
+  padding:15px;
   margin-left:10px;
   border:none;
   border-radius:12px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  font-weight:800;
+  font-weight:900;
+  cursor:pointer;
 }
 
+/* RESULTS */
 .results{
   margin-top:30px;
   display:grid;
   gap:15px;
 }
 
-/* FEED */
-.feed{
-  margin-top:50px;
+.resultCard{
+  padding:18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--border);
 }
 
+.actions{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+}
+.actions button{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,.05);
+  color:white;
+  cursor:pointer;
+}
+.actions button:hover{
+  background:rgba(0,255,157,.2);
+}
+
+/* FEED */
 .feedGrid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:15px;
+  margin-top:20px;
 }
 
 .feedCard{
-  height:180px;
-  border-radius:14px;
+  height:200px;
+  border-radius:16px;
+  position:relative;
+  overflow:hidden;
   background:linear-gradient(135deg,#123,#000);
   display:flex;
   align-items:end;
-  padding:10px;
-  font-weight:700;
-  transition:.3s;
+  padding:12px;
+  font-weight:800;
 }
-.feedCard:hover{transform:scale(1.05)}
 
+.feedCard::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.7), transparent);
+}
+
+.feedCard span{
+  position:relative;
+  z-index:2;
+}
+
+/* FOOTER */
 footer{
   text-align:center;
-  padding:40px;
+  padding:50px;
   color:var(--muted);
 }
 </style>
@@ -206,7 +282,7 @@ footer{
 
 <nav>
   <div class="logo">Cook<span>’ed</span></div>
-  <button class="navBtn">Try Demo</button>
+  <button class="navBtn" onclick="scrollToDemo()">Try Demo</button>
 </nav>
 
 <section class="hero">
@@ -215,10 +291,7 @@ footer{
     Cook Smarter. <br>
     <span class="highlight">Not Harder.</span>
   </h1>
-
-  <p>
-    Turn whatever you have into real meals. Save money. Reduce waste.
-  </p>
+  <p>Turn whatever you have into real meals. Save money. Reduce waste.</p>
 
   <div class="cta">
     <button class="primary" onclick="scrollToDemo()">Try It Now</button>
@@ -247,25 +320,29 @@ footer{
   <div class="results" id="results"></div>
 </section>
 
-<section class="section feed">
+<section class="section">
   <h2>🔥 Trending Meals</h2>
 
   <div class="feedGrid">
-    <div class="feedCard">🍝 Viral Pasta</div>
-    <div class="feedCard">🍳 Egg Hack</div>
-    <div class="feedCard">🌯 Budget Wrap</div>
-    <div class="feedCard">🍜 Ramen Upgrade</div>
+    <div class="feedCard"><span>🍝 Viral Pasta</span></div>
+    <div class="feedCard"><span>🍳 Egg Hack</span></div>
+    <div class="feedCard"><span>🌯 Budget Wrap</span></div>
+    <div class="feedCard"><span>🍜 Ramen Upgrade</span></div>
   </div>
 </section>
 
 <footer>
-Cook’ed • A StudentStreamHQ Project
+Cook’ed • A Prodigy Project
 </footer>
 
 <script>
 function scrollToDemo(){
   document.getElementById("demo").scrollIntoView({behavior:"smooth"});
 }
+
+document.getElementById("ingredients").addEventListener("keypress", e=>{
+  if(e.key==="Enter") generateMeals();
+});
 
 function generateMeals(){
   const input=document.getElementById("ingredients").value;
@@ -277,9 +354,29 @@ function generateMeals(){
   }
 
   results.innerHTML=`
-    <div class="card">🍳 Cheesy Bowl using ${input}</div>
-    <div class="card">🌯 Quick Wrap idea</div>
-    <div class="card">🍜 Easy remix meal</div>
+    <div class="resultCard">
+      🍳 Cheesy Bowl using ${input}
+      <div class="actions">
+        <button onclick="this.innerText='❤️ Liked'">❤️ Like</button>
+        <button onclick="this.innerText='✅ Saved'">🔖 Save</button>
+      </div>
+    </div>
+
+    <div class="resultCard">
+      🌯 Quick Wrap idea
+      <div class="actions">
+        <button onclick="this.innerText='❤️ Liked'">❤️ Like</button>
+        <button onclick="this.innerText='✅ Saved'">🔖 Save</button>
+      </div>
+    </div>
+
+    <div class="resultCard">
+      🍜 Easy remix meal
+      <div class="actions">
+        <button onclick="this.innerText='❤️ Liked'">❤️ Like</button>
+        <button onclick="this.innerText='✅ Saved'">🔖 Save</button>
+      </div>
+    </div>
   `;
 }
 </script>
