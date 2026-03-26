@@ -24,7 +24,7 @@ video{
   filter:brightness(.35) contrast(1.1);
 }
 
-/* DARK OVERLAY */
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
@@ -32,7 +32,7 @@ video{
   z-index:-1;
 }
 
-/* PROGRESS BAR */
+/* PROGRESS */
 .progress{
   position:fixed;
   top:0;
@@ -64,10 +64,8 @@ video{
 
 .scene small{
   font-size:1rem;
-  font-weight:400;
   margin-top:15px;
   color:#aaa;
-  letter-spacing:.5px;
 }
 
 .active{
@@ -75,18 +73,57 @@ video{
   transform:scale(1);
 }
 
-/* GLITCH INTRO */
+/* GLITCH */
 .glitch{
-  animation:glitch 0.6s linear;
+  animation:glitch .6s linear;
 }
-
 @keyframes glitch{
   0%{transform:translate(0)}
-  20%{transform:translate(-2px,2px)}
-  40%{transform:translate(2px,-2px)}
-  60%{transform:translate(-1px,1px)}
-  80%{transform:translate(1px,-1px)}
+  25%{transform:translate(-2px,2px)}
+  50%{transform:translate(2px,-2px)}
+  75%{transform:translate(-1px,1px)}
   100%{transform:translate(0)}
+}
+
+/* 🔥 LOGO REVEAL */
+.logoScene{
+  position:absolute;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  transition:1s ease;
+}
+
+.logoScene img{
+  width:120px;
+  margin-bottom:20px;
+  transform:scale(.7);
+  opacity:0;
+  filter:drop-shadow(0 0 25px rgba(0,255,157,.6));
+  transition:1s ease;
+}
+
+.logoScene h1{
+  font-size:48px;
+  letter-spacing:1px;
+}
+
+.logoScene p{
+  margin-top:10px;
+  color:#aaa;
+}
+
+.logoActive{
+  opacity:1;
+}
+
+.logoActive img{
+  transform:scale(1);
+  opacity:1;
 }
 
 /* BUTTON */
@@ -103,17 +140,16 @@ video{
   background:linear-gradient(135deg,#4CAF50,#00ff9d);
   cursor:pointer;
   opacity:0;
-  transition:0.6s;
-}
-
-.enterBtn:hover{
-  transform:translateX(-50%) scale(1.05);
-  box-shadow:0 0 30px rgba(0,255,157,.5);
+  transition:.6s;
 }
 
 .showBtn{
   opacity:1;
   transform:translateX(-50%) scale(1);
+}
+
+.enterBtn:hover{
+  box-shadow:0 0 30px rgba(0,255,157,.5);
 }
 </style>
 </head>
@@ -159,22 +195,27 @@ video{
   <small>Instantly. Effortlessly.</small>
 </div>
 
+<!-- 🔥 LOGO FINAL -->
+<div class="logoScene" id="logoScene">
+  <img src="cooked-logo.PNG">
+  <h1>Cook’ed</h1>
+  <p>A Prodigy Project</p>
+</div>
+
 <button class="enterBtn" id="enterBtn" onclick="enterApp()">Enter Cook’ed</button>
 
 <script>
 let current = 1;
 const total = 6;
-const duration = 2800; // timing per scene
+const duration = 2800;
 const progress = document.getElementById("progress");
 
 let progressVal = 0;
 
-setInterval(()=>{
-  // progress bar
-  progressVal += (100/total);
+const interval = setInterval(()=>{
+  progressVal += (100/(total+1));
   progress.style.width = progressVal + "%";
 
-  // switch scene
   document.getElementById("s"+current).classList.remove("active");
 
   current++;
@@ -182,23 +223,28 @@ setInterval(()=>{
   if(current <= total){
     let next = document.getElementById("s"+current);
     next.classList.add("active","glitch");
-
     setTimeout(()=>next.classList.remove("glitch"),500);
   }
 
-  // show button
-  if(current === total){
+  // 🔥 AFTER LAST TEXT → SHOW LOGO
+  if(current === total+1){
+    setTimeout(()=>{
+      document.getElementById("logoScene").classList.add("logoActive");
+    },800);
+
     setTimeout(()=>{
       document.getElementById("enterBtn").classList.add("showBtn");
-    },1500);
+    },2200);
+
+    clearInterval(interval);
   }
 
 }, duration);
 
 function enterApp(){
-  document.body.style.opacity = "0";
+  document.body.style.opacity="0";
   setTimeout(()=>{
-    window.location.href = "index.html";
+    window.location.href="index.html";
   },500);
 }
 </script>
