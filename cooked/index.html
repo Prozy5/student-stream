@@ -25,19 +25,19 @@ body{
   overflow-x:hidden;
 }
 
-/* 🔥 MOVING BANNER */
-.banner{
-  background:linear-gradient(90deg,#00ff9d,#4CAF50);
-  color:#000;
-  padding:10px;
-  text-align:center;
-  font-weight:800;
-  animation:slide 10s linear infinite;
+/* BACKGROUND GLOW */
+body::before{
+  content:"";
+  position:fixed;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle, rgba(0,255,157,.08), transparent 60%);
+  animation:moveBg 18s linear infinite;
 }
-@keyframes slide{
-  0%{letter-spacing:1px}
-  50%{letter-spacing:3px}
-  100%{letter-spacing:1px}
+@keyframes moveBg{
+  0%{transform:translate(0,0)}
+  50%{transform:translate(-8%, -10%)}
+  100%{transform:translate(0,0)}
 }
 
 /* NAV */
@@ -61,12 +61,14 @@ nav{
 .navLinks{
   display:flex;
   gap:20px;
+  align-items:center;
 }
 
 .navLinks span{
   cursor:pointer;
   color:var(--muted);
   font-weight:600;
+  transition:.2s;
 }
 .navLinks span:hover{
   color:white;
@@ -79,21 +81,33 @@ nav{
   font-weight:800;
   cursor:pointer;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
+  transition:.2s;
+}
+.navBtn:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 20px rgba(0,255,157,.4);
 }
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:120px 20px;
+  padding:130px 20px 90px;
+  animation:fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(30px)}
+  to{opacity:1; transform:translateY(0)}
 }
 
 .hero img{
   width:85px;
   margin-bottom:20px;
+  filter:drop-shadow(0 0 20px rgba(0,255,157,.5));
 }
 
 .hero h1{
-  font-size:64px;
+  font-size:66px;
   font-weight:900;
 }
 
@@ -104,151 +118,165 @@ nav{
 }
 
 /* JOIN MODAL */
-.modal{
+.joinModal{
   position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-
-.modalBox{
-  background:#08140f;
-  padding:30px;
-  border-radius:20px;
-  width:300px;
-  text-align:center;
-}
-
-.modalBox input{
+  bottom:-100%;
+  left:0;
   width:100%;
-  padding:12px;
+  height:100%;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(10px);
+  display:flex;
+  justify-content:center;
+  align-items:end;
+  transition:.4s;
+}
+
+.joinBox{
+  width:100%;
+  max-width:500px;
+  background:#081710;
+  padding:30px;
+  border-radius:20px 20px 0 0;
+  border-top:1px solid var(--border);
+  animation:slideUp .4s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+
+.joinBox h2{
+  margin-bottom:10px;
+}
+
+.joinBox input{
+  width:100%;
+  padding:14px;
   margin-top:10px;
   border-radius:10px;
-  border:none;
+  border:1px solid var(--border);
+  background:#0c1c14;
+  color:white;
 }
 
-.modalBox button{
+.joinBox button{
   margin-top:15px;
-  padding:12px;
   width:100%;
+  padding:14px;
   border:none;
   border-radius:10px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  font-weight:800;
+  font-weight:900;
+  cursor:pointer;
 }
 
-/* FEED */
-.feedGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
-  padding:40px;
-}
-
-.feedCard{
-  height:200px;
-  border-radius:16px;
-  background:#111;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  padding:10px;
-}
-
-.likes{
-  font-size:12px;
+.closeBtn{
+  margin-top:10px;
+  text-align:center;
+  cursor:pointer;
   color:var(--muted);
 }
 
-/* DEMO + OTHER SAME AS BEFORE */
-.section{max-width:1100px;margin:80px auto;padding:0 20px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-top:30px;}
-.card{padding:20px;border-radius:16px;background:var(--card);border:1px solid var(--border);}
-.demo{text-align:center;}
-.demo input{padding:14px;width:60%;border-radius:10px;border:none;}
-.demo button{padding:14px;border:none;border-radius:10px;background:var(--accent);}
-.results{margin-top:20px;display:grid;gap:10px;}
-.resultCard{padding:15px;background:var(--card);border-radius:12px;}
+/* USER COUNT */
+.counter{
+  margin-top:15px;
+  font-size:14px;
+  color:var(--muted);
+}
 
-footer{text-align:center;padding:40px;color:var(--muted);}
+/* EVERYTHING ELSE SAME */
+.section{max-width:1100px;margin:100px auto;padding:0 20px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-top:30px;}
+.card{padding:22px;border-radius:20px;background:var(--card);border:1px solid var(--border);transition:.3s;}
+.card:hover{transform:translateY(-8px);border-color:var(--accent);}
+
+.demo{text-align:center;}
+.demo input{padding:15px;width:60%;max-width:420px;border-radius:12px;border:1px solid var(--border);background:#0c1c14;color:white;}
+.demo button{padding:15px;margin-left:10px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:900;}
+
+.results{margin-top:30px;display:grid;gap:15px;}
+.resultCard{padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--border);}
+
+.feedGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:20px;}
+.feedCard{height:200px;border-radius:16px;background:linear-gradient(135deg,#123,#000);display:flex;align-items:end;padding:12px;font-weight:800;}
+
+footer{text-align:center;padding:50px;color:var(--muted);}
 </style>
 </head>
 
 <body>
 
-<div class="banner">
-🚧 Page actively being upgraded • HIGH PRIORITY • From The Owner of StudentStreamHQ — Deondre 🚀
-</div>
-
 <nav>
   <div class="logo">Cook<span>’ed</span></div>
 
   <div class="navLinks">
+    <span onclick="scrollToTop()">Home</span>
     <span onclick="scrollToFeed()">Feed</span>
-    <span onclick="scrollToDemo()">Explore</span>
-    <span onclick="openModal()">Join Cook’ed</span>
+    <span onclick="openJoin()">Join</span>
+    <button class="navBtn" onclick="scrollToDemo()">Try Demo</button>
   </div>
-
-  <button class="navBtn" onclick="openModal()">Join</button>
 </nav>
 
 <section class="hero">
   <img src="cooked-logo.PNG">
-  <h1>Cook Smarter.<br><span class="highlight">Not Harder.</span></h1>
-</section>
+  <h1>Cook Smarter. <br><span class="highlight">Not Harder.</span></h1>
+  <p>Turn whatever you have into real meals.</p>
 
-<!-- FEED -->
-<section id="feed">
-  <div class="feedGrid">
-    <div class="feedCard">
-      🍝 Viral Pasta
-      <div class="likes">❤️ 120 likes</div>
-    </div>
-    <div class="feedCard">
-      🍳 Egg Hack
-      <div class="likes">❤️ 89 likes</div>
-    </div>
-    <div class="feedCard">
-      🌯 Budget Wrap
-      <div class="likes">❤️ 64 likes</div>
-    </div>
-  </div>
+  <div class="counter" id="userCount">🔥 1,284 people joined</div>
 </section>
-
-<!-- DEMO -->
-<section class="section demo" id="demo">
-  <h2>Try the AI</h2>
-  <input id="ingredients" placeholder="eggs, rice">
-  <button onclick="generateMeals()">Generate</button>
-  <div id="results" class="results"></div>
-</section>
-
-<footer>
-Cook’ed • A Prodigy Project
-</footer>
 
 <!-- JOIN MODAL -->
-<div class="modal" id="modal">
-  <div class="modalBox">
-    <h3>Join Cook’ed</h3>
-    <input id="username" placeholder="Enter your name">
-    <button onclick="join()">Join Now</button>
+<div class="joinModal" id="joinModal">
+  <div class="joinBox">
+    <h2>Join Cook’ed</h2>
+    <p>Create your account (demo)</p>
+
+    <input placeholder="Username">
+    <input placeholder="Email">
+    <input placeholder="Password" type="password">
+
+    <button onclick="join()">Create Account</button>
+    <div class="closeBtn" onclick="closeJoin()">Cancel</div>
   </div>
 </div>
 
-<script>
-let user="";
+<!-- KEEP REST SAME -->
+<section class="section demo" id="demo">
+  <h2>Try the AI</h2>
+  <input id="ingredients" placeholder="eggs, rice, cheese">
+  <button onclick="generateMeals()">Generate</button>
+  <div class="results" id="results"></div>
+</section>
 
-function openModal(){
-  document.getElementById("modal").style.display="flex";
+<section class="section" id="feed">
+  <h2>🔥 Trending Meals</h2>
+  <div class="feedGrid">
+    <div class="feedCard">🍝 Viral Pasta</div>
+    <div class="feedCard">🍳 Egg Hack</div>
+    <div class="feedCard">🌯 Budget Wrap</div>
+    <div class="feedCard">🍜 Ramen Upgrade</div>
+  </div>
+</section>
+
+<footer>Cook’ed • A Prodigy Project</footer>
+
+<script>
+let users = 1284;
+
+function openJoin(){
+  document.getElementById("joinModal").style.bottom="0";
+}
+
+function closeJoin(){
+  document.getElementById("joinModal").style.bottom="-100%";
 }
 
 function join(){
-  user=document.getElementById("username").value;
-  alert("Welcome to Cook’ed, "+user+" 🔥");
-  document.getElementById("modal").style.display="none";
+  users += Math.floor(Math.random()*3)+1;
+  document.getElementById("userCount").innerText = "🔥 " + users + " people joined";
+  closeJoin();
 }
 
 function scrollToDemo(){
@@ -259,13 +287,27 @@ function scrollToFeed(){
   document.getElementById("feed").scrollIntoView({behavior:"smooth"});
 }
 
+function scrollToTop(){
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+document.getElementById("ingredients").addEventListener("keypress", e=>{
+  if(e.key==="Enter") generateMeals();
+});
+
 function generateMeals(){
   const input=document.getElementById("ingredients").value;
   const results=document.getElementById("results");
 
+  if(!input){
+    results.innerHTML="Enter ingredients first.";
+    return;
+  }
+
   results.innerHTML=`
-    <div class="resultCard">🍳 Meal for ${input}</div>
-    <div class="resultCard">🌯 Wrap idea</div>
+    <div class="resultCard">🍳 Cheesy Bowl using ${input}</div>
+    <div class="resultCard">🌯 Quick Wrap idea</div>
+    <div class="resultCard">🍜 Easy remix meal</div>
   `;
 }
 </script>
