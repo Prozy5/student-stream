@@ -20,17 +20,17 @@
 
 body{
   font-family:system-ui;
-  background:linear-gradient(to bottom,#0b0f14,#05080c);
+  background:radial-gradient(circle at top,#0f1722,#05080c);
   color:var(--text);
+  overflow-x:hidden;
 }
 
-/* 🚨 MOVING BANNER */
+/* 🚨 BANNER */
 .banner{
   width:100%;
   background:linear-gradient(90deg,#1b5e20,#4CAF50);
   overflow:hidden;
   white-space:nowrap;
-  border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
 .banner span{
@@ -41,8 +41,8 @@ body{
 }
 
 @keyframes scrollText{
-  from{transform:translateX(100%);}
-  to{transform:translateX(-100%);}
+  from{transform:translateX(100%)}
+  to{transform:translateX(-100%)}
 }
 
 /* NAV */
@@ -52,8 +52,11 @@ nav{
   align-items:center;
   padding:18px 24px;
   border-bottom:1px solid var(--border);
-  background:rgba(0,0,0,.4);
-  backdrop-filter:blur(10px);
+  background:rgba(0,0,0,.5);
+  backdrop-filter:blur(12px);
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 
 .logo{
@@ -61,34 +64,43 @@ nav{
   font-size:18px;
 }
 
-.logo span{
-  color:var(--accent);
+.logo span{color:var(--accent)}
+
+.feedBtn{
+  padding:10px 16px;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;
+  font-weight:800;
+  cursor:pointer;
 }
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:70px 20px 40px;
+  padding:80px 20px 50px;
+  animation:fadeUp .8s ease;
 }
 
 .hero h1{
-  font-size:48px;
+  font-size:52px;
   font-weight:900;
 }
 
 .hero span{
-  color:var(--accent);
+  background:linear-gradient(90deg,#4CAF50,#81ffb5);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
 .hero p{
   margin-top:12px;
   color:var(--muted);
-  font-size:15px;
 }
 
 /* INPUT */
 .inputBox{
-  margin:35px auto;
+  margin:40px auto;
   max-width:600px;
   display:flex;
   gap:10px;
@@ -96,21 +108,25 @@ nav{
 
 .inputBox input{
   flex:1;
-  padding:14px;
-  border-radius:12px;
+  padding:16px;
+  border-radius:14px;
   border:1px solid var(--border);
   background:var(--panel);
   color:var(--text);
 }
 
 .inputBox button{
-  padding:14px 18px;
+  padding:16px 20px;
   border:none;
-  border-radius:12px;
+  border-radius:14px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#002200;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
+  transition:.2s;
+}
+
+.inputBox button:hover{
+  transform:scale(1.05);
 }
 
 /* LOADER */
@@ -124,45 +140,60 @@ nav{
 /* RESULTS */
 .results{
   max-width:900px;
-  margin:20px auto;
+  margin:30px auto;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:18px;
+  gap:20px;
 }
 
 .card{
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:18px;
-  padding:18px;
+  padding:20px;
+  transition:.25s;
   animation:fadeUp .4s ease;
 }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(15px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-.card h3{
-  font-size:16px;
-  font-weight:900;
-}
-
-.card p{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:6px;
+.card:hover{
+  transform:translateY(-6px) scale(1.02);
+  border-color:var(--accent);
 }
 
 .badge{
-  display:inline-block;
   margin-top:10px;
-  padding:5px 10px;
+  padding:6px 12px;
   border-radius:999px;
   font-size:11px;
-  font-weight:700;
   background:rgba(76,175,80,.15);
   color:var(--accent);
+  display:inline-block;
+}
+
+/* TRENDING */
+.trending{
+  max-width:1000px;
+  margin:60px auto;
+  padding:0 20px;
+}
+
+.trendGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+}
+
+.trend{
+  padding:15px;
+  border-radius:14px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  text-align:center;
+  transition:.2s;
+}
+
+.trend:hover{
+  transform:scale(1.05);
 }
 
 /* FEATURES */
@@ -179,111 +210,125 @@ nav{
 }
 
 .feature{
-  padding:18px;
+  padding:20px;
   border-radius:16px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.02);
+}
+
+/* FLOAT BUTTON */
+.float{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  padding:16px 20px;
+  border-radius:50px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(76,175,80,.4);
 }
 
 footer{
   text-align:center;
   padding:40px;
   color:var(--muted);
-  font-size:13px;
+}
+
+/* ANIM */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🚨 BANNER -->
 <div class="banner">
-  <span>
-  🚨 Cook’ed Page Actively Being Built • Classified as HIGH PRIORITY • From the Owner of StudentStreamHQ — Deondre • Real Product in Development 🚀
-  </span>
+<span>🚨 Cook’ed Actively Being Built • HIGH PRIORITY • StudentStreamHQ • Founder: Deondre 🚀</span>
 </div>
 
 <nav>
-  <div class="logo">🍳 Cook<span>’ed</span></div>
-  <div>Live Demo</div>
+<div class="logo">🍳 Cook<span>’ed</span></div>
+<button class="feedBtn" onclick="goFeed()">Open Feed</button>
 </nav>
 
 <section class="hero">
-  <h1>Cook with What You <span>Already Have</span></h1>
-  <p>Smart meals. Zero waste. Built for Gen Z.</p>
+<h1>Turn Ingredients Into <span>Meals Instantly</span></h1>
+<p>AI-powered food discovery for Gen Z.</p>
 
-  <div class="inputBox">
-    <input id="ingredients" placeholder="ex: eggs, rice, cheese">
-    <button onclick="generateMeals()">Find Meals</button>
-  </div>
+<div class="inputBox">
+<input id="ingredients" placeholder="eggs, rice, cheese...">
+<button onclick="generateMeals()">Generate</button>
+</div>
 
-  <div class="loader" id="loader">🤖 Cook’ed AI is thinking...</div>
+<div class="loader" id="loader">🤖 Thinking...</div>
 </section>
 
 <section class="results" id="results"></section>
 
-<section class="features">
-  <div class="featureGrid">
-    <div class="feature">
-      <h4>🥗 Smart Generator</h4>
-      <p>Instant meals from your ingredients.</p>
-    </div>
-    <div class="feature">
-      <h4>💸 Budget Mode</h4>
-      <p>Cheapest meals possible.</p>
-    </div>
-    <div class="feature">
-      <h4>🌱 Waste Tracker</h4>
-      <p>Reduce food waste daily.</p>
-    </div>
-    <div class="feature">
-      <h4>⚡ Quick Meals</h4>
-      <p>5–15 minute recipes.</p>
-    </div>
-  </div>
+<section class="trending">
+<h2>🔥 Trending Meals</h2>
+<div class="trendGrid">
+<div class="trend">🍜 Ramen Hack</div>
+<div class="trend">🍳 Egg Toast</div>
+<div class="trend">🧀 Cheese Bowl</div>
+<div class="trend">🌯 Quick Wrap</div>
+</div>
 </section>
+
+<section class="features">
+<div class="featureGrid">
+<div class="feature">🥗 Smart Generator</div>
+<div class="feature">💸 Budget Mode</div>
+<div class="feature">🌱 Waste Tracker</div>
+<div class="feature">⚡ Quick Meals</div>
+</div>
+</section>
+
+<div class="float" onclick="goFeed()">Go to Feed →</div>
 
 <footer>
 Cook’ed Demo • StudentStreamHQ Division
 </footer>
 
 <script>
+function goFeed(){
+  window.location.href="feed.html";
+}
+
 function generateMeals(){
-  const input = document.getElementById("ingredients").value;
-  const results = document.getElementById("results");
-  const loader = document.getElementById("loader");
+  const input=document.getElementById("ingredients").value;
+  const results=document.getElementById("results");
+  const loader=document.getElementById("loader");
 
   if(!input){
-    results.innerHTML = "<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
+    results.innerHTML="<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
     return;
   }
 
-  results.innerHTML = "";
-  loader.style.display = "block";
+  results.innerHTML="";
+  loader.style.display="block";
 
   setTimeout(()=>{
-    loader.style.display = "none";
+    loader.style.display="none";
 
-    results.innerHTML = `
-      <div class="card">
-        <h3>Cheesy Rice Bowl</h3>
-        <p>Made using ${input} for a quick, filling meal.</p>
-        <div class="badge">10 min</div>
-      </div>
+    const meals=[
+      "🔥 Ultimate "+input+" Bowl",
+      "⚡ Quick "+input+" Mix",
+      "💸 Budget "+input+" Meal"
+    ];
 
+    results.innerHTML=meals.map(m=>`
       <div class="card">
-        <h3>Fried Rice Remix</h3>
-        <p>Flavor-packed remix using your ingredients.</p>
-        <div class="badge">Budget</div>
+        <h3>${m}</h3>
+        <p>Generated using your ingredients.</p>
+        <div class="badge">${Math.floor(Math.random()*15+5)} min</div>
       </div>
+    `).join("");
 
-      <div class="card">
-        <h3>Quick Scramble Wrap</h3>
-        <p>Fast and easy meal idea using what you have.</p>
-        <div class="badge">5 min</div>
-      </div>
-    `;
-  },1500);
+  },1200);
 }
 </script>
 
