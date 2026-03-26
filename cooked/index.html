@@ -20,10 +20,22 @@
 
 body{
   font-family:system-ui;
-  background:radial-gradient(circle at top,#0f1722,#05080c);
+  background:radial-gradient(circle at top,#0f1720,#05080c);
   color:var(--text);
   overflow-x:hidden;
 }
+
+/* 🔥 BACKGROUND ORBS */
+.orb{
+  position:absolute;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:.2;
+}
+.orb1{background:#4CAF50;top:-200px;left:-200px;}
+.orb2{background:#2e7d32;bottom:-200px;right:-200px;}
 
 /* 🚨 BANNER */
 .banner{
@@ -54,9 +66,6 @@ nav{
   border-bottom:1px solid var(--border);
   background:rgba(0,0,0,.5);
   backdrop-filter:blur(12px);
-  position:sticky;
-  top:0;
-  z-index:10;
 }
 
 .logo{
@@ -64,22 +73,12 @@ nav{
   font-size:18px;
 }
 
-.logo span{color:var(--accent)}
-
-.feedBtn{
-  padding:10px 16px;
-  border-radius:10px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:none;
-  font-weight:800;
-  cursor:pointer;
-}
+.logo span{color:var(--accent);}
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:80px 20px 50px;
-  animation:fadeUp .8s ease;
+  padding:80px 20px 40px;
 }
 
 .hero h1{
@@ -87,20 +86,24 @@ nav{
   font-weight:900;
 }
 
-.hero span{
-  background:linear-gradient(90deg,#4CAF50,#81ffb5);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+.hero span{color:var(--accent);}
 
 .hero p{
   margin-top:12px;
   color:var(--muted);
 }
 
+/* ✨ TYPING EFFECT */
+.typing{
+  border-right:2px solid var(--accent);
+  white-space:nowrap;
+  overflow:hidden;
+  display:inline-block;
+}
+
 /* INPUT */
 .inputBox{
-  margin:40px auto;
+  margin:35px auto;
   max-width:600px;
   display:flex;
   gap:10px;
@@ -108,25 +111,34 @@ nav{
 
 .inputBox input{
   flex:1;
-  padding:16px;
-  border-radius:14px;
+  padding:14px;
+  border-radius:12px;
   border:1px solid var(--border);
   background:var(--panel);
   color:var(--text);
 }
 
 .inputBox button{
-  padding:16px 20px;
+  padding:14px 18px;
   border:none;
-  border-radius:14px;
+  border-radius:12px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  font-weight:900;
+  color:#002200;
+  font-weight:800;
   cursor:pointer;
   transition:.2s;
 }
 
 .inputBox button:hover{
-  transform:scale(1.05);
+  transform:translateY(-2px) scale(1.03);
+}
+
+/* 🔥 FEED BUTTON */
+.feedBtn{
+  margin-top:15px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  color:white;
 }
 
 /* LOADER */
@@ -135,65 +147,80 @@ nav{
   margin-top:20px;
   color:var(--muted);
   display:none;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.4}
+  50%{opacity:1}
+  100%{opacity:.4}
 }
 
 /* RESULTS */
 .results{
   max-width:900px;
-  margin:30px auto;
+  margin:20px auto;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
+  gap:18px;
 }
 
 .card{
-  background:var(--panel);
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(12px);
   border:1px solid var(--border);
   border-radius:18px;
-  padding:20px;
+  padding:18px;
   transition:.25s;
-  animation:fadeUp .4s ease;
 }
 
 .card:hover{
   transform:translateY(-6px) scale(1.02);
-  border-color:var(--accent);
+  border-color:#4CAF50;
+  box-shadow:0 0 20px rgba(76,175,80,.2);
+}
+
+.card h3{
+  font-size:16px;
+  font-weight:900;
+}
+
+.card p{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
 }
 
 .badge{
+  display:inline-block;
   margin-top:10px;
-  padding:6px 12px;
+  padding:5px 10px;
   border-radius:999px;
   font-size:11px;
+  font-weight:700;
   background:rgba(76,175,80,.15);
   color:var(--accent);
-  display:inline-block;
 }
 
-/* TRENDING */
+/* 🔥 TRENDING */
 .trending{
   max-width:1000px;
   margin:60px auto;
   padding:0 20px;
 }
 
-.trendGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
+.trendRow{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
 }
 
 .trend{
-  padding:15px;
+  min-width:160px;
+  padding:16px;
   border-radius:14px;
-  background:rgba(255,255,255,.03);
+  background:var(--panel);
   border:1px solid var(--border);
-  text-align:center;
-  transition:.2s;
-}
-
-.trend:hover{
-  transform:scale(1.05);
 }
 
 /* FEATURES */
@@ -210,126 +237,153 @@ nav{
 }
 
 .feature{
-  padding:20px;
+  padding:18px;
   border-radius:16px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.02);
-}
-
-/* FLOAT BUTTON */
-.float{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  padding:16px 20px;
-  border-radius:50px;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow:0 0 20px rgba(76,175,80,.4);
 }
 
 footer{
   text-align:center;
   padding:40px;
   color:var(--muted);
-}
-
-/* ANIM */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:translateY(0)}
+  font-size:13px;
 }
 </style>
 </head>
 
 <body>
 
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- 🚨 BANNER -->
 <div class="banner">
-<span>🚨 Cook’ed Actively Being Built • HIGH PRIORITY • StudentStreamHQ • Founder: Deondre 🚀</span>
+  <span>
+  🚨 Cook’ed Page Actively Being Built • HIGH PRIORITY • StudentStreamHQ • Founder: Deondre 🚀
+  </span>
 </div>
 
 <nav>
-<div class="logo">🍳 Cook<span>’ed</span></div>
-<button class="feedBtn" onclick="goFeed()">Open Feed</button>
+  <div class="logo">🍳 Cook<span>’ed</span></div>
+  <div>Live Demo</div>
 </nav>
 
 <section class="hero">
-<h1>Turn Ingredients Into <span>Meals Instantly</span></h1>
-<p>AI-powered food discovery for Gen Z.</p>
+  <h1>
+    Cook with What You 
+    <span class="typing" id="typing"></span>
+  </h1>
+  <p>Smart meals. Zero waste. Built for Gen Z.</p>
 
-<div class="inputBox">
-<input id="ingredients" placeholder="eggs, rice, cheese...">
-<button onclick="generateMeals()">Generate</button>
-</div>
+  <div class="inputBox">
+    <input id="ingredients" placeholder="ex: eggs, rice, cheese">
+    <button onclick="generateMeals()">Find Meals</button>
+  </div>
 
-<div class="loader" id="loader">🤖 Thinking...</div>
+  <button class="inputBox feedBtn" onclick="goFeed()">Explore Feed 🔥</button>
+
+  <div class="loader" id="loader">🤖 Cook’ed AI is thinking...</div>
 </section>
 
 <section class="results" id="results"></section>
 
+<!-- 🔥 TRENDING -->
 <section class="trending">
-<h2>🔥 Trending Meals</h2>
-<div class="trendGrid">
-<div class="trend">🍜 Ramen Hack</div>
-<div class="trend">🍳 Egg Toast</div>
-<div class="trend">🧀 Cheese Bowl</div>
-<div class="trend">🌯 Quick Wrap</div>
-</div>
+  <h2>🔥 Trending Meals</h2>
+  <div class="trendRow">
+    <div class="trend">🍳 Egg Toast</div>
+    <div class="trend">🍜 Ramen Hack</div>
+    <div class="trend">🧀 Cheesy Rice</div>
+    <div class="trend">🌯 Wrap Combo</div>
+  </div>
 </section>
 
 <section class="features">
-<div class="featureGrid">
-<div class="feature">🥗 Smart Generator</div>
-<div class="feature">💸 Budget Mode</div>
-<div class="feature">🌱 Waste Tracker</div>
-<div class="feature">⚡ Quick Meals</div>
-</div>
+  <div class="featureGrid">
+    <div class="feature">
+      <h4>🥗 Smart Generator</h4>
+      <p>Instant meals from your ingredients.</p>
+    </div>
+    <div class="feature">
+      <h4>💸 Budget Mode</h4>
+      <p>Cheapest meals possible.</p>
+    </div>
+    <div class="feature">
+      <h4>🌱 Waste Tracker</h4>
+      <p>Reduce food waste daily.</p>
+    </div>
+    <div class="feature">
+      <h4>⚡ Quick Meals</h4>
+      <p>5–15 minute recipes.</p>
+    </div>
+  </div>
 </section>
-
-<div class="float" onclick="goFeed()">Go to Feed →</div>
 
 <footer>
 Cook’ed Demo • StudentStreamHQ Division
 </footer>
 
 <script>
+
+/* ✨ TYPING EFFECT */
+const words=["Already Have","Got at Home","Can Afford"];
+let i=0,j=0,word="";
+function type(){
+  word=words[i].slice(0,j++);
+  document.getElementById("typing").innerText=word;
+
+  if(j>words[i].length){
+    setTimeout(()=>{j=0;i=(i+1)%words.length},1200);
+  }
+  setTimeout(type,80);
+}
+type();
+
+/* AI GENERATOR */
+function generateMeals(){
+  const input = document.getElementById("ingredients").value;
+  const results = document.getElementById("results");
+  const loader = document.getElementById("loader");
+
+  if(!input){
+    results.innerHTML = "<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
+    return;
+  }
+
+  results.innerHTML = "";
+  loader.style.display = "block";
+
+  setTimeout(()=>{
+    loader.style.display = "none";
+
+    results.innerHTML = `
+      <div class="card">
+        <h3>🍳 Cheesy Rice Bowl</h3>
+        <p>Generated from ${input}</p>
+        <div class="badge">10 min</div>
+      </div>
+
+      <div class="card">
+        <h3>🍜 Remix Meal</h3>
+        <p>Creative combo using your ingredients</p>
+        <div class="badge">Budget</div>
+      </div>
+
+      <div class="card">
+        <h3>🌯 Quick Wrap</h3>
+        <p>Fast meal idea based on ${input}</p>
+        <div class="badge">5 min</div>
+      </div>
+    `;
+  },1400);
+}
+
+/* GO TO FEED */
 function goFeed(){
   window.location.href="feed.html";
 }
 
-function generateMeals(){
-  const input=document.getElementById("ingredients").value;
-  const results=document.getElementById("results");
-  const loader=document.getElementById("loader");
-
-  if(!input){
-    results.innerHTML="<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
-    return;
-  }
-
-  results.innerHTML="";
-  loader.style.display="block";
-
-  setTimeout(()=>{
-    loader.style.display="none";
-
-    const meals=[
-      "🔥 Ultimate "+input+" Bowl",
-      "⚡ Quick "+input+" Mix",
-      "💸 Budget "+input+" Meal"
-    ];
-
-    results.innerHTML=meals.map(m=>`
-      <div class="card">
-        <h3>${m}</h3>
-        <p>Generated using your ingredients.</p>
-        <div class="badge">${Math.floor(Math.random()*15+5)} min</div>
-      </div>
-    `).join("");
-
-  },1200);
-}
 </script>
 
 </body>
