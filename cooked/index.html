@@ -73,6 +73,7 @@ padding:140px 20px 90px;
 .hero img{
 width:90px;
 margin-bottom:15px;
+filter:drop-shadow(0 0 15px rgba(92,255,135,.4));
 }
 
 .hero h1{
@@ -91,10 +92,10 @@ margin-top:18px;
 opacity:.75;
 font-size:17px;
 max-width:650px;
-margin-left:auto;
-margin-right:auto;
+margin:auto;
 }
 
+/* CTA */
 .cta{
 margin-top:35px;
 display:flex;
@@ -123,8 +124,8 @@ color:#00210f;
 
 .secondary{
 background:rgba(255,255,255,.05);
-color:white;
 border:1px solid rgba(255,255,255,.1);
+color:white;
 }
 
 /* SECTION */
@@ -139,39 +140,14 @@ font-size:36px;
 margin-bottom:10px;
 }
 
-.section p{
-opacity:.7;
-margin-bottom:30px;
-}
-
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:20px;
-}
-
-.card{
-background:rgba(255,255,255,.03);
-border:1px solid rgba(255,255,255,.08);
-padding:22px;
-border-radius:18px;
-transition:.25s;
-}
-
-.card:hover{
-transform:translateY(-6px);
-border-color:var(--accent);
-box-shadow:0 0 25px rgba(92,255,135,.15);
-}
-
-/* DEMO BOX */
+/* DEMO */
 .demo{
 margin-top:40px;
 background:var(--panel);
 padding:25px;
 border-radius:20px;
 border:1px solid rgba(255,255,255,.08);
+box-shadow:0 0 40px rgba(0,255,170,.05);
 }
 
 .demo input{
@@ -181,11 +157,11 @@ border-radius:12px;
 border:none;
 background:#08140d;
 color:white;
-margin-bottom:10px;
 }
 
 .demo button{
 width:100%;
+margin-top:10px;
 padding:14px;
 border:none;
 border-radius:12px;
@@ -194,45 +170,62 @@ font-weight:900;
 cursor:pointer;
 }
 
-.result{
-margin-top:15px;
-font-size:14px;
-color:var(--muted);
-}
-
-/* STRIP */
-.strip{
+/* MODES */
+.modes{
 display:flex;
-flex-wrap:wrap;
 gap:10px;
-margin-top:20px;
+margin-top:10px;
 }
 
-.pill{
-padding:10px 16px;
-border-radius:999px;
-background:rgba(255,255,255,.05);
+.mode{
+flex:1;
+text-align:center;
+padding:10px;
+border-radius:10px;
+background:#08140d;
+cursor:pointer;
 font-size:13px;
 }
 
-/* CTA BIG */
-.ctaBig{
+.mode.active{
+border:1px solid var(--accent);
+color:var(--accent);
+}
+
+/* AI BOX */
+.aiBox{
+margin-top:15px;
+font-size:14px;
+color:var(--muted);
+min-height:40px;
+}
+
+/* RESULT CARDS */
+.results{
+margin-top:15px;
+}
+
+.card{
+background:#08140d;
+padding:14px;
+border-radius:12px;
+margin-bottom:10px;
+}
+
+/* STATS */
+.stats{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.stat{
+flex:1;
+background:#08140d;
+padding:10px;
+border-radius:10px;
 text-align:center;
-padding:100px 20px;
-}
-
-.ctaBig h2{
-font-size:40px;
-}
-
-.ctaBig button{
-margin-top:20px;
-padding:16px 35px;
-border:none;
-border-radius:16px;
-background:linear-gradient(90deg,var(--accent),var(--accent2));
-font-weight:900;
-cursor:pointer;
+font-size:13px;
 }
 
 /* FOOTER */
@@ -254,94 +247,101 @@ opacity:.5;
 <img src="cooked-logo.jpg" class="logo">
 <div class="navTitle">Cook’ed</div>
 </div>
-
 <button onclick="scrollToDemo()">Try Demo</button>
 </div>
 
 <!-- HERO -->
 <div class="hero">
 <img src="cooked-logo.jpg">
-<h1>Cook Smarter. <span>Not Harder.</span></h1>
-<p>
-Turn whatever you have at home into real meals. Save money, reduce waste, and cook in minutes.
-</p>
+<h1>AI Cooking <span>Made Simple</span></h1>
+<p>Turn random ingredients into real meals instantly.</p>
 
 <div class="cta">
-<button class="primary" onclick="scrollToDemo()">Try It Now</button>
-<button class="secondary">See Features</button>
+<button class="primary" onclick="scrollToDemo()">Try Now</button>
+<button class="secondary">Learn More</button>
 </div>
 </div>
 
-<!-- FEATURES -->
-<div class="section">
-<h2>Why Cook’ed?</h2>
-<p>Built for students, creators, and everyday life.</p>
-
-<div class="grid">
-<div class="card">🥚 Use ingredients you already have</div>
-<div class="card">⚡ Get meals in seconds</div>
-<div class="card">💰 Budget-friendly cooking</div>
-<div class="card">🌱 Reduce food waste</div>
-</div>
-</div>
-
-<!-- LIVE DEMO -->
+<!-- DEMO -->
 <div class="section" id="demoSection">
-<h2>Live Demo</h2>
-<p>Try entering ingredients below.</p>
+<h2>Live AI Demo</h2>
 
 <div class="demo">
-<input id="demoInput" placeholder="eggs, rice, cheese">
-<button onclick="runDemo()">Generate Meal</button>
-<div class="result" id="demoResult"></div>
-</div>
+<input id="input" placeholder="eggs, rice, cheese">
+
+<div class="modes">
+<div class="mode active" onclick="setMode(this,'quick')">⚡ Quick</div>
+<div class="mode" onclick="setMode(this,'budget')">💰 Budget</div>
+<div class="mode" onclick="setMode(this,'eco')">🌱 Eco</div>
 </div>
 
-<!-- HOW IT WORKS -->
-<div class="section">
-<h2>How It Works</h2>
+<button onclick="generate()">Generate Meal</button>
 
-<div class="strip">
-<div class="pill">Enter ingredients</div>
-<div class="pill">AI suggests meals</div>
-<div class="pill">Cook instantly</div>
-<div class="pill">Save money</div>
-</div>
-</div>
+<div class="aiBox" id="aiText"></div>
 
-<!-- CTA -->
-<div class="ctaBig">
-<h2>Start Cooking Today</h2>
-<button onclick="scrollToDemo()">Try Cook’ed</button>
+<div class="results" id="results"></div>
+
+<div class="stats" id="stats"></div>
+
+</div>
 </div>
 
 <div class="footer">
-Cook’ed • Prodigy App Presentation
+Cook’ed • Prodigy Winning Demo
 </div>
 
 <script>
+let mode="quick";
+
 function scrollToDemo(){
 document.getElementById("demoSection").scrollIntoView({behavior:"smooth"});
 }
 
-function runDemo(){
-let input = document.getElementById("demoInput").value;
-let result = document.getElementById("demoResult");
+function setMode(el,m){
+document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));
+el.classList.add("active");
+mode=m;
+}
+
+function generate(){
+let input=document.getElementById("input").value;
+let ai=document.getElementById("aiText");
+let results=document.getElementById("results");
+let stats=document.getElementById("stats");
 
 if(!input){
-result.innerHTML="Enter ingredients first.";
+ai.innerHTML="Enter ingredients first.";
 return;
 }
 
+/* FAKE AI LOADING */
+ai.innerHTML="🤖 Analyzing ingredients...";
+results.innerHTML="";
+stats.innerHTML="";
+
+setTimeout(()=>{
+ai.innerHTML="✔ Found meal ideas based on your ingredients.";
+
 let meals=[
-"Quick Egg Fried Rice 🍳",
-"Cheesy Comfort Bowl 🧀",
-"Lazy Stir Fry 🔥"
+"Egg Fried Rice 🍳",
+"Cheesy Rice Bowl 🧀",
+"Quick Stir Mix 🔥"
 ];
 
-let random=meals[Math.floor(Math.random()*meals.length)];
+results.innerHTML=meals.map(m=>`
+<div class="card">${m}<br><small>Using: ${input}</small></div>
+`).join("");
 
-result.innerHTML = "Meal Idea: <b>"+random+"</b><br>Using: "+input;
+/* STATS */
+let money = (Math.random()*8+2).toFixed(2);
+let waste = Math.floor(Math.random()*3+1);
+
+stats.innerHTML=`
+<div class="stat">💰 Saved $${money}</div>
+<div class="stat">🌱 Reduced ${waste} waste items</div>
+`;
+
+},1200);
 }
 </script>
 
