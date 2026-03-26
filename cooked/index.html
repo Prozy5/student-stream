@@ -1,347 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
+<title>Cook’ed Demo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed • Smart Cooking</title>
 
 <style>
 :root{
---bg:#08110c;
---panel:#0f1f16;
---accent:#5cff87;
---accent2:#00ffcc;
---text:#ecfff3;
---muted:#9bbca7;
+  --bg:#0b0f14;
+  --panel:#121923;
+  --accent:#4CAF50;
+  --accent2:#2e7d32;
+  --text:#ecf3ff;
+  --muted:#9fb3c8;
+  --border:rgba(255,255,255,0.08);
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
-background:radial-gradient(circle at top,#0c1f14,#050806);
-color:var(--text);
-overflow-x:hidden;
+  font-family:system-ui;
+  background:linear-gradient(to bottom,#0b0f14,#05080c);
+  color:var(--text);
 }
 
 /* NAV */
-.nav{
-position:fixed;
-top:0;
-width:100%;
-padding:15px 25px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(0,0,0,.3);
-backdrop-filter:blur(12px);
-z-index:100;
-}
-
-.logoWrap{
-display:flex;
-align-items:center;
-gap:10px;
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 24px;
+  border-bottom:1px solid var(--border);
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(10px);
 }
 
 .logo{
-width:38px;
-height:38px;
-object-fit:contain;
+  font-weight:900;
+  font-size:18px;
 }
 
-.navTitle{
-font-weight:900;
-font-size:18px;
-}
-
-.nav button{
-padding:10px 18px;
-border:none;
-border-radius:12px;
-background:linear-gradient(90deg,var(--accent),var(--accent2));
-font-weight:800;
-cursor:pointer;
+.logo span{
+  color:var(--accent);
 }
 
 /* HERO */
 .hero{
-text-align:center;
-padding:140px 20px 90px;
-}
-
-.hero img{
-width:90px;
-margin-bottom:15px;
-filter:drop-shadow(0 0 15px rgba(92,255,135,.4));
+  text-align:center;
+  padding:70px 20px 40px;
 }
 
 .hero h1{
-font-size:60px;
-font-weight:900;
+  font-size:48px;
+  font-weight:900;
 }
 
 .hero span{
-background:linear-gradient(90deg,var(--accent),var(--accent2));
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+  color:var(--accent);
 }
 
 .hero p{
-margin-top:18px;
-opacity:.75;
-font-size:17px;
-max-width:650px;
-margin:auto;
+  margin-top:12px;
+  color:var(--muted);
+  font-size:15px;
 }
 
-/* CTA */
-.cta{
-margin-top:35px;
-display:flex;
-gap:15px;
-justify-content:center;
-flex-wrap:wrap;
+/* INPUT */
+.inputBox{
+  margin:35px auto;
+  max-width:600px;
+  display:flex;
+  gap:10px;
 }
 
-.cta button{
-padding:16px 30px;
-border-radius:16px;
-border:none;
-font-weight:900;
-cursor:pointer;
-transition:.2s;
+.inputBox input{
+  flex:1;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  font-size:14px;
 }
 
-.cta button:hover{
-transform:translateY(-3px);
+.inputBox button{
+  padding:14px 18px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#002200;
+  font-weight:800;
+  cursor:pointer;
 }
 
-.primary{
-background:linear-gradient(90deg,var(--accent),var(--accent2));
-color:#00210f;
-}
-
-.secondary{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.1);
-color:white;
-}
-
-/* SECTION */
-.section{
-max-width:1100px;
-margin:auto;
-padding:80px 20px;
-}
-
-.section h2{
-font-size:36px;
-margin-bottom:10px;
-}
-
-/* DEMO */
-.demo{
-margin-top:40px;
-background:var(--panel);
-padding:25px;
-border-radius:20px;
-border:1px solid rgba(255,255,255,.08);
-box-shadow:0 0 40px rgba(0,255,170,.05);
-}
-
-.demo input{
-width:100%;
-padding:14px;
-border-radius:12px;
-border:none;
-background:#08140d;
-color:white;
-}
-
-.demo button{
-width:100%;
-margin-top:10px;
-padding:14px;
-border:none;
-border-radius:12px;
-background:var(--accent);
-font-weight:900;
-cursor:pointer;
-}
-
-/* MODES */
-.modes{
-display:flex;
-gap:10px;
-margin-top:10px;
-}
-
-.mode{
-flex:1;
-text-align:center;
-padding:10px;
-border-radius:10px;
-background:#08140d;
-cursor:pointer;
-font-size:13px;
-}
-
-.mode.active{
-border:1px solid var(--accent);
-color:var(--accent);
-}
-
-/* AI BOX */
-.aiBox{
-margin-top:15px;
-font-size:14px;
-color:var(--muted);
-min-height:40px;
-}
-
-/* RESULT CARDS */
+/* RESULTS */
 .results{
-margin-top:15px;
+  max-width:900px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
 }
 
 .card{
-background:#08140d;
-padding:14px;
-border-radius:12px;
-margin-bottom:10px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  transition:.2s;
 }
 
-/* STATS */
-.stats{
-display:flex;
-gap:10px;
-margin-top:10px;
+.card:hover{
+  transform:translateY(-4px);
 }
 
-.stat{
-flex:1;
-background:#08140d;
-padding:10px;
-border-radius:10px;
-text-align:center;
-font-size:13px;
+.card h3{
+  font-size:16px;
+  font-weight:900;
+}
+
+.card p{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* BADGES */
+.badge{
+  display:inline-block;
+  margin-top:10px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  background:rgba(76,175,80,.15);
+  color:var(--accent);
+}
+
+/* FEATURES */
+.features{
+  max-width:1000px;
+  margin:60px auto;
+  padding:0 20px;
+}
+
+.features h2{
+  font-size:22px;
+  margin-bottom:20px;
+}
+
+.featureGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:18px;
+}
+
+.feature{
+  padding:18px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+
+.feature h4{
+  font-size:15px;
+  font-weight:900;
+}
+
+.feature p{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
 }
 
 /* FOOTER */
-.footer{
-text-align:center;
-padding:30px;
-font-size:12px;
-opacity:.5;
+footer{
+  text-align:center;
+  padding:40px;
+  color:var(--muted);
+  font-size:13px;
 }
 </style>
-
 </head>
 
 <body>
 
-<!-- NAV -->
-<div class="nav">
-<div class="logoWrap">
-<img src="cooked-logo.jpg" class="logo">
-<div class="navTitle">Cook’ed</div>
-</div>
-<button onclick="scrollToDemo()">Try Demo</button>
-</div>
+<nav>
+  <div class="logo">🍳 Cook<span>’ed</span></div>
+  <div>Demo Experience</div>
+</nav>
 
-<!-- HERO -->
-<div class="hero">
-<img src="cooked-logo.jpg">
-<h1>AI Cooking <span>Made Simple</span></h1>
-<p>Turn random ingredients into real meals instantly.</p>
+<section class="hero">
+  <h1>Cook with What You <span>Already Have</span></h1>
+  <p>Enter ingredients and discover meals instantly.</p>
 
-<div class="cta">
-<button class="primary" onclick="scrollToDemo()">Try Now</button>
-<button class="secondary">Learn More</button>
-</div>
-</div>
+  <div class="inputBox">
+    <input id="ingredients" placeholder="ex: eggs, rice, cheese">
+    <button onclick="generateMeals()">Find Meals</button>
+  </div>
+</section>
 
-<!-- DEMO -->
-<div class="section" id="demoSection">
-<h2>Live AI Demo</h2>
+<section class="results" id="results"></section>
 
-<div class="demo">
-<input id="input" placeholder="eggs, rice, cheese">
+<section class="features">
+  <h2>Why Cook’ed?</h2>
 
-<div class="modes">
-<div class="mode active" onclick="setMode(this,'quick')">⚡ Quick</div>
-<div class="mode" onclick="setMode(this,'budget')">💰 Budget</div>
-<div class="mode" onclick="setMode(this,'eco')">🌱 Eco</div>
-</div>
+  <div class="featureGrid">
+    <div class="feature">
+      <h4>🥗 Smart Meal Generator</h4>
+      <p>Turn random ingredients into real meals instantly.</p>
+    </div>
 
-<button onclick="generate()">Generate Meal</button>
+    <div class="feature">
+      <h4>💸 Budget Friendly</h4>
+      <p>Find the cheapest meals based on what you already own.</p>
+    </div>
 
-<div class="aiBox" id="aiText"></div>
+    <div class="feature">
+      <h4>🌱 Reduce Waste</h4>
+      <p>Use leftover food instead of throwing it away.</p>
+    </div>
 
-<div class="results" id="results"></div>
+    <div class="feature">
+      <h4>⚡ Quick Cooking</h4>
+      <p>Meals ready in 5–15 minutes for busy students.</p>
+    </div>
+  </div>
+</section>
 
-<div class="stats" id="stats"></div>
-
-</div>
-</div>
-
-<div class="footer">
-Cook’ed • Prodigy Winning Demo
-</div>
+<footer>
+  Cook’ed Demo · Built for Prodigy App Competition
+</footer>
 
 <script>
-let mode="quick";
+function generateMeals(){
+  const input = document.getElementById("ingredients").value;
+  const results = document.getElementById("results");
 
-function scrollToDemo(){
-document.getElementById("demoSection").scrollIntoView({behavior:"smooth"});
-}
+  if(!input){
+    results.innerHTML = "<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
+    return;
+  }
 
-function setMode(el,m){
-document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));
-el.classList.add("active");
-mode=m;
-}
+  // Fake generated meals (for demo)
+  results.innerHTML = `
+    <div class="card">
+      <h3>Cheesy Rice Bowl</h3>
+      <p>Simple mix of ${input} cooked together for a quick meal.</p>
+      <div class="badge">10 min</div>
+    </div>
 
-function generate(){
-let input=document.getElementById("input").value;
-let ai=document.getElementById("aiText");
-let results=document.getElementById("results");
-let stats=document.getElementById("stats");
+    <div class="card">
+      <h3>Egg Fried Rice Remix</h3>
+      <p>Classic fried rice using your ingredients with added flavor.</p>
+      <div class="badge">Budget Meal</div>
+    </div>
 
-if(!input){
-ai.innerHTML="Enter ingredients first.";
-return;
-}
-
-/* FAKE AI LOADING */
-ai.innerHTML="🤖 Analyzing ingredients...";
-results.innerHTML="";
-stats.innerHTML="";
-
-setTimeout(()=>{
-ai.innerHTML="✔ Found meal ideas based on your ingredients.";
-
-let meals=[
-"Egg Fried Rice 🍳",
-"Cheesy Rice Bowl 🧀",
-"Quick Stir Mix 🔥"
-];
-
-results.innerHTML=meals.map(m=>`
-<div class="card">${m}<br><small>Using: ${input}</small></div>
-`).join("");
-
-/* STATS */
-let money = (Math.random()*8+2).toFixed(2);
-let waste = Math.floor(Math.random()*3+1);
-
-stats.innerHTML=`
-<div class="stat">💰 Saved $${money}</div>
-<div class="stat">🌱 Reduced ${waste} waste items</div>
-`;
-
-},1200);
+    <div class="card">
+      <h3>Quick Scramble Wrap</h3>
+      <p>Fast scrambled combo wrapped into a filling meal.</p>
+      <div class="badge">5 min</div>
+    </div>
+  `;
 }
 </script>
 
