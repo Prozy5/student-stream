@@ -21,7 +21,7 @@ video{
   height:100%;
   object-fit:cover;
   z-index:-2;
-  filter:brightness(.35) contrast(1.1);
+  filter:brightness(.35) contrast(1.2);
 }
 
 /* OVERLAY */
@@ -30,6 +30,17 @@ video{
   inset:0;
   background:radial-gradient(circle,transparent,black 70%);
   z-index:-1;
+}
+
+/* FLASH EFFECT */
+.flash{
+  position:fixed;
+  inset:0;
+  background:white;
+  opacity:0;
+  pointer-events:none;
+  transition:.4s;
+  z-index:5;
 }
 
 /* PROGRESS */
@@ -44,7 +55,7 @@ video{
   z-index:10;
 }
 
-/* SCENES */
+/* SCENE */
 .scene{
   position:absolute;
   width:100%;
@@ -73,19 +84,14 @@ video{
   transform:scale(1);
 }
 
-/* GLITCH */
-.glitch{
-  animation:glitch .6s linear;
-}
-@keyframes glitch{
-  0%{transform:translate(0)}
-  25%{transform:translate(-2px,2px)}
-  50%{transform:translate(2px,-2px)}
-  75%{transform:translate(-1px,1px)}
-  100%{transform:translate(0)}
+/* TYPE EFFECT */
+.type{
+  border-right:2px solid white;
+  white-space:nowrap;
+  overflow:hidden;
 }
 
-/* 🔥 LOGO REVEAL */
+/* LOGO */
 .logoScene{
   position:absolute;
   width:100%;
@@ -99,22 +105,22 @@ video{
 }
 
 .logoScene img{
-  width:120px;
+  width:130px;
   margin-bottom:20px;
-  transform:scale(.7);
   opacity:0;
-  filter:drop-shadow(0 0 25px rgba(0,255,157,.6));
+  transform:scale(.6);
+  filter:drop-shadow(0 0 25px rgba(0,255,157,.7));
   transition:1s ease;
 }
 
 .logoScene h1{
-  font-size:48px;
-  letter-spacing:1px;
+  font-size:52px;
+  letter-spacing:2px;
 }
 
 .logoScene p{
-  margin-top:10px;
   color:#aaa;
+  margin-top:10px;
 }
 
 .logoActive{
@@ -122,34 +128,23 @@ video{
 }
 
 .logoActive img{
+  opacity:1;
   transform:scale(1);
-  opacity:1;
+  animation:pulse 2s infinite;
 }
 
-/* BUTTON */
-.enterBtn{
-  position:absolute;
-  bottom:60px;
-  left:50%;
-  transform:translateX(-50%) scale(.9);
-  padding:18px 40px;
-  border:none;
-  border-radius:999px;
-  font-weight:900;
-  font-size:18px;
-  background:linear-gradient(135deg,#4CAF50,#00ff9d);
-  cursor:pointer;
-  opacity:0;
-  transition:.6s;
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+  100%{transform:scale(1)}
 }
 
-.showBtn{
-  opacity:1;
-  transform:translateX(-50%) scale(1);
+/* END FADE */
+.fadeOut{
+  animation:fadeOut 2s forwards;
 }
-
-.enterBtn:hover{
-  box-shadow:0 0 30px rgba(0,255,157,.5);
+@keyframes fadeOut{
+  to{opacity:0}
 }
 </style>
 </head>
@@ -157,16 +152,20 @@ video{
 <body>
 
 <div class="progress" id="progress"></div>
+<div class="overlay"></div>
+<div class="flash" id="flash"></div>
+
+<!-- 🎵 MUSIC (optional replace file) -->
+<audio id="bgm" src="music.mp3"></audio>
+<audio id="hit" src="hit.mp3"></audio>
 
 <video autoplay muted loop>
   <source src="your-video.mp4" type="video/mp4">
 </video>
 
-<div class="overlay"></div>
-
 <!-- SCENES -->
-<div class="scene active glitch" id="s1">
-  You’re wasting food.
+<div class="scene active" id="s1">
+  <div class="type" id="t1"></div>
   <small>Every single day.</small>
 </div>
 
@@ -195,24 +194,45 @@ video{
   <small>Instantly. Effortlessly.</small>
 </div>
 
-<!-- 🔥 LOGO FINAL -->
+<!-- LOGO -->
 <div class="logoScene" id="logoScene">
   <img src="cooked-logo.PNG">
   <h1>Cook’ed</h1>
   <p>A Prodigy Project</p>
 </div>
 
-<button class="enterBtn" id="enterBtn" onclick="enterApp()">Enter Cook’ed</button>
-
 <script>
 let current = 1;
 const total = 6;
-const duration = 2800;
+const duration = 2600;
 const progress = document.getElementById("progress");
+const flash = document.getElementById("flash");
 
 let progressVal = 0;
 
+/* TYPE EFFECT */
+const text = "You’re wasting food.";
+let i = 0;
+function typeWriter(){
+  if(i < text.length){
+    document.getElementById("t1").innerHTML += text.charAt(i);
+    i++;
+    setTimeout(typeWriter,50);
+  }
+}
+typeWriter();
+
+/* MUSIC START */
+setTimeout(()=>{
+  document.getElementById("bgm").play().catch(()=>{});
+},1000);
+
 const interval = setInterval(()=>{
+
+  /* FLASH TRANSITION */
+  flash.style.opacity = "0.8";
+  setTimeout(()=>flash.style.opacity="0",200);
+
   progressVal += (100/(total+1));
   progress.style.width = progressVal + "%";
 
@@ -221,32 +241,26 @@ const interval = setInterval(()=>{
   current++;
 
   if(current <= total){
-    let next = document.getElementById("s"+current);
-    next.classList.add("active","glitch");
-    setTimeout(()=>next.classList.remove("glitch"),500);
+    document.getElementById("s"+current).classList.add("active");
   }
 
-  // 🔥 AFTER LAST TEXT → SHOW LOGO
+  /* LOGO REVEAL */
   if(current === total+1){
+    document.getElementById("hit").play().catch(()=>{});
+    
     setTimeout(()=>{
       document.getElementById("logoScene").classList.add("logoActive");
-    },800);
+    },600);
 
+    /* AUTO FADE OUT END */
     setTimeout(()=>{
-      document.getElementById("enterBtn").classList.add("showBtn");
-    },2200);
+      document.body.classList.add("fadeOut");
+    },4000);
 
     clearInterval(interval);
   }
 
 }, duration);
-
-function enterApp(){
-  document.body.style.opacity="0";
-  setTimeout(()=>{
-    window.location.href="index.html";
-  },500);
-}
 </script>
 
 </body>
