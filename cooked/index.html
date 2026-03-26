@@ -25,23 +25,17 @@ body{
   overflow-x:hidden;
 }
 
-/* 🌌 PARALLAX ORBS */
+/* 🔥 BACKGROUND ORBS */
 .orb{
   position:absolute;
   width:500px;
   height:500px;
   border-radius:50%;
   filter:blur(120px);
-  opacity:.25;
-  animation:float 10s infinite ease-in-out;
+  opacity:.2;
 }
 .orb1{background:#4CAF50;top:-200px;left:-200px;}
 .orb2{background:#2e7d32;bottom:-200px;right:-200px;}
-
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(30px)}
-}
 
 /* 🚨 BANNER */
 .banner{
@@ -65,16 +59,25 @@ body{
 
 /* NAV */
 nav{
-  position:sticky;
-  top:0;
-  z-index:100;
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:18px 24px;
   border-bottom:1px solid var(--border);
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.5);
   backdrop-filter:blur(12px);
+}
+
+.logoWrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logoImg{
+  width:34px;
+  height:34px;
+  border-radius:10px;
 }
 
 .logo{
@@ -86,11 +89,18 @@ nav{
 /* HERO */
 .hero{
   text-align:center;
-  padding:90px 20px 40px;
+  padding:80px 20px 40px;
+}
+
+.heroLogo{
+  width:80px;
+  border-radius:20px;
+  margin-bottom:15px;
+  box-shadow:0 0 25px rgba(76,175,80,.4);
 }
 
 .hero h1{
-  font-size:56px;
+  font-size:52px;
   font-weight:900;
 }
 
@@ -104,8 +114,6 @@ nav{
 /* ✨ TYPING */
 .typing{
   border-right:2px solid var(--accent);
-  white-space:nowrap;
-  overflow:hidden;
 }
 
 /* INPUT */
@@ -123,12 +131,6 @@ nav{
   border:1px solid var(--border);
   background:var(--panel);
   color:var(--text);
-  transition:.2s;
-}
-
-.inputBox input:focus{
-  border-color:var(--accent);
-  box-shadow:0 0 10px rgba(76,175,80,.3);
 }
 
 .inputBox button{
@@ -136,7 +138,6 @@ nav{
   border:none;
   border-radius:12px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#002200;
   font-weight:800;
   cursor:pointer;
   transition:.2s;
@@ -149,15 +150,12 @@ nav{
 /* 🔥 FEED BUTTON */
 .feedBtn{
   margin-top:15px;
-  padding:12px 18px;
-  border-radius:12px;
   background:rgba(255,255,255,.05);
   border:1px solid var(--border);
+  color:white;
+  padding:12px 18px;
+  border-radius:12px;
   cursor:pointer;
-  transition:.2s;
-}
-.feedBtn:hover{
-  background:rgba(255,255,255,.1);
 }
 
 /* LOADER */
@@ -190,27 +188,23 @@ nav{
   border:1px solid var(--border);
   border-radius:18px;
   padding:18px;
-  transition:.25s;
+  transition:.3s;
+  position:relative;
 }
 
 .card:hover{
   transform:translateY(-8px) scale(1.03);
-  border-color:#4CAF50;
-  box-shadow:0 0 25px rgba(76,175,80,.25);
+  box-shadow:0 0 25px rgba(76,175,80,.3);
 }
 
-.badge{
-  margin-top:10px;
-  display:inline-block;
-  padding:5px 10px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:700;
-  background:rgba(76,175,80,.15);
-  color:var(--accent);
+.save{
+  position:absolute;
+  top:10px;
+  right:10px;
+  cursor:pointer;
 }
 
-/* 🔥 TRENDING */
+/* TRENDING */
 .trending{
   max-width:1000px;
   margin:60px auto;
@@ -225,16 +219,30 @@ nav{
 
 .trend{
   min-width:160px;
-  padding:16px;
-  border-radius:14px;
+  padding:14px;
+  border-radius:999px;
   background:var(--panel);
   border:1px solid var(--border);
+  cursor:pointer;
   transition:.2s;
 }
-
 .trend:hover{
-  transform:scale(1.05);
+  background:var(--accent);
+  color:black;
 }
+
+/* STATS */
+.stats{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin:40px 0;
+}
+.stat{
+  text-align:center;
+}
+.stat h3{font-size:22px}
+.stat p{font-size:12px;color:var(--muted)}
 
 /* FEATURES */
 .features{
@@ -254,18 +262,13 @@ nav{
   border-radius:16px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.02);
-  transition:.2s;
-}
-
-.feature:hover{
-  transform:translateY(-5px);
-  border-color:#4CAF50;
 }
 
 footer{
   text-align:center;
   padding:40px;
   color:var(--muted);
+  font-size:13px;
 }
 </style>
 </head>
@@ -275,17 +278,27 @@ footer{
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 
+<!-- 🚨 BANNER -->
 <div class="banner">
-  <span>🚨 Cook’ed • HIGH PRIORITY • StudentStreamHQ • Founder: Deondre 🚀</span>
+  <span>🚨 Cook’ed • HIGH PRIORITY • Built by StudentStreamHQ • Founder: Deondre 🚀</span>
 </div>
 
 <nav>
-  <div class="logo">🍳 Cook<span>’ed</span></div>
+  <div class="logoWrap">
+    <img src="logo.png" class="logoImg">
+    <div class="logo">Cook<span>’ed</span></div>
+  </div>
   <div>Live Demo</div>
 </nav>
 
 <section class="hero">
-  <h1>Cook with What You <span id="typing"></span></h1>
+  <img src="logo.png" class="heroLogo">
+
+  <h1>
+    Cook with What You 
+    <span class="typing" id="typing"></span>
+  </h1>
+
   <p>Smart meals. Zero waste. Built for Gen Z.</p>
 
   <div class="inputBox">
@@ -293,49 +306,53 @@ footer{
     <button onclick="generateMeals()">Find Meals</button>
   </div>
 
-  <div class="feedBtn" onclick="goFeed()">Explore Feed 🔥</div>
+  <button class="feedBtn" onclick="goFeed()">Explore Feed 🔥</button>
 
   <div class="loader" id="loader">🤖 Cook’ed AI is thinking...</div>
 </section>
 
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><h3>5K+</h3><p>Meals Generated</p></div>
+  <div class="stat"><h3>1K+</h3><p>Users</p></div>
+  <div class="stat"><h3>98%</h3><p>Satisfaction</p></div>
+</div>
+
 <section class="results" id="results"></section>
 
 <section class="trending">
-  <h2>🔥 Trending Meals</h2>
+  <h2>🔥 Trending</h2>
   <div class="trendRow">
-    <div class="trend">🍳 Egg Toast</div>
-    <div class="trend">🍜 Ramen Hack</div>
-    <div class="trend">🧀 Cheesy Rice</div>
-    <div class="trend">🌯 Wrap Combo</div>
+    <div class="trend" onclick="quickFill('eggs')">🍳 Eggs</div>
+    <div class="trend" onclick="quickFill('ramen')">🍜 Ramen</div>
+    <div class="trend" onclick="quickFill('cheese')">🧀 Cheese</div>
   </div>
 </section>
 
 <section class="features">
   <div class="featureGrid">
-    <div class="feature"><h4>🥗 Smart Generator</h4><p>Instant meals</p></div>
-    <div class="feature"><h4>💸 Budget Mode</h4><p>Cheapest meals</p></div>
-    <div class="feature"><h4>🌱 Waste Tracker</h4><p>Reduce waste</p></div>
-    <div class="feature"><h4>⚡ Quick Meals</h4><p>5–15 min</p></div>
+    <div class="feature"><h4>🥗 Smart Generator</h4><p>Instant meals.</p></div>
+    <div class="feature"><h4>💸 Budget Mode</h4><p>Cheapest meals.</p></div>
+    <div class="feature"><h4>🌱 Waste Tracker</h4><p>Reduce waste.</p></div>
+    <div class="feature"><h4>⚡ Quick Meals</h4><p>5–15 min recipes.</p></div>
   </div>
 </section>
 
-<footer>Cook’ed Demo • StudentStreamHQ</footer>
+<footer>
+Cook’ed Demo • StudentStreamHQ Division
+</footer>
 
 <script>
+
 /* typing */
 const words=["Already Have","Got at Home","Can Afford"];
 let i=0,j=0;
 function type(){
   document.getElementById("typing").innerText=words[i].slice(0,j++);
   if(j>words[i].length){j=0;i=(i+1)%words.length;}
-  setTimeout(type,90);
+  setTimeout(type,80);
 }
 type();
-
-/* enter key */
-document.getElementById("ingredients").addEventListener("keypress",e=>{
-  if(e.key==="Enter") generateMeals();
-});
 
 /* generator */
 function generateMeals(){
@@ -343,10 +360,7 @@ function generateMeals(){
   const results=document.getElementById("results");
   const loader=document.getElementById("loader");
 
-  if(!input){
-    results.innerHTML="<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
-    return;
-  }
+  if(!input){results.innerHTML="Enter ingredients";return;}
 
   loader.style.display="block";
   results.innerHTML="";
@@ -355,16 +369,26 @@ function generateMeals(){
     loader.style.display="none";
 
     results.innerHTML=`
-      <div class="card"><h3>🍳 Cheesy Rice Bowl</h3><p>${input}</p><div class="badge">10 min</div></div>
-      <div class="card"><h3>🍜 Remix Meal</h3><p>${input}</p><div class="badge">Budget</div></div>
-      <div class="card"><h3>🌯 Quick Wrap</h3><p>${input}</p><div class="badge">5 min</div></div>
+      <div class="card">
+        <div class="save">💾</div>
+        <h3>🍳 Smart Bowl</h3>
+        <p>Using ${input}</p>
+        <div class="badge">10 min</div>
+      </div>
     `;
   },1200);
 }
 
+/* trending autofill */
+function quickFill(item){
+  document.getElementById("ingredients").value=item;
+}
+
+/* feed */
 function goFeed(){
   window.location.href="feed.html";
 }
+
 </script>
 
 </body>
