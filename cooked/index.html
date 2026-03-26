@@ -24,6 +24,27 @@ body{
   color:var(--text);
 }
 
+/* 🚨 MOVING BANNER */
+.banner{
+  width:100%;
+  background:linear-gradient(90deg,#1b5e20,#4CAF50);
+  overflow:hidden;
+  white-space:nowrap;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.banner span{
+  display:inline-block;
+  padding:10px 0;
+  font-weight:700;
+  animation:scrollText 18s linear infinite;
+}
+
+@keyframes scrollText{
+  from{transform:translateX(100%);}
+  to{transform:translateX(-100%);}
+}
+
 /* NAV */
 nav{
   display:flex;
@@ -80,7 +101,6 @@ nav{
   border:1px solid var(--border);
   background:var(--panel);
   color:var(--text);
-  font-size:14px;
 }
 
 .inputBox button{
@@ -91,6 +111,14 @@ nav{
   color:#002200;
   font-weight:800;
   cursor:pointer;
+}
+
+/* LOADER */
+.loader{
+  text-align:center;
+  margin-top:20px;
+  color:var(--muted);
+  display:none;
 }
 
 /* RESULTS */
@@ -107,11 +135,12 @@ nav{
   border:1px solid var(--border);
   border-radius:18px;
   padding:18px;
-  transition:.2s;
+  animation:fadeUp .4s ease;
 }
 
-.card:hover{
-  transform:translateY(-4px);
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(15px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
 .card h3{
@@ -125,7 +154,6 @@ nav{
   margin-top:6px;
 }
 
-/* BADGES */
 .badge{
   display:inline-block;
   margin-top:10px;
@@ -144,11 +172,6 @@ nav{
   padding:0 20px;
 }
 
-.features h2{
-  font-size:22px;
-  margin-bottom:20px;
-}
-
 .featureGrid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -162,18 +185,6 @@ nav{
   background:rgba(255,255,255,.02);
 }
 
-.feature h4{
-  font-size:15px;
-  font-weight:900;
-}
-
-.feature p{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:6px;
-}
-
-/* FOOTER */
 footer{
   text-align:center;
   padding:40px;
@@ -185,83 +196,94 @@ footer{
 
 <body>
 
+<!-- 🚨 BANNER -->
+<div class="banner">
+  <span>
+  🚨 Cook’ed Page Actively Being Built • Classified as HIGH PRIORITY • From the Owner of StudentStreamHQ — Deondre • Real Product in Development 🚀
+  </span>
+</div>
+
 <nav>
   <div class="logo">🍳 Cook<span>’ed</span></div>
-  <div>Demo Experience</div>
+  <div>Live Demo</div>
 </nav>
 
 <section class="hero">
   <h1>Cook with What You <span>Already Have</span></h1>
-  <p>Enter ingredients and discover meals instantly.</p>
+  <p>Smart meals. Zero waste. Built for Gen Z.</p>
 
   <div class="inputBox">
     <input id="ingredients" placeholder="ex: eggs, rice, cheese">
     <button onclick="generateMeals()">Find Meals</button>
   </div>
+
+  <div class="loader" id="loader">🤖 Cook’ed AI is thinking...</div>
 </section>
 
 <section class="results" id="results"></section>
 
 <section class="features">
-  <h2>Why Cook’ed?</h2>
-
   <div class="featureGrid">
     <div class="feature">
-      <h4>🥗 Smart Meal Generator</h4>
-      <p>Turn random ingredients into real meals instantly.</p>
+      <h4>🥗 Smart Generator</h4>
+      <p>Instant meals from your ingredients.</p>
     </div>
-
     <div class="feature">
-      <h4>💸 Budget Friendly</h4>
-      <p>Find the cheapest meals based on what you already own.</p>
+      <h4>💸 Budget Mode</h4>
+      <p>Cheapest meals possible.</p>
     </div>
-
     <div class="feature">
-      <h4>🌱 Reduce Waste</h4>
-      <p>Use leftover food instead of throwing it away.</p>
+      <h4>🌱 Waste Tracker</h4>
+      <p>Reduce food waste daily.</p>
     </div>
-
     <div class="feature">
-      <h4>⚡ Quick Cooking</h4>
-      <p>Meals ready in 5–15 minutes for busy students.</p>
+      <h4>⚡ Quick Meals</h4>
+      <p>5–15 minute recipes.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  Cook’ed Demo · Built for Prodigy App Competition
+Cook’ed Demo • StudentStreamHQ Division
 </footer>
 
 <script>
 function generateMeals(){
   const input = document.getElementById("ingredients").value;
   const results = document.getElementById("results");
+  const loader = document.getElementById("loader");
 
   if(!input){
     results.innerHTML = "<p style='text-align:center;color:#9fb3c8;'>Enter ingredients first.</p>";
     return;
   }
 
-  // Fake generated meals (for demo)
-  results.innerHTML = `
-    <div class="card">
-      <h3>Cheesy Rice Bowl</h3>
-      <p>Simple mix of ${input} cooked together for a quick meal.</p>
-      <div class="badge">10 min</div>
-    </div>
+  results.innerHTML = "";
+  loader.style.display = "block";
 
-    <div class="card">
-      <h3>Egg Fried Rice Remix</h3>
-      <p>Classic fried rice using your ingredients with added flavor.</p>
-      <div class="badge">Budget Meal</div>
-    </div>
+  setTimeout(()=>{
+    loader.style.display = "none";
 
-    <div class="card">
-      <h3>Quick Scramble Wrap</h3>
-      <p>Fast scrambled combo wrapped into a filling meal.</p>
-      <div class="badge">5 min</div>
-    </div>
-  `;
+    results.innerHTML = `
+      <div class="card">
+        <h3>Cheesy Rice Bowl</h3>
+        <p>Made using ${input} for a quick, filling meal.</p>
+        <div class="badge">10 min</div>
+      </div>
+
+      <div class="card">
+        <h3>Fried Rice Remix</h3>
+        <p>Flavor-packed remix using your ingredients.</p>
+        <div class="badge">Budget</div>
+      </div>
+
+      <div class="card">
+        <h3>Quick Scramble Wrap</h3>
+        <p>Fast and easy meal idea using what you have.</p>
+        <div class="badge">5 min</div>
+      </div>
+    `;
+  },1500);
 }
 </script>
 
