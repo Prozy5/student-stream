@@ -14,42 +14,87 @@ body{
   overflow:hidden;
 }
 
-/* VIDEO BACKGROUND */
+/* VIDEO */
 video{
   position:fixed;
   width:100%;
   height:100%;
   object-fit:cover;
-  z-index:-1;
-  filter:brightness(.4);
+  z-index:-2;
+  filter:brightness(.35) contrast(1.1);
 }
 
-/* OVERLAY TEXT */
+/* DARK OVERLAY */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle,transparent,black 70%);
+  z-index:-1;
+}
+
+/* PROGRESS BAR */
+.progress{
+  position:fixed;
+  top:0;
+  left:0;
+  height:4px;
+  background:linear-gradient(90deg,#4CAF50,#00ff9d);
+  width:0%;
+  transition:width .2s linear;
+  z-index:10;
+}
+
+/* SCENES */
 .scene{
   position:absolute;
   width:100%;
   height:100%;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  font-size:3rem;
+  font-size:3.2rem;
   font-weight:900;
   text-align:center;
   opacity:0;
-  transition:1s;
+  transform:scale(1.1);
+  transition:1s ease;
   padding:20px;
+}
+
+.scene small{
+  font-size:1rem;
+  font-weight:400;
+  margin-top:15px;
+  color:#aaa;
+  letter-spacing:.5px;
 }
 
 .active{
   opacity:1;
+  transform:scale(1);
 }
 
-/* FINAL BUTTON */
+/* GLITCH INTRO */
+.glitch{
+  animation:glitch 0.6s linear;
+}
+
+@keyframes glitch{
+  0%{transform:translate(0)}
+  20%{transform:translate(-2px,2px)}
+  40%{transform:translate(2px,-2px)}
+  60%{transform:translate(-1px,1px)}
+  80%{transform:translate(1px,-1px)}
+  100%{transform:translate(0)}
+}
+
+/* BUTTON */
 .enterBtn{
   position:absolute;
   bottom:60px;
   left:50%;
-  transform:translateX(-50%);
+  transform:translateX(-50%) scale(.9);
   padding:18px 40px;
   border:none;
   border-radius:999px;
@@ -58,54 +103,103 @@ video{
   background:linear-gradient(135deg,#4CAF50,#00ff9d);
   cursor:pointer;
   opacity:0;
-  transition:1s;
+  transition:0.6s;
+}
+
+.enterBtn:hover{
+  transform:translateX(-50%) scale(1.05);
+  box-shadow:0 0 30px rgba(0,255,157,.5);
 }
 
 .showBtn{
   opacity:1;
+  transform:translateX(-50%) scale(1);
 }
 </style>
 </head>
 
 <body>
 
-<!-- OPTIONAL VIDEO -->
+<div class="progress" id="progress"></div>
+
 <video autoplay muted loop>
   <source src="your-video.mp4" type="video/mp4">
 </video>
 
+<div class="overlay"></div>
+
 <!-- SCENES -->
-<div class="scene active" id="s1">You’re wasting food.</div>
-<div class="scene" id="s2">You’re wasting money.</div>
-<div class="scene" id="s3">You don’t need more groceries.</div>
-<div class="scene" id="s4">You need better ideas.</div>
-<div class="scene" id="s5">Introducing Cook’ed.</div>
-<div class="scene" id="s6">Turn ingredients into real meals.</div>
+<div class="scene active glitch" id="s1">
+  You’re wasting food.
+  <small>Every single day.</small>
+</div>
+
+<div class="scene" id="s2">
+  You’re wasting money.
+  <small>Without realizing it.</small>
+</div>
+
+<div class="scene" id="s3">
+  You don’t need more groceries.
+  <small>You already have enough.</small>
+</div>
+
+<div class="scene" id="s4">
+  You need better ideas.
+  <small>Smarter cooking starts here.</small>
+</div>
+
+<div class="scene" id="s5">
+  Introducing Cook’ed.
+  <small>A StudentStreamHQ Project</small>
+</div>
+
+<div class="scene" id="s6">
+  Turn ingredients into real meals.
+  <small>Instantly. Effortlessly.</small>
+</div>
 
 <button class="enterBtn" id="enterBtn" onclick="enterApp()">Enter Cook’ed</button>
 
 <script>
 let current = 1;
 const total = 6;
+const duration = 2800; // timing per scene
+const progress = document.getElementById("progress");
+
+let progressVal = 0;
 
 setInterval(()=>{
+  // progress bar
+  progressVal += (100/total);
+  progress.style.width = progressVal + "%";
+
+  // switch scene
   document.getElementById("s"+current).classList.remove("active");
+
   current++;
 
   if(current <= total){
-    document.getElementById("s"+current).classList.add("active");
+    let next = document.getElementById("s"+current);
+    next.classList.add("active","glitch");
+
+    setTimeout(()=>next.classList.remove("glitch"),500);
   }
 
+  // show button
   if(current === total){
     setTimeout(()=>{
       document.getElementById("enterBtn").classList.add("showBtn");
     },1500);
   }
 
-},2500);
+}, duration);
 
 function enterApp(){
-  window.location.href = "index.html"; // your main page
+  document.body.style.opacity = "0";
+  setTimeout(()=>{
+    window.location.href = "index.html";
+  },500);
 }
 </script>
 
