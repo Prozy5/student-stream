@@ -21,6 +21,7 @@ body{
   background:linear-gradient(135deg,#0f2027,#1c3b46,#00ff9d);
   overflow:hidden;
   color:white;
+  transition:background .5s;
 }
 
 /* ✨ PARTICLES */
@@ -45,9 +46,8 @@ canvas{
   50%{transform:translateY(-50px)}
 }
 
-/* 🔥 CARD */
+/* CARD */
 .card{
-  position:relative;
   width:360px;
   padding:35px;
   border-radius:24px;
@@ -63,18 +63,12 @@ canvas{
   to{opacity:1; transform:translateY(0)}
 }
 
-/* 🔥 LOGO */
+/* LOGO */
 .logo{
   font-size:30px;
   font-weight:900;
   margin-bottom:8px;
   text-shadow:0 0 15px rgba(0,255,157,.6);
-  animation:pulse 2.5s infinite;
-}
-
-@keyframes pulse{
-  0%,100%{opacity:1}
-  50%{opacity:.7}
 }
 
 .tag{
@@ -83,52 +77,16 @@ canvas{
   margin-bottom:25px;
 }
 
-/* INPUT WRAP */
-.inputWrap{
-  position:relative;
-  margin-bottom:18px;
-}
-
+/* INPUT */
 .input{
   width:100%;
   padding:14px;
+  margin-bottom:15px;
   border:none;
   border-radius:12px;
-  outline:none;
   background:rgba(255,255,255,0.12);
   color:white;
-}
-
-.input::placeholder{
-  color:#bbb;
-}
-
-/* ✨ FOCUS LINE */
-.inputWrap::after{
-  content:"";
-  position:absolute;
-  bottom:0;
-  left:0;
-  width:0%;
-  height:2px;
-  background:#00ff9d;
-  transition:.3s;
-}
-
-.input:focus + .inputWrap::after,
-.inputWrap:focus-within::after{
-  width:100%;
-}
-
-/* 👁 PASSWORD TOGGLE */
-.eye{
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  font-size:14px;
-  color:#aaa;
+  outline:none;
 }
 
 /* BUTTON */
@@ -144,49 +102,15 @@ canvas{
 }
 
 .btn:hover{
-  transform:scale(1.06);
-  box-shadow:0 0 25px rgba(0,255,157,.6);
-}
-
-/* SOCIAL */
-.social{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
-}
-
-.social button{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:rgba(255,255,255,0.1);
-  color:white;
-  cursor:pointer;
-  transition:.3s;
-}
-
-.social button:hover{
-  background:rgba(255,255,255,0.2);
-}
-
-/* ALT */
-.alt{
-  margin-top:20px;
-  font-size:13px;
-  color:#aaa;
-}
-
-.alt span{
-  color:#00ff9d;
-  cursor:pointer;
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(0,255,157,.6);
 }
 
 /* ERROR */
 .error{
   color:#ff6b6b;
   font-size:12px;
-  margin-top:8px;
+  margin-top:10px;
   display:none;
 }
 
@@ -209,13 +133,25 @@ canvas{
   pointer-events:auto;
 }
 
-.success h1{
-  font-size:32px;
-  margin-bottom:10px;
+/* LOADING BAR */
+.loader{
+  width:200px;
+  height:4px;
+  background:#222;
+  margin-top:20px;
+  border-radius:10px;
+  overflow:hidden;
 }
 
-.success p{
-  color:#aaa;
+.bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#4CAF50,#00ff9d);
+  animation:load 2s forwards;
+}
+
+@keyframes load{
+  to{width:100%;}
 }
 </style>
 </head>
@@ -225,81 +161,68 @@ canvas{
 <canvas id="particles"></canvas>
 <div class="bgGlow"></div>
 
-<div class="card" id="card">
+<div class="card">
 
   <div class="logo">Cook’ed</div>
   <div class="tag">Smart meals. Built for you.</div>
 
-  <div class="inputWrap">
-    <input class="input" id="email" placeholder="Email">
-  </div>
-
-  <div class="inputWrap">
-    <input class="input" id="password" type="password" placeholder="Password">
-    <span class="eye" onclick="togglePass()">👁</span>
-  </div>
+  <input class="input" id="email" placeholder="Email">
+  <input class="input" id="password" type="password" placeholder="Password">
 
   <button class="btn" onclick="login()">Log In</button>
 
-  <div class="error" id="error">Invalid login. Try again.</div>
-
-  <div class="social">
-    <button>Google</button>
-    <button>Apple</button>
-  </div>
-
-  <div class="alt">
-    Don’t have an account? <span>Sign up</span>
-  </div>
+  <div class="error" id="error">Enter a valid email + password</div>
 
 </div>
 
-<!-- SUCCESS SCREEN -->
+<!-- SUCCESS -->
 <div class="success" id="success">
   <h1>Welcome to Cook’ed 🔥</h1>
-  <p>Loading your experience...</p>
+  <p>Preparing your experience...</p>
+
+  <div class="loader">
+    <div class="bar"></div>
+  </div>
 </div>
 
 <script>
-function togglePass(){
-  const p = document.getElementById("password");
-  p.type = p.type === "password" ? "text" : "password";
-}
-
 function login(){
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
   const error = document.getElementById("error");
 
-  if(email === "" || pass === ""){
+  if(!email.includes("@") || pass.length < 3){
     error.style.display = "block";
     return;
   }
 
   error.style.display = "none";
 
+  document.getElementById("success").classList.add("show");
+
   setTimeout(()=>{
-    document.getElementById("success").classList.add("show");
-  },800);
+    window.location.href = "home.html"; // 🔥 CONNECT TO YOUR HOMEPAGE
+  },2200);
 }
 
-/* ✨ PARTICLES */
+/* ENTER KEY SUPPORT */
+document.addEventListener("keydown", e=>{
+  if(e.key === "Enter") login();
+});
+
+/* PARTICLES */
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-let particles = [];
-
-for(let i=0;i<60;i++){
-  particles.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*2,
-    d:Math.random()*1
-  });
-}
+let particles = Array.from({length:60},()=>({
+  x:Math.random()*canvas.width,
+  y:Math.random()*canvas.height,
+  r:Math.random()*2,
+  d:Math.random()*1
+}));
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
