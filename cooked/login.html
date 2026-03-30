@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed Login</title>
+<title>Cook’ed</title>
 
 <style>
 *{
@@ -18,103 +18,132 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(135deg,#0f2027,#1c3b46,#00ff9d);
-  overflow:hidden;
+  background:linear-gradient(180deg,#050a08,#0c1c14);
   color:white;
-  transition:background .5s;
 }
 
-/* ✨ PARTICLES */
-canvas{
+/* 🔥 BACKGROUND GLOW */
+.bg{
   position:absolute;
-  inset:0;
-  z-index:-2;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle at 50% 20%, rgba(0,255,157,.15), transparent 60%);
 }
 
-/* 🔥 GLOW */
-.bgGlow{
-  position:absolute;
-  width:500px;
-  height:500px;
-  background:radial-gradient(circle,#00ff9d33,transparent 70%);
-  filter:blur(100px);
-  animation:float 7s infinite ease-in-out;
-}
-
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-50px)}
-}
-
-/* CARD */
+/* 📱 APP CARD */
 .card{
   width:360px;
-  padding:35px;
-  border-radius:24px;
-  backdrop-filter:blur(25px);
-  background:rgba(255,255,255,0.08);
-  box-shadow:0 0 60px rgba(0,0,0,.4);
+  padding:32px;
+  border-radius:28px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
   text-align:center;
-  animation:fadeIn 1s ease;
+  animation:fadeIn .8s ease;
 }
 
 @keyframes fadeIn{
-  from{opacity:0; transform:translateY(25px)}
+  from{opacity:0; transform:translateY(20px)}
   to{opacity:1; transform:translateY(0)}
 }
 
-/* LOGO */
-.logo{
-  font-size:30px;
+/* 🔥 LOGO */
+.logoImg{
+  width:70px;
+  margin-bottom:12px;
+  filter:drop-shadow(0 0 15px rgba(0,255,157,.5));
+}
+
+.logoText{
+  font-size:28px;
   font-weight:900;
-  margin-bottom:8px;
-  text-shadow:0 0 15px rgba(0,255,157,.6);
 }
 
 .tag{
   font-size:13px;
-  color:#ccc;
+  color:#9fb3c8;
   margin-bottom:25px;
 }
 
 /* INPUT */
 .input{
   width:100%;
-  padding:14px;
-  margin-bottom:15px;
-  border:none;
-  border-radius:12px;
-  background:rgba(255,255,255,0.12);
+  padding:15px;
+  margin-bottom:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.04);
   color:white;
   outline:none;
+}
+
+.input:focus{
+  border-color:#00ff9d;
+  box-shadow:0 0 10px rgba(0,255,157,.2);
 }
 
 /* BUTTON */
 .btn{
   width:100%;
-  padding:14px;
+  padding:15px;
   border:none;
   border-radius:999px;
   background:linear-gradient(135deg,#4CAF50,#00ff9d);
   font-weight:900;
   cursor:pointer;
-  transition:.3s;
+  transition:.2s;
 }
 
 .btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 20px rgba(0,255,157,.6);
+  transform:scale(1.04);
+  box-shadow:0 0 20px rgba(0,255,157,.4);
 }
 
-/* ERROR */
-.error{
-  color:#ff6b6b;
+/* DIVIDER */
+.divider{
+  margin:20px 0;
   font-size:12px;
-  margin-top:10px;
-  display:none;
+  color:#666;
 }
 
-/* SUCCESS SCREEN */
+/* SOCIAL */
+.social{
+  display:flex;
+  gap:10px;
+}
+
+.social button{
+  flex:1;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  background:rgba(255,255,255,0.06);
+  color:white;
+  cursor:pointer;
+}
+
+/* ALT */
+.alt{
+  margin-top:18px;
+  font-size:13px;
+  color:#888;
+}
+
+.alt span{
+  color:#00ff9d;
+  cursor:pointer;
+}
+
+/* GUEST */
+.guest{
+  margin-top:12px;
+  font-size:13px;
+  color:#aaa;
+  cursor:pointer;
+}
+
+/* SUCCESS */
 .success{
   position:fixed;
   inset:0;
@@ -125,122 +154,63 @@ canvas{
   flex-direction:column;
   opacity:0;
   pointer-events:none;
-  transition:1s;
+  transition:.6s;
 }
 
 .success.show{
   opacity:1;
-  pointer-events:auto;
 }
 
-/* LOADING BAR */
-.loader{
-  width:200px;
-  height:4px;
-  background:#222;
-  margin-top:20px;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#4CAF50,#00ff9d);
-  animation:load 2s forwards;
-}
-
-@keyframes load{
-  to{width:100%;}
+.success img{
+  width:80px;
+  margin-bottom:10px;
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="particles"></canvas>
-<div class="bgGlow"></div>
+<div class="bg"></div>
 
 <div class="card">
 
-  <div class="logo">Cook’ed</div>
-  <div class="tag">Smart meals. Built for you.</div>
+  <img src="cooked-logo.png" class="logoImg">
+  <div class="logoText">Cook’ed</div>
+  <div class="tag">Turn what you have into real meals</div>
 
-  <input class="input" id="email" placeholder="Email">
-  <input class="input" id="password" type="password" placeholder="Password">
+  <input class="input" placeholder="Email">
+  <input class="input" type="password" placeholder="Password">
 
   <button class="btn" onclick="login()">Log In</button>
 
-  <div class="error" id="error">Enter a valid email + password</div>
+  <div class="divider">or continue with</div>
+
+  <div class="social">
+    <button>Google</button>
+    <button>Apple</button>
+  </div>
+
+  <div class="guest" onclick="login()">Continue as Guest</div>
+
+  <div class="alt">
+    Don’t have an account? <span>Sign up</span>
+  </div>
 
 </div>
 
-<!-- SUCCESS -->
 <div class="success" id="success">
-  <h1>Welcome to Cook’ed 🔥</h1>
-  <p>Preparing your experience...</p>
-
-  <div class="loader">
-    <div class="bar"></div>
-  </div>
+  <img src="cooked-logo.png">
+  <h2>Welcome to Cook’ed 🔥</h2>
 </div>
 
 <script>
 function login(){
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-  const error = document.getElementById("error");
-
-  if(!email.includes("@") || pass.length < 3){
-    error.style.display = "block";
-    return;
-  }
-
-  error.style.display = "none";
-
   document.getElementById("success").classList.add("show");
 
   setTimeout(()=>{
-    window.location.href = "home.html"; // 🔥 CONNECT TO YOUR HOMEPAGE
-  },2200);
+    window.location.href="feed.html"; // connect to your feed
+  },1200);
 }
-
-/* ENTER KEY SUPPORT */
-document.addEventListener("keydown", e=>{
-  if(e.key === "Enter") login();
-});
-
-/* PARTICLES */
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-canvas.width = innerWidth;
-canvas.height = innerHeight;
-
-let particles = Array.from({length:60},()=>({
-  x:Math.random()*canvas.width,
-  y:Math.random()*canvas.height,
-  r:Math.random()*2,
-  d:Math.random()*1
-}));
-
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  particles.forEach(p=>{
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(0,255,157,0.4)";
-    ctx.fill();
-
-    p.y += p.d;
-    if(p.y > canvas.height) p.y = 0;
-  });
-
-  requestAnimationFrame(draw);
-}
-
-draw();
 </script>
 
 </body>
