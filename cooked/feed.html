@@ -14,28 +14,115 @@
 }
 
 body{
-  background:#0b0f14;
+  background:black;
   color:white;
-  overflow-x:hidden;
+  overflow:hidden;
 }
 
-/* HEADER */
-.header{
+/* 🔥 FEED SCROLLER */
+.feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+.card{
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+}
+
+/* IMAGE */
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(.75);
+}
+
+/* OVERLAY CONTENT */
+.overlay{
+  position:absolute;
+  bottom:0;
+  padding:20px;
+  width:100%;
+  background:linear-gradient(transparent,rgba(0,0,0,.8));
+}
+
+/* TEXT */
+.title{
+  font-size:26px;
+  font-weight:900;
+}
+
+.desc{
+  font-size:14px;
+  color:#ccc;
+  margin-top:5px;
+}
+
+/* RIGHT ACTIONS */
+.actions{
+  position:absolute;
+  right:15px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  text-align:center;
+}
+
+.actions div{
+  font-size:13px;
+  cursor:pointer;
+}
+
+/* ❤️ LIKE ANIMATION */
+.heart{
+  position:absolute;
+  font-size:80px;
+  color:white;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(0);
+  opacity:0;
+  pointer-events:none;
+}
+
+.heart.show{
+  animation:pop .6s ease;
+}
+
+@keyframes pop{
+  0%{transform:translate(-50%,-50%) scale(0); opacity:1;}
+  50%{transform:translate(-50%,-50%) scale(1.2);}
+  100%{transform:translate(-50%,-50%) scale(1); opacity:0;}
+}
+
+/* COOK BUTTON */
+.cookBtn{
+  margin-top:12px;
+  padding:10px 20px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,#4CAF50,#00ff9d);
+  font-weight:900;
+  cursor:pointer;
+}
+
+/* TOP BAR */
+.topbar{
   position:fixed;
   top:0;
   width:100%;
-  padding:15px 20px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(10px);
+  padding:15px 20px;
   z-index:10;
 }
 
 .logo{
   font-weight:900;
-  font-size:20px;
 }
 
 .profile{
@@ -45,122 +132,57 @@ body{
   background:#00ff9d;
 }
 
-/* FEED */
-.feed{
-  padding-top:80px;
-  padding-bottom:100px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-/* CARD */
-.card{
-  margin:0 15px;
-  border-radius:20px;
-  overflow:hidden;
-  background:#111;
-  box-shadow:0 0 20px rgba(0,0,0,.4);
-  transition:.3s;
-}
-
-.card:hover{
-  transform:scale(1.02);
-}
-
-/* IMAGE */
-.card img{
-  width:100%;
-  height:220px;
-  object-fit:cover;
-}
-
-/* CONTENT */
-.content{
-  padding:15px;
-}
-
-.title{
-  font-size:18px;
-  font-weight:800;
-}
-
-.desc{
-  font-size:13px;
-  color:#aaa;
-  margin-top:5px;
-}
-
-/* ACTIONS */
-.actions{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:12px;
-}
-
-.leftActions{
-  display:flex;
-  gap:15px;
-  font-size:14px;
-  color:#ccc;
-}
-
-.rightBtn{
-  background:linear-gradient(135deg,#4CAF50,#00ff9d);
-  border:none;
-  padding:8px 16px;
-  border-radius:999px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-/* NAV BAR */
+/* BOTTOM NAV */
 .nav{
   position:fixed;
   bottom:0;
   width:100%;
-  background:#0f141a;
   display:flex;
   justify-content:space-around;
-  padding:12px 0;
-  border-top:1px solid #222;
+  padding:12px;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(10px);
 }
 
 .nav div{
   font-size:12px;
-  text-align:center;
   color:#aaa;
 }
 
-.nav div.active{
+.nav .active{
   color:#00ff9d;
 }
 
-/* FLOAT BUTTON */
-.addBtn{
+/* FULLSCREEN COOK MODE */
+.cookMode{
   position:fixed;
-  bottom:70px;
-  right:20px;
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#4CAF50,#00ff9d);
+  inset:0;
+  background:#0b0f14;
   display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  font-weight:900;
+  flex-direction:column;
+  padding:20px;
+  transform:translateY(100%);
+  transition:.5s ease;
+  z-index:20;
+}
+
+.cookMode.active{
+  transform:translateY(0);
+}
+
+.close{
+  align-self:flex-end;
+  font-size:20px;
   cursor:pointer;
-  box-shadow:0 0 20px rgba(0,255,157,.6);
+  margin-bottom:20px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
+<!-- TOP -->
+<div class="topbar">
   <div class="logo">Cook’ed</div>
   <div class="profile"></div>
 </div>
@@ -168,55 +190,52 @@ body{
 <!-- FEED -->
 <div class="feed">
 
-  <div class="card">
+  <!-- CARD -->
+  <div class="card" ondblclick="like(this)">
     <img src="https://images.unsplash.com/photo-1604908176997-4316c84e91aa">
-    <div class="content">
+    
+    <div class="overlay">
       <div class="title">Garlic Butter Chicken</div>
-      <div class="desc">Made with 5 ingredients you already have.</div>
-      <div class="actions">
-        <div class="leftActions">
-          <span>❤️ 1.2k</span>
-          <span>💬 84</span>
-        </div>
-        <button class="rightBtn">Cook</button>
-      </div>
+      <div class="desc">5 ingredients. 20 minutes.</div>
+      <button class="cookBtn" onclick="openCook()">Cook</button>
     </div>
+
+    <div class="actions">
+      <div>❤️ 1.2k</div>
+      <div>💬 84</div>
+      <div>🔖</div>
+    </div>
+
+    <div class="heart">❤️</div>
   </div>
 
-  <div class="card">
+  <!-- CARD -->
+  <div class="card" ondblclick="like(this)">
     <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
-    <div class="content">
+    
+    <div class="overlay">
       <div class="title">Quick Breakfast Bowl</div>
-      <div class="desc">10-minute energy meal.</div>
-      <div class="actions">
-        <div class="leftActions">
-          <span>❤️ 980</span>
-          <span>💬 40</span>
-        </div>
-        <button class="rightBtn">Cook</button>
-      </div>
+      <div class="desc">Energy in 10 minutes.</div>
+      <button class="cookBtn" onclick="openCook()">Cook</button>
     </div>
-  </div>
 
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd">
-    <div class="content">
-      <div class="title">Healthy Pasta</div>
-      <div class="desc">Low cost. High flavor.</div>
-      <div class="actions">
-        <div class="leftActions">
-          <span>❤️ 2.3k</span>
-          <span>💬 120</span>
-        </div>
-        <button class="rightBtn">Cook</button>
-      </div>
+    <div class="actions">
+      <div>❤️ 980</div>
+      <div>💬 40</div>
+      <div>🔖</div>
     </div>
+
+    <div class="heart">❤️</div>
   </div>
 
 </div>
 
-<!-- FLOAT BUTTON -->
-<div class="addBtn">+</div>
+<!-- COOK MODE -->
+<div class="cookMode" id="cookMode">
+  <div class="close" onclick="closeCook()">✖</div>
+  <h2>Cooking Mode 🍳</h2>
+  <p>Step-by-step instructions coming here...</p>
+</div>
 
 <!-- NAV -->
 <div class="nav">
@@ -226,6 +245,25 @@ body{
   <div>Saved</div>
   <div>Profile</div>
 </div>
+
+<script>
+function like(card){
+  let heart = card.querySelector(".heart");
+  heart.classList.add("show");
+
+  setTimeout(()=>{
+    heart.classList.remove("show");
+  },600);
+}
+
+function openCook(){
+  document.getElementById("cookMode").classList.add("active");
+}
+
+function closeCook(){
+  document.getElementById("cookMode").classList.remove("active");
+}
+</script>
 
 </body>
 </html>
