@@ -20,7 +20,7 @@ body{
   color:white;
 }
 
-/* 🖼 LEFT SIDE (IMAGE / BRAND) */
+/* 🖼 LEFT SIDE */
 .left{
   flex:1;
   display:flex;
@@ -35,29 +35,68 @@ body{
 .left::before{
   content:"";
   position:absolute;
-  width:400px;
-  height:400px;
-  background:radial-gradient(circle,#00ff9d33,transparent 70%);
-  filter:blur(80px);
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle,#00ff9d22,transparent 70%);
+  filter:blur(100px);
+  animation:float 10s infinite ease-in-out;
 }
 
-/* big logo */
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-40px)}
+}
+
+/* logo */
 .heroLogo{
-  width:220px;
+  width:200px;
   z-index:2;
   filter:drop-shadow(0 0 30px rgba(0,255,157,.4));
+  animation:fadeIn 1s ease;
+}
+
+/* floating food cards */
+.preview{
+  position:absolute;
+  display:flex;
+  gap:15px;
+  bottom:80px;
+}
+
+.preview div{
+  width:120px;
+  height:160px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#123,#000);
+  padding:10px;
+  font-size:13px;
+  font-weight:700;
+  display:flex;
+  align-items:end;
+  animation:floatCard 6s infinite ease-in-out;
+}
+
+.preview div:nth-child(2){
+  animation-delay:1s;
+}
+.preview div:nth-child(3){
+  animation-delay:2s;
+}
+
+@keyframes floatCard{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-15px)}
 }
 
 /* text */
 .heroText{
   position:absolute;
-  bottom:60px;
+  top:60px;
   text-align:center;
-  font-weight:800;
 }
 
 .heroText h1{
-  font-size:28px;
+  font-size:30px;
 }
 
 .heroText p{
@@ -65,7 +104,7 @@ body{
   color:#9fb3c8;
 }
 
-/* 🔐 RIGHT SIDE (LOGIN) */
+/* 🔐 RIGHT SIDE */
 .right{
   flex:1;
   display:flex;
@@ -76,29 +115,36 @@ body{
 
 /* card */
 .card{
-  width:320px;
-  padding:30px;
-  border-radius:20px;
+  width:340px;
+  padding:32px;
+  border-radius:22px;
   background:rgba(255,255,255,0.05);
   border:1px solid rgba(255,255,255,0.08);
-  backdrop-filter:blur(20px);
+  backdrop-filter:blur(25px);
+  box-shadow:0 0 40px rgba(0,0,0,.4);
+  animation:fadeUp .8s ease;
 }
 
-/* small logo */
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(20px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* logo */
 .logoTop{
   width:50px;
   margin-bottom:10px;
 }
 
 .title{
-  font-size:22px;
+  font-size:24px;
   font-weight:900;
 }
 
 .tag{
   font-size:13px;
   color:#aaa;
-  margin-bottom:20px;
+  margin-bottom:22px;
 }
 
 /* inputs */
@@ -111,10 +157,12 @@ body{
   background:#0c1c14;
   color:white;
   outline:none;
+  transition:.2s;
 }
 
 .input:focus{
   border-color:#00ff9d;
+  box-shadow:0 0 10px rgba(0,255,157,.2);
 }
 
 /* button */
@@ -127,6 +175,12 @@ body{
   font-weight:900;
   cursor:pointer;
   margin-top:5px;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(0,255,157,.4);
 }
 
 /* social */
@@ -144,6 +198,11 @@ body{
   background:rgba(255,255,255,0.08);
   color:white;
   cursor:pointer;
+  transition:.2s;
+}
+
+.social button:hover{
+  background:rgba(255,255,255,0.15);
 }
 
 /* alt */
@@ -172,6 +231,10 @@ body{
     width:120px;
   }
 
+  .preview{
+    display:none;
+  }
+
   .heroText{
     display:none;
   }
@@ -185,17 +248,25 @@ body{
 
 <body>
 
-<!-- LEFT SIDE -->
+<!-- LEFT -->
 <div class="left">
-  <img src="cooked-logo.png" class="heroLogo">
 
   <div class="heroText">
     <h1>Cook smarter</h1>
     <p>Turn anything into a meal.</p>
   </div>
+
+  <img src="cooked-logo.png" class="heroLogo">
+
+  <div class="preview">
+    <div>🍝 Viral Pasta</div>
+    <div>🍳 Egg Hack</div>
+    <div>🌯 Budget Wrap</div>
+  </div>
+
 </div>
 
-<!-- RIGHT SIDE -->
+<!-- RIGHT -->
 <div class="right">
   <div class="card">
 
