@@ -2,244 +2,230 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cook’ed Feed</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cook’ed Feed</title>
 
 <style>
-:root{
-  --bg:#0b0f14;
-  --accent:#4CAF50;
-  --text:#ecf3ff;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui;
 }
-
-*{margin:0;padding:0;box-sizing:border-box}
 
 body{
-  font-family:system-ui;
-  background:var(--bg);
-  color:var(--text);
-  overflow:hidden;
+  background:#0b0f14;
+  color:white;
+  overflow-x:hidden;
 }
 
-/* 🚨 BANNER */
-.banner{
+/* HEADER */
+.header{
   position:fixed;
   top:0;
   width:100%;
-  background:linear-gradient(90deg,#1b5e20,#4CAF50);
-  white-space:nowrap;
-  overflow:hidden;
-  z-index:999;
+  padding:15px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(10px);
+  z-index:10;
 }
 
-.banner span{
-  display:inline-block;
-  padding:8px 0;
-  animation:scroll 15s linear infinite;
-  font-weight:700;
+.logo{
+  font-weight:900;
+  font-size:20px;
 }
 
-@keyframes scroll{
-  from{transform:translateX(100%)}
-  to{transform:translateX(-100%)}
+.profile{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  background:#00ff9d;
 }
 
-/* FEED CONTAINER */
+/* FEED */
 .feed{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-}
-
-.post{
-  height:100vh;
-  scroll-snap-align:start;
-  position:relative;
+  padding-top:80px;
+  padding-bottom:100px;
   display:flex;
-  align-items:center;
-  justify-content:center;
+  flex-direction:column;
+  gap:20px;
 }
 
-/* FAKE VIDEO */
-.video{
-  position:absolute;
+/* CARD */
+.card{
+  margin:0 15px;
+  border-radius:20px;
+  overflow:hidden;
+  background:#111;
+  box-shadow:0 0 20px rgba(0,0,0,.4);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:scale(1.02);
+}
+
+/* IMAGE */
+.card img{
   width:100%;
-  height:100%;
-  background:linear-gradient(135deg,#1b5e20,#4CAF50);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:60px;
+  height:220px;
+  object-fit:cover;
 }
 
-/* OVERLAY INFO */
-.overlay{
-  position:absolute;
-  bottom:80px;
-  left:15px;
+/* CONTENT */
+.content{
+  padding:15px;
 }
 
 .title{
-  font-size:20px;
-  font-weight:900;
+  font-size:18px;
+  font-weight:800;
 }
 
-.meta{
+.desc{
   font-size:13px;
-  opacity:.8;
+  color:#aaa;
+  margin-top:5px;
 }
 
-/* SIDE BUTTONS */
+/* ACTIONS */
 .actions{
-  position:absolute;
-  right:15px;
-  bottom:120px;
   display:flex;
-  flex-direction:column;
-  gap:18px;
-  text-align:center;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
 }
 
-.actions div{
-  cursor:pointer;
-  font-size:22px;
-  transition:.2s;
-}
-
-.actions div:hover{
-  transform:scale(1.2);
-}
-
-/* AI TAG */
-.aiTag{
-  position:absolute;
-  top:60px;
-  left:15px;
-  background:rgba(0,0,0,.5);
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
-}
-
-/* RECIPE PANEL */
-.recipePanel{
-  position:fixed;
-  bottom:-100%;
-  left:0;
-  width:100%;
-  background:#121923;
-  border-radius:20px 20px 0 0;
-  padding:20px;
-  transition:.4s;
-  z-index:1000;
-}
-
-.recipePanel.active{
-  bottom:0;
-}
-
-.close{
-  float:right;
-  cursor:pointer;
-}
-
-.step{
+.leftActions{
+  display:flex;
+  gap:15px;
   font-size:14px;
-  margin-top:8px;
-  opacity:.8;
+  color:#ccc;
+}
+
+.rightBtn{
+  background:linear-gradient(135deg,#4CAF50,#00ff9d);
+  border:none;
+  padding:8px 16px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* NAV BAR */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#0f141a;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  border-top:1px solid #222;
+}
+
+.nav div{
+  font-size:12px;
+  text-align:center;
+  color:#aaa;
+}
+
+.nav div.active{
+  color:#00ff9d;
+}
+
+/* FLOAT BUTTON */
+.addBtn{
+  position:fixed;
+  bottom:70px;
+  right:20px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4CAF50,#00ff9d);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(0,255,157,.6);
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🚨 BANNER -->
-<div class="banner">
-  <span>🚨 Cook’ed Feed Actively Being Built • HIGH PRIORITY • StudentStreamHQ Project • Founder: Deondre 🚀</span>
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">Cook’ed</div>
+  <div class="profile"></div>
 </div>
 
+<!-- FEED -->
 <div class="feed">
 
-  <!-- POST 1 -->
-  <div class="post" onclick="openRecipe('Egg Toast','1. Toast bread 2. Cook egg 3. Combine & serve')">
-    <div class="video">🍳</div>
-
-    <div class="aiTag">AI Recommended</div>
-
-    <div class="overlay">
-      <div class="title">Quick Egg Toast</div>
-      <div class="meta">5 min • Budget Meal</div>
-    </div>
-
-    <div class="actions">
-      <div onclick="like(event)">❤️</div>
-      <div onclick="save(event)">💾</div>
-      <div>🔗</div>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1604908176997-4316c84e91aa">
+    <div class="content">
+      <div class="title">Garlic Butter Chicken</div>
+      <div class="desc">Made with 5 ingredients you already have.</div>
+      <div class="actions">
+        <div class="leftActions">
+          <span>❤️ 1.2k</span>
+          <span>💬 84</span>
+        </div>
+        <button class="rightBtn">Cook</button>
+      </div>
     </div>
   </div>
 
-  <!-- POST 2 -->
-  <div class="post" onclick="openRecipe('Cheesy Rice','1. Cook rice 2. Add cheese 3. Mix well')">
-    <div class="video">🧀</div>
-
-    <div class="overlay">
-      <div class="title">Cheesy Rice Bowl</div>
-      <div class="meta">10 min • Easy</div>
-    </div>
-
-    <div class="actions">
-      <div onclick="like(event)">❤️</div>
-      <div onclick="save(event)">💾</div>
-      <div>🔗</div>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
+    <div class="content">
+      <div class="title">Quick Breakfast Bowl</div>
+      <div class="desc">10-minute energy meal.</div>
+      <div class="actions">
+        <div class="leftActions">
+          <span>❤️ 980</span>
+          <span>💬 40</span>
+        </div>
+        <button class="rightBtn">Cook</button>
+      </div>
     </div>
   </div>
 
-  <!-- POST 3 -->
-  <div class="post" onclick="openRecipe('Ramen Upgrade','1. Cook ramen 2. Add egg 3. Season & enjoy')">
-    <div class="video">🍜</div>
-
-    <div class="overlay">
-      <div class="title">Ramen Upgrade</div>
-      <div class="meta">7 min • Student Favorite</div>
-    </div>
-
-    <div class="actions">
-      <div onclick="like(event)">❤️</div>
-      <div onclick="save(event)">💾</div>
-      <div>🔗</div>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd">
+    <div class="content">
+      <div class="title">Healthy Pasta</div>
+      <div class="desc">Low cost. High flavor.</div>
+      <div class="actions">
+        <div class="leftActions">
+          <span>❤️ 2.3k</span>
+          <span>💬 120</span>
+        </div>
+        <button class="rightBtn">Cook</button>
+      </div>
     </div>
   </div>
 
 </div>
 
-<!-- RECIPE PANEL -->
-<div class="recipePanel" id="panel">
-  <div class="close" onclick="closeRecipe()">✖</div>
-  <h2 id="recipeTitle"></h2>
-  <div id="recipeSteps"></div>
+<!-- FLOAT BUTTON -->
+<div class="addBtn">+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="active">Home</div>
+  <div>Search</div>
+  <div>Create</div>
+  <div>Saved</div>
+  <div>Profile</div>
 </div>
-
-<script>
-function openRecipe(title, steps){
-  document.getElementById("panel").classList.add("active");
-  document.getElementById("recipeTitle").innerText = title;
-  document.getElementById("recipeSteps").innerText = steps;
-}
-
-function closeRecipe(){
-  document.getElementById("panel").classList.remove("active");
-}
-
-function like(e){
-  e.stopPropagation();
-  e.target.innerText = "💚";
-}
-
-function save(e){
-  e.stopPropagation();
-  e.target.innerText = "✅";
-}
-</script>
 
 </body>
 </html>
