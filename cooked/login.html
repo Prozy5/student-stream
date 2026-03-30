@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cook’ed Login</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#0f2027,#2c5364,#00ff9d);
+  overflow:hidden;
+  color:white;
+}
+
+/* 🔥 BACKGROUND GLOW */
+.bgGlow{
+  position:absolute;
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle,#00ff9d33,transparent 70%);
+  filter:blur(80px);
+  animation:float 6s infinite ease-in-out;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-40px)}
+}
+
+/* 🔥 GLASS CARD */
+.card{
+  position:relative;
+  width:340px;
+  padding:30px;
+  border-radius:20px;
+  backdrop-filter:blur(20px);
+  background:rgba(255,255,255,0.08);
+  box-shadow:0 0 40px rgba(0,0,0,.3);
+  text-align:center;
+  animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* LOGO */
+.logo{
+  font-size:28px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.tag{
+  font-size:13px;
+  color:#ccc;
+  margin-bottom:25px;
+}
+
+/* INPUTS */
+.input{
+  width:100%;
+  padding:14px;
+  margin-bottom:15px;
+  border:none;
+  border-radius:12px;
+  outline:none;
+  background:rgba(255,255,255,0.12);
+  color:white;
+}
+
+.input::placeholder{
+  color:#bbb;
+}
+
+/* BUTTON */
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,#4CAF50,#00ff9d);
+  font-weight:900;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(0,255,157,.5);
+}
+
+/* ALT OPTIONS */
+.alt{
+  margin-top:20px;
+  font-size:13px;
+  color:#aaa;
+}
+
+.alt span{
+  color:#00ff9d;
+  cursor:pointer;
+}
+
+/* SOCIAL LOGIN */
+.social{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.social button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.1);
+  color:white;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.social button:hover{
+  background:rgba(255,255,255,0.2);
+}
+
+/* LOADING STATE */
+.loading{
+  opacity:.6;
+  pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bgGlow"></div>
+
+<div class="card" id="card">
+
+  <div class="logo">Cook’ed</div>
+  <div class="tag">Smart meals. Built for you.</div>
+
+  <input class="input" placeholder="Email">
+  <input class="input" placeholder="Password" type="password">
+
+  <button class="btn" onclick="login()">Log In</button>
+
+  <div class="social">
+    <button>Google</button>
+    <button>Apple</button>
+  </div>
+
+  <div class="alt">
+    Don’t have an account? <span>Sign up</span>
+  </div>
+
+</div>
+
+<script>
+function login(){
+  const card = document.getElementById("card");
+  card.classList.add("loading");
+
+  setTimeout(()=>{
+    // fake success animation
+    document.body.style.background = "black";
+    card.innerHTML = "<h2>Welcome to Cook’ed 🔥</h2>";
+  },1200);
+}
+</script>
+
+</body>
+</html>
