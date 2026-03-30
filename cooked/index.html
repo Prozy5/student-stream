@@ -25,6 +25,28 @@ body{
   overflow-x:hidden;
 }
 
+/* 🔥 TOP BANNER */
+.banner{
+  width:100%;
+  overflow:hidden;
+  background:linear-gradient(90deg,#00ff9d,#4CAF50);
+  color:black;
+  font-weight:800;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+.banner span{
+  display:inline-block;
+  padding:10px 0;
+  animation:scrollBanner 12s linear infinite;
+}
+
+@keyframes scrollBanner{
+  from{transform:translateX(100%)}
+  to{transform:translateX(-100%)}
+}
+
 /* BACKGROUND GLOW */
 body::before{
   content:"";
@@ -56,6 +78,7 @@ nav{
   font-weight:900;
   font-size:20px;
 }
+
 .logo span{color:var(--accent)}
 
 .navLinks{
@@ -70,9 +93,8 @@ nav{
   font-weight:600;
   transition:.2s;
 }
-.navLinks span:hover{
-  color:white;
-}
+
+.navLinks span:hover{color:white}
 
 .navBtn{
   padding:10px 20px;
@@ -83,6 +105,7 @@ nav{
   background:linear-gradient(135deg,var(--accent),var(--accent2));
   transition:.2s;
 }
+
 .navBtn:hover{
   transform:scale(1.08);
   box-shadow:0 0 20px rgba(0,255,157,.4);
@@ -91,23 +114,11 @@ nav{
 /* HERO */
 .hero{
   text-align:center;
-  padding:130px 20px 90px;
-  animation:fadeUp 1s ease;
-}
-
-@keyframes fadeUp{
-  from{opacity:0; transform:translateY(30px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-.hero img{
-  width:85px;
-  margin-bottom:20px;
-  filter:drop-shadow(0 0 20px rgba(0,255,157,.5));
+  padding:120px 20px 80px;
 }
 
 .hero h1{
-  font-size:66px;
+  font-size:64px;
   font-weight:900;
 }
 
@@ -117,96 +128,165 @@ nav{
   -webkit-text-fill-color:transparent;
 }
 
-/* JOIN MODAL */
-.joinModal{
-  position:fixed;
-  bottom:-100%;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(10px);
+.hero p{
+  margin-top:10px;
+  color:var(--muted);
+}
+
+/* CTA BUTTONS */
+.cta{
+  margin-top:25px;
+  display:flex;
+  gap:15px;
+  justify-content:center;
+}
+
+.cta button{
+  padding:14px 24px;
+  border-radius:999px;
+  border:none;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
+
+.secondary{
+  background:transparent;
+  border:1px solid var(--border);
+  color:white;
+}
+
+.cta button:hover{
+  transform:scale(1.05);
+}
+
+/* SOCIAL PROOF */
+.users{
+  margin-top:20px;
   display:flex;
   justify-content:center;
-  align-items:end;
-  transition:.4s;
+  gap:10px;
 }
 
-.joinBox{
-  width:100%;
-  max-width:500px;
-  background:#081710;
-  padding:30px;
-  border-radius:20px 20px 0 0;
-  border-top:1px solid var(--border);
-  animation:slideUp .4s ease;
+.users div{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#123;
+  border:2px solid #00ff9d;
 }
 
-@keyframes slideUp{
-  from{transform:translateY(100%)}
-  to{transform:translateY(0)}
+/* SECTION */
+.section{
+  max-width:1100px;
+  margin:90px auto;
+  padding:0 20px;
 }
 
-.joinBox h2{
-  margin-bottom:10px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  margin-top:30px;
 }
 
-.joinBox input{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border-radius:10px;
+.card{
+  padding:22px;
+  border-radius:20px;
+  background:var(--card);
+  border:1px solid var(--border);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-10px) scale(1.02);
+  border-color:var(--accent);
+  box-shadow:0 0 25px rgba(0,255,157,.2);
+}
+
+/* DEMO */
+.demo{
+  text-align:center;
+}
+
+.demo input{
+  padding:15px;
+  width:60%;
+  max-width:420px;
+  border-radius:12px;
   border:1px solid var(--border);
   background:#0c1c14;
   color:white;
 }
 
-.joinBox button{
-  margin-top:15px;
-  width:100%;
-  padding:14px;
+.demo button{
+  padding:15px;
+  margin-left:10px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
   font-weight:900;
-  cursor:pointer;
 }
 
-.closeBtn{
-  margin-top:10px;
+/* RESULTS */
+.results{
+  margin-top:30px;
+  display:grid;
+  gap:15px;
+}
+
+.resultCard{
+  padding:18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  animation:fadeUp .5s ease;
+}
+
+/* FEED GRID */
+.feedGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  margin-top:20px;
+}
+
+.feedCard{
+  height:200px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#123,#000);
+  display:flex;
+  align-items:end;
+  padding:12px;
+  font-weight:800;
+  transition:.3s;
+}
+
+.feedCard:hover{
+  transform:scale(1.05);
+}
+
+/* FOOTER */
+footer{
   text-align:center;
-  cursor:pointer;
+  padding:50px;
   color:var(--muted);
 }
-
-/* USER COUNT */
-.counter{
-  margin-top:15px;
-  font-size:14px;
-  color:var(--muted);
-}
-
-/* EVERYTHING ELSE SAME */
-.section{max-width:1100px;margin:100px auto;padding:0 20px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-top:30px;}
-.card{padding:22px;border-radius:20px;background:var(--card);border:1px solid var(--border);transition:.3s;}
-.card:hover{transform:translateY(-8px);border-color:var(--accent);}
-
-.demo{text-align:center;}
-.demo input{padding:15px;width:60%;max-width:420px;border-radius:12px;border:1px solid var(--border);background:#0c1c14;color:white;}
-.demo button{padding:15px;margin-left:10px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:900;}
-
-.results{margin-top:30px;display:grid;gap:15px;}
-.resultCard{padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--border);}
-
-.feedGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:20px;}
-.feedCard{height:200px;border-radius:16px;background:linear-gradient(135deg,#123,#000);display:flex;align-items:end;padding:12px;font-weight:800;}
-
-footer{text-align:center;padding:50px;color:var(--muted);}
 </style>
 </head>
 
 <body>
+
+<!-- 🔥 BANNER -->
+<div class="banner">
+  <span>
+  ⚠️ Page actively being developed • Classified High Priority • From the Owner of StudentStreamHQ — Deondre • ⚠️
+  </span>
+</div>
 
 <nav>
   <div class="logo">Cook<span>’ed</span></div>
@@ -220,33 +300,26 @@ footer{text-align:center;padding:50px;color:var(--muted);}
 </nav>
 
 <section class="hero">
-  <img src="cooked-logo.PNG">
-  <h1>Cook Smarter. <br><span class="highlight">Not Harder.</span></h1>
-  <p>Turn whatever you have into real meals.</p>
+  <h1>Cook Smarter.<br><span class="highlight">Not Harder.</span></h1>
+  <p>Turn whatever you have into real meals instantly.</p>
 
-  <div class="counter" id="userCount">🔥 1,284 people joined</div>
+  <div class="cta">
+    <button class="primary" onclick="scrollToDemo()">Try AI</button>
+    <button class="secondary" onclick="scrollToFeed()">Explore Meals</button>
+  </div>
+
+  <div class="users">
+    <div></div><div></div><div></div><div></div><div></div>
+  </div>
+
+  <div style="margin-top:10px;color:#9fb3c8;">🔥 1,284 early users</div>
 </section>
 
-<!-- JOIN MODAL -->
-<div class="joinModal" id="joinModal">
-  <div class="joinBox">
-    <h2>Join Cook’ed</h2>
-    <p>Create your account (demo)</p>
-
-    <input placeholder="Username">
-    <input placeholder="Email">
-    <input placeholder="Password" type="password">
-
-    <button onclick="join()">Create Account</button>
-    <div class="closeBtn" onclick="closeJoin()">Cancel</div>
-  </div>
-</div>
-
-<!-- KEEP REST SAME -->
 <section class="section demo" id="demo">
   <h2>Try the AI</h2>
   <input id="ingredients" placeholder="eggs, rice, cheese">
   <button onclick="generateMeals()">Generate</button>
+
   <div class="results" id="results"></div>
 </section>
 
@@ -260,25 +333,9 @@ footer{text-align:center;padding:50px;color:var(--muted);}
   </div>
 </section>
 
-<footer>Cook’ed • A Prodigy Project</footer>
+<footer>Cook’ed • A StudentStreamHQ Project</footer>
 
 <script>
-let users = 1284;
-
-function openJoin(){
-  document.getElementById("joinModal").style.bottom="0";
-}
-
-function closeJoin(){
-  document.getElementById("joinModal").style.bottom="-100%";
-}
-
-function join(){
-  users += Math.floor(Math.random()*3)+1;
-  document.getElementById("userCount").innerText = "🔥 " + users + " people joined";
-  closeJoin();
-}
-
 function scrollToDemo(){
   document.getElementById("demo").scrollIntoView({behavior:"smooth"});
 }
@@ -291,10 +348,6 @@ function scrollToTop(){
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
-document.getElementById("ingredients").addEventListener("keypress", e=>{
-  if(e.key==="Enter") generateMeals();
-});
-
 function generateMeals(){
   const input=document.getElementById("ingredients").value;
   const results=document.getElementById("results");
@@ -305,9 +358,9 @@ function generateMeals(){
   }
 
   results.innerHTML=`
-    <div class="resultCard">🍳 Cheesy Bowl using ${input}</div>
-    <div class="resultCard">🌯 Quick Wrap idea</div>
-    <div class="resultCard">🍜 Easy remix meal</div>
+    <div class="resultCard">🍳 Smart Bowl using ${input}</div>
+    <div class="resultCard">🌯 AI Wrap Idea</div>
+    <div class="resultCard">🍜 Remix Meal Suggestion</div>
   `;
 }
 </script>
