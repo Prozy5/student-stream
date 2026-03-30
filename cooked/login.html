@@ -18,64 +18,75 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(180deg,#050a08,#0c1c14);
+  background:linear-gradient(160deg,#050a08,#0b1f16,#00ff9d10);
   color:white;
 }
 
-/* 🔥 BACKGROUND GLOW */
-.bg{
+/* 🌿 CLEAN GLOW */
+.bgGlow{
   position:absolute;
-  width:100%;
-  height:100%;
-  background:radial-gradient(circle at 50% 20%, rgba(0,255,157,.15), transparent 60%);
+  width:350px;
+  height:350px;
+  background:radial-gradient(circle,#00ff9d22,transparent 70%);
+  filter:blur(70px);
+  animation:float 8s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-30px)}
 }
 
 /* 📱 APP CARD */
 .card{
-  width:360px;
-  padding:32px;
-  border-radius:28px;
-  background:rgba(255,255,255,0.05);
+  width:340px;
+  padding:30px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.06);
   backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  box-shadow:0 0 40px rgba(0,0,0,.4);
   text-align:center;
-  animation:fadeIn .8s ease;
+  animation:fadeUp .8s ease;
 }
 
-@keyframes fadeIn{
+@keyframes fadeUp{
   from{opacity:0; transform:translateY(20px)}
   to{opacity:1; transform:translateY(0)}
 }
 
-/* 🔥 LOGO */
+/* 🍳 LOGO IMAGE */
 .logoImg{
   width:70px;
-  margin-bottom:12px;
-  filter:drop-shadow(0 0 15px rgba(0,255,157,.5));
+  margin-bottom:10px;
+  filter:drop-shadow(0 0 12px rgba(0,255,157,.4));
 }
 
 .logoText{
-  font-size:28px;
+  font-size:22px;
   font-weight:900;
 }
 
 .tag{
   font-size:13px;
-  color:#9fb3c8;
+  color:#aaa;
   margin-bottom:25px;
 }
 
 /* INPUT */
+.inputWrap{
+  margin-bottom:15px;
+}
+
 .input{
   width:100%;
-  padding:15px;
-  margin-bottom:14px;
-  border-radius:14px;
+  padding:14px;
+  border-radius:12px;
   border:1px solid rgba(255,255,255,0.08);
-  background:rgba(255,255,255,0.04);
+  background:#0c1c14;
   color:white;
   outline:none;
+  transition:.2s;
 }
 
 .input:focus{
@@ -86,39 +97,33 @@ body{
 /* BUTTON */
 .btn{
   width:100%;
-  padding:15px;
+  padding:14px;
   border:none;
   border-radius:999px;
   background:linear-gradient(135deg,#4CAF50,#00ff9d);
   font-weight:900;
   cursor:pointer;
+  margin-top:10px;
   transition:.2s;
 }
 
 .btn:hover{
-  transform:scale(1.04);
-  box-shadow:0 0 20px rgba(0,255,157,.4);
-}
-
-/* DIVIDER */
-.divider{
-  margin:20px 0;
-  font-size:12px;
-  color:#666;
+  transform:scale(1.05);
 }
 
 /* SOCIAL */
 .social{
   display:flex;
   gap:10px;
+  margin-top:15px;
 }
 
 .social button{
   flex:1;
-  padding:12px;
-  border-radius:12px;
+  padding:10px;
+  border-radius:10px;
   border:none;
-  background:rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.08);
   color:white;
   cursor:pointer;
 }
@@ -127,91 +132,48 @@ body{
 .alt{
   margin-top:18px;
   font-size:13px;
-  color:#888;
+  color:#aaa;
 }
 
 .alt span{
   color:#00ff9d;
   cursor:pointer;
 }
-
-/* GUEST */
-.guest{
-  margin-top:12px;
-  font-size:13px;
-  color:#aaa;
-  cursor:pointer;
-}
-
-/* SUCCESS */
-.success{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  opacity:0;
-  pointer-events:none;
-  transition:.6s;
-}
-
-.success.show{
-  opacity:1;
-}
-
-.success img{
-  width:80px;
-  margin-bottom:10px;
-}
 </style>
 </head>
 
 <body>
 
-<div class="bg"></div>
+<div class="bgGlow"></div>
 
 <div class="card">
 
+  <!-- 🔥 YOUR LOGO -->
   <img src="cooked-logo.png" class="logoImg">
+  
   <div class="logoText">Cook’ed</div>
-  <div class="tag">Turn what you have into real meals</div>
+  <div class="tag">Turn what you have into meals.</div>
 
-  <input class="input" placeholder="Email">
-  <input class="input" type="password" placeholder="Password">
+  <div class="inputWrap">
+    <input class="input" placeholder="Email">
+  </div>
 
-  <button class="btn" onclick="login()">Log In</button>
+  <div class="inputWrap">
+    <input class="input" type="password" placeholder="Password">
+  </div>
 
-  <div class="divider">or continue with</div>
+  <button class="btn">Log In</button>
 
   <div class="social">
     <button>Google</button>
     <button>Apple</button>
   </div>
 
-  <div class="guest" onclick="login()">Continue as Guest</div>
-
   <div class="alt">
     Don’t have an account? <span>Sign up</span>
   </div>
 
 </div>
-
-<div class="success" id="success">
-  <img src="cooked-logo.png">
-  <h2>Welcome to Cook’ed 🔥</h2>
-</div>
-
-<script>
-function login(){
-  document.getElementById("success").classList.add("show");
-
-  setTimeout(()=>{
-    window.location.href="feed.html"; // connect to your feed
-  },1200);
-}
-</script>
 
 </body>
 </html>
