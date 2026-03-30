@@ -18,49 +18,63 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(135deg,#0f2027,#2c5364,#00ff9d);
+  background:linear-gradient(135deg,#0f2027,#1c3b46,#00ff9d);
   overflow:hidden;
   color:white;
 }
 
-/* 🔥 BACKGROUND GLOW */
+/* ✨ PARTICLES */
+canvas{
+  position:absolute;
+  inset:0;
+  z-index:-2;
+}
+
+/* 🔥 GLOW */
 .bgGlow{
   position:absolute;
   width:500px;
   height:500px;
   background:radial-gradient(circle,#00ff9d33,transparent 70%);
-  filter:blur(80px);
-  animation:float 6s infinite ease-in-out;
+  filter:blur(100px);
+  animation:float 7s infinite ease-in-out;
 }
 
 @keyframes float{
   0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-40px)}
+  50%{transform:translateY(-50px)}
 }
 
-/* 🔥 GLASS CARD */
+/* 🔥 CARD */
 .card{
   position:relative;
-  width:340px;
-  padding:30px;
-  border-radius:20px;
-  backdrop-filter:blur(20px);
+  width:360px;
+  padding:35px;
+  border-radius:24px;
+  backdrop-filter:blur(25px);
   background:rgba(255,255,255,0.08);
-  box-shadow:0 0 40px rgba(0,0,0,.3);
+  box-shadow:0 0 60px rgba(0,0,0,.4);
   text-align:center;
   animation:fadeIn 1s ease;
 }
 
 @keyframes fadeIn{
-  from{opacity:0; transform:translateY(20px)}
+  from{opacity:0; transform:translateY(25px)}
   to{opacity:1; transform:translateY(0)}
 }
 
-/* LOGO */
+/* 🔥 LOGO */
 .logo{
-  font-size:28px;
+  font-size:30px;
   font-weight:900;
-  margin-bottom:10px;
+  margin-bottom:8px;
+  text-shadow:0 0 15px rgba(0,255,157,.6);
+  animation:pulse 2.5s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.7}
 }
 
 .tag{
@@ -69,11 +83,15 @@ body{
   margin-bottom:25px;
 }
 
-/* INPUTS */
+/* INPUT WRAP */
+.inputWrap{
+  position:relative;
+  margin-bottom:18px;
+}
+
 .input{
   width:100%;
   padding:14px;
-  margin-bottom:15px;
   border:none;
   border-radius:12px;
   outline:none;
@@ -83,6 +101,34 @@ body{
 
 .input::placeholder{
   color:#bbb;
+}
+
+/* ✨ FOCUS LINE */
+.inputWrap::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:0%;
+  height:2px;
+  background:#00ff9d;
+  transition:.3s;
+}
+
+.input:focus + .inputWrap::after,
+.inputWrap:focus-within::after{
+  width:100%;
+}
+
+/* 👁 PASSWORD TOGGLE */
+.eye{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:14px;
+  color:#aaa;
 }
 
 /* BUTTON */
@@ -98,23 +144,11 @@ body{
 }
 
 .btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 20px rgba(0,255,157,.5);
+  transform:scale(1.06);
+  box-shadow:0 0 25px rgba(0,255,157,.6);
 }
 
-/* ALT OPTIONS */
-.alt{
-  margin-top:20px;
-  font-size:13px;
-  color:#aaa;
-}
-
-.alt span{
-  color:#00ff9d;
-  cursor:pointer;
-}
-
-/* SOCIAL LOGIN */
+/* SOCIAL */
 .social{
   display:flex;
   gap:10px;
@@ -136,16 +170,59 @@ body{
   background:rgba(255,255,255,0.2);
 }
 
-/* LOADING STATE */
-.loading{
-  opacity:.6;
+/* ALT */
+.alt{
+  margin-top:20px;
+  font-size:13px;
+  color:#aaa;
+}
+
+.alt span{
+  color:#00ff9d;
+  cursor:pointer;
+}
+
+/* ERROR */
+.error{
+  color:#ff6b6b;
+  font-size:12px;
+  margin-top:8px;
+  display:none;
+}
+
+/* SUCCESS SCREEN */
+.success{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  opacity:0;
   pointer-events:none;
+  transition:1s;
+}
+
+.success.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.success h1{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+.success p{
+  color:#aaa;
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="particles"></canvas>
 <div class="bgGlow"></div>
 
 <div class="card" id="card">
@@ -153,10 +230,18 @@ body{
   <div class="logo">Cook’ed</div>
   <div class="tag">Smart meals. Built for you.</div>
 
-  <input class="input" placeholder="Email">
-  <input class="input" placeholder="Password" type="password">
+  <div class="inputWrap">
+    <input class="input" id="email" placeholder="Email">
+  </div>
+
+  <div class="inputWrap">
+    <input class="input" id="password" type="password" placeholder="Password">
+    <span class="eye" onclick="togglePass()">👁</span>
+  </div>
 
   <button class="btn" onclick="login()">Log In</button>
+
+  <div class="error" id="error">Invalid login. Try again.</div>
 
   <div class="social">
     <button>Google</button>
@@ -169,17 +254,70 @@ body{
 
 </div>
 
+<!-- SUCCESS SCREEN -->
+<div class="success" id="success">
+  <h1>Welcome to Cook’ed 🔥</h1>
+  <p>Loading your experience...</p>
+</div>
+
 <script>
+function togglePass(){
+  const p = document.getElementById("password");
+  p.type = p.type === "password" ? "text" : "password";
+}
+
 function login(){
-  const card = document.getElementById("card");
-  card.classList.add("loading");
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  const error = document.getElementById("error");
+
+  if(email === "" || pass === ""){
+    error.style.display = "block";
+    return;
+  }
+
+  error.style.display = "none";
 
   setTimeout(()=>{
-    // fake success animation
-    document.body.style.background = "black";
-    card.innerHTML = "<h2>Welcome to Cook’ed 🔥</h2>";
-  },1200);
+    document.getElementById("success").classList.add("show");
+  },800);
 }
+
+/* ✨ PARTICLES */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let particles = [];
+
+for(let i=0;i<60;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2,
+    d:Math.random()*1
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(0,255,157,0.4)";
+    ctx.fill();
+
+    p.y += p.d;
+    if(p.y > canvas.height) p.y = 0;
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
 </script>
 
 </body>
