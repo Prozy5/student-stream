@@ -7,12 +7,12 @@
 
 <style>
 :root{
-  --bg:#06110c;
-  --accent:#4CAF50;
-  --accent2:#00ff9d;
-  --text:#eafef3;
-  --muted:#9fb3c8;
-  --card:rgba(255,255,255,0.05);
+  --bg:#030806;
+  --card:#0c1c14;
+  --accent:#00ff9d;
+  --accent2:#4CAF50;
+  --text:#eafff5;
+  --muted:#8fa89c;
   --border:rgba(255,255,255,0.08);
 }
 
@@ -20,62 +20,85 @@
 
 body{
   font-family:system-ui;
-  background:#020705;
+  background:var(--bg);
   color:var(--text);
+  overflow-x:hidden;
+}
+
+/* 🔥 MOVING BACKGROUND */
+body::before{
+  content:"";
+  position:fixed;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle at 30% 20%, rgba(0,255,157,.08), transparent 40%),
+             radial-gradient(circle at 70% 60%, rgba(0,255,157,.06), transparent 50%);
+  animation:bgMove 18s linear infinite;
+}
+@keyframes bgMove{
+  0%{transform:translate(0,0)}
+  50%{transform:translate(-5%,-8%)}
+  100%{transform:translate(0,0)}
 }
 
 /* 🔥 BANNER */
 .banner{
   width:100%;
-  overflow:hidden;
   background:linear-gradient(90deg,#00ff9d,#4CAF50);
   color:black;
   font-weight:800;
   font-size:13px;
-  white-space:nowrap;
+  overflow:hidden;
 }
 .banner span{
   display:inline-block;
   padding:8px 0;
-  animation:scrollBanner 12s linear infinite;
+  animation:scroll 12s linear infinite;
 }
-@keyframes scrollBanner{
+@keyframes scroll{
   from{transform:translateX(100%)}
   to{transform:translateX(-100%)}
-}
-
-/* 🧊 APP CONTAINER */
-.app{
-  max-width:1200px;
-  margin:auto;
 }
 
 /* NAV */
 nav{
   display:flex;
   justify-content:space-between;
-  padding:15px 20px;
+  align-items:center;
+  padding:18px 25px;
+  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  position:sticky;
-  top:0;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(10px);
 }
 
 .logo{
   font-weight:900;
-  font-size:20px;
+  font-size:22px;
 }
 .logo span{color:var(--accent)}
+
+.navBtn{
+  padding:10px 18px;
+  border-radius:999px;
+  border:none;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  cursor:pointer;
+  transition:.2s;
+}
+.navBtn:hover{
+  transform:scale(1.08);
+}
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:80px 20px 40px;
+  padding:90px 20px 50px;
+  position:relative;
 }
 
 .hero h1{
-  font-size:48px;
+  font-size:60px;
+  line-height:1.1;
 }
 
 .highlight{
@@ -87,26 +110,27 @@ nav{
 .hero p{
   color:var(--muted);
   margin-top:10px;
+  font-size:16px;
 }
 
 /* CTA */
 .cta{
-  margin-top:20px;
+  margin-top:25px;
   display:flex;
-  gap:10px;
   justify-content:center;
+  gap:12px;
 }
 
 .cta button{
-  padding:12px 20px;
+  padding:14px 24px;
   border-radius:999px;
   border:none;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
 }
 
 .primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
 }
 
 .secondary{
@@ -115,88 +139,84 @@ nav{
   color:white;
 }
 
-/* FEED */
-.feedGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:12px;
-  padding:20px;
+/* FLOATING CARDS */
+.floating{
+  display:flex;
+  gap:15px;
+  justify-content:center;
+  margin-top:40px;
 }
 
-.feedCard{
+.floatCard{
+  width:140px;
   height:180px;
-  border-radius:14px;
+  border-radius:18px;
   background:linear-gradient(135deg,#123,#000);
   display:flex;
   align-items:end;
-  padding:10px;
+  padding:12px;
   font-weight:800;
-  transition:.3s;
+  animation:float 6s infinite ease-in-out;
+}
+.floatCard:nth-child(2){animation-delay:1s}
+.floatCard:nth-child(3){animation-delay:2s}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-15px)}
 }
 
-.feedCard:hover{
+/* SECTION */
+.section{
+  padding:60px 20px;
+  max-width:1100px;
+  margin:auto;
+}
+
+/* FEED GRID */
+.feed{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+}
+
+.post{
+  height:220px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#0f2a1f,#000);
+  display:flex;
+  flex-direction:column;
+  justify-content:end;
+  padding:12px;
+  font-weight:800;
+  transition:.3s;
+  position:relative;
+}
+
+.post::after{
+  content:"▶";
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-size:14px;
+  opacity:.6;
+}
+
+.post:hover{
   transform:scale(1.05);
 }
 
-/* 🔐 LOGIN MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  backdrop-filter:blur(10px);
-  opacity:0;
-  pointer-events:none;
-  transition:.3s;
-}
-
-.modal.active{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.card{
-  width:320px;
-  padding:25px;
-  border-radius:20px;
-  background:var(--card);
-  border:1px solid var(--border);
+/* FOOTER */
+footer{
   text-align:center;
-}
-
-.card img{
-  width:60px;
-  margin-bottom:10px;
-}
-
-.input{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:#0c1c14;
-  color:white;
-}
-
-.btn{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:999px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  font-weight:900;
-  margin-top:10px;
-  cursor:pointer;
+  padding:40px;
+  color:var(--muted);
 }
 
 /* 📱 MOBILE */
-@media(max-width:600px){
-  .hero h1{
-    font-size:34px;
-  }
+@media(max-width:700px){
+  .hero h1{font-size:36px}
+  .floating{display:none}
 }
 </style>
 </head>
@@ -204,58 +224,50 @@ nav{
 <body>
 
 <div class="banner">
-  <span>⚠️ Page actively being developed • High Priority • StudentStreamHQ — Deondre ⚠️</span>
+  <span>⚠️ Actively being developed • High Priority • StudentStreamHQ — Deondre ⚠️</span>
 </div>
-
-<div class="app">
 
 <nav>
   <div class="logo">Cook<span>’ed</span></div>
-  <button class="primary" onclick="openLogin()">Login</button>
+  <button class="navBtn" onclick="goLogin()">Login</button>
 </nav>
 
 <section class="hero">
   <h1>Cook Smarter.<br><span class="highlight">Not Harder.</span></h1>
-  <p>Turn whatever you have into real meals instantly.</p>
+  <p>Gen Z cooking platform. Fast. Visual. Smart.</p>
 
   <div class="cta">
-    <button class="primary" onclick="openLogin()">Get Started</button>
+    <button class="primary" onclick="goLogin()">Get Started</button>
     <button class="secondary">Explore</button>
+  </div>
+
+  <div class="floating">
+    <div class="floatCard">🍝 Viral Pasta</div>
+    <div class="floatCard">🍳 Egg Hack</div>
+    <div class="floatCard">🌯 Budget Wrap</div>
   </div>
 </section>
 
-<div class="feedGrid">
-  <div class="feedCard">🍝 Viral Pasta</div>
-  <div class="feedCard">🍳 Egg Hack</div>
-  <div class="feedCard">🌯 Budget Wrap</div>
-  <div class="feedCard">🍜 Ramen Upgrade</div>
-</div>
+<section class="section">
+  <h2>🔥 Trending Now</h2>
 
-</div>
-
-<!-- 🔐 LOGIN -->
-<div class="modal" id="loginModal">
-  <div class="card">
-    <img src="cooked-logo.png">
-    <h2>Cook’ed</h2>
-
-    <input class="input" placeholder="Email">
-    <input class="input" type="password" placeholder="Password">
-
-    <button class="btn">Log In</button>
+  <div class="feed">
+    <div class="post">🍜 Ramen Upgrade</div>
+    <div class="post">🍔 Air Fryer Burger</div>
+    <div class="post">🥗 Healthy Bowl</div>
+    <div class="post">🍗 Crispy Chicken</div>
+    <div class="post">🌮 Street Tacos</div>
+    <div class="post">🍳 5-min Breakfast</div>
   </div>
-</div>
+</section>
+
+<footer>
+  Cook’ed • A StudentStreamHQ Product
+</footer>
 
 <script>
-function openLogin(){
-  document.getElementById("loginModal").classList.add("active");
-}
-
-window.onclick = function(e){
-  const modal=document.getElementById("loginModal");
-  if(e.target===modal){
-    modal.classList.remove("active");
-  }
+function goLogin(){
+  window.location.href="/cooked/login.html";
 }
 </script>
 
