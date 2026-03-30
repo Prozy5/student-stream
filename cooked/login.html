@@ -16,53 +16,81 @@
 body{
   height:100vh;
   display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(160deg,#050a08,#0b1f16,#00ff9d10);
+  background:#050a08;
   color:white;
 }
 
-/* 🌿 CLEAN GLOW */
-.bgGlow{
+/* 🖼 LEFT SIDE (IMAGE / BRAND) */
+.left{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(160deg,#081710,#0b1f16);
+  position:relative;
+  overflow:hidden;
+}
+
+/* glow */
+.left::before{
+  content:"";
   position:absolute;
-  width:350px;
-  height:350px;
-  background:radial-gradient(circle,#00ff9d22,transparent 70%);
-  filter:blur(70px);
-  animation:float 8s ease-in-out infinite;
+  width:400px;
+  height:400px;
+  background:radial-gradient(circle,#00ff9d33,transparent 70%);
+  filter:blur(80px);
 }
 
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-30px)}
+/* big logo */
+.heroLogo{
+  width:220px;
+  z-index:2;
+  filter:drop-shadow(0 0 30px rgba(0,255,157,.4));
 }
 
-/* 📱 APP CARD */
-.card{
-  width:340px;
-  padding:30px;
-  border-radius:22px;
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 0 40px rgba(0,0,0,.4);
+/* text */
+.heroText{
+  position:absolute;
+  bottom:60px;
   text-align:center;
-  animation:fadeUp .8s ease;
+  font-weight:800;
 }
 
-@keyframes fadeUp{
-  from{opacity:0; transform:translateY(20px)}
-  to{opacity:1; transform:translateY(0)}
+.heroText h1{
+  font-size:28px;
 }
 
-/* 🍳 LOGO IMAGE */
-.logoImg{
-  width:70px;
+.heroText p{
+  font-size:14px;
+  color:#9fb3c8;
+}
+
+/* 🔐 RIGHT SIDE (LOGIN) */
+.right{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#050a08;
+}
+
+/* card */
+.card{
+  width:320px;
+  padding:30px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(20px);
+}
+
+/* small logo */
+.logoTop{
+  width:50px;
   margin-bottom:10px;
-  filter:drop-shadow(0 0 12px rgba(0,255,157,.4));
 }
 
-.logoText{
+.title{
   font-size:22px;
   font-weight:900;
 }
@@ -70,31 +98,26 @@ body{
 .tag{
   font-size:13px;
   color:#aaa;
-  margin-bottom:25px;
+  margin-bottom:20px;
 }
 
-/* INPUT */
-.inputWrap{
-  margin-bottom:15px;
-}
-
+/* inputs */
 .input{
   width:100%;
   padding:14px;
+  margin-bottom:12px;
   border-radius:12px;
   border:1px solid rgba(255,255,255,0.08);
   background:#0c1c14;
   color:white;
   outline:none;
-  transition:.2s;
 }
 
 .input:focus{
   border-color:#00ff9d;
-  box-shadow:0 0 10px rgba(0,255,157,.2);
 }
 
-/* BUTTON */
+/* button */
 .btn{
   width:100%;
   padding:14px;
@@ -103,15 +126,10 @@ body{
   background:linear-gradient(135deg,#4CAF50,#00ff9d);
   font-weight:900;
   cursor:pointer;
-  margin-top:10px;
-  transition:.2s;
+  margin-top:5px;
 }
 
-.btn:hover{
-  transform:scale(1.05);
-}
-
-/* SOCIAL */
+/* social */
 .social{
   display:flex;
   gap:10px;
@@ -128,9 +146,9 @@ body{
   cursor:pointer;
 }
 
-/* ALT */
+/* alt */
 .alt{
-  margin-top:18px;
+  margin-top:15px;
   font-size:13px;
   color:#aaa;
 }
@@ -139,40 +157,68 @@ body{
   color:#00ff9d;
   cursor:pointer;
 }
+
+/* 📱 MOBILE */
+@media(max-width:768px){
+  body{
+    flex-direction:column;
+  }
+
+  .left{
+    height:35%;
+  }
+
+  .heroLogo{
+    width:120px;
+  }
+
+  .heroText{
+    display:none;
+  }
+
+  .right{
+    height:65%;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<div class="bgGlow"></div>
+<!-- LEFT SIDE -->
+<div class="left">
+  <img src="cooked-logo.png" class="heroLogo">
 
-<div class="card">
+  <div class="heroText">
+    <h1>Cook smarter</h1>
+    <p>Turn anything into a meal.</p>
+  </div>
+</div>
 
-  <!-- 🔥 YOUR LOGO -->
-  <img src="cooked-logo.png" class="logoImg">
-  
-  <div class="logoText">Cook’ed</div>
-  <div class="tag">Turn what you have into meals.</div>
+<!-- RIGHT SIDE -->
+<div class="right">
+  <div class="card">
 
-  <div class="inputWrap">
+    <img src="cooked-logo.png" class="logoTop">
+
+    <div class="title">Cook’ed</div>
+    <div class="tag">Welcome back 👋</div>
+
     <input class="input" placeholder="Email">
-  </div>
-
-  <div class="inputWrap">
     <input class="input" type="password" placeholder="Password">
+
+    <button class="btn">Log In</button>
+
+    <div class="social">
+      <button>Google</button>
+      <button>Apple</button>
+    </div>
+
+    <div class="alt">
+      Don’t have an account? <span>Sign up</span>
+    </div>
+
   </div>
-
-  <button class="btn">Log In</button>
-
-  <div class="social">
-    <button>Google</button>
-    <button>Apple</button>
-  </div>
-
-  <div class="alt">
-    Don’t have an account? <span>Sign up</span>
-  </div>
-
 </div>
 
 </body>
