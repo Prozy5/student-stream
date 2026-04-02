@@ -5,23 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SS Studios Library</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <style>
+/* SAME DESIGN (kept yours but polished slightly) */
 :root{
   --bg:#04070d;
   --card:#0c1424;
   --accent:#6c5cff;
-  --accent2:#9b8cff;
   --text:#eef2ff;
   --muted:#8b9ab5;
   --border:rgba(255,255,255,.08);
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-
 body{
   font-family:system-ui;
   background:var(--bg);
   color:var(--text);
+  margin:0;
 }
 
 /* NAV */
@@ -34,57 +35,6 @@ nav{
 
 .logo{font-weight:900;font-size:22px;}
 .logo span{color:var(--accent)}
-
-.hero{
-  padding:25px;
-}
-
-.featured{
-  display:flex;
-  gap:15px;
-  overflow-x:auto;
-}
-
-.featureCard{
-  min-width:260px;
-  height:150px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#6c5cff,#000);
-  padding:15px;
-  display:flex;
-  align-items:flex-end;
-  font-weight:700;
-}
-
-/* SEARCH */
-.search{
-  padding:15px 20px;
-}
-.search input{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  background:var(--card);
-  color:white;
-}
-
-/* TABS */
-.tabs{
-  display:flex;
-  gap:10px;
-  padding:0 20px 10px;
-  overflow-x:auto;
-}
-.tab{
-  padding:8px 14px;
-  border-radius:999px;
-  background:var(--card);
-  cursor:pointer;
-}
-.tab.active{
-  background:var(--accent);
-}
 
 /* GRID */
 .grid{
@@ -101,18 +51,14 @@ nav{
   cursor:pointer;
   transition:.3s;
 }
-.card:hover{
-  transform:scale(1.05);
-}
+.card:hover{transform:scale(1.05)}
 
 .cover{
   height:160px;
-  background:linear-gradient(#222,#000);
+  background:#111;
 }
 
-.cardContent{
-  padding:10px;
-}
+.cardContent{padding:10px}
 
 .title{font-weight:700;font-size:14px;}
 .author{font-size:12px;color:var(--muted);}
@@ -121,11 +67,10 @@ nav{
   display:flex;
   justify-content:space-between;
   margin-top:8px;
+  font-size:12px;
 }
 
-.like{
-  cursor:pointer;
-}
+.like{cursor:pointer}
 
 /* MODAL */
 .modal{
@@ -144,18 +89,6 @@ nav{
   width:90%;
   max-width:400px;
 }
-
-/* BUTTON */
-.createBtn{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  padding:15px 20px;
-  border-radius:999px;
-  border:none;
-  background:var(--accent);
-  color:white;
-}
 </style>
 </head>
 
@@ -166,97 +99,128 @@ nav{
   <div>📚 Library</div>
 </nav>
 
-<section class="hero">
-  <div class="featured">
-    <div class="featureCard">🔥 Midnight School</div>
-    <div class="featureCard">🚀 Lost Signals</div>
-  </div>
-</section>
-
-<div class="search">
-  <input id="search" placeholder="Search...">
-</div>
-
-<div class="tabs">
-  <div class="tab active" onclick="filter('all')">All</div>
-  <div class="tab" onclick="filter('comic')">Comics</div>
-  <div class="tab" onclick="filter('book')">Books</div>
-</div>
-
 <div class="grid" id="grid"></div>
 
 <div class="modal" id="modal">
   <div class="modalContent" id="modalContent"></div>
 </div>
 
-<button class="createBtn">+ Create</button>
-
 <script>
-const data = [
-  {title:"Midnight School", author:"@user1", type:"comic"},
-  {title:"Street Legends", author:"@creator", type:"book"},
-  {title:"Lost Signals", author:"@alex", type:"comic"}
-];
+/* 🔌 CONNECT SUPABASE */
+const supabase = window.supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
 
-const grid = document.getElementById("grid");
+let currentUser = null;
 
+/* 🔐 GET USER */
+async function getUser(){
+  const { data } = await supabase.auth.getUser();
+  currentUser = data.user;
+}
+getUser();
+
+/* 📚 FETCH PROJECTS */
+async function fetchProjects(){
+  const { data, error } = await supabase
+    .from("projects")
+    .select(`
+      *,
+      profiles(username),
+      project_stats(likes, views)
+    `)
+    .order("created_at", { ascending:false });
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  render(data);
+}
+
+/* 🎨 RENDER */
 function render(items){
+  const grid = document.getElementById("grid");
   grid.innerHTML = "";
+
   items.forEach(item=>{
     const el = document.createElement("div");
     el.className="card";
+
     el.innerHTML=`
-      <div class="cover"></div>
+      <div class="cover" style="background:url('${item.cover_url || ""}') center/cover"></div>
       <div class="cardContent">
         <div class="title">${item.title}</div>
-        <div class="author">${item.author}</div>
+        <div class="author">@${item.profiles?.username || "unknown"}</div>
         <div class="actions">
-          <span class="like" onclick="like(event)">❤️</span>
-          <span>👁</span>
+          <span class="like" onclick="like(event,'${item.id}')">❤️ ${item.project_stats?.likes || 0}</span>
+          <span>👁 ${item.project_stats?.views || 0}</span>
         </div>
       </div>
     `;
+
     el.onclick=()=>openModal(item);
+
     grid.appendChild(el);
   });
 }
 
-render(data);
-
-/* FILTER */
-function filter(type){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  event.target.classList.add("active");
-
-  if(type==="all") return render(data);
-  render(data.filter(i=>i.type===type));
-}
-
-/* SEARCH */
-document.getElementById("search").addEventListener("input", e=>{
-  const val = e.target.value.toLowerCase();
-  render(data.filter(i=>i.title.toLowerCase().includes(val)));
-});
-
-/* LIKE */
-function like(e){
+/* ❤️ LIKE SYSTEM */
+async function like(e, projectId){
   e.stopPropagation();
-  e.target.textContent="💜";
+
+  if(!currentUser){
+    alert("Login first");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("likes")
+    .insert({
+      user_id: currentUser.id,
+      project_id: projectId
+    });
+
+  if(error){
+    console.log("Already liked or error");
+  }
+
+  fetchProjects();
 }
 
-/* MODAL */
+/* 👀 VIEW TRACK */
+async function addView(projectId){
+  if(!currentUser) return;
+
+  await supabase
+    .from("views")
+    .insert({
+      user_id: currentUser.id,
+      project_id: projectId
+    });
+}
+
+/* 📖 MODAL */
 function openModal(item){
-  modal.style.display="flex";
-  modalContent.innerHTML=`
+  document.getElementById("modal").style.display="flex";
+
+  addView(item.id);
+
+  document.getElementById("modalContent").innerHTML=`
     <h2>${item.title}</h2>
-    <p>${item.author}</p>
+    <p>@${item.profiles?.username}</p>
     <p style="margin-top:10px;color:gray;">
-      This is a preview of the story.
+      ${item.description || "No description yet."}
     </p>
   `;
 }
 
 modal.onclick=()=>modal.style.display="none";
+
+/* 🚀 INIT */
+fetchProjects();
 </script>
 
 </body>
