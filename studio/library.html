@@ -22,214 +22,139 @@ body{
   font-family:system-ui;
   background:var(--bg);
   color:var(--text);
-  overflow-x:hidden;
 }
 
-/* 🌌 BACKGROUND GLOW */
-body::before{
-  content:"";
-  position:fixed;
-  width:200%;
-  height:200%;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(108,92,255,.15), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(155,140,255,.12), transparent 50%);
-  animation:moveBg 20s linear infinite;
-}
-@keyframes moveBg{
-  0%{transform:translate(0,0)}
-  50%{transform:translate(-5%,-8%)}
-  100%{transform:translate(0,0)}
-}
-
-/* 🔝 NAV */
+/* NAV */
 nav{
   display:flex;
   justify-content:space-between;
-  align-items:center;
   padding:18px 25px;
   border-bottom:1px solid var(--border);
-  backdrop-filter:blur(12px);
 }
 
-.logo{
-  font-weight:900;
-  font-size:22px;
-}
+.logo{font-weight:900;font-size:22px;}
 .logo span{color:var(--accent)}
 
-.navRight{
-  display:flex;
-  gap:12px;
-}
-
-.navBtn{
-  padding:8px 14px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:transparent;
-  color:white;
-  cursor:pointer;
-}
-
-.profile{
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#6c5cff,#000);
-}
-
-/* 🎬 HERO */
 .hero{
-  padding:40px 20px;
-  text-align:center;
+  padding:25px;
 }
 
-.hero h1{
-  font-size:42px;
+.featured{
+  display:flex;
+  gap:15px;
+  overflow-x:auto;
 }
 
-.hero span{
-  background:linear-gradient(90deg,#6c5cff,#9b8cff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+.featureCard{
+  min-width:260px;
+  height:150px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#6c5cff,#000);
+  padding:15px;
+  display:flex;
+  align-items:flex-end;
+  font-weight:700;
 }
 
-.hero p{
-  color:var(--muted);
-  margin-top:8px;
-}
-
-/* 🔍 SEARCH */
+/* SEARCH */
 .search{
-  padding:0 20px 20px;
+  padding:15px 20px;
 }
-
 .search input{
   width:100%;
   padding:14px;
   border-radius:12px;
-  border:1px solid var(--border);
+  border:none;
   background:var(--card);
   color:white;
 }
 
-/* 🧭 TABS */
+/* TABS */
 .tabs{
   display:flex;
   gap:10px;
-  padding:0 20px 20px;
+  padding:0 20px 10px;
   overflow-x:auto;
 }
-
 .tab{
-  padding:8px 16px;
+  padding:8px 14px;
   border-radius:999px;
   background:var(--card);
-  color:var(--muted);
   cursor:pointer;
-  white-space:nowrap;
 }
-
 .tab.active{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:white;
-}
-
-/* 📚 SECTION */
-.section{
-  padding:20px;
-}
-
-.section h2{
-  margin-bottom:12px;
+  background:var(--accent);
 }
 
 /* GRID */
 .grid{
+  padding:20px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:14px;
+  gap:15px;
 }
 
-/* 🎨 CARD */
 .card{
   background:var(--card);
-  border-radius:16px;
+  border-radius:14px;
   overflow:hidden;
+  cursor:pointer;
   transition:.3s;
-  position:relative;
 }
-
 .card:hover{
-  transform:translateY(-6px) scale(1.03);
-  box-shadow:0 0 25px rgba(108,92,255,.25);
+  transform:scale(1.05);
 }
 
-/* COVER */
 .cover{
-  height:180px;
-  background:linear-gradient(135deg,#222,#000);
+  height:160px;
+  background:linear-gradient(#222,#000);
 }
 
-/* CARD CONTENT */
 .cardContent{
   padding:10px;
 }
 
-.title{
-  font-size:14px;
-  font-weight:700;
-}
+.title{font-weight:700;font-size:14px;}
+.author{font-size:12px;color:var(--muted);}
 
-.author{
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* STATS */
-.stats{
+.actions{
   display:flex;
   justify-content:space-between;
-  margin-top:6px;
-  font-size:11px;
-  color:var(--muted);
+  margin-top:8px;
 }
 
-/* 🔥 BADGE */
-.badge{
-  position:absolute;
-  top:10px;
-  left:10px;
-  background:rgba(0,0,0,.6);
-  padding:4px 8px;
-  border-radius:999px;
-  font-size:10px;
+.like{
+  cursor:pointer;
 }
 
-/* ➕ CREATE BUTTON */
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.modalContent{
+  background:var(--card);
+  padding:20px;
+  border-radius:16px;
+  width:90%;
+  max-width:400px;
+}
+
+/* BUTTON */
 .createBtn{
   position:fixed;
   bottom:20px;
   right:20px;
-  padding:16px 22px;
+  padding:15px 20px;
   border-radius:999px;
   border:none;
-  font-weight:900;
-  background:linear-gradient(135deg,#6c5cff,#9b8cff);
+  background:var(--accent);
   color:white;
-  cursor:pointer;
-  box-shadow:0 0 20px rgba(108,92,255,.4);
-  transition:.2s;
-}
-
-.createBtn:hover{
-  transform:scale(1.1);
-}
-
-/* 📱 MOBILE */
-@media(max-width:600px){
-  .hero h1{font-size:28px}
 }
 </style>
 </head>
@@ -238,81 +163,101 @@ nav{
 
 <nav>
   <div class="logo">SS <span>Studios</span></div>
-
-  <div class="navRight">
-    <button class="navBtn">Explore</button>
-    <div class="profile"></div>
-  </div>
+  <div>📚 Library</div>
 </nav>
 
 <section class="hero">
-  <h1>Create. Share. <span>Story.</span></h1>
-  <p>The home for books, comics, and creators.</p>
+  <div class="featured">
+    <div class="featureCard">🔥 Midnight School</div>
+    <div class="featureCard">🚀 Lost Signals</div>
+  </div>
 </section>
 
 <div class="search">
-  <input placeholder="Search stories, comics, creators...">
+  <input id="search" placeholder="Search...">
 </div>
 
 <div class="tabs">
-  <div class="tab active">All</div>
-  <div class="tab">Comics</div>
-  <div class="tab">Books</div>
-  <div class="tab">Horror</div>
-  <div class="tab">Romance</div>
-  <div class="tab">Sci-Fi</div>
+  <div class="tab active" onclick="filter('all')">All</div>
+  <div class="tab" onclick="filter('comic')">Comics</div>
+  <div class="tab" onclick="filter('book')">Books</div>
 </div>
 
-<section class="section">
-  <h2>🔥 Trending</h2>
+<div class="grid" id="grid"></div>
 
-  <div class="grid">
-    <div class="card">
-      <div class="badge">HOT</div>
-      <div class="cover"></div>
-      <div class="cardContent">
-        <div class="title">Midnight School</div>
-        <div class="author">@user1</div>
-        <div class="stats">
-          <span>👁 12k</span>
-          <span>❤️ 2.1k</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="cover"></div>
-      <div class="cardContent">
-        <div class="title">Street Legends</div>
-        <div class="author">@creator</div>
-        <div class="stats">
-          <span>👁 8k</span>
-          <span>❤️ 1.4k</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <h2>🆕 New Drops</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="cover"></div>
-      <div class="cardContent">
-        <div class="title">Lost Signals</div>
-        <div class="author">@alex</div>
-        <div class="stats">
-          <span>👁 2k</span>
-          <span>❤️ 300</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<div class="modal" id="modal">
+  <div class="modalContent" id="modalContent"></div>
+</div>
 
 <button class="createBtn">+ Create</button>
+
+<script>
+const data = [
+  {title:"Midnight School", author:"@user1", type:"comic"},
+  {title:"Street Legends", author:"@creator", type:"book"},
+  {title:"Lost Signals", author:"@alex", type:"comic"}
+];
+
+const grid = document.getElementById("grid");
+
+function render(items){
+  grid.innerHTML = "";
+  items.forEach(item=>{
+    const el = document.createElement("div");
+    el.className="card";
+    el.innerHTML=`
+      <div class="cover"></div>
+      <div class="cardContent">
+        <div class="title">${item.title}</div>
+        <div class="author">${item.author}</div>
+        <div class="actions">
+          <span class="like" onclick="like(event)">❤️</span>
+          <span>👁</span>
+        </div>
+      </div>
+    `;
+    el.onclick=()=>openModal(item);
+    grid.appendChild(el);
+  });
+}
+
+render(data);
+
+/* FILTER */
+function filter(type){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  event.target.classList.add("active");
+
+  if(type==="all") return render(data);
+  render(data.filter(i=>i.type===type));
+}
+
+/* SEARCH */
+document.getElementById("search").addEventListener("input", e=>{
+  const val = e.target.value.toLowerCase();
+  render(data.filter(i=>i.title.toLowerCase().includes(val)));
+});
+
+/* LIKE */
+function like(e){
+  e.stopPropagation();
+  e.target.textContent="💜";
+}
+
+/* MODAL */
+function openModal(item){
+  modal.style.display="flex";
+  modalContent.innerHTML=`
+    <h2>${item.title}</h2>
+    <p>${item.author}</p>
+    <p style="margin-top:10px;color:gray;">
+      This is a preview of the story.
+    </p>
+  `;
+}
+
+modal.onclick=()=>modal.style.display="none";
+</script>
 
 </body>
 </html>
