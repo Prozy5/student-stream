@@ -7,199 +7,260 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
-body{
-  background:#0b0f14;
-  color:#e6edf3;
-  display:flex;
-  height:100vh;
-}
+body{background:#0b0f14;color:#e6edf3;display:flex;height:100vh;}
 
-/* LAYOUT */
 .sidebar{
-  width:260px;
-  background:#06080c;
-  padding:15px;
-  border-right:1px solid #111;
+width:260px;
+background:#06080c;
+padding:15px;
+border-right:1px solid #111;
 }
 
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
+.main{flex:1;display:flex;flex-direction:column;}
 
-/* LOGO */
-.logo{
-  font-size:18px;
-  font-weight:900;
-  margin-bottom:20px;
-}
+.logo{font-weight:900;margin-bottom:20px;}
 
-/* COMPONENTS */
 .comp{
-  padding:10px;
-  margin-bottom:8px;
-  border-radius:8px;
-  background:#11161d;
-  display:flex;
-  justify-content:space-between;
+padding:10px;margin-bottom:8px;border-radius:8px;
+background:#11161d;display:flex;justify-content:space-between;
 }
 
-.status{
-  font-size:10px;
-  padding:4px 6px;
-  border-radius:999px;
-}
-
+.status{font-size:10px;padding:4px 6px;border-radius:999px;}
 .live{background:#003d2e;color:#00ff9d;}
 .build{background:#2e2e00;color:#ffd000;}
 .err{background:#3d0000;color:#ff4d4d;}
 
-/* FEED */
-.feed{
-  flex:1;
-  overflow:auto;
-  padding:15px;
-}
-
-/* LOG ITEM */
-.log{
-  margin-bottom:10px;
-  padding:10px;
-  background:#11161d;
-  border-radius:8px;
-  font-size:13px;
-}
-
+.feed{flex:1;overflow:auto;padding:15px;}
+.log{margin-bottom:10px;padding:10px;background:#11161d;border-radius:8px;}
 .time{color:#777;font-size:11px;}
 
 /* CHAT */
-.chat{
-  height:200px;
-  border-top:1px solid #111;
-  overflow:auto;
-  padding:10px;
-}
-
-.msg{
-  margin-bottom:8px;
-  font-size:13px;
-}
-
+.chat{height:160px;border-top:1px solid #111;overflow:auto;padding:10px;}
+.msg{margin-bottom:6px;font-size:13px;}
 .name{font-weight:700;}
-
-.ai{color:#00ff9d;}
 .dev{color:#4da6ff;}
 .ops{color:#ffcc00;}
+.ai{color:#00ff9d;}
 
+/* INBOX */
+.inbox{
+position:fixed;
+right:0;
+top:0;
+width:280px;
+height:100%;
+background:#05070a;
+border-left:1px solid #111;
+overflow:auto;
+z-index:50;
+}
+
+.dm{
+padding:10px;
+border-bottom:1px solid #111;
+cursor:pointer;
+}
+
+.dm:hover{background:#111;}
+
+.thread{
+position:fixed;
+inset:0;
+background:#0b0f14;
+z-index:100;
+padding:20px;
+display:none;
+flex-direction:column;
+}
+
+.thread.active{display:flex;}
+
+.threadMsgs{
+flex:1;
+overflow:auto;
+margin-bottom:10px;
+}
+
+.tmsg{margin-bottom:8px;}
+.me{color:#00ff9d;}
+
+button{
+padding:10px;
+border:none;
+border-radius:999px;
+background:#00ff9d;
+font-weight:900;
+cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="logo">StudentStream HQ</div>
+<div class="logo">StudentStream HQ</div>
 
-  <div class="comp">Cook’ed <span class="status build">BUILDING</span></div>
-  <div class="comp">SS Films <span class="status live">LIVE</span></div>
-  <div class="comp">Library <span class="status build">SYNCING</span></div>
-  <div class="comp">Auth System <span class="status live">ONLINE</span></div>
-  <div class="comp">AI Engine <span class="status build">TRAINING</span></div>
+<div class="comp">Cook’ed <span class="status build">BUILDING</span></div>
+<div class="comp">SS Films <span class="status live">LIVE</span></div>
+<div class="comp">Library <span class="status build">SYNCING</span></div>
+<div class="comp">Auth <span class="status live">ONLINE</span></div>
+<div class="comp">AI Engine <span class="status build">TRAINING</span></div>
+
+<button onclick="triggerOutage()" style="margin-top:10px;">🚨 Trigger Outage</button>
 </div>
 
-<!-- MAIN -->
 <div class="main">
+<div class="feed" id="logFeed"></div>
+<div class="chat" id="chat"></div>
+</div>
 
-  <div class="feed" id="logFeed"></div>
+<!-- INBOX -->
+<div class="inbox" id="inbox"></div>
 
-  <div class="chat" id="chat"></div>
-
+<!-- THREAD -->
+<div class="thread" id="thread">
+<h3 id="threadName"></h3>
+<div class="threadMsgs" id="threadMsgs"></div>
+<input id="replyInput" placeholder="Reply...">
+<button onclick="sendReply()">Send</button>
+<button onclick="closeThread()">Close</button>
 </div>
 
 <script>
 
-/* FAKE DATA */
-const logs = [
-  "Deploying Cook’ed feed update...",
-  "Uploading new recipe generator...",
-  "Fixing video playback bug...",
-  "Connecting Supabase auth...",
-  "Publishing Library module...",
-  "AI generating viral content...",
-  "SS Films upload pipeline active...",
-  "Optimizing mobile layout...",
-  "Syncing user profiles...",
-  "Pushing hotfix to production..."
+/* LOGS */
+const logs=[
+"Deploying update...",
+"Fixing Cook’ed bug...",
+"API reconnecting...",
+"Scaling servers...",
+"Hotfix pushed...",
+"Auth retry...",
+"Database spike detected..."
 ];
 
-const names = [
-  {name:"Alex (Dev)", cls:"dev"},
-  {name:"Maya (Ops)", cls:"ops"},
-  {name:"AI Worker", cls:"ai"},
-  {name:"Jordan (Backend)", cls:"dev"},
-  {name:"System Bot", cls:"ai"}
+/* PEOPLE */
+const staff=[
+{name:"Alex (Dev)",cls:"dev"},
+{name:"Maya (Ops)",cls:"ops"},
+{name:"Jordan (Backend)",cls:"dev"},
+{name:"AI Worker",cls:"ai"}
 ];
 
-const messages = [
-  "Cook’ed feed almost done",
-  "why is AI generating burgers nonstop 😭",
-  "pushing fix now",
-  "library module glitching",
-  "WE LIVE??",
-  "nah not yet give me 2 min",
-  "deploy succeeded 🚀",
-  "checking logs now",
-  "AI just made 12 recipes in 5 sec 💀"
+/* UNIQUE MESSAGE POOL */
+let messagePool=[
+"site is lagging bad",
+"users reporting crashes",
+"feed not loading",
+"api might be down",
+"checking logs now",
+"this might be database",
+"trying restart",
+"we got spike in traffic",
+"nah something broke fr",
+"looking into it"
 ];
+
+/* INBOX THREADS */
+let threads=[];
 
 /* ADD LOG */
 function addLog(){
-  const log = document.createElement("div");
-  log.className="log";
-
-  const text = logs[Math.floor(Math.random()*logs.length)];
-  const time = new Date().toLocaleTimeString();
-
-  log.innerHTML = `
-    ${text}
-    <div class="time">${time}</div>
-  `;
-
-  logFeed.prepend(log);
+const log=document.createElement("div");
+log.className="log";
+log.innerHTML=logs[Math.floor(Math.random()*logs.length)] +
+`<div class="time">${new Date().toLocaleTimeString()}</div>`;
+logFeed.prepend(log);
 }
 
-/* ADD CHAT */
+/* CHAT (NO REPEAT) */
 function addMsg(){
-  const msg = document.createElement("div");
+if(messagePool.length===0) return;
 
-  const person = names[Math.floor(Math.random()*names.length)];
-  const text = messages[Math.floor(Math.random()*messages.length)];
+const person=staff[Math.floor(Math.random()*staff.length)];
+const text=messagePool.splice(Math.floor(Math.random()*messagePool.length),1)[0];
 
-  msg.className="msg";
-  msg.innerHTML = `<span class="name ${person.cls}">${person.name}:</span> ${text}`;
+const msg=document.createElement("div");
+msg.className="msg";
+msg.innerHTML=`<span class="name ${person.cls}">${person.name}:</span> ${text}`;
+chat.appendChild(msg);
+chat.scrollTop=chat.scrollHeight;
 
-  chat.appendChild(msg);
-  chat.scrollTop = chat.scrollHeight;
+/* ALSO SEND TO DM */
+createDM(person.name,text);
 }
 
-/* RANDOM STATUS CHANGE */
-function updateStatus(){
-  document.querySelectorAll(".status").forEach(s=>{
-    const r = Math.random();
-    s.classList.remove("live","build","err");
+/* CREATE DM */
+function createDM(name,text){
+let thread=threads.find(t=>t.name===name);
 
-    if(r<0.6){s.classList.add("live"); s.innerText="LIVE";}
-    else if(r<0.9){s.classList.add("build"); s.innerText="BUILDING";}
-    else{s.classList.add("err"); s.innerText="ERROR";}
-  });
+if(!thread){
+thread={name, msgs:[]};
+threads.push(thread);
+}
+
+thread.msgs.push({from:name,text});
+
+/* RENDER INBOX */
+renderInbox();
+}
+
+/* INBOX UI */
+function renderInbox(){
+inbox.innerHTML="";
+threads.forEach((t,i)=>{
+const el=document.createElement("div");
+el.className="dm";
+el.innerHTML=`<b>${t.name}</b><br>${t.msgs[t.msgs.length-1].text}`;
+el.onclick=()=>openThread(i);
+inbox.appendChild(el);
+});
+}
+
+/* OPEN THREAD */
+let currentThread=null;
+function openThread(i){
+currentThread=i;
+thread.classList.add("active");
+threadName.innerText=threads[i].name;
+
+threadMsgs.innerHTML=threads[i].msgs.map(m=>
+`<div class="tmsg ${m.from==='You'?'me':''}"><b>${m.from}:</b> ${m.text}</div>`
+).join("");
+}
+
+/* SEND REPLY */
+function sendReply(){
+const text=replyInput.value;
+threads[currentThread].msgs.push({from:"You",text});
+replyInput.value="";
+openThread(currentThread);
+}
+
+/* CLOSE */
+function closeThread(){
+thread.classList.remove("active");
+}
+
+/* OUTAGE MODE */
+function triggerOutage(){
+messagePool=[
+"SITE DOWN??",
+"yo prod is dead",
+"500 errors everywhere",
+"users blowing me up",
+"WE ARE DOWN",
+"checking db NOW",
+"restart??",
+"this is bad",
+"traffic spike killed us"
+];
 }
 
 /* LOOP */
 setInterval(()=>{
-  addLog();
-  if(Math.random()>0.4) addMsg();
-  if(Math.random()>0.7) updateStatus();
+addLog();
+if(Math.random()>0.5) addMsg();
 },1200);
 
 </script>
