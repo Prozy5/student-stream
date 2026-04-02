@@ -9,6 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 body{background:black;color:white;overflow:hidden;}
 
+/* FEED */
 .feed{
   height:100vh;
   overflow-y:scroll;
@@ -25,7 +26,6 @@ iframe{
   width:100%;
   height:100%;
   border:none;
-  pointer-events:none;
 }
 
 .overlay{
@@ -48,21 +48,23 @@ iframe{
   gap:20px;
 }
 
+/* BUTTON */
 button{
-  padding:10px;
+  padding:12px;
   border:none;
-  border-radius:10px;
+  border-radius:999px;
   background:#00ff9d;
   font-weight:900;
   cursor:pointer;
 }
 
-/* UPLOAD MODAL */
+/* UPLOAD SCREEN */
 .upload{
   position:fixed;
   inset:0;
   background:#0b0f14;
   padding:20px;
+  overflow:auto;
   transform:translateY(100%);
   transition:.4s;
   z-index:20;
@@ -72,10 +74,43 @@ button{
 
 input,textarea{
   width:100%;
-  padding:10px;
-  margin-bottom:10px;
+  padding:12px;
+  margin-bottom:12px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
+}
+
+/* VIDEO PREVIEW */
+.preview{
+  width:100%;
+  height:200px;
+  margin-bottom:10px;
+  border-radius:10px;
+  overflow:hidden;
+  background:#111;
+}
+
+/* COOK MODE */
+.cookMode{
+  position:fixed;
+  inset:0;
+  background:#0b0f14;
+  padding:20px;
+  transform:translateY(100%);
+  transition:.4s;
+  z-index:30;
+}
+
+.cookMode.active{transform:translateY(0);}
+
+.step{margin-top:20px;font-size:18px;}
+.ingredients{margin-top:10px;color:#aaa;}
+
+.float{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  font-size:22px;
 }
 </style>
 </head>
@@ -84,39 +119,60 @@ input,textarea{
 
 <div class="feed" id="feed"></div>
 
-<!-- UPLOAD PANEL -->
+<!-- UPLOAD PAGE -->
 <div class="upload" id="upload">
   <h2>Upload Recipe 🍳</h2>
 
-  <input id="video" placeholder="Google Drive Link">
+  <div class="preview" id="previewBox"></div>
+
+  <input id="video" placeholder="Paste Google Drive Link" oninput="previewVideo()">
   <input id="title" placeholder="Recipe Title">
   <input id="desc" placeholder="Short Description">
   <textarea id="ingredients" placeholder="Ingredients (comma separated)"></textarea>
   <textarea id="steps" placeholder="Steps (comma separated)"></textarea>
 
-  <button onclick="submitRecipe()">Post</button>
+  <button onclick="submitRecipe()">Post Recipe</button>
   <button onclick="closeUpload()">Cancel</button>
 </div>
 
-<!-- FLOAT BUTTON -->
-<button style="position:fixed;bottom:20px;right:20px;" onclick="openUpload()">+</button>
+<!-- COOK MODE -->
+<div class="cookMode" id="cookMode">
+  <h2 id="cookTitle"></h2>
+  <div class="ingredients" id="cookIngredients"></div>
+  <div class="step" id="cookStep"></div>
+
+  <button onclick="nextStep()">Next Step</button>
+  <button onclick="closeCook()">Close</button>
+</div>
+
+<button class="float" onclick="openUpload()">＋</button>
 
 <script>
 
 /* STORAGE */
 let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
 
-/* DRIVE CONVERT */
+/* DRIVE LINK FIX */
 function getDriveEmbed(url){
   try{
     const id = url.split("/d/")[1].split("/")[0];
     return `https://drive.google.com/uc?export=preview&id=${id}`;
-  }catch{
-    return "";
+  }catch{return "";}
+}
+
+/* PREVIEW VIDEO */
+function previewVideo(){
+  const url = video.value;
+  const embed = getDriveEmbed(url);
+
+  if(embed){
+    previewBox.innerHTML = `<iframe src="${embed}"></iframe>`;
+  }else{
+    previewBox.innerHTML = "";
   }
 }
 
-/* RENDER */
+/* RENDER FEED */
 function render(){
   feed.innerHTML="";
 
@@ -134,14 +190,23 @@ function render(){
       </div>
 
       <div class="actions">
-        <div>❤️</div>
+        <div onclick="like(this)">❤️</div>
         <div>💬</div>
-        <div>🔖</div>
+        <div onclick="save(this)">🔖</div>
       </div>
     `;
 
     feed.appendChild(el);
   });
+}
+
+/* LIKE + SAVE */
+function like(el){
+  el.style.color = el.style.color==="red" ? "white" : "red";
+}
+
+function save(el){
+  el.style.color = el.style.color==="yellow" ? "white" : "yellow";
 }
 
 /* UPLOAD */
@@ -153,13 +218,20 @@ function closeUpload(){
   upload.classList.remove("active");
 }
 
+/* SUBMIT */
 function submitRecipe(){
+
+  if(!video.value || !title.value){
+    alert("Video + title required");
+    return;
+  }
+
   const newRecipe={
     video:video.value,
     title:title.value,
     desc:desc.value,
-    ingredients:ingredients.value.split(","),
-    steps:steps.value.split(",")
+    ingredients:ingredients.value.split(",").map(i=>i.trim()),
+    steps:steps.value.split(",").map(s=>s.trim())
   };
 
   recipes.unshift(newRecipe);
@@ -167,11 +239,36 @@ function submitRecipe(){
 
   render();
   closeUpload();
+
+  video.value=title.value=desc.value=ingredients.value=steps.value="";
+  previewBox.innerHTML="";
 }
 
 /* COOK MODE */
+let currentRecipe, stepIndex=0;
+
 function openCook(i){
-  alert("Next step: connect full cooking UI again 🔥");
+  currentRecipe=recipes[i];
+  stepIndex=0;
+
+  cookTitle.innerText=currentRecipe.title;
+  cookIngredients.innerText="Ingredients: "+currentRecipe.ingredients.join(", ");
+  cookStep.innerText=currentRecipe.steps[0];
+
+  cookMode.classList.add("active");
+}
+
+function nextStep(){
+  stepIndex++;
+  if(stepIndex>=currentRecipe.steps.length){
+    cookStep.innerText="Done 🎉";
+    return;
+  }
+  cookStep.innerText=currentRecipe.steps[stepIndex];
+}
+
+function closeCook(){
+  cookMode.classList.remove("active");
 }
 
 /* INIT */
