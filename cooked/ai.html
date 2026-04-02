@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cook’ed AI</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+body{background:black;color:white;overflow:hidden;}
+
+/* FEED */
+.feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+.card{
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+}
+
+/* VIDEO / FRAME */
+.videoFrame{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:26px;
+  padding:20px;
+  background:#111;
+}
+
+/* DRIVE VIDEO */
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+/* OVERLAY */
+.overlay{
+  position:absolute;
+  bottom:0;
+  padding:20px;
+  width:100%;
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
+}
+
+.title{font-size:26px;font-weight:900;}
+.desc{font-size:14px;color:#ccc;}
+
+.actions{
+  position:absolute;
+  right:15px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+/* BUTTON */
+button{
+  padding:10px;
+  border:none;
+  border-radius:999px;
+  background:#00ff9d;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+/* MODALS */
+.panel{
+  position:fixed;
+  inset:0;
+  background:#0b0f14;
+  padding:20px;
+  overflow:auto;
+  transform:translateY(100%);
+  transition:.4s;
+  z-index:20;
+}
+
+.panel.active{transform:translateY(0);}
+
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:none;
+  border-radius:10px;
+}
+
+/* FLOAT BUTTONS */
+.float{
+  position:fixed;
+  bottom:20px;
+  font-size:22px;
+}
+
+.add{right:20px;}
+.ai{left:20px;}
+</style>
+</head>
+
+<body>
+
+<div class="feed" id="feed"></div>
+
+<!-- UPLOAD PANEL -->
+<div class="panel" id="upload">
+  <h2>Upload Recipe 🍳</h2>
+  <input id="video" placeholder="Google Drive Link (optional)">
+  <input id="title" placeholder="Title">
+  <input id="desc" placeholder="Description">
+  <textarea id="ingredients" placeholder="Ingredients (comma separated)"></textarea>
+  <textarea id="steps" placeholder="Steps (comma separated)"></textarea>
+
+  <button onclick="submitRecipe()">Post</button>
+  <button onclick="closeUpload()">Close</button>
+</div>
+
+<!-- AI PANEL -->
+<div class="panel" id="aiPanel">
+  <h2>Cook’ed AI 🧠</h2>
+  <textarea id="aiInput" placeholder="chicken, rice, garlic"></textarea>
+
+  <button onclick="generateRecipe()">Generate</button>
+  <div id="aiResult"></div>
+  <button onclick="closeAI()">Close</button>
+</div>
+
+<!-- VIDEO PLAYER -->
+<div class="panel" id="aiVideo">
+  <h2>AI Video 🎬</h2>
+  <div id="videoFrame" class="videoFrame"></div>
+  <button onclick="nextFrame()">Next</button>
+  <button onclick="closeVideo()">Close</button>
+</div>
+
+<!-- FLOAT BUTTONS -->
+<button class="float add" onclick="openUpload()">＋</button>
+<button class="float ai" onclick="openAI()">🧠</button>
+
+<script>
+
+/* STORAGE */
+let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+
+/* DRIVE */
+function getDriveEmbed(url){
+  try{
+    const id = url.split("/d/")[1].split("/")[0];
+    return `https://drive.google.com/uc?export=preview&id=${id}`;
+  }catch{return "";}
+}
+
+/* RENDER */
+function render(){
+  feed.innerHTML="";
+
+  recipes.forEach((r,i)=>{
+    const el=document.createElement("div");
+    el.className="card";
+
+    let media = "";
+
+    if(r.video){
+      media = `<iframe src="${getDriveEmbed(r.video)}"></iframe>`;
+    } else if(r.videoFrames){
+      media = `<div class="videoFrame" id="vid${i}">${r.videoFrames[0]}</div>`;
+    }
+
+    el.innerHTML=`
+      ${media}
+
+      <div class="overlay">
+        <div class="title">${r.title}</div>
+        <div class="desc">${r.desc}</div>
+        <button onclick="openCook(${i})">Cook</button>
+      </div>
+
+      <div class="actions">
+        <div onclick="like(this)">❤️</div>
+        <div>💬</div>
+        <div onclick="save(this)">🔖</div>
+      </div>
+    `;
+
+    feed.appendChild(el);
+
+    if(r.videoFrames) playFeedVideo(i);
+  });
+}
+
+/* AUTO PLAY AI VIDEOS */
+function playFeedVideo(i){
+  const r = recipes[i];
+  let frame=0;
+  const el=document.getElementById("vid"+i);
+
+  setInterval(()=>{
+    if(!el) return;
+    frame=(frame+1)%r.videoFrames.length;
+    el.innerHTML=r.videoFrames[frame];
+  },1500);
+}
+
+/* LIKE / SAVE */
+function like(el){el.style.color = el.style.color==="red"?"white":"red";}
+function save(el){el.style.color = el.style.color==="yellow"?"white":"yellow";}
+
+/* UPLOAD */
+function openUpload(){upload.classList.add("active");}
+function closeUpload(){upload.classList.remove("active");}
+
+function submitRecipe(){
+  const newRecipe={
+    video:video.value,
+    title:title.value,
+    desc:desc.value,
+    ingredients:ingredients.value.split(","),
+    steps:steps.value.split(",")
+  };
+
+  recipes.unshift(newRecipe);
+  localStorage.setItem("recipes",JSON.stringify(recipes));
+  render();
+  closeUpload();
+}
+
+/* AI PANEL */
+function openAI(){aiPanel.classList.add("active");}
+function closeAI(){aiPanel.classList.remove("active");}
+
+/* AI ENGINE */
+function generateRecipe(){
+  const input = aiInput.value.toLowerCase().split(",").map(i=>i.trim());
+
+  const title = input.join(" ") + " Bowl";
+  const steps = [
+    "Prep ingredients",
+    "Cook everything",
+    "Mix together",
+    "Serve hot"
+  ];
+
+  aiResult.innerHTML=`
+    <h3>${title}</h3>
+    ${steps.map(s=>`<div>${s}</div>`).join("")}
+
+    <button onclick='generateVideoFromRecipe(${JSON.stringify(title)}, ${JSON.stringify(input)}, ${JSON.stringify(steps)})'>
+      🎬 Make Video
+    </button>
+
+    <button onclick='postAIRecipe(${JSON.stringify(title)}, ${JSON.stringify(input)}, ${JSON.stringify(steps)})'>
+      Post
+    </button>
+  `;
+}
+
+/* AI VIDEO */
+let frames=[],currentFrame=0;
+
+function generateVideoFromRecipe(title,ingredients,steps){
+  frames=[
+    "🔥 "+title,
+    "🛒 "+ingredients.join(", "),
+    ...steps.map((s,i)=>"Step "+(i+1)+": "+s),
+    "🍽️ Enjoy!"
+  ];
+  currentFrame=0;
+  aiVideo.classList.add("active");
+  renderFrame();
+}
+
+function renderFrame(){
+  videoFrame.innerHTML=frames[currentFrame];
+}
+
+function nextFrame(){
+  currentFrame=(currentFrame+1)%frames.length;
+  renderFrame();
+}
+
+function closeVideo(){
+  aiVideo.classList.remove("active");
+}
+
+/* POST AI */
+function postAIRecipe(title,ingredients,steps){
+  const newRecipe={
+    title,
+    desc:"AI Generated 🤖",
+    ingredients,
+    steps,
+    videoFrames:[
+      "🔥 "+title,
+      "🛒 "+ingredients.join(", "),
+      ...steps,
+      "🍽️ Done!"
+    ]
+  };
+
+  recipes.unshift(newRecipe);
+  localStorage.setItem("recipes",JSON.stringify(recipes));
+  render();
+  closeAI();
+}
+
+/* COOK MODE */
+function openCook(i){
+  alert(recipes[i].steps.join("\n"));
+}
+
+/* INIT */
+render();
+
+</script>
+
+</body>
+</html>
