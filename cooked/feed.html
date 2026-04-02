@@ -9,7 +9,6 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 body{background:black;color:white;overflow:hidden;}
 
-/* FEED */
 .feed{
   height:100vh;
   overflow-y:scroll;
@@ -22,11 +21,18 @@ body{background:black;color:white;overflow:hidden;}
   scroll-snap-align:start;
 }
 
-/* VIDEO */
 iframe{
   width:100%;
   height:100%;
   border:none;
+  pointer-events:none; /* FIX CLICK ISSUE */
+}
+
+/* CLICK LAYER */
+.tapLayer{
+  position:absolute;
+  inset:0;
+  z-index:5;
 }
 
 /* OVERLAY */
@@ -36,12 +42,12 @@ iframe{
   padding:20px;
   width:100%;
   background:linear-gradient(transparent,rgba(0,0,0,.9));
+  z-index:10;
 }
 
 .title{font-size:24px;font-weight:900;}
 .desc{font-size:14px;color:#ccc;}
 
-/* ACTIONS */
 .actions{
   position:absolute;
   right:15px;
@@ -49,14 +55,10 @@ iframe{
   display:flex;
   flex-direction:column;
   gap:20px;
-  text-align:center;
+  z-index:10;
 }
 
-.actions div{
-  cursor:pointer;
-}
-
-/* HEART ANIM */
+/* HEART */
 .heart{
   position:absolute;
   top:50%;
@@ -76,32 +78,57 @@ iframe{
   100%{opacity:0;}
 }
 
-/* FLOAT BTN */
+/* FLOAT BTNS */
 .float{
   position:fixed;
   bottom:20px;
-  right:20px;
-  font-size:22px;
+  font-size:20px;
+  padding:12px;
+  border-radius:50%;
+  background:#00ff9d;
+  border:none;
+  font-weight:900;
 }
 
-/* RECIPE VIEW */
-.recipeView{
+.add{right:20px;}
+.ai{left:20px;}
+
+/* PANELS */
+.panel{
   position:fixed;
   inset:0;
   background:#0b0f14;
   padding:20px;
-  overflow:auto;
   transform:translateY(100%);
   transition:.4s;
   z-index:40;
+  overflow:auto;
 }
 
-.recipeView.active{transform:translateY(0);}
+.panel.active{transform:translateY(0);}
 
-.section{margin-top:20px;}
-.section h3{margin-bottom:10px;}
-.step{margin-bottom:8px;color:#ccc;}
+/* INPUT */
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:none;
+  border-radius:8px;
+}
 
+/* VIDEO FRAMES */
+.frame{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  text-align:center;
+  padding:20px;
+}
+
+/* BUTTON */
 button{
   padding:10px;
   border:none;
@@ -119,56 +146,48 @@ button{
 <div class="feed" id="feed"></div>
 
 <!-- RECIPE VIEW -->
-<div class="recipeView" id="recipeView">
+<div class="panel" id="recipeView">
   <h2 id="rvTitle"></h2>
   <p id="rvDesc"></p>
 
-  <div class="section">
-    <h3>Ingredients</h3>
-    <div id="rvIngredients"></div>
-  </div>
+  <h3>Ingredients</h3>
+  <div id="rvIngredients"></div>
 
-  <div class="section">
-    <h3>Steps</h3>
-    <div id="rvSteps"></div>
-  </div>
+  <h3>Steps</h3>
+  <div id="rvSteps"></div>
 
   <button onclick="closeRecipe()">Close</button>
 </div>
 
-<button class="float" onclick="addFake()">＋</button>
+<!-- AI PANEL -->
+<div class="panel" id="aiPanel">
+  <h2>Cook’ed AI 🧠</h2>
+  <textarea id="aiInput" placeholder="chicken, rice, garlic"></textarea>
+
+  <button onclick="generateAI()">Generate</button>
+  <div id="aiResult"></div>
+  <button onclick="closeAI()">Close</button>
+</div>
+
+<button class="float add" onclick="addFake()">＋</button>
+<button class="float ai" onclick="openAI()">🧠</button>
 
 <script>
 
 /* STORAGE */
 let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
 
-/* FAKE DATA IF EMPTY */
-if(recipes.length === 0){
-  recipes = [
+/* FAKE START */
+if(recipes.length===0){
+  recipes=[
     {
-      video:"https://drive.google.com/file/d/1d_dummy_video/view",
-      title:"Garlic Butter Chicken",
-      desc:"Juicy, buttery, viral 🔥",
-      ingredients:["chicken","garlic","butter","salt"],
-      steps:["Season chicken","Cook in pan","Add butter + garlic","Serve hot"]
-    },
-    {
-      video:"https://drive.google.com/file/d/1d_dummy_video/view",
-      title:"Cheesy Ramen Hack",
-      desc:"College meal upgrade 🧀",
-      ingredients:["ramen","cheese","milk"],
-      steps:["Boil ramen","Add cheese","Mix creamy","Eat"]
+      title:"Garlic Chicken",
+      desc:"Simple + viral 🔥",
+      ingredients:["chicken","garlic","butter"],
+      steps:["Season","Cook","Add garlic","Serve"],
+      frames:["🔥 Garlic Chicken","🛒 chicken, garlic","Cook it","🍽️ Done"]
     }
   ];
-}
-
-/* DRIVE */
-function getDriveEmbed(url){
-  try{
-    const id = url.split("/d/")[1].split("/")[0];
-    return `https://drive.google.com/uc?export=preview&id=${id}`;
-  }catch{return "";}
 }
 
 /* RENDER */
@@ -179,8 +198,18 @@ function render(){
     const el=document.createElement("div");
     el.className="card";
 
+    let media="";
+
+    if(r.frames){
+      media=`<div class="frame" id="f${i}">${r.frames[0]}</div>`;
+      playFrames(i);
+    } else {
+      media=`<iframe src="${getDriveEmbed(r.video)}"></iframe>`;
+    }
+
     el.innerHTML=`
-      <iframe src="${getDriveEmbed(r.video)}" onclick="openRecipe(${i})"></iframe>
+      ${media}
+      <div class="tapLayer" onclick="openRecipe(${i})"></div>
 
       <div class="overlay">
         <div class="title">${r.title}</div>
@@ -197,23 +226,38 @@ function render(){
     `;
 
     el.ondblclick=()=>likeAnim(el);
-
     feed.appendChild(el);
   });
 
   localStorage.setItem("recipes",JSON.stringify(recipes));
 }
 
+/* FRAME AUTO PLAY */
+function playFrames(i){
+  let index=0;
+  setInterval(()=>{
+    const el=document.getElementById("f"+i);
+    if(!el) return;
+    index=(index+1)%recipes[i].frames.length;
+    el.innerHTML=recipes[i].frames[index];
+  },1500);
+}
+
+/* DRIVE */
+function getDriveEmbed(url){
+  try{
+    const id = url.split("/d/")[1].split("/")[0];
+    return `https://drive.google.com/uc?export=preview&id=${id}`;
+  }catch{return "";}
+}
+
 /* OPEN RECIPE */
 function openRecipe(i){
-  const r = recipes[i];
-
-  rvTitle.innerText = r.title;
-  rvDesc.innerText = r.desc;
-
-  rvIngredients.innerHTML = r.ingredients.map(x=>`• ${x}`).join("<br>");
-  rvSteps.innerHTML = r.steps.map((s,i)=>`<div class="step">${i+1}. ${s}</div>`).join("");
-
+  const r=recipes[i];
+  rvTitle.innerText=r.title;
+  rvDesc.innerText=r.desc;
+  rvIngredients.innerHTML=r.ingredients.join(", ");
+  rvSteps.innerHTML=r.steps.map((s,i)=>`${i+1}. ${s}`).join("<br>");
   recipeView.classList.add("active");
 }
 
@@ -222,14 +266,8 @@ function closeRecipe(){
 }
 
 /* LIKE */
-function like(el){
-  el.style.color = el.style.color==="red" ? "white" : "red";
-}
-
-/* SAVE */
-function save(el){
-  el.style.color = el.style.color==="yellow" ? "white" : "yellow";
-}
+function like(el){el.style.color=el.style.color==="red"?"white":"red";}
+function save(el){el.style.color=el.style.color==="yellow"?"white":"yellow";}
 
 /* DOUBLE TAP */
 function likeAnim(card){
@@ -238,14 +276,52 @@ function likeAnim(card){
   setTimeout(()=>h.classList.remove("show"),600);
 }
 
-/* ADD FAKE (for testing growth feel) */
+/* AI PANEL */
+function openAI(){aiPanel.classList.add("active");}
+function closeAI(){aiPanel.classList.remove("active");}
+
+/* AI ENGINE */
+function generateAI(){
+  const input = aiInput.value.split(",").map(x=>x.trim());
+
+  const title = input.join(" ") + " Mix";
+  const steps = ["Prep ingredients","Cook everything","Mix well","Serve"];
+  const frames=[
+    "🔥 "+title,
+    "🛒 "+input.join(", "),
+    ...steps,
+    "🍽️ Done"
+  ];
+
+  aiResult.innerHTML=`
+    <h3>${title}</h3>
+    <button onclick='postAI(${JSON.stringify(title)},${JSON.stringify(input)},${JSON.stringify(steps)},${JSON.stringify(frames)})'>
+      Post to Feed 🚀
+    </button>
+  `;
+}
+
+/* POST AI */
+function postAI(title,ingredients,steps,frames){
+  recipes.unshift({
+    title,
+    desc:"AI Generated 🤖",
+    ingredients,
+    steps,
+    frames
+  });
+  render();
+  closeAI();
+}
+
+/* FAKE ADD */
 function addFake(){
   recipes.unshift({
-    video:"https://drive.google.com/file/d/1d_dummy_video/view",
-    title:"Viral Egg Sandwich",
-    desc:"Simple but hits 🔥",
-    ingredients:["egg","bread","butter"],
-    steps:["Crack egg","Toast bread","Assemble","Eat"]
+    title:"Egg Toast",
+    desc:"Quick breakfast 🔥",
+    ingredients:["egg","bread"],
+    steps:["Crack egg","Toast","Eat"],
+    frames:["🍳 Egg Toast","Cook egg","Toast bread","Done"]
   });
   render();
 }
