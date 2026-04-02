@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SS Studios Library</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -12,16 +13,14 @@
   --bg:#02040a;
   --card:rgba(255,255,255,.05);
   --accent:#6c5cff;
-  --accent2:#9b8cff;
   --text:#eef2ff;
   --muted:#8b9ab5;
-  --border:rgba(255,255,255,.08);
 }
 
 body{
   margin:0;
   font-family:system-ui;
-  background:radial-gradient(circle at top,#12172a,#02040a);
+  background:var(--bg);
   color:var(--text);
 }
 
@@ -30,43 +29,40 @@ nav{
   display:flex;
   justify-content:space-between;
   padding:18px 25px;
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .logo{
   font-weight:900;
   font-size:22px;
 }
-.logo span{
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+
+.logo span{color:var(--accent)}
 
 /* SEARCH */
 .search{
   padding:15px 20px;
 }
+
 .search input{
   width:100%;
   padding:14px;
   border-radius:12px;
-  border:1px solid var(--border);
+  border:none;
   background:var(--card);
   color:white;
 }
 
-/* SECTION */
+/* ROWS */
 .section{
-  padding:20px;
+  padding:10px 20px;
 }
 
-.section h2{
+.sectionTitle{
+  font-weight:800;
   margin-bottom:10px;
-  font-size:18px;
 }
 
-/* ROW SCROLL */
 .row{
   display:flex;
   gap:12px;
@@ -76,24 +72,14 @@ nav{
 /* BOOK CARD */
 .book{
   min-width:140px;
-  background:var(--card);
-  border-radius:14px;
-  overflow:hidden;
   cursor:pointer;
-  transition:.3s;
-}
-
-.book:hover{
-  transform:scale(1.05);
 }
 
 .cover{
-  height:180px;
+  height:200px;
+  border-radius:12px;
   background:#111;
-}
-
-.info{
-  padding:10px;
+  margin-bottom:6px;
 }
 
 .title{
@@ -106,57 +92,30 @@ nav{
   color:var(--muted);
 }
 
-/* PROGRESS BAR */
-.progress{
-  height:4px;
-  background:#222;
-  margin-top:6px;
-  border-radius:999px;
-  overflow:hidden;
-}
-.progress span{
-  display:block;
-  height:100%;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-}
-
-/* GRID */
-.grid{
-  padding:20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:14px;
-}
-
 /* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.75);
   display:none;
-  justify-content:center;
-  align-items:center;
+  background:black;
+  overflow:auto;
 }
 
-.modalContent{
-  background:var(--card);
+.reader{
+  max-width:600px;
+  margin:auto;
   padding:20px;
-  border-radius:18px;
-  width:90%;
-  max-width:420px;
 }
 
-/* BUTTON */
-.btn{
-  margin-top:12px;
+.readBtn{
   width:100%;
   padding:12px;
+  margin-top:15px;
   border:none;
   border-radius:999px;
-  font-weight:800;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  background:var(--accent);
   color:white;
-  cursor:pointer;
+  font-weight:800;
 }
 </style>
 </head>
@@ -164,35 +123,40 @@ nav{
 <body>
 
 <nav>
-  <div class="logo">SS <span>Studios</span></div>
-  <div>📚 Library</div>
+  <div class="logo">SS <span>Library</span></div>
 </nav>
 
 <div class="search">
-  <input id="search" placeholder="Search library...">
+  <input id="search" placeholder="Search books...">
 </div>
 
 <!-- CONTINUE -->
 <div class="section">
-  <h2>Continue Reading</h2>
+  <div class="sectionTitle">Continue Reading</div>
   <div class="row" id="continueRow"></div>
 </div>
 
-<!-- POPULAR -->
+<!-- TRENDING -->
 <div class="section">
-  <h2>Trending</h2>
-  <div class="row" id="popularRow"></div>
+  <div class="sectionTitle">🔥 Trending</div>
+  <div class="row" id="trendingRow"></div>
+</div>
+
+<!-- NEW -->
+<div class="section">
+  <div class="sectionTitle">🆕 New Releases</div>
+  <div class="row" id="newRow"></div>
 </div>
 
 <!-- ALL -->
 <div class="section">
-  <h2>All Titles</h2>
-  <div class="grid" id="grid"></div>
+  <div class="sectionTitle">📚 Library</div>
+  <div class="row" id="allRow"></div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL READER -->
 <div class="modal" id="modal">
-  <div class="modalContent" id="modalContent"></div>
+  <div class="reader" id="reader"></div>
 </div>
 
 <script>
@@ -201,14 +165,7 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let user=null;
-let projects=[];
-
-/* USER */
-async function init(){
-  const { data } = await supabase.auth.getUser();
-  user=data.user;
-}
+let all=[];
 
 /* FETCH */
 async function load(){
@@ -217,89 +174,85 @@ async function load(){
     .select(`*, profiles(username), project_stats(likes, views)`)
     .order("created_at",{ascending:false});
 
-  projects=data||[];
+  all=data||[];
 
-  renderAll(projects);
-  renderPopular(projects);
-  renderContinue(projects);
+  renderRow(allRow, all);
+  renderRow(newRow, all.slice(0,10));
+  renderTrending(all);
+  renderContinue();
 }
 
-/* ALL GRID */
-function renderAll(items){
-  grid.innerHTML="";
-  items.forEach(b=>{
-    grid.appendChild(bookCard(b));
+/* RENDER ROW */
+function renderRow(container, items){
+  container.innerHTML="";
+  items.forEach(item=>{
+    const el=document.createElement("div");
+    el.className="book";
+
+    el.innerHTML=`
+      <div class="cover" style="background:url('${item.cover_url||""}') center/cover"></div>
+      <div class="title">${item.title}</div>
+      <div class="author">@${item.profiles?.username||"user"}</div>
+    `;
+
+    el.onclick=()=>openReader(item);
+
+    container.appendChild(el);
   });
 }
 
-/* POPULAR */
-function renderPopular(items){
-  popularRow.innerHTML="";
-  items.sort((a,b)=>(b.project_stats?.views||0)-(a.project_stats?.views||0))
-       .slice(0,10)
-       .forEach(b=>popularRow.appendChild(bookCard(b)));
+/* TRENDING */
+function renderTrending(items){
+  const sorted=[...items].sort((a,b)=>
+    (b.project_stats?.views||0)-(a.project_stats?.views||0)
+  );
+
+  renderRow(trendingRow, sorted.slice(0,10));
 }
 
-/* CONTINUE (fake progress for now) */
-function renderContinue(items){
-  continueRow.innerHTML="";
-  items.slice(0,5).forEach(b=>{
-    const el=bookCard(b,true);
-    continueRow.appendChild(el);
-  });
-}
-
-/* CARD */
-function bookCard(b,progress=false){
-  const el=document.createElement("div");
-  el.className="book";
-
-  el.innerHTML=`
-    <div class="cover" style="background:url('${b.cover_url||""}') center/cover"></div>
-    <div class="info">
-      <div class="title">${b.title}</div>
-      <div class="author">@${b.profiles?.username||"user"}</div>
-      ${progress?`<div class="progress"><span style="width:${Math.random()*80+10}%"></span></div>`:""}
-    </div>
-  `;
-
-  el.onclick=()=>openBook(b);
-  return el;
+/* CONTINUE */
+function renderContinue(){
+  const saved=JSON.parse(localStorage.getItem("continue")||"[]");
+  const items=all.filter(i=>saved.includes(i.id));
+  renderRow(continueRow, items);
 }
 
 /* SEARCH */
 search.addEventListener("input",e=>{
   const v=e.target.value.toLowerCase();
-  renderAll(projects.filter(p=>p.title.toLowerCase().includes(v)));
+  renderRow(allRow, all.filter(i=>i.title.toLowerCase().includes(v)));
 });
 
-/* OPEN BOOK */
-async function openBook(b){
-  modal.style.display="flex";
+/* OPEN READER */
+function openReader(item){
+  modal.style.display="block";
 
-  /* track view */
-  if(user){
-    await supabase.from("views").insert({
-      user_id:user.id,
-      project_id:b.id
-    });
-  }
+  saveContinue(item.id);
 
-  modalContent.innerHTML=`
-    <h2>${b.title}</h2>
-    <p>@${b.profiles?.username}</p>
-    <p style="color:gray;margin-top:10px;">
-      ${b.description||"No description yet"}
+  reader.innerHTML=`
+    <h1>${item.title}</h1>
+    <p>@${item.profiles?.username}</p>
+    <p style="margin-top:15px;color:gray;">
+      ${item.description||"Start reading..."}
     </p>
 
-    <button class="btn">Start Reading</button>
+    <button class="readBtn">Start Reading</button>
   `;
 }
 
+/* SAVE CONTINUE */
+function saveContinue(id){
+  let list=JSON.parse(localStorage.getItem("continue")||"[]");
+  if(!list.includes(id)){
+    list.unshift(id);
+    localStorage.setItem("continue",JSON.stringify(list.slice(0,10)));
+  }
+}
+
+/* CLOSE */
 modal.onclick=()=>modal.style.display="none";
 
 /* INIT */
-init();
 load();
 </script>
 
