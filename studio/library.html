@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SS Studios</title>
+<title>SS Studios Library</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
 :root{
-  --bg:#03060d;
+  --bg:#02040a;
   --card:rgba(255,255,255,.05);
   --accent:#6c5cff;
   --accent2:#9b8cff;
@@ -19,30 +18,11 @@
   --border:rgba(255,255,255,.08);
 }
 
-/* 🌌 BACKGROUND */
 body{
   margin:0;
   font-family:system-ui;
+  background:radial-gradient(circle at top,#12172a,#02040a);
   color:var(--text);
-  background:radial-gradient(circle at 20% 20%, #1a1f3a, #03060d);
-  overflow-x:hidden;
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  width:200%;
-  height:200%;
-  background:
-    radial-gradient(circle, rgba(108,92,255,.15), transparent 40%),
-    radial-gradient(circle, rgba(155,140,255,.1), transparent 50%);
-  animation:floatBg 20s infinite linear;
-}
-
-@keyframes floatBg{
-  0%{transform:translate(0,0)}
-  50%{transform:translate(-5%,-5%)}
-  100%{transform:translate(0,0)}
 }
 
 /* NAV */
@@ -50,7 +30,6 @@ nav{
   display:flex;
   justify-content:space-between;
   padding:18px 25px;
-  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
 }
 
@@ -64,41 +43,10 @@ nav{
   -webkit-text-fill-color:transparent;
 }
 
-.profile{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#6c5cff,#000);
-}
-
-/* HERO */
-.hero{
-  padding:20px;
-}
-
-.featured{
-  display:flex;
-  gap:15px;
-  overflow-x:auto;
-}
-
-.featureCard{
-  min-width:260px;
-  height:160px;
-  border-radius:18px;
-  padding:15px;
-  display:flex;
-  align-items:flex-end;
-  font-weight:700;
-  background:linear-gradient(135deg,#6c5cff,#000);
-  box-shadow:0 0 25px rgba(108,92,255,.4);
-}
-
 /* SEARCH */
 .search{
   padding:15px 20px;
 }
-
 .search input{
   width:100%;
   padding:14px;
@@ -106,51 +54,37 @@ nav{
   border:1px solid var(--border);
   background:var(--card);
   color:white;
-  backdrop-filter:blur(10px);
 }
 
-/* TABS */
-.tabs{
+/* SECTION */
+.section{
+  padding:20px;
+}
+
+.section h2{
+  margin-bottom:10px;
+  font-size:18px;
+}
+
+/* ROW SCROLL */
+.row{
   display:flex;
-  gap:10px;
-  padding:0 20px;
+  gap:12px;
   overflow-x:auto;
 }
 
-.tab{
-  padding:8px 14px;
-  border-radius:999px;
+/* BOOK CARD */
+.book{
+  min-width:140px;
   background:var(--card);
-  color:var(--muted);
-  cursor:pointer;
-}
-
-.tab.active{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:white;
-}
-
-/* GRID */
-.grid{
-  padding:20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:16px;
-}
-
-/* CARD */
-.card{
-  background:var(--card);
-  border-radius:18px;
+  border-radius:14px;
   overflow:hidden;
-  backdrop-filter:blur(12px);
-  transition:.3s;
   cursor:pointer;
+  transition:.3s;
 }
 
-.card:hover{
-  transform:translateY(-6px) scale(1.03);
-  box-shadow:0 0 30px rgba(108,92,255,.3);
+.book:hover{
+  transform:scale(1.05);
 }
 
 .cover{
@@ -158,54 +92,63 @@ nav{
   background:#111;
 }
 
-/* CONTENT */
-.cardContent{
-  padding:12px;
+.info{
+  padding:10px;
 }
 
 .title{
-  font-size:14px;
+  font-size:13px;
   font-weight:700;
 }
 
 .author{
-  font-size:12px;
+  font-size:11px;
   color:var(--muted);
 }
 
-.actions{
-  display:flex;
-  justify-content:space-between;
-  margin-top:8px;
-  font-size:12px;
+/* PROGRESS BAR */
+.progress{
+  height:4px;
+  background:#222;
+  margin-top:6px;
+  border-radius:999px;
+  overflow:hidden;
+}
+.progress span{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
 }
 
-.like.active{
-  color:#ff4d6d;
+/* GRID */
+.grid{
+  padding:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:14px;
 }
 
 /* MODAL */
 .modal{
   position:fixed;
   inset:0;
+  background:rgba(0,0,0,.75);
   display:none;
   justify-content:center;
   align-items:center;
-  background:rgba(0,0,0,.7);
 }
 
 .modalContent{
   background:var(--card);
   padding:20px;
-  border-radius:20px;
+  border-radius:18px;
   width:90%;
   max-width:420px;
-  backdrop-filter:blur(20px);
 }
 
 /* BUTTON */
-.readBtn{
-  margin-top:15px;
+.btn{
+  margin-top:12px;
   width:100%;
   padding:12px;
   border:none;
@@ -222,25 +165,32 @@ nav{
 
 <nav>
   <div class="logo">SS <span>Studios</span></div>
-  <div class="profile"></div>
+  <div>📚 Library</div>
 </nav>
 
-<section class="hero">
-  <div class="featured" id="featured"></div>
-</section>
-
 <div class="search">
-  <input id="search" placeholder="Search stories...">
+  <input id="search" placeholder="Search library...">
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="filter('all',event)">All</div>
-  <div class="tab" onclick="filter('comic',event)">Comics</div>
-  <div class="tab" onclick="filter('book',event)">Books</div>
+<!-- CONTINUE -->
+<div class="section">
+  <h2>Continue Reading</h2>
+  <div class="row" id="continueRow"></div>
 </div>
 
-<div class="grid" id="grid"></div>
+<!-- POPULAR -->
+<div class="section">
+  <h2>Trending</h2>
+  <div class="row" id="popularRow"></div>
+</div>
 
+<!-- ALL -->
+<div class="section">
+  <h2>All Titles</h2>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modalContent" id="modalContent"></div>
 </div>
@@ -251,120 +201,106 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let currentUser=null;
-let allProjects=[];
+let user=null;
+let projects=[];
 
 /* USER */
-async function initUser(){
+async function init(){
   const { data } = await supabase.auth.getUser();
-  currentUser=data.user;
+  user=data.user;
 }
 
 /* FETCH */
-async function fetchProjects(){
+async function load(){
   const { data } = await supabase
     .from("projects")
     .select(`*, profiles(username), project_stats(likes, views)`)
     .order("created_at",{ascending:false});
 
-  allProjects=data||[];
-  render(allProjects);
-  renderFeatured(allProjects.slice(0,5));
+  projects=data||[];
+
+  renderAll(projects);
+  renderPopular(projects);
+  renderContinue(projects);
 }
 
-/* RENDER GRID */
-function render(items){
+/* ALL GRID */
+function renderAll(items){
   grid.innerHTML="";
-  items.forEach(item=>{
-    const el=document.createElement("div");
-    el.className="card";
-
-    el.innerHTML=`
-      <div class="cover" style="background:url('${item.cover_url||""}') center/cover"></div>
-      <div class="cardContent">
-        <div class="title">${item.title}</div>
-        <div class="author">@${item.profiles?.username||"user"}</div>
-        <div class="actions">
-          <span class="like" onclick="like(event,'${item.id}')">❤️ ${item.project_stats?.likes||0}</span>
-          <span>👁 ${item.project_stats?.views||0}</span>
-        </div>
-      </div>
-    `;
-
-    el.onclick=()=>openModal(item);
-    grid.appendChild(el);
+  items.forEach(b=>{
+    grid.appendChild(bookCard(b));
   });
 }
 
-/* FEATURED */
-function renderFeatured(items){
-  featured.innerHTML="";
-  items.forEach(i=>{
-    const el=document.createElement("div");
-    el.className="featureCard";
-    el.textContent="🔥 "+i.title;
-    featured.appendChild(el);
+/* POPULAR */
+function renderPopular(items){
+  popularRow.innerHTML="";
+  items.sort((a,b)=>(b.project_stats?.views||0)-(a.project_stats?.views||0))
+       .slice(0,10)
+       .forEach(b=>popularRow.appendChild(bookCard(b)));
+}
+
+/* CONTINUE (fake progress for now) */
+function renderContinue(items){
+  continueRow.innerHTML="";
+  items.slice(0,5).forEach(b=>{
+    const el=bookCard(b,true);
+    continueRow.appendChild(el);
   });
 }
 
-/* FILTER */
-function filter(type,e){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  e.target.classList.add("active");
+/* CARD */
+function bookCard(b,progress=false){
+  const el=document.createElement("div");
+  el.className="book";
 
-  if(type==="all") return render(allProjects);
-  render(allProjects.filter(i=>i.type===type));
+  el.innerHTML=`
+    <div class="cover" style="background:url('${b.cover_url||""}') center/cover"></div>
+    <div class="info">
+      <div class="title">${b.title}</div>
+      <div class="author">@${b.profiles?.username||"user"}</div>
+      ${progress?`<div class="progress"><span style="width:${Math.random()*80+10}%"></span></div>`:""}
+    </div>
+  `;
+
+  el.onclick=()=>openBook(b);
+  return el;
 }
 
 /* SEARCH */
 search.addEventListener("input",e=>{
   const v=e.target.value.toLowerCase();
-  render(allProjects.filter(i=>i.title.toLowerCase().includes(v)));
+  renderAll(projects.filter(p=>p.title.toLowerCase().includes(v)));
 });
 
-/* LIKE TOGGLE */
-async function like(e,id){
-  e.stopPropagation();
+/* OPEN BOOK */
+async function openBook(b){
+  modal.style.display="flex";
 
-  if(!currentUser) return alert("login");
-
-  const { data } = await supabase
-    .from("likes")
-    .select("*")
-    .eq("user_id",currentUser.id)
-    .eq("project_id",id);
-
-  if(data.length){
-    await supabase.from("likes").delete().eq("id",data[0].id);
-  } else {
-    await supabase.from("likes").insert({
-      user_id:currentUser.id,
-      project_id:id
+  /* track view */
+  if(user){
+    await supabase.from("views").insert({
+      user_id:user.id,
+      project_id:b.id
     });
   }
 
-  fetchProjects();
-}
-
-/* MODAL */
-function openModal(item){
-  modal.style.display="flex";
-
   modalContent.innerHTML=`
-    <h2>${item.title}</h2>
-    <p>@${item.profiles?.username}</p>
+    <h2>${b.title}</h2>
+    <p>@${b.profiles?.username}</p>
     <p style="color:gray;margin-top:10px;">
-      ${item.description||"No description"}
+      ${b.description||"No description yet"}
     </p>
-    <button class="readBtn">Read Now</button>
+
+    <button class="btn">Start Reading</button>
   `;
 }
 
 modal.onclick=()=>modal.style.display="none";
 
 /* INIT */
-initUser();
-fetchProjects();
+init();
+load();
 </script>
 
 </body>
