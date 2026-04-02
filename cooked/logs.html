@@ -34,34 +34,37 @@ background:#11161d;display:flex;justify-content:space-between;
 .log{margin-bottom:10px;padding:10px;background:#11161d;border-radius:8px;}
 .time{color:#777;font-size:11px;}
 
-/* CHAT */
-.chat{height:160px;border-top:1px solid #111;overflow:auto;padding:10px;}
-.msg{margin-bottom:6px;font-size:13px;}
-.name{font-weight:700;}
-.dev{color:#4da6ff;}
-.ops{color:#ffcc00;}
-.ai{color:#00ff9d;}
+.chat{height:120px;border-top:1px solid #111;overflow:auto;padding:10px;}
 
-/* INBOX */
 .inbox{
 position:fixed;
 right:0;
 top:0;
-width:280px;
+width:300px;
 height:100%;
 background:#05070a;
 border-left:1px solid #111;
 overflow:auto;
-z-index:50;
 }
 
 .dm{
-padding:10px;
+padding:12px;
 border-bottom:1px solid #111;
 cursor:pointer;
+position:relative;
 }
 
 .dm:hover{background:#111;}
+
+.unread{
+position:absolute;
+right:10px;
+top:10px;
+background:red;
+width:8px;
+height:8px;
+border-radius:50%;
+}
 
 .thread{
 position:fixed;
@@ -81,8 +84,15 @@ overflow:auto;
 margin-bottom:10px;
 }
 
-.tmsg{margin-bottom:8px;}
+.tmsg{margin-bottom:10px;}
 .me{color:#00ff9d;}
+
+input{
+padding:10px;
+border-radius:8px;
+border:none;
+margin-bottom:10px;
+}
 
 button{
 padding:10px;
@@ -106,7 +116,7 @@ cursor:pointer;
 <div class="comp">Auth <span class="status live">ONLINE</span></div>
 <div class="comp">AI Engine <span class="status build">TRAINING</span></div>
 
-<button onclick="triggerOutage()" style="margin-top:10px;">🚨 Trigger Outage</button>
+<button onclick="triggerOutage()">🚨 Trigger Outage</button>
 </div>
 
 <div class="main">
@@ -114,104 +124,82 @@ cursor:pointer;
 <div class="chat" id="chat"></div>
 </div>
 
-<!-- INBOX -->
 <div class="inbox" id="inbox"></div>
 
-<!-- THREAD -->
 <div class="thread" id="thread">
 <h3 id="threadName"></h3>
 <div class="threadMsgs" id="threadMsgs"></div>
-<input id="replyInput" placeholder="Reply...">
+<input id="replyInput" placeholder="Reply as CEO...">
 <button onclick="sendReply()">Send</button>
 <button onclick="closeThread()">Close</button>
 </div>
 
 <script>
 
-/* LOGS */
-const logs=[
-"Deploying update...",
-"Fixing Cook’ed bug...",
-"API reconnecting...",
-"Scaling servers...",
-"Hotfix pushed...",
-"Auth retry...",
-"Database spike detected..."
-];
-
-/* PEOPLE */
+/* STAFF PERSONALITIES */
 const staff=[
-{name:"Alex (Dev)",cls:"dev"},
-{name:"Maya (Ops)",cls:"ops"},
-{name:"Jordan (Backend)",cls:"dev"},
-{name:"AI Worker",cls:"ai"}
+{name:"Alex (Dev)", replies:["restarting now","checking logs","might be API","trying fix rn"]},
+{name:"Maya (Ops)", replies:["traffic spiking","servers stressed","we need scale","monitoring rn"]},
+{name:"Jordan (Backend)", replies:["db might be cooked","queries slow","fixing indexes","patching now"]},
+{name:"AI Worker", replies:["generating fix...","optimizing system","analyzing error","auto-repair attempt"]}
 ];
 
-/* UNIQUE MESSAGE POOL */
-let messagePool=[
-"site is lagging bad",
-"users reporting crashes",
-"feed not loading",
-"api might be down",
-"checking logs now",
-"this might be database",
-"trying restart",
-"we got spike in traffic",
-"nah something broke fr",
-"looking into it"
-];
-
-/* INBOX THREADS */
 let threads=[];
+let outage=false;
 
-/* ADD LOG */
+/* LOGS */
+const logs=["Deploying...","Scaling...","Fixing bug...","Server retry..."];
+
+/* LOG */
 function addLog(){
 const log=document.createElement("div");
 log.className="log";
-log.innerHTML=logs[Math.floor(Math.random()*logs.length)] +
+log.innerHTML=logs[Math.floor(Math.random()*logs.length)]+
 `<div class="time">${new Date().toLocaleTimeString()}</div>`;
 logFeed.prepend(log);
 }
 
-/* CHAT (NO REPEAT) */
-function addMsg(){
-if(messagePool.length===0) return;
-
-const person=staff[Math.floor(Math.random()*staff.length)];
-const text=messagePool.splice(Math.floor(Math.random()*messagePool.length),1)[0];
-
-const msg=document.createElement("div");
-msg.className="msg";
-msg.innerHTML=`<span class="name ${person.cls}">${person.name}:</span> ${text}`;
-chat.appendChild(msg);
-chat.scrollTop=chat.scrollHeight;
-
-/* ALSO SEND TO DM */
-createDM(person.name,text);
-}
-
 /* CREATE DM */
-function createDM(name,text){
-let thread=threads.find(t=>t.name===name);
+function createDM(person,text){
+let t=threads.find(x=>x.name===person.name);
 
-if(!thread){
-thread={name, msgs:[]};
-threads.push(thread);
+if(!t){
+t={name:person.name,msgs:[],unread:true};
+threads.push(t);
 }
 
-thread.msgs.push({from:name,text});
-
-/* RENDER INBOX */
+t.msgs.push({from:person.name,text});
+t.unread=true;
 renderInbox();
 }
 
-/* INBOX UI */
+/* RANDOM DM */
+function randomDM(){
+const person=staff[Math.floor(Math.random()*staff.length)];
+
+const msgs= outage ? [
+"WE GOT ERRORS",
+"should I restart server?",
+"users complaining rn",
+"what you want me to do?"
+] : [
+"small bug here",
+"should I push update?",
+"checking something quick",
+"all good mostly"
+];
+
+createDM(person,msgs[Math.floor(Math.random()*msgs.length)]);
+}
+
+/* INBOX */
 function renderInbox(){
 inbox.innerHTML="";
 threads.forEach((t,i)=>{
 const el=document.createElement("div");
 el.className="dm";
-el.innerHTML=`<b>${t.name}</b><br>${t.msgs[t.msgs.length-1].text}`;
+el.innerHTML=`<b>${t.name}</b><br>${t.msgs[t.msgs.length-1].text}`+
+(t.unread?'<div class="unread"></div>':'');
 el.onclick=()=>openThread(i);
 inbox.appendChild(el);
 });
@@ -222,45 +210,48 @@ let currentThread=null;
 function openThread(i){
 currentThread=i;
 thread.classList.add("active");
+threads[i].unread=false;
+
 threadName.innerText=threads[i].name;
 
-threadMsgs.innerHTML=threads[i].msgs.map(m=>
+renderThread();
+renderInbox();
+}
+
+function renderThread(){
+threadMsgs.innerHTML=threads[currentThread].msgs.map(m=>
 `<div class="tmsg ${m.from==='You'?'me':''}"><b>${m.from}:</b> ${m.text}</div>`
 ).join("");
 }
 
-/* SEND REPLY */
+/* REPLY */
 function sendReply(){
 const text=replyInput.value;
-threads[currentThread].msgs.push({from:"You",text});
+const t=threads[currentThread];
+
+t.msgs.push({from:"You",text});
 replyInput.value="";
-openThread(currentThread);
+renderThread();
+
+/* STAFF RESPONDS */
+setTimeout(()=>{
+const person=staff.find(s=>s.name===t.name);
+const reply=person.replies[Math.floor(Math.random()*person.replies.length)];
+t.msgs.push({from:t.name,text:reply});
+renderThread();
+},1000);
 }
 
 /* CLOSE */
-function closeThread(){
-thread.classList.remove("active");
-}
+function closeThread(){thread.classList.remove("active");}
 
-/* OUTAGE MODE */
-function triggerOutage(){
-messagePool=[
-"SITE DOWN??",
-"yo prod is dead",
-"500 errors everywhere",
-"users blowing me up",
-"WE ARE DOWN",
-"checking db NOW",
-"restart??",
-"this is bad",
-"traffic spike killed us"
-];
-}
+/* OUTAGE */
+function triggerOutage(){outage=true;}
 
 /* LOOP */
 setInterval(()=>{
 addLog();
-if(Math.random()>0.5) addMsg();
+if(Math.random()>0.6) randomDM();
 },1200);
 
 </script>
