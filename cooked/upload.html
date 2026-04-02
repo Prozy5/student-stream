@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cook’ed</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+body{background:black;color:white;overflow:hidden;}
+
+.feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+.card{
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+}
+
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  pointer-events:none;
+}
+
+.overlay{
+  position:absolute;
+  bottom:0;
+  padding:20px;
+  width:100%;
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
+}
+
+.title{font-size:26px;font-weight:900;}
+.desc{font-size:14px;color:#ccc;}
+
+.actions{
+  position:absolute;
+  right:15px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#00ff9d;
+  font-weight:900;
+  cursor:pointer;
+}
+
+/* UPLOAD MODAL */
+.upload{
+  position:fixed;
+  inset:0;
+  background:#0b0f14;
+  padding:20px;
+  transform:translateY(100%);
+  transition:.4s;
+  z-index:20;
+}
+
+.upload.active{transform:translateY(0);}
+
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:none;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="feed" id="feed"></div>
+
+<!-- UPLOAD PANEL -->
+<div class="upload" id="upload">
+  <h2>Upload Recipe 🍳</h2>
+
+  <input id="video" placeholder="Google Drive Link">
+  <input id="title" placeholder="Recipe Title">
+  <input id="desc" placeholder="Short Description">
+  <textarea id="ingredients" placeholder="Ingredients (comma separated)"></textarea>
+  <textarea id="steps" placeholder="Steps (comma separated)"></textarea>
+
+  <button onclick="submitRecipe()">Post</button>
+  <button onclick="closeUpload()">Cancel</button>
+</div>
+
+<!-- FLOAT BUTTON -->
+<button style="position:fixed;bottom:20px;right:20px;" onclick="openUpload()">+</button>
+
+<script>
+
+/* STORAGE */
+let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+
+/* DRIVE CONVERT */
+function getDriveEmbed(url){
+  try{
+    const id = url.split("/d/")[1].split("/")[0];
+    return `https://drive.google.com/uc?export=preview&id=${id}`;
+  }catch{
+    return "";
+  }
+}
+
+/* RENDER */
+function render(){
+  feed.innerHTML="";
+
+  recipes.forEach((r,i)=>{
+    const el=document.createElement("div");
+    el.className="card";
+
+    el.innerHTML=`
+      <iframe src="${getDriveEmbed(r.video)}"></iframe>
+
+      <div class="overlay">
+        <div class="title">${r.title}</div>
+        <div class="desc">${r.desc}</div>
+        <button onclick="openCook(${i})">Cook</button>
+      </div>
+
+      <div class="actions">
+        <div>❤️</div>
+        <div>💬</div>
+        <div>🔖</div>
+      </div>
+    `;
+
+    feed.appendChild(el);
+  });
+}
+
+/* UPLOAD */
+function openUpload(){
+  upload.classList.add("active");
+}
+
+function closeUpload(){
+  upload.classList.remove("active");
+}
+
+function submitRecipe(){
+  const newRecipe={
+    video:video.value,
+    title:title.value,
+    desc:desc.value,
+    ingredients:ingredients.value.split(","),
+    steps:steps.value.split(",")
+  };
+
+  recipes.unshift(newRecipe);
+  localStorage.setItem("recipes",JSON.stringify(recipes));
+
+  render();
+  closeUpload();
+}
+
+/* COOK MODE */
+function openCook(i){
+  alert("Next step: connect full cooking UI again 🔥");
+}
+
+/* INIT */
+render();
+
+</script>
+
+</body>
+</html>
