@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudentStream HQ • Live Ops</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+body{
+  background:#0b0f14;
+  color:#e6edf3;
+  display:flex;
+  height:100vh;
+}
+
+/* LAYOUT */
+.sidebar{
+  width:260px;
+  background:#06080c;
+  padding:15px;
+  border-right:1px solid #111;
+}
+
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+/* LOGO */
+.logo{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:20px;
+}
+
+/* COMPONENTS */
+.comp{
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:8px;
+  background:#11161d;
+  display:flex;
+  justify-content:space-between;
+}
+
+.status{
+  font-size:10px;
+  padding:4px 6px;
+  border-radius:999px;
+}
+
+.live{background:#003d2e;color:#00ff9d;}
+.build{background:#2e2e00;color:#ffd000;}
+.err{background:#3d0000;color:#ff4d4d;}
+
+/* FEED */
+.feed{
+  flex:1;
+  overflow:auto;
+  padding:15px;
+}
+
+/* LOG ITEM */
+.log{
+  margin-bottom:10px;
+  padding:10px;
+  background:#11161d;
+  border-radius:8px;
+  font-size:13px;
+}
+
+.time{color:#777;font-size:11px;}
+
+/* CHAT */
+.chat{
+  height:200px;
+  border-top:1px solid #111;
+  overflow:auto;
+  padding:10px;
+}
+
+.msg{
+  margin-bottom:8px;
+  font-size:13px;
+}
+
+.name{font-weight:700;}
+
+.ai{color:#00ff9d;}
+.dev{color:#4da6ff;}
+.ops{color:#ffcc00;}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">StudentStream HQ</div>
+
+  <div class="comp">Cook’ed <span class="status build">BUILDING</span></div>
+  <div class="comp">SS Films <span class="status live">LIVE</span></div>
+  <div class="comp">Library <span class="status build">SYNCING</span></div>
+  <div class="comp">Auth System <span class="status live">ONLINE</span></div>
+  <div class="comp">AI Engine <span class="status build">TRAINING</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="feed" id="logFeed"></div>
+
+  <div class="chat" id="chat"></div>
+
+</div>
+
+<script>
+
+/* FAKE DATA */
+const logs = [
+  "Deploying Cook’ed feed update...",
+  "Uploading new recipe generator...",
+  "Fixing video playback bug...",
+  "Connecting Supabase auth...",
+  "Publishing Library module...",
+  "AI generating viral content...",
+  "SS Films upload pipeline active...",
+  "Optimizing mobile layout...",
+  "Syncing user profiles...",
+  "Pushing hotfix to production..."
+];
+
+const names = [
+  {name:"Alex (Dev)", cls:"dev"},
+  {name:"Maya (Ops)", cls:"ops"},
+  {name:"AI Worker", cls:"ai"},
+  {name:"Jordan (Backend)", cls:"dev"},
+  {name:"System Bot", cls:"ai"}
+];
+
+const messages = [
+  "Cook’ed feed almost done",
+  "why is AI generating burgers nonstop 😭",
+  "pushing fix now",
+  "library module glitching",
+  "WE LIVE??",
+  "nah not yet give me 2 min",
+  "deploy succeeded 🚀",
+  "checking logs now",
+  "AI just made 12 recipes in 5 sec 💀"
+];
+
+/* ADD LOG */
+function addLog(){
+  const log = document.createElement("div");
+  log.className="log";
+
+  const text = logs[Math.floor(Math.random()*logs.length)];
+  const time = new Date().toLocaleTimeString();
+
+  log.innerHTML = `
+    ${text}
+    <div class="time">${time}</div>
+  `;
+
+  logFeed.prepend(log);
+}
+
+/* ADD CHAT */
+function addMsg(){
+  const msg = document.createElement("div");
+
+  const person = names[Math.floor(Math.random()*names.length)];
+  const text = messages[Math.floor(Math.random()*messages.length)];
+
+  msg.className="msg";
+  msg.innerHTML = `<span class="name ${person.cls}">${person.name}:</span> ${text}`;
+
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/* RANDOM STATUS CHANGE */
+function updateStatus(){
+  document.querySelectorAll(".status").forEach(s=>{
+    const r = Math.random();
+    s.classList.remove("live","build","err");
+
+    if(r<0.6){s.classList.add("live"); s.innerText="LIVE";}
+    else if(r<0.9){s.classList.add("build"); s.innerText="BUILDING";}
+    else{s.classList.add("err"); s.innerText="ERROR";}
+  });
+}
+
+/* LOOP */
+setInterval(()=>{
+  addLog();
+  if(Math.random()>0.4) addMsg();
+  if(Math.random()>0.7) updateStatus();
+},1200);
+
+</script>
+
+</body>
+</html>
