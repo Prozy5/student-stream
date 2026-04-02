@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SS System Core</title>
+
+<style>
+:root{
+  --bg:#05070d;
+  --panel:#0c1220;
+  --accent:#6c5cff;
+  --green:#00ffae;
+  --red:#ff4d6d;
+  --text:#dfe6ff;
+}
+
+body{
+  margin:0;
+  font-family:monospace;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* NAV */
+nav{
+  padding:15px 20px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  font-weight:800;
+}
+
+/* LAYOUT */
+.container{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  height:100vh;
+}
+
+/* WORKERS */
+.sidebar{
+  background:var(--panel);
+  padding:15px;
+  overflow:auto;
+}
+
+.worker{
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+  background:rgba(255,255,255,.03);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.status{
+  font-size:11px;
+  padding:3px 8px;
+  border-radius:999px;
+}
+
+.active{background:var(--green); color:black;}
+.idle{background:#444;}
+.error{background:var(--red);}
+
+/* LOG PANEL */
+.logs{
+  padding:15px;
+  overflow:auto;
+}
+
+.log{
+  font-size:12px;
+  margin-bottom:6px;
+  opacity:.9;
+}
+
+.success{color:var(--green);}
+.fail{color:var(--red);}
+.info{color:#9ab;}
+
+/* METRICS */
+.metrics{
+  display:flex;
+  gap:15px;
+  padding:10px 15px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.metric{
+  background:var(--panel);
+  padding:10px;
+  border-radius:10px;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>⚙️ SS Studios • AI System Core</nav>
+
+<div class="metrics">
+  <div class="metric">CPU: <span id="cpu">23%</span></div>
+  <div class="metric">Requests: <span id="req">1,204</span></div>
+  <div class="metric">Active Users: <span id="users">89</span></div>
+</div>
+
+<div class="container">
+
+  <!-- WORKERS -->
+  <div class="sidebar" id="workers"></div>
+
+  <!-- LOGS -->
+  <div class="logs" id="logs"></div>
+
+</div>
+
+<script>
+const workerNames=[
+  "Content AI",
+  "Recommendation Engine",
+  "Upload Processor",
+  "Moderation Bot",
+  "Analytics AI",
+  "Search Indexer",
+  "Notification System",
+  "Feed Generator"
+];
+
+const actions=[
+  "Processing new upload",
+  "Analyzing engagement data",
+  "Generating recommendations",
+  "Indexing content",
+  "Scanning for violations",
+  "Updating feed",
+  "Syncing database",
+  "Optimizing images"
+];
+
+const logsEl=document.getElementById("logs");
+const workersEl=document.getElementById("workers");
+
+/* CREATE WORKERS */
+workerNames.forEach(name=>{
+  const el=document.createElement("div");
+  el.className="worker";
+  el.innerHTML=`
+    <span>${name}</span>
+    <span class="status idle">Idle</span>
+  `;
+  workersEl.appendChild(el);
+});
+
+/* UPDATE WORKERS */
+function updateWorkers(){
+  document.querySelectorAll(".worker").forEach(w=>{
+    const status=w.querySelector(".status");
+    const r=Math.random();
+
+    if(r<0.7){
+      status.className="status active";
+      status.textContent="Processing";
+    } else if(r<0.9){
+      status.className="status idle";
+      status.textContent="Idle";
+    } else{
+      status.className="status error";
+      status.textContent="Error";
+    }
+  });
+}
+
+/* ADD LOG */
+function addLog(){
+  const log=document.createElement("div");
+  log.className="log";
+
+  const worker=workerNames[Math.floor(Math.random()*workerNames.length)];
+  const action=actions[Math.floor(Math.random()*actions.length)];
+  const type=Math.random();
+
+  if(type<0.7){
+    log.classList.add("success");
+    log.textContent=`✔ ${worker}: ${action} completed`;
+  } else if(type<0.9){
+    log.classList.add("info");
+    log.textContent=`… ${worker}: ${action}`;
+  } else{
+    log.classList.add("fail");
+    log.textContent=`✖ ${worker}: failed task`;
+  }
+
+  logsEl.prepend(log);
+
+  if(logsEl.children.length>50){
+    logsEl.removeChild(logsEl.lastChild);
+  }
+}
+
+/* METRICS */
+function updateMetrics(){
+  cpu.textContent=Math.floor(Math.random()*60+20)+"%";
+  req.textContent=parseInt(req.textContent)+Math.floor(Math.random()*10);
+  users.textContent=Math.floor(Math.random()*200+50);
+}
+
+/* LOOP */
+setInterval(()=>{
+  addLog();
+  updateWorkers();
+  updateMetrics();
+},800);
+</script>
+
+</body>
+</html>
