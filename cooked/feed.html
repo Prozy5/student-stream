@@ -38,7 +38,7 @@ iframe{
   background:linear-gradient(transparent,rgba(0,0,0,.9));
 }
 
-.title{font-size:26px;font-weight:900;}
+.title{font-size:24px;font-weight:900;}
 .desc{font-size:14px;color:#ccc;}
 
 /* ACTIONS */
@@ -54,10 +54,9 @@ iframe{
 
 .actions div{
   cursor:pointer;
-  font-size:18px;
 }
 
-/* LIKE ANIM */
+/* HEART ANIM */
 .heart{
   position:absolute;
   top:50%;
@@ -77,7 +76,32 @@ iframe{
   100%{opacity:0;}
 }
 
-/* BUTTON */
+/* FLOAT BTN */
+.float{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  font-size:22px;
+}
+
+/* RECIPE VIEW */
+.recipeView{
+  position:fixed;
+  inset:0;
+  background:#0b0f14;
+  padding:20px;
+  overflow:auto;
+  transform:translateY(100%);
+  transition:.4s;
+  z-index:40;
+}
+
+.recipeView.active{transform:translateY(0);}
+
+.section{margin-top:20px;}
+.section h3{margin-bottom:10px;}
+.step{margin-bottom:8px;color:#ccc;}
+
 button{
   padding:10px;
   border:none;
@@ -87,58 +111,6 @@ button{
   cursor:pointer;
   margin-top:10px;
 }
-
-/* UPLOAD */
-.upload{
-  position:fixed;
-  inset:0;
-  background:#0b0f14;
-  padding:20px;
-  transform:translateY(100%);
-  transition:.4s;
-  z-index:20;
-}
-
-.upload.active{transform:translateY(0);}
-
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border:none;
-  border-radius:8px;
-}
-
-/* COOK MODE */
-.cookMode{
-  position:fixed;
-  inset:0;
-  background:#0b0f14;
-  padding:20px;
-  transform:translateY(100%);
-  transition:.4s;
-  z-index:30;
-}
-
-.cookMode.active{transform:translateY(0);}
-
-.step{
-  margin-top:20px;
-  font-size:18px;
-}
-
-.ingredients{
-  margin-top:10px;
-  color:#aaa;
-}
-
-/* FLOAT BTN */
-.float{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  font-size:22px;
-}
 </style>
 </head>
 
@@ -146,35 +118,50 @@ input,textarea{
 
 <div class="feed" id="feed"></div>
 
-<!-- UPLOAD -->
-<div class="upload" id="upload">
-  <h2>Upload Recipe 🍳</h2>
+<!-- RECIPE VIEW -->
+<div class="recipeView" id="recipeView">
+  <h2 id="rvTitle"></h2>
+  <p id="rvDesc"></p>
 
-  <input id="video" placeholder="Google Drive Link">
-  <input id="title" placeholder="Recipe Title">
-  <input id="desc" placeholder="Short Description">
-  <textarea id="ingredients" placeholder="Ingredients (comma separated)"></textarea>
-  <textarea id="steps" placeholder="Steps (comma separated)"></textarea>
+  <div class="section">
+    <h3>Ingredients</h3>
+    <div id="rvIngredients"></div>
+  </div>
 
-  <button onclick="submitRecipe()">Post</button>
-  <button onclick="closeUpload()">Cancel</button>
+  <div class="section">
+    <h3>Steps</h3>
+    <div id="rvSteps"></div>
+  </div>
+
+  <button onclick="closeRecipe()">Close</button>
 </div>
 
-<!-- COOK MODE -->
-<div class="cookMode" id="cookMode">
-  <h2 id="cookTitle"></h2>
-  <div class="ingredients" id="cookIngredients"></div>
-  <div class="step" id="cookStep"></div>
-  <button onclick="nextStep()">Next Step</button>
-  <button onclick="closeCook()">Close</button>
-</div>
-
-<button class="float" onclick="openUpload()">＋</button>
+<button class="float" onclick="addFake()">＋</button>
 
 <script>
 
 /* STORAGE */
 let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+
+/* FAKE DATA IF EMPTY */
+if(recipes.length === 0){
+  recipes = [
+    {
+      video:"https://drive.google.com/file/d/1d_dummy_video/view",
+      title:"Garlic Butter Chicken",
+      desc:"Juicy, buttery, viral 🔥",
+      ingredients:["chicken","garlic","butter","salt"],
+      steps:["Season chicken","Cook in pan","Add butter + garlic","Serve hot"]
+    },
+    {
+      video:"https://drive.google.com/file/d/1d_dummy_video/view",
+      title:"Cheesy Ramen Hack",
+      desc:"College meal upgrade 🧀",
+      ingredients:["ramen","cheese","milk"],
+      steps:["Boil ramen","Add cheese","Mix creamy","Eat"]
+    }
+  ];
+}
 
 /* DRIVE */
 function getDriveEmbed(url){
@@ -193,12 +180,11 @@ function render(){
     el.className="card";
 
     el.innerHTML=`
-      <iframe src="${getDriveEmbed(r.video)}"></iframe>
+      <iframe src="${getDriveEmbed(r.video)}" onclick="openRecipe(${i})"></iframe>
 
       <div class="overlay">
         <div class="title">${r.title}</div>
         <div class="desc">${r.desc}</div>
-        <button onclick="openCook(${i})">Cook</button>
       </div>
 
       <div class="actions">
@@ -214,6 +200,25 @@ function render(){
 
     feed.appendChild(el);
   });
+
+  localStorage.setItem("recipes",JSON.stringify(recipes));
+}
+
+/* OPEN RECIPE */
+function openRecipe(i){
+  const r = recipes[i];
+
+  rvTitle.innerText = r.title;
+  rvDesc.innerText = r.desc;
+
+  rvIngredients.innerHTML = r.ingredients.map(x=>`• ${x}`).join("<br>");
+  rvSteps.innerHTML = r.steps.map((s,i)=>`<div class="step">${i+1}. ${s}</div>`).join("");
+
+  recipeView.classList.add("active");
+}
+
+function closeRecipe(){
+  recipeView.classList.remove("active");
 }
 
 /* LIKE */
@@ -233,58 +238,16 @@ function likeAnim(card){
   setTimeout(()=>h.classList.remove("show"),600);
 }
 
-/* UPLOAD */
-function openUpload(){upload.classList.add("active");}
-function closeUpload(){upload.classList.remove("active");}
-
-function submitRecipe(){
-  if(!video.value || !title.value){
-    alert("Fill required fields");
-    return;
-  }
-
-  const newRecipe={
-    video:video.value,
-    title:title.value,
-    desc:desc.value,
-    ingredients:ingredients.value.split(","),
-    steps:steps.value.split(",")
-  };
-
-  recipes.unshift(newRecipe);
-  localStorage.setItem("recipes",JSON.stringify(recipes));
-
+/* ADD FAKE (for testing growth feel) */
+function addFake(){
+  recipes.unshift({
+    video:"https://drive.google.com/file/d/1d_dummy_video/view",
+    title:"Viral Egg Sandwich",
+    desc:"Simple but hits 🔥",
+    ingredients:["egg","bread","butter"],
+    steps:["Crack egg","Toast bread","Assemble","Eat"]
+  });
   render();
-  closeUpload();
-
-  video.value=title.value=desc.value=ingredients.value=steps.value="";
-}
-
-/* COOK MODE */
-let currentRecipe, stepIndex=0;
-
-function openCook(i){
-  currentRecipe=recipes[i];
-  stepIndex=0;
-
-  cookTitle.innerText=currentRecipe.title;
-  cookIngredients.innerText="Ingredients: "+currentRecipe.ingredients.join(", ");
-  cookStep.innerText=currentRecipe.steps[0];
-
-  cookMode.classList.add("active");
-}
-
-function nextStep(){
-  stepIndex++;
-  if(stepIndex>=currentRecipe.steps.length){
-    cookStep.innerText="Done 🎉";
-    return;
-  }
-  cookStep.innerText=currentRecipe.steps[stepIndex];
-}
-
-function closeCook(){
-  cookMode.classList.remove("active");
 }
 
 /* INIT */
