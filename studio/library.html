@@ -3,26 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SS Studios Library</title>
+
+<title>SS Studios</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
-/* SAME DESIGN (kept yours but polished slightly) */
 :root{
-  --bg:#04070d;
-  --card:#0c1424;
+  --bg:#03060d;
+  --card:rgba(255,255,255,.05);
   --accent:#6c5cff;
+  --accent2:#9b8cff;
   --text:#eef2ff;
   --muted:#8b9ab5;
   --border:rgba(255,255,255,.08);
 }
 
+/* 🌌 BACKGROUND */
 body{
-  font-family:system-ui;
-  background:var(--bg);
-  color:var(--text);
   margin:0;
+  font-family:system-ui;
+  color:var(--text);
+  background:radial-gradient(circle at 20% 20%, #1a1f3a, #03060d);
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  width:200%;
+  height:200%;
+  background:
+    radial-gradient(circle, rgba(108,92,255,.15), transparent 40%),
+    radial-gradient(circle, rgba(155,140,255,.1), transparent 50%);
+  animation:floatBg 20s infinite linear;
+}
+
+@keyframes floatBg{
+  0%{transform:translate(0,0)}
+  50%{transform:translate(-5%,-5%)}
+  100%{transform:translate(0,0)}
 }
 
 /* NAV */
@@ -30,38 +50,128 @@ nav{
   display:flex;
   justify-content:space-between;
   padding:18px 25px;
+  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
 }
 
-.logo{font-weight:900;font-size:22px;}
-.logo span{color:var(--accent)}
+.logo{
+  font-weight:900;
+  font-size:22px;
+}
+.logo span{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.profile{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#6c5cff,#000);
+}
+
+/* HERO */
+.hero{
+  padding:20px;
+}
+
+.featured{
+  display:flex;
+  gap:15px;
+  overflow-x:auto;
+}
+
+.featureCard{
+  min-width:260px;
+  height:160px;
+  border-radius:18px;
+  padding:15px;
+  display:flex;
+  align-items:flex-end;
+  font-weight:700;
+  background:linear-gradient(135deg,#6c5cff,#000);
+  box-shadow:0 0 25px rgba(108,92,255,.4);
+}
+
+/* SEARCH */
+.search{
+  padding:15px 20px;
+}
+
+.search input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:white;
+  backdrop-filter:blur(10px);
+}
+
+/* TABS */
+.tabs{
+  display:flex;
+  gap:10px;
+  padding:0 20px;
+  overflow-x:auto;
+}
+
+.tab{
+  padding:8px 14px;
+  border-radius:999px;
+  background:var(--card);
+  color:var(--muted);
+  cursor:pointer;
+}
+
+.tab.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+}
 
 /* GRID */
 .grid{
   padding:20px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:15px;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:16px;
 }
 
+/* CARD */
 .card{
   background:var(--card);
-  border-radius:14px;
+  border-radius:18px;
   overflow:hidden;
-  cursor:pointer;
+  backdrop-filter:blur(12px);
   transition:.3s;
+  cursor:pointer;
 }
-.card:hover{transform:scale(1.05)}
+
+.card:hover{
+  transform:translateY(-6px) scale(1.03);
+  box-shadow:0 0 30px rgba(108,92,255,.3);
+}
 
 .cover{
-  height:160px;
+  height:180px;
   background:#111;
 }
 
-.cardContent{padding:10px}
+/* CONTENT */
+.cardContent{
+  padding:12px;
+}
 
-.title{font-weight:700;font-size:14px;}
-.author{font-size:12px;color:var(--muted);}
+.title{
+  font-size:14px;
+  font-weight:700;
+}
+
+.author{
+  font-size:12px;
+  color:var(--muted);
+}
 
 .actions{
   display:flex;
@@ -70,24 +180,40 @@ nav{
   font-size:12px;
 }
 
-.like{cursor:pointer}
+.like.active{
+  color:#ff4d6d;
+}
 
 /* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.7);
   display:none;
   justify-content:center;
   align-items:center;
+  background:rgba(0,0,0,.7);
 }
 
 .modalContent{
   background:var(--card);
   padding:20px;
-  border-radius:16px;
+  border-radius:20px;
   width:90%;
-  max-width:400px;
+  max-width:420px;
+  backdrop-filter:blur(20px);
+}
+
+/* BUTTON */
+.readBtn{
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:999px;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -96,8 +222,22 @@ nav{
 
 <nav>
   <div class="logo">SS <span>Studios</span></div>
-  <div>📚 Library</div>
+  <div class="profile"></div>
 </nav>
+
+<section class="hero">
+  <div class="featured" id="featured"></div>
+</section>
+
+<div class="search">
+  <input id="search" placeholder="Search stories...">
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="filter('all',event)">All</div>
+  <div class="tab" onclick="filter('comic',event)">Comics</div>
+  <div class="tab" onclick="filter('book',event)">Books</div>
+</div>
 
 <div class="grid" id="grid"></div>
 
@@ -106,120 +246,124 @@ nav{
 </div>
 
 <script>
-/* 🔌 CONNECT SUPABASE */
 const supabase = window.supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let currentUser = null;
+let currentUser=null;
+let allProjects=[];
 
-/* 🔐 GET USER */
-async function getUser(){
+/* USER */
+async function initUser(){
   const { data } = await supabase.auth.getUser();
-  currentUser = data.user;
+  currentUser=data.user;
 }
-getUser();
 
-/* 📚 FETCH PROJECTS */
+/* FETCH */
 async function fetchProjects(){
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("projects")
-    .select(`
-      *,
-      profiles(username),
-      project_stats(likes, views)
-    `)
-    .order("created_at", { ascending:false });
+    .select(`*, profiles(username), project_stats(likes, views)`)
+    .order("created_at",{ascending:false});
 
-  if(error){
-    console.error(error);
-    return;
-  }
-
-  render(data);
+  allProjects=data||[];
+  render(allProjects);
+  renderFeatured(allProjects.slice(0,5));
 }
 
-/* 🎨 RENDER */
+/* RENDER GRID */
 function render(items){
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-
+  grid.innerHTML="";
   items.forEach(item=>{
-    const el = document.createElement("div");
+    const el=document.createElement("div");
     el.className="card";
 
     el.innerHTML=`
-      <div class="cover" style="background:url('${item.cover_url || ""}') center/cover"></div>
+      <div class="cover" style="background:url('${item.cover_url||""}') center/cover"></div>
       <div class="cardContent">
         <div class="title">${item.title}</div>
-        <div class="author">@${item.profiles?.username || "unknown"}</div>
+        <div class="author">@${item.profiles?.username||"user"}</div>
         <div class="actions">
-          <span class="like" onclick="like(event,'${item.id}')">❤️ ${item.project_stats?.likes || 0}</span>
-          <span>👁 ${item.project_stats?.views || 0}</span>
+          <span class="like" onclick="like(event,'${item.id}')">❤️ ${item.project_stats?.likes||0}</span>
+          <span>👁 ${item.project_stats?.views||0}</span>
         </div>
       </div>
     `;
 
     el.onclick=()=>openModal(item);
-
     grid.appendChild(el);
   });
 }
 
-/* ❤️ LIKE SYSTEM */
-async function like(e, projectId){
+/* FEATURED */
+function renderFeatured(items){
+  featured.innerHTML="";
+  items.forEach(i=>{
+    const el=document.createElement("div");
+    el.className="featureCard";
+    el.textContent="🔥 "+i.title;
+    featured.appendChild(el);
+  });
+}
+
+/* FILTER */
+function filter(type,e){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  e.target.classList.add("active");
+
+  if(type==="all") return render(allProjects);
+  render(allProjects.filter(i=>i.type===type));
+}
+
+/* SEARCH */
+search.addEventListener("input",e=>{
+  const v=e.target.value.toLowerCase();
+  render(allProjects.filter(i=>i.title.toLowerCase().includes(v)));
+});
+
+/* LIKE TOGGLE */
+async function like(e,id){
   e.stopPropagation();
 
-  if(!currentUser){
-    alert("Login first");
-    return;
-  }
+  if(!currentUser) return alert("login");
 
-  const { error } = await supabase
+  const { data } = await supabase
     .from("likes")
-    .insert({
-      user_id: currentUser.id,
-      project_id: projectId
-    });
+    .select("*")
+    .eq("user_id",currentUser.id)
+    .eq("project_id",id);
 
-  if(error){
-    console.log("Already liked or error");
+  if(data.length){
+    await supabase.from("likes").delete().eq("id",data[0].id);
+  } else {
+    await supabase.from("likes").insert({
+      user_id:currentUser.id,
+      project_id:id
+    });
   }
 
   fetchProjects();
 }
 
-/* 👀 VIEW TRACK */
-async function addView(projectId){
-  if(!currentUser) return;
-
-  await supabase
-    .from("views")
-    .insert({
-      user_id: currentUser.id,
-      project_id: projectId
-    });
-}
-
-/* 📖 MODAL */
+/* MODAL */
 function openModal(item){
-  document.getElementById("modal").style.display="flex";
+  modal.style.display="flex";
 
-  addView(item.id);
-
-  document.getElementById("modalContent").innerHTML=`
+  modalContent.innerHTML=`
     <h2>${item.title}</h2>
     <p>@${item.profiles?.username}</p>
-    <p style="margin-top:10px;color:gray;">
-      ${item.description || "No description yet."}
+    <p style="color:gray;margin-top:10px;">
+      ${item.description||"No description"}
     </p>
+    <button class="readBtn">Read Now</button>
   `;
 }
 
 modal.onclick=()=>modal.style.display="none";
 
-/* 🚀 INIT */
+/* INIT */
+initUser();
 fetchProjects();
 </script>
 
