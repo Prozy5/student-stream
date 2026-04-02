@@ -8,7 +8,7 @@
 
 <style>
 :root{
-  --bg:#05070d;
+  --bg:#03060f;
   --panel:#0c1220;
   --accent:#6c5cff;
   --green:#00ffae;
@@ -21,6 +21,24 @@ body{
   font-family:monospace;
   background:var(--bg);
   color:var(--text);
+  overflow:hidden;
+}
+
+/* 🌌 ANIMATED BG */
+body::before{
+  content:"";
+  position:fixed;
+  width:200%;
+  height:200%;
+  background:
+    radial-gradient(circle, rgba(108,92,255,.15), transparent 40%),
+    radial-gradient(circle, rgba(0,255,174,.1), transparent 50%);
+  animation:move 20s linear infinite;
+}
+@keyframes move{
+  0%{transform:translate(0,0)}
+  50%{transform:translate(-5%,-5%)}
+  100%{transform:translate(0,0)}
 }
 
 /* NAV */
@@ -28,13 +46,38 @@ nav{
   padding:15px 20px;
   border-bottom:1px solid rgba(255,255,255,.1);
   font-weight:800;
+  display:flex;
+  justify-content:space-between;
+}
+
+.statusGlobal{
+  font-size:12px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:var(--green);
+  color:black;
+}
+
+/* METRICS */
+.metrics{
+  display:flex;
+  gap:15px;
+  padding:10px 15px;
+}
+
+.metric{
+  background:var(--panel);
+  padding:10px;
+  border-radius:10px;
+  font-size:12px;
+  min-width:120px;
 }
 
 /* LAYOUT */
 .container{
   display:grid;
   grid-template-columns:300px 1fr;
-  height:100vh;
+  height:calc(100vh - 80px);
 }
 
 /* WORKERS */
@@ -49,14 +92,22 @@ nav{
   border-radius:10px;
   margin-bottom:10px;
   background:rgba(255,255,255,.03);
+}
+
+.workerTop{
   display:flex;
   justify-content:space-between;
-  align-items:center;
+}
+
+.task{
+  font-size:11px;
+  color:#9ab;
+  margin-top:4px;
 }
 
 .status{
-  font-size:11px;
-  padding:3px 8px;
+  font-size:10px;
+  padding:2px 6px;
   border-radius:999px;
 }
 
@@ -64,155 +115,192 @@ nav{
 .idle{background:#444;}
 .error{background:var(--red);}
 
-/* LOG PANEL */
+/* LOGS */
 .logs{
   padding:15px;
   overflow:auto;
+  height:100%;
 }
 
 .log{
   font-size:12px;
   margin-bottom:6px;
   opacity:.9;
+  animation:fadeIn .3s;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(5px)}
+  to{opacity:1; transform:translateY(0)}
 }
 
 .success{color:var(--green);}
 .fail{color:var(--red);}
 .info{color:#9ab;}
 
-/* METRICS */
-.metrics{
-  display:flex;
-  gap:15px;
+/* ALERT */
+.alert{
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:var(--red);
   padding:10px 15px;
-  border-bottom:1px solid rgba(255,255,255,.1);
-}
-
-.metric{
-  background:var(--panel);
-  padding:10px;
   border-radius:10px;
-  font-size:12px;
+  display:none;
 }
 </style>
 </head>
 
 <body>
 
-<nav>⚙️ SS Studios • AI System Core</nav>
+<nav>
+  ⚙️ SS Studios • AI Core
+  <div id="globalStatus" class="statusGlobal">STABLE</div>
+</nav>
 
 <div class="metrics">
-  <div class="metric">CPU: <span id="cpu">23%</span></div>
-  <div class="metric">Requests: <span id="req">1,204</span></div>
-  <div class="metric">Active Users: <span id="users">89</span></div>
+  <div class="metric">CPU: <span id="cpu">0%</span></div>
+  <div class="metric">Traffic: <span id="req">0</span></div>
+  <div class="metric">Users: <span id="users">0</span></div>
 </div>
 
 <div class="container">
-
-  <!-- WORKERS -->
   <div class="sidebar" id="workers"></div>
-
-  <!-- LOGS -->
   <div class="logs" id="logs"></div>
-
 </div>
 
+<div class="alert" id="alert">⚠️ SYSTEM OVERLOAD</div>
+
 <script>
+const workersEl=document.getElementById("workers");
+const logsEl=document.getElementById("logs");
+
 const workerNames=[
-  "Content AI",
-  "Recommendation Engine",
-  "Upload Processor",
-  "Moderation Bot",
-  "Analytics AI",
-  "Search Indexer",
-  "Notification System",
-  "Feed Generator"
+  "Content AI","Recommender","Upload Engine",
+  "Moderation AI","Analytics Core","Search AI",
+  "Notifier","Feed Builder"
 ];
 
 const actions=[
-  "Processing new upload",
-  "Analyzing engagement data",
-  "Generating recommendations",
-  "Indexing content",
-  "Scanning for violations",
-  "Updating feed",
-  "Syncing database",
-  "Optimizing images"
+  "Processing upload","Analyzing behavior",
+  "Generating feed","Indexing content",
+  "Scanning safety","Optimizing media",
+  "Syncing DB","Training model"
 ];
 
-const logsEl=document.getElementById("logs");
-const workersEl=document.getElementById("workers");
+let workers=[];
 
 /* CREATE WORKERS */
 workerNames.forEach(name=>{
   const el=document.createElement("div");
   el.className="worker";
+
   el.innerHTML=`
-    <span>${name}</span>
-    <span class="status idle">Idle</span>
+    <div class="workerTop">
+      <span>${name}</span>
+      <span class="status idle">Idle</span>
+    </div>
+    <div class="task">Waiting...</div>
   `;
+
   workersEl.appendChild(el);
+  workers.push(el);
 });
 
 /* UPDATE WORKERS */
 function updateWorkers(){
-  document.querySelectorAll(".worker").forEach(w=>{
+  workers.forEach(w=>{
     const status=w.querySelector(".status");
-    const r=Math.random();
+    const task=w.querySelector(".task");
 
-    if(r<0.7){
+    const r=Math.random();
+    const action=actions[Math.floor(Math.random()*actions.length)];
+
+    if(r<0.75){
       status.className="status active";
       status.textContent="Processing";
+      task.textContent=action;
     } else if(r<0.9){
       status.className="status idle";
       status.textContent="Idle";
+      task.textContent="Waiting...";
     } else{
       status.className="status error";
       status.textContent="Error";
+      task.textContent="Failure detected";
+      triggerAlert();
     }
   });
 }
 
-/* ADD LOG */
+/* LOGS */
 function addLog(){
   const log=document.createElement("div");
   log.className="log";
 
   const worker=workerNames[Math.floor(Math.random()*workerNames.length)];
   const action=actions[Math.floor(Math.random()*actions.length)];
-  const type=Math.random();
+  const r=Math.random();
 
-  if(type<0.7){
+  if(r<0.7){
     log.classList.add("success");
-    log.textContent=`✔ ${worker}: ${action} completed`;
-  } else if(type<0.9){
+    typeText(log,`✔ ${worker}: ${action} complete`);
+  } else if(r<0.9){
     log.classList.add("info");
-    log.textContent=`… ${worker}: ${action}`;
+    typeText(log,`… ${worker}: ${action}`);
   } else{
     log.classList.add("fail");
-    log.textContent=`✖ ${worker}: failed task`;
+    typeText(log,`✖ ${worker}: failure`);
   }
 
   logsEl.prepend(log);
 
-  if(logsEl.children.length>50){
+  if(logsEl.children.length>60){
     logsEl.removeChild(logsEl.lastChild);
   }
 }
 
+/* TYPE EFFECT */
+function typeText(el,text){
+  let i=0;
+  const interval=setInterval(()=>{
+    el.textContent+=text[i];
+    i++;
+    if(i>=text.length) clearInterval(interval);
+  },10);
+}
+
 /* METRICS */
 function updateMetrics(){
-  cpu.textContent=Math.floor(Math.random()*60+20)+"%";
-  req.textContent=parseInt(req.textContent)+Math.floor(Math.random()*10);
-  users.textContent=Math.floor(Math.random()*200+50);
+  const cpuVal=Math.floor(Math.random()*80+10);
+  cpu.textContent=cpuVal+"%";
+
+  req.textContent=parseInt(req.textContent)+Math.floor(Math.random()*20);
+  users.textContent=Math.floor(Math.random()*300+50);
+
+  if(cpuVal>85){
+    globalStatus.textContent="OVERLOAD";
+    globalStatus.style.background="var(--red)";
+  } else{
+    globalStatus.textContent="STABLE";
+    globalStatus.style.background="var(--green)";
+  }
 }
+
+/* ALERT */
+function triggerAlert(){
+  alertBox.style.display="block";
+  setTimeout(()=>alertBox.style.display="none",2000);
+}
+
+const alertBox=document.getElementById("alert");
 
 /* LOOP */
 setInterval(()=>{
-  addLog();
   updateWorkers();
+  addLog();
   updateMetrics();
-},800);
+},700);
 </script>
 
 </body>
