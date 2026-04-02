@@ -7,12 +7,7 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
-
-body{
-  background:black;
-  color:white;
-  overflow:hidden;
-}
+body{background:black;color:white;overflow:hidden;}
 
 /* FEED */
 .feed{
@@ -27,12 +22,11 @@ body{
   scroll-snap-align:start;
 }
 
-/* IMAGE */
-.card img{
+/* VIDEO */
+iframe{
   width:100%;
   height:100%;
-  object-fit:cover;
-  filter:brightness(.7);
+  border:none;
 }
 
 /* OVERLAY */
@@ -41,11 +35,11 @@ body{
   bottom:0;
   padding:20px;
   width:100%;
-  background:linear-gradient(transparent,rgba(0,0,0,.85));
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
 }
 
 .title{font-size:26px;font-weight:900;}
-.desc{font-size:14px;color:#ccc;margin-top:5px;}
+.desc{font-size:14px;color:#ccc;}
 
 /* ACTIONS */
 .actions{
@@ -58,18 +52,25 @@ body{
   text-align:center;
 }
 
-.actions div{cursor:pointer}
+.actions div{
+  cursor:pointer;
+  font-size:18px;
+}
 
-/* HEART */
+/* LIKE ANIM */
 .heart{
   position:absolute;
-  font-size:80px;
-  top:50%;left:50%;
+  top:50%;
+  left:50%;
   transform:translate(-50%,-50%) scale(0);
+  font-size:80px;
   opacity:0;
 }
 
-.heart.show{animation:pop .6s ease;}
+.heart.show{
+  animation:pop .6s;
+}
+
 @keyframes pop{
   0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
   50%{transform:translate(-50%,-50%) scale(1.2);}
@@ -77,14 +78,35 @@ body{
 }
 
 /* BUTTON */
-.cookBtn{
-  margin-top:12px;
-  padding:10px 20px;
+button{
+  padding:10px;
   border:none;
   border-radius:999px;
   background:#00ff9d;
   font-weight:900;
   cursor:pointer;
+  margin-top:10px;
+}
+
+/* UPLOAD */
+.upload{
+  position:fixed;
+  inset:0;
+  background:#0b0f14;
+  padding:20px;
+  transform:translateY(100%);
+  transition:.4s;
+  z-index:20;
+}
+
+.upload.active{transform:translateY(0);}
+
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:none;
+  border-radius:8px;
 }
 
 /* COOK MODE */
@@ -95,7 +117,7 @@ body{
   padding:20px;
   transform:translateY(100%);
   transition:.4s;
-  z-index:20;
+  z-index:30;
 }
 
 .cookMode.active{transform:translateY(0);}
@@ -105,129 +127,97 @@ body{
   font-size:18px;
 }
 
-.nextBtn{
-  margin-top:20px;
-  padding:12px;
-  width:100%;
-  border:none;
-  border-radius:10px;
-  background:#6c5cff;
-  color:white;
+.ingredients{
+  margin-top:10px;
+  color:#aaa;
 }
 
-/* TOP */
-.topbar{
+/* FLOAT BTN */
+.float{
   position:fixed;
-  top:0;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  padding:15px;
-  z-index:10;
-}
-
-.logo{font-weight:900;}
-
-.nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  padding:12px;
-  background:rgba(0,0,0,.6);
+  bottom:20px;
+  right:20px;
+  font-size:22px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-  <div class="logo">Cook’ed</div>
-</div>
-
 <div class="feed" id="feed"></div>
 
-<div class="cookMode" id="cookMode">
-  <h2 id="recipeTitle"></h2>
-  <div id="ingredients"></div>
-  <div class="step" id="step"></div>
-  <button class="nextBtn" onclick="nextStep()">Next Step</button>
+<!-- UPLOAD -->
+<div class="upload" id="upload">
+  <h2>Upload Recipe 🍳</h2>
+
+  <input id="video" placeholder="Google Drive Link">
+  <input id="title" placeholder="Recipe Title">
+  <input id="desc" placeholder="Short Description">
+  <textarea id="ingredients" placeholder="Ingredients (comma separated)"></textarea>
+  <textarea id="steps" placeholder="Steps (comma separated)"></textarea>
+
+  <button onclick="submitRecipe()">Post</button>
+  <button onclick="closeUpload()">Cancel</button>
 </div>
 
-<div class="nav">
-  <div>Home</div>
-  <div>Search</div>
-  <div>Create</div>
-  <div>Saved</div>
-  <div>Profile</div>
+<!-- COOK MODE -->
+<div class="cookMode" id="cookMode">
+  <h2 id="cookTitle"></h2>
+  <div class="ingredients" id="cookIngredients"></div>
+  <div class="step" id="cookStep"></div>
+  <button onclick="nextStep()">Next Step</button>
+  <button onclick="closeCook()">Close</button>
 </div>
+
+<button class="float" onclick="openUpload()">＋</button>
 
 <script>
 
-/* DATA */
-const recipes=[
-{
-  title:"Garlic Butter Chicken",
-  desc:"5 ingredients. 20 min.",
-  img:"https://images.unsplash.com/photo-1604908176997-4316c84e91aa",
-  ingredients:["Chicken","Garlic","Butter","Salt","Pepper"],
-  steps:[
-    "Season the chicken",
-    "Heat butter in pan",
-    "Add garlic",
-    "Cook chicken 6 minutes each side",
-    "Serve hot"
-  ]
-},
-{
-  title:"Breakfast Bowl",
-  desc:"Energy in 10 min",
-  img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
-  ingredients:["Eggs","Rice","Avocado","Spinach"],
-  steps:[
-    "Cook rice",
-    "Fry eggs",
-    "Slice avocado",
-    "Assemble bowl",
-    "Enjoy"
-  ]
-}
-];
+/* STORAGE */
+let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
 
-let currentRecipe=null;
-let stepIndex=0;
+/* DRIVE */
+function getDriveEmbed(url){
+  try{
+    const id = url.split("/d/")[1].split("/")[0];
+    return `https://drive.google.com/uc?export=preview&id=${id}`;
+  }catch{return "";}
+}
 
 /* RENDER */
-recipes.forEach((r,i)=>{
-  const el=document.createElement("div");
-  el.className="card";
+function render(){
+  feed.innerHTML="";
 
-  el.innerHTML=`
-    <img src="${r.img}">
-    <div class="overlay">
-      <div class="title">${r.title}</div>
-      <div class="desc">${r.desc}</div>
-      <button class="cookBtn" onclick="openCook(${i})">Cook</button>
-    </div>
+  recipes.forEach((r,i)=>{
+    const el=document.createElement("div");
+    el.className="card";
 
-    <div class="actions">
-      <div onclick="like(event,this)">❤️</div>
-      <div>💬</div>
-      <div onclick="save(this)">🔖</div>
-    </div>
+    el.innerHTML=`
+      <iframe src="${getDriveEmbed(r.video)}"></iframe>
 
-    <div class="heart">❤️</div>
-  `;
+      <div class="overlay">
+        <div class="title">${r.title}</div>
+        <div class="desc">${r.desc}</div>
+        <button onclick="openCook(${i})">Cook</button>
+      </div>
 
-  el.ondblclick=()=>likeAnim(el);
+      <div class="actions">
+        <div onclick="like(this)">❤️</div>
+        <div>💬</div>
+        <div onclick="save(this)">🔖</div>
+      </div>
 
-  feed.appendChild(el);
-});
+      <div class="heart">❤️</div>
+    `;
+
+    el.ondblclick=()=>likeAnim(el);
+
+    feed.appendChild(el);
+  });
+}
 
 /* LIKE */
-function like(e,el){
-  e.stopPropagation();
+function like(el){
   el.style.color = el.style.color==="red" ? "white" : "red";
 }
 
@@ -238,41 +228,67 @@ function save(el){
 
 /* DOUBLE TAP */
 function likeAnim(card){
-  let h=card.querySelector(".heart");
+  const h=card.querySelector(".heart");
   h.classList.add("show");
   setTimeout(()=>h.classList.remove("show"),600);
 }
 
-/* OPEN COOK */
+/* UPLOAD */
+function openUpload(){upload.classList.add("active");}
+function closeUpload(){upload.classList.remove("active");}
+
+function submitRecipe(){
+  if(!video.value || !title.value){
+    alert("Fill required fields");
+    return;
+  }
+
+  const newRecipe={
+    video:video.value,
+    title:title.value,
+    desc:desc.value,
+    ingredients:ingredients.value.split(","),
+    steps:steps.value.split(",")
+  };
+
+  recipes.unshift(newRecipe);
+  localStorage.setItem("recipes",JSON.stringify(recipes));
+
+  render();
+  closeUpload();
+
+  video.value=title.value=desc.value=ingredients.value=steps.value="";
+}
+
+/* COOK MODE */
+let currentRecipe, stepIndex=0;
+
 function openCook(i){
   currentRecipe=recipes[i];
   stepIndex=0;
 
-  recipeTitle.innerText=currentRecipe.title;
-  ingredients.innerHTML="Ingredients: "+currentRecipe.ingredients.join(", ");
-  step.innerText=currentRecipe.steps[0];
+  cookTitle.innerText=currentRecipe.title;
+  cookIngredients.innerText="Ingredients: "+currentRecipe.ingredients.join(", ");
+  cookStep.innerText=currentRecipe.steps[0];
 
-  document.getElementById("cookMode").classList.add("active");
-
-  speak(step.innerText);
+  cookMode.classList.add("active");
 }
 
-/* NEXT STEP */
 function nextStep(){
   stepIndex++;
   if(stepIndex>=currentRecipe.steps.length){
-    step.innerText="Done! 🎉";
+    cookStep.innerText="Done 🎉";
     return;
   }
-  step.innerText=currentRecipe.steps[stepIndex];
-  speak(step.innerText);
+  cookStep.innerText=currentRecipe.steps[stepIndex];
 }
 
-/* SPEAK */
-function speak(text){
-  const msg=new SpeechSynthesisUtterance(text);
-  speechSynthesis.speak(msg);
+function closeCook(){
+  cookMode.classList.remove("active");
 }
+
+/* INIT */
+render();
 
 </script>
 
