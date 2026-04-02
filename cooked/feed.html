@@ -21,14 +21,15 @@ body{background:black;color:white;overflow:hidden;}
   scroll-snap-align:start;
 }
 
-/* IMAGE SLIDESHOW */
+/* MEDIA */
 .media{
   width:100%;
   height:100%;
   object-fit:cover;
+  transition:opacity .5s;
 }
 
-/* TAP LAYER */
+/* TAP */
 .tapLayer{
   position:absolute;
   inset:0;
@@ -45,12 +46,7 @@ body{background:black;color:white;overflow:hidden;}
   z-index:10;
 }
 
-.user{
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:5px;
-}
-
+.user{font-weight:700;cursor:pointer;}
 .title{font-size:22px;font-weight:900;}
 .desc{font-size:14px;color:#ccc;}
 
@@ -77,9 +73,7 @@ body{background:black;color:white;overflow:hidden;}
   font-size:80px;
   opacity:0;
 }
-
 .heart.show{animation:pop .6s;}
-
 @keyframes pop{
   0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
   50%{transform:translate(-50%,-50%) scale(1.2);}
@@ -90,18 +84,17 @@ body{background:black;color:white;overflow:hidden;}
 .float{
   position:fixed;
   bottom:20px;
-  font-size:20px;
+  font-size:18px;
   padding:12px;
   border-radius:50%;
   background:#00ff9d;
   border:none;
   font-weight:900;
 }
-
 .add{right:20px;}
 .ai{left:20px;}
 
-/* PANEL */
+/* PANELS */
 .panel{
   position:fixed;
   inset:0;
@@ -112,7 +105,6 @@ body{background:black;color:white;overflow:hidden;}
   z-index:40;
   overflow:auto;
 }
-
 .panel.active{transform:translateY(0);}
 
 input,textarea{
@@ -137,27 +129,30 @@ button{
 
 <body>
 
+<input placeholder="Search food..." oninput="search(this.value)" style="position:fixed;top:10px;left:10px;z-index:50;padding:8px;border-radius:8px;border:none;">
+
 <div class="feed" id="feed"></div>
 
-<!-- RECIPE VIEW -->
-<div class="panel" id="recipeView">
-  <h2 id="rvTitle"></h2>
-  <p id="rvDesc"></p>
-
-  <h3>Ingredients</h3>
-  <div id="rvIngredients"></div>
-
-  <h3>Steps</h3>
-  <div id="rvSteps"></div>
-
-  <button onclick="closeRecipe()">Close</button>
+<!-- COMMENTS -->
+<div class="panel" id="commentsPanel">
+  <h2>Comments</h2>
+  <div id="commentsList"></div>
+  <input id="commentInput" placeholder="Add comment">
+  <button onclick="addComment()">Post</button>
+  <button onclick="closeComments()">Close</button>
 </div>
 
-<!-- AI PANEL -->
+<!-- PROFILE -->
+<div class="panel" id="profilePanel">
+  <h2 id="profileName"></h2>
+  <div id="profilePosts"></div>
+  <button onclick="closeProfile()">Close</button>
+</div>
+
+<!-- AI -->
 <div class="panel" id="aiPanel">
   <h2>Cook’ed AI 🧠</h2>
-  <textarea id="aiInput" placeholder="chicken, rice, garlic"></textarea>
-
+  <textarea id="aiInput"></textarea>
   <button onclick="generateAI()">Generate</button>
   <div id="aiResult"></div>
   <button onclick="closeAI()">Close</button>
@@ -169,168 +164,177 @@ button{
 <script>
 
 let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+let activeIndex = null;
 
-/* IMAGE GENERATOR */
-function getFoodImage(query){
-  return `https://source.unsplash.com/featured/?${query},food`;
-}
+/* IMAGE */
+const img = q=>`https://source.unsplash.com/featured/?${q},food`;
 
-/* START DATA */
+/* INIT */
 if(recipes.length===0){
-  recipes=[{
-    user:"@chefjay",
-    title:"Garlic Chicken",
-    desc:"Simple + viral 🔥",
-    ingredients:["chicken","garlic","butter"],
-    steps:["Season","Cook","Add garlic","Serve"],
-    images:[
-      getFoodImage("garlic chicken"),
-      getFoodImage("cooking chicken"),
-      getFoodImage("plated chicken")
-    ],
-    likes:23
-  }];
+recipes=[{
+user:"@chef",
+title:"Spicy Chicken",
+desc:"🔥🔥🔥",
+ingredients:["chicken","spices"],
+steps:["Cook","Eat"],
+images:[img("spicy chicken"),img("cooking chicken")],
+likes:10,
+comments:["fire 🔥","need this"]
+}]
 }
 
 /* RENDER */
-function render(){
-  feed.innerHTML="";
+function render(list=recipes){
+feed.innerHTML="";
 
-  recipes.forEach((r,i)=>{
-    const el=document.createElement("div");
-    el.className="card";
+list.forEach((r,i)=>{
+const el=document.createElement("div");
+el.className="card";
 
-    el.innerHTML=`
-      <img class="media" id="img${i}" src="${r.images[0]}">
+el.innerHTML=`
+<img class="media" id="img${i}" src="${r.images[0]}">
 
-      <div class="tapLayer" onclick="openRecipe(${i})"></div>
+<div class="tapLayer" onclick="togglePlay(${i})"></div>
 
-      <div class="overlay">
-        <div class="user">${r.user}</div>
-        <div class="title">${r.title}</div>
-        <div class="desc">${r.desc}</div>
-      </div>
+<div class="overlay">
+<div class="user" onclick="openProfile('${r.user}')">${r.user}</div>
+<div class="title">${r.title}</div>
+<div class="desc">${r.desc}</div>
+</div>
 
-      <div class="actions">
-        <div onclick="like(this,${i})">❤️<div class="count">${r.likes||0}</div></div>
-        <div>💬<div class="count">12</div></div>
-        <div onclick="save(this)">🔖</div>
-      </div>
+<div class="actions">
+<div onclick="like(this,${i})">❤️<div class="count" id="like${i}">${r.likes}</div></div>
+<div onclick="openComments(${i})">💬<div class="count">${r.comments?.length||0}</div></div>
+<div onclick="save(this)">🔖</div>
+</div>
 
-      <div class="heart">❤️</div>
-    `;
+<div class="heart">❤️</div>
+`;
 
-    slideshow(i);
-    el.ondblclick=()=>likeAnim(el,i);
+startSlide(i);
+el.ondblclick=()=>likeAnim(el,i);
+feed.appendChild(el);
+});
 
-    feed.appendChild(el);
-  });
-
-  localStorage.setItem("recipes",JSON.stringify(recipes));
+localStorage.setItem("recipes",JSON.stringify(recipes));
 }
 
-/* IMAGE SLIDESHOW */
-function slideshow(i){
-  let index=0;
-  setInterval(()=>{
-    const img=document.getElementById("img"+i);
-    if(!img) return;
-    index=(index+1)%recipes[i].images.length;
-    img.src=recipes[i].images[index];
-  },2000);
+/* SLIDES */
+const timers={};
+function startSlide(i){
+clearInterval(timers[i]);
+let index=0;
+
+timers[i]=setInterval(()=>{
+const el=document.getElementById("img"+i);
+if(!el) return;
+index=(index+1)%recipes[i].images.length;
+el.style.opacity=0;
+setTimeout(()=>{
+el.src=recipes[i].images[index];
+el.style.opacity=1;
+},200);
+},2000);
 }
 
-/* RECIPE VIEW */
-function openRecipe(i){
-  const r=recipes[i];
-  rvTitle.innerText=r.title;
-  rvDesc.innerText=r.desc;
-  rvIngredients.innerHTML=r.ingredients.join(", ");
-  rvSteps.innerHTML=r.steps.map((s,i)=>`${i+1}. ${s}`).join("<br>");
-  recipeView.classList.add("active");
+function togglePlay(i){
+if(timers[i]){
+clearInterval(timers[i]);
+timers[i]=null;
+}else startSlide(i);
 }
-
-function closeRecipe(){recipeView.classList.remove("active");}
 
 /* LIKE */
 function like(el,i){
-  recipes[i].likes++;
-  render();
-}
-
-/* SAVE */
-function save(el){
-  el.style.color=el.style.color==="yellow"?"white":"yellow";
+recipes[i].likes++;
+document.getElementById("like"+i).innerText=recipes[i].likes;
 }
 
 /* DOUBLE TAP */
 function likeAnim(card,i){
-  recipes[i].likes++;
-  const h=card.querySelector(".heart");
-  h.classList.add("show");
-  setTimeout(()=>h.classList.remove("show"),600);
-  render();
+like(null,i);
+const h=card.querySelector(".heart");
+h.classList.add("show");
+setTimeout(()=>h.classList.remove("show"),600);
 }
 
-/* AI PANEL */
+/* COMMENTS */
+function openComments(i){
+activeIndex=i;
+commentsPanel.classList.add("active");
+commentsList.innerHTML=recipes[i].comments.map(c=>`<p>${c}</p>`).join("");
+}
+
+function addComment(){
+recipes[activeIndex].comments.push(commentInput.value);
+render();
+closeComments();
+}
+
+function closeComments(){commentsPanel.classList.remove("active");}
+
+/* PROFILE */
+function openProfile(user){
+profilePanel.classList.add("active");
+profileName.innerText=user;
+
+const posts=recipes.filter(r=>r.user===user);
+profilePosts.innerHTML=posts.map(p=>`<p>${p.title}</p>`).join("");
+}
+
+function closeProfile(){profilePanel.classList.remove("active");}
+
+/* SEARCH */
+function search(q){
+render(recipes.filter(r=>r.title.toLowerCase().includes(q.toLowerCase())));
+}
+
+/* AI */
 function openAI(){aiPanel.classList.add("active");}
 function closeAI(){aiPanel.classList.remove("active");}
 
-/* AI */
 function generateAI(){
-  const input=aiInput.value.split(",").map(x=>x.trim());
+const input=aiInput.value;
+const title=input+" Dish";
 
-  const title=input.join(" ")+" Mix";
-  const images=[
-    getFoodImage(title),
-    getFoodImage(input[0]||"food"),
-    getFoodImage("cooking "+title)
-  ];
-
-  aiResult.innerHTML=`
-    <h3>${title}</h3>
-    <button onclick='postAI(${JSON.stringify(title)},${JSON.stringify(input)},${JSON.stringify(images)})'>
-      Post 🚀
-    </button>
-  `;
+aiResult.innerHTML=`
+<h3>${title}</h3>
+<button onclick="postAI('${title}','${input}')">Post</button>
+`;
 }
 
-/* POST AI */
-function postAI(title,ingredients,images){
-  recipes.unshift({
-    user:"@ai_chef",
-    title,
-    desc:"AI Generated 🤖",
-    ingredients,
-    steps:["Prep","Cook","Mix","Serve"],
-    images,
-    likes:0
-  });
-  render();
-  closeAI();
+function postAI(title,input){
+recipes.unshift({
+user:"@ai",
+title,
+desc:"AI magic 🤖",
+ingredients:[input],
+steps:["Cook it"],
+images:[img(input),img("cooking "+input)],
+likes:0,
+comments:[]
+});
+render();
+closeAI();
 }
 
 /* FAKE */
 function addFake(){
-  recipes.unshift({
-    user:"@foodie",
-    title:"Egg Toast",
-    desc:"Quick 🔥",
-    ingredients:["egg","bread"],
-    steps:["Cook","Toast","Eat"],
-    images:[
-      getFoodImage("egg toast"),
-      getFoodImage("fried egg"),
-      getFoodImage("toast breakfast")
-    ],
-    likes:5
-  });
-  render();
+recipes.unshift({
+user:"@foodie",
+title:"Pasta",
+desc:"🔥",
+ingredients:["pasta"],
+steps:["cook"],
+images:[img("pasta"),img("italian pasta")],
+likes:5,
+comments:["yum"]
+});
+render();
 }
 
 render();
 
 </script>
-
 </body>
 </html>
