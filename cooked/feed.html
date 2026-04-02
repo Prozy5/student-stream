@@ -9,153 +9,126 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 body{background:black;color:white;overflow:hidden;}
 
+.topbar{
+position:fixed;
+top:0;
+width:100%;
+padding:12px;
+text-align:center;
+font-weight:900;
+background:rgba(0,0,0,.6);
+z-index:100;
+}
+
 .feed{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
+height:100vh;
+overflow-y:scroll;
+scroll-snap-type:y mandatory;
 }
 
 .card{
-  height:100vh;
-  position:relative;
-  scroll-snap-align:start;
+height:100vh;
+position:relative;
+scroll-snap-align:start;
 }
 
-/* MEDIA */
-.media{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:opacity .5s;
+.media, video{
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
-/* TAP */
-.tapLayer{
-  position:absolute;
-  inset:0;
-  z-index:5;
-}
-
-/* OVERLAY */
 .overlay{
-  position:absolute;
-  bottom:0;
-  padding:20px;
-  width:100%;
-  background:linear-gradient(transparent,rgba(0,0,0,.9));
-  z-index:10;
+position:absolute;
+bottom:0;
+padding:20px;
+width:100%;
+background:linear-gradient(transparent,rgba(0,0,0,.9));
+z-index:10;
 }
 
-.user{font-weight:700;cursor:pointer;}
 .title{font-size:22px;font-weight:900;}
 .desc{font-size:14px;color:#ccc;}
 
-/* ACTIONS */
+.meta{font-size:12px;color:#aaa;margin-top:5px;}
+
 .actions{
-  position:absolute;
-  right:15px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  z-index:10;
-  text-align:center;
+position:absolute;
+right:15px;
+bottom:120px;
+display:flex;
+flex-direction:column;
+gap:18px;
+z-index:10;
+text-align:center;
 }
 
 .count{font-size:12px;}
 
-/* HEART */
+.badge{
+background:#00ff9d;
+color:black;
+font-size:10px;
+padding:4px 6px;
+border-radius:999px;
+margin-left:6px;
+}
+
 .heart{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(0);
-  font-size:80px;
-  opacity:0;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(0);
+font-size:80px;
+opacity:0;
 }
 .heart.show{animation:pop .6s;}
 @keyframes pop{
-  0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
-  50%{transform:translate(-50%,-50%) scale(1.2);}
-  100%{opacity:0;}
+0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
+50%{transform:translate(-50%,-50%) scale(1.2);}
+100%{opacity:0;}
 }
 
-/* FLOAT */
 .float{
-  position:fixed;
-  bottom:20px;
-  font-size:18px;
-  padding:12px;
-  border-radius:50%;
-  background:#00ff9d;
-  border:none;
-  font-weight:900;
+position:fixed;
+bottom:20px;
+font-size:18px;
+padding:12px;
+border-radius:50%;
+background:#00ff9d;
+border:none;
+font-weight:900;
 }
 .add{right:20px;}
 .ai{left:20px;}
 
-/* PANELS */
 .panel{
-  position:fixed;
-  inset:0;
-  background:#0b0f14;
-  padding:20px;
-  transform:translateY(100%);
-  transition:.4s;
-  z-index:40;
-  overflow:auto;
+position:fixed;
+inset:0;
+background:#0b0f14;
+padding:20px;
+transform:translateY(100%);
+transition:.4s;
+z-index:200;
+overflow:auto;
 }
 .panel.active{transform:translateY(0);}
-
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border:none;
-  border-radius:8px;
-}
-
-button{
-  padding:10px;
-  border:none;
-  border-radius:999px;
-  background:#00ff9d;
-  font-weight:900;
-  cursor:pointer;
-  margin-top:10px;
-}
 </style>
 </head>
 
 <body>
 
-<input placeholder="Search food..." oninput="search(this.value)" style="position:fixed;top:10px;left:10px;z-index:50;padding:8px;border-radius:8px;border:none;">
+<div class="topbar">Cook’ed 🔥</div>
 
 <div class="feed" id="feed"></div>
 
-<!-- COMMENTS -->
-<div class="panel" id="commentsPanel">
-  <h2>Comments</h2>
-  <div id="commentsList"></div>
-  <input id="commentInput" placeholder="Add comment">
-  <button onclick="addComment()">Post</button>
-  <button onclick="closeComments()">Close</button>
-</div>
-
-<!-- PROFILE -->
-<div class="panel" id="profilePanel">
-  <h2 id="profileName"></h2>
-  <div id="profilePosts"></div>
-  <button onclick="closeProfile()">Close</button>
-</div>
-
-<!-- AI -->
+<!-- AI PANEL -->
 <div class="panel" id="aiPanel">
-  <h2>Cook’ed AI 🧠</h2>
-  <textarea id="aiInput"></textarea>
-  <button onclick="generateAI()">Generate</button>
-  <div id="aiResult"></div>
-  <button onclick="closeAI()">Close</button>
+<h2>AI Recipe Generator</h2>
+<textarea id="aiInput" placeholder="e.g. spicy chicken tacos"></textarea>
+<button onclick="generateAI()">Generate</button>
+<div id="aiResult"></div>
+<button onclick="closeAI()">Close</button>
 </div>
 
 <button class="float add" onclick="addFake()">＋</button>
@@ -164,59 +137,94 @@ button{
 <script>
 
 let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
-let activeIndex = null;
 
-/* IMAGE */
+/* HELPERS */
 const img = q=>`https://source.unsplash.com/featured/?${q},food`;
+
+function getVideo(url){
+if(!url) return null;
+
+if(url.includes("drive.google.com")){
+try{
+const id = url.split("/d/")[1].split("/")[0];
+return `https://drive.google.com/uc?export=preview&id=${id}`;
+}catch{}
+}
+
+if(url.endsWith(".mp4")) return url;
+
+return null;
+}
+
+function timeAgo(ts){
+const diff = Math.floor((Date.now()-ts)/60000);
+if(diff<1) return "just now";
+if(diff<60) return diff+"m ago";
+return Math.floor(diff/60)+"h ago";
+}
 
 /* INIT */
 if(recipes.length===0){
 recipes=[{
-user:"@chef",
-title:"Spicy Chicken",
-desc:"🔥🔥🔥",
-ingredients:["chicken","spices"],
-steps:["Cook","Eat"],
-images:[img("spicy chicken"),img("cooking chicken")],
-likes:10,
-comments:["fire 🔥","need this"]
+title:"Viral Spicy Chicken",
+desc:"This is blowing up 🔥",
+images:[img("spicy chicken"),img("fried chicken")],
+video:null,
+likes:120,
+views:1200,
+created:Date.now()
 }]
 }
 
 /* RENDER */
-function render(list=recipes){
+function render(){
 feed.innerHTML="";
 
-list.forEach((r,i)=>{
+recipes.forEach((r,i)=>{
+
+const video = getVideo(r.video);
+
 const el=document.createElement("div");
 el.className="card";
 
 el.innerHTML=`
-<img class="media" id="img${i}" src="${r.images[0]}">
-
-<div class="tapLayer" onclick="togglePlay(${i})"></div>
+${video ? 
+`<video src="${video}" autoplay loop muted playsinline></video>` :
+`<img class="media" id="img${i}" src="${r.images[0]}">`
+}
 
 <div class="overlay">
-<div class="user" onclick="openProfile('${r.user}')">${r.user}</div>
-<div class="title">${r.title}</div>
+<div class="title">${r.title} ${r.views>1000?'<span class="badge">TRENDING</span>':''}</div>
 <div class="desc">${r.desc}</div>
+<div class="meta">${timeAgo(r.created)} • ${r.views} views</div>
 </div>
 
 <div class="actions">
-<div onclick="like(this,${i})">❤️<div class="count" id="like${i}">${r.likes}</div></div>
-<div onclick="openComments(${i})">💬<div class="count">${r.comments?.length||0}</div></div>
-<div onclick="save(this)">🔖</div>
+<div onclick="like(${i})">❤️<div class="count" id="like${i}">${r.likes}</div></div>
+<div onclick="repost(${i})">🔁</div>
 </div>
 
 <div class="heart">❤️</div>
 `;
 
-startSlide(i);
 el.ondblclick=()=>likeAnim(el,i);
+
 feed.appendChild(el);
+
+/* slideshow fallback */
+if(!video && r.images.length>1){
+startSlide(i);
+}
 });
 
+/* fake growth */
+setInterval(()=>{
+recipes.forEach(r=>{
+r.views+=Math.floor(Math.random()*20);
+});
 localStorage.setItem("recipes",JSON.stringify(recipes));
+},2000);
+
 }
 
 /* SLIDES */
@@ -229,64 +237,28 @@ timers[i]=setInterval(()=>{
 const el=document.getElementById("img"+i);
 if(!el) return;
 index=(index+1)%recipes[i].images.length;
-el.style.opacity=0;
-setTimeout(()=>{
 el.src=recipes[i].images[index];
-el.style.opacity=1;
-},200);
 },2000);
 }
 
-function togglePlay(i){
-if(timers[i]){
-clearInterval(timers[i]);
-timers[i]=null;
-}else startSlide(i);
-}
-
 /* LIKE */
-function like(el,i){
+function like(i){
 recipes[i].likes++;
 document.getElementById("like"+i).innerText=recipes[i].likes;
 }
 
+/* REPOST */
+function repost(i){
+recipes.unshift({...recipes[i],created:Date.now()});
+render();
+}
+
 /* DOUBLE TAP */
 function likeAnim(card,i){
-like(null,i);
+like(i);
 const h=card.querySelector(".heart");
 h.classList.add("show");
 setTimeout(()=>h.classList.remove("show"),600);
-}
-
-/* COMMENTS */
-function openComments(i){
-activeIndex=i;
-commentsPanel.classList.add("active");
-commentsList.innerHTML=recipes[i].comments.map(c=>`<p>${c}</p>`).join("");
-}
-
-function addComment(){
-recipes[activeIndex].comments.push(commentInput.value);
-render();
-closeComments();
-}
-
-function closeComments(){commentsPanel.classList.remove("active");}
-
-/* PROFILE */
-function openProfile(user){
-profilePanel.classList.add("active");
-profileName.innerText=user;
-
-const posts=recipes.filter(r=>r.user===user);
-profilePosts.innerHTML=posts.map(p=>`<p>${p.title}</p>`).join("");
-}
-
-function closeProfile(){profilePanel.classList.remove("active");}
-
-/* SEARCH */
-function search(q){
-render(recipes.filter(r=>r.title.toLowerCase().includes(q.toLowerCase())));
 }
 
 /* AI */
@@ -294,26 +266,25 @@ function openAI(){aiPanel.classList.add("active");}
 function closeAI(){aiPanel.classList.remove("active");}
 
 function generateAI(){
-const input=aiInput.value;
-const title=input+" Dish";
+const q = aiInput.value;
+
+const recipe={
+title:q.charAt(0).toUpperCase()+q.slice(1),
+desc:"AI created viral recipe 🤖🔥",
+images:[img(q),img("cooking "+q),img("food plating "+q)],
+likes:0,
+views:0,
+created:Date.now()
+};
 
 aiResult.innerHTML=`
-<h3>${title}</h3>
-<button onclick="postAI('${title}','${input}')">Post</button>
+<h3>${recipe.title}</h3>
+<button onclick='postAI(${JSON.stringify(recipe)})'>Post</button>
 `;
 }
 
-function postAI(title,input){
-recipes.unshift({
-user:"@ai",
-title,
-desc:"AI magic 🤖",
-ingredients:[input],
-steps:["Cook it"],
-images:[img(input),img("cooking "+input)],
-likes:0,
-comments:[]
-});
+function postAI(r){
+recipes.unshift(r);
 render();
 closeAI();
 }
@@ -321,14 +292,12 @@ closeAI();
 /* FAKE */
 function addFake(){
 recipes.unshift({
-user:"@foodie",
-title:"Pasta",
-desc:"🔥",
-ingredients:["pasta"],
-steps:["cook"],
-images:[img("pasta"),img("italian pasta")],
-likes:5,
-comments:["yum"]
+title:"Cheesy Pasta",
+desc:"Too good 😭",
+images:[img("pasta"),img("cheese pasta")],
+likes:Math.floor(Math.random()*200),
+views:Math.floor(Math.random()*5000),
+created:Date.now()
 });
 render();
 }
