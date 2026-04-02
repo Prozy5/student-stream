@@ -3,15 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed Feed</title>
+<title>Cook’ed</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:system-ui;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
 body{
   background:black;
@@ -19,7 +14,7 @@ body{
   overflow:hidden;
 }
 
-/* 🔥 FEED SCROLLER */
+/* FEED */
 .feed{
   height:100vh;
   overflow-y:scroll;
@@ -32,7 +27,8 @@ body{
   scroll-snap-align:start;
 }
 
-/* IMAGE */
+/* MEDIA */
+.card video,
 .card img{
   width:100%;
   height:100%;
@@ -40,99 +36,85 @@ body{
   filter:brightness(.75);
 }
 
-/* OVERLAY CONTENT */
+/* OVERLAY */
 .overlay{
   position:absolute;
   bottom:0;
   padding:20px;
   width:100%;
-  background:linear-gradient(transparent,rgba(0,0,0,.8));
+  background:linear-gradient(transparent,rgba(0,0,0,.85));
 }
 
-/* TEXT */
-.title{
-  font-size:26px;
-  font-weight:900;
-}
+.title{font-size:24px;font-weight:900;}
+.desc{font-size:14px;color:#ccc;margin-top:5px;}
 
-.desc{
-  font-size:14px;
-  color:#ccc;
+.badge{
+  font-size:10px;
+  background:#00ff9d;
+  color:black;
+  padding:2px 6px;
+  border-radius:6px;
+  display:inline-block;
   margin-top:5px;
 }
 
-/* RIGHT ACTIONS */
+/* ACTIONS */
 .actions{
   position:absolute;
   right:15px;
   bottom:120px;
   display:flex;
   flex-direction:column;
-  gap:20px;
+  gap:18px;
   text-align:center;
 }
 
-.actions div{
-  font-size:13px;
-  cursor:pointer;
-}
+.actions div{cursor:pointer;font-size:13px;}
 
-/* ❤️ LIKE ANIMATION */
+/* HEART */
 .heart{
   position:absolute;
   font-size:80px;
-  color:white;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%) scale(0);
   opacity:0;
-  pointer-events:none;
 }
 
-.heart.show{
-  animation:pop .6s ease;
-}
+.heart.show{animation:pop .6s ease;}
 
 @keyframes pop{
-  0%{transform:translate(-50%,-50%) scale(0); opacity:1;}
+  0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
   50%{transform:translate(-50%,-50%) scale(1.2);}
-  100%{transform:translate(-50%,-50%) scale(1); opacity:0;}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:0;}
 }
 
-/* COOK BUTTON */
+/* BUTTON */
 .cookBtn{
-  margin-top:12px;
-  padding:10px 20px;
+  margin-top:10px;
+  padding:10px 18px;
   border:none;
   border-radius:999px;
   background:linear-gradient(135deg,#4CAF50,#00ff9d);
   font-weight:900;
-  cursor:pointer;
 }
 
-/* TOP BAR */
+/* TOP */
 .topbar{
   position:fixed;
   top:0;
   width:100%;
   display:flex;
   justify-content:space-between;
-  padding:15px 20px;
+  padding:15px;
   z-index:10;
 }
 
-.logo{
-  font-weight:900;
-}
-
 .profile{
-  width:35px;
-  height:35px;
-  border-radius:50%;
-  background:#00ff9d;
+  width:35px;height:35px;border-radius:50%;background:#00ff9d;
 }
 
-/* BOTTOM NAV */
+/* NAV */
 .nav{
   position:fixed;
   bottom:0;
@@ -144,85 +126,61 @@ body{
   backdrop-filter:blur(10px);
 }
 
-.nav div{
-  font-size:12px;
-  color:#aaa;
-}
-
-.nav .active{
-  color:#00ff9d;
-}
-
-/* FULLSCREEN COOK MODE */
+/* COOK MODE */
 .cookMode{
   position:fixed;
   inset:0;
   background:#0b0f14;
-  display:flex;
-  flex-direction:column;
   padding:20px;
   transform:translateY(100%);
-  transition:.5s ease;
+  transition:.4s;
   z-index:20;
+  overflow:auto;
 }
 
-.cookMode.active{
-  transform:translateY(0);
+.cookMode.active{transform:translateY(0);}
+
+/* COMMENTS */
+.comments{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height:50%;
+  background:#111;
+  transform:translateY(100%);
+  transition:.4s;
+  z-index:25;
+  padding:15px;
 }
 
-.close{
-  align-self:flex-end;
-  font-size:20px;
-  cursor:pointer;
-  margin-bottom:20px;
-}
+.comments.active{transform:translateY(0);}
 </style>
 </head>
 
 <body>
 
-<!-- TOP -->
 <div class="topbar">
-  <div class="logo">Cook’ed</div>
+  <div><b>Cook’ed</b></div>
   <div class="profile"></div>
 </div>
 
-<!-- FEED -->
 <div class="feed">
 
   <!-- CARD -->
   <div class="card" ondblclick="like(this)">
-    <img src="https://images.unsplash.com/photo-1604908176997-4316c84e91aa">
-    
+    <video src="https://www.w3schools.com/html/mov_bbb.mp4" autoplay loop muted></video>
+
     <div class="overlay">
       <div class="title">Garlic Butter Chicken</div>
       <div class="desc">5 ingredients. 20 minutes.</div>
-      <button class="cookBtn" onclick="openCook()">Cook</button>
+      <div class="badge">AI Recipe</div>
+      <button class="cookBtn" onclick="openCook('chicken')">Cook</button>
     </div>
 
     <div class="actions">
-      <div>❤️ 1.2k</div>
-      <div>💬 84</div>
-      <div>🔖</div>
-    </div>
-
-    <div class="heart">❤️</div>
-  </div>
-
-  <!-- CARD -->
-  <div class="card" ondblclick="like(this)">
-    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
-    
-    <div class="overlay">
-      <div class="title">Quick Breakfast Bowl</div>
-      <div class="desc">Energy in 10 minutes.</div>
-      <button class="cookBtn" onclick="openCook()">Cook</button>
-    </div>
-
-    <div class="actions">
-      <div>❤️ 980</div>
-      <div>💬 40</div>
-      <div>🔖</div>
+      <div onclick="like(this.parentNode.parentNode)">❤️ <span class="likeCount">1200</span></div>
+      <div onclick="openComments()">💬</div>
+      <div onclick="save(this)">🔖</div>
     </div>
 
     <div class="heart">❤️</div>
@@ -231,15 +189,17 @@ body{
 </div>
 
 <!-- COOK MODE -->
-<div class="cookMode" id="cookMode">
-  <div class="close" onclick="closeCook()">✖</div>
-  <h2>Cooking Mode 🍳</h2>
-  <p>Step-by-step instructions coming here...</p>
+<div class="cookMode" id="cookMode"></div>
+
+<!-- COMMENTS -->
+<div class="comments" id="comments">
+  <h3>Comments</h3>
+  <p>🔥 looks good</p>
+  <p>trying this tonight</p>
 </div>
 
-<!-- NAV -->
 <div class="nav">
-  <div class="active">Home</div>
+  <div>Home</div>
   <div>Search</div>
   <div>Create</div>
   <div>Saved</div>
@@ -247,22 +207,59 @@ body{
 </div>
 
 <script>
+/* LIKE */
 function like(card){
-  let heart = card.querySelector(".heart");
-  heart.classList.add("show");
+  let heart=card.querySelector(".heart");
+  let count=card.querySelector(".likeCount");
 
-  setTimeout(()=>{
-    heart.classList.remove("show");
-  },600);
+  count.textContent=parseInt(count.textContent)+1;
+
+  heart.classList.add("show");
+  setTimeout(()=>heart.classList.remove("show"),600);
 }
 
-function openCook(){
-  document.getElementById("cookMode").classList.add("active");
+/* SAVE */
+function save(el){
+  el.style.color="#00ff9d";
+}
+
+/* COMMENTS */
+function openComments(){
+  document.getElementById("comments").classList.add("active");
+}
+
+/* COOK MODE */
+function openCook(type){
+  const cook=document.getElementById("cookMode");
+
+  let steps={
+    chicken:[
+      "Season chicken",
+      "Cook in butter",
+      "Add garlic",
+      "Serve hot"
+    ]
+  };
+
+  cook.innerHTML=`
+    <h2>Cooking Mode 🍳</h2>
+    ${steps[type].map(s=>`<p>• ${s}</p>`).join("")}
+    <br><button onclick="closeCook()">Close</button>
+  `;
+
+  cook.classList.add("active");
 }
 
 function closeCook(){
   document.getElementById("cookMode").classList.remove("active");
 }
+
+/* TAP VIDEO SOUND */
+document.querySelectorAll("video").forEach(v=>{
+  v.addEventListener("click",()=>{
+    v.muted=!v.muted;
+  });
+});
 </script>
 
 </body>
