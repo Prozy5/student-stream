@@ -6,23 +6,20 @@
 <title>StudentStreamHQ • Command Center</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:system-ui;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
 body{
-  background:#0a0f14;
+  background:radial-gradient(circle at top, #0f172a, #020617);
   color:#e6edf3;
   display:flex;
+  height:100vh;
+  overflow:hidden;
 }
 
 /* SIDEBAR */
 .sidebar{
   width:240px;
-  background:#0d131a;
+  background:#020617;
   padding:20px;
   border-right:1px solid #1f2933;
 }
@@ -31,26 +28,21 @@ body{
   font-size:18px;
   font-weight:700;
   margin-bottom:30px;
+  color:#3b82f6;
 }
 
 .sidebar a{
   display:block;
-  margin:10px 0;
+  margin:12px 0;
   color:#9ca3af;
   text-decoration:none;
+  transition:0.2s;
 }
-
-.sidebar a:hover{
-  color:#3b82f6;
-}
+.sidebar a:hover{color:#3b82f6;transform:translateX(5px);}
 
 /* MAIN */
-.main{
-  flex:1;
-  padding:20px;
-}
+.main{flex:1;padding:20px;overflow:auto;}
 
-/* TOP BAR */
 .topbar{
   display:flex;
   justify-content:space-between;
@@ -59,6 +51,10 @@ body{
 
 .status{
   color:#22c55e;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}
 }
 
 /* GRID */
@@ -70,35 +66,70 @@ body{
 
 /* CARD */
 .card{
-  background:#11161c;
+  background:rgba(17,22,28,0.9);
   border:1px solid #1f2933;
-  border-radius:12px;
+  border-radius:14px;
   padding:15px;
+  backdrop-filter:blur(10px);
+  transition:0.3s;
+}
+.card:hover{
+  transform:translateY(-6px);
+  border-color:#3b82f6;
+  box-shadow:0 0 20px rgba(59,130,246,0.2);
 }
 
-.card h3{
-  margin-bottom:10px;
-  font-size:15px;
-}
-
-/* LOGS */
-.log{
-  font-size:12px;
-  margin:5px 0;
-  color:#9ca3af;
-}
+.card h3{margin-bottom:10px;font-size:15px;}
 
 /* BADGES */
-.badge{
-  padding:4px 8px;
-  border-radius:6px;
-  font-size:11px;
-}
-
+.badge{padding:4px 8px;border-radius:6px;font-size:11px;}
 .green{background:#022c22;color:#22c55e;}
 .red{background:#2c0a0a;color:#ef4444;}
 .blue{background:#0a1f2c;color:#3b82f6;}
 .yellow{background:#2c2a0a;color:#eab308;}
+
+/* METRIC */
+.metric{font-size:22px;font-weight:700;color:#3b82f6;}
+
+/* LOGS */
+.log{font-size:12px;color:#9ca3af;margin:5px 0;}
+.log-box{max-height:150px;overflow:hidden;}
+
+/* MAP */
+.map{
+  height:200px;
+  background:#020617;
+  border-radius:10px;
+  position:relative;
+  overflow:hidden;
+}
+.ping{
+  width:8px;height:8px;
+  background:#3b82f6;
+  border-radius:50%;
+  position:absolute;
+  animation:ping 2s infinite;
+}
+@keyframes ping{
+  0%{transform:scale(1);opacity:1;}
+  100%{transform:scale(3);opacity:0;}
+}
+
+/* MESSAGES */
+.message{
+  font-size:12px;
+  margin:6px 0;
+  padding:6px;
+  background:#0a1f2c;
+  border-radius:6px;
+}
+
+/* MINI GRID */
+.mini-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
 
 </style>
 </head>
@@ -107,7 +138,6 @@ body{
 
 <div class="sidebar">
   <div class="logo">StudentStreamHQ</div>
-
   <a href="#">Dashboard</a>
   <a href="#">SS Studios</a>
   <a href="#">SS Productions</a>
@@ -127,64 +157,109 @@ body{
 
   <div class="grid">
 
-    <!-- SYSTEM STATUS -->
+    <!-- DIVISIONS STATUS -->
     <div class="card">
-      <h3>System Status</h3>
+      <h3>All Divisions</h3>
       <p>SS Studios <span class="badge green">Active</span></p>
       <p>SS Productions <span class="badge green">Filming</span></p>
-      <p>Astra Messaging <span class="badge blue">Stable</span></p>
-      <p>DevForum <span class="badge yellow">Deploying</span></p>
-      <p>Security <span class="badge green">Monitoring</span></p>
-      <p>Finance <span class="badge green">Processing</span></p>
-      <p>Law <span class="badge blue">Reviewing</span></p>
+      <p>Astra Messaging <span class="badge green">Online</span></p>
+      <p>DevForum <span class="badge yellow">Updating</span></p>
+      <p>StudentStream Security <span class="badge green">Monitoring</span></p>
+      <p>StudentStream Finance <span class="badge green">Processing</span></p>
+      <p>StudentStream Law <span class="badge blue">Reviewing</span></p>
     </div>
 
-    <!-- ACTIVITY LOG -->
+    <!-- LIVE METRICS -->
     <div class="card">
-      <h3>Live Activity Logs</h3>
-      <div class="log">[12:01] New user joined Astra Messaging</div>
-      <div class="log">[12:03] DevForum patch deployed</div>
-      <div class="log">[12:04] Payment processed (SS Finance)</div>
-      <div class="log">[12:06] New message thread created</div>
-      <div class="log">[12:07] Film project updated (SS Studios)</div>
+      <h3>Live Metrics</h3>
+      <div class="mini-grid">
+        <div><div class="metric" id="users">120</div><small>Users</small></div>
+        <div><div class="metric" id="messages">300</div><small>Msgs/min</small></div>
+        <div><div class="metric" id="requests">2300</div><small>API</small></div>
+        <div><div class="metric" id="threats">2</div><small>Threats</small></div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="card">
+      <h3>Network Activity</h3>
+      <div class="map" id="map"></div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="card">
+      <h3>Activity Logs</h3>
+      <div class="log-box" id="logBox"></div>
+    </div>
+
+    <!-- STAFF MESSAGES -->
+    <div class="card">
+      <h3>Staff Messages</h3>
+      <div id="messagesBox"></div>
     </div>
 
     <!-- SECURITY -->
     <div class="card">
-      <h3>Security Monitoring</h3>
-      <p>Threat Detection: <span class="badge green">Low</span></p>
-      <p>Active Sessions: 128</p>
-      <p>API Requests/min: 2,340</p>
-      <p>System Integrity: <span class="badge green">100%</span></p>
-    </div>
-
-    <!-- MESSAGING -->
-    <div class="card">
-      <h3>Astra Messaging</h3>
-      <p>Active Chats: 42</p>
-      <p>Messages/min: 310</p>
-      <p>Status: <span class="badge green">Online</span></p>
-    </div>
-
-    <!-- DEV -->
-    <div class="card">
-      <h3>DevForum</h3>
-      <p>Open Threads: 87</p>
-      <p>Commits Today: 26</p>
-      <p>Status: <span class="badge yellow">Updating</span></p>
-    </div>
-
-    <!-- FILM -->
-    <div class="card">
-      <h3>SS Productions</h3>
-      <p>Projects: 3 Active</p>
-      <p>Rendering: 1 Video</p>
-      <p>Status: <span class="badge green">In Progress</span></p>
+      <h3>Security</h3>
+      <p>Threat Level <span class="badge green">Low</span></p>
+      <p>Firewall <span class="badge green">Active</span></p>
+      <p>Encryption <span class="badge green">Enabled</span></p>
+      <p>Integrity <span class="badge green">100%</span></p>
     </div>
 
   </div>
 
 </div>
+
+<script>
+
+// METRICS
+setInterval(()=>{
+  users.innerText = 100 + Math.floor(Math.random()*50);
+  messages.innerText = 250 + Math.floor(Math.random()*100);
+  requests.innerText = 2000 + Math.floor(Math.random()*500);
+  threats.innerText = Math.floor(Math.random()*5);
+},2000);
+
+// LOGS
+const logs = ["User joined","Payment processed","Security scan","Film updated","DB synced"];
+setInterval(()=>{
+  const logBox = document.getElementById("logBox");
+  const log = document.createElement("div");
+  log.className="log";
+  log.innerText=`[${new Date().toLocaleTimeString()}] ${logs[Math.random()*logs.length|0]}`;
+  logBox.prepend(log);
+  if(logBox.children.length>8) logBox.removeChild(logBox.lastChild);
+},1500);
+
+// MESSAGES
+const msgs = [
+"Editor: Video exporting now",
+"Dev: Patch deployed",
+"Finance: Payment cleared",
+"Security: All systems normal"
+];
+setInterval(()=>{
+  const box = document.getElementById("messagesBox");
+  const msg = document.createElement("div");
+  msg.className="message";
+  msg.innerText=msgs[Math.random()*msgs.length|0];
+  box.prepend(msg);
+  if(box.children.length>5) box.removeChild(box.lastChild);
+},2500);
+
+// MAP PINGS
+setInterval(()=>{
+  const map=document.getElementById("map");
+  const ping=document.createElement("div");
+  ping.className="ping";
+  ping.style.top=Math.random()*180+"px";
+  ping.style.left=Math.random()*280+"px";
+  map.appendChild(ping);
+  setTimeout(()=>ping.remove(),2000);
+},800);
+
+</script>
 
 </body>
 </html>
