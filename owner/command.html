@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudentStreamHQ • Command Center</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui;
+}
+
+body{
+  background:#0a0f14;
+  color:#e6edf3;
+  display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  background:#0d131a;
+  padding:20px;
+  border-right:1px solid #1f2933;
+}
+
+.logo{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:30px;
+}
+
+.sidebar a{
+  display:block;
+  margin:10px 0;
+  color:#9ca3af;
+  text-decoration:none;
+}
+
+.sidebar a:hover{
+  color:#3b82f6;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:20px;
+}
+
+/* TOP BAR */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.status{
+  color:#22c55e;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:15px;
+}
+
+/* CARD */
+.card{
+  background:#11161c;
+  border:1px solid #1f2933;
+  border-radius:12px;
+  padding:15px;
+}
+
+.card h3{
+  margin-bottom:10px;
+  font-size:15px;
+}
+
+/* LOGS */
+.log{
+  font-size:12px;
+  margin:5px 0;
+  color:#9ca3af;
+}
+
+/* BADGES */
+.badge{
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:11px;
+}
+
+.green{background:#022c22;color:#22c55e;}
+.red{background:#2c0a0a;color:#ef4444;}
+.blue{background:#0a1f2c;color:#3b82f6;}
+.yellow{background:#2c2a0a;color:#eab308;}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="logo">StudentStreamHQ</div>
+
+  <a href="#">Dashboard</a>
+  <a href="#">SS Studios</a>
+  <a href="#">SS Productions</a>
+  <a href="#">Astra Messaging</a>
+  <a href="#">DevForum</a>
+  <a href="#">Security</a>
+  <a href="#">Finance</a>
+  <a href="#">Law</a>
+</div>
+
+<div class="main">
+
+  <div class="topbar">
+    <h2>Owner Command Center</h2>
+    <div class="status">● Systems Operational</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- SYSTEM STATUS -->
+    <div class="card">
+      <h3>System Status</h3>
+      <p>SS Studios <span class="badge green">Active</span></p>
+      <p>SS Productions <span class="badge green">Filming</span></p>
+      <p>Astra Messaging <span class="badge blue">Stable</span></p>
+      <p>DevForum <span class="badge yellow">Deploying</span></p>
+      <p>Security <span class="badge green">Monitoring</span></p>
+      <p>Finance <span class="badge green">Processing</span></p>
+      <p>Law <span class="badge blue">Reviewing</span></p>
+    </div>
+
+    <!-- ACTIVITY LOG -->
+    <div class="card">
+      <h3>Live Activity Logs</h3>
+      <div class="log">[12:01] New user joined Astra Messaging</div>
+      <div class="log">[12:03] DevForum patch deployed</div>
+      <div class="log">[12:04] Payment processed (SS Finance)</div>
+      <div class="log">[12:06] New message thread created</div>
+      <div class="log">[12:07] Film project updated (SS Studios)</div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="card">
+      <h3>Security Monitoring</h3>
+      <p>Threat Detection: <span class="badge green">Low</span></p>
+      <p>Active Sessions: 128</p>
+      <p>API Requests/min: 2,340</p>
+      <p>System Integrity: <span class="badge green">100%</span></p>
+    </div>
+
+    <!-- MESSAGING -->
+    <div class="card">
+      <h3>Astra Messaging</h3>
+      <p>Active Chats: 42</p>
+      <p>Messages/min: 310</p>
+      <p>Status: <span class="badge green">Online</span></p>
+    </div>
+
+    <!-- DEV -->
+    <div class="card">
+      <h3>DevForum</h3>
+      <p>Open Threads: 87</p>
+      <p>Commits Today: 26</p>
+      <p>Status: <span class="badge yellow">Updating</span></p>
+    </div>
+
+    <!-- FILM -->
+    <div class="card">
+      <h3>SS Productions</h3>
+      <p>Projects: 3 Active</p>
+      <p>Rendering: 1 Video</p>
+      <p>Status: <span class="badge green">In Progress</span></p>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
