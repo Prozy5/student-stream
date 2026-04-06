@@ -197,20 +197,20 @@ body{
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
 
-// REAL MAP WITH LABELS
+// MAP
 const map = L.map('map').setView([20,0],2);
 
-// THIS TILE SHOWS COUNTRIES + NAMES
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
   attribution:'© OpenStreetMap'
 }).addTo(map);
 
-// Fix rendering issue
 setTimeout(()=>{map.invalidateSize()},500);
 
-// MARKERS (VISIBLE LOCATIONS)
+// LOCATIONS
 const locations = [
   {name:"United States", coords:[37.0902,-95.7129]},
   {name:"United Kingdom", coords:[51.5074,-0.1278]},
@@ -218,13 +218,81 @@ const locations = [
   {name:"Australia", coords:[-25.2744,133.7751]}
 ];
 
+// MARKERS + PULSE
 locations.forEach(loc=>{
-  L.marker(loc.coords)
-    .addTo(map)
-    .bindPopup(loc.name);
+  const marker = L.circleMarker(loc.coords,{
+    radius:5,
+    color:"#3b82f6"
+  }).addTo(map).bindPopup(loc.name);
+
+  // pulsing effect
+  setInterval(()=>{
+    const pulse = L.circle(loc.coords,{
+      radius:400000,
+      color:"#3b82f6",
+      opacity:0.2
+    }).addTo(map);
+
+    setTimeout(()=>map.removeLayer(pulse),1500);
+  },3000);
 });
 
-</script>
+// CONNECTIONS
+function connect(a,b){
+  const latlngs = [
+    a,
+    [(a[0]+b[0])/2 + 10, (a[1]+b[1])/2],
+    b
+  ];
 
-</body>
-</html>
+  const line = L.polyline(latlngs,{
+    color:"#3b82f6",
+    weight:2,
+    opacity:0.6
+  }).addTo(map);
+
+  animatePacket(latlngs);
+}
+
+// DATA PACKET ANIMATION
+function animatePacket(path){
+  let i = 0;
+
+  const marker = L.circleMarker(path[0],{
+    radius:4,
+    color:"#22c55e"
+  }).addTo(map);
+
+  const interval = setInterval(()=>{
+    i++;
+
+    if(i >= path.length){
+      i = 0;
+    }
+
+    marker.setLatLng(path[i]);
+  },500);
+}
+
+// CONNECT ALL
+for(let i=0;i<locations.length-1;i++){
+  connect(locations[i].coords, locations[i+1].coords);
+}
+
+// LIVE DATA (subtle, not spam)
+const statusBox = document.querySelector(".status-box");
+
+setInterval(()=>{
+  const latency = Math.floor(Math.random()*40)+60;
+  const traffic = Math.floor(Math.random()*500)+1200;
+
+  statusBox.innerHTML = `
+    <p>🟢 Servers: Online</p>
+    <p>🟢 API: Stable (${latency}ms)</p>
+    <p>🟢 Database: Connected</p>
+    <p>🟡 Traffic: ${traffic}/min</p>
+    <p>🟢 Security: Secure</p>
+  `;
+},4000);
+
+</script>
