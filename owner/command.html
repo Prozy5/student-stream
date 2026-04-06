@@ -5,44 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StudentStreamHQ • Command Center</title>
 
-<!-- LEAFLET -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
 body{
-  background:radial-gradient(circle at top, #0f172a, #020617);
+  background:#020617;
   color:#e6edf3;
   display:flex;
   height:100vh;
-  overflow:hidden;
 }
 
 /* SIDEBAR */
 .sidebar{
   width:240px;
-  background:#020617;
+  background:#010409;
   padding:20px;
   border-right:1px solid #1f2933;
 }
 
-.logo{
-  font-size:18px;
-  font-weight:700;
-  color:#3b82f6;
-  margin-bottom:20px;
-}
-
-.owner{
-  font-size:12px;
-  color:#22c55e;
-  margin-bottom:25px;
-}
+.logo{color:#3b82f6;font-weight:700;margin-bottom:10px;}
+.owner{color:#22c55e;font-size:12px;margin-bottom:20px;}
 
 .sidebar a{
   display:block;
-  margin:12px 0;
+  margin:10px 0;
   color:#9ca3af;
   text-decoration:none;
 }
@@ -53,41 +41,33 @@ body{
   flex:1;
   display:flex;
   flex-direction:column;
-  padding:15px;
+  padding:12px;
 }
 
-/* TOPBAR */
 .topbar{
   display:flex;
   justify-content:space-between;
   margin-bottom:10px;
 }
 
-.status{
-  color:#22c55e;
-  animation:pulse 2s infinite;
-}
-@keyframes pulse{
-  0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}
-}
-
 /* GRID */
 .dashboard{
   flex:1;
   display:grid;
-  grid-template-columns: 2.2fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns:2.5fr 1fr;
+  grid-template-rows:1fr 1fr;
   gap:12px;
 }
 
 /* CARDS */
 .card{
-  background:rgba(17,22,28,0.9);
+  background:#020617;
   border:1px solid #1f2933;
   border-radius:12px;
   padding:12px;
   display:flex;
   flex-direction:column;
+  box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
 /* MAP */
@@ -96,14 +76,6 @@ body{
   border-radius:10px;
   overflow:hidden;
 }
-
-/* LOGS */
-.log-box{
-  flex:1;
-  font-size:11px;
-  overflow:hidden;
-}
-.log{margin:4px 0;color:#9ca3af;}
 
 /* METRICS */
 .metric{
@@ -119,10 +91,7 @@ body{
 .blue{background:#0a1f2c;color:#3b82f6;}
 
 /* DM */
-.messages{
-  flex:1;
-  overflow:hidden;
-}
+.messages{flex:1;overflow:hidden;}
 .msg{
   margin:4px 0;
   padding:6px;
@@ -132,13 +101,10 @@ body{
 }
 
 /* INPUT */
-.input{
-  display:flex;
-  margin-top:8px;
-}
+.input{display:flex;margin-top:8px;}
 .input input{
   flex:1;
-  background:#020617;
+  background:#010409;
   border:1px solid #1f2933;
   color:white;
   padding:6px;
@@ -153,27 +119,18 @@ body{
   border-radius:6px;
 }
 
-/* AI PANEL */
+/* AI */
 .ai{
   position:absolute;
   bottom:20px;
   right:20px;
   width:260px;
-  background:#020617;
+  background:#010409;
   border:1px solid #1f2933;
   border-radius:12px;
   padding:10px;
 }
-.ai h4{font-size:13px;margin-bottom:6px;}
-.ai-log{
-  font-size:11px;
-  color:#9ca3af;
-  max-height:120px;
-  overflow:hidden;
-}
-.ai-msg{
-  margin:3px 0;
-}
+.ai-log{font-size:11px;color:#9ca3af;max-height:120px;overflow:hidden;}
 
 </style>
 </head>
@@ -182,120 +139,129 @@ body{
 
 <div class="sidebar">
   <div class="logo">StudentStreamHQ</div>
-  <div class="owner">👑 Owner: You</div>
+  <div class="owner">👑 Owner</div>
 
   <a href="#">Dashboard</a>
   <a href="#">SS Studios</a>
   <a href="#">SS Productions</a>
   <a href="#">Astra Messaging</a>
   <a href="#">DevForum</a>
-  <a href="#">Security</a>
-  <a href="#">Finance</a>
-  <a href="#">Law</a>
 </div>
 
 <div class="main">
 
-  <div class="topbar">
-    <h2>Command Center</h2>
-    <div class="status">● All Systems Operational</div>
-  </div>
-
-  <div class="dashboard">
-
-    <!-- MAP -->
-    <div class="card" style="grid-row:1 / span 2;">
-      <h3>Global Network</h3>
-      <div id="map"></div>
-    </div>
-
-    <!-- DIVISIONS -->
-    <div class="card">
-      <h3>Divisions</h3>
-      <p>SS Studios <span class="badge green">Active</span></p>
-      <p>SS Productions <span class="badge green">Filming</span></p>
-      <p>Astra Messaging <span class="badge green">Online</span></p>
-      <p>DevForum <span class="badge yellow">Updating</span></p>
-      <p>Security <span class="badge green">Monitoring</span></p>
-      <p>Finance <span class="badge green">Processing</span></p>
-      <p>Law <span class="badge blue">Reviewing</span></p>
-    </div>
-
-    <!-- METRICS -->
-    <div class="card">
-      <h3>Live Metrics</h3>
-      <div class="metric" id="users">120</div> Users
-      <div class="metric" id="messages">300</div> Msg/min
-      <div class="metric" id="requests">2300</div> API
-    </div>
-
-    <!-- DMS -->
-    <div class="card">
-      <h3>Staff Direct Messages</h3>
-      <div class="messages" id="dmBox"></div>
-      <div class="input">
-        <input placeholder="Reply as Owner...">
-        <button>Send</button>
-      </div>
-    </div>
-
-  </div>
-
+<div class="topbar">
+  <h2>Command Center</h2>
+  <div style="color:#22c55e">● Systems Active</div>
 </div>
 
-<!-- AI PANEL -->
+<div class="dashboard">
+
+<!-- MAP -->
+<div class="card" style="grid-row:1 / span 2;">
+  <h3>Global Network</h3>
+  <div id="map"></div>
+</div>
+
+<!-- DIVISIONS -->
+<div class="card">
+  <h3>Divisions</h3>
+  <p>SS Studios <span class="badge green">Active</span></p>
+  <p>SS Productions <span class="badge green">Filming</span></p>
+  <p>Astra Messaging <span class="badge green">Online</span></p>
+</div>
+
+<!-- METRICS -->
+<div class="card">
+  <h3>Live Metrics</h3>
+  <div class="metric" id="users">120</div> Users
+  <div class="metric" id="messages">300</div> Msg/min
+</div>
+
+<!-- DMS -->
+<div class="card">
+  <h3>Staff Messages</h3>
+  <div class="messages" id="dmBox"></div>
+  <div class="input">
+    <input id="inputMsg" placeholder="Reply...">
+    <button onclick="sendMsg()">Send</button>
+  </div>
+</div>
+
+</div>
+</div>
+
 <div class="ai">
-  <h4>🧠 HQ Assistant</h4>
-  <div class="ai-log" id="aiLog"></div>
+  <div id="aiLog"></div>
 </div>
 
-<!-- LEAFLET SCRIPT -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
-// INIT MAP
-const map = L.map('map').setView([20,0], 2);
+// DARK MAP (THIS FIXES YOUR PROBLEM)
+const map = L.map('map',{zoomControl:false}).setView([20,0],2);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
   attribution:'© OpenStreetMap'
 }).addTo(map);
 
-// CONNECTION POINTS
-const points = [
-  [37.7749,-122.4194], // US
-  [51.5074,-0.1278],   // London
-  [35.6895,139.6917],  // Tokyo
-  [-33.8688,151.2093]  // Australia
+// FIX BLANK MAP BUG
+setTimeout(()=>{map.invalidateSize()},500);
+
+// LOCATIONS
+const points=[
+[37.7749,-122.4194],
+[51.5074,-0.1278],
+[35.6895,139.6917],
+[-33.8688,151.2093]
 ];
 
-// DRAW LINES
-for(let i=0;i<points.length-1;i++){
-  L.polyline([points[i],points[i+1]],{
-    color:'#3b82f6'
-  }).addTo(map);
+// CURVED LINES
+function drawLine(a,b){
+  const latlngs=[
+    a,
+    [(a[0]+b[0])/2 + 10, (a[1]+b[1])/2],
+    b
+  ];
+  L.polyline(latlngs,{color:'#3b82f6',weight:2,opacity:0.7}).addTo(map);
 }
 
-// MARKERS
+for(let i=0;i<points.length-1;i++){
+  drawLine(points[i],points[i+1]);
+}
+
+// PULSING NODES
 points.forEach(p=>{
-  L.circleMarker(p,{radius:5,color:'#3b82f6'}).addTo(map);
+  const marker=L.circleMarker(p,{radius:5,color:'#3b82f6'}).addTo(map);
+
+  setInterval(()=>{
+    const pulse=L.circle(p,{radius:500000,color:'#3b82f6',opacity:0.2});
+    pulse.addTo(map);
+    setTimeout(()=>map.removeLayer(pulse),2000);
+  },2000);
 });
 
 // METRICS
 setInterval(()=>{
   users.innerText=100+Math.random()*50|0;
   messages.innerText=250+Math.random()*100|0;
-  requests.innerText=2000+Math.random()*500|0;
 },2000);
 
-// LOGIC (DMs)
-const dms=[
-"Dev: Deploy update?",
-"Editor: Final cut ready",
-"Finance: Approve payout?",
-"Security: Suspicious login detected",
-"Law: Contract needs review"
-];
+// DMS
+function sendMsg(){
+  const input=document.getElementById("inputMsg");
+  if(!input.value) return;
+
+  const box=document.getElementById("dmBox");
+  const msg=document.createElement("div");
+  msg.className="msg";
+  msg.innerText="You: "+input.value;
+  box.prepend(msg);
+  input.value="";
+}
+
+const dms=["Dev: Push update?","Finance: Approve?","Security: Alert triggered"];
 
 setInterval(()=>{
   const box=document.getElementById("dmBox");
@@ -303,25 +269,16 @@ setInterval(()=>{
   msg.className="msg";
   msg.innerText=dms[Math.random()*dms.length|0];
   box.prepend(msg);
-  if(box.children.length>6) box.removeChild(box.lastChild);
 },2500);
 
-// AI ASSISTANT
-const aiLogs=[
-"Scanning system health...",
-"No critical threats detected",
-"Traffic spike in EU region",
-"New deployment successful",
-"All services stable"
-];
+// AI
+const aiLogs=["Scanning...","All systems normal","Traffic spike detected"];
 
 setInterval(()=>{
   const log=document.getElementById("aiLog");
   const msg=document.createElement("div");
-  msg.className="ai-msg";
   msg.innerText="> "+aiLogs[Math.random()*aiLogs.length|0];
   log.prepend(msg);
-  if(log.children.length>6) log.removeChild(log.lastChild);
 },2000);
 
 </script>
