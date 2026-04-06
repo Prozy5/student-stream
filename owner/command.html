@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StudentStreamHQ • Command Center</title>
 
+<!-- LEAFLET -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
@@ -18,7 +21,7 @@ body{
 
 /* SIDEBAR */
 .sidebar{
-  width:230px;
+  width:240px;
   background:#020617;
   padding:20px;
   border-right:1px solid #1f2933;
@@ -27,8 +30,14 @@ body{
 .logo{
   font-size:18px;
   font-weight:700;
-  margin-bottom:30px;
   color:#3b82f6;
+  margin-bottom:20px;
+}
+
+.owner{
+  font-size:12px;
+  color:#22c55e;
+  margin-bottom:25px;
 }
 
 .sidebar a{
@@ -39,7 +48,7 @@ body{
 }
 .sidebar a:hover{color:#3b82f6;}
 
-/* MAIN LAYOUT */
+/* MAIN */
 .main{
   flex:1;
   display:flex;
@@ -47,7 +56,7 @@ body{
   padding:15px;
 }
 
-/* TOP */
+/* TOPBAR */
 .topbar{
   display:flex;
   justify-content:space-between;
@@ -62,30 +71,16 @@ body{
   0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}
 }
 
-/* DASH GRID */
+/* GRID */
 .dashboard{
   flex:1;
   display:grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 2.2fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap:12px;
 }
 
-/* LEFT SIDE */
-.left{
-  display:grid;
-  grid-template-rows: 1fr 1fr;
-  gap:12px;
-}
-
-/* RIGHT SIDE */
-.right{
-  display:grid;
-  grid-template-rows: 1fr 1fr;
-  gap:12px;
-}
-
-/* CARD */
+/* CARDS */
 .card{
   background:rgba(17,22,28,0.9);
   border:1px solid #1f2933;
@@ -94,57 +89,52 @@ body{
   display:flex;
   flex-direction:column;
 }
-.card h3{margin-bottom:8px;font-size:14px;}
-
-/* BADGES */
-.badge{padding:3px 7px;border-radius:6px;font-size:10px;}
-.green{background:#022c22;color:#22c55e;}
-.blue{background:#0a1f2c;color:#3b82f6;}
-.yellow{background:#2c2a0a;color:#eab308;}
-
-/* METRICS */
-.metric{font-size:20px;font-weight:700;color:#3b82f6;}
 
 /* MAP */
-.map{
+#map{
   flex:1;
-  background:#020617;
-  border-radius:8px;
-  position:relative;
-}
-.ping{
-  width:8px;height:8px;
-  background:#3b82f6;
-  border-radius:50%;
-  position:absolute;
-  animation:ping 2s infinite;
-}
-@keyframes ping{
-  0%{transform:scale(1);opacity:1;}
-  100%{transform:scale(3);opacity:0;}
+  border-radius:10px;
+  overflow:hidden;
 }
 
 /* LOGS */
-.log-box{flex:1;overflow:hidden;font-size:11px;color:#9ca3af;}
-.log{margin:4px 0;}
+.log-box{
+  flex:1;
+  font-size:11px;
+  overflow:hidden;
+}
+.log{margin:4px 0;color:#9ca3af;}
 
-/* MESSAGES */
+/* METRICS */
+.metric{
+  font-size:20px;
+  color:#3b82f6;
+  font-weight:700;
+}
+
+/* BADGE */
+.badge{padding:3px 7px;border-radius:6px;font-size:10px;}
+.green{background:#022c22;color:#22c55e;}
+.yellow{background:#2c2a0a;color:#eab308;}
+.blue{background:#0a1f2c;color:#3b82f6;}
+
+/* DM */
 .messages{
   flex:1;
   overflow:hidden;
-  font-size:11px;
 }
 .msg{
   margin:4px 0;
   padding:6px;
   background:#0a1f2c;
   border-radius:6px;
+  font-size:11px;
 }
 
 /* INPUT */
 .input{
-  margin-top:8px;
   display:flex;
+  margin-top:8px;
 }
 .input input{
   flex:1;
@@ -153,16 +143,36 @@ body{
   color:white;
   padding:6px;
   border-radius:6px;
-  font-size:11px;
 }
 .input button{
   margin-left:5px;
-  padding:6px 10px;
   background:#3b82f6;
   border:none;
   color:white;
+  padding:6px 10px;
   border-radius:6px;
+}
+
+/* AI PANEL */
+.ai{
+  position:absolute;
+  bottom:20px;
+  right:20px;
+  width:260px;
+  background:#020617;
+  border:1px solid #1f2933;
+  border-radius:12px;
+  padding:10px;
+}
+.ai h4{font-size:13px;margin-bottom:6px;}
+.ai-log{
   font-size:11px;
+  color:#9ca3af;
+  max-height:120px;
+  overflow:hidden;
+}
+.ai-msg{
+  margin:3px 0;
 }
 
 </style>
@@ -172,6 +182,8 @@ body{
 
 <div class="sidebar">
   <div class="logo">StudentStreamHQ</div>
+  <div class="owner">👑 Owner: You</div>
+
   <a href="#">Dashboard</a>
   <a href="#">SS Studios</a>
   <a href="#">SS Productions</a>
@@ -185,60 +197,42 @@ body{
 <div class="main">
 
   <div class="topbar">
-    <h2>Owner Command Center</h2>
-    <div class="status">● Systems Operational</div>
+    <h2>Command Center</h2>
+    <div class="status">● All Systems Operational</div>
   </div>
 
   <div class="dashboard">
 
-    <!-- LEFT SIDE -->
-    <div class="left">
-
-      <!-- MAP -->
-      <div class="card">
-        <h3>Global Network Activity</h3>
-        <div class="map" id="map"></div>
-      </div>
-
-      <!-- LOGS -->
-      <div class="card">
-        <h3>System Logs</h3>
-        <div class="log-box" id="logBox"></div>
-      </div>
-
+    <!-- MAP -->
+    <div class="card" style="grid-row:1 / span 2;">
+      <h3>Global Network</h3>
+      <div id="map"></div>
     </div>
 
-    <!-- RIGHT SIDE -->
-    <div class="right">
-
-      <!-- DIVISIONS -->
-      <div class="card">
-        <h3>All Divisions</h3>
-        <p>SS Studios <span class="badge green">Active</span></p>
-        <p>SS Productions <span class="badge green">Filming</span></p>
-        <p>Astra Messaging <span class="badge green">Online</span></p>
-        <p>DevForum <span class="badge yellow">Updating</span></p>
-        <p>StudentStream Security <span class="badge green">Monitoring</span></p>
-        <p>StudentStream Finance <span class="badge green">Processing</span></p>
-        <p>StudentStream Law <span class="badge blue">Reviewing</span></p>
-      </div>
-
-      <!-- METRICS -->
-      <div class="card">
-        <h3>Live Metrics</h3>
-        <div class="metric" id="users">120</div> Users
-        <div class="metric" id="messages">300</div> Msg/min
-        <div class="metric" id="requests">2300</div> API
-      </div>
-
+    <!-- DIVISIONS -->
+    <div class="card">
+      <h3>Divisions</h3>
+      <p>SS Studios <span class="badge green">Active</span></p>
+      <p>SS Productions <span class="badge green">Filming</span></p>
+      <p>Astra Messaging <span class="badge green">Online</span></p>
+      <p>DevForum <span class="badge yellow">Updating</span></p>
+      <p>Security <span class="badge green">Monitoring</span></p>
+      <p>Finance <span class="badge green">Processing</span></p>
+      <p>Law <span class="badge blue">Reviewing</span></p>
     </div>
 
-    <!-- STAFF DM (FULL WIDTH BOTTOM RIGHT FEEL) -->
-    <div class="card" style="grid-column:2; grid-row:2;">
-      <h3>Direct Messages (Staff → You)</h3>
+    <!-- METRICS -->
+    <div class="card">
+      <h3>Live Metrics</h3>
+      <div class="metric" id="users">120</div> Users
+      <div class="metric" id="messages">300</div> Msg/min
+      <div class="metric" id="requests">2300</div> API
+    </div>
 
+    <!-- DMS -->
+    <div class="card">
+      <h3>Staff Direct Messages</h3>
       <div class="messages" id="dmBox"></div>
-
       <div class="input">
         <input placeholder="Reply as Owner...">
         <button>Send</button>
@@ -249,44 +243,58 @@ body{
 
 </div>
 
+<!-- AI PANEL -->
+<div class="ai">
+  <h4>🧠 HQ Assistant</h4>
+  <div class="ai-log" id="aiLog"></div>
+</div>
+
+<!-- LEAFLET SCRIPT -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
 
-// MAP PINGS
-setInterval(()=>{
-  const map=document.getElementById("map");
-  const ping=document.createElement("div");
-  ping.className="ping";
-  ping.style.top=Math.random()*90+"%";
-  ping.style.left=Math.random()*95+"%";
-  map.appendChild(ping);
-  setTimeout(()=>ping.remove(),2000);
-},700);
+// INIT MAP
+const map = L.map('map').setView([20,0], 2);
 
-// LOGS
-const logs=["User joined","Payment processed","Security scan","Film updated"];
-setInterval(()=>{
-  const box=document.getElementById("logBox");
-  const log=document.createElement("div");
-  log.className="log";
-  log.innerText=`[${new Date().toLocaleTimeString()}] ${logs[Math.random()*logs.length|0]}`;
-  box.prepend(log);
-  if(box.children.length>10) box.removeChild(box.lastChild);
-},1200);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'© OpenStreetMap'
+}).addTo(map);
+
+// CONNECTION POINTS
+const points = [
+  [37.7749,-122.4194], // US
+  [51.5074,-0.1278],   // London
+  [35.6895,139.6917],  // Tokyo
+  [-33.8688,151.2093]  // Australia
+];
+
+// DRAW LINES
+for(let i=0;i<points.length-1;i++){
+  L.polyline([points[i],points[i+1]],{
+    color:'#3b82f6'
+  }).addTo(map);
+}
+
+// MARKERS
+points.forEach(p=>{
+  L.circleMarker(p,{radius:5,color:'#3b82f6'}).addTo(map);
+});
 
 // METRICS
 setInterval(()=>{
-  users.innerText=100+Math.floor(Math.random()*50);
-  messages.innerText=250+Math.floor(Math.random()*100);
-  requests.innerText=2000+Math.floor(Math.random()*500);
+  users.innerText=100+Math.random()*50|0;
+  messages.innerText=250+Math.random()*100|0;
+  requests.innerText=2000+Math.random()*500|0;
 },2000);
 
-// STAFF DMs (QUESTIONS)
+// LOGIC (DMs)
 const dms=[
-"Editor: Do we finalize the cut?",
-"Dev: Push update to production?",
+"Dev: Deploy update?",
+"Editor: Final cut ready",
 "Finance: Approve payout?",
-"Security: Investigate flagged activity?",
-"Law: Review contract draft?"
+"Security: Suspicious login detected",
+"Law: Contract needs review"
 ];
 
 setInterval(()=>{
@@ -297,6 +305,24 @@ setInterval(()=>{
   box.prepend(msg);
   if(box.children.length>6) box.removeChild(box.lastChild);
 },2500);
+
+// AI ASSISTANT
+const aiLogs=[
+"Scanning system health...",
+"No critical threats detected",
+"Traffic spike in EU region",
+"New deployment successful",
+"All services stable"
+];
+
+setInterval(()=>{
+  const log=document.getElementById("aiLog");
+  const msg=document.createElement("div");
+  msg.className="ai-msg";
+  msg.innerText="> "+aiLogs[Math.random()*aiLogs.length|0];
+  log.prepend(msg);
+  if(log.children.length>6) log.removeChild(log.lastChild);
+},2000);
 
 </script>
 
