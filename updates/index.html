@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudentStreamHQ • Updates</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+
+body{background:#020617;color:#e6edf3;padding:20px;}
+
+.header{max-width:900px;margin:auto;margin-bottom:30px;}
+.logo{font-size:22px;font-weight:700;color:#3b82f6;}
+.sub{font-size:13px;color:#9ca3af;}
+
+.feed{max-width:900px;margin:auto;}
+
+.card{
+  background:#010409;
+  border:1px solid #1f2933;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:15px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.card:hover{
+  border-color:#3b82f6;
+  transform:translateY(-2px);
+}
+
+.title{font-size:20px;margin-bottom:8px;}
+.meta{font-size:12px;color:#9ca3af;margin-bottom:10px;}
+.preview{color:#cbd5e1;font-size:14px;}
+
+.badge{
+  background:#2c0a0a;
+  color:#ef4444;
+  padding:3px 8px;
+  border-radius:6px;
+  margin-left:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="logo">StudentStreamHQ • Updates</div>
+  <div class="sub">System Reports & Platform Status</div>
+</div>
+
+<div class="feed" id="feed"></div>
+
+<script>
+
+// TEMP DATA (replace with Supabase later)
+const posts = [
+{
+  id:1,
+  title:"StudentStreamHQ Launch Delayed Following Data Outage",
+  date:"April 5, 2026",
+  tag:"Critical",
+  preview:"A critical outage earlier last month resulted in the loss of core system data. Investigation remains ongoing with no confirmed root cause."
+}
+];
+
+// RENDER POSTS
+const feed = document.getElementById("feed");
+
+posts.forEach(post=>{
+  feed.innerHTML += `
+    <div class="card" onclick="openPost(${post.id})">
+      <div class="title">${post.title}</div>
+      <div class="meta">${post.date} <span class="badge">${post.tag}</span></div>
+      <div class="preview">${post.preview}</div>
+    </div>
+  `;
+});
+
+function openPost(id){
+  window.location.href = "/updates/post.html?id=" + id;
+}
+
+</script>
+
+</body>
+</html>
