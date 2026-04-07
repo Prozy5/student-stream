@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudentStreamHQ • Updates</title>
+<title>StudentStreamHQ • Updates (Debug)</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -12,7 +12,7 @@
 
 body{background:#020617;color:#e6edf3;padding:20px;}
 
-.header{max-width:900px;margin:auto;margin-bottom:30px;}
+.header{max-width:900px;margin:auto;margin-bottom:20px;}
 .logo{font-size:22px;font-weight:700;color:#3b82f6;}
 .sub{font-size:13px;color:#9ca3af;}
 
@@ -31,111 +31,104 @@ body{background:#020617;color:#e6edf3;padding:20px;}
 .meta{font-size:12px;color:#9ca3af;margin-bottom:10px;}
 .preview{color:#cbd5e1;font-size:14px;}
 
-.badge{padding:3px 8px;border-radius:6px;margin-left:10px;font-size:11px;}
-.critical{background:#2c0a0a;color:#ef4444;}
-.update{background:#0a1f2c;color:#3b82f6;}
-.info{background:#022c22;color:#22c55e;}
+.center{
+  text-align:center;
+  margin-top:50px;
+  color:#9ca3af;
+}
 
-.center{text-align:center;margin-top:50px;color:#9ca3af;}
-.error{color:#ef4444;font-size:13px;margin-top:10px;}
+/* DEBUG PANEL */
+.debug{
+  max-width:900px;
+  margin:30px auto;
+  background:#000;
+  border:1px solid #333;
+  padding:15px;
+  font-size:12px;
+  white-space:pre-wrap;
+  color:#22c55e;
+}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <div class="logo">StudentStreamHQ • Updates</div>
-  <div class="sub">System Reports & Platform Status</div>
+  <div class="logo">StudentStreamHQ • Updates (Debug Mode)</div>
+  <div class="sub">Live Debugging Enabled</div>
 </div>
 
 <div class="feed" id="feed">
   <div class="center">Loading updates...</div>
 </div>
 
+<div class="debug" id="debug">Starting debug...</div>
+
 <script>
 
+// 🔌 INIT SUPABASE
 const supabase = window.supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
 const feed = document.getElementById("feed");
+const debug = document.getElementById("debug");
 
+// DEBUG LOGGER
+function log(msg){
+  console.log(msg);
+  debug.textContent += "\n" + JSON.stringify(msg, null, 2);
+}
+
+// FORMAT DATE
 function formatDate(dateString){
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year:"numeric", month:"long", day:"numeric"
-  });
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
 }
 
-function getTagClass(tag){
-  if(!tag) return "update";
-  tag = tag.toLowerCase();
-  if(tag.includes("critical")) return "critical";
-  if(tag.includes("info")) return "info";
-  return "update";
-}
-
+// LOAD POSTS
 async function loadPosts(){
-  try {
+  log("🚀 Fetching posts...");
 
-    const { data, error } = await supabase
-      .from("posts")
-      .select("*")
-      .order("created_at",{ ascending:false });
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    console.log("DATA:", data);
-    console.log("ERROR:", error);
+  log({ data, error });
 
-    if(error){
-      feed.innerHTML = `
-        <div class="center">
-          Failed to load updates
-          <div class="error">${error.message}</div>
-        </div>`;
-      return;
-    }
-
-    if(!data || data.length === 0){
-      feed.innerHTML = `
-        <div class="center">
-          No posts found
-          <div class="error">Check if your table has data</div>
-        </div>`;
-      return;
-    }
-
-    feed.innerHTML = "";
-
-    data.forEach(post=>{
-      const card = document.createElement("div");
-      card.className = "card";
-      card.onclick = ()=>openPost(post.id);
-
-      card.innerHTML = `
-        <div class="title">${post.title}</div>
-        <div class="meta">
-          ${formatDate(post.created_at)}
-          <span class="badge ${getTagClass(post.tag)}">${post.tag || "Update"}</span>
-        </div>
-        <div class="preview">${post.preview || ""}</div>
-      `;
-
-      feed.appendChild(card);
-    });
-
-  } catch(err){
-    feed.innerHTML = `
-      <div class="center">
-        System error
-        <div class="error">${err.message}</div>
-      </div>`;
+  if(error){
+    feed.innerHTML = `<div class="center">❌ Error loading updates</div>`;
+    log("❌ ERROR FOUND");
+    return;
   }
+
+  if(!data || data.length === 0){
+    feed.innerHTML = `<div class="center">⚠️ No posts found</div>`;
+    log("⚠️ EMPTY DATA");
+    return;
+  }
+
+  feed.innerHTML = "";
+
+  data.forEach(post=>{
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="title">${post.title}</div>
+      <div class="meta">${formatDate(post.created_at)}</div>
+      <div class="preview">${post.preview || "No preview"}</div>
+    `;
+
+    feed.appendChild(card);
+  });
+
+  log("✅ POSTS RENDERED");
 }
 
-function openPost(id){
-  window.location.href = "/updates/post.html?id=" + id;
-}
-
+// RUN
 loadPosts();
 
 </script>
