@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StudentStreamHQ • Article</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
@@ -31,22 +33,42 @@ body{background:#020617;color:#e6edf3;padding:20px;}
   padding:25px;
 }
 
+/* CONTENT */
 .title{font-size:26px;margin-bottom:10px;}
 .meta{font-size:12px;color:#9ca3af;margin-bottom:20px;}
 
 .badge{
-  background:#2c0a0a;
-  color:#ef4444;
   padding:3px 8px;
   border-radius:6px;
   margin-left:10px;
+  font-size:11px;
 }
 
-.content{line-height:1.7;color:#cbd5e1;font-size:15px;}
+/* TAG COLORS */
+.critical{background:#2c0a0a;color:#ef4444;}
+.update{background:#0a1f2c;color:#3b82f6;}
+.info{background:#022c22;color:#22c55e;}
+
+.content{
+  line-height:1.7;
+  color:#cbd5e1;
+  font-size:15px;
+}
+
 .content p{margin-bottom:16px;}
 
-.divider{height:1px;background:#1f2933;margin:20px 0;}
+.divider{
+  height:1px;
+  background:#1f2933;
+  margin:20px 0;
+}
 
+/* STATES */
+.center{
+  text-align:center;
+  margin-top:50px;
+  color:#9ca3af;
+}
 </style>
 </head>
 
@@ -58,59 +80,98 @@ body{background:#020617;color:#e6edf3;padding:20px;}
 
 <div class="back" onclick="goBack()">← Back to Updates</div>
 
-<div class="article" id="article"></div>
+<div class="article" id="article">
+  <div class="center">Loading article...</div>
+</div>
 
 <script>
 
-// GET ID
+// 🔌 SUPABASE INIT
+const supabase = window.supabase.createClient(
+  "https://iabzmoxzbqzcqgypxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+// GET ID FROM URL
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-// TEMP DATABASE
-const posts = {
-  1: {
-    title:"StudentStreamHQ Launch Delayed Following Data Outage",
-    date:"April 5, 2026 • Internal Systems",
-    tag:"Critical Incident",
-    content:`
-      <p>StudentStreamHQ has officially delayed its platform launch following a critical data outage that occurred earlier last month. The incident impacted core infrastructure systems and resulted in the loss of essential platform data required for deployment.</p>
+const articleEl = document.getElementById("article");
 
-      <p>Initial investigations traced the disruption to backend systems associated with our primary server infrastructure located in North Virginia. However, despite extensive diagnostics and internal review processes, no definitive root cause has been identified at this time.</p>
+// FORMAT DATE
+function formatDate(dateString){
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year:"numeric",
+    month:"long",
+    day:"numeric"
+  });
+}
 
-      <p>Engineering teams conducted a full analysis across system logs, network activity, and database structures. The outage appears to have occurred without a clear trigger, leaving no direct traceable failure point within the system. This has significantly delayed recovery efforts.</p>
+// TAG STYLE
+function getTagClass(tag){
+  if(!tag) return "update";
+  const t = tag.toLowerCase();
+  if(t.includes("critical")) return "critical";
+  if(t.includes("info")) return "info";
+  return "update";
+}
 
-      <div class="divider"></div>
+// FORMAT CONTENT INTO HTML
+function formatContent(text){
+  if(!text) return "";
 
-      <p>Due to the inability to isolate the origin of the failure, StudentStreamHQ has made the decision to fully rebuild its platform infrastructure from the ground up.</p>
+  // Split paragraphs
+  const paragraphs = text.split("\n\n");
 
-      <p>Teams are currently working to determine:<br>
-      • The exact time of the outage<br>
-      • The location and system layer affected<br>
-      • Any potential vulnerabilities within the North Virginia server environment</p>
-
-      <p>At this stage, the root cause of the outage remains unknown.</p>
-
-      <div class="divider"></div>
-
-      <p>While this has resulted in a delay of the official launch, the rebuild process is expected to produce a more stable and secure version moving forward.</p>
-
-      <p>Further updates will be provided as new findings emerge.</p>
-    `
-  }
-};
+  return paragraphs.map(p=>{
+    if(p.trim() === "---"){
+      return `<div class="divider"></div>`;
+    }
+    return `<p>${p.replace(/\n/g,"<br>")}</p>`;
+  }).join("");
+}
 
 // LOAD ARTICLE
-const article = posts[id];
+async function loadArticle(){
+  if(!id){
+    articleEl.innerHTML = `<div class="center">Invalid article.</div>`;
+    return;
+  }
 
-document.getElementById("article").innerHTML = `
-  <div class="title">${article.title}</div>
-  <div class="meta">${article.date} <span class="badge">${article.tag}</span></div>
-  <div class="content">${article.content}</div>
-`;
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .single();
 
+  if(error || !data){
+    articleEl.innerHTML = `<div class="center">Article not found.</div>`;
+    console.error(error);
+    return;
+  }
+
+  const tagClass = getTagClass(data.tag);
+
+  articleEl.innerHTML = `
+    <div class="title">${data.title}</div>
+    <div class="meta">
+      ${formatDate(data.created_at)} • Internal Systems
+      <span class="badge ${tagClass}">${data.tag || "Update"}</span>
+    </div>
+    <div class="content">
+      ${formatContent(data.content)}
+    </div>
+  `;
+}
+
+// BACK NAV
 function goBack(){
   window.location.href = "/updates/index.html";
 }
+
+// INIT
+loadArticle();
 
 </script>
 
