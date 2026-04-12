@@ -25,7 +25,7 @@ body{
   overflow-x:hidden;
 }
 
-/* 🔥 MOVING BACKGROUND */
+/* BACKGROUND */
 body::before{
   content:"";
   position:fixed;
@@ -41,31 +41,12 @@ body::before{
   100%{transform:translate(0,0)}
 }
 
-/* 🔥 BANNER */
-.banner{
-  width:100%;
-  background:linear-gradient(90deg,#00ff9d,#4CAF50);
-  color:black;
-  font-weight:800;
-  font-size:13px;
-  overflow:hidden;
-}
-.banner span{
-  display:inline-block;
-  padding:8px 0;
-  animation:scroll 12s linear infinite;
-}
-@keyframes scroll{
-  from{transform:translateX(100%)}
-  to{transform:translateX(-100%)}
-}
-
 /* NAV */
 nav{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:18px 25px;
+  padding:18px 20px;
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
 }
@@ -83,22 +64,16 @@ nav{
   font-weight:800;
   background:linear-gradient(135deg,var(--accent2),var(--accent));
   cursor:pointer;
-  transition:.2s;
-}
-.navBtn:hover{
-  transform:scale(1.08);
 }
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:90px 20px 50px;
-  position:relative;
+  padding:70px 20px 40px;
 }
 
 .hero h1{
-  font-size:60px;
-  line-height:1.1;
+  font-size:48px;
 }
 
 .highlight{
@@ -110,23 +85,21 @@ nav{
 .hero p{
   color:var(--muted);
   margin-top:10px;
-  font-size:16px;
 }
 
-/* CTA */
 .cta{
   margin-top:25px;
   display:flex;
   justify-content:center;
-  gap:12px;
+  gap:10px;
 }
 
 .cta button{
-  padding:14px 24px;
+  padding:14px;
   border-radius:999px;
   border:none;
   font-weight:900;
-  cursor:pointer;
+  width:140px;
 }
 
 .primary{
@@ -139,93 +112,67 @@ nav{
   color:white;
 }
 
-/* FLOATING CARDS */
-.floating{
-  display:flex;
-  gap:15px;
-  justify-content:center;
-  margin-top:40px;
+/* PANTRY AI */
+.ai-box{
+  margin:40px auto;
+  max-width:500px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  text-align:center;
 }
 
-.floatCard{
-  width:140px;
-  height:180px;
-  border-radius:18px;
-  background:linear-gradient(135deg,#123,#000);
-  display:flex;
-  align-items:end;
-  padding:12px;
-  font-weight:800;
-  animation:float 6s infinite ease-in-out;
-}
-.floatCard:nth-child(2){animation-delay:1s}
-.floatCard:nth-child(3){animation-delay:2s}
-
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-15px)}
+.upload{
+  border:2px dashed var(--border);
+  padding:20px;
+  border-radius:12px;
+  cursor:pointer;
 }
 
-/* SECTION */
+.result{
+  margin-top:20px;
+  text-align:left;
+  font-size:14px;
+  color:var(--muted);
+}
+
+/* FEED */
 .section{
-  padding:60px 20px;
-  max-width:1100px;
-  margin:auto;
+  padding:50px 20px;
 }
 
-/* FEED GRID */
 .feed{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
 }
 
 .post{
-  height:220px;
-  border-radius:16px;
+  height:180px;
+  border-radius:14px;
   background:linear-gradient(135deg,#0f2a1f,#000);
   display:flex;
-  flex-direction:column;
-  justify-content:end;
-  padding:12px;
+  align-items:end;
+  padding:10px;
   font-weight:800;
-  transition:.3s;
-  position:relative;
-}
-
-.post::after{
-  content:"▶";
-  position:absolute;
-  top:10px;
-  right:10px;
-  font-size:14px;
-  opacity:.6;
+  transition:.2s;
 }
 
 .post:hover{
   transform:scale(1.05);
 }
 
-/* FOOTER */
-footer{
-  text-align:center;
-  padding:40px;
-  color:var(--muted);
-}
-
-/* 📱 MOBILE */
+/* MOBILE */
 @media(max-width:700px){
-  .hero h1{font-size:36px}
-  .floating{display:none}
+  .hero h1{font-size:32px}
+  .cta{flex-direction:column}
+  .cta button{width:100%}
 }
 </style>
 </head>
 
 <body>
-
-<div class="banner">
-  <span>⚠️ Actively being developed • High Priority • StudentStreamHQ — Deondre ⚠️</span>
-</div>
 
 <nav>
   <div class="logo">Cook<span>’ed</span></div>
@@ -234,40 +181,62 @@ footer{
 
 <section class="hero">
   <h1>Cook Smarter.<br><span class="highlight">Not Harder.</span></h1>
-  <p>Gen Z cooking platform. Fast. Visual. Smart.</p>
+  <p>Turn what you already have into meals instantly.</p>
 
   <div class="cta">
-    <button class="primary" onclick="goLogin()">Get Started</button>
+    <button class="primary">Scan Pantry</button>
     <button class="secondary">Explore</button>
-  </div>
-
-  <div class="floating">
-    <div class="floatCard">🍝 Viral Pasta</div>
-    <div class="floatCard">🍳 Egg Hack</div>
-    <div class="floatCard">🌯 Budget Wrap</div>
   </div>
 </section>
 
+<!-- 🔥 PANTRY AI -->
+<section class="ai-box">
+  <h3>📸 Scan Your Pantry</h3>
+  <div class="upload" onclick="simulateAI()">
+    Tap to upload pantry image
+  </div>
+
+  <div class="result" id="aiResult"></div>
+</section>
+
+<!-- 🔥 FEED -->
 <section class="section">
-  <h2>🔥 Trending Now</h2>
+  <h2>🔥 Trending</h2>
 
   <div class="feed">
     <div class="post">🍜 Ramen Upgrade</div>
     <div class="post">🍔 Air Fryer Burger</div>
     <div class="post">🥗 Healthy Bowl</div>
     <div class="post">🍗 Crispy Chicken</div>
-    <div class="post">🌮 Street Tacos</div>
-    <div class="post">🍳 5-min Breakfast</div>
   </div>
 </section>
-
-<footer>
-  Cook’ed • A StudentStreamHQ Product
-</footer>
 
 <script>
 function goLogin(){
   window.location.href="/cooked/login.html";
+}
+
+function simulateAI(){
+  const box = document.getElementById("aiResult");
+
+  box.innerHTML = "Analyzing pantry...";
+  
+  setTimeout(()=>{
+    box.innerHTML += "<br>Detected: eggs, rice, chicken...";
+  },1000);
+
+  setTimeout(()=>{
+    box.innerHTML += "<br>Generating meals...";
+  },2000);
+
+  setTimeout(()=>{
+    box.innerHTML += `
+      <br><br><b>🍳 Recipes:</b>
+      <br>- Chicken Fried Rice
+      <br>- Omelette Bowl
+      <br>- Crispy Chicken & Rice
+    `;
+  },3000);
 }
 </script>
 
