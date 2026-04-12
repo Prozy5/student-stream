@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed</title>
+<title>Cook’ed Feed</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
@@ -20,6 +20,7 @@ background:rgba(0,0,0,.6);
 z-index:100;
 }
 
+/* FEED */
 .feed{
 height:100vh;
 overflow-y:scroll;
@@ -30,9 +31,10 @@ scroll-snap-type:y mandatory;
 height:100vh;
 position:relative;
 scroll-snap-align:start;
+cursor:pointer;
 }
 
-.media, video{
+.media{
 width:100%;
 height:100%;
 object-fit:cover;
@@ -65,15 +67,7 @@ text-align:center;
 
 .count{font-size:12px;}
 
-.badge{
-background:#00ff9d;
-color:black;
-font-size:10px;
-padding:4px 6px;
-border-radius:999px;
-margin-left:6px;
-}
-
+/* HEART ANIMATION */
 .heart{
 position:absolute;
 top:50%;
@@ -89,19 +83,7 @@ opacity:0;
 100%{opacity:0;}
 }
 
-.float{
-position:fixed;
-bottom:20px;
-font-size:18px;
-padding:12px;
-border-radius:50%;
-background:#00ff9d;
-border:none;
-font-weight:900;
-}
-.add{right:20px;}
-.ai{left:20px;}
-
+/* PANEL */
 .panel{
 position:fixed;
 inset:0;
@@ -113,6 +95,33 @@ z-index:200;
 overflow:auto;
 }
 .panel.active{transform:translateY(0);}
+
+.recipe-title{
+font-size:24px;
+font-weight:900;
+margin-bottom:10px;
+}
+
+.section-title{
+margin-top:15px;
+font-weight:900;
+color:#00ff9d;
+}
+
+.comment{
+background:#111;
+padding:10px;
+border-radius:10px;
+margin-top:8px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+}
 </style>
 </head>
 
@@ -122,58 +131,63 @@ overflow:auto;
 
 <div class="feed" id="feed"></div>
 
-<!-- AI PANEL -->
-<div class="panel" id="aiPanel">
-<h2>AI Recipe Generator</h2>
-<textarea id="aiInput" placeholder="e.g. spicy chicken tacos"></textarea>
-<button onclick="generateAI()">Generate</button>
-<div id="aiResult"></div>
-<button onclick="closeAI()">Close</button>
+<!-- RECIPE PANEL -->
+<div class="panel" id="recipePanel">
+  <div class="recipe-title" id="recipeTitle"></div>
+  <div id="recipeDesc"></div>
+
+  <div class="section-title">Ingredients</div>
+  <div id="recipeIngredients"></div>
+
+  <div class="section-title">Steps</div>
+  <div id="recipeSteps"></div>
+
+  <button onclick="closeRecipe()">Close</button>
 </div>
 
-<button class="float add" onclick="addFake()">＋</button>
-<button class="float ai" onclick="openAI()">🧠</button>
+<!-- COMMENTS PANEL -->
+<div class="panel" id="commentPanel">
+  <h2>Comments 💬</h2>
+  <div id="comments"></div>
+
+  <input id="commentInput" placeholder="Add comment">
+  <button onclick="addComment()">Post</button>
+
+  <button onclick="closeComments()">Close</button>
+</div>
 
 <script>
 
 let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
 
-/* HELPERS */
 const img = q=>`https://source.unsplash.com/featured/?${q},food`;
 
-function getVideo(url){
-if(!url) return null;
-
-if(url.includes("drive.google.com")){
-try{
-const id = url.split("/d/")[1].split("/")[0];
-return `https://drive.google.com/uc?export=preview&id=${id}`;
-}catch{}
-}
-
-if(url.endsWith(".mp4")) return url;
-
-return null;
-}
-
-function timeAgo(ts){
-const diff = Math.floor((Date.now()-ts)/60000);
-if(diff<1) return "just now";
-if(diff<60) return diff+"m ago";
-return Math.floor(diff/60)+"h ago";
-}
-
-/* INIT */
+/* DEFAULT DATA */
 if(recipes.length===0){
-recipes=[{
+recipes=[
+{
 title:"Viral Spicy Chicken",
 desc:"This is blowing up 🔥",
-images:[img("spicy chicken"),img("fried chicken")],
-video:null,
+images:[img("spicy chicken")],
+ingredients:["chicken","spices","oil"],
+steps:["Season chicken","Cook until crispy","Serve hot"],
 likes:120,
 views:1200,
+comments:[],
 created:Date.now()
-}]
+},
+{
+title:"Cheesy Pasta",
+desc:"Too good 😭",
+images:[img("cheesy pasta")],
+ingredients:["pasta","cheese","milk"],
+steps:["Boil pasta","Add cheese","Mix and serve"],
+likes:98,
+views:980,
+comments:[],
+created:Date.now()
+}
+];
 }
 
 /* RENDER */
@@ -182,128 +196,123 @@ feed.innerHTML="";
 
 recipes.forEach((r,i)=>{
 
-const video = getVideo(r.video);
-
 const el=document.createElement("div");
 el.className="card";
 
 el.innerHTML=`
-${video ? 
-`<video src="${video}" autoplay loop muted playsinline></video>` :
-`<img class="media" id="img${i}" src="${r.images[0]}">`
-}
+<img class="media" src="${r.images[0]}">
 
 <div class="overlay">
-<div class="title">${r.title} ${r.views>1000?'<span class="badge">TRENDING</span>':''}</div>
+<div class="title">${r.title}</div>
 <div class="desc">${r.desc}</div>
-<div class="meta">${timeAgo(r.created)} • ${r.views} views</div>
+<div class="meta">${r.views} views</div>
 </div>
 
 <div class="actions">
-<div onclick="like(${i})">❤️<div class="count" id="like${i}">${r.likes}</div></div>
-<div onclick="repost(${i})">🔁</div>
+<div onclick="like(event,${i})">❤️<div class="count">${r.likes}</div></div>
+<div onclick="openComments(event,${i})">💬</div>
+<div onclick="share(event,${i})">🔗</div>
 </div>
 
 <div class="heart">❤️</div>
 `;
 
 el.ondblclick=()=>likeAnim(el,i);
+el.onclick=()=>openRecipe(i);
 
 feed.appendChild(el);
-
-/* slideshow fallback */
-if(!video && r.images.length>1){
-startSlide(i);
-}
 });
-
-/* fake growth */
-setInterval(()=>{
-recipes.forEach(r=>{
-r.views+=Math.floor(Math.random()*20);
-});
-localStorage.setItem("recipes",JSON.stringify(recipes));
-},2000);
-
-}
-
-/* SLIDES */
-const timers={};
-function startSlide(i){
-clearInterval(timers[i]);
-let index=0;
-
-timers[i]=setInterval(()=>{
-const el=document.getElementById("img"+i);
-if(!el) return;
-index=(index+1)%recipes[i].images.length;
-el.src=recipes[i].images[index];
-},2000);
 }
 
 /* LIKE */
-function like(i){
+function like(e,i){
+e.stopPropagation();
 recipes[i].likes++;
-document.getElementById("like"+i).innerText=recipes[i].likes;
-}
-
-/* REPOST */
-function repost(i){
-recipes.unshift({...recipes[i],created:Date.now()});
+save();
 render();
 }
 
-/* DOUBLE TAP */
+/* LIKE ANIMATION */
 function likeAnim(card,i){
-like(i);
+like({stopPropagation:()=>{}},i);
 const h=card.querySelector(".heart");
 h.classList.add("show");
 setTimeout(()=>h.classList.remove("show"),600);
 }
 
-/* AI */
-function openAI(){aiPanel.classList.add("active");}
-function closeAI(){aiPanel.classList.remove("active");}
-
-function generateAI(){
-const q = aiInput.value;
-
-const recipe={
-title:q.charAt(0).toUpperCase()+q.slice(1),
-desc:"AI created viral recipe 🤖🔥",
-images:[img(q),img("cooking "+q),img("food plating "+q)],
-likes:0,
-views:0,
-created:Date.now()
-};
-
-aiResult.innerHTML=`
-<h3>${recipe.title}</h3>
-<button onclick='postAI(${JSON.stringify(recipe)})'>Post</button>
-`;
+/* SHARE */
+function share(e,i){
+e.stopPropagation();
+navigator.clipboard.writeText(recipes[i].title);
+alert("Copied recipe name!");
 }
 
-function postAI(r){
-recipes.unshift(r);
-render();
-closeAI();
+/* RECIPE */
+function openRecipe(i){
+const r = recipes[i];
+
+recipeTitle.innerText = r.title;
+recipeDesc.innerText = r.desc;
+
+recipeIngredients.innerHTML = r.ingredients.map(i=>`<div>- ${i}</div>`).join("");
+recipeSteps.innerHTML = r.steps.map(s=>`<div>- ${s}</div>`).join("");
+
+recipePanel.classList.add("active");
 }
 
-/* FAKE */
-function addFake(){
-recipes.unshift({
-title:"Cheesy Pasta",
-desc:"Too good 😭",
-images:[img("pasta"),img("cheese pasta")],
-likes:Math.floor(Math.random()*200),
-views:Math.floor(Math.random()*5000),
-created:Date.now()
+function closeRecipe(){
+recipePanel.classList.remove("active");
+}
+
+/* COMMENTS */
+let currentCommentIndex=0;
+
+function openComments(e,i){
+e.stopPropagation();
+currentCommentIndex=i;
+
+const r=recipes[i];
+comments.innerHTML = (r.comments||[]).map(c=>`<div class="comment">${c}</div>`).join("");
+
+commentPanel.classList.add("active");
+}
+
+function addComment(){
+const val = commentInput.value;
+if(!val) return;
+
+if(!recipes[currentCommentIndex].comments){
+recipes[currentCommentIndex].comments=[];
+}
+
+recipes[currentCommentIndex].comments.push(val);
+commentInput.value="";
+save();
+openComments({stopPropagation:()=>{}},currentCommentIndex);
+}
+
+function closeComments(){
+commentPanel.classList.remove("active");
+}
+
+/* FAKE LIVE GROWTH (DEMO MAGIC) */
+setInterval(()=>{
+recipes.forEach(r=>{
+r.views += Math.floor(Math.random()*10);
 });
+save();
 render();
+},4000);
+
+/* SAVE */
+function save(){
+localStorage.setItem("recipes",JSON.stringify(recipes));
 }
 
+/* INIT */
 render();
 
 </script>
+
 </body>
 </html>
