@@ -30,15 +30,19 @@ padding:20px;
 display:flex;
 flex-direction:column;
 gap:15px;
+overflow-y:auto;
 }
 
+/* UPLOAD */
 .upload{
 border:2px dashed #00ff9d;
 padding:20px;
 text-align:center;
 border-radius:15px;
 cursor:pointer;
+transition:.2s;
 }
+.upload:hover{background:#0f1a14;}
 
 .upload input{display:none;}
 
@@ -48,15 +52,18 @@ border-radius:15px;
 margin-top:10px;
 }
 
+/* INPUT */
 input{
 width:100%;
-padding:12px;
+padding:14px;
 border-radius:12px;
 border:none;
 background:#111;
 color:white;
+font-size:15px;
 }
 
+/* BUTTONS */
 button{
 padding:14px;
 border:none;
@@ -65,7 +72,9 @@ background:#00ff9d;
 font-weight:900;
 cursor:pointer;
 color:black;
+transition:.2s;
 }
+button:hover{opacity:.85;}
 
 .secondary{
 background:#111;
@@ -73,18 +82,46 @@ color:#00ff9d;
 border:1px solid #00ff9d;
 }
 
+/* OUTPUT CARD */
 .output{
 background:#111;
-padding:15px;
-border-radius:15px;
+padding:18px;
+border-radius:18px;
 margin-top:10px;
-line-height:1.5;
-white-space:pre-line;
+line-height:1.6;
+}
+
+.section{
+margin-top:15px;
+}
+
+.title{
+font-weight:900;
+font-size:18px;
+color:#00ff9d;
+margin-bottom:5px;
+}
+
+.badge{
+display:inline-block;
+padding:6px 10px;
+border-radius:10px;
+background:#00ff9d;
+color:black;
+font-size:12px;
+margin-top:10px;
 }
 
 .loading{
 text-align:center;
 opacity:.7;
+}
+
+.success{
+color:#00ff9d;
+text-align:center;
+font-weight:900;
+margin-top:10px;
 }
 </style>
 </head>
@@ -110,6 +147,8 @@ Scan Pantry
 
 <button id="postBtn" class="secondary" style="display:none;" onclick="postToFeed()">Post to Cook’ed</button>
 
+<div id="successMsg" class="success" style="display:none;">Posted to feed</div>
+
 </div>
 
 <script>
@@ -131,7 +170,7 @@ uploadText.innerText = "Pantry scanned";
 }
 }
 
-/* FAKE VISION (FOR DEMO) */
+/* DEMO PANTRY */
 function generatePantry(){
 const items = ["chicken","rice","eggs","cheese","milk","tomato","onion","garlic","pasta"];
 return items.sort(()=>0.5-Math.random()).slice(0,5);
@@ -153,26 +192,46 @@ output.innerHTML = "<div class='loading'>Generating recipe...</div>";
 
 try{
 
-/* REAL API */
 const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${meal}`);
 const data = await res.json();
 
 if(data.meals){
 
-const m = data.meals[0];
+buildRecipe(data.meals[0]);
+
+}else{
+fallbackAI(meal);
+}
+
+}catch{
+fallbackAI(meal);
+}
+
+}
+
+/* BUILD REAL RECIPE */
+function buildRecipe(m){
 
 let ingredients = [];
 for(let i=1;i<=20;i++){
-if(m["strIngredient"+i]){
-ingredients.push(m["strIngredient"+i]);
+let ing = m["strIngredient"+i];
+if(ing && ing.trim()){
+ingredients.push(ing);
 }
 }
 
+/* MATCH SCORE */
+let matchCount = ingredients.filter(i => 
+pantryItems.includes(i.toLowerCase())
+).length;
+
+let score = Math.round((matchCount / ingredients.length) * 100);
+
 generatedRecipe = {
 title: m.strMeal,
-desc: "Generated from AI",
+desc: "AI Generated Meal",
 images: [m.strMealThumb],
-ingredients: ingredients,
+ingredients,
 steps: m.strInstructions.split("."),
 likes: Math.floor(Math.random()*200),
 views: Math.floor(Math.random()*2000),
@@ -180,44 +239,51 @@ comments: [],
 created: Date.now()
 };
 
-output.innerText = `
-Meal: ${m.strMeal}
+renderOutput(m.strMeal, ingredients, m.strInstructions, score);
 
-Pantry:
-- ${pantryItems.join("\n- ")}
+}
 
-Ingredients:
-- ${ingredients.join("\n- ")}
+/* RENDER UI */
+function renderOutput(title, ingredients, steps, score){
 
-Steps:
-${m.strInstructions}
+const output = document.getElementById("output");
 
-Substitutions:
-Use similar pantry items if missing ingredients
+output.innerHTML = `
+<div class="title">${title}</div>
+
+<div class="badge">${score}% ingredient match</div>
+
+<div class="section">
+<div class="title">Pantry</div>
+${pantryItems.map(i=>`- ${i}`).join("<br>")}
+</div>
+
+<div class="section">
+<div class="title">Ingredients</div>
+${ingredients.map(i=>`- ${i}`).join("<br>")}
+</div>
+
+<div class="section">
+<div class="title">Steps</div>
+${steps}
+</div>
+
+<div class="section">
+<div class="title">Substitutions</div>
+Use similar pantry items if something is missing
+</div>
 `;
 
 document.getElementById("postBtn").style.display="block";
 
-}else{
-
-fallbackAI(meal);
-
 }
 
-}catch(err){
-fallbackAI(meal);
-}
-
-}
-
-/* FALLBACK AI */
+/* FALLBACK */
 function fallbackAI(meal){
-
-const output = document.getElementById("output");
 
 generatedRecipe = {
 title: meal,
-desc: "Custom pantry recipe",
+desc: "Custom pantry meal",
 images: [`https://source.unsplash.com/featured/?${meal},food`],
 ingredients: pantryItems,
 steps: ["Prepare ingredients","Cook","Combine","Serve"],
@@ -227,30 +293,11 @@ comments: [],
 created: Date.now()
 };
 
-output.innerText = `
-Meal: ${meal}
-
-Pantry:
-- ${pantryItems.join("\n- ")}
-
-Suggested Meal:
-Use available ingredients to create a custom version.
-
-Steps:
-1. Prepare ingredients
-2. Cook
-3. Combine
-4. Serve
-
-Substitutions:
-Use pantry alternatives if needed
-`;
-
-document.getElementById("postBtn").style.display="block";
+renderOutput(meal, pantryItems, "Prepare ingredients. Cook. Combine. Serve.", 80);
 
 }
 
-/* POST TO FEED */
+/* POST */
 function postToFeed(){
 
 let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
@@ -259,11 +306,13 @@ recipes.unshift(generatedRecipe);
 
 localStorage.setItem("recipes", JSON.stringify(recipes));
 
-alert("Posted to Cook’ed feed");
+document.getElementById("successMsg").style.display="block";
+
+setTimeout(()=>{
+document.getElementById("successMsg").style.display="none";
+},2000);
 
 }
-
-/* END */
 
 </script>
 
