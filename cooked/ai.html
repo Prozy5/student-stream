@@ -3,233 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed AI</title>
+<title>Cook AI</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
-body{background:black;color:white;overflow:hidden;}
-
-/* FEED */
-.feed{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
+body{
+background:#0b0f14;
+color:white;
+display:flex;
+flex-direction:column;
+height:100vh;
 }
 
-.card{
-  height:100vh;
-  position:relative;
-  scroll-snap-align:start;
+/* HEADER */
+.header{
+padding:15px;
+text-align:center;
+font-weight:900;
+font-size:20px;
+background:#000;
 }
 
-/* VIDEO / FRAME */
-.videoFrame{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-size:26px;
-  padding:20px;
-  background:#111;
+/* MAIN */
+.container{
+flex:1;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:15px;
 }
 
-/* OVERLAY */
-.overlay{
-  position:absolute;
-  bottom:0;
-  padding:20px;
-  width:100%;
-  background:linear-gradient(transparent,rgba(0,0,0,.9));
+/* UPLOAD */
+.upload{
+border:2px dashed #333;
+padding:20px;
+text-align:center;
+border-radius:15px;
+cursor:pointer;
 }
 
-.title{font-size:26px;font-weight:900;}
-.desc{font-size:14px;color:#ccc;}
+.upload input{display:none;}
 
-.actions{
-  position:absolute;
-  right:15px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
+.preview{
+width:100%;
+border-radius:15px;
+margin-top:10px;
+}
+
+/* INPUT */
+input, textarea{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:none;
+background:#111;
+color:white;
 }
 
 /* BUTTON */
 button{
-  padding:10px;
-  border:none;
-  border-radius:999px;
-  background:#00ff9d;
-  font-weight:900;
-  cursor:pointer;
-  margin-top:10px;
+padding:14px;
+border:none;
+border-radius:12px;
+background:#00ff9d;
+font-weight:900;
+cursor:pointer;
 }
 
-/* PANELS */
-.panel{
-  position:fixed;
-  inset:0;
-  background:#0b0f14;
-  padding:20px;
-  overflow:auto;
-  transform:translateY(100%);
-  transition:.4s;
-  z-index:20;
-}
-.panel.active{transform:translateY(0);}
-
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border:none;
-  border-radius:10px;
+/* OUTPUT */
+.output{
+background:#111;
+padding:15px;
+border-radius:15px;
+margin-top:10px;
+line-height:1.5;
+white-space:pre-line;
 }
 
-/* IMAGE PREVIEW */
-.preview{
-  width:100%;
-  border-radius:12px;
-  margin-top:10px;
+/* LOADING */
+.loading{
+text-align:center;
+opacity:.7;
 }
-
-/* FLOAT BUTTONS */
-.float{
-  position:fixed;
-  bottom:20px;
-  font-size:22px;
-}
-.add{right:20px;}
-.ai{left:20px;}
 </style>
 </head>
 
 <body>
 
-<div class="feed" id="feed"></div>
+<div class="header">Cook AI 🧠🔥</div>
 
-<!-- AI PANEL (PANTRY SCAN) -->
-<div class="panel" id="aiPanel">
-  <h2>📸 Scan Your Pantry</h2>
+<div class="container">
 
-  <input type="file" id="imageInput" accept="image/*" capture="environment">
+<!-- IMAGE UPLOAD -->
+<label class="upload">
+Tap to scan your pantry 📸
+<input type="file" accept="image/*" onchange="previewImage(event)">
+<div id="uploadText">Upload pantry image</div>
+<img id="preview" class="preview" style="display:none;">
+</label>
 
-  <img id="preview" class="preview" style="display:none">
+<!-- USER INPUT -->
+<input id="mealInput" placeholder="What do you want to cook? (e.g. pasta, tacos, etc)">
 
-  <button onclick="scanPantry()">Scan Pantry</button>
+<button onclick="runAI()">Generate Meal</button>
 
-  <div id="aiResult"></div>
+<!-- OUTPUT -->
+<div id="output" class="output" style="display:none;"></div>
 
-  <button onclick="closeAI()">Close</button>
 </div>
-
-<!-- FLOAT BUTTON -->
-<button class="float ai" onclick="openAI()">📸</button>
 
 <script>
 
-/* STORAGE */
-let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
-
-/* RENDER */
-function render(){
-  feed.innerHTML="";
-
-  recipes.forEach((r,i)=>{
-    const el=document.createElement("div");
-    el.className="card";
-
-    el.innerHTML=`
-      <div class="videoFrame">${r.title}</div>
-
-      <div class="overlay">
-        <div class="title">${r.title}</div>
-        <div class="desc">${r.desc}</div>
-        <button onclick="openCook(${i})">Cook</button>
-      </div>
-
-      <div class="actions">
-        <div onclick="like(this)">❤️</div>
-        <div onclick="save(this)">🔖</div>
-      </div>
-    `;
-
-    feed.appendChild(el);
-  });
-}
+let pantryItems = [];
 
 /* IMAGE PREVIEW */
-imageInput.onchange = e=>{
-  const file = e.target.files[0];
-  if(!file) return;
+function previewImage(e){
+const file = e.target.files[0];
+const preview = document.getElementById("preview");
 
-  preview.src = URL.createObjectURL(file);
-  preview.style.display="block";
-};
+if(file){
+preview.src = URL.createObjectURL(file);
+preview.style.display="block";
 
-/* AI SCAN */
-function scanPantry(){
-  const result = document.getElementById("aiResult");
-
-  result.innerHTML="🧠 Scanning pantry...";
-
-  setTimeout(()=>{
-    const possible = ["eggs","rice","chicken","cheese","bread","beans","pasta"];
-    const detected = possible.sort(()=>0.5-Math.random()).slice(0,4);
-
-    result.innerHTML += "<br>Detected: "+detected.join(", ");
-
-    setTimeout(()=>{
-      const title = detected.join(" ")+" Meal";
-
-      result.innerHTML += `
-        <br><br><b>🍳 Recipes:</b>
-        <br>- ${detected[0]} & ${detected[1]} Bowl
-        <br>- ${detected[2]} ${detected[3]} Mix
-      `;
-
-      result.innerHTML += `
-        <br><br>
-        <button onclick='postAI("${title}", ${JSON.stringify(detected)})'>
-          Post to Feed
-        </button>
-      `;
-    },1500);
-
-  },1200);
+/* FAKE AI VISION (DEMO) */
+pantryItems = generatePantry();
+uploadText.innerText = "Pantry scanned ✅";
+}
 }
 
-/* POST AI */
-function postAI(title,ingredients){
-  const newRecipe={
-    title,
-    desc:"Generated from your pantry 📸",
-    steps:["Prep","Cook","Serve"]
-  };
+/* FAKE PANTRY DETECTION */
+function generatePantry(){
+const possible = [
+"chicken","rice","eggs","cheese","milk",
+"tomatoes","onions","garlic","pasta","bread"
+];
 
-  recipes.unshift(newRecipe);
-  localStorage.setItem("recipes",JSON.stringify(recipes));
-  render();
-  closeAI();
+return possible.sort(()=>0.5-Math.random()).slice(0,5);
 }
 
-/* LIKE / SAVE */
-function like(el){el.style.color = el.style.color==="red"?"white":"red";}
-function save(el){el.style.color = el.style.color==="yellow"?"white":"yellow";}
+/* AI GENERATION */
+function runAI(){
 
-/* COOK MODE */
-function openCook(i){
-  alert(recipes[i].steps.join("\n"));
+const meal = document.getElementById("mealInput").value;
+const output = document.getElementById("output");
+
+if(!meal){
+alert("Enter a meal idea");
+return;
 }
 
-/* PANEL */
-function openAI(){aiPanel.classList.add("active");}
-function closeAI(){aiPanel.classList.remove("active");}
+output.style.display="block";
+output.innerHTML = "<div class='loading'>Analyzing pantry...</div>";
 
-/* INIT */
-render();
+setTimeout(()=>{
+
+const result = generateRecipe(meal, pantryItems);
+output.innerText = result;
+
+},1500);
+
+}
+
+/* RECIPE LOGIC */
+function generateRecipe(meal, items){
+
+let recipe = `🍽 Meal: ${meal.toUpperCase()}\n\n`;
+
+recipe += `🧺 Pantry Detected:\n- ${items.join("\n- ")}\n\n`;
+
+recipe += `✅ What You Can Make:\n`;
+recipe += `You can create a version of ${meal} using your available ingredients.\n\n`;
+
+recipe += `🧂 Suggested Ingredients:\n`;
+items.forEach(i=>{
+recipe += `- ${i}\n`;
+});
+
+recipe += `\n🍳 Steps:\n`;
+recipe += `1. Prep all ingredients\n`;
+recipe += `2. Cook based on your meal style\n`;
+recipe += `3. Combine and season\n`;
+recipe += `4. Serve hot\n\n`;
+
+/* SUBSTITUTIONS */
+recipe += `🔄 Missing Something?\n`;
+recipe += `- No cheese? → use butter or sauce\n`;
+recipe += `- No meat? → use eggs or beans\n`;
+recipe += `- No pasta? → use rice or bread\n`;
+
+return recipe;
+
+}
 
 </script>
 
