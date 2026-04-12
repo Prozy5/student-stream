@@ -22,8 +22,10 @@ text-align:center;
 font-weight:900;
 font-size:20px;
 background:#000;
-color:#00ff9d;
 }
+
+.header span.cook{color:#00ff9d;}
+.header span.ai{color:#fff;}
 
 .container{
 flex:1;
@@ -31,8 +33,10 @@ padding:20px;
 display:flex;
 flex-direction:column;
 gap:15px;
+overflow:auto;
 }
 
+/* UPLOAD */
 .upload{
 border:2px dashed #00ff9d;
 padding:20px;
@@ -41,14 +45,14 @@ border-radius:15px;
 cursor:pointer;
 }
 
-.upload input{display:none;}
-
-.preview{
-width:100%;
+/* CARD STYLE */
+.card{
+background:#111;
+padding:15px;
 border-radius:15px;
-margin-top:10px;
 }
 
+/* INPUT */
 input{
 width:100%;
 padding:12px;
@@ -58,6 +62,7 @@ background:#111;
 color:white;
 }
 
+/* BUTTONS */
 button{
 padding:14px;
 border:none;
@@ -66,11 +71,6 @@ background:#00ff9d;
 font-weight:900;
 cursor:pointer;
 color:black;
-transition:.2s;
-}
-
-button:active{
-transform:scale(.97);
 }
 
 .secondary{
@@ -79,98 +79,96 @@ color:#00ff9d;
 border:1px solid #00ff9d;
 }
 
-.output{
+/* OUTPUT */
+.recipe{
 background:#111;
 padding:15px;
 border-radius:15px;
 margin-top:10px;
-line-height:1.6;
+}
+
+.title{
+font-weight:900;
+font-size:18px;
+color:#00ff9d;
 }
 
 .section{
 margin-top:10px;
-}
-
-.section-title{
-color:#00ff9d;
-font-weight:900;
-margin-bottom:5px;
-}
-
-.loading{
-text-align:center;
-opacity:.7;
+font-size:14px;
 }
 
 .match{
-margin-top:10px;
-font-weight:900;
 color:#00ff9d;
+font-weight:900;
+margin-top:8px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">Cook AI</div>
+<div class="header">
+<span class="cook">Cook</span> <span class="ai">AI</span>
+</div>
 
 <div class="container">
 
-<label class="upload">
+<label class="upload card">
 Scan Pantry
 <input type="file" accept="image/*" onchange="previewImage(event)">
 <div id="uploadText">Upload pantry image</div>
-<img id="preview" class="preview" style="display:none;">
+<img id="preview" style="width:100%;margin-top:10px;border-radius:10px;display:none;">
 </label>
 
-<input id="mealInput" placeholder="Enter a meal (pasta, chicken, etc)">
+<input id="mealInput" placeholder="Enter a meal idea">
 
-<button onclick="runAI()">Generate Meal</button>
+<button onclick="runAI()">Generate Meals</button>
 
-<div id="output" class="output" style="display:none;"></div>
-
-<button id="postBtn" class="secondary" style="display:none;" onclick="postToFeed()">Post to Cook’ed</button>
+<div id="results"></div>
 
 </div>
 
 <script>
 
 let pantryItems = [];
-let generatedRecipe = null;
+let generatedList = [];
 
-/* IMAGE PREVIEW */
+/* IMAGE */
 function previewImage(e){
 const file = e.target.files[0];
-const preview = document.getElementById("preview");
-
 if(file){
 preview.src = URL.createObjectURL(file);
 preview.style.display="block";
 
+/* LEARNING MEMORY */
+let history = JSON.parse(localStorage.getItem("pantryHistory")||"[]");
+
 pantryItems = generatePantry();
-uploadText.innerText = "Pantry scanned";
+history.push(pantryItems);
+
+localStorage.setItem("pantryHistory", JSON.stringify(history));
+
+uploadText.innerText = "Pantry analyzed";
 }
 }
 
 /* FAKE VISION */
 function generatePantry(){
 const items = ["chicken","rice","eggs","cheese","milk","tomato","onion","garlic","pasta"];
-return items.sort(()=>0.5-Math.random()).slice(0,5);
+return items.sort(()=>0.5-Math.random()).slice(0,6);
 }
 
-/* MAIN AI */
+/* MAIN */
 async function runAI(){
 
-const meal = document.getElementById("mealInput").value;
-const output = document.getElementById("output");
-
+const meal = mealInput.value;
 if(!meal){
 alert("Enter a meal");
 return;
 }
 
-output.style.display="block";
-output.innerHTML = "<div class='loading'>Analyzing pantry and generating recipe...</div>";
+results.innerHTML = "Loading recipes...";
 
 try{
 
@@ -179,66 +177,82 @@ const data = await res.json();
 
 if(data.meals){
 
-const m = data.meals[0];
+generatedList = data.meals.slice(0,3); // MULTIPLE RECIPES
 
-let ingredients = [];
-for(let i=1;i<=20;i++){
-let ing = m["strIngredient"+i];
-if(ing && ing.trim() !== ""){
+renderRecipes(generatedList);
+
+}else{
+fallbackAI(meal);
+}
+
+}catch{
+fallbackAI(meal);
+}
+
+}
+
+/* RENDER */
+function renderRecipes(list){
+
+results.innerHTML = "";
+
+list.forEach((m,i)=>{
+
+let ingredients=[];
+for(let x=1;x<=20;x++){
+let ing=m["strIngredient"+x];
+if(ing && ing.trim()!=""){
 ingredients.push(ing.toLowerCase());
 }
 }
 
-/* MATCH SCORE */
-let matchCount = ingredients.filter(i =>
+/* MATCH */
+let match = ingredients.filter(i =>
 pantryItems.some(p => i.includes(p))
-).length;
+);
 
-let matchPercent = Math.floor((matchCount / ingredients.length) * 100);
+let percent = Math.floor((match.length / ingredients.length)*100);
 
 /* MISSING */
 let missing = ingredients.filter(i =>
 !pantryItems.some(p => i.includes(p))
 );
 
-/* BUILD UI */
-output.innerHTML = `
-<div class="section">
-<div class="section-title">Meal</div>
-${m.strMeal}
-</div>
+/* SUBSTITUTIONS */
+let subs = missing.map(i => {
+if(i.includes("cheese")) return "cheese → butter or sauce";
+if(i.includes("milk")) return "milk → water or cream";
+if(i.includes("chicken")) return "chicken → eggs or beans";
+return i + " → similar pantry item";
+});
 
-<div class="section match">
-Match: ${matchPercent}% of ingredients available
-</div>
+const card = document.createElement("div");
+card.className="recipe";
 
-<div class="section">
-<div class="section-title">Pantry</div>
-- ${pantryItems.join("<br>- ")}
-</div>
+card.innerHTML = `
+<div class="title">${m.strMeal}</div>
 
-<div class="section">
-<div class="section-title">Ingredients</div>
-- ${ingredients.join("<br>- ")}
-</div>
+<div class="match">Match: ${percent}%</div>
 
 <div class="section">
-<div class="section-title">Missing Ingredients</div>
-- ${missing.length ? missing.join("<br>- ") : "None"}
+Pantry:<br>- ${pantryItems.join("<br>- ")}
 </div>
 
 <div class="section">
-<div class="section-title">Steps</div>
-${m.strInstructions}
+Missing:<br>- ${missing.length ? missing.join("<br>- ") : "None"}
 </div>
 
 <div class="section">
-<div class="section-title">Substitutions</div>
-Use similar pantry items if something is missing
+Substitutions:<br>- ${subs.join("<br>- ")}
 </div>
+
+<button onclick="postToFeed(${i})">Post to Feed</button>
 `;
 
-generatedRecipe = {
+results.appendChild(card);
+
+/* STORE CLEAN VERSION */
+generatedList[i] = {
 title: m.strMeal,
 desc: "AI generated meal",
 images: [m.strMealThumb],
@@ -250,74 +264,40 @@ comments: [],
 created: Date.now()
 };
 
-document.getElementById("postBtn").style.display="block";
-
-}else{
-fallbackAI(meal);
-}
-
-}catch(err){
-fallbackAI(meal);
-}
+});
 
 }
 
 /* FALLBACK */
 function fallbackAI(meal){
 
-const output = document.getElementById("output");
-
-output.innerHTML = `
-<div class="section">
-<div class="section-title">Meal</div>
-${meal}
-</div>
-
-<div class="section">
-<div class="section-title">Pantry</div>
-- ${pantryItems.join("<br>- ")}
-</div>
-
-<div class="section">
-<div class="section-title">Suggestion</div>
-Create a custom version using your available ingredients
-</div>
-
-<div class="section">
-<div class="section-title">Steps</div>
-1. Prepare ingredients<br>
-2. Cook<br>
-3. Combine<br>
-4. Serve
-</div>
-`;
-
-generatedRecipe = {
+generatedList=[{
 title: meal,
-desc: "Custom pantry meal",
-images: [`https://source.unsplash.com/featured/?${meal},food`],
+desc: "Custom meal",
+images:[`https://source.unsplash.com/featured/?${meal},food`],
 ingredients: pantryItems,
-steps: ["Prepare ingredients","Cook","Combine","Serve"],
-likes: 50,
-views: 500,
-comments: [],
-created: Date.now()
-};
+steps:["Prep","Cook","Serve"],
+likes:50,
+views:500,
+comments:[],
+created:Date.now()
+}];
 
-document.getElementById("postBtn").style.display="block";
+renderRecipes(generatedList);
 
 }
 
-/* POST */
-function postToFeed(){
+/* POST + REDIRECT */
+function postToFeed(i){
 
-let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+let recipes = JSON.parse(localStorage.getItem("recipes")||"[]");
 
-recipes.unshift(generatedRecipe);
+recipes.unshift(generatedList[i]);
 
 localStorage.setItem("recipes", JSON.stringify(recipes));
 
-alert("Posted to Cook’ed feed");
+/* AUTO REDIRECT */
+window.location.href = "feed.html";
 
 }
 
