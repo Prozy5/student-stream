@@ -15,16 +15,15 @@ flex-direction:column;
 height:100vh;
 }
 
-/* HEADER */
 .header{
 padding:15px;
 text-align:center;
 font-weight:900;
 font-size:20px;
 background:#000;
+color:#00ff9d;
 }
 
-/* MAIN */
 .container{
 flex:1;
 padding:20px;
@@ -33,9 +32,8 @@ flex-direction:column;
 gap:15px;
 }
 
-/* UPLOAD */
 .upload{
-border:2px dashed #333;
+border:2px dashed #00ff9d;
 padding:20px;
 text-align:center;
 border-radius:15px;
@@ -50,8 +48,7 @@ border-radius:15px;
 margin-top:10px;
 }
 
-/* INPUT */
-input, textarea{
+input{
 width:100%;
 padding:12px;
 border-radius:12px;
@@ -60,7 +57,6 @@ background:#111;
 color:white;
 }
 
-/* BUTTON */
 button{
 padding:14px;
 border:none;
@@ -68,9 +64,15 @@ border-radius:12px;
 background:#00ff9d;
 font-weight:900;
 cursor:pointer;
+color:black;
 }
 
-/* OUTPUT */
+.secondary{
+background:#111;
+color:#00ff9d;
+border:1px solid #00ff9d;
+}
+
 .output{
 background:#111;
 padding:15px;
@@ -80,7 +82,6 @@ line-height:1.5;
 white-space:pre-line;
 }
 
-/* LOADING */
 .loading{
 text-align:center;
 opacity:.7;
@@ -90,31 +91,31 @@ opacity:.7;
 
 <body>
 
-<div class="header">Cook AI 🧠🔥</div>
+<div class="header">Cook AI</div>
 
 <div class="container">
 
-<!-- IMAGE UPLOAD -->
 <label class="upload">
-Tap to scan your pantry 📸
+Scan Pantry
 <input type="file" accept="image/*" onchange="previewImage(event)">
 <div id="uploadText">Upload pantry image</div>
 <img id="preview" class="preview" style="display:none;">
 </label>
 
-<!-- USER INPUT -->
-<input id="mealInput" placeholder="What do you want to cook? (e.g. pasta, tacos, etc)">
+<input id="mealInput" placeholder="Enter a meal (pasta, chicken, etc)">
 
 <button onclick="runAI()">Generate Meal</button>
 
-<!-- OUTPUT -->
 <div id="output" class="output" style="display:none;"></div>
+
+<button id="postBtn" class="secondary" style="display:none;" onclick="postToFeed()">Post to Cook’ed</button>
 
 </div>
 
 <script>
 
 let pantryItems = [];
+let generatedRecipe = null;
 
 /* IMAGE PREVIEW */
 function previewImage(e){
@@ -125,75 +126,144 @@ if(file){
 preview.src = URL.createObjectURL(file);
 preview.style.display="block";
 
-/* FAKE AI VISION (DEMO) */
 pantryItems = generatePantry();
-uploadText.innerText = "Pantry scanned ✅";
+uploadText.innerText = "Pantry scanned";
 }
 }
 
-/* FAKE PANTRY DETECTION */
+/* FAKE VISION (FOR DEMO) */
 function generatePantry(){
-const possible = [
-"chicken","rice","eggs","cheese","milk",
-"tomatoes","onions","garlic","pasta","bread"
-];
-
-return possible.sort(()=>0.5-Math.random()).slice(0,5);
+const items = ["chicken","rice","eggs","cheese","milk","tomato","onion","garlic","pasta"];
+return items.sort(()=>0.5-Math.random()).slice(0,5);
 }
 
-/* AI GENERATION */
-function runAI(){
+/* MAIN AI */
+async function runAI(){
 
 const meal = document.getElementById("mealInput").value;
 const output = document.getElementById("output");
 
 if(!meal){
-alert("Enter a meal idea");
+alert("Enter a meal");
 return;
 }
 
 output.style.display="block";
-output.innerHTML = "<div class='loading'>Analyzing pantry...</div>";
+output.innerHTML = "<div class='loading'>Generating recipe...</div>";
 
-setTimeout(()=>{
+try{
 
-const result = generateRecipe(meal, pantryItems);
-output.innerText = result;
+/* REAL API */
+const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${meal}`);
+const data = await res.json();
 
-},1500);
+if(data.meals){
+
+const m = data.meals[0];
+
+let ingredients = [];
+for(let i=1;i<=20;i++){
+if(m["strIngredient"+i]){
+ingredients.push(m["strIngredient"+i]);
+}
+}
+
+generatedRecipe = {
+title: m.strMeal,
+desc: "Generated from AI",
+images: [m.strMealThumb],
+ingredients: ingredients,
+steps: m.strInstructions.split("."),
+likes: Math.floor(Math.random()*200),
+views: Math.floor(Math.random()*2000),
+comments: [],
+created: Date.now()
+};
+
+output.innerText = `
+Meal: ${m.strMeal}
+
+Pantry:
+- ${pantryItems.join("\n- ")}
+
+Ingredients:
+- ${ingredients.join("\n- ")}
+
+Steps:
+${m.strInstructions}
+
+Substitutions:
+Use similar pantry items if missing ingredients
+`;
+
+document.getElementById("postBtn").style.display="block";
+
+}else{
+
+fallbackAI(meal);
 
 }
 
-/* RECIPE LOGIC */
-function generateRecipe(meal, items){
-
-let recipe = `🍽 Meal: ${meal.toUpperCase()}\n\n`;
-
-recipe += `🧺 Pantry Detected:\n- ${items.join("\n- ")}\n\n`;
-
-recipe += `✅ What You Can Make:\n`;
-recipe += `You can create a version of ${meal} using your available ingredients.\n\n`;
-
-recipe += `🧂 Suggested Ingredients:\n`;
-items.forEach(i=>{
-recipe += `- ${i}\n`;
-});
-
-recipe += `\n🍳 Steps:\n`;
-recipe += `1. Prep all ingredients\n`;
-recipe += `2. Cook based on your meal style\n`;
-recipe += `3. Combine and season\n`;
-recipe += `4. Serve hot\n\n`;
-
-/* SUBSTITUTIONS */
-recipe += `🔄 Missing Something?\n`;
-recipe += `- No cheese? → use butter or sauce\n`;
-recipe += `- No meat? → use eggs or beans\n`;
-recipe += `- No pasta? → use rice or bread\n`;
-
-return recipe;
+}catch(err){
+fallbackAI(meal);
+}
 
 }
+
+/* FALLBACK AI */
+function fallbackAI(meal){
+
+const output = document.getElementById("output");
+
+generatedRecipe = {
+title: meal,
+desc: "Custom pantry recipe",
+images: [`https://source.unsplash.com/featured/?${meal},food`],
+ingredients: pantryItems,
+steps: ["Prepare ingredients","Cook","Combine","Serve"],
+likes: 50,
+views: 500,
+comments: [],
+created: Date.now()
+};
+
+output.innerText = `
+Meal: ${meal}
+
+Pantry:
+- ${pantryItems.join("\n- ")}
+
+Suggested Meal:
+Use available ingredients to create a custom version.
+
+Steps:
+1. Prepare ingredients
+2. Cook
+3. Combine
+4. Serve
+
+Substitutions:
+Use pantry alternatives if needed
+`;
+
+document.getElementById("postBtn").style.display="block";
+
+}
+
+/* POST TO FEED */
+function postToFeed(){
+
+let recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+
+recipes.unshift(generatedRecipe);
+
+localStorage.setItem("recipes", JSON.stringify(recipes));
+
+alert("Posted to Cook’ed feed");
+
+}
+
+/* END */
 
 </script>
 
