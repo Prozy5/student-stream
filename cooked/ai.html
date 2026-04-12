@@ -7,6 +7,7 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+
 body{
 background:#0b0f14;
 color:white;
@@ -40,10 +41,7 @@ padding:20px;
 text-align:center;
 border-radius:15px;
 cursor:pointer;
-transition:.2s;
 }
-.upload:hover{background:#0f1a14;}
-
 .upload input{display:none;}
 
 .preview{
@@ -60,10 +58,9 @@ border-radius:12px;
 border:none;
 background:#111;
 color:white;
-font-size:15px;
 }
 
-/* BUTTONS */
+/* BUTTON */
 button{
 padding:14px;
 border:none;
@@ -72,9 +69,7 @@ background:#00ff9d;
 font-weight:900;
 cursor:pointer;
 color:black;
-transition:.2s;
 }
-button:hover{opacity:.85;}
 
 .secondary{
 background:#111;
@@ -82,12 +77,11 @@ color:#00ff9d;
 border:1px solid #00ff9d;
 }
 
-/* OUTPUT CARD */
+/* OUTPUT */
 .output{
 background:#111;
 padding:18px;
 border-radius:18px;
-margin-top:10px;
 line-height:1.6;
 }
 
@@ -97,7 +91,6 @@ margin-top:15px;
 
 .title{
 font-weight:900;
-font-size:18px;
 color:#00ff9d;
 margin-bottom:5px;
 }
@@ -112,6 +105,9 @@ font-size:12px;
 margin-top:10px;
 }
 
+.good{color:#00ff9d;}
+.missing{color:#ff4d4d;}
+
 .loading{
 text-align:center;
 opacity:.7;
@@ -121,7 +117,6 @@ opacity:.7;
 color:#00ff9d;
 text-align:center;
 font-weight:900;
-margin-top:10px;
 }
 </style>
 </head>
@@ -139,7 +134,7 @@ Scan Pantry
 <img id="preview" class="preview" style="display:none;">
 </label>
 
-<input id="mealInput" placeholder="Enter a meal (pasta, chicken, etc)">
+<input id="mealInput" placeholder="Enter a meal">
 
 <button onclick="runAI()">Generate Meal</button>
 
@@ -147,7 +142,7 @@ Scan Pantry
 
 <button id="postBtn" class="secondary" style="display:none;" onclick="postToFeed()">Post to Cook’ed</button>
 
-<div id="successMsg" class="success" style="display:none;">Posted to feed</div>
+<div id="successMsg" class="success" style="display:none;">Posted</div>
 
 </div>
 
@@ -155,8 +150,9 @@ Scan Pantry
 
 let pantryItems = [];
 let generatedRecipe = null;
+let uploadedImage = null;
 
-/* IMAGE PREVIEW */
+/* IMAGE */
 function previewImage(e){
 const file = e.target.files[0];
 const preview = document.getElementById("preview");
@@ -164,6 +160,8 @@ const preview = document.getElementById("preview");
 if(file){
 preview.src = URL.createObjectURL(file);
 preview.style.display="block";
+
+uploadedImage = preview.src;
 
 pantryItems = generatePantry();
 uploadText.innerText = "Pantry scanned";
@@ -176,19 +174,14 @@ const items = ["chicken","rice","eggs","cheese","milk","tomato","onion","garlic"
 return items.sort(()=>0.5-Math.random()).slice(0,5);
 }
 
-/* MAIN AI */
+/* AI */
 async function runAI(){
 
-const meal = document.getElementById("mealInput").value;
-const output = document.getElementById("output");
-
-if(!meal){
-alert("Enter a meal");
-return;
-}
+const meal = mealInput.value;
+if(!meal) return alert("Enter meal");
 
 output.style.display="block";
-output.innerHTML = "<div class='loading'>Generating recipe...</div>";
+output.innerHTML = "<div class='loading'>Generating...</div>";
 
 try{
 
@@ -196,9 +189,7 @@ const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${
 const data = await res.json();
 
 if(data.meals){
-
 buildRecipe(data.meals[0]);
-
 }else{
 fallbackAI(meal);
 }
@@ -209,72 +200,72 @@ fallbackAI(meal);
 
 }
 
-/* BUILD REAL RECIPE */
+/* BUILD */
 function buildRecipe(m){
 
 let ingredients = [];
 for(let i=1;i<=20;i++){
 let ing = m["strIngredient"+i];
-if(ing && ing.trim()){
-ingredients.push(ing);
-}
+if(ing && ing.trim()) ingredients.push(ing.toLowerCase());
 }
 
-/* MATCH SCORE */
-let matchCount = ingredients.filter(i => 
-pantryItems.includes(i.toLowerCase())
-).length;
+/* MATCH */
+let matched = ingredients.filter(i=>pantryItems.includes(i));
+let missing = ingredients.filter(i=>!pantryItems.includes(i));
 
-let score = Math.round((matchCount / ingredients.length) * 100);
+let score = Math.round((matched.length / ingredients.length)*100);
+
+let confidence = score > 70 ? "High" : score > 40 ? "Medium" : "Low";
+
+/* CLEAN STEPS */
+let steps = m.strInstructions.split(".").filter(s=>s.trim());
 
 generatedRecipe = {
 title: m.strMeal,
 desc: "AI Generated Meal",
-images: [m.strMealThumb],
+images: [uploadedImage || m.strMealThumb],
 ingredients,
-steps: m.strInstructions.split("."),
+steps,
 likes: Math.floor(Math.random()*200),
 views: Math.floor(Math.random()*2000),
 comments: [],
 created: Date.now()
 };
 
-renderOutput(m.strMeal, ingredients, m.strInstructions, score);
+renderOutput(m.strMeal, matched, missing, steps, score, confidence);
 
 }
 
-/* RENDER UI */
-function renderOutput(title, ingredients, steps, score){
-
-const output = document.getElementById("output");
+/* UI */
+function renderOutput(title, matched, missing, steps, score, confidence){
 
 output.innerHTML = `
 <div class="title">${title}</div>
 
-<div class="badge">${score}% ingredient match</div>
+<div class="badge">${score}% match • ${confidence} confidence</div>
 
 <div class="section">
-<div class="title">Pantry</div>
-${pantryItems.map(i=>`- ${i}`).join("<br>")}
+<div class="title">Available Ingredients</div>
+${matched.map(i=>`<div class="good">- ${i}</div>`).join("")}
 </div>
 
 <div class="section">
-<div class="title">Ingredients</div>
-${ingredients.map(i=>`- ${i}`).join("<br>")}
+<div class="title">Missing Ingredients</div>
+${missing.map(i=>`<div class="missing">- ${i}</div>`).join("")}
 </div>
 
 <div class="section">
 <div class="title">Steps</div>
-${steps}
+${steps.map((s,i)=>`${i+1}. ${s}`).join("<br><br>")}
 </div>
 
 <div class="section">
 <div class="title">Substitutions</div>
-Use similar pantry items if something is missing
+${missing.map(i=>`- Replace ${i} with similar pantry item`).join("<br>")}
 </div>
 `;
 
-document.getElementById("postBtn").style.display="block";
+postBtn.style.display="block";
 
 }
 
@@ -283,17 +274,17 @@ function fallbackAI(meal){
 
 generatedRecipe = {
 title: meal,
-desc: "Custom pantry meal",
-images: [`https://source.unsplash.com/featured/?${meal},food`],
+desc: "Custom Meal",
+images: [uploadedImage || `https://source.unsplash.com/featured/?${meal},food`],
 ingredients: pantryItems,
-steps: ["Prepare ingredients","Cook","Combine","Serve"],
+steps: ["Prepare","Cook","Combine","Serve"],
 likes: 50,
 views: 500,
 comments: [],
 created: Date.now()
 };
 
-renderOutput(meal, pantryItems, "Prepare ingredients. Cook. Combine. Serve.", 80);
+renderOutput(meal, pantryItems, [], generatedRecipe.steps, 80, "Medium");
 
 }
 
@@ -306,11 +297,11 @@ recipes.unshift(generatedRecipe);
 
 localStorage.setItem("recipes", JSON.stringify(recipes));
 
-document.getElementById("successMsg").style.display="block";
+successMsg.style.display="block";
 
 setTimeout(()=>{
-document.getElementById("successMsg").style.display="none";
-},2000);
+window.location.href = "feed.html"; // IMPORTANT
+},1200);
 
 }
 
