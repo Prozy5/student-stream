@@ -10,64 +10,122 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
-body{background:#020617;color:#e6edf3;padding:20px;}
+body{
+  background:#020617;
+  color:#e6edf3;
+  padding:20px;
+}
 
-.header{max-width:900px;margin:auto;margin-bottom:20px;}
-.logo{font-size:20px;color:#3b82f6;}
-
-.back{
+/* HEADER */
+.header{
   max-width:900px;
   margin:auto;
   margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:18px;
+  font-weight:700;
+  color:#3b82f6;
+}
+
+/* BACK */
+.back{
+  max-width:900px;
+  margin:10px auto 20px;
   color:#3b82f6;
   cursor:pointer;
   font-size:13px;
+  transition:.2s;
 }
 
+.back:hover{opacity:.7;}
+
+/* ARTICLE */
 .article{
   max-width:900px;
   margin:auto;
   background:#010409;
   border:1px solid #1f2933;
-  border-radius:12px;
-  padding:25px;
+  border-radius:16px;
+  padding:28px;
+  animation:fadeIn .4s ease;
 }
 
-/* CONTENT */
-.title{font-size:26px;margin-bottom:10px;}
-.meta{font-size:12px;color:#9ca3af;margin-bottom:20px;}
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
 
+/* TEXT */
+.title{
+  font-size:28px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.meta{
+  font-size:13px;
+  color:#9ca3af;
+  margin-bottom:25px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* BADGE */
 .badge{
-  padding:3px 8px;
-  border-radius:6px;
-  margin-left:10px;
+  padding:4px 10px;
+  border-radius:999px;
   font-size:11px;
+  font-weight:600;
 }
 
-/* TAG COLORS */
 .critical{background:#2c0a0a;color:#ef4444;}
 .update{background:#0a1f2c;color:#3b82f6;}
 .info{background:#022c22;color:#22c55e;}
 
+/* CONTENT */
 .content{
-  line-height:1.7;
+  line-height:1.8;
   color:#cbd5e1;
-  font-size:15px;
+  font-size:16px;
 }
 
-.content p{margin-bottom:16px;}
+/* PARAGRAPHS */
+.content p{
+  margin-bottom:18px;
+}
 
+/* HEADINGS AUTO */
+.content p:first-child{
+  font-size:17px;
+  font-weight:500;
+}
+
+/* DIVIDER */
 .divider{
   height:1px;
   background:#1f2933;
-  margin:20px 0;
+  margin:25px 0;
 }
 
 /* STATES */
 .center{
   text-align:center;
-  margin-top:50px;
+  margin-top:60px;
   color:#9ca3af;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  .article{padding:20px;}
+  .title{font-size:24px;}
+  .content{font-size:15px;}
 }
 </style>
 </head>
@@ -75,7 +133,7 @@ body{background:#020617;color:#e6edf3;padding:20px;}
 <body>
 
 <div class="header">
-  <div class="logo">StudentStreamHQ • System Updates</div>
+  <div class="logo">StudentStreamHQ</div>
 </div>
 
 <div class="back" onclick="goBack()">← Back to Updates</div>
@@ -86,19 +144,19 @@ body{background:#020617;color:#e6edf3;padding:20px;}
 
 <script>
 
-// 🔌 SUPABASE INIT
+// 🔌 SUPABASE
 const supabase = window.supabase.createClient(
   "https://iabzmoxzbqzcqgypxctr.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-// GET ID FROM URL
+// GET ID
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
 const articleEl = document.getElementById("article");
 
-// FORMAT DATE
+/* DATE */
 function formatDate(dateString){
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
@@ -108,7 +166,7 @@ function formatDate(dateString){
   });
 }
 
-// TAG STYLE
+/* TAG */
 function getTagClass(tag){
   if(!tag) return "update";
   const t = tag.toLowerCase();
@@ -117,11 +175,10 @@ function getTagClass(tag){
   return "update";
 }
 
-// FORMAT CONTENT INTO HTML
+/* FORMAT CONTENT */
 function formatContent(text){
   if(!text) return "";
 
-  // Split paragraphs
   const paragraphs = text.split("\n\n");
 
   return paragraphs.map(p=>{
@@ -132,8 +189,9 @@ function formatContent(text){
   }).join("");
 }
 
-// LOAD ARTICLE
+/* LOAD */
 async function loadArticle(){
+
   if(!id){
     articleEl.innerHTML = `<div class="center">Invalid article.</div>`;
     return;
@@ -155,22 +213,26 @@ async function loadArticle(){
 
   articleEl.innerHTML = `
     <div class="title">${data.title}</div>
+
     <div class="meta">
-      ${formatDate(data.created_at)} • Internal Systems
-      <span class="badge ${tagClass}">${data.tag || "Update"}</span>
+      ${formatDate(data.created_at)}
+      • StudentStream HQ
+      <span class="badge ${tagClass}">
+        ${data.tag || "Update"}
+      </span>
     </div>
+
     <div class="content">
       ${formatContent(data.content)}
     </div>
   `;
 }
 
-// BACK NAV
+/* BACK */
 function goBack(){
   window.location.href = "/updates/index.html";
 }
 
-// INIT
 loadArticle();
 
 </script>
