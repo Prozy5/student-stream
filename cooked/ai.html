@@ -129,121 +129,91 @@ Scan Pantry
 
 </div>
 
-<script>
+l<script>
 
-let pantryItems = [];
-let generatedList = [];
-
-/* IMAGE */
-function previewImage(e){
-const file = e.target.files[0];
-if(file){
-preview.src = URL.createObjectURL(file);
-preview.style.display="block";
-
-/* LEARNING MEMORY */
-let history = JSON.parse(localStorage.getItem("pantryHistory")||"[]");
-
-pantryItems = generatePantry();
-history.push(pantryItems);
-
-localStorage.setItem("pantryHistory", JSON.stringify(history));
-
-uploadText.innerText = "Pantry analyzed";
-}
-}
-
-/* FAKE VISION */
-function generatePantry(){
-const items = ["chicken","rice","eggs","cheese","milk","tomato","onion","garlic","pasta"];
-return items.sort(()=>0.5-Math.random()).slice(0,6);
-}
-
-/* MAIN */
-async function runAI(){
-
-const meal = mealInput.value;
-if(!meal){
-alert("Enter a meal");
-return;
-}
-
-results.innerHTML = "Loading recipes...";
-
-try{
-
-const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${meal}`);
-const data = await res.json();
-
-if(data.meals){
-
-generatedList = data.meals.slice(0,3); // MULTIPLE RECIPES
-
-renderRecipes(generatedList);
-
-}else{
-fallbackAI(meal);
-}
-
-}catch{
-fallbackAI(meal);
-}
-
-}
-
-/* RENDER */
+/* SMART RENDER */
 function renderRecipes(list){
 
 results.innerHTML = "";
+
+const userMeal = mealInput.value.toLowerCase();
 
 list.forEach((m,i)=>{
 
 let ingredients=[];
 for(let x=1;x<=20;x++){
 let ing=m["strIngredient"+x];
-if(ing && ing.trim()!=""){
+if(ing && ing.trim()!==""){
 ingredients.push(ing.toLowerCase());
 }
 }
 
-/* MATCH */
-let match = ingredients.filter(i =>
+/* SAFETY */
+if(ingredients.length === 0){
+ingredients = ["salt","water"];
+}
+
+/* INTELLIGENT MATCH (based on requested meal) */
+let relevantIngredients = ingredients.filter(i =>
+userMeal.includes(i) || i.includes(userMeal)
+);
+
+/* WHAT USER HAS */
+let have = ingredients.filter(i =>
 pantryItems.some(p => i.includes(p))
 );
 
-let percent = Math.floor((match.length / ingredients.length)*100);
+/* WHAT THEY CAN USE */
+let usable = pantryItems.filter(p =>
+ingredients.some(i => i.includes(p))
+);
 
 /* MISSING */
 let missing = ingredients.filter(i =>
 !pantryItems.some(p => i.includes(p))
 );
 
-/* SUBSTITUTIONS */
+/* MATCH SCORE */
+let percent = Math.floor((have.length / ingredients.length)*100);
+if(isNaN(percent)) percent = 0;
+
+/* SMART SUBSTITUTIONS */
 let subs = missing.map(i => {
-if(i.includes("cheese")) return "cheese → butter or sauce";
-if(i.includes("milk")) return "milk → water or cream";
-if(i.includes("chicken")) return "chicken → eggs or beans";
-return i + " → similar pantry item";
+
+if(i.includes("milk")) return i + " → use water, cream, or butter";
+if(i.includes("cheese")) return i + " → use butter or sauce";
+if(i.includes("chicken")) return i + " → use eggs, beans, or tofu";
+if(i.includes("rice")) return i + " → use pasta or bread";
+if(i.includes("butter")) return i + " → use oil";
+if(i.includes("egg")) return i + " → use milk or banana";
+
+return i + " → use similar pantry ingredient";
+
 });
 
+/* UI */
 const card = document.createElement("div");
 card.className="recipe";
 
 card.innerHTML = `
-<div class="title">${m.strMeal}</div>
+<div class="title">${m.strMeal || "Generated Meal"}</div>
 
 <div class="match">Match: ${percent}%</div>
 
 <div class="section">
-Pantry:<br>- ${pantryItems.join("<br>- ")}
+You have:<br>- ${have.length ? have.join("<br>- ") : "Minimal match"}
 </div>
 
 <div class="section">
-Missing:<br>- ${missing.length ? missing.join("<br>- ") : "None"}
+Use these from pantry:<br>- ${usable.length ? usable.join("<br>- ") : "Try basic ingredients"}
 </div>
 
 <div class="section">
-Substitutions:<br>- ${subs.join("<br>- ")}
+Missing:<br>- ${missing.length ? missing.join("<br>- ") : "Nothing missing"}
+</div>
+
+<div class="section">
+Substitutions:<br>- ${subs.length ? subs.join("<br>- ") : "Not needed"}
 </div>
 
 <button onclick="postToFeed(${i})">Post to Feed</button>
@@ -253,11 +223,11 @@ results.appendChild(card);
 
 /* STORE CLEAN VERSION */
 generatedList[i] = {
-title: m.strMeal,
-desc: "AI generated meal",
-images: [m.strMealThumb],
+title: m.strMeal || "Generated Meal",
+desc: "AI personalized recipe",
+images: [m.strMealThumb || `https://source.unsplash.com/featured/?food`],
 ingredients: ingredients,
-steps: m.strInstructions.split("."),
+steps: m.strInstructions ? m.strInstructions.split(".") : ["Prepare","Cook","Serve"],
 likes: Math.floor(Math.random()*200),
 views: Math.floor(Math.random()*2000),
 comments: [],
@@ -268,40 +238,4 @@ created: Date.now()
 
 }
 
-/* FALLBACK */
-function fallbackAI(meal){
-
-generatedList=[{
-title: meal,
-desc: "Custom meal",
-images:[`https://source.unsplash.com/featured/?${meal},food`],
-ingredients: pantryItems,
-steps:["Prep","Cook","Serve"],
-likes:50,
-views:500,
-comments:[],
-created:Date.now()
-}];
-
-renderRecipes(generatedList);
-
-}
-
-/* POST + REDIRECT */
-function postToFeed(i){
-
-let recipes = JSON.parse(localStorage.getItem("recipes")||"[]");
-
-recipes.unshift(generatedList[i]);
-
-localStorage.setItem("recipes", JSON.stringify(recipes));
-
-/* AUTO REDIRECT */
-window.location.href = "feed.html";
-
-}
-
 </script>
-
-</body>
-</html>
