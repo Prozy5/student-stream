@@ -58,56 +58,27 @@ body{
   transform:translateY(-3px) scale(1.01);
 }
 
-/* FEATURED FIRST CARD */
+/* FEATURED */
 .card.featured{
   border:1px solid #3b82f6;
-  background:linear-gradient(180deg,#010409,#020617);
   box-shadow:0 0 20px rgba(59,130,246,0.15);
 }
 
 /* TEXT */
-.title{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:8px;
-}
-
-.meta{
-  font-size:12px;
-  color:#9ca3af;
-  margin-bottom:10px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.preview{
-  color:#cbd5e1;
-  font-size:14px;
-  line-height:1.5;
-}
+.title{font-size:20px;font-weight:700;margin-bottom:8px;}
+.meta{font-size:12px;color:#9ca3af;margin-bottom:10px;display:flex;gap:8px;}
+.preview{color:#cbd5e1;font-size:14px;line-height:1.5;}
 
 /* BADGES */
-.badge{
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:600;
-}
-
-/* TAG COLORS */
+.badge{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;}
 .critical{background:#2c0a0a;color:#ef4444;}
 .update{background:#0a1f2c;color:#3b82f6;}
 .info{background:#022c22;color:#22c55e;}
 
 /* STATES */
-.center{
-  text-align:center;
-  margin-top:60px;
-  color:#9ca3af;
-}
+.center{text-align:center;margin-top:60px;color:#9ca3af;}
 
-/* LOADING SKELETON */
+/* LOADING */
 .skeleton{
   height:90px;
   border-radius:14px;
@@ -121,11 +92,19 @@ body{
   100%{background-position:-200% 0;}
 }
 
-/* MOBILE */
-@media(max-width:600px){
-  .title{font-size:18px;}
-  .card{padding:16px;}
+/* DEBUG PANEL */
+.debug{
+  max-width:900px;
+  margin:20px auto;
+  padding:12px;
+  border-radius:10px;
+  background:#111827;
+  font-size:12px;
+  color:#9ca3af;
+  line-height:1.4;
+  white-space:pre-wrap;
 }
+
 </style>
 </head>
 
@@ -133,8 +112,10 @@ body{
 
 <div class="header">
   <div class="logo">StudentStreamHQ • Updates</div>
-  <div class="sub">System Reports • Partnerships • Platform Growth</div>
+  <div class="sub">System Reports • Platform Growth</div>
 </div>
+
+<div id="debug" class="debug">🔍 Debug loading...</div>
 
 <div class="feed" id="feed">
   <div class="skeleton"></div>
@@ -151,18 +132,24 @@ const supabase = window.supabase.createClient(
 );
 
 const feed = document.getElementById("feed");
+const debugBox = document.getElementById("debug");
 
-/* DATE FORMAT */
+/* DEBUG LOGGER */
+function logDebug(message){
+  console.log(message);
+  debugBox.textContent += "\n" + JSON.stringify(message, null, 2);
+}
+
+/* DATE */
 function formatDate(dateString){
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  return new Date(dateString).toLocaleDateString("en-US",{
     year:"numeric",
     month:"short",
     day:"numeric"
   });
 }
 
-/* TAG STYLE */
+/* TAG */
 function getTagClass(tag){
   if(!tag) return "update";
   const t = tag.toLowerCase();
@@ -174,48 +161,50 @@ function getTagClass(tag){
 /* LOAD POSTS */
 async function loadPosts(){
 
+  debugBox.textContent = "🚀 Connecting to Supabase...\n";
+
   const { data, error } = await supabase
     .from("posts")
     .select("*")
     .eq("status","published")
     .order("created_at",{ ascending:false });
 
+  logDebug({ data });
+  logDebug({ error });
+
   if(error){
     feed.innerHTML = `<div class="center">⚠️ Failed to load updates.</div>`;
-    console.error(error);
+    debugBox.textContent += "\n❌ ERROR:\n" + error.message;
     return;
   }
 
   if(!data || data.length === 0){
-    feed.innerHTML = `<div class="center">No updates yet.</div>`;
+    feed.innerHTML = `<div class="center">No updates found.</div>`;
+    debugBox.textContent += "\n⚠️ No rows returned from database.";
     return;
   }
+
+  debugBox.textContent += `\n✅ Loaded ${data.length} posts`;
 
   feed.innerHTML = "";
 
   data.forEach((post,index)=>{
 
-    const tagClass = getTagClass(post.tag);
-
     const card = document.createElement("div");
     card.className = "card";
 
-    if(index === 0){
-      card.classList.add("featured");
-    }
+    if(index === 0) card.classList.add("featured");
 
     card.onclick = () => openPost(post.id);
 
     card.innerHTML = `
       <div class="title">${post.title}</div>
-
       <div class="meta">
         ${formatDate(post.created_at)}
-        <span class="badge ${tagClass}">
+        <span class="badge ${getTagClass(post.tag)}">
           ${post.tag || "Update"}
         </span>
       </div>
-
       <div class="preview">
         ${post.preview || "No preview available."}
       </div>
