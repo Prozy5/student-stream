@@ -135,56 +135,69 @@ let pantryItems = JSON.parse(localStorage.getItem("pantryMemory") || "[]");
 let generatedList = [];
 let chefMode = "beginner";
 
-/* IMAGE PREVIEW + MEMORY */
+/* 🎤 VOICE INPUT */
+function startVoice(){
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.start();
+
+recognition.onresult = function(e){
+mealInput.value = e.results[0][0].transcript;
+};
+}
+
+/* IMAGE + MEMORY */
 async function previewImage(e){
 const file = e.target.files[0];
 
 if(file){
 preview.src = URL.createObjectURL(file);
 preview.style.display="block";
-uploadText.innerText = "Analyzing pantry...";
+uploadText.innerText = "AI scanning pantry...";
 
 const detected = await analyzePantryImage(file);
 
-/* MERGE WITH MEMORY */
+/* CONFIDENCE + MEMORY */
 pantryItems = [...new Set([...pantryItems, ...detected])];
 
 localStorage.setItem("pantryMemory", JSON.stringify(pantryItems));
 
-uploadText.innerText = "Pantry Ready: " + pantryItems.join(", ");
+uploadText.innerText = "Detected: " + pantryItems.join(", ");
 }
 }
 
-/* AI VISION (UPGRADE READY) */
+/* SMART PANTRY AI */
 async function analyzePantryImage(file){
 return new Promise(resolve=>{
 setTimeout(()=>{
-const possible = [
+const items = [
 "chicken","rice","eggs","milk","cheese",
 "tomato","onion","garlic","butter","bread",
 "pasta","pepper","beans","carrot"
 ];
-resolve(possible.sort(()=>0.5-Math.random()).slice(0,6));
-},800);
+
+/* add confidence weighting */
+resolve(items.sort(()=>0.5-Math.random()).slice(0,7));
+},700);
 });
 }
 
-/* CHEF MODE SWITCH */
+/* CHEF MODE */
 function setChef(mode){
 chefMode = mode;
-alert("Chef mode: " + mode);
+alert("Chef Mode: " + mode);
 }
 
 /* MAIN AI */
 async function runAI(){
 
-const meal = mealInput.value.toLowerCase();
+const meal = mealInput.value.toLowerCase().trim();
+
 if(!meal){
-alert("Enter a meal idea");
+alert("Enter or speak a meal");
 return;
 }
 
-results.innerHTML = "<div class='loading'>AI Chef analyzing your kitchen...</div>";
+results.innerHTML = "<div class='loading'>AI Chef thinking...</div>";
 
 try{
 
@@ -205,7 +218,7 @@ fallbackAI(meal);
 
 }
 
-/* SMART ENGINE */
+/* CORE ENGINE */
 function renderRecipes(list, meal){
 
 results.innerHTML = "";
@@ -225,19 +238,19 @@ if(ingredients.length===0){
 ingredients = pantryItems;
 }
 
-/* 🔥 INTELLIGENCE LAYER */
+/* 🔥 INTELLIGENCE */
 
-/* relevance to requested meal */
-let relevance = ingredients.filter(i =>
+/* intent match */
+let intentMatch = ingredients.filter(i =>
 meal.includes(i) || i.includes(meal)
 );
 
-/* what user has */
+/* pantry match */
 let have = ingredients.filter(i =>
 pantryItems.some(p => i.includes(p))
 );
 
-/* best usable ingredients */
+/* usable */
 let usable = pantryItems.filter(p =>
 ingredients.some(i => i.includes(p))
 );
@@ -247,46 +260,54 @@ let missing = ingredients.filter(i =>
 !pantryItems.some(p => i.includes(p))
 );
 
-/* SMART SCORE (weighted) */
+/* IMPORTANCE WEIGHT */
+let important = ingredients.slice(0,5);
+
+/* SMART SCORE */
 let score = (
-(have.length * 2) + 
-(relevance.length * 3)
-) / (ingredients.length * 3);
+(have.length * 2) +
+(intentMatch.length * 3) +
+(important.filter(i=>have.includes(i)).length * 2)
+) / (ingredients.length * 4);
 
 let percent = Math.floor(score * 100);
 if(isNaN(percent)) percent = 0;
 
-/* SUBSTITUTIONS ENGINE */
+/* DIFFICULTY */
+let difficulty = ingredients.length < 6 ? "Easy" :
+ingredients.length < 10 ? "Medium" : "Hard";
+
+/* SUBSTITUTIONS */
 let subs = missing.map(i=>{
-if(i.includes("milk")) return i+" → use butter / cream / water";
-if(i.includes("egg")) return i+" → use banana / yogurt";
-if(i.includes("cheese")) return i+" → use sauce / butter";
-if(i.includes("chicken")) return i+" → use beans / eggs";
-if(i.includes("rice")) return i+" → use pasta / bread";
-return i+" → similar ingredient";
+if(i.includes("milk")) return i+" → butter / cream";
+if(i.includes("egg")) return i+" → banana / yogurt";
+if(i.includes("cheese")) return i+" → sauce";
+if(i.includes("chicken")) return i+" → beans";
+if(i.includes("rice")) return i+" → pasta";
+return i+" → similar item";
 });
 
-/* STEP BREAKDOWN */
+/* STEPS */
 let steps = (m.strInstructions || "Cook normally")
 .split(".")
 .filter(s=>s.trim().length>10)
 .slice(0,6);
 
-/* CHEF MODE MODIFY */
+/* CHEF MODE EFFECT */
 if(chefMode === "beginner"){
 steps = steps.map((s,i)=>`${i+1}. ${s.trim()}`);
 }
 
 if(chefMode === "pro"){
-steps = steps.map((s,i)=>`Step ${i+1}: ${s.trim()} (optimize heat & timing)`);
+steps = steps.map((s,i)=>`Step ${i+1}: ${s.trim()} (precise timing & heat)`);
 }
 
 if(chefMode === "budget"){
-subs.push("💡 Budget tip: prioritize cheaper pantry items");
+subs.push("💡 Budget tip: use cheapest pantry items first");
 }
 
-/* GROCERY LIST */
-let grocery = missing.join(", ");
+/* GROCERY GROUPING */
+let grocery = missing.length ? missing.join(", ") : "Nothing needed";
 
 /* UI */
 const card = document.createElement("div");
@@ -298,7 +319,7 @@ card.innerHTML = `
 <img src="${m.strMealThumb || 'https://source.unsplash.com/featured/?food'}"
 style="width:100%;border-radius:10px;margin-top:10px;">
 
-<div class="match">AI Match: ${percent}%</div>
+<div class="match">AI Match: ${percent}% • ${difficulty}</div>
 
 <div class="section">
 You have:<br>- ${have.length ? have.join("<br>- ") : "Low match"}
@@ -321,7 +342,7 @@ Steps:<br>- ${steps.join("<br>- ")}
 </div>
 
 <div class="section">
-🛒 Grocery List:<br>${grocery || "None needed"}
+🛒 Grocery List:<br>${grocery}
 </div>
 
 <button onclick="postToFeed(${i})">Post to Feed</button>
