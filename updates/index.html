@@ -125,105 +125,98 @@ body{
 
 <script>
 
-// 🔌 SUPABASE
-const supabase = window.supabase.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+console.log("🚀 Script started");
 
-const feed = document.getElementById("feed");
 const debugBox = document.getElementById("debug");
+const feed = document.getElementById("feed");
 
-/* DEBUG LOGGER */
-function logDebug(message){
-  console.log(message);
-  debugBox.textContent += "\n" + JSON.stringify(message, null, 2);
+function log(msg){
+  console.log(msg);
+  debugBox.textContent += "\n" + msg;
 }
 
-/* DATE */
-function formatDate(dateString){
-  return new Date(dateString).toLocaleDateString("en-US",{
-    year:"numeric",
-    month:"short",
-    day:"numeric"
-  });
+// 🔌 SUPABASE INIT
+let supabase;
+
+try {
+  supabase = window.supabase.createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "PUT_REAL_KEY_HERE"
+  );
+  log("✅ Supabase client created");
+} catch(e){
+  log("❌ Supabase init failed: " + e.message);
 }
 
-/* TAG */
-function getTagClass(tag){
-  if(!tag) return "update";
-  const t = tag.toLowerCase();
-  if(t.includes("critical")) return "critical";
-  if(t.includes("info")) return "info";
-  return "update";
+// ⏱️ TIMEOUT WRAPPER
+function timeout(ms){
+  return new Promise((_, reject)=>
+    setTimeout(()=>reject(new Error("Request timeout")), ms)
+  );
 }
 
-/* LOAD POSTS */
+// 📡 LOAD POSTS
 async function loadPosts(){
 
-  debugBox.textContent = "🚀 Connecting to Supabase...\n";
+  log("📡 Fetching posts...");
 
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("status","published")
-    .order("created_at",{ ascending:false });
+  try {
 
-  logDebug({ data });
-  logDebug({ error });
+    const query = supabase
+      .from("posts")
+      .select("*")
+      .eq("status","published")
+      .order("created_at",{ ascending:false });
 
-  if(error){
-    feed.innerHTML = `<div class="center">⚠️ Failed to load updates.</div>`;
-    debugBox.textContent += "\n❌ ERROR:\n" + error.message;
-    return;
+    const result = await Promise.race([
+      query,
+      timeout(8000)
+    ]);
+
+    log("📦 Response received");
+
+    const { data, error } = result;
+
+    if(error){
+      log("❌ ERROR: " + error.message);
+      feed.innerHTML = `<div class="center">Error loading data</div>`;
+      return;
+    }
+
+    if(!data || data.length === 0){
+      log("⚠️ No data returned");
+      feed.innerHTML = `<div class="center">No updates yet</div>`;
+      return;
+    }
+
+    log("✅ Posts loaded: " + data.length);
+
+    feed.innerHTML = "";
+
+    data.forEach((post,index)=>{
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      if(index === 0) card.classList.add("featured");
+
+      card.innerHTML = `
+        <div class="title">${post.title}</div>
+        <div class="meta">${new Date(post.created_at).toLocaleDateString()}</div>
+        <div class="preview">${post.preview || ""}</div>
+      `;
+
+      feed.appendChild(card);
+    });
+
+  } catch(err){
+    log("💥 CRASH: " + err.message);
+    feed.innerHTML = `<div class="center">Crash occurred</div>`;
   }
-
-  if(!data || data.length === 0){
-    feed.innerHTML = `<div class="center">No updates found.</div>`;
-    debugBox.textContent += "\n⚠️ No rows returned from database.";
-    return;
-  }
-
-  debugBox.textContent += `\n✅ Loaded ${data.length} posts`;
-
-  feed.innerHTML = "";
-
-  data.forEach((post,index)=>{
-
-    const card = document.createElement("div");
-    card.className = "card";
-
-    if(index === 0) card.classList.add("featured");
-
-    card.onclick = () => openPost(post.id);
-
-    card.innerHTML = `
-      <div class="title">${post.title}</div>
-      <div class="meta">
-        ${formatDate(post.created_at)}
-        <span class="badge ${getTagClass(post.tag)}">
-          ${post.tag || "Update"}
-        </span>
-      </div>
-      <div class="preview">
-        ${post.preview || "No preview available."}
-      </div>
-    `;
-
-    feed.appendChild(card);
-  });
 
 }
 
-/* NAV */
-function openPost(id){
-  window.location.href = "/updates/post.html?id=" + id;
-}
-
-/* INIT */
+// 🚀 RUN
 loadPosts();
 
 </script>
-
-</body>
-</html>
