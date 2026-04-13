@@ -36,7 +36,6 @@ gap:15px;
 overflow:auto;
 }
 
-/* UPLOAD */
 .upload{
 border:2px dashed #00ff9d;
 padding:20px;
@@ -45,14 +44,12 @@ border-radius:15px;
 cursor:pointer;
 }
 
-/* CARD STYLE */
 .card{
 background:#111;
 padding:15px;
 border-radius:15px;
 }
 
-/* INPUT */
 input{
 width:100%;
 padding:12px;
@@ -62,7 +59,6 @@ background:#111;
 color:white;
 }
 
-/* BUTTONS */
 button{
 padding:14px;
 border:none;
@@ -79,7 +75,6 @@ color:#00ff9d;
 border:1px solid #00ff9d;
 }
 
-/* OUTPUT */
 .recipe{
 background:#111;
 padding:15px;
@@ -103,6 +98,11 @@ color:#00ff9d;
 font-weight:900;
 margin-top:8px;
 }
+
+.loading{
+opacity:.6;
+text-align:center;
+}
 </style>
 </head>
 
@@ -121,7 +121,7 @@ Scan Pantry
 <img id="preview" style="width:100%;margin-top:10px;border-radius:10px;display:none;">
 </label>
 
-<input id="mealInput" placeholder="Enter a meal idea">
+<input id="mealInput" placeholder="What do you want to cook?">
 
 <button onclick="runAI()">Generate Meals</button>
 
@@ -129,14 +129,105 @@ Scan Pantry
 
 </div>
 
-l<script>
+<script>
+
+let pantryItems = [];
+let generatedList = [];
+
+/* IMAGE PREVIEW + AI VISION SIMULATION */
+async function previewImage(e){
+const file = e.target.files[0];
+
+if(file){
+preview.src = URL.createObjectURL(file);
+preview.style.display="block";
+uploadText.innerText = "Analyzing pantry...";
+
+/* REALISTIC AI SIMULATION (replace with API later) */
+pantryItems = await analyzePantryImage(file);
+
+uploadText.innerText = "Pantry Ready: " + pantryItems.join(", ");
+}
+}
+
+/* 🔥 FAKE AI VISION (UPGRADE READY FOR REAL API) */
+async function analyzePantryImage(file){
+
+/*
+🔥 REAL API OPTIONS YOU CAN PLUG IN LATER:
+- Google Vision API
+- Clarifai Food Model
+- Spoonacular Ingredient Detection
+*/
+
+return new Promise(resolve=>{
+setTimeout(()=>{
+const possible = [
+"chicken","rice","eggs","milk","cheese",
+"tomato","onion","garlic","butter","bread",
+"pasta","pepper","beans","carrot"
+];
+
+resolve(possible.sort(()=>0.5-Math.random()).slice(0,6));
+},1000);
+});
+}
+
+/* MAIN AI */
+async function runAI(){
+
+const meal = mealInput.value.toLowerCase();
+if(!meal){
+alert("Enter a meal idea");
+return;
+}
+
+results.innerHTML = "<div class='loading'>Cooking up smart recipes...</div>";
+
+try{
+
+/* MULTI API COMBO */
+const [mealDB, spoon] = await Promise.all([
+fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${meal}`).then(r=>r.json()),
+fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${meal}&number=3&apiKey=YOUR_API_KEY`).then(r=>r.json()).catch(()=>null)
+]);
+
+let meals = [];
+
+/* MealDB */
+if(mealDB.meals){
+meals = mealDB.meals;
+}
+
+/* Spoonacular fallback */
+if(spoon && spoon.results){
+spoon.results.forEach(r=>{
+meals.push({
+strMeal:r.title,
+strMealThumb:r.image,
+strInstructions:"Follow standard cooking steps."
+});
+});
+}
+
+if(!meals.length){
+fallbackAI(meal);
+return;
+}
+
+generatedList = meals.slice(0,5);
+renderRecipes(generatedList, meal);
+
+}catch{
+fallbackAI(meal);
+}
+
+}
 
 /* SMART RENDER */
-function renderRecipes(list){
+function renderRecipes(list, meal){
 
 results.innerHTML = "";
-
-const userMeal = mealInput.value.toLowerCase();
 
 list.forEach((m,i)=>{
 
@@ -148,23 +239,17 @@ ingredients.push(ing.toLowerCase());
 }
 }
 
-/* SAFETY */
-if(ingredients.length === 0){
-ingredients = ["salt","water"];
+if(ingredients.length===0){
+ingredients = pantryItems;
 }
-
-/* INTELLIGENT MATCH (based on requested meal) */
-let relevantIngredients = ingredients.filter(i =>
-userMeal.includes(i) || i.includes(userMeal)
-);
 
 /* WHAT USER HAS */
 let have = ingredients.filter(i =>
 pantryItems.some(p => i.includes(p))
 );
 
-/* WHAT THEY CAN USE */
-let usable = pantryItems.filter(p =>
+/* WHAT THEY SHOULD USE */
+let use = pantryItems.filter(p =>
 ingredients.some(i => i.includes(p))
 );
 
@@ -173,47 +258,45 @@ let missing = ingredients.filter(i =>
 !pantryItems.some(p => i.includes(p))
 );
 
-/* MATCH SCORE */
+/* MATCH */
 let percent = Math.floor((have.length / ingredients.length)*100);
 if(isNaN(percent)) percent = 0;
 
 /* SMART SUBSTITUTIONS */
-let subs = missing.map(i => {
-
-if(i.includes("milk")) return i + " → use water, cream, or butter";
-if(i.includes("cheese")) return i + " → use butter or sauce";
-if(i.includes("chicken")) return i + " → use eggs, beans, or tofu";
-if(i.includes("rice")) return i + " → use pasta or bread";
-if(i.includes("butter")) return i + " → use oil";
-if(i.includes("egg")) return i + " → use milk or banana";
-
-return i + " → use similar pantry ingredient";
-
+let subs = missing.map(i=>{
+if(i.includes("milk")) return i+" → use butter or water";
+if(i.includes("egg")) return i+" → use banana or milk";
+if(i.includes("cheese")) return i+" → use sauce or butter";
+if(i.includes("chicken")) return i+" → use beans or eggs";
+if(i.includes("rice")) return i+" → use pasta or bread";
+return i+" → similar pantry item";
 });
 
-/* UI */
 const card = document.createElement("div");
 card.className="recipe";
 
 card.innerHTML = `
-<div class="title">${m.strMeal || "Generated Meal"}</div>
+<div class="title">${m.strMeal || "Smart Meal"}</div>
+
+<img src="${m.strMealThumb || 'https://source.unsplash.com/featured/?food'}" 
+style="width:100%;border-radius:10px;margin-top:10px;">
 
 <div class="match">Match: ${percent}%</div>
 
 <div class="section">
-You have:<br>- ${have.length ? have.join("<br>- ") : "Minimal match"}
+You have:<br>- ${have.length ? have.join("<br>- ") : "Low match"}
 </div>
 
 <div class="section">
-Use these from pantry:<br>- ${usable.length ? usable.join("<br>- ") : "Try basic ingredients"}
+Use these:<br>- ${use.length ? use.join("<br>- ") : "Basic ingredients"}
 </div>
 
 <div class="section">
-Missing:<br>- ${missing.length ? missing.join("<br>- ") : "Nothing missing"}
+Missing:<br>- ${missing.length ? missing.join("<br>- ") : "Nothing"}
 </div>
 
 <div class="section">
-Substitutions:<br>- ${subs.length ? subs.join("<br>- ") : "Not needed"}
+Substitutions:<br>- ${subs.length ? subs.join("<br>- ") : "None"}
 </div>
 
 <button onclick="postToFeed(${i})">Post to Feed</button>
@@ -221,21 +304,56 @@ Substitutions:<br>- ${subs.length ? subs.join("<br>- ") : "Not needed"}
 
 results.appendChild(card);
 
-/* STORE CLEAN VERSION */
+/* STORE */
 generatedList[i] = {
-title: m.strMeal || "Generated Meal",
-desc: "AI personalized recipe",
-images: [m.strMealThumb || `https://source.unsplash.com/featured/?food`],
-ingredients: ingredients,
-steps: m.strInstructions ? m.strInstructions.split(".") : ["Prepare","Cook","Serve"],
-likes: Math.floor(Math.random()*200),
-views: Math.floor(Math.random()*2000),
-comments: [],
-created: Date.now()
+title:m.strMeal || "Smart Meal",
+desc:"AI generated",
+images:[m.strMealThumb],
+ingredients,
+steps:["Prep","Cook","Serve"],
+likes:Math.floor(Math.random()*200),
+views:Math.floor(Math.random()*2000),
+comments:[],
+created:Date.now()
 };
 
 });
 
 }
 
+/* FALLBACK */
+function fallbackAI(meal){
+
+generatedList=[{
+title:meal,
+desc:"Custom AI meal",
+images:[`https://source.unsplash.com/featured/?${meal},food`],
+ingredients:pantryItems,
+steps:["Prep","Cook","Serve"],
+likes:50,
+views:500,
+comments:[],
+created:Date.now()
+}];
+
+renderRecipes(generatedList, meal);
+
+}
+
+/* POST + REDIRECT */
+function postToFeed(i){
+
+let recipes = JSON.parse(localStorage.getItem("recipes")||"[]");
+
+recipes.unshift(generatedList[i]);
+
+localStorage.setItem("recipes", JSON.stringify(recipes));
+
+window.location.href="feed.html";
+
+}
+
 </script>
+
+</body>
+</html>
