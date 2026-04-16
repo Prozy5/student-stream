@@ -77,17 +77,24 @@ body{
   100%{opacity:.3}
 }
 
-/* BANNER */
+/* 🚨 BANNER (UPGRADED) */
 .banner{
   max-width:1000px;
   margin:20px auto;
-  padding:12px;
-  border-radius:10px;
-  background:#111827;
-  border:1px solid var(--border);
+  padding:14px;
+  border-radius:12px;
+  background:linear-gradient(90deg,#020617,#111827,#020617);
+  border:1px solid var(--accent);
   font-size:12px;
   text-align:center;
   color:#00ff9d;
+  box-shadow:0 0 12px rgba(0,255,157,0.2);
+  animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{box-shadow:0 0 6px rgba(0,255,157,0.2);}
+  to{box-shadow:0 0 18px rgba(0,255,157,0.5);}
 }
 
 /* SECTION */
@@ -197,10 +204,10 @@ body{
   <div class="status-box"><span class="dot"></span> Data Protection: Online</div>
 </div>
 
-<!-- 🚨 BANNER -->
+<!-- 🚨 EXECUTIVE BANNER -->
 <div class="banner">
-🔒 Advanced monitoring and protection protocols have been activated across Cook’ed systems under StudentStreamHQ oversight.  
-This interface demonstrates how user data and health-related information would be securely handled.
+🔒 By executive directive from Deondre (StudentStreamHQ), enhanced monitoring and security protocols have been activated across all Cook’ed systems.  
+This interface demonstrates how user data, pantry scans, and health-related information would be securely processed, protected, and monitored.
 </div>
 
 <div class="section">
@@ -222,8 +229,8 @@ This interface demonstrates how user data and health-related information would b
       <span class="tag">DATA SECURITY</span>
       <h3>End-to-End Encryption</h3>
       <p>
-        All data would be encrypted during transfer and storage. This ensures unauthorized access 
-        cannot expose sensitive information.
+        All data would be encrypted during transfer and storage, ensuring that sensitive information 
+        remains protected from unauthorized access.
       </p>
       <div class="status">✔ Encryption Layer Active (Demo)</div>
     </div>
@@ -233,7 +240,7 @@ This interface demonstrates how user data and health-related information would b
       <h3>Secure Authentication</h3>
       <p>
         Only verified users and systems would have access to data through token-based authentication 
-        and permission controls.
+        and permission-based access controls.
       </p>
       <div class="status">✔ Access Restricted</div>
     </div>
@@ -242,8 +249,7 @@ This interface demonstrates how user data and health-related information would b
       <span class="tag">AI PROCESSING</span>
       <h3>Private AI Engine</h3>
       <p>
-        Pantry images are analyzed without long-term storage. AI focuses only on ingredient detection 
-        and meal generation.
+        Pantry images are analyzed in a controlled environment and are not permanently stored unless necessary.
       </p>
       <div class="status">✔ AI Sandbox Active</div>
     </div>
@@ -255,8 +261,8 @@ This interface demonstrates how user data and health-related information would b
     <span class="tag">HEALTH PROTECTION</span>
     <h3>Health & Dietary Privacy</h3>
     <p>
-      Allergies, diets, and health preferences are treated as sensitive data. Cook’ed would never sell 
-      or expose this information. Only essential data is used for recommendations.
+      Allergies, diets, and health preferences are treated as sensitive data. Cook’ed is designed to ensure 
+      this information is never sold or exposed and is only used to improve personalized recommendations.
     </p>
     <div class="status">✔ Sensitive Data Shielded</div>
   </div>
@@ -276,6 +282,7 @@ StudentStreamHQ • Cook’ed Security Demo • Not a live enforcement system
 
 <script>
 const logs = [
+  "Executive security directive received...",
   "Initializing secure environment...",
   "AI engine booting...",
   "Monitoring systems online...",
