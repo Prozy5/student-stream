@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed • Security System</title>
+<title>Cook’ed • Security Command Center</title>
 
 <style>
 :root{
@@ -26,13 +26,13 @@ body{
 
 /* HEADER */
 .header{
-  max-width:900px;
+  max-width:1000px;
   margin:auto;
-  margin-bottom:30px;
+  margin-bottom:20px;
 }
 
 .title{
-  font-size:26px;
+  font-size:28px;
   font-weight:900;
   color:var(--accent);
 }
@@ -42,9 +42,44 @@ body{
   color:var(--muted);
 }
 
+/* LIVE STATUS BAR */
+.status-bar{
+  max-width:1000px;
+  margin:10px auto;
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.status-box{
+  flex:1;
+  min-width:150px;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:12px;
+  border-radius:10px;
+  font-size:12px;
+}
+
+.dot{
+  height:8px;
+  width:8px;
+  background:#22c55e;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.3}
+  50%{opacity:1}
+  100%{opacity:.3}
+}
+
 /* BANNER */
 .banner{
-  max-width:900px;
+  max-width:1000px;
   margin:20px auto;
   padding:12px;
   border-radius:10px;
@@ -57,7 +92,7 @@ body{
 
 /* SECTION */
 .section{
-  max-width:900px;
+  max-width:1000px;
   margin:20px auto;
   display:flex;
   flex-direction:column;
@@ -75,6 +110,7 @@ body{
 
 .card:hover{
   border-color:var(--accent);
+  transform:translateY(-2px);
 }
 
 /* TEXT */
@@ -113,6 +149,29 @@ body{
   gap:15px;
 }
 
+/* LOG SYSTEM */
+.logs{
+  background:#000;
+  border-radius:10px;
+  padding:12px;
+  height:150px;
+  overflow:hidden;
+  font-family:monospace;
+  font-size:11px;
+  color:#00ff9d;
+  border:1px solid var(--border);
+}
+
+.log-line{
+  opacity:.8;
+  animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1}
+}
+
 /* FOOTER */
 .footer{
   text-align:center;
@@ -126,12 +185,22 @@ body{
 <body>
 
 <div class="header">
-  <div class="title">Cook’ed Security System</div>
-  <div class="sub">Cybersecurity Demo • StudentStreamHQ</div>
+  <div class="title">Cook’ed Security Command Center</div>
+  <div class="sub">Cybersecurity Demonstration • StudentStreamHQ</div>
 </div>
 
+<!-- 🔥 LIVE STATUS -->
+<div class="status-bar">
+  <div class="status-box"><span class="dot"></span> System Status: Secure</div>
+  <div class="status-box"><span class="dot"></span> AI Engine: Active</div>
+  <div class="status-box"><span class="dot"></span> Monitoring: Enabled</div>
+  <div class="status-box"><span class="dot"></span> Data Protection: Online</div>
+</div>
+
+<!-- 🚨 BANNER -->
 <div class="banner">
-⚠️ This is a demonstration system created by StudentStreamHQ to showcase how Cook’ed protects user data, health information, and platform integrity.
+🔒 Advanced monitoring and protection protocols have been activated across Cook’ed systems under StudentStreamHQ oversight.  
+This interface demonstrates how user data and health-related information would be securely handled.
 </div>
 
 <div class="section">
@@ -139,90 +208,102 @@ body{
   <!-- OVERVIEW -->
   <div class="card">
     <span class="tag">SYSTEM OVERVIEW</span>
-    <h3>How Cook’ed Handles Security</h3>
+    <h3>Security Architecture</h3>
     <p>
-      Cook’ed is designed with a privacy-first architecture. This demo explains how user data, 
-      uploaded pantry images, and personal health-related inputs would be securely processed, stored, and protected.
+      Cook’ed is built with a privacy-first design. Pantry scans, AI requests, and user preferences 
+      are processed securely using controlled systems designed to minimize risk and maximize protection.
     </p>
   </div>
 
-  <!-- DATA PROTECTION -->
+  <!-- GRID -->
   <div class="grid">
 
     <div class="card">
       <span class="tag">DATA SECURITY</span>
-      <h3>Encrypted Storage</h3>
+      <h3>End-to-End Encryption</h3>
       <p>
-        All user data would be encrypted both in transit and at rest using modern encryption standards. 
-        This ensures that even if data is intercepted, it remains unreadable.
+        All data would be encrypted during transfer and storage. This ensures unauthorized access 
+        cannot expose sensitive information.
       </p>
-      <div class="status">✔ Planned Protection Layer</div>
+      <div class="status">✔ Encryption Layer Active (Demo)</div>
     </div>
 
     <div class="card">
       <span class="tag">ACCESS CONTROL</span>
-      <h3>Strict Authentication</h3>
+      <h3>Secure Authentication</h3>
       <p>
-        Users would authenticate through secure login systems. Access to sensitive data is restricted 
-        using role-based permissions and secure tokens.
+        Only verified users and systems would have access to data through token-based authentication 
+        and permission controls.
       </p>
-      <div class="status">✔ Controlled Access System</div>
+      <div class="status">✔ Access Restricted</div>
     </div>
 
     <div class="card">
       <span class="tag">AI PROCESSING</span>
-      <h3>Private AI Analysis</h3>
+      <h3>Private AI Engine</h3>
       <p>
-        Pantry images and inputs are processed without permanently storing raw data unless necessary. 
-        AI operates in a controlled environment to prevent data leaks.
+        Pantry images are analyzed without long-term storage. AI focuses only on ingredient detection 
+        and meal generation.
       </p>
-      <div class="status">✔ Secure AI Pipeline</div>
+      <div class="status">✔ AI Sandbox Active</div>
     </div>
 
   </div>
 
-  <!-- HEALTH DATA -->
+  <!-- HEALTH -->
   <div class="card">
     <span class="tag">HEALTH PROTECTION</span>
-    <h3>Protecting Health & Dietary Information</h3>
+    <h3>Health & Dietary Privacy</h3>
     <p>
-      When users provide dietary preferences, allergies, or health-related information, Cook’ed treats 
-      this as sensitive data. This information would never be shared, sold, or exposed.
-      <br><br>
-      Data is minimized, meaning only the necessary details are used to generate meal suggestions. 
-      Sensitive inputs are isolated and protected under stricter security rules.
+      Allergies, diets, and health preferences are treated as sensitive data. Cook’ed would never sell 
+      or expose this information. Only essential data is used for recommendations.
     </p>
-    <div class="status">✔ Sensitive Data Protection Enabled</div>
+    <div class="status">✔ Sensitive Data Shielded</div>
   </div>
 
-  <!-- MONITORING -->
+  <!-- LIVE LOGS -->
   <div class="card">
-    <span class="tag">MONITORING</span>
-    <h3>SSHQ Oversight System</h3>
-    <p>
-      StudentStreamHQ (SSHQ) actively monitors system behavior, detects unusual activity, 
-      and ensures all systems operate within secure parameters. This includes logging, 
-      anomaly detection, and system audits.
-    </p>
-    <div class="status">✔ Active Monitoring</div>
-  </div>
-
-  <!-- FUTURE -->
-  <div class="card">
-    <span class="tag">FUTURE SECURITY</span>
-    <h3>Scalable Protection Plan</h3>
-    <p>
-      As Cook’ed grows, additional protections such as multi-factor authentication, 
-      advanced AI moderation, and real-time threat detection will be implemented.
-    </p>
-    <div class="status">✔ Future Ready</div>
+    <span class="tag">LIVE SYSTEM LOGS</span>
+    <h3>Real-Time Monitoring (Demo)</h3>
+    <div class="logs" id="logs"></div>
   </div>
 
 </div>
 
 <div class="footer">
-StudentStreamHQ • Cook’ed Security Demo • Not a live security system
+StudentStreamHQ • Cook’ed Security Demo • Not a live enforcement system
 </div>
+
+<script>
+const logs = [
+  "Initializing secure environment...",
+  "AI engine booting...",
+  "Monitoring systems online...",
+  "Encrypting user session...",
+  "Scanning pantry image...",
+  "Analyzing ingredients...",
+  "No threats detected...",
+  "System operating normally...",
+  "Health data protected...",
+  "Session secured..."
+];
+
+let i = 0;
+const logBox = document.getElementById("logs");
+
+setInterval(()=>{
+  const line = document.createElement("div");
+  line.className = "log-line";
+  line.textContent = "> " + logs[i % logs.length];
+  logBox.appendChild(line);
+
+  if(logBox.children.length > 8){
+    logBox.removeChild(logBox.firstChild);
+  }
+
+  i++;
+}, 1500);
+</script>
 
 </body>
 </html>
