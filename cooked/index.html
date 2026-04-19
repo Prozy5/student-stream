@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,72 +7,140 @@
 
 <style>
 :root{
-  --bg:#030806;
-  --card:#0c1c14;
-  --accent:#00ff9d;
-  --text:#eafff5;
+  --bg:#020617;
+  --card:#0f172a;
+  --accent:#22c55e;
+  --accent2:#4ade80;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
 }
 
-body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
-.app{max-width:420px;margin:auto;height:100vh;display:flex;flex-direction:column}
+*{margin:0;padding:0;box-sizing:border-box}
 
-.screen{display:none;flex:1;overflow:auto;padding:15px}
-.active{display:block}
-
-.header{text-align:center;font-weight:900;margin-bottom:10px}
-.header span{color:var(--accent)}
-
-.card{
-  background:var(--card);
-  border-radius:14px;
-  padding:10px;
-  margin-bottom:12px;
+body{
+  font-family:system-ui;
+  background:linear-gradient(180deg,#020617,#000);
+  color:var(--text);
 }
 
-.card img{width:100%;border-radius:10px;cursor:pointer}
-
-.nav{
-  height:60px;
+.app{
+  width:100vw;
+  height:100vh;
   display:flex;
-  justify-content:space-around;
-  align-items:center;
-  background:#000;
+  flex-direction:column;
 }
+
+.screen{
+  display:none;
+  flex:1;
+  overflow:auto;
+  padding:16px;
+}
+
+.active{display:block}
 
 /* LOGIN */
 .login{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  justify-content:center;
   height:100vh;
-  padding:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:radial-gradient(circle at top,#064e3b,#020617);
 }
 
-input,button{
-  padding:10px;
+.login-card{
+  background:rgba(15,23,42,0.9);
+  padding:30px;
+  border-radius:20px;
+  width:90%;
+  max-width:350px;
+  text-align:center;
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 40px rgba(34,197,94,0.2);
+}
+
+.login-card h1{
+  margin-bottom:10px;
+}
+
+.login-card span{color:var(--accent)}
+
+.input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
   border:none;
-  border-radius:8px;
+  margin-top:15px;
+  background:#020617;
+  color:white;
 }
 
-button{background:var(--accent);cursor:pointer}
+.btn{
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  font-weight:bold;
+  cursor:pointer;
+}
 
-/* MODALS */
+/* HEADER */
+.header{
+  text-align:center;
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+.header span{color:var(--accent)}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:10px;
+  margin-bottom:14px;
+  box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+.card img{
+  width:100%;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+/* NAV */
+.nav{
+  height:70px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  background:#020617;
+  border-top:1px solid #111;
+}
+
+.nav div{
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* MODAL */
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.8);
+  background:rgba(0,0,0,0.8);
   display:none;
   align-items:center;
   justify-content:center;
 }
 
 .modal-content{
-  background:#111;
+  background:#020617;
   padding:20px;
-  border-radius:12px;
-  max-width:90%;
-  max-height:80%;
+  border-radius:16px;
+  width:90%;
+  max-height:85%;
   overflow:auto;
 }
 
@@ -81,11 +149,15 @@ button{background:var(--accent);cursor:pointer}
 
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="loginScreen" class="login">
-  <h2>Cook’ed Login</h2>
-  <input id="username" placeholder="Enter username">
-  <button onclick="login()">Login</button>
+  <div class="login-card">
+    <h1>Cook<span>’ed</span></h1>
+    <p style="color:var(--muted)">AI Cooking Experience</p>
+
+    <input class="input" id="username" placeholder="Enter username">
+    <button class="btn" onclick="login()">Enter Kitchen</button>
+  </div>
 </div>
 
 <div class="app" id="app" style="display:none">
@@ -109,36 +181,35 @@ button{background:var(--accent);cursor:pointer}
 <div class="screen" id="ai">
   <div class="header">Cook<span>’ed AI</span></div>
 
-  <button onclick="scanFood()">📸 Scan Pantry</button>
-  <div id="aiResult"></div>
+  <button class="btn" onclick="scanFood()">Scan Pantry</button>
+  <div id="aiResult" style="margin-top:15px;color:var(--muted)"></div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="header">Profile</div>
-  <h3 id="userDisplay"></h3>
+  <h2 id="userDisplay"></h2>
 
-  <h4>Saved Recipes</h4>
+  <h3 style="margin-top:10px">Saved Recipes</h3>
   <div id="savedList"></div>
 </div>
 
 <!-- NAV -->
 <div class="nav">
   <div onclick="switchScreen('home')">🏠</div>
-  <div onclick="switchScreen('ai')">📸</div>
+  <div onclick="switchScreen('ai')">🤖</div>
   <div onclick="switchScreen('profile')">👤</div>
 </div>
 
 </div>
 
-<!-- RECIPE MODAL -->
+<!-- MODAL -->
 <div class="modal" id="recipeModal">
   <div class="modal-content" id="recipeContent"></div>
 </div>
 
 <script>
 
-/* LOGIN SYSTEM */
 function login(){
   const user = document.getElementById("username").value;
   if(!user) return;
@@ -157,22 +228,19 @@ function startApp(){
 
 if(localStorage.getItem("user")) startApp();
 
-/* NAV */
 function switchScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* AI SYSTEM */
 function scanFood(){
   const foods = ["chicken","rice","eggs","cheese"];
   const pick = foods[Math.floor(Math.random()*foods.length)];
 
   document.getElementById("aiResult").innerHTML =
-  "🧠 Detected: "+pick+"<br>Suggested: "+pick+" bowl, "+pick+" pasta";
+  "Detected: "+pick+"<br>Suggested meals: "+pick+" bowl, "+pick+" pasta";
 }
 
-/* RECIPE API */
 function openRecipe(query){
   document.getElementById("recipeModal").style.display="flex";
   const box = document.getElementById("recipeContent");
@@ -184,19 +252,17 @@ function openRecipe(query){
     const meal = data.meals[0];
     box.innerHTML=`
       <h2>${meal.strMeal}</h2>
-      <img src="${meal.strMealThumb}" style="width:100%">
+      <img src="${meal.strMealThumb}" style="width:100%;border-radius:10px">
       <p>${meal.strInstructions.substring(0,200)}...</p>
-      <button onclick="saveRecipe('${meal.strMeal}')">⭐ Save</button>
+      <button class="btn" onclick="saveRecipe('${meal.strMeal}')">Save Recipe</button>
     `;
   });
 }
 
-/* SAVE SYSTEM */
 function saveRecipe(name){
   let saved = JSON.parse(localStorage.getItem("saved")) || [];
   saved.push(name);
   localStorage.setItem("saved", JSON.stringify(saved));
-  alert("Saved!");
   loadSaved();
 }
 
@@ -206,7 +272,6 @@ function loadSaved(){
     saved.map(r=>"<div class='card'>"+r+"</div>").join("");
 }
 
-/* CLOSE MODAL */
 document.getElementById("recipeModal").onclick=()=>{
   document.getElementById("recipeModal").style.display="none";
 }
