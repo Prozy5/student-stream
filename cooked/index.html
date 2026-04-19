@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cook’ed App</title>
+<title>Cook’ed</title>
 
 <style>
 :root{
@@ -14,32 +14,15 @@
   --muted:#8fa89c;
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
+body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
+.app{max-width:420px;margin:auto;height:100vh;display:flex;flex-direction:column}
 
-body{
-  font-family:system-ui;
-  background:var(--bg);
-  color:var(--text);
-}
-
-/* APP */
-.app{
-  max-width:420px;
-  margin:auto;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-
-/* SCREENS */
 .screen{display:none;flex:1;overflow:auto;padding:15px}
 .active{display:block}
 
-/* HEADER */
-.header{text-align:center;font-weight:900;font-size:20px;margin-bottom:10px}
+.header{text-align:center;font-weight:900;margin-bottom:10px}
 .header span{color:var(--accent)}
 
-/* FEED CARD */
 .card{
   background:var(--card);
   border-radius:14px;
@@ -47,92 +30,60 @@ body{
   margin-bottom:12px;
 }
 
-.card img{
-  width:100%;
-  border-radius:10px;
-}
+.card img{width:100%;border-radius:10px;cursor:pointer}
 
 .stats{
   display:flex;
   justify-content:space-between;
   font-size:12px;
-  margin-top:6px;
   color:var(--muted);
 }
 
-.like{
-  cursor:pointer;
-}
-
-/* AI */
-.search{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  margin-bottom:15px;
-}
-
-.bubbles{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-}
-
-.bubble{
-  padding:14px;
-  border-radius:50%;
-  background:#111;
-  border:1px solid var(--accent);
-  cursor:pointer;
-}
-
-.result{margin-top:15px;font-size:13px;color:var(--muted)}
-
-/* RECIPES */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.recipe{
-  background:#111;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.recipe img{
-  width:100%;
-  height:80px;
-  object-fit:cover;
-}
-
-/* PROFILE */
-.profile{text-align:center}
-.avatar{
-  width:70px;height:70px;border-radius:50%;
-  background:#ccc;margin:auto;
-}
-
-.box{
-  margin-top:10px;
-  padding:10px;
-  background:#111;
-  border-radius:10px;
-}
-
-/* NAV */
 .nav{
   height:60px;
   display:flex;
   justify-content:space-around;
   align-items:center;
-  border-top:1px solid #222;
   background:#000;
 }
-.nav div{cursor:pointer}
+
+/* MODALS */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content{
+  background:#111;
+  padding:20px;
+  border-radius:12px;
+  max-width:90%;
+  max-height:80%;
+  overflow:auto;
+}
+
+/* CAMERA */
+.camera{
+  background:black;
+  height:300px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+}
+
+.scan{
+  border:2px solid var(--accent);
+  padding:20px;
+}
+
+/* COMMENTS */
+.comment{font-size:12px;margin:5px 0}
+
 </style>
 </head>
 
@@ -145,85 +96,81 @@ body{
   <div class="header">Cook<span>’ed</span></div>
 
   <div class="card">
-    <img src="https://images.unsplash.com/photo-1604908176997-4316c64c7f8c">
+    <img src="https://images.unsplash.com/photo-1604908176997-4316c64c7f8c" onclick="openRecipe('chicken')">
     <b>Marry Me Chicken</b>
-
     <div class="stats">
-      <span>❤️ <span id="likes1">128</span></span>
-      <span>💬 32</span>
-      <span class="like" onclick="like('likes1')">👍 Like</span>
+      ❤️ 128 | 💬 <span onclick="openComments()">32</span> | 👍
     </div>
   </div>
 
   <div class="card">
-    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2">
+    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2" onclick="openRecipe('beef')">
     <b>Garlic Butter Steak</b>
-
     <div class="stats">
-      <span>❤️ <span id="likes2">204</span></span>
-      <span>💬 51</span>
-      <span class="like" onclick="like('likes2')">👍 Like</span>
+      ❤️ 204 | 💬 <span onclick="openComments()">51</span> | 👍
     </div>
   </div>
-
 </div>
 
 <!-- AI -->
 <div class="screen" id="ai">
-  <div class="header">Cook<span>’ed</span></div>
+  <div class="header">Cook<span>’ed AI</span></div>
 
-  <input class="search" placeholder="What do you want to cook today?">
-
-  <div class="bubbles">
-    <div class="bubble" onclick="selectAI('protein')">Protein</div>
-    <div class="bubble" onclick="selectAI('seafood')">Seafood</div>
-    <div class="bubble" onclick="selectAI('quick')">30 min</div>
-  </div>
-
-  <div class="result" id="aiResult"></div>
+  <button onclick="openCamera()">📸 Scan Pantry</button>
+  <div id="aiResult"></div>
 </div>
 
-<!-- RECIPES -->
-<div class="screen" id="recipes">
-  <div class="header">Recipes</div>
+<!-- NOTIFICATIONS -->
+<div class="screen" id="notif">
+  <div class="header">Notifications</div>
 
-  <div class="grid">
-    <div class="recipe">
-      <img src="https://images.unsplash.com/photo-1543353071-873f17a7a088">
-    </div>
-    <div class="recipe">
-      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836">
-    </div>
-    <div class="recipe">
-      <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352">
-    </div>
-    <div class="recipe">
-      <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1">
-    </div>
-  </div>
+  <div class="card">🔥 Your recipe hit 1K likes</div>
+  <div class="card">👤 New follower: @foodie23</div>
+  <div class="card">🧠 AI suggested 5 new meals</div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="header">Cook<span>’ed</span></div>
-
-  <div class="profile">
-    <div class="avatar"></div>
-    <h3>Chef Deondre</h3>
-
-    <div class="box">Level 12 Cook • 124 Recipes Created</div>
-    <div class="box">🔥 3.2K Likes • 890 Followers</div>
-  </div>
+  <h3>Chef Deondre</h3>
+  <p>🔥 3.2K Likes • 890 Followers</p>
 </div>
 
 <!-- NAV -->
 <div class="nav">
   <div onclick="switchScreen('home')">🏠</div>
-  <div onclick="switchScreen('ai')">🔍</div>
-  <div onclick="switchScreen('recipes')">🍽️</div>
+  <div onclick="switchScreen('ai')">📸</div>
+  <div onclick="switchScreen('notif')">🔔</div>
   <div onclick="switchScreen('profile')">👤</div>
 </div>
 
+</div>
+
+<!-- CAMERA MODAL -->
+<div class="modal" id="cameraModal">
+  <div class="modal-content">
+    <div class="camera">
+      <div class="scan">Scanning...</div>
+    </div>
+    <button onclick="scanFood()">Scan</button>
+  </div>
+</div>
+
+<!-- COMMENTS MODAL -->
+<div class="modal" id="commentsModal">
+  <div class="modal-content">
+    <h3>Comments</h3>
+    <div class="comment">🔥 This was amazing!</div>
+    <div class="comment">💯 10/10 recipe</div>
+    <input placeholder="Add comment...">
+  </div>
+</div>
+
+<!-- RECIPE MODAL -->
+<div class="modal" id="recipeModal">
+  <div class="modal-content" id="recipeContent">
+    Loading...
+  </div>
 </div>
 
 <script>
@@ -232,27 +179,43 @@ function switchScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-function like(id){
-  let el = document.getElementById(id);
-  el.innerText = parseInt(el.innerText) + 1;
+/* CAMERA */
+function openCamera(){
+  document.getElementById("cameraModal").style.display="flex";
 }
 
-function selectAI(type){
-  const box = document.getElementById("aiResult");
-  box.innerHTML = "🧠 Generating results...";
-
-  setTimeout(()=>{
-    if(type==="protein"){
-      box.innerHTML = "🍗 High Protein Meals:<br>- Grilled Chicken Bowl<br>- Steak & Rice";
-    }
-    if(type==="seafood"){
-      box.innerHTML = "🦐 Seafood Ideas:<br>- Garlic Shrimp<br>- Salmon Plate";
-    }
-    if(type==="quick"){
-      box.innerHTML = "⚡ Quick Meals:<br>- Egg Wrap<br>- Instant Ramen Upgrade";
-    }
-  },1200);
+function scanFood(){
+  document.getElementById("cameraModal").style.display="none";
+  document.getElementById("aiResult").innerHTML="🧠 Found: chicken, rice → Suggested meals loaded!";
 }
+
+/* COMMENTS */
+function openComments(){
+  document.getElementById("commentsModal").style.display="flex";
+}
+
+/* RECIPE API */
+function openRecipe(query){
+  document.getElementById("recipeModal").style.display="flex";
+  const box = document.getElementById("recipeContent");
+  box.innerHTML="Loading recipe...";
+
+  fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
+  .then(res=>res.json())
+  .then(data=>{
+    const meal = data.meals[0];
+    box.innerHTML=`
+      <h2>${meal.strMeal}</h2>
+      <img src="${meal.strMealThumb}" style="width:100%">
+      <p>${meal.strInstructions.substring(0,300)}...</p>
+    `;
+  });
+}
+
+/* CLOSE MODALS */
+document.querySelectorAll(".modal").forEach(m=>{
+  m.onclick=()=>m.style.display="none";
+});
 </script>
 
 </body>
