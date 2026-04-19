@@ -10,7 +10,6 @@
   --bg:#030806;
   --card:#0c1c14;
   --accent:#00ff9d;
-  --accent2:#4CAF50;
   --text:#eafff5;
   --muted:#8fa89c;
 }
@@ -23,52 +22,49 @@ body{
   color:var(--text);
 }
 
-/* APP CONTAINER */
+/* APP */
 .app{
   max-width:420px;
   margin:auto;
   height:100vh;
   display:flex;
   flex-direction:column;
-  position:relative;
-  overflow:hidden;
 }
 
 /* SCREENS */
-.screen{
-  flex:1;
-  display:none;
-  overflow-y:auto;
-  padding:15px;
-}
-
-.active{
-  display:block;
-}
+.screen{display:none;flex:1;overflow:auto;padding:15px}
+.active{display:block}
 
 /* HEADER */
-.header{
-  text-align:center;
-  font-weight:900;
-  font-size:20px;
-  margin-bottom:10px;
-}
-
+.header{text-align:center;font-weight:900;font-size:20px;margin-bottom:10px}
 .header span{color:var(--accent)}
 
-/* HOME */
-.food{
-  width:100%;
+/* FEED CARD */
+.card{
+  background:var(--card);
   border-radius:14px;
-  margin-bottom:10px;
+  padding:10px;
+  margin-bottom:12px;
 }
 
-.ingredients{
-  font-size:13px;
+.card img{
+  width:100%;
+  border-radius:10px;
+}
+
+.stats{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-top:6px;
   color:var(--muted);
 }
 
-/* AI SCREEN */
+.like{
+  cursor:pointer;
+}
+
+/* AI */
 .search{
   width:100%;
   padding:10px;
@@ -85,13 +81,14 @@ body{
 }
 
 .bubble{
-  padding:15px;
+  padding:14px;
   border-radius:50%;
   background:#111;
   border:1px solid var(--accent);
   cursor:pointer;
-  text-align:center;
 }
+
+.result{margin-top:15px;font-size:13px;color:var(--muted)}
 
 /* RECIPES */
 .grid{
@@ -103,33 +100,30 @@ body{
 .recipe{
   background:#111;
   border-radius:10px;
-  height:120px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  overflow:hidden;
+}
+
+.recipe img{
+  width:100%;
+  height:80px;
+  object-fit:cover;
 }
 
 /* PROFILE */
-.profile{
-  text-align:center;
-}
-
+.profile{text-align:center}
 .avatar{
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  background:#ccc;
-  margin:auto;
+  width:70px;height:70px;border-radius:50%;
+  background:#ccc;margin:auto;
 }
 
 .box{
-  margin-top:15px;
-  padding:15px;
+  margin-top:10px;
+  padding:10px;
   background:#111;
   border-radius:10px;
 }
 
-/* NAV BAR */
+/* NAV */
 .nav{
   height:60px;
   display:flex;
@@ -138,17 +132,7 @@ body{
   border-top:1px solid #222;
   background:#000;
 }
-
-.nav div{
-  cursor:pointer;
-}
-
-/* AI RESULT */
-.result{
-  margin-top:15px;
-  font-size:13px;
-  color:var(--muted);
-}
+.nav div{cursor:pointer}
 </style>
 </head>
 
@@ -156,65 +140,89 @@ body{
 
 <div class="app">
 
-  <!-- HOME -->
-  <div class="screen active" id="home">
-    <div class="header">Cook<span>’ed</span></div>
+<!-- HOME -->
+<div class="screen active" id="home">
+  <div class="header">Cook<span>’ed</span></div>
 
-    <img class="food" src="https://images.unsplash.com/photo-1604908176997-4316c64c7f8c">
-    <b>Meal: Marry Me Chicken</b>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1604908176997-4316c64c7f8c">
+    <b>Marry Me Chicken</b>
 
-    <div class="ingredients">
-      chicken • onion • garlic • cream
+    <div class="stats">
+      <span>❤️ <span id="likes1">128</span></span>
+      <span>💬 32</span>
+      <span class="like" onclick="like('likes1')">👍 Like</span>
     </div>
   </div>
 
-  <!-- AI -->
-  <div class="screen" id="ai">
-    <div class="header">Cook<span>’ed</span></div>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2">
+    <b>Garlic Butter Steak</b>
 
-    <input class="search" placeholder="What do you want to cook today?">
-
-    <div class="bubbles">
-      <div class="bubble" onclick="selectAI('High Protein')">Protein</div>
-      <div class="bubble" onclick="selectAI('Seafood')">Seafood</div>
-      <div class="bubble" onclick="selectAI('Quick Meals')">30 min</div>
-      <div class="bubble" onclick="selectAI('Fried Foods')">Fried</div>
-    </div>
-
-    <div class="result" id="aiResult"></div>
-  </div>
-
-  <!-- RECIPES -->
-  <div class="screen" id="recipes">
-    <div class="header">Recipes</div>
-
-    <div class="grid">
-      <div class="recipe">🍗 Chicken</div>
-      <div class="recipe">🍜 Noodles</div>
-      <div class="recipe">🥗 Salad</div>
-      <div class="recipe">🥞 Pancakes</div>
+    <div class="stats">
+      <span>❤️ <span id="likes2">204</span></span>
+      <span>💬 51</span>
+      <span class="like" onclick="like('likes2')">👍 Like</span>
     </div>
   </div>
 
-  <!-- PROFILE -->
-  <div class="screen" id="profile">
-    <div class="header">Cook<span>’ed</span></div>
+</div>
 
-    <div class="profile">
-      <div class="avatar"></div>
-      <h3>Nick Name</h3>
+<!-- AI -->
+<div class="screen" id="ai">
+  <div class="header">Cook<span>’ed</span></div>
 
-      <div class="box">Short description...</div>
+  <input class="search" placeholder="What do you want to cook today?">
+
+  <div class="bubbles">
+    <div class="bubble" onclick="selectAI('protein')">Protein</div>
+    <div class="bubble" onclick="selectAI('seafood')">Seafood</div>
+    <div class="bubble" onclick="selectAI('quick')">30 min</div>
+  </div>
+
+  <div class="result" id="aiResult"></div>
+</div>
+
+<!-- RECIPES -->
+<div class="screen" id="recipes">
+  <div class="header">Recipes</div>
+
+  <div class="grid">
+    <div class="recipe">
+      <img src="https://images.unsplash.com/photo-1543353071-873f17a7a088">
+    </div>
+    <div class="recipe">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836">
+    </div>
+    <div class="recipe">
+      <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352">
+    </div>
+    <div class="recipe">
+      <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1">
     </div>
   </div>
+</div>
 
-  <!-- NAV -->
-  <div class="nav">
-    <div onclick="switchScreen('home')">🏠</div>
-    <div onclick="switchScreen('ai')">🔍</div>
-    <div onclick="switchScreen('recipes')">🍽️</div>
-    <div onclick="switchScreen('profile')">👤</div>
+<!-- PROFILE -->
+<div class="screen" id="profile">
+  <div class="header">Cook<span>’ed</span></div>
+
+  <div class="profile">
+    <div class="avatar"></div>
+    <h3>Chef Deondre</h3>
+
+    <div class="box">Level 12 Cook • 124 Recipes Created</div>
+    <div class="box">🔥 3.2K Likes • 890 Followers</div>
   </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div onclick="switchScreen('home')">🏠</div>
+  <div onclick="switchScreen('ai')">🔍</div>
+  <div onclick="switchScreen('recipes')">🍽️</div>
+  <div onclick="switchScreen('profile')">👤</div>
+</div>
 
 </div>
 
@@ -224,14 +232,25 @@ function switchScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
+function like(id){
+  let el = document.getElementById(id);
+  el.innerText = parseInt(el.innerText) + 1;
+}
+
 function selectAI(type){
   const box = document.getElementById("aiResult");
-  box.innerHTML = "🧠 Generating " + type + " meals...";
+  box.innerHTML = "🧠 Generating results...";
 
   setTimeout(()=>{
-    box.innerHTML += "<br>✔ Suggestions:";
-    box.innerHTML += "<br>- Garlic Chicken Bowl";
-    box.innerHTML += "<br>- Spicy Shrimp Pasta";
+    if(type==="protein"){
+      box.innerHTML = "🍗 High Protein Meals:<br>- Grilled Chicken Bowl<br>- Steak & Rice";
+    }
+    if(type==="seafood"){
+      box.innerHTML = "🦐 Seafood Ideas:<br>- Garlic Shrimp<br>- Salmon Plate";
+    }
+    if(type==="quick"){
+      box.innerHTML = "⚡ Quick Meals:<br>- Egg Wrap<br>- Instant Ramen Upgrade";
+    }
   },1200);
 }
 </script>
