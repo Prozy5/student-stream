@@ -11,7 +11,6 @@
   --card:#0c1c14;
   --accent:#00ff9d;
   --text:#eafff5;
-  --muted:#8fa89c;
 }
 
 body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
@@ -32,13 +31,6 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 
 .card img{width:100%;border-radius:10px;cursor:pointer}
 
-.stats{
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  color:var(--muted);
-}
-
 .nav{
   height:60px;
   display:flex;
@@ -46,6 +38,24 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
   align-items:center;
   background:#000;
 }
+
+/* LOGIN */
+.login{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  justify-content:center;
+  height:100vh;
+  padding:20px;
+}
+
+input,button{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+}
+
+button{background:var(--accent);cursor:pointer}
 
 /* MODALS */
 .modal{
@@ -66,30 +76,19 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
   overflow:auto;
 }
 
-/* CAMERA */
-.camera{
-  background:black;
-  height:300px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-}
-
-.scan{
-  border:2px solid var(--accent);
-  padding:20px;
-}
-
-/* COMMENTS */
-.comment{font-size:12px;margin:5px 0}
-
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login">
+  <h2>Cook’ed Login</h2>
+  <input id="username" placeholder="Enter username">
+  <button onclick="login()">Login</button>
+</div>
+
+<div class="app" id="app" style="display:none">
 
 <!-- HOME -->
 <div class="screen active" id="home">
@@ -98,17 +97,11 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
   <div class="card">
     <img src="https://images.unsplash.com/photo-1604908176997-4316c64c7f8c" onclick="openRecipe('chicken')">
     <b>Marry Me Chicken</b>
-    <div class="stats">
-      ❤️ 128 | 💬 <span onclick="openComments()">32</span> | 👍
-    </div>
   </div>
 
   <div class="card">
     <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2" onclick="openRecipe('beef')">
     <b>Garlic Butter Steak</b>
-    <div class="stats">
-      ❤️ 204 | 💬 <span onclick="openComments()">51</span> | 👍
-    </div>
   </div>
 </div>
 
@@ -116,89 +109,74 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 <div class="screen" id="ai">
   <div class="header">Cook<span>’ed AI</span></div>
 
-  <button onclick="openCamera()">📸 Scan Pantry</button>
+  <button onclick="scanFood()">📸 Scan Pantry</button>
   <div id="aiResult"></div>
-</div>
-
-<!-- NOTIFICATIONS -->
-<div class="screen" id="notif">
-  <div class="header">Notifications</div>
-
-  <div class="card">🔥 Your recipe hit 1K likes</div>
-  <div class="card">👤 New follower: @foodie23</div>
-  <div class="card">🧠 AI suggested 5 new meals</div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
-  <div class="header">Cook<span>’ed</span></div>
-  <h3>Chef Deondre</h3>
-  <p>🔥 3.2K Likes • 890 Followers</p>
+  <div class="header">Profile</div>
+  <h3 id="userDisplay"></h3>
+
+  <h4>Saved Recipes</h4>
+  <div id="savedList"></div>
 </div>
 
 <!-- NAV -->
 <div class="nav">
   <div onclick="switchScreen('home')">🏠</div>
   <div onclick="switchScreen('ai')">📸</div>
-  <div onclick="switchScreen('notif')">🔔</div>
   <div onclick="switchScreen('profile')">👤</div>
 </div>
 
 </div>
 
-<!-- CAMERA MODAL -->
-<div class="modal" id="cameraModal">
-  <div class="modal-content">
-    <div class="camera">
-      <div class="scan">Scanning...</div>
-    </div>
-    <button onclick="scanFood()">Scan</button>
-  </div>
-</div>
-
-<!-- COMMENTS MODAL -->
-<div class="modal" id="commentsModal">
-  <div class="modal-content">
-    <h3>Comments</h3>
-    <div class="comment">🔥 This was amazing!</div>
-    <div class="comment">💯 10/10 recipe</div>
-    <input placeholder="Add comment...">
-  </div>
-</div>
-
 <!-- RECIPE MODAL -->
 <div class="modal" id="recipeModal">
-  <div class="modal-content" id="recipeContent">
-    Loading...
-  </div>
+  <div class="modal-content" id="recipeContent"></div>
 </div>
 
 <script>
+
+/* LOGIN SYSTEM */
+function login(){
+  const user = document.getElementById("username").value;
+  if(!user) return;
+  localStorage.setItem("user", user);
+  startApp();
+}
+
+function startApp(){
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("app").style.display="flex";
+
+  const user = localStorage.getItem("user");
+  document.getElementById("userDisplay").innerText = "Chef " + user;
+  loadSaved();
+}
+
+if(localStorage.getItem("user")) startApp();
+
+/* NAV */
 function switchScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* CAMERA */
-function openCamera(){
-  document.getElementById("cameraModal").style.display="flex";
-}
-
+/* AI SYSTEM */
 function scanFood(){
-  document.getElementById("cameraModal").style.display="none";
-  document.getElementById("aiResult").innerHTML="🧠 Found: chicken, rice → Suggested meals loaded!";
-}
+  const foods = ["chicken","rice","eggs","cheese"];
+  const pick = foods[Math.floor(Math.random()*foods.length)];
 
-/* COMMENTS */
-function openComments(){
-  document.getElementById("commentsModal").style.display="flex";
+  document.getElementById("aiResult").innerHTML =
+  "🧠 Detected: "+pick+"<br>Suggested: "+pick+" bowl, "+pick+" pasta";
 }
 
 /* RECIPE API */
 function openRecipe(query){
   document.getElementById("recipeModal").style.display="flex";
   const box = document.getElementById("recipeContent");
-  box.innerHTML="Loading recipe...";
+  box.innerHTML="Loading...";
 
   fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
   .then(res=>res.json())
@@ -207,15 +185,32 @@ function openRecipe(query){
     box.innerHTML=`
       <h2>${meal.strMeal}</h2>
       <img src="${meal.strMealThumb}" style="width:100%">
-      <p>${meal.strInstructions.substring(0,300)}...</p>
+      <p>${meal.strInstructions.substring(0,200)}...</p>
+      <button onclick="saveRecipe('${meal.strMeal}')">⭐ Save</button>
     `;
   });
 }
 
-/* CLOSE MODALS */
-document.querySelectorAll(".modal").forEach(m=>{
-  m.onclick=()=>m.style.display="none";
-});
+/* SAVE SYSTEM */
+function saveRecipe(name){
+  let saved = JSON.parse(localStorage.getItem("saved")) || [];
+  saved.push(name);
+  localStorage.setItem("saved", JSON.stringify(saved));
+  alert("Saved!");
+  loadSaved();
+}
+
+function loadSaved(){
+  let saved = JSON.parse(localStorage.getItem("saved")) || [];
+  document.getElementById("savedList").innerHTML =
+    saved.map(r=>"<div class='card'>"+r+"</div>").join("");
+}
+
+/* CLOSE MODAL */
+document.getElementById("recipeModal").onclick=()=>{
+  document.getElementById("recipeModal").style.display="none";
+}
+
 </script>
 
 </body>
