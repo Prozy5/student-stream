@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -23,23 +23,11 @@ body{
   color:var(--text);
 }
 
-.app{
-  width:100vw;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-
-.screen{
-  display:none;
-  flex:1;
-  overflow:auto;
-  padding:16px;
-}
-
+.app{width:100vw;height:100vh;display:flex;flex-direction:column}
+.screen{display:none;flex:1;overflow:auto}
 .active{display:block}
 
-/* LOGIN */
+/* LOGIN UPGRADE */
 .login{
   height:100vh;
   display:flex;
@@ -53,79 +41,50 @@ body{
   padding:30px;
   border-radius:20px;
   width:90%;
-  max-width:350px;
+  max-width:360px;
   text-align:center;
-  backdrop-filter:blur(10px);
-  box-shadow:0 0 40px rgba(34,197,94,0.2);
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 50px rgba(34,197,94,0.25);
 }
 
-.login-card h1{
-  margin-bottom:10px;
-}
-
-.login-card span{color:var(--accent)}
-
-.input{
+.input, .btn, .file{
   width:100%;
   padding:12px;
+  margin-top:12px;
   border-radius:10px;
   border:none;
-  margin-top:15px;
-  background:#020617;
-  color:white;
 }
 
-.btn{
-  margin-top:15px;
+.input{background:#020617;color:white}
+.btn{background:linear-gradient(90deg,var(--accent),var(--accent2));cursor:pointer}
+.file{background:#111;color:white}
+
+/* FEED VIDEO */
+.feed{display:flex;flex-direction:column}
+.post{margin-bottom:20px}
+
+video{
   width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  font-weight:bold;
-  cursor:pointer;
+  border-radius:12px;
 }
 
-/* HEADER */
-.header{
-  text-align:center;
-  font-size:22px;
-  font-weight:900;
-  margin-bottom:10px;
-}
-.header span{color:var(--accent)}
-
-/* CARDS */
 .card{
   background:var(--card);
   border-radius:16px;
   padding:10px;
-  margin-bottom:14px;
-  box-shadow:0 0 20px rgba(0,0,0,0.4);
+  margin:10px;
 }
 
-.card img{
-  width:100%;
-  border-radius:12px;
-  cursor:pointer;
-}
+.header{text-align:center;font-weight:900;padding:10px}
 
-/* NAV */
 .nav{
   height:70px;
   display:flex;
   justify-content:space-around;
   align-items:center;
   background:#020617;
-  border-top:1px solid #111;
 }
 
-.nav div{
-  font-size:20px;
-  cursor:pointer;
-}
-
-/* MODAL */
 .modal{
   position:fixed;
   inset:0;
@@ -152,45 +111,41 @@ body{
 <!-- LOGIN -->
 <div id="loginScreen" class="login">
   <div class="login-card">
-    <h1>Cook<span>’ed</span></h1>
-    <p style="color:var(--muted)">AI Cooking Experience</p>
+    <h1>Cook’ed</h1>
+    <p style="color:var(--muted)">Short-form AI Cooking</p>
 
-    <input class="input" id="username" placeholder="Enter username">
-    <button class="btn" onclick="login()">Enter Kitchen</button>
+    <input class="input" id="username" placeholder="Username">
+    <button class="btn" onclick="login()">Enter</button>
   </div>
 </div>
 
 <div class="app" id="app" style="display:none">
 
-<!-- HOME -->
+<!-- HOME FEED -->
 <div class="screen active" id="home">
-  <div class="header">Cook<span>’ed</span></div>
+  <div class="header">Cook’ed Feed</div>
 
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1604908176997-4316c64c7f8c" onclick="openRecipe('chicken')">
-    <b>Marry Me Chicken</b>
-  </div>
+  <div class="feed" id="feed"></div>
 
+  <!-- UPLOAD -->
   <div class="card">
-    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2" onclick="openRecipe('beef')">
-    <b>Garlic Butter Steak</b>
+    <input type="file" class="file" accept="video/*" onchange="uploadVideo(event)">
+    <button class="btn" onclick="postVideo()">Post Video</button>
   </div>
 </div>
 
 <!-- AI -->
 <div class="screen" id="ai">
-  <div class="header">Cook<span>’ed AI</span></div>
-
+  <div class="header">AI Suggestions</div>
   <button class="btn" onclick="scanFood()">Scan Pantry</button>
-  <div id="aiResult" style="margin-top:15px;color:var(--muted)"></div>
+  <div id="aiResult"></div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="header">Profile</div>
   <h2 id="userDisplay"></h2>
-
-  <h3 style="margin-top:10px">Saved Recipes</h3>
+  <h3>Saved</h3>
   <div id="savedList"></div>
 </div>
 
@@ -203,13 +158,16 @@ body{
 
 </div>
 
-<!-- MODAL -->
+<!-- RECIPE MODAL -->
 <div class="modal" id="recipeModal">
   <div class="modal-content" id="recipeContent"></div>
 </div>
 
 <script>
 
+let uploadedVideo = null;
+
+/* LOGIN */
 function login(){
   const user = document.getElementById("username").value;
   if(!user) return;
@@ -220,58 +178,104 @@ function login(){
 function startApp(){
   document.getElementById("loginScreen").style.display="none";
   document.getElementById("app").style.display="flex";
-
-  const user = localStorage.getItem("user");
-  document.getElementById("userDisplay").innerText = "Chef " + user;
+  document.getElementById("userDisplay").innerText = "Chef " + localStorage.getItem("user");
+  loadFeed();
   loadSaved();
 }
 
 if(localStorage.getItem("user")) startApp();
 
+/* NAV */
 function switchScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-function scanFood(){
-  const foods = ["chicken","rice","eggs","cheese"];
-  const pick = foods[Math.floor(Math.random()*foods.length)];
+/* FEED SYSTEM */
+function loadFeed(){
+  let feed = JSON.parse(localStorage.getItem("feed")) || [];
 
-  document.getElementById("aiResult").innerHTML =
-  "Detected: "+pick+"<br>Suggested meals: "+pick+" bowl, "+pick+" pasta";
+  // default videos
+  if(feed.length===0){
+    feed = [
+      {video:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Steak Cooking"},
+      {video:"https://www.w3schools.com/html/movie.mp4",title:"Pasta Cooking"}
+    ];
+    localStorage.setItem("feed", JSON.stringify(feed));
+  }
+
+  renderFeed();
 }
 
-function openRecipe(query){
-  document.getElementById("recipeModal").style.display="flex";
-  const box = document.getElementById("recipeContent");
-  box.innerHTML="Loading...";
+function renderFeed(){
+  let feed = JSON.parse(localStorage.getItem("feed")) || [];
 
-  fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
+  document.getElementById("feed").innerHTML = feed.map((p,i)=>`
+    <div class="post card">
+      <video controls src="${p.video}"></video>
+      <b>${p.title}</b>
+      <button class="btn" onclick="openRecipe('chicken')">View Recipe</button>
+    </div>
+  `).join("");
+}
+
+/* UPLOAD VIDEO */
+function uploadVideo(e){
+  const file = e.target.files[0];
+  if(file){
+    uploadedVideo = URL.createObjectURL(file);
+  }
+}
+
+function postVideo(){
+  if(!uploadedVideo) return alert("Upload video first");
+
+  let feed = JSON.parse(localStorage.getItem("feed")) || [];
+  feed.unshift({video:uploadedVideo,title:"User Upload"});
+  localStorage.setItem("feed", JSON.stringify(feed));
+
+  uploadedVideo = null;
+  renderFeed();
+}
+
+/* AI */
+function scanFood(){
+  const foods=["chicken","rice","eggs"];
+  const pick=foods[Math.floor(Math.random()*foods.length)];
+  document.getElementById("aiResult").innerHTML="Detected: "+pick;
+}
+
+/* RECIPE */
+function openRecipe(q){
+  document.getElementById("recipeModal").style.display="flex";
+  fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${q}`)
   .then(res=>res.json())
   .then(data=>{
-    const meal = data.meals[0];
-    box.innerHTML=`
-      <h2>${meal.strMeal}</h2>
-      <img src="${meal.strMealThumb}" style="width:100%;border-radius:10px">
-      <p>${meal.strInstructions.substring(0,200)}...</p>
-      <button class="btn" onclick="saveRecipe('${meal.strMeal}')">Save Recipe</button>
+    const m=data.meals[0];
+    document.getElementById("recipeContent").innerHTML=`
+      <h2>${m.strMeal}</h2>
+      <img src="${m.strMealThumb}" style="width:100%">
+      <p>${m.strInstructions.substring(0,200)}...</p>
+      <button class="btn" onclick="saveRecipe('${m.strMeal}')">Save</button>
     `;
   });
 }
 
+/* SAVE */
 function saveRecipe(name){
-  let saved = JSON.parse(localStorage.getItem("saved")) || [];
+  let saved=JSON.parse(localStorage.getItem("saved"))||[];
   saved.push(name);
-  localStorage.setItem("saved", JSON.stringify(saved));
+  localStorage.setItem("saved",JSON.stringify(saved));
   loadSaved();
 }
 
 function loadSaved(){
-  let saved = JSON.parse(localStorage.getItem("saved")) || [];
-  document.getElementById("savedList").innerHTML =
+  let saved=JSON.parse(localStorage.getItem("saved"))||[];
+  document.getElementById("savedList").innerHTML=
     saved.map(r=>"<div class='card'>"+r+"</div>").join("");
 }
 
+/* CLOSE MODAL */
 document.getElementById("recipeModal").onclick=()=>{
   document.getElementById("recipeModal").style.display="none";
 }
