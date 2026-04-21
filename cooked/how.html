@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cook’ed AI</title>
+
+<style>
+:root{
+  --accent:#00ff9d;
+  --text:#eafff5;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui;
+  background:linear-gradient(270deg,#020617,#000,#020617);
+  background-size:400% 400%;
+  animation:bgMove 10s infinite linear;
+  color:var(--text);
+  padding:20px;
+}
+
+@keyframes bgMove{
+  0%{background-position:0%}
+  100%{background-position:100%}
+}
+
+.header{
+  text-align:center;
+  font-size:32px;
+  font-weight:900;
+  margin-bottom:15px;
+}
+
+.sub{
+  text-align:center;
+  opacity:.7;
+  margin-bottom:20px;
+}
+
+.banner{
+  background:linear-gradient(90deg,#00ff9d,#00cfff);
+  padding:14px;
+  text-align:center;
+  border-radius:12px;
+  font-weight:bold;
+  margin-bottom:20px;
+  color:black;
+}
+
+.section{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:15px;
+  transition:.3s;
+}
+
+.section:hover{
+  transform:scale(1.02);
+}
+
+.section h2{
+  color:var(--accent);
+  margin-bottom:10px;
+}
+
+.section p{
+  font-size:14px;
+  line-height:1.6;
+  opacity:.9;
+}
+
+.highlight{
+  margin-top:10px;
+  font-size:13px;
+  color:#9fffd4;
+}
+
+/* FLOW */
+.flow{
+  display:flex;
+  gap:10px;
+  overflow:auto;
+  margin-bottom:20px;
+}
+
+.step{
+  min-width:120px;
+  background:#111;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  font-size:13px;
+}
+
+/* DEMO */
+.demo{
+  margin-top:10px;
+}
+
+button{
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:var(--accent);
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.output{
+  margin-top:10px;
+  font-size:13px;
+  opacity:.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">Cook’ed AI</div>
+<div class="sub">Next Generation Cooking Intelligence</div>
+
+<div class="banner">
+🚀 Intelligent AI System Developed by StudentStreamHQ
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="flow">
+  <div class="step">📸 Scan</div>
+  <div class="step">🧠 Detect</div>
+  <div class="step">📊 Analyze</div>
+  <div class="step">🍽️ Match</div>
+  <div class="step">🔥 Serve</div>
+</div>
+
+<div class="section">
+  <h2>📸 Pantry Scan AI</h2>
+  <p>
+    Cook’ed uses computer vision to detect ingredients directly from your camera.
+    The system identifies foods in real time and instantly builds meal suggestions
+    based on what is available.
+  </p>
+
+  <div class="demo">
+    <button onclick="runAI('scan')">Try AI Scan</button>
+    <div class="output" id="out1"></div>
+  </div>
+
+  <div class="highlight">✔ Reduces waste • ✔ Instant meals • ✔ Smart detection</div>
+</div>
+
+<div class="section">
+  <h2>🎥 Video Intelligence AI</h2>
+  <p>
+    Cook’ed analyzes uploaded cooking videos frame-by-frame using AI to detect
+    ingredients, cooking styles, and techniques to generate enhanced recipe suggestions.
+  </p>
+
+  <div class="demo">
+    <button onclick="runAI('video')">Simulate Video AI</button>
+    <div class="output" id="out2"></div>
+  </div>
+
+  <div class="highlight">✔ Frame analysis • ✔ Trend recognition • ✔ Smart suggestions</div>
+</div>
+
+<div class="section">
+  <h2>🍽️ Smart Recipe Engine</h2>
+  <p>
+    After detection, Cook’ed connects to live recipe databases and ranks results
+    based on speed, health value, and user preferences using intelligent algorithms.
+  </p>
+
+  <div class="demo">
+    <button onclick="runAI('recipe')">Generate Recipes</button>
+    <div class="output" id="out3"></div>
+  </div>
+
+  <div class="highlight">✔ Real-time data • ✔ Personalized • ✔ Optimized meals</div>
+</div>
+
+<div class="section">
+  <h2>🔒 Cybersecurity & Data Protection</h2>
+  <p>
+    Cook’ed applies secure architecture principles including encrypted data storage,
+    access control layers, and protected API communication. User health preferences
+    and dietary information are safeguarded through privacy-first design.
+  </p>
+
+  <div class="highlight">
+    ✔ Encryption • ✔ Secure APIs • ✔ Privacy-first AI
+  </div>
+</div>
+
+<div class="section">
+  <h2>🤖 Future AI Expansion</h2>
+  <p>
+    Cook’ed will evolve into a fully intelligent cooking assistant featuring voice AI,
+    real-time nutrition tracking, and predictive meal planning powered by machine learning.
+  </p>
+
+  <div class="highlight">
+    ✔ Voice AI • ✔ Smart tracking • ✔ Predictive meals
+  </div>
+</div>
+
+<script>
+function runAI(type){
+  const outputs={
+    scan:["Detecting ingredients...","Found: chicken, rice","Generating meals..."],
+    video:["Analyzing frames...","Detected: pasta cooking","Matching recipes..."],
+    recipe:["Ranking recipes...","Top: Garlic Chicken Bowl","Ready to serve"]
+  }
+
+  let i=0;
+  const box = document.getElementById(
+    type==="scan"?"out1":type==="video"?"out2":"out3"
+  );
+
+  box.innerHTML="";
+
+  const interval=setInterval(()=>{
+    box.innerHTML+=outputs[type][i]+"<br>";
+    i++;
+    if(i>=outputs[type].length) clearInterval(interval);
+  },600);
+}
+</script>
+
+</body>
+</html>
