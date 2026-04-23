@@ -17,7 +17,7 @@ body{
   font-family:system-ui;
   background:linear-gradient(270deg,#020617,#000,#020617);
   background-size:400% 400%;
-  animation:bgMove 10s infinite linear;
+  animation:bgMove 12s infinite linear;
   color:var(--text);
   padding:20px;
 }
@@ -27,11 +27,12 @@ body{
   100%{background-position:100%}
 }
 
+/* HEADER */
 .header{
   text-align:center;
-  font-size:32px;
+  font-size:34px;
   font-weight:900;
-  margin-bottom:15px;
+  letter-spacing:1px;
 }
 
 .sub{
@@ -40,27 +41,51 @@ body{
   margin-bottom:20px;
 }
 
+/* BANNER */
 .banner{
   background:linear-gradient(90deg,#00ff9d,#00cfff);
   padding:14px;
   text-align:center;
   border-radius:12px;
   font-weight:bold;
-  margin-bottom:20px;
+  margin-bottom:25px;
   color:black;
+  box-shadow:0 0 20px #00ff9d55;
 }
 
-.section{
+/* FLOW */
+.flow{
+  display:flex;
+  gap:10px;
+  overflow:auto;
+  margin-bottom:25px;
+}
+
+.step{
+  min-width:120px;
   background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(20px);
+  backdrop-filter:blur(10px);
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  font-size:13px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+/* CARD */
+.section{
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(25px);
   padding:20px;
   border-radius:20px;
-  margin-bottom:15px;
+  margin-bottom:18px;
+  border:1px solid rgba(255,255,255,0.08);
   transition:.3s;
 }
 
 .section:hover{
-  transform:scale(1.02);
+  transform:translateY(-4px);
+  box-shadow:0 0 25px rgba(0,255,157,0.15);
 }
 
 .section h2{
@@ -80,42 +105,67 @@ body{
   color:#9fffd4;
 }
 
-/* FLOW */
-.flow{
-  display:flex;
-  gap:10px;
-  overflow:auto;
-  margin-bottom:20px;
-}
-
-.step{
-  min-width:120px;
-  background:#111;
-  padding:15px;
-  border-radius:12px;
-  text-align:center;
-  font-size:13px;
-}
-
 /* DEMO */
-.demo{
-  margin-top:10px;
-}
-
 button{
-  margin-top:10px;
-  padding:10px;
+  margin-top:12px;
+  padding:10px 14px;
   border:none;
   border-radius:10px;
   background:var(--accent);
   cursor:pointer;
   font-weight:bold;
+  transition:.2s;
 }
 
+button:hover{
+  transform:scale(1.05);
+}
+
+/* OUTPUT */
 .output{
   margin-top:10px;
   font-size:13px;
   opacity:.8;
+}
+
+/* PROGRESS BAR */
+.progress{
+  height:6px;
+  background:#111;
+  border-radius:10px;
+  margin-top:10px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00ff9d,#00cfff);
+  transition:.4s;
+}
+
+/* AI STATUS */
+.ai-status{
+  text-align:center;
+  margin:15px 0;
+  font-size:14px;
+  opacity:.7;
+}
+
+.pulse{
+  display:inline-block;
+  width:10px;
+  height:10px;
+  background:var(--accent);
+  border-radius:50%;
+  margin-right:8px;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:.3;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.5)}
+  100%{opacity:.3;transform:scale(1)}
 }
 </style>
 </head>
@@ -126,10 +176,14 @@ button{
 <div class="sub">Next Generation Cooking Intelligence</div>
 
 <div class="banner">
-🚀 Intelligent AI System Developed by StudentStreamHQ
+🚀 Intelligent AI System • Built by StudentStreamHQ
 </div>
 
-<!-- HOW IT WORKS -->
+<div class="ai-status">
+  <span class="pulse"></span> AI System Active
+</div>
+
+<!-- FLOW -->
 <div class="flow">
   <div class="step">📸 Scan</div>
   <div class="step">🧠 Detect</div>
@@ -138,97 +192,95 @@ button{
   <div class="step">🔥 Serve</div>
 </div>
 
+<!-- SECTION -->
 <div class="section">
   <h2>📸 Pantry Scan AI</h2>
   <p>
-    Cook’ed uses computer vision to detect ingredients directly from your camera.
-    The system identifies foods in real time and instantly builds meal suggestions
-    based on what is available.
+    Cook’ed uses computer vision to instantly detect ingredients from your camera
+    and generate meal ideas in real time based on available items.
   </p>
 
-  <div class="demo">
-    <button onclick="runAI('scan')">Try AI Scan</button>
-    <div class="output" id="out1"></div>
-  </div>
+  <button onclick="runAI('scan')">Run AI Scan</button>
+  <div class="progress"><div class="progress-bar" id="bar1"></div></div>
+  <div class="output" id="out1"></div>
 
-  <div class="highlight">✔ Reduces waste • ✔ Instant meals • ✔ Smart detection</div>
+  <div class="highlight">✔ Real-time detection • ✔ Zero waste • ✔ Instant meals</div>
 </div>
 
 <div class="section">
   <h2>🎥 Video Intelligence AI</h2>
   <p>
-    Cook’ed analyzes uploaded cooking videos frame-by-frame using AI to detect
-    ingredients, cooking styles, and techniques to generate enhanced recipe suggestions.
+    AI analyzes cooking videos frame-by-frame to detect ingredients, techniques,
+    and cooking patterns — then generates improved recipe suggestions.
   </p>
 
-  <div class="demo">
-    <button onclick="runAI('video')">Simulate Video AI</button>
-    <div class="output" id="out2"></div>
-  </div>
+  <button onclick="runAI('video')">Analyze Video</button>
+  <div class="progress"><div class="progress-bar" id="bar2"></div></div>
+  <div class="output" id="out2"></div>
 
-  <div class="highlight">✔ Frame analysis • ✔ Trend recognition • ✔ Smart suggestions</div>
+  <div class="highlight">✔ Frame detection • ✔ Trend learning • ✔ Smart cooking</div>
 </div>
 
 <div class="section">
   <h2>🍽️ Smart Recipe Engine</h2>
   <p>
-    After detection, Cook’ed connects to live recipe databases and ranks results
-    based on speed, health value, and user preferences using intelligent algorithms.
+    Cook’ed connects to live APIs and ranks recipes based on speed, health,
+    and user preferences using intelligent decision systems.
   </p>
 
-  <div class="demo">
-    <button onclick="runAI('recipe')">Generate Recipes</button>
-    <div class="output" id="out3"></div>
-  </div>
+  <button onclick="runAI('recipe')">Generate Recipes</button>
+  <div class="progress"><div class="progress-bar" id="bar3"></div></div>
+  <div class="output" id="out3"></div>
 
-  <div class="highlight">✔ Real-time data • ✔ Personalized • ✔ Optimized meals</div>
+  <div class="highlight">✔ Personalized • ✔ Fast results • ✔ AI ranking</div>
 </div>
 
 <div class="section">
-  <h2>🔒 Cybersecurity & Data Protection</h2>
+  <h2>🔒 Security (Demo System)</h2>
   <p>
-    Cook’ed applies secure architecture principles including encrypted data storage,
-    access control layers, and protected API communication. User health preferences
-    and dietary information are safeguarded through privacy-first design.
+    This cybersecurity system is a demonstration of how Cook’ed would protect
+    user data. It simulates encryption, secure API communication, and protection
+    of sensitive information like dietary or health-related inputs.
   </p>
 
   <div class="highlight">
-    ✔ Encryption • ✔ Secure APIs • ✔ Privacy-first AI
-  </div>
-</div>
-
-<div class="section">
-  <h2>🤖 Future AI Expansion</h2>
-  <p>
-    Cook’ed will evolve into a fully intelligent cooking assistant featuring voice AI,
-    real-time nutrition tracking, and predictive meal planning powered by machine learning.
-  </p>
-
-  <div class="highlight">
-    ✔ Voice AI • ✔ Smart tracking • ✔ Predictive meals
+    ✔ Demo encryption • ✔ Secure design model • ✔ Privacy-first approach
   </div>
 </div>
 
 <script>
 function runAI(type){
   const outputs={
-    scan:["Detecting ingredients...","Found: chicken, rice","Generating meals..."],
-    video:["Analyzing frames...","Detected: pasta cooking","Matching recipes..."],
-    recipe:["Ranking recipes...","Top: Garlic Chicken Bowl","Ready to serve"]
+    scan:["Scanning...","Detected: chicken, rice","Generating meals...","Done"],
+    video:["Analyzing frames...","Detected: pasta cooking","Matching recipes...","Done"],
+    recipe:["Connecting to API...","Ranking recipes...","Top: Garlic Chicken Bowl","Done"]
+  }
+
+  const bars={
+    scan:"bar1",
+    video:"bar2",
+    recipe:"bar3"
+  }
+
+  const outs={
+    scan:"out1",
+    video:"out2",
+    recipe:"out3"
   }
 
   let i=0;
-  const box = document.getElementById(
-    type==="scan"?"out1":type==="video"?"out2":"out3"
-  );
+  const box = document.getElementById(outs[type]);
+  const bar = document.getElementById(bars[type]);
 
   box.innerHTML="";
+  bar.style.width="0%";
 
   const interval=setInterval(()=>{
     box.innerHTML+=outputs[type][i]+"<br>";
+    bar.style.width = ((i+1)/outputs[type].length)*100 + "%";
     i++;
     if(i>=outputs[type].length) clearInterval(interval);
-  },600);
+  },700);
 }
 </script>
 
