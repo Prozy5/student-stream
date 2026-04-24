@@ -3,35 +3,61 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- TensorFlow -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
-
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
 :root{--accent:#00ff9d;--bg:#000;--card:rgba(255,255,255,0.08);--text:#fff}
 .premium{--accent:#ff7a9c}
-body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text)}
-.screen{display:none;padding:15px}.active{display:block}
-.header{text-align:center;font-size:22px;font-weight:600;padding:15px}
-.card{background:var(--card);border-radius:20px;padding:12px;margin-bottom:15px}
-input{width:100%;padding:12px;border-radius:12px;border:none;margin-top:10px;background:#111;color:#fff}
-.btn{background:var(--accent);padding:12px;border-radius:12px;text-align:center;margin-top:10px;font-weight:600}
+body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text;overflow:hidden}
+.screen{display:none;height:100vh;overflow:auto}.active{display:block}
+.header{text-align:center;font-size:24px;font-weight:800;padding:10px}
+.card{background:var(--card);border-radius:20px;padding:15px;margin:10px}
+input{width:100%;padding:12px;border-radius:14px;border:none;margin-top:10px;background:#111;color:#fff}
+.btn{background:var(--accent);padding:12px;border-radius:14px;text-align:center;margin-top:10px}
 .nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px;background:#000}
 video{width:100%;border-radius:15px}
-.chat{height:150px;overflow:auto;background:#111;border-radius:10px;padding:10px;margin-top:10px}
-.msg{font-size:13px;margin-bottom:6px}
 
-/* LOGIN UI */
-.login-hero{
-  height:180px;
-  border-radius:20px;
-  background:url('https://source.unsplash.com/600x400/?food,kitchen') center/cover;
-  margin-bottom:15px;
+/* 🎬 TikTok Feed */
+.feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
 }
-.tagline{font-size:13px;opacity:.7;text-align:center;margin-top:-10px}
+.feed-item{
+  height:100vh;
+  scroll-snap-align:start;
+  position:relative;
+}
+.feed-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.overlay{
+  position:absolute;
+  bottom:60px;
+  left:15px;
+}
+
+/* 🔍 bubbles */
+.bubbles{display:flex;flex-wrap:wrap;gap:10px;padding:10px}
+.bubble{
+  padding:15px;
+  border-radius:50px;
+  background:var(--card);
+  backdrop-filter:blur(20px);
+}
+
+/* 🧠 avatar */
+.avatar{
+  width:150px;
+  margin:auto;
+  display:block;
+}
+
+/* LOGIN */
+.hero{height:250px;background:url('https://source.unsplash.com/900x700/?food') center/cover}
 </style>
 </head>
 
@@ -41,125 +67,95 @@ video{width:100%;border-radius:15px}
 
 <!-- LOGIN -->
 <div class="screen active" id="login">
-  <div class="login-hero"></div>
-  <div class="header">Cook’ed</div>
-  <div class="tagline">AI-powered food scanning & cooking assistant</div>
-
+  <div class="hero"></div>
   <div class="card">
-    <b>🔥 Quick Start (Free)</b>
-    <input id="username" placeholder="Enter username">
-    <div class="btn" onclick="enterFree()">Start Cooking</div>
-  </div>
-
-  <div class="card">
-    <b>👑 Premium Access</b>
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <div class="btn" onclick="signIn()">Login / Sign Up</div>
+    <input id="username" placeholder="Username">
+    <div class="btn" onclick="enterApp()">Enter</div>
   </div>
 </div>
 
-<!-- HOME -->
+<!-- TIKTOK FEED -->
 <div class="screen" id="home">
-  <div class="header">Cook’ed</div>
-  <div id="feed"></div>
+  <div class="feed" id="feed"></div>
+</div>
+
+<!-- SEARCH -->
+<div class="screen" id="search">
+  <div class="header">Search</div>
+  <div class="bubbles">
+    <div class="bubble">Protein</div>
+    <div class="bubble">Seafood</div>
+    <div class="bubble">Quick Meals</div>
+    <div class="bubble">Fried</div>
+  </div>
 </div>
 
 <!-- CAMERA -->
 <div class="screen" id="camera">
-  <div class="header">Scan Food</div>
   <video id="video" autoplay></video>
   <div class="btn" onclick="capture()">Scan</div>
   <canvas id="canvas" style="display:none"></canvas>
   <div id="result"></div>
+</div>
 
-  <div id="chatBox" style="display:none;">
-    <div class="chat" id="chat"></div>
-    <input placeholder="Ask AI..." onkeydown="chatAI(event)">
-  </div>
+<!-- FRIDGE (premium) -->
+<div class="screen" id="fridge">
+  <div class="header">Fridge Scanner</div>
+  <video autoplay></video>
+  <div class="btn">Scan Ingredients</div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="header">Profile</div>
+  <img class="avatar" src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Gnome-stock_person.svg">
   <div id="userInfo"></div>
   <div class="btn" onclick="togglePremium()">Toggle Premium</div>
-  <div class="btn" onclick="logout()">Logout</div>
-  <div id="premiumBox"></div>
 </div>
 
 <!-- NAV -->
 <div class="nav">
   <div onclick="nav('home')">🏠</div>
-  <div onclick="startCamera()">📸</div>
+  <div onclick="nav('search')">🔍</div>
+  <div onclick="nav('camera')">📸</div>
+  <div onclick="nav('fridge')">🧊</div>
   <div onclick="nav('profile')">👤</div>
 </div>
 
 </div>
 
 <script>
+let isPremium=false;
+let user;
 
-/* SUPABASE (PUT REAL KEYS) */
-const supabase = window.supabase.createClient(
-  "https://YOUR_PROJECT.supabase.co",
-  "YOUR_ANON_KEY"
-);
-
-let user = null;
-let isPremium = false;
-
-/* NAV */
 function nav(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-/* FREE MODE */
-function enterFree(){
-  let name = document.getElementById('username').value || "Guest";
-  user = {name};
-  userInfo.innerText = "Free User: " + name;
+function enterApp(){
+  user = document.getElementById('username').value || 'Chef';
+  userInfo.innerText = user;
+  loadFeed();
   nav('home');
 }
 
-/* AUTH (PREMIUM) */
-async function signIn(){
-  let email = document.getElementById('email').value;
-  let password = document.getElementById('password').value;
-
-  let { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if(error){
-    await supabase.auth.signUp({ email, password });
-    alert('Account created. Login again.');
-    return;
-  }
-
-  user = data.user;
-  isPremium = true;
-  document.body.classList.add('premium');
-
-  userInfo.innerText = "Premium: " + user.email;
-  nav('home');
-}
-
-async function logout(){
-  await supabase.auth.signOut();
-  location.reload();
-}
-
-/* FEED */
 function loadFeed(){
-  ["chicken","pasta","steak","salmon"].forEach(f=>{
-    feed.innerHTML += `<div class="card"><img src="https://source.unsplash.com/400x300/?${f},food"><b>${f}</b></div>`;
+  feed.innerHTML='';
+  ['chicken','steak','pasta','salmon'].forEach(f=>{
+    feed.innerHTML += `
+    <div class="feed-item">
+      <img src="https://source.unsplash.com/900x1600/?${f},food">
+      <div class="overlay">
+        <h2>${f}</h2>
+        <div>${Math.floor(Math.random()*500)} kcal</div>
+      </div>
+    </div>`;
   });
 }
-loadFeed();
 
-/* CAMERA */
 let model;
 async function startCamera(){
-  nav('camera');
   const stream = await navigator.mediaDevices.getUserMedia({video:true});
   video.srcObject = stream;
   if(!model) model = await mobilenet.load();
@@ -170,76 +166,12 @@ function capture(){
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   ctx.drawImage(video,0,0);
-  detectFood();
 }
 
-function fakeUpload(){
-  return "https://source.unsplash.com/400x300/?food";
-}
-
-async function detectFood(){
-  const predictions = await model.classify(video);
-  let food = predictions[0].className;
-  let image = fakeUpload();
-
-  result.innerHTML = `
-    <div class="card">
-      <img src="${image}">
-      <h3>${food}</h3>
-      ${(predictions[0].probability*100).toFixed(1)}% confidence
-      ${isPremium ? nutritionHTML() : '<br><i>Upgrade for nutrition</i>'}
-    </div>`;
-
-  saveScan(food, image);
-  showChat();
-}
-
-function nutritionHTML(){
-  return `<br>Calories: ${Math.floor(Math.random()*400+200)} kcal<br>Protein: ${Math.floor(Math.random()*40)}g`;
-}
-
-/* SAVE */
-async function saveScan(food, img){
-  if(isPremium){
-    await supabase.from('scans').insert([{ food, image: img }]);
-  } else {
-    console.log('Free scan:', food);
-  }
-}
-
-/* CHAT */
-function showChat(){ chatBox.style.display='block'; }
-
-function chatAI(e){
-  if(e.key === 'Enter'){
-    let msg = e.target.value;
-    chat.innerHTML += `<div class="msg">You: ${msg}</div>`;
-
-    let replies = [
-      "Add garlic & butter 🔥",
-      "Try baking instead 👨‍🍳",
-      "Pair with veggies 🥦",
-      "More protein = better 💪"
-    ];
-
-    let reply = replies[Math.floor(Math.random()*replies.length)];
-    chat.innerHTML += `<div class="msg">AI: ${reply}</div>`;
-
-    e.target.value = '';
-  }
-}
-
-/* PREMIUM TOGGLE (DEMO) */
 function togglePremium(){
-  isPremium = !isPremium;
+  isPremium=!isPremium;
   document.body.classList.toggle('premium');
-
-  premiumBox.innerHTML = isPremium ? `
-    <div class="card">Nutrition Unlocked</div>
-    <div class="card">Health Insights</div>
-  ` : '';
 }
-
 </script>
 
 </body>
