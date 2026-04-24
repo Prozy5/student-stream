@@ -18,13 +18,17 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text);o
 video{width:100%;border-radius:15px}
 
 /* LOGIN */
-.hero{height:300px;background:url('https://source.unsplash.com/900x700/?chef,cooking,class') center/cover}
+.hero{height:300px;background:url('https://source.unsplash.com/900x700/?chef,kitchen,cooking,class') center/cover}
+.tag{text-align:center;margin-top:10px;font-size:18px}
+.sub{opacity:.6;text-align:center;margin-bottom:10px}
 
 /* FEED */
 .feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
 .feed-item{height:100vh;scroll-snap-align:start;position:relative}
 .feed-item img{width:100%;height:100%;object-fit:cover}
-.overlay{position:absolute;bottom:80px;left:15px}
+.overlay{position:absolute;bottom:120px;left:15px}
+.actions{position:absolute;right:15px;bottom:120px;text-align:center}
+.actions div{margin:10px 0;cursor:pointer}
 
 .modal{position:fixed;inset:0;background:#000;display:none;z-index:10;padding:20px;overflow:auto}
 .modal.active{display:block}
@@ -32,9 +36,13 @@ video{width:100%;border-radius:15px}
 .chat{height:150px;overflow:auto;background:#111;border-radius:10px;padding:10px;margin-top:10px}
 .msg{font-size:13px;margin-bottom:6px}
 
+/* COMMENTS */
+.comment-box{background:#111;border-radius:10px;padding:10px;margin-top:10px}
+
 /* HEALTH */
 .health-box input{margin-bottom:10px}
 .avatar{width:200px;display:block;margin:auto}
+.stat{padding:10px;margin:5px;background:#111;border-radius:10px}
 </style>
 </head>
 
@@ -47,7 +55,8 @@ video{width:100%;border-radius:15px}
   <div class="hero"></div>
   <div class="card">
     <h2>Cook’ed</h2>
-    <p>Cook smarter, not harder.</p>
+    <div class="tag">Cook smarter, not harder.</div>
+    <div class="sub">Scan food • Discover recipes • Build your body</div>
     <input id="username" placeholder="Username">
     <div class="btn" onclick="enterApp()">Enter</div>
   </div>
@@ -61,7 +70,16 @@ video{width:100%;border-radius:15px}
 <!-- RECIPE -->
 <div class="modal" id="recipeModal">
   <div id="recipeContent"></div>
+  <div class="btn" onclick="openComments()">Comments 💬</div>
   <div class="btn" onclick="closeRecipe()">Close</div>
+</div>
+
+<!-- COMMENTS MODAL -->
+<div class="modal" id="commentModal">
+  <h3>Comments</h3>
+  <div id="comments"></div>
+  <input placeholder="Add comment..." onkeydown="addComment(event)">
+  <div class="btn" onclick="closeComments()">Close</div>
 </div>
 
 <!-- CAMERA -->
@@ -85,9 +103,12 @@ video{width:100%;border-radius:15px}
       <h3>Health Tracker</h3>
       <input id="height" placeholder="Height (cm)">
       <input id="weight" placeholder="Weight (kg)">
-      <div class="btn" onclick="generateBody()">Generate Body</div>
+      <div class="btn" onclick="generateStats()">Generate Stats</div>
     </div>
+
     <img id="bodyImg" class="avatar" src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Gnome-stock_person.svg">
+
+    <div id="stats"></div>
 
     <div class="chat" id="chat"></div>
     <input placeholder="Ask fitness AI..." onkeydown="chatAI(event)">
@@ -105,38 +126,63 @@ video{width:100%;border-radius:15px}
 
 <script>
 let user, isPremium=false, model;
+let likes = {};
 
 function nav(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
 function enterApp(){user=document.getElementById('username').value||'Chef';userInfo.innerText="👤 "+user;loadFeed();nav('home');}
 
-// 🍽 FREE API (TheMealDB)
 async function loadFeed(){
   feed.innerHTML='';
   let res = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=chicken');
   let data = await res.json();
 
   data.meals.slice(0,6).forEach(meal=>{
+    likes[meal.idMeal] = Math.floor(Math.random()*500);
+
     feed.innerHTML+=`
-    <div class="feed-item" onclick="openRecipe('${meal.strMeal}','${meal.strMealThumb}')">
-      <img src="${meal.strMealThumb}">
+    <div class="feed-item">
+      <img src="${meal.strMealThumb}" onclick="openRecipe('${meal.strMeal}','${meal.strMealThumb}')">
       <div class="overlay"><h2>${meal.strMeal}</h2></div>
+
+      <div class="actions">
+        <div onclick="like('${meal.idMeal}')">❤️<br><span id="like-${meal.idMeal}">${likes[meal.idMeal]}</span></div>
+        <div onclick="openComments()">💬</div>
+      </div>
     </div>`;
   });
 }
 
+function like(id){likes[id]++;document.getElementById('like-'+id).innerText=likes[id];}
+
 function openRecipe(name,img){
   recipeModal.classList.add('active');
-
   recipeContent.innerHTML=`
     <h2>${name}</h2>
     <img src="${img}">
-    <p>Recipe steps and ingredients loaded.</p>
+    <p>Recipe steps and ingredients.</p>
     ${isPremium ? `<iframe width="100%" height="200" src="https://www.youtube.com/embed?listType=search&list=${name} recipe"></iframe>` : '<p>🔒 Video recipes are Premium</p>'}
   `;
 }
 
 function closeRecipe(){recipeModal.classList.remove('active');}
+
+function openComments(){
+  commentModal.classList.add('active');
+  comments.innerHTML='';
+  ['Looks good 🔥','Trying this tonight','W recipe'].forEach(c=>{
+    comments.innerHTML+=`<div class="comment-box">${c}</div>`;
+  });
+}
+
+function closeComments(){commentModal.classList.remove('active');}
+
+function addComment(e){
+  if(e.key==='Enter'){
+    comments.innerHTML+=`<div class="comment-box">${e.target.value}</div>`;
+    e.target.value='';
+  }
+}
 
 async function startCamera(){nav('camera');const stream=await navigator.mediaDevices.getUserMedia({video:true});video.srcObject=stream;if(!model)model=await mobilenet.load();}
 
@@ -150,15 +196,25 @@ function togglePremium(){
   healthSection.style.display = isPremium ? 'block' : 'none';
 }
 
-function generateBody(){
+function generateStats(){
+  let h = document.getElementById('height').value;
+  let w = document.getElementById('weight').value;
+  let bmi = (w / ((h/100)*(h/100))).toFixed(1);
+
   bodyImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Human_body_silhouette.svg/512px-Human_body_silhouette.svg.png";
+
+  stats.innerHTML = `
+    <div class="stat">BMI: ${bmi}</div>
+    <div class="stat">Goal: Build muscle 💪</div>
+    <div class="stat">Calories Needed: ${Math.floor(2000 + (w*10))}</div>
+  `;
 }
 
 function chatAI(e){
   if(e.key==='Enter'){
     let msg=e.target.value;
     chat.innerHTML+=`<div class="msg">You: ${msg}</div>`;
-    chat.innerHTML+=`<div class="msg">AI: Focus on protein & strength training 💪</div>`;
+    chat.innerHTML+=`<div class="msg">AI: Increase protein & stay consistent 💪</div>`;
     e.target.value='';
   }
 }
