@@ -13,27 +13,26 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text);o
 .screen{display:none;height:100vh;overflow:auto}.active{display:block}
 .header{text-align:center;font-size:24px;font-weight:800;padding:10px}
 .card{background:var(--card);border-radius:20px;padding:15px;margin:10px}
-input{width:100%;padding:12px;border-radius:14px;border:none;margin-top:10px;background:#111;color:#fff}
-.btn{background:var(--accent);padding:12px;border-radius:14px;text-align:center;margin-top:10px;font-weight:700}
+.btn{background:var(--accent);padding:12px;border-radius:14px;text-align:center;margin:10px;font-weight:700}
 .nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px;background:#000}
 video{width:100%;border-radius:15px}
 
-/* 🎬 TikTok Feed */
+/* FEED */
 .feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
 .feed-item{height:100vh;scroll-snap-align:start;position:relative}
 .feed-item img{width:100%;height:100%;object-fit:cover}
 .overlay{position:absolute;bottom:80px;left:15px}
 
-/* 🔍 bubbles */
+/* MODAL */
+.modal{position:fixed;inset:0;background:#000;display:none;z-index:10;padding:20px;overflow:auto}
+.modal.active{display:block}
+
+/* BUBBLES */
 .bubbles{display:flex;flex-wrap:wrap;gap:10px;padding:10px}
-.bubble{padding:15px;border-radius:50px;background:var(--card);backdrop-filter:blur(20px);cursor:pointer}
+.bubble{padding:15px;border-radius:50px;background:var(--card)}
 
-/* 🧠 avatar */
-.avatar{width:160px;margin:20px auto;display:block}
-
-/* LOGIN */
-.hero{height:260px;background:url('https://source.unsplash.com/900x700/?food,chef') center/cover}
-.lock{opacity:.6;text-align:center;margin-top:20px}
+.chat{height:150px;overflow:auto;background:#111;border-radius:10px;padding:10px;margin-top:10px}
+.msg{font-size:13px;margin-bottom:6px}
 </style>
 </head>
 
@@ -43,30 +42,35 @@ video{width:100%;border-radius:15px}
 
 <!-- LOGIN -->
 <div class="screen active" id="login">
-  <div class="hero"></div>
   <div class="card">
-    <input id="username" placeholder="Enter username">
-    <div class="btn" onclick="enterApp()">Enter Cook’ed</div>
+    <h2>Cook’ed</h2>
+    <input id="username" placeholder="Username">
+    <div class="btn" onclick="enterApp()">Enter</div>
   </div>
 </div>
 
-<!-- TIKTOK FEED -->
+<!-- FEED -->
 <div class="screen" id="home">
   <div class="feed" id="feed"></div>
+</div>
+
+<!-- RECIPE MODAL -->
+<div class="modal" id="recipeModal">
+  <div id="recipeContent"></div>
+  <div class="btn" onclick="closeRecipe()">Close</div>
 </div>
 
 <!-- SEARCH -->
 <div class="screen" id="search">
   <div class="header">Search</div>
   <div class="bubbles">
-    <div class="bubble" onclick="filterFeed('protein')">Protein</div>
-    <div class="bubble" onclick="filterFeed('seafood')">Seafood</div>
-    <div class="bubble" onclick="filterFeed('quick')">Quick Meals</div>
-    <div class="bubble" onclick="filterFeed('fried')">Fried</div>
+    <div class="bubble" onclick="loadFeed('protein')">Protein</div>
+    <div class="bubble" onclick="loadFeed('quick')">Quick</div>
+    <div class="bubble" onclick="loadFeed('seafood')">Seafood</div>
   </div>
 </div>
 
-<!-- CAMERA -->
+<!-- CAMERA (FREE) -->
 <div class="screen" id="camera">
   <div class="header">Scan Food</div>
   <video id="video" autoplay></video>
@@ -75,20 +79,25 @@ video{width:100%;border-radius:15px}
   <div id="result"></div>
 </div>
 
-<!-- FRIDGE (premium) -->
+<!-- FRIDGE (FREE SCAN) -->
 <div class="screen" id="fridge">
-  <div class="header">Fridge Scanner</div>
+  <div class="header">Fridge Scan</div>
   <video id="fridgeVideo" autoplay></video>
   <div class="btn" onclick="scanFridge()">Scan Ingredients</div>
   <div id="fridgeResult"></div>
+
+  <!-- PREMIUM INSIGHTS -->
+  <div id="premiumAI" style="display:none">
+    <div class="chat" id="chat"></div>
+    <input placeholder="Ask about diet..." onkeydown="chatAI(event)">
+  </div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="header">Profile</div>
-  <img class="avatar" src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Gnome-stock_person.svg">
   <div id="userInfo"></div>
-  <div class="btn" onclick="togglePremium()">Toggle Premium 👑</div>
+  <div class="btn" onclick="togglePremium()">Toggle Premium</div>
 </div>
 
 <!-- NAV -->
@@ -103,89 +112,61 @@ video{width:100%;border-radius:15px}
 </div>
 
 <script>
-let isPremium=false;
-let user;
-let model;
+let user, isPremium=false, model;
 
-function nav(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+function nav(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
-function enterApp(){
-  user = document.getElementById('username').value || 'Chef';
-  userInfo.innerText = "👤 " + user;
-  loadFeed();
-  nav('home');
-}
+function enterApp(){user=document.getElementById('username').value||'Chef';userInfo.innerText=user;loadFeed();nav('home');}
 
 function loadFeed(type='food'){
   feed.innerHTML='';
   ['chicken','steak','pasta','salmon'].forEach(f=>{
-    feed.innerHTML += `
-    <div class="feed-item">
+    feed.innerHTML+=`
+    <div class="feed-item" onclick="openRecipe('${f}')">
       <img src="https://source.unsplash.com/900x1600/?${f},${type}">
-      <div class="overlay">
-        <h2>${f}</h2>
-        <div>${Math.floor(Math.random()*500)} kcal</div>
-      </div>
+      <div class="overlay"><h2>${f}</h2></div>
     </div>`;
   });
 }
 
-function filterFeed(type){
-  loadFeed(type);
-  nav('home');
+function openRecipe(food){
+  recipeModal.classList.add('active');
+  recipeContent.innerHTML=`
+    <h2>${food}</h2>
+    <img src="https://source.unsplash.com/400x300/?${food}">
+    <p>Ingredients: sample ingredients</p>
+    <p>Steps: cook, season, serve</p>
+    ${isPremium ? '<video controls src="https://www.w3schools.com/html/mov_bbb.mp4"></video>' : '<p>🔒 Videos are Premium</p>'}
+  `;
 }
 
-async function startCamera(){
-  nav('camera');
-  const stream = await navigator.mediaDevices.getUserMedia({video:true});
-  video.srcObject = stream;
-  if(!model) model = await mobilenet.load();
-}
+function closeRecipe(){recipeModal.classList.remove('active');}
 
-function capture(){
-  const ctx = canvas.getContext('2d');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video,0,0);
-  detectFood();
-}
+async function startCamera(){nav('camera');const stream=await navigator.mediaDevices.getUserMedia({video:true});video.srcObject=stream;if(!model)model=await mobilenet.load();}
 
-async function detectFood(){
-  const predictions = await model.classify(video);
-  result.innerHTML = `<div class="card"><h3>${predictions[0].className}</h3>${(predictions[0].probability*100).toFixed(1)}%</div>`;
-}
+function capture(){const ctx=canvas.getContext('2d');canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0);detectFood();}
 
-function openFridge(){
-  if(!isPremium){
-    nav('fridge');
-    fridgeResult.innerHTML = `<div class="lock">🔒 Premium Feature<br>Enable premium to scan your fridge</div>`;
-    return;
-  }
-  nav('fridge');
-  startFridgeCamera();
-}
+async function detectFood(){const p=await model.classify(video);result.innerHTML=`<div class="card">${p[0].className} ${(p[0].probability*100).toFixed(1)}%</div>`;}
 
-async function startFridgeCamera(){
-  const stream = await navigator.mediaDevices.getUserMedia({video:true});
-  fridgeVideo.srcObject = stream;
-}
+function openFridge(){nav('fridge');startFridge();}
+
+async function startFridge(){const stream=await navigator.mediaDevices.getUserMedia({video:true});fridgeVideo.srcObject=stream;}
 
 function scanFridge(){
-  if(!isPremium){
-    fridgeResult.innerHTML = `<div class="lock">🔒 Upgrade to use this</div>`;
-    return;
+  fridgeResult.innerHTML='<div class="card">Detected: eggs, milk, veggies</div>';
+  if(isPremium){premiumAI.style.display='block'}
+}
+
+function chatAI(e){
+  if(e.key==='Enter'){
+    let msg=e.target.value;
+    chat.innerHTML+=`<div class="msg">You: ${msg}</div>`;
+    chat.innerHTML+=`<div class="msg">AI: Eat more protein & veggies 💪</div>`;
+    e.target.value='';
   }
-  fridgeResult.innerHTML = `<div class="card">Detected: eggs, milk, vegetables 🥦</div>`;
 }
 
-function togglePremium(){
-  isPremium=!isPremium;
-  document.body.classList.toggle('premium');
-}
-
+function togglePremium(){isPremium=!isPremium;document.body.classList.toggle('premium');}
 </script>
 
 </body>
