@@ -3,36 +3,48 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 
 <style>
 :root{--accent:#00ff9d;--bg:#000;--card:rgba(255,255,255,0.08);--text:#fff}
 .premium{--accent:#ff7a9c}
 
-body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text);overflow:hidden}
+body{margin:0;font-family:-apple-system;background:#000;color:#fff}
 
 .screen{display:none;height:100vh;overflow:auto}
 .active{display:block}
-
-.card{background:var(--card);border-radius:20px;padding:15px;margin:10px}
-.btn{background:var(--accent);padding:12px;border-radius:14px;text-align:center;margin:10px;font-weight:700}
-
-.nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px;background:#000}
 
 .feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
 .feed-item{height:100vh;scroll-snap-align:start;position:relative}
 .feed-item img{width:100%;height:100%;object-fit:cover}
 
 .overlay{position:absolute;bottom:120px;left:15px}
+.actions{position:absolute;right:15px;bottom:120px;text-align:center}
+.actions div{margin:10px 0;font-size:18px}
+
+.card{background:rgba(255,255,255,0.08);padding:15px;border-radius:20px;margin:10px}
+.btn{background:var(--accent);padding:12px;border-radius:14px;margin:10px;text-align:center}
+
+.nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:10px;background:#000}
 
 .modal{position:fixed;inset:0;background:#000;display:none;padding:20px;overflow:auto}
 .modal.active{display:block}
 
 .hero{height:300px;background:url('https://source.unsplash.com/900x700/?chef,kitchen') center/cover}
 
-.progress{height:8px;background:#222;border-radius:10px;margin:6px 0}
-.progress div{height:100%;background:var(--accent);border-radius:10px}
+.heart{
+position:absolute;
+top:50%;left:50%;
+transform:translate(-50%,-50%);
+font-size:80px;
+animation:pop .6s;
+}
+@keyframes pop{
+0%{opacity:0;transform:scale(.5)}
+50%{opacity:1;transform:scale(1.2)}
+100%{opacity:0}
+}
 </style>
 </head>
 
@@ -53,26 +65,28 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text);o
 </div>
 
 <div id="camera" class="screen">
-<video id="video" autoplay playsinline></video>
-<div class="btn" onclick="capture()">Scan Food</div>
+<video id="video" autoplay playsinline style="width:100%"></video>
+<canvas id="canvas" style="display:none"></canvas>
+<div class="btn" onclick="capture()">Scan</div>
 <div id="scanResult"></div>
 </div>
 
 <div id="profile" class="screen">
 <div id="userInfo"></div>
-<div class="btn" onclick="togglePremium()">Toggle Premium</div>
+<div class="btn" onclick="togglePremium()">Toggle Premium 👑</div>
 
 <div id="health" style="display:none">
-<input id="height" placeholder="Height (cm)">
-<input id="weight" placeholder="Weight (kg)">
+<input id="height" placeholder="Height cm">
+<input id="weight" placeholder="Weight kg">
 <div class="btn" onclick="analyze()">Analyze</div>
-
 <div id="healthResult"></div>
 <div id="mealPlan"></div>
 </div>
 </div>
 
 <div id="recipeModal" class="modal"></div>
+
+<div id="commentModal" class="modal"></div>
 
 <div class="nav">
 <div onclick="nav('home')">🏠</div>
@@ -82,15 +96,17 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text);o
 
 <script>
 let user,isPremium=false,model,stream;
+let likes={},commentsData={};
 
-// NAVIGATION
 function nav(id){
-stopCamera();
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
+
+if(id!=='camera' && stream){
+stream.getTracks().forEach(t=>t.stop());
+}
 }
 
-// LOGIN
 function enterApp(){
 user=username.value||'Chef';
 userInfo.innerText="👤 "+user;
@@ -98,105 +114,117 @@ loadFeed();
 nav('home');
 }
 
-// FEED
 async function loadFeed(){
 let res=await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
 let data=await res.json();
-
 feed.innerHTML='';
 
-data.meals.slice(0,10).forEach(meal=>{
+data.meals.slice(0,8).forEach(meal=>{
+likes[meal.idMeal]=likes[meal.idMeal]||Math.floor(Math.random()*500);
+
 feed.innerHTML+=`
-<div class="feed-item">
-<img src="${meal.strMealThumb}" onclick="openRecipe('${meal.strMeal}')">
+<div class="feed-item" ondblclick="doubleLike('${meal.idMeal}')">
+<img src="${meal.strMealThumb}" onclick="openRecipe('${meal.strMeal}','${meal.idMeal}')">
+
 <div class="overlay"><h2>${meal.strMeal}</h2></div>
+
+<div class="actions">
+<div onclick="like('${meal.idMeal}')">❤️<br>${likes[meal.idMeal]}</div>
+<div onclick="openComments('${meal.idMeal}')">💬</div>
+<div onclick="save('${meal.idMeal}')">🔖</div>
+</div>
+
+<div id="heart-${meal.idMeal}"></div>
 </div>`;
 });
 }
 
-// RECIPE MODAL
-async function openRecipe(name){
-let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
-let data=await res.json();
-let meal=data.meals[0];
+function like(id){likes[id]++;loadFeed();}
 
+function doubleLike(id){
+likes[id]++;
+document.getElementById("heart-"+id).innerHTML="<div class='heart'>❤️</div>";
+setTimeout(loadFeed,300);
+}
+
+function save(id){
+alert("Saved 🔖");
+}
+
+function openRecipe(name,id){
 recipeModal.classList.add('active');
-
 recipeModal.innerHTML=`
-<h2>${meal.strMeal}</h2>
-<img src="${meal.strMealThumb}" style="width:100%;border-radius:10px">
-<p>${meal.strInstructions.substring(0,400)}...</p>
-
-${isPremium?`
-<iframe width="100%" height="200"
-src="https://www.youtube.com/embed?listType=search&list=${name} recipe">
-</iframe>`:`<p>🔒 Premium unlocks videos</p>`}
-
+<h2>${name}</h2>
+<p>Recipe loaded</p>
+${isPremium?`<iframe width="100%" height="200" src="https://www.youtube.com/embed?listType=search&list=${name} recipe"></iframe>`:'🔒 Premium for video'}
 <div class="btn" onclick="closeRecipe()">Close</div>
 `;
 }
 
 function closeRecipe(){recipeModal.classList.remove('active');}
 
+function openComments(id){
+commentModal.classList.add('active');
+if(!commentsData[id])commentsData[id]=["🔥 fire","making this"];
+commentModal.innerHTML=`<h3>Comments</h3>`;
+
+commentsData[id].forEach(c=>{
+commentModal.innerHTML+=`<div class="card">${c}</div>`;
+});
+
+commentModal.innerHTML+=`
+<input id="commentInput" placeholder="Add comment" onkeydown="addComment(event,'${id}')">
+<div class="btn" onclick="closeComments()">Close</div>
+`;
+}
+
+function addComment(e,id){
+if(e.key==="Enter"){
+commentsData[id].push(e.target.value);
+openComments(id);
+}
+}
+
+function closeComments(){commentModal.classList.remove('active');}
+
 // CAMERA
 async function startCamera(){
 nav('camera');
 
-try{
 stream=await navigator.mediaDevices.getUserMedia({
 video:{facingMode:"environment"}
 });
+
 video.srcObject=stream;
 
-if(!model){
-scanResult.innerHTML="Loading AI...";
-model=await mobilenet.load();
-scanResult.innerHTML="Ready to scan 🍳";
-}
-}catch(e){
-scanResult.innerHTML="Camera access denied ❌";
-}
+if(!model)model=await mobilenet.load();
 }
 
-function stopCamera(){
-if(stream){
-stream.getTracks().forEach(track=>track.stop());
-}
-}
-
-// SCAN
 async function capture(){
-scanResult.innerHTML="Scanning...";
+const ctx=canvas.getContext('2d');
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+ctx.drawImage(video,0,0);
 
-let predictions=await model.classify(video);
+let predictions=await model.classify(canvas);
 let food=predictions[0].className.split(',')[0];
 
-scanResult.innerHTML=`Detected: <b>${food}</b>`;
-
+scanResult.innerHTML=`<div class="card">Detected: ${food}</div>`;
 suggestRecipe(food);
 }
 
-// SUGGESTION
 async function suggestRecipe(food){
 let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${food}`);
 let data=await res.json();
 
 if(data.meals){
-let meal=data.meals[0];
-
-scanResult.innerHTML+=`
-<div class="card" onclick="openRecipe('${meal.strMeal}')">
-🔥 Try: ${meal.strMeal}
-</div>`;
-}else{
-scanResult.innerHTML+=`<div>No recipe found 😭</div>`;
+scanResult.innerHTML+=`<div class="card">Try: ${data.meals[0].strMeal}</div>`;
 }
 }
 
 // PREMIUM
 function togglePremium(){
 isPremium=!isPremium;
-document.body.classList.toggle('premium');
 health.style.display=isPremium?'block':'none';
 }
 
@@ -204,41 +232,22 @@ health.style.display=isPremium?'block':'none';
 function analyze(){
 let h=height.value;
 let w=weight.value;
-
 let bmi=(w/((h/100)*(h/100))).toFixed(1);
 
 let goal=bmi<18.5?"Bulk 💪":bmi<25?"Maintain ⚖️":"Cut 🔥";
-let protein=Math.floor(w*1.2);
-let calories=Math.floor(2000+w*10);
 
-healthResult.innerHTML=`
-<div class="card">
-BMI: ${bmi}<br>
-Goal: ${goal}<br>
-Calories: ${calories}<br>
-Protein: ${protein}g
-
-<div class="progress"><div style="width:${protein/2}%"></div></div>
-</div>
-`;
-
+healthResult.innerHTML=`<div class="card">BMI: ${bmi}<br>${goal}</div>`;
 generateMeals(goal);
 }
 
-// MEALS
 async function generateMeals(goal){
-let query=goal.includes("Bulk")?"chicken":goal.includes("Cut")?"salad":"rice";
-
+let query=goal.includes("Bulk")?"chicken":"salad";
 let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
 let data=await res.json();
 
-mealPlan.innerHTML="<h3>Recommended Meals</h3>";
-
+mealPlan.innerHTML="<h3>Meals</h3>";
 data.meals.slice(0,3).forEach(m=>{
-mealPlan.innerHTML+=`
-<div class="card" onclick="openRecipe('${m.strMeal}')">
-${m.strMeal}
-</div>`;
+mealPlan.innerHTML+=`<div class="card">${m.strMeal}</div>`;
 });
 }
 </script>
