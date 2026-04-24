@@ -13,41 +13,36 @@
   --text:#eafff5;
 }
 
-/* PREMIUM THEME */
-.premium-on{
-  --accent:#ffcc00;
-  --bg:#1a1200;
-  --card:rgba(255,204,0,0.1);
+/* PREMIUM COLORS */
+.premium-mode{
+  --accent:#ff7b7b;
+  --text:#ffecec;
 }
 
 body{
+  margin:0;
   font-family:system-ui;
-  background:var(--bg);
+  background:#000;
   color:var(--text);
 }
 
-/* BASIC UI SAME BUT CLEANER */
+/* GENERAL */
 .screen{display:none;padding:20px}
 .active{display:block}
 
+.header{text-align:center;font-size:24px;font-weight:bold}
+
+/* CARDS */
 .card{
   background:var(--card);
-  padding:12px;
+  padding:10px;
   border-radius:15px;
-  margin-bottom:12px;
+  margin-top:10px;
 }
 
-img{width:100%;border-radius:10px}
-
-/* BUTTON */
-button{
-  background:var(--accent);
-  border:none;
-  padding:10px;
-  border-radius:10px;
+.card img{
   width:100%;
-  margin-top:8px;
-  cursor:pointer;
+  border-radius:10px;
 }
 
 /* NAV */
@@ -61,23 +56,27 @@ button{
   padding:10px;
 }
 
-/* PREMIUM */
+/* TOGGLE */
 .toggle{
-  width:40px;height:20px;background:#333;border-radius:20px;cursor:pointer;
+  width:40px;height:20px;background:#333;border-radius:20px;cursor:pointer;position:relative
+}
+.toggle::after{
+  content:"";width:18px;height:18px;background:white;position:absolute;top:1px;left:1px;border-radius:50%
 }
 .toggle.active{background:var(--accent)}
+.toggle.active::after{left:21px}
 
 /* AUTH */
 .auth-btn{
+  margin-top:10px;
   padding:10px;
-  margin:5px 0;
   border-radius:10px;
   background:#111;
   text-align:center;
   cursor:pointer;
 }
 
-/* HEALTH */
+/* HEALTH PANEL */
 .health{
   background:#111;
   padding:10px;
@@ -89,44 +88,46 @@ button{
 
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-  <h1>Cook’ed</h1>
-  <input id="user" placeholder="Username">
-  <button onclick="start()">Enter</button>
-</div>
-
-<!-- APP -->
-<div id="app" style="display:none">
+<div id="app">
 
 <!-- HOME -->
-<div id="home" class="screen active">
-  <h2>Cook’ed</h2>
+<div class="screen active" id="home">
+  <div class="header">Cook’ed</div>
   <input placeholder="Search food..." onkeyup="search(this.value)">
   <div id="feed"></div>
 </div>
 
 <!-- AI -->
-<div id="ai" class="screen">
-  <h2>AI Kitchen</h2>
-  <input placeholder="Type ingredients..." onkeyup="ai(this.value)">
+<div class="screen" id="ai">
+  <div class="header">AI Kitchen</div>
+  <input placeholder="Type ingredients...">
   <div id="aiBox"></div>
-
-  <button onclick="scan()">📸 Scan Meal</button>
-
-  <div id="healthPanel"></div>
 </div>
 
 <!-- PROFILE -->
-<div id="profile" class="screen">
-  <h2 id="name"></h2>
+<div class="screen" id="profile">
+  <div class="header">Profile</div>
 
-  <div>
+  <div>Chef User</div>
+
+  <div style="margin-top:10px;">
     Cook’ed Premium 👑
-    <div class="toggle" id="toggle" onclick="premium()"></div>
+    <div class="toggle" id="toggle" onclick="togglePremium()"></div>
   </div>
 
-  <div id="auth"></div>
+  <!-- AUTH (PREMIUM ONLY) -->
+  <div id="authSection" style="display:none;">
+    <div class="auth-btn">🔐 Sign in with Google</div>
+    <div class="auth-btn">🍎 Sign in with Apple</div>
+    <div class="auth-btn">🪟 Sign in with Microsoft</div>
+  </div>
+
+  <!-- HEALTH AI -->
+  <div id="healthSection" style="display:none;">
+    <div class="card" onclick="scanFood()">📸 Scan Meal</div>
+    <div id="healthResult"></div>
+  </div>
+
 </div>
 
 <!-- NAV -->
@@ -140,94 +141,67 @@ button{
 
 <script>
 
-function start(){
-  app.style.display="block";
-  login.style.display="none";
-  name.innerText="Chef "+user.value;
-  loadFeed();
-}
-
-function nav(x){
+/* NAV */
+function nav(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(x).classList.add("active");
+  document.getElementById(id).classList.add("active");
 }
 
-/* IMAGE API */
-function foodImg(q){
-  return `https://source.unsplash.com/400x300/?${q},food`;
-}
-
-/* FEED */
+/* LOAD FEED WITH REAL IMAGES */
 function loadFeed(){
-  let foods=["chicken","pasta","steak"];
-  feed.innerHTML="";
+  const foods=["chicken","steak","pasta","salmon"];
+
   foods.forEach(f=>{
     feed.innerHTML+=`
     <div class="card">
-      <img src="${foodImg(f)}">
+      <img src="https://source.unsplash.com/400x300/?${f},food">
       <b>${f}</b>
-      <button onclick="open('${f}')">View</button>
     </div>`;
   });
 }
+loadFeed();
 
 /* SEARCH */
 function search(q){
   if(q.length<2)return;
-  open(q);
-}
-
-/* AI */
-function ai(q){
-  if(q.length<2)return;
-  aiBox.innerHTML=`<div class="card" onclick="open('${q}')">AI Suggestion: ${q}</div>`;
-}
-
-/* SCAN FOOD AI */
-function scan(){
-  alert("Scanning image...");
-  setTimeout(()=>{
-    let food="chicken salad";
-
-    healthPanel.innerHTML=`
-    <div class="health">
-      <h3>${food}</h3>
-      Calories: 400 kcal<br>
-      Protein: 30g<br>
-      Carbs: 20g<br><br>
-
-      💡 Recommendation:
-      High protein meal. Good for muscle gain.
+  feed.innerHTML=`
+    <div class="card">
+      <img src="https://source.unsplash.com/400x300/?${q},food">
+      <b>${q}</b>
     </div>`;
-  },1500);
 }
 
 /* PREMIUM */
-let isPremium=false;
+let premium=false;
 
-function premium(){
-  isPremium=!isPremium;
+function togglePremium(){
+  premium=!premium;
   toggle.classList.toggle("active");
 
-  if(isPremium){
-    document.body.classList.add("premium-on");
+  document.body.classList.toggle("premium-mode");
 
-    auth.innerHTML=`
-      <h3>Sign in</h3>
-      <div class="auth-btn">Continue with Google</div>
-      <div class="auth-btn">Continue with Apple</div>
-      <div class="auth-btn">Continue with Microsoft</div>
-      <div class="auth-btn">Enable 2FA 🔐</div>
-    `;
-  }else{
-    document.body.classList.remove("premium-on");
-    auth.innerHTML="";
-  }
+  authSection.style.display = premium ? "block":"none";
+  healthSection.style.display = premium ? "block":"none";
 }
 
-/* OPEN */
-function open(q){
-  alert("Loading "+q);
+/* AI FOOD SCAN + HEALTH */
+function scanFood(){
+  const foods=[
+    {name:"Chicken",cal:450,protein:35,diet:"High Protein 💪"},
+    {name:"Salmon",cal:500,protein:40,diet:"Healthy Fats 🧠"},
+    {name:"Pasta",cal:650,protein:20,diet:"Carb Load 🍝"}
+  ];
+
+  let f=foods[Math.floor(Math.random()*foods.length)];
+
+  healthResult.innerHTML=`
+    <div class="health">
+      <h3>${f.name}</h3>
+      Calories: ${f.cal} kcal<br>
+      Protein: ${f.protein}g<br>
+      Recommendation: ${f.diet}
+    </div>
+  `;
 }
 
 </script>
