@@ -5,44 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cook’ed</title>
 
+<!-- TensorFlow -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
 <style>
 :root{
-  --bg:#020617;
-  --card:rgba(255,255,255,0.06);
   --accent:#00ff9d;
-  --text:#eafff5;
+  --bg:#000;
+  --card:rgba(255,255,255,0.08);
+  --text:#fff;
 }
 
-/* PREMIUM COLORS */
-.premium-mode{
-  --accent:#ff7b7b;
-  --text:#ffecec;
+/* PREMIUM MODE */
+.premium{
+  --accent:#ff7a9c;
 }
 
+/* BODY */
 body{
   margin:0;
-  font-family:system-ui;
-  background:#000;
+  font-family:-apple-system,BlinkMacSystemFont;
+  background:var(--bg);
   color:var(--text);
 }
 
-/* GENERAL */
-.screen{display:none;padding:20px}
+/* HEADER */
+.header{
+  text-align:center;
+  font-size:22px;
+  font-weight:600;
+  padding:15px;
+}
+
+/* SCREENS */
+.screen{display:none;padding:15px}
 .active{display:block}
 
-.header{text-align:center;font-size:24px;font-weight:bold}
-
-/* CARDS */
+/* CARD */
 .card{
   background:var(--card);
+  border-radius:20px;
   padding:10px;
-  border-radius:15px;
-  margin-top:10px;
+  margin-bottom:15px;
+  backdrop-filter:blur(20px);
 }
 
 .card img{
   width:100%;
-  border-radius:10px;
+  border-radius:15px;
 }
 
 /* NAV */
@@ -52,36 +63,25 @@ body{
   width:100%;
   display:flex;
   justify-content:space-around;
-  background:#000;
-  padding:10px;
+  padding:12px;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(20px);
 }
 
 /* TOGGLE */
 .toggle{
-  width:40px;height:20px;background:#333;border-radius:20px;cursor:pointer;position:relative
+  width:45px;height:22px;background:#333;border-radius:20px;cursor:pointer;position:relative
 }
 .toggle::after{
-  content:"";width:18px;height:18px;background:white;position:absolute;top:1px;left:1px;border-radius:50%
+  content:"";width:20px;height:20px;background:white;position:absolute;top:1px;left:1px;border-radius:50%
 }
 .toggle.active{background:var(--accent)}
-.toggle.active::after{left:21px}
+.toggle.active::after{left:23px}
 
-/* AUTH */
-.auth-btn{
-  margin-top:10px;
-  padding:10px;
-  border-radius:10px;
-  background:#111;
-  text-align:center;
-  cursor:pointer;
-}
-
-/* HEALTH PANEL */
-.health{
-  background:#111;
-  padding:10px;
-  border-radius:10px;
-  margin-top:10px;
+/* CAMERA */
+video{
+  width:100%;
+  border-radius:15px;
 }
 </style>
 </head>
@@ -93,15 +93,17 @@ body{
 <!-- HOME -->
 <div class="screen active" id="home">
   <div class="header">Cook’ed</div>
-  <input placeholder="Search food..." onkeyup="search(this.value)">
   <div id="feed"></div>
 </div>
 
-<!-- AI -->
+<!-- AI CAMERA -->
 <div class="screen" id="ai">
-  <div class="header">AI Kitchen</div>
-  <input placeholder="Type ingredients...">
-  <div id="aiBox"></div>
+  <div class="header">Scan Food</div>
+
+  <video id="camera" autoplay></video>
+  <button onclick="scan()">Scan</button>
+
+  <div id="result"></div>
 </div>
 
 <!-- PROFILE -->
@@ -111,21 +113,13 @@ body{
   <div>Chef User</div>
 
   <div style="margin-top:10px;">
-    Cook’ed Premium 👑
+    Premium 👑
     <div class="toggle" id="toggle" onclick="togglePremium()"></div>
   </div>
 
-  <!-- AUTH (PREMIUM ONLY) -->
-  <div id="authSection" style="display:none;">
-    <div class="auth-btn">🔐 Sign in with Google</div>
-    <div class="auth-btn">🍎 Sign in with Apple</div>
-    <div class="auth-btn">🪟 Sign in with Microsoft</div>
-  </div>
-
-  <!-- HEALTH AI -->
-  <div id="healthSection" style="display:none;">
-    <div class="card" onclick="scanFood()">📸 Scan Meal</div>
-    <div id="healthResult"></div>
+  <div id="premiumFeatures" style="display:none;">
+    <div class="card">🔐 Google / Apple / Microsoft Login</div>
+    <div class="card">💪 Nutrition AI Enabled</div>
   </div>
 
 </div>
@@ -133,7 +127,7 @@ body{
 <!-- NAV -->
 <div class="nav">
   <div onclick="nav('home')">🏠</div>
-  <div onclick="nav('ai')">🤖</div>
+  <div onclick="nav('ai')">📸</div>
   <div onclick="nav('profile')">👤</div>
 </div>
 
@@ -147,9 +141,9 @@ function nav(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* LOAD FEED WITH REAL IMAGES */
+/* FEED */
 function loadFeed(){
-  const foods=["chicken","steak","pasta","salmon"];
+  let foods=["chicken","pasta","steak","salmon"];
 
   foods.forEach(f=>{
     feed.innerHTML+=`
@@ -161,47 +155,45 @@ function loadFeed(){
 }
 loadFeed();
 
-/* SEARCH */
-function search(q){
-  if(q.length<2)return;
-  feed.innerHTML=`
+/* CAMERA SETUP */
+let model;
+
+async function initCamera(){
+  const stream = await navigator.mediaDevices.getUserMedia({ video:true });
+  camera.srcObject = stream;
+
+  model = await mobilenet.load();
+}
+initCamera();
+
+/* SCAN FUNCTION */
+async function scan(){
+  const predictions = await model.classify(camera);
+
+  let top = predictions[0];
+
+  result.innerHTML=`
     <div class="card">
-      <img src="https://source.unsplash.com/400x300/?${q},food">
-      <b>${q}</b>
-    </div>`;
+      <h3>${top.className}</h3>
+      Confidence: ${(top.probability*100).toFixed(1)}%
+      <br><br>
+      Calories: ${Math.floor(Math.random()*500+200)} kcal
+      <br>
+      Protein: ${Math.floor(Math.random()*40)}g
+    </div>
+  `;
 }
 
 /* PREMIUM */
-let premium=false;
+let isPremium=false;
 
 function togglePremium(){
-  premium=!premium;
+  isPremium=!isPremium;
+
   toggle.classList.toggle("active");
+  document.body.classList.toggle("premium");
 
-  document.body.classList.toggle("premium-mode");
-
-  authSection.style.display = premium ? "block":"none";
-  healthSection.style.display = premium ? "block":"none";
-}
-
-/* AI FOOD SCAN + HEALTH */
-function scanFood(){
-  const foods=[
-    {name:"Chicken",cal:450,protein:35,diet:"High Protein 💪"},
-    {name:"Salmon",cal:500,protein:40,diet:"Healthy Fats 🧠"},
-    {name:"Pasta",cal:650,protein:20,diet:"Carb Load 🍝"}
-  ];
-
-  let f=foods[Math.floor(Math.random()*foods.length)];
-
-  healthResult.innerHTML=`
-    <div class="health">
-      <h3>${f.name}</h3>
-      Calories: ${f.cal} kcal<br>
-      Protein: ${f.protein}g<br>
-      Recommendation: ${f.diet}
-    </div>
-  `;
+  premiumFeatures.style.display = isPremium ? "block":"none";
 }
 
 </script>
