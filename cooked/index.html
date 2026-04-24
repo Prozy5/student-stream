@@ -13,209 +13,76 @@
   --text:#eafff5;
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
+/* PREMIUM THEME */
+.premium-on{
+  --accent:#ffcc00;
+  --bg:#1a1200;
+  --card:rgba(255,204,0,0.1);
+}
 
 body{
   font-family:system-ui;
-  background:#000;
+  background:var(--bg);
   color:var(--text);
 }
 
-/* LOGIN */
-.login-screen{
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.login-box{
-  background:var(--card);
-  backdrop-filter:blur(20px);
-  padding:30px;
-  border-radius:20px;
-  width:300px;
-  text-align:center;
-}
-
-/* INPUTS */
-input{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:var(--accent);
-  cursor:pointer;
-  font-weight:bold;
-}
-
-/* APP */
-.app{
-  display:none;
-  height:100vh;
-  flex-direction:column;
-}
-
-.screen{
-  display:none;
-  flex:1;
-  overflow:auto;
-  padding:20px;
-}
-
+/* BASIC UI SAME BUT CLEANER */
+.screen{display:none;padding:20px}
 .active{display:block}
 
-/* HEADER */
-.header{
-  text-align:center;
-  font-weight:900;
-  font-size:24px;
-  margin-bottom:15px;
-  color:#7df9ff;
-}
-
-/* CARD */
 .card{
   background:var(--card);
-  backdrop-filter:blur(15px);
+  padding:12px;
+  border-radius:15px;
+  margin-bottom:12px;
+}
+
+img{width:100%;border-radius:10px}
+
+/* BUTTON */
+button{
+  background:var(--accent);
+  border:none;
   padding:10px;
-  border-radius:18px;
-  margin-bottom:15px;
-  animation:fade .4s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1}
-}
-
-.card img{
+  border-radius:10px;
   width:100%;
-  border-radius:12px;
+  margin-top:8px;
   cursor:pointer;
 }
 
 /* NAV */
 .nav{
-  height:65px;
+  position:fixed;
+  bottom:0;
+  width:100%;
   display:flex;
   justify-content:space-around;
-  align-items:center;
   background:#000;
-  border-top:1px solid rgba(255,255,255,0.1);
-  font-size:22px;
-}
-
-/* AI BUBBLES */
-.bubble{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  background:radial-gradient(circle,#00ff9d33,#000);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-size:13px;
-  cursor:pointer;
-  transition:.3s;
-}
-
-.bubble:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 20px #00ff9d;
-}
-
-/* PROFILE */
-.upload{
-  margin-top:15px;
-  padding:15px;
-  border:2px dashed var(--accent);
-  text-align:center;
-  border-radius:15px;
-}
-
-/* MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.9);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-
-.modal-content{
-  background:#0a0a0a;
-  padding:20px;
-  border-radius:15px;
-  max-width:500px;
-  width:90%;
-  max-height:80vh;
-  overflow:auto;
+  padding:10px;
 }
 
 /* PREMIUM */
-.premium{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#111;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:15px;
-}
-
 .toggle{
-  width:40px;
-  height:20px;
-  background:#333;
-  border-radius:20px;
-  position:relative;
-  cursor:pointer;
+  width:40px;height:20px;background:#333;border-radius:20px;cursor:pointer;
 }
+.toggle.active{background:var(--accent)}
 
-.toggle::after{
-  content:"";
-  width:18px;
-  height:18px;
-  background:white;
-  position:absolute;
-  top:1px;
-  left:1px;
-  border-radius:50%;
-  transition:.3s;
-}
-
-.toggle.active{
-  background:var(--accent);
-}
-
-.toggle.active::after{
-  left:21px;
-}
-
-/* COMMENTS */
-.comment{
+/* AUTH */
+.auth-btn{
+  padding:10px;
+  margin:5px 0;
+  border-radius:10px;
   background:#111;
-  padding:8px;
-  border-radius:8px;
-  margin-top:5px;
-  font-size:12px;
+  text-align:center;
+  cursor:pointer;
 }
 
-.like{
-  cursor:pointer;
-  margin-top:5px;
-  font-size:14px;
+/* HEALTH */
+.health{
+  background:#111;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -223,184 +90,145 @@ button{
 <body>
 
 <!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <h1>Cook’ed</h1>
-    <input id="username" placeholder="Username">
-    <button onclick="login()">Enter Kitchen</button>
-  </div>
+<div id="login">
+  <h1>Cook’ed</h1>
+  <input id="user" placeholder="Username">
+  <button onclick="start()">Enter</button>
 </div>
 
 <!-- APP -->
-<div class="app" id="app">
+<div id="app" style="display:none">
 
 <!-- HOME -->
-<div class="screen active" id="home">
-  <div class="header">Cook’ed</div>
-
-  <input placeholder="Search recipes..." onkeyup="searchRecipe(this.value)">
-
+<div id="home" class="screen active">
+  <h2>Cook’ed</h2>
+  <input placeholder="Search food..." onkeyup="search(this.value)">
   <div id="feed"></div>
 </div>
 
 <!-- AI -->
-<div class="screen" id="ai">
-  <div class="header">AI Kitchen</div>
+<div id="ai" class="screen">
+  <h2>AI Kitchen</h2>
+  <input placeholder="Type ingredients..." onkeyup="ai(this.value)">
+  <div id="aiBox"></div>
 
-  <input placeholder="Type ingredients..." onkeyup="aiSuggest(this.value)">
+  <button onclick="scan()">📸 Scan Meal</button>
 
-  <div id="aiResults"></div>
+  <div id="healthPanel"></div>
 </div>
 
 <!-- PROFILE -->
-<div class="screen" id="profile">
-  <div class="header">Profile</div>
+<div id="profile" class="screen">
+  <h2 id="name"></h2>
 
-  <div id="userDisplay"></div>
-
-  <div class="premium">
+  <div>
     Cook’ed Premium 👑
-    <div class="toggle" id="premiumToggle" onclick="togglePremium()"></div>
+    <div class="toggle" id="toggle" onclick="premium()"></div>
   </div>
 
-  <div class="upload" onclick="scanFood()">📸 Scan Food</div>
-
-  <h4>Saved Recipes</h4>
-  <div id="savedList"></div>
+  <div id="auth"></div>
 </div>
 
 <!-- NAV -->
 <div class="nav">
-  <div onclick="switchScreen('home')">🏠</div>
-  <div onclick="switchScreen('ai')">🤖</div>
-  <div onclick="switchScreen('profile')">👤</div>
+  <div onclick="nav('home')">🏠</div>
+  <div onclick="nav('ai')">🤖</div>
+  <div onclick="nav('profile')">👤</div>
 </div>
 
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="recipeModal">
-  <div class="modal-content" id="recipeContent"></div>
 </div>
 
 <script>
 
-/* LOGIN */
-function login(){
-  let user=username.value;
-  if(!user)return;
-  localStorage.setItem("user",user);
-  startApp();
-}
-
-function startApp(){
-  loginScreen.style.display="none";
-  app.style.display="flex";
-  userDisplay.innerText="Chef "+localStorage.getItem("user");
-  loadSaved();
+function start(){
+  app.style.display="block";
+  login.style.display="none";
+  name.innerText="Chef "+user.value;
   loadFeed();
 }
 
-if(localStorage.getItem("user")) startApp();
-
-/* NAV */
-function switchScreen(id){
+function nav(x){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  document.getElementById(x).classList.add("active");
+}
+
+/* IMAGE API */
+function foodImg(q){
+  return `https://source.unsplash.com/400x300/?${q},food`;
 }
 
 /* FEED */
 function loadFeed(){
-  const meals=["chicken","beef","pasta"];
+  let foods=["chicken","pasta","steak"];
   feed.innerHTML="";
-  meals.forEach(m=>{
+  foods.forEach(f=>{
     feed.innerHTML+=`
     <div class="card">
-      <img src="https://source.unsplash.com/400x300/?${m}" onclick="openRecipe('${m}')">
-      <b>${m}</b>
-      <div class="like" onclick="like(this)">❤️ Like</div>
+      <img src="${foodImg(f)}">
+      <b>${f}</b>
+      <button onclick="open('${f}')">View</button>
     </div>`;
   });
 }
 
 /* SEARCH */
-function searchRecipe(q){
+function search(q){
   if(q.length<2)return;
-  openRecipe(q);
+  open(q);
 }
 
 /* AI */
-function aiSuggest(q){
+function ai(q){
   if(q.length<2)return;
-  aiResults.innerHTML=`<div class="card" onclick="openRecipe('${q}')">AI Suggestion: ${q}</div>`;
+  aiBox.innerHTML=`<div class="card" onclick="open('${q}')">AI Suggestion: ${q}</div>`;
 }
 
-/* SCAN */
-function scanFood(){
-  alert("Scanning...");
+/* SCAN FOOD AI */
+function scan(){
+  alert("Scanning image...");
   setTimeout(()=>{
-    openRecipe("chicken");
-  },1200);
+    let food="chicken salad";
+
+    healthPanel.innerHTML=`
+    <div class="health">
+      <h3>${food}</h3>
+      Calories: 400 kcal<br>
+      Protein: 30g<br>
+      Carbs: 20g<br><br>
+
+      💡 Recommendation:
+      High protein meal. Good for muscle gain.
+    </div>`;
+  },1500);
 }
 
 /* PREMIUM */
-function togglePremium(){
-  premiumToggle.classList.toggle("active");
-  alert(premiumToggle.classList.contains("active") ? "Premium ON 👑" : "Premium OFF");
-}
+let isPremium=false;
 
-/* LIKE */
-function like(el){
-  el.innerText="❤️ Liked";
-}
+function premium(){
+  isPremium=!isPremium;
+  toggle.classList.toggle("active");
 
-/* RECIPE */
-function openRecipe(q){
-  recipeModal.style.display="flex";
-  recipeContent.innerHTML="Loading...";
+  if(isPremium){
+    document.body.classList.add("premium-on");
 
-  fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${q}`)
-  .then(r=>r.json())
-  .then(d=>{
-    let m=d.meals[0];
-
-    recipeContent.innerHTML=`
-      <h2>${m.strMeal}</h2>
-      <img src="${m.strMealThumb}" style="width:100%">
-      <p>${m.strInstructions.substring(0,150)}...</p>
-
-      <button onclick="saveRecipe('${m.strMeal}')">⭐ Save</button>
-
-      <input placeholder="Add comment..." onkeydown="addComment(event)">
-      <div id="comments"></div>
+    auth.innerHTML=`
+      <h3>Sign in</h3>
+      <div class="auth-btn">Continue with Google</div>
+      <div class="auth-btn">Continue with Apple</div>
+      <div class="auth-btn">Continue with Microsoft</div>
+      <div class="auth-btn">Enable 2FA 🔐</div>
     `;
-  });
-}
-
-/* COMMENTS */
-function addComment(e){
-  if(e.key==="Enter"){
-    comments.innerHTML+=`<div class="comment">${e.target.value}</div>`;
-    e.target.value="";
+  }else{
+    document.body.classList.remove("premium-on");
+    auth.innerHTML="";
   }
 }
 
-/* SAVE */
-function saveRecipe(name){
-  let s=JSON.parse(localStorage.getItem("saved"))||[];
-  if(!s.includes(name)) s.push(name);
-  localStorage.setItem("saved",JSON.stringify(s));
-  loadSaved();
+/* OPEN */
+function open(q){
+  alert("Loading "+q);
 }
-
-/* LOAD SAVED */
-function loadSaved(){
-  let s=JSON.parse(localStorage.getItem("saved"))||[];
-  savedList.innerHTML=s.map(x=>`<div class="card">${x}</div>`).join("");
-}
-
-/* CLOSE */
-recipeModal.onclick=()=>recipeModal.style.display="none";
 
 </script>
 
