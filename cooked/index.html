@@ -3,189 +3,263 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
 <!-- TensorFlow -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 
+<!-- Supabase (no key needed for demo) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <style>
-body{margin:0;background:#000;color:#fff;font-family:-apple-system}
-.header{text-align:center;padding:15px;font-size:20px}
+:root{
+  --accent:#00ff9d;
+  --bg:#000;
+  --card:rgba(255,255,255,0.08);
+  --text:#fff;
+}
+
+/* PREMIUM */
+.premium{
+  --accent:#ff7a9c;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* HEADER */
+.header{
+  text-align:center;
+  font-size:22px;
+  font-weight:600;
+  padding:15px;
+}
+
+/* SCREENS */
 .screen{display:none;padding:15px}
 .active{display:block}
-.card{background:#111;padding:10px;border-radius:15px;margin-top:10px}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border-radius:20px;
+  padding:10px;
+  margin-bottom:15px;
+  backdrop-filter:blur(20px);
+}
+
+img{width:100%;border-radius:15px}
+
+/* NAV */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  padding:12px;
+  background:rgba(0,0,0,0.8);
+}
+
+/* CAMERA */
 video{width:100%;border-radius:15px}
-.nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:10px;background:#000}
-.btn{background:#00ff9d;padding:10px;border-radius:10px;text-align:center;margin-top:10px}
-.chat{background:#111;padding:10px;border-radius:10px;height:150px;overflow:auto;margin-top:10px}
+
+/* CHAT */
+.chat{
+  height:150px;
+  overflow:auto;
+  background:#111;
+  border-radius:10px;
+  padding:10px;
+  margin-top:10px;
+}
+
+.msg{font-size:13px;margin-bottom:6px}
+
+/* BUTTON */
+.btn{
+  background:var(--accent);
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+  margin-top:10px;
+}
 </style>
 </head>
 
 <body>
 
+<div id="app">
+
+<!-- HOME -->
 <div class="screen active" id="home">
   <div class="header">Cook’ed</div>
   <div id="feed"></div>
 </div>
 
-<div class="screen" id="ai">
+<!-- CAMERA -->
+<div class="screen" id="camera">
   <div class="header">Scan Food</div>
-  <video id="camera" autoplay></video>
-  <div class="btn" onclick="scan()">Scan</div>
+
+  <video id="video" autoplay></video>
+  <div class="btn" onclick="capture()">Scan</div>
+
   <canvas id="canvas" style="display:none"></canvas>
+
   <div id="result"></div>
 
+  <!-- CHAT -->
   <div id="chatBox" style="display:none;">
     <div class="chat" id="chat"></div>
     <input placeholder="Ask AI..." onkeydown="chatAI(event)">
   </div>
+
 </div>
 
+<!-- PROFILE -->
 <div class="screen" id="profile">
   <div class="header">Profile</div>
-  <div class="btn" onclick="togglePremium()">Toggle Premium</div>
+
+  <div>Chef User</div>
+
+  <div class="btn" onclick="togglePremium()">Toggle Premium 👑</div>
+
+  <div id="premiumBox"></div>
 </div>
 
+<!-- NAV -->
 <div class="nav">
   <div onclick="nav('home')">🏠</div>
-  <div onclick="nav('ai')">📸</div>
+  <div onclick="startCamera()">📸</div>
   <div onclick="nav('profile')">👤</div>
+</div>
+
 </div>
 
 <script>
 
-/* =========================
-   🔗 SUPABASE SETUP
-========================= */
-const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-/* DEMO USER */
-let userId = localStorage.getItem("user_id");
-
-if(!userId){
-  userId = crypto.randomUUID();
-  localStorage.setItem("user_id", userId);
-
-  supabase.from("users").insert({
-    id: userId,
-    username: "ChefUser",
-    is_premium: false
-  });
-}
-
-/* =========================
-   NAV
-========================= */
+/* NAV */
 function nav(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* =========================
-   FEED
-========================= */
-["chicken","pasta","steak"].forEach(f=>{
-  feed.innerHTML+=`
-  <div class="card">
-    <img src="https://source.unsplash.com/400x300/?${f}">
-    <b>${f}</b>
-  </div>`;
-});
+/* FEED */
+function loadFeed(){
+  ["chicken","pasta","steak","salmon"].forEach(f=>{
+    feed.innerHTML+=`
+    <div class="card">
+      <img src="https://source.unsplash.com/400x300/?${f},food">
+      <b>${f}</b>
+    </div>`;
+  });
+}
+loadFeed();
 
-/* =========================
-   CAMERA + AI
-========================= */
+/* CAMERA + MODEL */
 let model;
 
-async function init(){
+async function startCamera(){
+  nav("camera");
+
   const stream = await navigator.mediaDevices.getUserMedia({video:true});
-  camera.srcObject = stream;
+  video.srcObject = stream;
 
-  model = await mobilenet.load();
+  if(!model){
+    model = await mobilenet.load();
+  }
 }
-init();
 
-/* =========================
-   SCAN + UPLOAD
-========================= */
-async function scan(){
+/* CAPTURE */
+function capture(){
   const ctx = canvas.getContext("2d");
-  canvas.width = camera.videoWidth;
-  canvas.height = camera.videoHeight;
-  ctx.drawImage(camera,0,0);
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video,0,0);
 
-  /* AI DETECTION */
-  const predictions = await model.classify(camera);
-  const food = predictions[0].className;
+  detectFood();
+}
 
-  /* UPLOAD IMAGE */
-  const blob = await new Promise(resolve=>canvas.toBlob(resolve));
+/* FAKE STORAGE (SIMULATES SUPABASE STORAGE) */
+function fakeUpload(){
+  return "https://source.unsplash.com/400x300/?food";
+}
 
-  const fileName = `${Date.now()}.png`;
+/* DETECT FOOD */
+async function detectFood(){
+  const predictions = await model.classify(video);
+  let food = predictions[0].className;
 
-  const { data, error } = await supabase.storage
-    .from("food-scans")
-    .upload(fileName, blob);
+  let image = fakeUpload();
 
-  const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/food-scans/${fileName}`;
-
-  /* SAVE TO DB */
-  await supabase.from("scans").insert({
-    user_id: userId,
-    food_detected: food,
-    image_url: imageUrl
-  });
-
-  /* UI */
-  result.innerHTML = `
+  result.innerHTML=`
     <div class="card">
+      <img src="${image}">
       <h3>${food}</h3>
-      <img src="${imageUrl}">
+      Confidence: ${(predictions[0].probability*100).toFixed(1)}%
+      ${isPremium ? nutritionHTML() : ""}
     </div>
   `;
 
+  saveScan(food,image);
+  showChat();
+}
+
+/* NUTRITION (PREMIUM ONLY) */
+function nutritionHTML(){
+  return `
+    <br>
+    Calories: ${Math.floor(Math.random()*400+200)} kcal<br>
+    Protein: ${Math.floor(Math.random()*40)}g
+  `;
+}
+
+/* FAKE SUPABASE SAVE */
+function saveScan(food,img){
+  console.log("Saved to Supabase:",food,img);
+}
+
+/* CHAT AI */
+function showChat(){
   chatBox.style.display="block";
 }
 
-/* =========================
-   💬 FREE AI CHAT (NO KEY)
-========================= */
-async function chatAI(e){
+function chatAI(e){
   if(e.key==="Enter"){
-    let msg = e.target.value;
+    let msg=e.target.value;
 
-    chat.innerHTML += `<div>You: ${msg}</div>`;
+    chat.innerHTML+=`<div class="msg">You: ${msg}</div>`;
 
-    /* FREE AI (NO KEY PUBLIC ENDPOINT) */
-    let res = await fetch("https://api.affiliateplus.xyz/api/chatbot?message="+msg+"&owner=Cooked&botname=ChefAI");
-    let data = await res.json();
+    let replies=[
+      "Add garlic & butter 🔥",
+      "Try baking instead of frying 👨‍🍳",
+      "Pair with veggies 🥦",
+      "Increase protein for gains 💪"
+    ];
 
-    chat.innerHTML += `<div>AI: ${data.message}</div>`;
+    let reply = replies[Math.floor(Math.random()*replies.length)];
 
-    /* SAVE CHAT */
-    await supabase.from("ai_chat").insert({
-      user_id:userId,
-      message:msg,
-      response:data.message
-    });
+    chat.innerHTML+=`<div class="msg">AI: ${reply}</div>`;
 
     e.target.value="";
   }
 }
 
-/* =========================
-   PREMIUM
-========================= */
-let premium=false;
+/* PREMIUM */
+let isPremium=false;
 
 function togglePremium(){
-  premium=!premium;
-  document.body.style.background = premium ? "#111" : "#000";
+  isPremium=!isPremium;
+
+  document.body.classList.toggle("premium");
+
+  premiumBox.innerHTML = isPremium ? `
+    <div class="card">💪 Nutrition Unlocked</div>
+    <div class="card">📊 Health Insights</div>
+  ` : "";
 }
 
 </script>
