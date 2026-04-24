@@ -17,12 +17,21 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text)}
 .screen{display:none;padding:15px}.active{display:block}
 .header{text-align:center;font-size:22px;font-weight:600;padding:15px}
 .card{background:var(--card);border-radius:20px;padding:12px;margin-bottom:15px}
-input{width:100%;padding:10px;border-radius:10px;border:none;margin-top:10px}
-.btn{background:var(--accent);padding:10px;border-radius:10px;text-align:center;margin-top:10px}
+input{width:100%;padding:12px;border-radius:12px;border:none;margin-top:10px;background:#111;color:#fff}
+.btn{background:var(--accent);padding:12px;border-radius:12px;text-align:center;margin-top:10px;font-weight:600}
 .nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px;background:#000}
 video{width:100%;border-radius:15px}
 .chat{height:150px;overflow:auto;background:#111;border-radius:10px;padding:10px;margin-top:10px}
 .msg{font-size:13px;margin-bottom:6px}
+
+/* LOGIN UI */
+.login-hero{
+  height:180px;
+  border-radius:20px;
+  background:url('https://source.unsplash.com/600x400/?food,kitchen') center/cover;
+  margin-bottom:15px;
+}
+.tagline{font-size:13px;opacity:.7;text-align:center;margin-top:-10px}
 </style>
 </head>
 
@@ -32,16 +41,18 @@ video{width:100%;border-radius:15px}
 
 <!-- LOGIN -->
 <div class="screen active" id="login">
+  <div class="login-hero"></div>
   <div class="header">Cook’ed</div>
+  <div class="tagline">AI-powered food scanning & cooking assistant</div>
 
   <div class="card">
-    <b>Free Mode</b>
+    <b>🔥 Quick Start (Free)</b>
     <input id="username" placeholder="Enter username">
-    <div class="btn" onclick="enterFree()">Continue Free</div>
+    <div class="btn" onclick="enterFree()">Start Cooking</div>
   </div>
 
   <div class="card">
-    <b>Premium Login</b>
+    <b>👑 Premium Access</b>
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
     <div class="btn" onclick="signIn()">Login / Sign Up</div>
