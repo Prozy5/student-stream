@@ -8,15 +8,16 @@
 <style>
 :root{
   --bg:#020617;
-  --card:rgba(255,255,255,0.05);
+  --card:rgba(255,255,255,0.06);
   --accent:#00ff9d;
   --text:#eafff5;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
   font-family:system-ui;
-  background:linear-gradient(135deg,#020617,#000);
+  background:#000;
   color:var(--text);
 }
 
@@ -35,10 +36,6 @@ body{
   border-radius:20px;
   width:300px;
   text-align:center;
-}
-
-.login-box h1{
-  margin-bottom:20px;
 }
 
 input{
@@ -63,7 +60,6 @@ button{
 .app{
   display:none;
   height:100vh;
-  display:flex;
   flex-direction:column;
 }
 
@@ -76,24 +72,27 @@ button{
 
 .active{display:block}
 
+/* HEADER */
 .header{
   text-align:center;
   font-weight:900;
-  font-size:22px;
+  font-size:24px;
   margin-bottom:15px;
+  color:#7df9ff;
 }
 
+/* CARD */
 .card{
   background:var(--card);
-  backdrop-filter:blur(10px);
+  backdrop-filter:blur(15px);
   padding:10px;
-  border-radius:15px;
+  border-radius:18px;
   margin-bottom:15px;
 }
 
 .card img{
   width:100%;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
 }
 
@@ -104,6 +103,28 @@ button{
   justify-content:space-around;
   align-items:center;
   background:#000;
+  border-top:1px solid rgba(255,255,255,0.1);
+  font-size:22px;
+}
+
+/* AI BUBBLES */
+.bubble{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:radial-gradient(circle,#00ff9d33,#000);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:13px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.bubble:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 20px #00ff9d;
 }
 
 /* PROFILE */
@@ -112,8 +133,7 @@ button{
   padding:15px;
   border:2px dashed var(--accent);
   text-align:center;
-  border-radius:12px;
-  cursor:pointer;
+  border-radius:15px;
 }
 
 /* MODAL */
@@ -127,9 +147,9 @@ button{
 }
 
 .modal-content{
-  background:#111;
+  background:#0a0a0a;
   padding:20px;
-  border-radius:12px;
+  border-radius:15px;
   max-width:500px;
   width:90%;
 }
@@ -167,19 +187,31 @@ button{
 
 <!-- AI -->
 <div class="screen" id="ai">
-  <div class="header">AI Kitchen</div>
-  <button onclick="scanFood()">Scan Pantry</button>
-  <div id="aiResult"></div>
+  <div class="header">Cook’ed</div>
+
+  <input placeholder="What do you want to cook today?">
+
+  <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
+    <div class="bubble" onclick="openRecipe('chicken')">Lots of protein</div>
+    <div class="bubble" onclick="openRecipe('seafood')">Sea food</div>
+    <div class="bubble" onclick="openRecipe('soup')">Soup</div>
+    <div class="bubble" onclick="openRecipe('fried')">Fried dishes</div>
+  </div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
-  <div class="header">Profile</div>
-  <h3 id="userDisplay"></h3>
+  <div class="header">Cook’ed</div>
 
-  <div class="upload" onclick="uploadVideo()">
-    🎥 Upload Cooking Video
+  <div style="text-align:center;margin-bottom:15px;">
+    <div style="font-size:18px;font-weight:bold;" id="userDisplay"></div>
   </div>
+
+  <div style="background:#0f172a;padding:15px;border-radius:15px;margin-bottom:15px;">
+    Short Description
+  </div>
+
+  <div class="upload" onclick="uploadVideo()">🎥 Upload Cooking Video</div>
 
   <h4 style="margin-top:20px;">Saved Recipes</h4>
   <div id="savedList"></div>
@@ -194,7 +226,7 @@ button{
 
 </div>
 
-<!-- RECIPE MODAL -->
+<!-- MODAL -->
 <div class="modal" id="recipeModal">
   <div class="modal-content" id="recipeContent"></div>
 </div>
@@ -203,9 +235,9 @@ button{
 
 /* LOGIN */
 function login(){
-  const user = document.getElementById("username").value;
+  const user=document.getElementById("username").value;
   if(!user) return;
-  localStorage.setItem("user", user);
+  localStorage.setItem("user",user);
   startApp();
 }
 
@@ -224,22 +256,13 @@ function switchScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* AI PANTRY */
-function scanFood(){
-  const foods=["chicken","pasta","rice","eggs"];
-  const pick=foods[Math.floor(Math.random()*foods.length)];
-
-  aiResult.innerHTML=`🧠 Detected: ${pick}<br>Loading recipes...`;
-  openRecipe(pick);
-}
-
 /* VIDEO AI */
 function uploadVideo(){
   alert("Uploading video...");
 
   setTimeout(()=>{
-    const detected=["pasta","chicken","beef"];
-    const pick=detected[Math.floor(Math.random()*detected.length)];
+    const foods=["pasta","chicken","beef"];
+    const pick=foods[Math.floor(Math.random()*foods.length)];
 
     alert("AI detected: "+pick);
     openRecipe(pick);
@@ -258,8 +281,10 @@ function openRecipe(query){
 
     recipeContent.innerHTML=`
       <h2>${meal.strMeal}</h2>
-      <img src="${meal.strMealThumb}" style="width:100%">
-      <p>${meal.strInstructions.substring(0,250)}...</p>
+      <img src="${meal.strMealThumb}" style="width:100%;border-radius:10px">
+      <p style="font-size:13px;margin-top:10px;">
+        ${meal.strInstructions.substring(0,200)}...
+      </p>
       <button onclick="saveRecipe('${meal.strMeal}')">⭐ Save</button>
     `;
   });
