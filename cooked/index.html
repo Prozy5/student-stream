@@ -9,28 +9,15 @@
 <style>
 :root{--accent:#00ff9d;--bg:#000;--card:rgba(255,255,255,0.08);--text:#fff}
 .premium{--accent:#ff7a9c}
-
 body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text);overflow:hidden}
-
-.screen{display:none;height:100vh;overflow:auto;animation:fade .3s}
+.screen{display:none;height:100vh;overflow:auto}
 .active{display:block}
 
-@keyframes fade{from{opacity:0}to{opacity:1}}
-
-.header{text-align:center;font-size:24px;font-weight:800;padding:10px}
-.card{background:var(--card);border-radius:20px;padding:15px;margin:10px;backdrop-filter:blur(20px)}
+.card{background:var(--card);border-radius:20px;padding:15px;margin:10px}
 .btn{background:var(--accent);padding:12px;border-radius:14px;text-align:center;margin:10px;font-weight:700}
 
 .nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px;background:#000}
 
-video{width:100%;border-radius:15px}
-
-/* LOGIN */
-.hero{height:320px;background:url('https://source.unsplash.com/900x700/?chef,kitchen,food') center/cover}
-.tag{text-align:center;margin-top:10px;font-size:20px;font-weight:700}
-.sub{text-align:center;opacity:.7}
-
-/* FEED */
 .feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
 .feed-item{height:100vh;scroll-snap-align:start;position:relative}
 .feed-item img{width:100%;height:100%;object-fit:cover}
@@ -38,192 +25,114 @@ video{width:100%;border-radius:15px}
 .overlay{position:absolute;bottom:120px;left:15px}
 .actions{position:absolute;right:15px;bottom:120px;text-align:center}
 
-.actions div{margin:14px 0;font-size:18px}
-
-.heart{
-position:absolute;
-top:50%;left:50%;
-transform:translate(-50%,-50%);
-font-size:80px;
-opacity:0;
-animation:pop .6s;
-}
-
-@keyframes pop{
-0%{opacity:0;transform:scale(.5) translate(-50%,-50%)}
-50%{opacity:1;transform:scale(1.2) translate(-50%,-50%)}
-100%{opacity:0;transform:scale(1) translate(-50%,-50%)}
-}
-
-.modal{position:fixed;inset:0;background:#000;display:none;z-index:10;padding:20px;overflow:auto}
+.modal{position:fixed;inset:0;background:#000;display:none;padding:20px}
 .modal.active{display:block}
 
-.comment{background:#111;padding:8px;border-radius:10px;margin:6px 0;font-size:13px}
-
-.chat{height:150px;overflow:auto;background:#111;border-radius:10px;padding:10px;margin-top:10px}
-
-.progress{height:10px;background:#222;border-radius:10px;margin:5px}
-.progress div{height:100%;background:var(--accent);border-radius:10px}
+.hero{height:300px;background:url('https://source.unsplash.com/900x700/?chef,food') center/cover}
 </style>
 </head>
 
 <body>
 
-<div id="app">
-
-<!-- LOGIN -->
-<div class="screen active" id="login">
-  <div class="hero"></div>
-  <div class="card">
-    <h2>Cook’ed</h2>
-    <div class="tag">Cook better. Live healthier.</div>
-    <div class="sub">AI food • fitness • lifestyle</div>
-    <input id="username" placeholder="Username">
-    <div class="btn" onclick="enterApp()">Enter</div>
-  </div>
+<div id="login" class="screen active">
+<div class="hero"></div>
+<div class="card">
+<h2>Cook’ed</h2>
+<p>Cook better. Live healthier.</p>
+<input id="username" placeholder="Username">
+<div class="btn" onclick="enterApp()">Enter</div>
+</div>
 </div>
 
-<!-- FEED -->
-<div class="screen" id="home">
-  <div class="feed" id="feed"></div>
+<div id="home" class="screen">
+<div id="feed" class="feed"></div>
 </div>
 
-<!-- RECIPE -->
-<div class="modal" id="recipeModal">
-  <div id="recipeContent"></div>
-  <div class="btn" onclick="openComments()">Comments 💬</div>
-  <div class="btn" onclick="closeRecipe()">Close</div>
+<div id="camera" class="screen">
+<video id="video" autoplay></video>
+<div class="btn" onclick="capture()">Scan</div>
+<div id="scanResult"></div>
 </div>
 
-<!-- COMMENTS -->
-<div class="modal" id="commentModal">
-  <h3>Comments</h3>
-  <div id="comments"></div>
-  <input placeholder="Add comment..." onkeydown="addComment(event)">
-  <div class="btn" onclick="closeComments()">Close</div>
+<div id="profile" class="screen">
+<div id="userInfo"></div>
+<div class="btn" onclick="togglePremium()">Toggle Premium</div>
+
+<div id="health" style="display:none">
+<input id="height" placeholder="Height">
+<input id="weight" placeholder="Weight">
+<div class="btn" onclick="analyze()">Analyze</div>
+<div id="healthResult"></div>
+<div id="mealPlan"></div>
+</div>
 </div>
 
-<!-- CAMERA -->
-<div class="screen" id="camera">
-  <div class="header">Scan Food</div>
-  <video id="video" autoplay></video>
-  <div class="btn" onclick="capture()">Scan</div>
-  <canvas id="canvas" style="display:none"></canvas>
-  <div id="result"></div>
-</div>
+<div id="recipeModal" class="modal"></div>
 
-<!-- PROFILE -->
-<div class="screen" id="profile">
-  <div class="header">Profile</div>
-  <div id="userInfo"></div>
-  <div class="btn" onclick="togglePremium()">Toggle Premium 👑</div>
-
-  <div id="healthSection" style="display:none">
-    <div class="card">
-      <input id="height" placeholder="Height (cm)">
-      <input id="weight" placeholder="Weight (kg)">
-      <div class="btn" onclick="generateStats()">Analyze</div>
-    </div>
-
-    <div id="stats"></div>
-
-    <div class="chat" id="chat"></div>
-    <input placeholder="Ask AI..." onkeydown="chatAI(event)">
-  </div>
-</div>
-
-<!-- NAV -->
 <div class="nav">
-  <div onclick="nav('home')">🏠</div>
-  <div onclick="startCamera()">📸</div>
-  <div onclick="nav('profile')">👤</div>
-</div>
-
+<div onclick="nav('home')">🏠</div>
+<div onclick="startCamera()">📸</div>
+<div onclick="nav('profile')">👤</div>
 </div>
 
 <script>
 let user,isPremium=false,model;
-let likes={},saved={};
 
+// NAV
 function nav(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
+// LOGIN
 function enterApp(){
 user=username.value||'Chef';
-userInfo.innerText='👤 '+user;
+userInfo.innerText="👤 "+user;
 loadFeed();
 nav('home');
 }
 
+// FEED (REAL API)
 async function loadFeed(){
-feed.innerHTML='';
-let res=await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=chicken');
+let res=await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
 let data=await res.json();
 
-data.meals.slice(0,8).forEach(meal=>{
-likes[meal.idMeal]=likes[meal.idMeal]||Math.floor(Math.random()*1000);
+feed.innerHTML='';
 
+data.meals.slice(0,10).forEach(meal=>{
 feed.innerHTML+=`
-<div class="feed-item" ondblclick="doubleLike('${meal.idMeal}')">
-<img src="${meal.strMealThumb}" onclick="openRecipe('${meal.strMeal}','${meal.strMealThumb}')">
-
+<div class="feed-item">
+<img src="${meal.strMealThumb}" onclick="openRecipe('${meal.strMeal}')">
 <div class="overlay"><h2>${meal.strMeal}</h2></div>
-
-<div class="actions">
-<div onclick="like('${meal.idMeal}')">❤️<br>${likes[meal.idMeal]}</div>
-<div onclick="openComments()">💬</div>
-<div onclick="save('${meal.idMeal}')">🔖</div>
-</div>
-
-<div id="heart-${meal.idMeal}"></div>
 </div>`;
 });
 }
 
-function like(id){likes[id]++;loadFeed();}
+// RECIPE (API + VIDEO)
+async function openRecipe(name){
+let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
+let data=await res.json();
+let meal=data.meals[0];
 
-function doubleLike(id){
-likes[id]++;
-document.getElementById("heart-"+id).innerHTML="<div class='heart'>❤️</div>";
-setTimeout(()=>loadFeed(),300);
-}
-
-function save(id){
-saved[id]=!saved[id];
-alert(saved[id]?"Saved 🔖":"Removed");
-}
-
-function openRecipe(name,img){
 recipeModal.classList.add('active');
-recipeContent.innerHTML=`
-<h2>${name}</h2>
-<img src="${img}" style="width:100%;border-radius:10px">
-<p>Recipe instructions loaded.</p>
-${isPremium?`<iframe width="100%" height="200" src="https://www.youtube.com/embed?listType=search&list=${name} recipe"></iframe>`:'<p>🔒 Premium for videos</p>'}
+
+recipeModal.innerHTML=`
+<h2>${meal.strMeal}</h2>
+<img src="${meal.strMealThumb}" style="width:100%">
+<p>${meal.strInstructions}</p>
+
+${isPremium?`
+<iframe width="100%" height="200"
+src="https://www.youtube.com/embed?listType=search&list=${name} recipe">
+</iframe>`:`<p>🔒 Premium for videos</p>`}
+
+<div class="btn" onclick="closeRecipe()">Close</div>
 `;
 }
 
 function closeRecipe(){recipeModal.classList.remove('active');}
 
-function openComments(){
-commentModal.classList.add('active');
-comments.innerHTML='';
-['🔥 this valid','trying this tonight','W recipe'].forEach(c=>{
-comments.innerHTML+=`<div class="comment"><b>User</b>: ${c}</div>`;
-});
-}
-
-function closeComments(){commentModal.classList.remove('active');}
-
-function addComment(e){
-if(e.key==='Enter'){
-comments.innerHTML+=`<div class="comment"><b>You</b>: ${e.target.value}</div>`;
-e.target.value='';
-}
-}
-
+// CAMERA AI
 async function startCamera(){
 nav('camera');
 const stream=await navigator.mediaDevices.getUserMedia({video:true});
@@ -231,59 +140,64 @@ video.srcObject=stream;
 if(!model)model=await mobilenet.load();
 }
 
-function capture(){
-const ctx=canvas.getContext('2d');
-canvas.width=video.videoWidth;
-canvas.height=video.videoHeight;
-ctx.drawImage(video,0,0);
-detectFood();
+async function capture(){
+let predictions=await model.classify(video);
+let food=predictions[0].className.split(',')[0];
+
+scanResult.innerHTML=`Detected: ${food}`;
+
+suggestRecipe(food);
 }
 
-async function detectFood(){
-const p=await model.classify(video);
-result.innerHTML=`
+// SMART RECIPE SUGGESTION
+async function suggestRecipe(food){
+let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${food}`);
+let data=await res.json();
+
+if(data.meals){
+scanResult.innerHTML+=`
 <div class="card">
-Detected: ${p[0].className}<br>
-Suggestion: Try cooking something high protein 🍗
+Suggested: ${data.meals[0].strMeal}
 </div>`;
 }
+}
 
+// PREMIUM
 function togglePremium(){
 isPremium=!isPremium;
-document.body.classList.toggle('premium');
-healthSection.style.display=isPremium?'block':'none';
+health.style.display=isPremium?'block':'none';
 }
 
-function generateStats(){
+// HEALTH AI
+function analyze(){
 let h=height.value;
 let w=weight.value;
+
 let bmi=(w/((h/100)*(h/100))).toFixed(1);
+let goal=bmi<18.5?"Bulk":bmi<25?"Maintain":"Cut";
 
-let goal = bmi<18.5?"Bulk 💪":bmi<25?"Maintain ⚖️":"Cut 🔥";
-
-stats.innerHTML=`
+healthResult.innerHTML=`
 <div class="card">
 BMI: ${bmi}<br>
-Goal: ${goal}<br>
-Calories: ${Math.floor(2000+w*10)}<br>
-Protein: ${Math.floor(w*1.2)}g
+Goal: ${goal}
 </div>`;
+
+generateMeals(goal);
 }
 
-function chatAI(e){
-if(e.key==='Enter'){
-let msg=e.target.value;
-chat.innerHTML+=`<div>You: ${msg}</div>`;
+// MEAL RECOMMENDER
+async function generateMeals(goal){
+let query = goal=="Bulk"?"chicken":"salad";
 
-let reply = msg.includes("muscle")
-? "Increase protein and lift heavy 💪"
-: msg.includes("lose")
-? "Calorie deficit + cardio 🔥"
-: "Stay consistent. Eat clean.";
+let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
+let data=await res.json();
 
-chat.innerHTML+=`<div>AI: ${reply}</div>`;
-e.target.value='';
-}
+mealPlan.innerHTML="<h3>Recommended Meals</h3>";
+
+data.meals.slice(0,3).forEach(m=>{
+mealPlan.innerHTML+=`
+<div class="card">${m.strMeal}</div>`;
+});
 }
 </script>
 
