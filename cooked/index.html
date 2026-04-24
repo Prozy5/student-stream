@@ -17,22 +17,24 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text);o
 .nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px;background:#000}
 video{width:100%;border-radius:15px}
 
+/* LOGIN */
+.hero{height:300px;background:url('https://source.unsplash.com/900x700/?chef,cooking,class') center/cover}
+
 /* FEED */
 .feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
 .feed-item{height:100vh;scroll-snap-align:start;position:relative}
 .feed-item img{width:100%;height:100%;object-fit:cover}
 .overlay{position:absolute;bottom:80px;left:15px}
 
-/* MODAL */
 .modal{position:fixed;inset:0;background:#000;display:none;z-index:10;padding:20px;overflow:auto}
 .modal.active{display:block}
 
-/* BUBBLES */
-.bubbles{display:flex;flex-wrap:wrap;gap:10px;padding:10px}
-.bubble{padding:15px;border-radius:50px;background:var(--card)}
-
 .chat{height:150px;overflow:auto;background:#111;border-radius:10px;padding:10px;margin-top:10px}
 .msg{font-size:13px;margin-bottom:6px}
+
+/* HEALTH */
+.health-box input{margin-bottom:10px}
+.avatar{width:200px;display:block;margin:auto}
 </style>
 </head>
 
@@ -42,8 +44,10 @@ video{width:100%;border-radius:15px}
 
 <!-- LOGIN -->
 <div class="screen active" id="login">
+  <div class="hero"></div>
   <div class="card">
     <h2>Cook’ed</h2>
+    <p>Cook smarter, not harder.</p>
     <input id="username" placeholder="Username">
     <div class="btn" onclick="enterApp()">Enter</div>
   </div>
@@ -54,23 +58,13 @@ video{width:100%;border-radius:15px}
   <div class="feed" id="feed"></div>
 </div>
 
-<!-- RECIPE MODAL -->
+<!-- RECIPE -->
 <div class="modal" id="recipeModal">
   <div id="recipeContent"></div>
   <div class="btn" onclick="closeRecipe()">Close</div>
 </div>
 
-<!-- SEARCH -->
-<div class="screen" id="search">
-  <div class="header">Search</div>
-  <div class="bubbles">
-    <div class="bubble" onclick="loadFeed('protein')">Protein</div>
-    <div class="bubble" onclick="loadFeed('quick')">Quick</div>
-    <div class="bubble" onclick="loadFeed('seafood')">Seafood</div>
-  </div>
-</div>
-
-<!-- CAMERA (FREE) -->
+<!-- CAMERA -->
 <div class="screen" id="camera">
   <div class="header">Scan Food</div>
   <video id="video" autoplay></video>
@@ -79,33 +73,31 @@ video{width:100%;border-radius:15px}
   <div id="result"></div>
 </div>
 
-<!-- FRIDGE (FREE SCAN) -->
-<div class="screen" id="fridge">
-  <div class="header">Fridge Scan</div>
-  <video id="fridgeVideo" autoplay></video>
-  <div class="btn" onclick="scanFridge()">Scan Ingredients</div>
-  <div id="fridgeResult"></div>
-
-  <!-- PREMIUM INSIGHTS -->
-  <div id="premiumAI" style="display:none">
-    <div class="chat" id="chat"></div>
-    <input placeholder="Ask about diet..." onkeydown="chatAI(event)">
-  </div>
-</div>
-
-<!-- PROFILE -->
+<!-- PROFILE / HEALTH -->
 <div class="screen" id="profile">
   <div class="header">Profile</div>
   <div id="userInfo"></div>
-  <div class="btn" onclick="togglePremium()">Toggle Premium</div>
+
+  <div class="btn" onclick="togglePremium()">Toggle Premium 👑</div>
+
+  <div id="healthSection" style="display:none">
+    <div class="card health-box">
+      <h3>Health Tracker</h3>
+      <input id="height" placeholder="Height (cm)">
+      <input id="weight" placeholder="Weight (kg)">
+      <div class="btn" onclick="generateBody()">Generate Body</div>
+    </div>
+    <img id="bodyImg" class="avatar" src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Gnome-stock_person.svg">
+
+    <div class="chat" id="chat"></div>
+    <input placeholder="Ask fitness AI..." onkeydown="chatAI(event)">
+  </div>
 </div>
 
 <!-- NAV -->
 <div class="nav">
   <div onclick="nav('home')">🏠</div>
-  <div onclick="nav('search')">🔍</div>
   <div onclick="startCamera()">📸</div>
-  <div onclick="openFridge()">🧊</div>
   <div onclick="nav('profile')">👤</div>
 </div>
 
@@ -116,27 +108,31 @@ let user, isPremium=false, model;
 
 function nav(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
-function enterApp(){user=document.getElementById('username').value||'Chef';userInfo.innerText=user;loadFeed();nav('home');}
+function enterApp(){user=document.getElementById('username').value||'Chef';userInfo.innerText="👤 "+user;loadFeed();nav('home');}
 
-function loadFeed(type='food'){
+// 🍽 FREE API (TheMealDB)
+async function loadFeed(){
   feed.innerHTML='';
-  ['chicken','steak','pasta','salmon'].forEach(f=>{
+  let res = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=chicken');
+  let data = await res.json();
+
+  data.meals.slice(0,6).forEach(meal=>{
     feed.innerHTML+=`
-    <div class="feed-item" onclick="openRecipe('${f}')">
-      <img src="https://source.unsplash.com/900x1600/?${f},${type}">
-      <div class="overlay"><h2>${f}</h2></div>
+    <div class="feed-item" onclick="openRecipe('${meal.strMeal}','${meal.strMealThumb}')">
+      <img src="${meal.strMealThumb}">
+      <div class="overlay"><h2>${meal.strMeal}</h2></div>
     </div>`;
   });
 }
 
-function openRecipe(food){
+function openRecipe(name,img){
   recipeModal.classList.add('active');
+
   recipeContent.innerHTML=`
-    <h2>${food}</h2>
-    <img src="https://source.unsplash.com/400x300/?${food}">
-    <p>Ingredients: sample ingredients</p>
-    <p>Steps: cook, season, serve</p>
-    ${isPremium ? '<video controls src="https://www.w3schools.com/html/mov_bbb.mp4"></video>' : '<p>🔒 Videos are Premium</p>'}
+    <h2>${name}</h2>
+    <img src="${img}">
+    <p>Recipe steps and ingredients loaded.</p>
+    ${isPremium ? `<iframe width="100%" height="200" src="https://www.youtube.com/embed?listType=search&list=${name} recipe"></iframe>` : '<p>🔒 Video recipes are Premium</p>'}
   `;
 }
 
@@ -146,27 +142,26 @@ async function startCamera(){nav('camera');const stream=await navigator.mediaDev
 
 function capture(){const ctx=canvas.getContext('2d');canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0);detectFood();}
 
-async function detectFood(){const p=await model.classify(video);result.innerHTML=`<div class="card">${p[0].className} ${(p[0].probability*100).toFixed(1)}%</div>`;}
+async function detectFood(){const p=await model.classify(video);result.innerHTML=`<div class="card">${p[0].className}</div>`;}
 
-function openFridge(){nav('fridge');startFridge();}
+function togglePremium(){
+  isPremium=!isPremium;
+  document.body.classList.toggle('premium');
+  healthSection.style.display = isPremium ? 'block' : 'none';
+}
 
-async function startFridge(){const stream=await navigator.mediaDevices.getUserMedia({video:true});fridgeVideo.srcObject=stream;}
-
-function scanFridge(){
-  fridgeResult.innerHTML='<div class="card">Detected: eggs, milk, veggies</div>';
-  if(isPremium){premiumAI.style.display='block'}
+function generateBody(){
+  bodyImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Human_body_silhouette.svg/512px-Human_body_silhouette.svg.png";
 }
 
 function chatAI(e){
   if(e.key==='Enter'){
     let msg=e.target.value;
     chat.innerHTML+=`<div class="msg">You: ${msg}</div>`;
-    chat.innerHTML+=`<div class="msg">AI: Eat more protein & veggies 💪</div>`;
+    chat.innerHTML+=`<div class="msg">AI: Focus on protein & strength training 💪</div>`;
     e.target.value='';
   }
 }
-
-function togglePremium(){isPremium=!isPremium;document.body.classList.toggle('premium');}
 </script>
 
 </body>
