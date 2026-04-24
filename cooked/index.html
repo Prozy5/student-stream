@@ -38,6 +38,7 @@ body{
   text-align:center;
 }
 
+/* INPUTS */
 input{
   width:100%;
   padding:12px;
@@ -88,6 +89,12 @@ button{
   padding:10px;
   border-radius:18px;
   margin-bottom:15px;
+  animation:fade .4s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1}
 }
 
 .card img{
@@ -140,7 +147,7 @@ button{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.85);
+  background:rgba(0,0,0,.9);
   display:none;
   align-items:center;
   justify-content:center;
@@ -152,6 +159,63 @@ button{
   border-radius:15px;
   max-width:500px;
   width:90%;
+  max-height:80vh;
+  overflow:auto;
+}
+
+/* PREMIUM */
+.premium{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#111;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.toggle{
+  width:40px;
+  height:20px;
+  background:#333;
+  border-radius:20px;
+  position:relative;
+  cursor:pointer;
+}
+
+.toggle::after{
+  content:"";
+  width:18px;
+  height:18px;
+  background:white;
+  position:absolute;
+  top:1px;
+  left:1px;
+  border-radius:50%;
+  transition:.3s;
+}
+
+.toggle.active{
+  background:var(--accent);
+}
+
+.toggle.active::after{
+  left:21px;
+}
+
+/* COMMENTS */
+.comment{
+  background:#111;
+  padding:8px;
+  border-radius:8px;
+  margin-top:5px;
+  font-size:12px;
+}
+
+.like{
+  cursor:pointer;
+  margin-top:5px;
+  font-size:14px;
 }
 </style>
 </head>
@@ -174,46 +238,34 @@ button{
 <div class="screen active" id="home">
   <div class="header">Cook’ed</div>
 
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1604908176997-4316c64c7f8c" onclick="openRecipe('chicken')">
-    <b>Marry Me Chicken</b>
-  </div>
+  <input placeholder="Search recipes..." onkeyup="searchRecipe(this.value)">
 
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2" onclick="openRecipe('beef')">
-    <b>Garlic Butter Steak</b>
-  </div>
+  <div id="feed"></div>
 </div>
 
 <!-- AI -->
 <div class="screen" id="ai">
-  <div class="header">Cook’ed</div>
+  <div class="header">AI Kitchen</div>
 
-  <input placeholder="What do you want to cook today?">
+  <input placeholder="Type ingredients..." onkeyup="aiSuggest(this.value)">
 
-  <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
-    <div class="bubble" onclick="openRecipe('chicken')">Lots of protein</div>
-    <div class="bubble" onclick="openRecipe('seafood')">Sea food</div>
-    <div class="bubble" onclick="openRecipe('soup')">Soup</div>
-    <div class="bubble" onclick="openRecipe('fried')">Fried dishes</div>
-  </div>
+  <div id="aiResults"></div>
 </div>
 
 <!-- PROFILE -->
 <div class="screen" id="profile">
-  <div class="header">Cook’ed</div>
+  <div class="header">Profile</div>
 
-  <div style="text-align:center;margin-bottom:15px;">
-    <div style="font-size:18px;font-weight:bold;" id="userDisplay"></div>
+  <div id="userDisplay"></div>
+
+  <div class="premium">
+    Cook’ed Premium 👑
+    <div class="toggle" id="premiumToggle" onclick="togglePremium()"></div>
   </div>
 
-  <div style="background:#0f172a;padding:15px;border-radius:15px;margin-bottom:15px;">
-    Short Description
-  </div>
+  <div class="upload" onclick="scanFood()">📸 Scan Food</div>
 
-  <div class="upload" onclick="uploadVideo()">🎥 Upload Cooking Video</div>
-
-  <h4 style="margin-top:20px;">Saved Recipes</h4>
+  <h4>Saved Recipes</h4>
   <div id="savedList"></div>
 </div>
 
@@ -235,8 +287,8 @@ button{
 
 /* LOGIN */
 function login(){
-  const user=document.getElementById("username").value;
-  if(!user) return;
+  let user=username.value;
+  if(!user)return;
   localStorage.setItem("user",user);
   startApp();
 }
@@ -246,6 +298,7 @@ function startApp(){
   app.style.display="flex";
   userDisplay.innerText="Chef "+localStorage.getItem("user");
   loadSaved();
+  loadFeed();
 }
 
 if(localStorage.getItem("user")) startApp();
@@ -256,54 +309,97 @@ function switchScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* VIDEO AI */
-function uploadVideo(){
-  alert("Uploading video...");
-
-  setTimeout(()=>{
-    const foods=["pasta","chicken","beef"];
-    const pick=foods[Math.floor(Math.random()*foods.length)];
-
-    alert("AI detected: "+pick);
-    openRecipe(pick);
-  },1500);
+/* FEED */
+function loadFeed(){
+  const meals=["chicken","beef","pasta"];
+  feed.innerHTML="";
+  meals.forEach(m=>{
+    feed.innerHTML+=`
+    <div class="card">
+      <img src="https://source.unsplash.com/400x300/?${m}" onclick="openRecipe('${m}')">
+      <b>${m}</b>
+      <div class="like" onclick="like(this)">❤️ Like</div>
+    </div>`;
+  });
 }
 
-/* RECIPE API */
-function openRecipe(query){
+/* SEARCH */
+function searchRecipe(q){
+  if(q.length<2)return;
+  openRecipe(q);
+}
+
+/* AI */
+function aiSuggest(q){
+  if(q.length<2)return;
+  aiResults.innerHTML=`<div class="card" onclick="openRecipe('${q}')">AI Suggestion: ${q}</div>`;
+}
+
+/* SCAN */
+function scanFood(){
+  alert("Scanning...");
+  setTimeout(()=>{
+    openRecipe("chicken");
+  },1200);
+}
+
+/* PREMIUM */
+function togglePremium(){
+  premiumToggle.classList.toggle("active");
+  alert(premiumToggle.classList.contains("active") ? "Premium ON 👑" : "Premium OFF");
+}
+
+/* LIKE */
+function like(el){
+  el.innerText="❤️ Liked";
+}
+
+/* RECIPE */
+function openRecipe(q){
   recipeModal.style.display="flex";
   recipeContent.innerHTML="Loading...";
 
-  fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
-  .then(res=>res.json())
-  .then(data=>{
-    const meal=data.meals[0];
+  fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${q}`)
+  .then(r=>r.json())
+  .then(d=>{
+    let m=d.meals[0];
 
     recipeContent.innerHTML=`
-      <h2>${meal.strMeal}</h2>
-      <img src="${meal.strMealThumb}" style="width:100%;border-radius:10px">
-      <p style="font-size:13px;margin-top:10px;">
-        ${meal.strInstructions.substring(0,200)}...
-      </p>
-      <button onclick="saveRecipe('${meal.strMeal}')">⭐ Save</button>
+      <h2>${m.strMeal}</h2>
+      <img src="${m.strMealThumb}" style="width:100%">
+      <p>${m.strInstructions.substring(0,150)}...</p>
+
+      <button onclick="saveRecipe('${m.strMeal}')">⭐ Save</button>
+
+      <input placeholder="Add comment..." onkeydown="addComment(event)">
+      <div id="comments"></div>
     `;
   });
 }
 
+/* COMMENTS */
+function addComment(e){
+  if(e.key==="Enter"){
+    comments.innerHTML+=`<div class="comment">${e.target.value}</div>`;
+    e.target.value="";
+  }
+}
+
 /* SAVE */
 function saveRecipe(name){
-  let saved=JSON.parse(localStorage.getItem("saved"))||[];
-  saved.push(name);
-  localStorage.setItem("saved",JSON.stringify(saved));
+  let s=JSON.parse(localStorage.getItem("saved"))||[];
+  if(!s.includes(name)) s.push(name);
+  localStorage.setItem("saved",JSON.stringify(s));
   loadSaved();
 }
 
+/* LOAD SAVED */
 function loadSaved(){
-  let saved=JSON.parse(localStorage.getItem("saved"))||[];
-  savedList.innerHTML=saved.map(r=>`<div class="card">${r}</div>`).join("");
+  let s=JSON.parse(localStorage.getItem("saved"))||[];
+  savedList.innerHTML=s.map(x=>`<div class="card">${x}</div>`).join("");
 }
 
-/* CLOSE MODAL */
+/* CLOSE */
 recipeModal.onclick=()=>recipeModal.style.display="none";
 
 </script>
