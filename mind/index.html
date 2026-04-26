@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SS Mind</title>
+
+<style>
+:root{
+  --accent:#22c55e;
+  --bg:#050505;
+  --card:#0f0f0f;
+  --text:#e5e5e5;
+  --muted:#888;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont;
+  background:var(--bg);
+  color:var(--text);
+}
+
+.header{
+  padding:20px;
+  font-size:22px;
+  font-weight:600;
+}
+
+.hero{
+  padding:40px 20px;
+}
+
+.hero h1{
+  margin:0;
+  font-size:36px;
+}
+
+.hero p{
+  color:var(--muted);
+}
+
+.section{
+  padding:20px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:15px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.metric{
+  font-size:28px;
+  font-weight:700;
+}
+
+.label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+input,textarea{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  margin-top:10px;
+  background:#111;
+  color:white;
+}
+
+.btn{
+  background:var(--accent);
+  padding:12px;
+  border-radius:12px;
+  text-align:center;
+  margin-top:10px;
+  font-weight:600;
+  color:black;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  padding:12px;
+  background:#000;
+}
+
+.screen{display:none;padding-bottom:70px}
+.active{display:block}
+</style>
+</head>
+
+<body>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="screen active">
+
+<div class="hero">
+<h1>SS Mind</h1>
+<p>Mental performance. Discipline. Control.</p>
+</div>
+
+<div class="section">
+
+<div class="grid">
+  <div class="card">
+    <div class="metric" id="moodScore">7</div>
+    <div class="label">Mood</div>
+  </div>
+
+  <div class="card">
+    <div class="metric" id="stressScore">4</div>
+    <div class="label">Stress</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <div>
+      <div class="metric" id="streak">5</div>
+      <div class="label">Day Streak</div>
+    </div>
+    <div class="label">Stay consistent.</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Daily Check-In</h3>
+  <input id="mood" placeholder="Mood (1-10)">
+  <input id="stress" placeholder="Stress (1-10)">
+  <div class="btn" onclick="updateStats()">Submit</div>
+</div>
+
+</div>
+</div>
+
+<!-- JOURNAL -->
+<div id="journal" class="screen">
+<div class="header">Journal</div>
+<div class="section">
+
+<div class="card">
+<textarea id="entry" placeholder="Log your thoughts..."></textarea>
+<div class="btn" onclick="saveEntry()">Save</div>
+</div>
+
+<div id="entries"></div>
+
+</div>
+</div>
+
+<!-- PERFORMANCE -->
+<div id="performance" class="screen">
+<div class="header">Performance</div>
+<div class="section">
+
+<div class="card">
+<h3>Focus Score</h3>
+<div class="metric" id="focus">82%</div>
+<div class="label">Based on consistency + entries</div>
+</div>
+
+<div class="card">
+<h3>Recommendation</h3>
+<div id="advice">Stay locked in. Limit distractions today.</div>
+</div>
+
+</div>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="screen">
+<div class="header">Profile</div>
+<div class="section">
+
+<div class="card">
+<h3>User</h3>
+<p id="username">Guest</p>
+</div>
+
+</div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+<div onclick="nav('dashboard')">🏠</div>
+<div onclick="nav('journal')">📝</div>
+<div onclick="nav('performance')">📈</div>
+<div onclick="nav('profile')">👤</div>
+</div>
+
+<script>
+function nav(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateStats(){
+  let m = parseInt(mood.value);
+  let s = parseInt(stress.value);
+
+  if(m){ document.getElementById('moodScore').innerText = m; }
+  if(s){ document.getElementById('stressScore').innerText = s; }
+
+  let advice = "";
+
+  if(m < 5) advice = "Reset mentally. Take a break and refocus.";
+  else advice = "Good state. Stay disciplined.";
+
+  if(s > 7) advice += " Reduce pressure.";
+
+  document.getElementById('advice').innerText = advice;
+}
+
+function saveEntry(){
+  let text = entry.value;
+  if(!text) return;
+
+  entries.innerHTML = `<div class='card'>${text}</div>` + entries.innerHTML;
+  entry.value = '';
+
+  let current = parseInt(streak.innerText);
+  streak.innerText = current + 1;
+}
+</script>
+
+</body>
+</html>
