@@ -11,7 +11,7 @@
 body{
   margin:0;
   font-family:system-ui,-apple-system,BlinkMacSystemFont;
-  background:radial-gradient(circle at top,#10101c,#040406);
+  background:radial-gradient(circle at top,#0b0f1a,#020203);
   color:#fff;
 }
 
@@ -21,8 +21,8 @@ header{
   top:0;
   z-index:10;
   padding:16px 24px;
-  background:#070b12ee;
-  border-bottom:1px solid #1c2533;
+  background:#05070cee;
+  border-bottom:1px solid #1a2230;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -44,7 +44,7 @@ header{
 
 /* HERO */
 .hero{
-  padding:95px 24px 65px;
+  padding:110px 24px 70px;
   max-width:1100px;
   margin:auto;
   text-align:center;
@@ -63,15 +63,15 @@ header{
 }
 
 .hero h1{
-  font-size:44px;
+  font-size:46px;
   margin:0 0 14px;
   font-weight:900;
 }
 
 .hero p{
   font-size:18px;
-  opacity:.82;
-  max-width:780px;
+  opacity:.8;
+  max-width:800px;
   margin:auto;
 }
 
@@ -107,6 +107,7 @@ header{
   color:black;
 }
 
+/* SECTION */
 .section{
   max-width:1100px;
   margin:80px auto;
@@ -114,11 +115,12 @@ header{
 }
 
 .section h2{
-  font-size:28px;
-  margin-bottom:22px;
+  font-size:30px;
+  margin-bottom:20px;
   font-weight:900;
 }
 
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -128,7 +130,7 @@ header{
 /* CARD */
 .card{
   background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.08);
   border-radius:18px;
   padding:24px;
   transition:.25s;
@@ -140,6 +142,7 @@ header{
   box-shadow:0 14px 35px rgba(0,0,0,0.55);
 }
 
+/* BADGE */
 .badge{
   display:inline-block;
   background:rgba(108,242,194,0.12);
@@ -152,28 +155,30 @@ header{
   font-weight:800;
 }
 
-/* DIVISION STATUS */
+/* STATUS */
 .statusTag{
-  display:inline-block;
   margin-top:10px;
   font-size:12px;
   padding:5px 10px;
   border-radius:999px;
   font-weight:700;
+  display:inline-block;
 }
 
 .open{background:rgba(108,242,194,0.12);color:#6cf2c2;}
 .maint{background:rgba(255,200,80,0.12);color:#ffd37a;}
-.closed{background:rgba(255,90,90,0.12);color:#ff7a7a;}
 
-.division span{
+/* TEAM */
+.teamRole{
+  font-size:18px;
   font-weight:900;
-  font-size:17px;
+  margin-bottom:8px;
 }
 
-.division p{
-  opacity:.82;
-  line-height:1.45;
+.teamCount{
+  font-size:28px;
+  font-weight:900;
+  color:#6cf2c2;
 }
 
 /* FOOTER */
@@ -182,7 +187,7 @@ footer{
   padding:45px 24px;
   text-align:center;
   font-size:13px;
-  opacity:.65;
+  opacity:.6;
 }
 </style>
 </head>
@@ -199,62 +204,85 @@ footer{
 
 <!-- HERO -->
 <section class="hero">
-  <div class="heroBadge">StudentStream Corporate Network</div>
+  <div class="heroBadge">Corporate Infrastructure</div>
 
-  <h1>One Company. Multiple Worlds.</h1>
+  <h1>Building Systems, Not Just Platforms.</h1>
 
   <p>
-    StudentStream is building a multi-division technology ecosystem across
-    entertainment, production, investigations, and creator-first infrastructure.
+    StudentStreamHQ is a multi-division technology company focused on media, infrastructure,
+    and creator-first systems designed for the next generation of digital ownership.
   </p>
 
-  <!-- NEW BUTTONS -->
   <div class="heroButtons">
-    <a href="division-directory.html" class="btn btnPrimary">Division Directory</a>
-    <a href="staff-directory.html" class="btn">Staff Directory</a>
+    <a href="division-directory.html" class="btn btnPrimary">Explore Divisions</a>
+    <a href="staff-directory.html" class="btn">View Team</a>
   </div>
 </section>
 
 <!-- MISSION -->
 <section class="section">
-  <h2>Our Mission</h2>
-  <div class="grid">
-    <div class="card">
-      <p>
-        StudentStream exists to give creators, filmmakers, investigators, and digital entrepreneurs
-        the tools, ownership, and infrastructure they need to operate independently.
-      </p>
+  <h2>Mission</h2>
+  <div class="card">
+    <p>
+      Our mission is to give creators, engineers, and digital operators the ability to build,
+      distribute, and monetize without relying on outdated platforms.
+    </p>
 
-      <p>
-        We design systems that replace outdated platforms with modern technology —
-        transparent, creator-first, and built for long-term growth.
-      </p>
+    <p>
+      StudentStream develops systems that prioritize ownership, transparency,
+      and long-term scalability.
+    </p>
+  </div>
+</section>
+
+<!-- STRUCTURE -->
+<section class="section">
+  <h2>Company Structure</h2>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="teamRole">Engineering</div>
+      <div class="teamCount">Core Team</div>
+      <p>Responsible for platform development, systems architecture, and infrastructure.</p>
     </div>
+
+    <div class="card">
+      <div class="teamRole">Media & Production</div>
+      <div class="teamCount">SS Films</div>
+      <p>Handles film production, content creation, and distribution pipelines.</p>
+    </div>
+
+    <div class="card">
+      <div class="teamRole">Operations</div>
+      <div class="teamCount">Internal</div>
+      <p>Manages company logistics, coordination, and organizational growth.</p>
+    </div>
+
+    <div class="card">
+      <div class="teamRole">Research & Investigations</div>
+      <div class="teamCount">SS:I</div>
+      <p>Focused on investigative work, documentation, and deep research projects.</p>
+    </div>
+
   </div>
 </section>
 
 <!-- FOUNDER -->
 <section class="section">
   <h2>Founder</h2>
-  <div class="grid">
-    <div class="card">
-      <span class="badge">✔ Verified Founder & Owner</span>
-      <h3 style="margin:0;font-size:22px;font-weight:900;">Deondre</h3>
+  <div class="card">
+    <span class="badge">Founder & Owner</span>
+    <h3 style="margin:0;font-size:22px;">Deondre</h3>
 
-      <p>
-        Deondre is the owner and founder of StudentStreamHQ and the visionary behind its
-        multi-division ecosystem.
-      </p>
+    <p>
+      Founder of StudentStreamHQ and lead architect behind its multi-division ecosystem.
+    </p>
 
-      <p>
-        He created StudentStream to solve critical problems in creator monetization,
-        platform control, digital rights, and media transparency.
-      </p>
-
-      <p style="opacity:.7;font-size:14px;margin-top:14px">
-        “We don’t just build platforms. We build systems that change who controls the future.”
-      </p>
-    </div>
+    <p>
+      Focused on building independent infrastructure across media, technology,
+      and digital ownership systems.
+    </p>
   </div>
 </section>
 
@@ -264,30 +292,28 @@ footer{
 
   <div class="grid">
 
-    <div class="card division">
-      <span>SS Films</span>
-      <p>Production + streaming division for independent films and originals.</p>
-      <div class="statusTag open">Open</div>
+    <div class="card">
+      <h3>SS Films</h3>
+      <p>Production and streaming division for original content.</p>
+      <div class="statusTag open">Active</div>
     </div>
 
-    <div class="card division">
-      <span>StudentStream Studios</span>
-      <p>Creative infrastructure for filmmakers, creators, and digital teams.</p>
-      <div class="statusTag open">Open</div>
+    <div class="card">
+      <h3>StudentStream Studios</h3>
+      <p>Creative infrastructure for creators and digital teams.</p>
+      <div class="statusTag open">Active</div>
     </div>
 
-    <div class="card division">
-      <span>SSI Law (StudentStream Law)</span>
-      <p>Legal infrastructure protecting creators and digital businesses.</p>
-      <div class="statusTag maint">Maintenance</div>
+    <div class="card">
+      <h3>SS:I</h3>
+      <p>Investigative division producing research-driven media.</p>
+      <div class="statusTag open">Active</div>
     </div>
 
-    <div class="card division">
-      <span>SS:I — StudentStream Investigations</span>
-      <p>
-        Investigative division documenting what others overlook and producing deep research media.
-      </p>
-      <div class="statusTag open">Open</div>
+    <div class="card">
+      <h3>SSI Law</h3>
+      <p>Legal systems protecting digital creators and operations.</p>
+      <div class="statusTag maint">Developing</div>
     </div>
 
   </div>
@@ -295,24 +321,21 @@ footer{
 
 <!-- VISION -->
 <section class="section">
-  <h2>Our Vision</h2>
-  <div class="grid">
-    <div class="card">
-      <p>
-        StudentStream is building a unified digital empire where entertainment, truth,
-        law, and creator ownership coexist in one ecosystem.
-      </p>
+  <h2>Vision</h2>
+  <div class="card">
+    <p>
+      StudentStream is building a unified ecosystem where creators and operators
+      maintain control over their work, revenue, and distribution.
+    </p>
 
-      <p>
-        Our goal is to become the backbone infrastructure for independent media worldwide —
-        where creators control distribution, revenue, and narrative.
-      </p>
-    </div>
+    <p>
+      The long-term goal is to establish a new standard for independent digital infrastructure.
+    </p>
   </div>
 </section>
 
 <footer>
-  © 2026 StudentStreamHQ · SS Films, StudentStream Studios, SSI Law, and SS:I are divisions of StudentStream
+  © 2026 StudentStreamHQ · All divisions operate under StudentStream Corporate Network
 </footer>
 
 </body>
