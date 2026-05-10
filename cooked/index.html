@@ -1,41 +1,307 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
+<title>Cook’ed — Cook Better. Live Healthier.</title>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- AI -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 
+<!-- ICONS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
 <style>
-:root{--accent:#00ff9d;--bg:#000;--card:rgba(255,255,255,0.08);--text:#fff}
-.premium{--accent:#ff7a9c}
 
-body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text)}
+:root{
+--accent:#00ff9d;
+--bg:#050505;
+--card:rgba(255,255,255,0.07);
+--text:#fff;
+--muted:#9ca3af;
+}
 
-.screen{display:none;height:100vh;overflow:auto}
-.active{display:block}
+.premium{
+--accent:#ff7ca8;
+}
 
-.card{background:var(--card);border-radius:20px;padding:15px;margin:10px}
-.btn{background:var(--accent);padding:12px;border-radius:14px;text-align:center;margin:10px;font-weight:700}
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
 
-.nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px;background:#000}
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+background:var(--bg);
+color:var(--text);
+overflow:hidden;
+}
 
-.feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
-.feed-item{height:100vh;scroll-snap-align:start;position:relative}
-.feed-item img{width:100%;height:100%;object-fit:cover}
+input{
+width:100%;
+padding:14px;
+border:none;
+outline:none;
+border-radius:16px;
+background:#111;
+color:white;
+margin-top:10px;
+font-size:15px;
+}
 
-.overlay{position:absolute;bottom:120px;left:15px}
-.actions{position:absolute;right:15px;bottom:120px;text-align:center}
+.screen{
+display:none;
+height:100vh;
+overflow:auto;
+animation:fade .25s;
+}
 
-.modal{position:fixed;inset:0;background:#000;display:none;padding:20px;overflow:auto}
-.modal.active{display:block}
+.active{
+display:block;
+}
 
-.hero{height:300px;background:url('https://source.unsplash.com/900x700/?chef,kitchen') center/cover}
+@keyframes fade{
+from{opacity:0}
+to{opacity:1}
+}
 
-.comment{background:#111;padding:8px;border-radius:10px;margin:5px}
+/* LOGIN */
 
-.progress{height:8px;background:#222;border-radius:10px;margin:5px}
-.progress div{height:100%;background:var(--accent)}
+.hero{
+height:52vh;
+background:
+linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.2)),
+url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=1400&auto=format&fit=crop');
+background-size:cover;
+background-position:center;
+display:flex;
+align-items:flex-end;
+padding:25px;
+}
+
+.heroText h1{
+margin:0;
+font-size:42px;
+font-weight:900;
+}
+
+.heroText p{
+margin-top:6px;
+color:#ddd;
+}
+
+.card{
+background:var(--card);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.08);
+border-radius:24px;
+padding:18px;
+margin:14px;
+}
+
+.btn{
+background:var(--accent);
+color:black;
+padding:14px;
+font-weight:800;
+border-radius:16px;
+text-align:center;
+margin-top:12px;
+cursor:pointer;
+}
+
+/* FEED */
+
+.feed{
+height:100vh;
+overflow-y:scroll;
+scroll-snap-type:y mandatory;
+}
+
+.feed-item{
+height:100vh;
+position:relative;
+scroll-snap-align:start;
+}
+
+.feed-item img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.overlay{
+position:absolute;
+left:18px;
+bottom:120px;
+max-width:70%;
+}
+
+.overlay h2{
+margin:0;
+font-size:28px;
+font-weight:900;
+}
+
+.overlay p{
+margin-top:6px;
+font-size:14px;
+color:#ddd;
+}
+
+.actions{
+position:absolute;
+right:16px;
+bottom:120px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:18px;
+font-size:14px;
+font-weight:700;
+}
+
+.actionBtn{
+text-align:center;
+cursor:pointer;
+}
+
+.actionBtn i{
+font-size:28px;
+margin-bottom:4px;
+}
+
+/* NAV */
+
+.nav{
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+justify-content:space-around;
+padding:14px;
+background:rgba(0,0,0,.88);
+backdrop-filter:blur(18px);
+z-index:100;
+}
+
+.nav div{
+font-size:24px;
+cursor:pointer;
+}
+
+/* MODAL */
+
+.modal{
+position:fixed;
+inset:0;
+background:#000;
+z-index:999;
+display:none;
+overflow:auto;
+padding-bottom:80px;
+}
+
+.modal.active{
+display:block;
+}
+
+.recipeHero{
+width:100%;
+height:320px;
+object-fit:cover;
+}
+
+.recipeContent{
+padding:18px;
+}
+
+.recipeContent h2{
+margin-top:0;
+font-size:32px;
+}
+
+.recipeContent p{
+line-height:1.6;
+color:#ddd;
+}
+
+/* CAMERA */
+
+.cameraWrap{
+padding:16px;
+}
+
+video{
+width:100%;
+border-radius:24px;
+background:black;
+}
+
+.scanBox{
+margin-top:14px;
+}
+
+/* HEALTH */
+
+.bodyCard{
+text-align:center;
+}
+
+.bodyImg{
+width:220px;
+margin:auto;
+display:block;
+}
+
+.stat{
+background:#111;
+padding:12px;
+border-radius:14px;
+margin-top:10px;
+}
+
+.progress{
+height:10px;
+background:#222;
+border-radius:999px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.progress div{
+height:100%;
+background:var(--accent);
+}
+
+/* COMMENTS */
+
+.comment{
+background:#111;
+padding:12px;
+border-radius:14px;
+margin-top:10px;
+}
+
+/* BADGES */
+
+.badge{
+display:inline-block;
+padding:6px 12px;
+border-radius:999px;
+background:rgba(0,255,157,.15);
+color:var(--accent);
+font-size:12px;
+font-weight:800;
+margin-top:8px;
+}
+
 </style>
 </head>
 
@@ -43,13 +309,29 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text)}
 
 <!-- LOGIN -->
 <div id="login" class="screen active">
-<div class="hero"></div>
-<div class="card">
-<h2>Cook’ed</h2>
-<p>Cook better. Live healthier.</p>
-<input id="username" placeholder="Username">
-<div class="btn" onclick="enterApp()">Enter</div>
+
+<div class="hero">
+<div class="heroText">
+<h1>Cook’ed</h1>
+<p>Cook Better. Live Healthier.</p>
 </div>
+</div>
+
+<div class="card">
+<h3>Welcome Back</h3>
+
+<input id="username" placeholder="Enter username">
+
+<div class="btn" onclick="enterApp()">
+Enter App
+</div>
+
+<div class="badge">
+AI Food + Fitness Platform
+</div>
+
+</div>
+
 </div>
 
 <!-- HOME -->
@@ -59,45 +341,106 @@ body{margin:0;font-family:-apple-system;background:var(--bg);color:var(--text)}
 
 <!-- CAMERA -->
 <div id="camera" class="screen">
+
+<div class="cameraWrap">
+
+<h2>AI Food Scanner</h2>
+
 <video id="video" autoplay playsinline></video>
-<div class="btn" onclick="capture()">Scan Food</div>
-<div id="scanResult"></div>
+
+<div class="btn" onclick="capture()">
+Scan Food
+</div>
+
+<div id="scanResult" class="scanBox"></div>
+
+</div>
+
 </div>
 
 <!-- PROFILE -->
 <div id="profile" class="screen">
-<div id="userInfo"></div>
-<div class="btn" onclick="togglePremium()">Toggle Premium 👑</div>
-
-<div id="health" style="display:none">
-<input id="height" placeholder="Height (cm)">
-<input id="weight" placeholder="Weight (kg)">
-<div class="btn" onclick="analyze()">Analyze</div>
-
-<div id="healthResult"></div>
-<div id="mealPlan"></div>
 
 <div class="card">
+<h2 id="userInfo">Chef</h2>
+
+<div class="badge">
+Cook’ed Premium
+</div>
+
+<div class="btn" onclick="togglePremium()">
+Toggle Premium 👑
+</div>
+</div>
+
+<div id="health" style="display:none">
+
+<div class="card bodyCard">
+
+<h2>Health Analysis</h2>
+
+<img class="bodyImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Human_body_silhouette.svg/512px-Human_body_silhouette.svg.png">
+
+<input id="height" placeholder="Height (cm)">
+<input id="weight" placeholder="Weight (kg)">
+
+<div class="btn" onclick="analyze()">
+Analyze Body
+</div>
+
+<div id="healthResult"></div>
+
+</div>
+
+<div class="card">
+<h3>Daily Progress</h3>
+
 Protein
-<div class="progress"><div style="width:60%"></div></div>
+<div class="progress"><div style="width:72%"></div></div>
+
 Calories
-<div class="progress"><div style="width:70%"></div></div>
+<div class="progress"><div style="width:60%"></div></div>
+
+Hydration
+<div class="progress"><div style="width:88%"></div></div>
+
 Workout
 <div class="progress"><div style="width:40%"></div></div>
+
+</div>
+
+<div class="card">
+<h3>Recommended Meals</h3>
+<div id="mealPlan"></div>
 </div>
 
 </div>
+
 </div>
 
-<!-- RECIPE -->
+<!-- RECIPE MODAL -->
 <div id="recipeModal" class="modal"></div>
 
 <!-- COMMENTS -->
 <div id="commentModal" class="modal">
-<h3>Comments</h3>
+
+<div style="padding:20px">
+
+<h2>Comments</h2>
+
 <div id="comments"></div>
-<input placeholder="Add comment..." onkeydown="addComment(event)">
-<div class="btn" onclick="closeComments()">Close</div>
+
+<input
+placeholder="Add comment..."
+onkeydown="addComment(event)"
+>
+
+<div class="btn" onclick="closeComments()">
+Close
+</div>
+
+</div>
+
 </div>
 
 <!-- NAV -->
@@ -108,169 +451,515 @@ Workout
 </div>
 
 <script>
-let user,isPremium=false,model;
-let likes={};
 
-// NAV
+/* =========================
+SUPABASE
+========================= */
+
+const SUPABASE_URL = "https://iabzmoxzbqzcqgypxctr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabaseClient = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+/* =========================
+GLOBAL
+========================= */
+
+let user;
+let isPremium = false;
+let model;
+let likes = {};
+
+/* =========================
+NAV
+========================= */
+
 function nav(id){
-document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
+document.querySelectorAll('.screen')
+.forEach(s=>s.classList.remove('active'));
+
+document.getElementById(id)
+.classList.add('active');
 }
 
-// LOGIN
-function enterApp(){
-user=username.value||'Chef';
-userInfo.innerText="👤 "+user;
-loadFeed();
+/* =========================
+LOGIN
+========================= */
+
+async function enterApp(){
+
+user = username.value || "Chef";
+
+userInfo.innerText = "👤 " + user;
+
+await loadFeed();
+
 nav('home');
+
 }
 
-// FEED
+/* =========================
+LOAD FEED
+========================= */
+
 async function loadFeed(){
-let res=await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-let data=await res.json();
 
-feed.innerHTML='';
+feed.innerHTML = '';
 
-data.meals.slice(0,8).forEach(meal=>{
-likes[meal.idMeal]=likes[meal.idMeal]||Math.floor(Math.random()*500);
+const res = await fetch(
+'https://www.themealdb.com/api/json/v1/1/search.php?s='
+);
 
-feed.innerHTML+=`
-<div class="feed-item" ondblclick="like('${meal.idMeal}')">
-<img src="${meal.strMealThumb}" onclick="openRecipe('${meal.strMeal}')">
+const data = await res.json();
 
-<div class="overlay"><h2>${meal.strMeal}</h2></div>
+data.meals.slice(0,10).forEach(meal=>{
+
+likes[meal.idMeal] =
+likes[meal.idMeal] ||
+Math.floor(Math.random()*900);
+
+feed.innerHTML += `
+
+<div class="feed-item">
+
+<img
+src="${meal.strMealThumb}"
+onclick="openRecipe('${meal.strMeal}')"
+>
+
+<div class="overlay">
+<h2>${meal.strMeal}</h2>
+<p>${meal.strCategory} • ${meal.strArea}</p>
+</div>
 
 <div class="actions">
-<div onclick="like('${meal.idMeal}')">❤️<br>${likes[meal.idMeal]}</div>
-<div onclick="openComments()">💬</div>
-<div>🔖</div>
+
+<div class="actionBtn"
+onclick="like('${meal.idMeal}')">
+<i class="fa-solid fa-heart"></i>
+<div>${likes[meal.idMeal]}</div>
 </div>
-</div>`;
+
+<div class="actionBtn"
+onclick="openComments()">
+<i class="fa-solid fa-comment"></i>
+<div>82</div>
+</div>
+
+<div class="actionBtn">
+<i class="fa-solid fa-bookmark"></i>
+<div>Save</div>
+</div>
+
+</div>
+
+</div>
+
+`;
+
 });
+
 }
 
-// LIKE
-function like(id){likes[id]++;loadFeed();}
+/* =========================
+LIKE
+========================= */
 
-// RECIPE
+function like(id){
+
+likes[id]++;
+
+loadFeed();
+
+}
+
+/* =========================
+RECIPE MODAL
+========================= */
+
 async function openRecipe(name){
-let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
-let data=await res.json();
-let meal=data.meals[0];
+
+const res = await fetch(
+`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`
+);
+
+const data = await res.json();
+
+const meal = data.meals[0];
 
 recipeModal.classList.add('active');
 
-recipeModal.innerHTML=`
+recipeModal.innerHTML = `
+
+<img
+class="recipeHero"
+src="${meal.strMealThumb}"
+>
+
+<div class="recipeContent">
+
 <h2>${meal.strMeal}</h2>
-<img src="${meal.strMealThumb}" style="width:100%">
-<p>${meal.strInstructions}</p>
 
-${isPremium?`
-<iframe width="100%" height="200"
-src="https://www.youtube.com/embed?listType=search&list=${name} recipe">
-</iframe>`:''}
+<div class="badge">
+${meal.strCategory}
+</div>
 
-<div class="btn" onclick="openComments()">Comments</div>
-<div class="btn" onclick="closeRecipe()">Close</div>
+<p>
+${meal.strInstructions}
+</p>
+
+<h3>Ingredients</h3>
+
+<p>
+🥩 ${meal.strIngredient1}<br>
+🥬 ${meal.strIngredient2}<br>
+🧂 ${meal.strIngredient3}<br>
+🍚 ${meal.strIngredient4}
+</p>
+
+${
+isPremium
+?
+`
+<h3>Recipe Video</h3>
+
+<iframe
+width="100%"
+height="240"
+src="https://www.youtube.com/embed?listType=search&list=${meal.strMeal} recipe"
+allowfullscreen
+style="border:none;border-radius:18px"
+></iframe>
+`
+:
+`
+<div class="card">
+🔒 Premium unlocks recipe videos
+</div>
+`
+}
+
+<div class="btn" onclick="openComments()">
+Comments 💬
+</div>
+
+<div class="btn" onclick="closeRecipe()">
+Close
+</div>
+
+</div>
+
 `;
+
 }
 
-function closeRecipe(){recipeModal.classList.remove('active');}
+function closeRecipe(){
+recipeModal.classList.remove('active');
+}
 
-// COMMENTS
+/* =========================
+COMMENTS
+========================= */
+
 function openComments(){
+
 commentModal.classList.add('active');
-comments.innerHTML='';
-['🔥 fire','making this tonight','this app tough'].forEach(c=>{
-comments.innerHTML+=`<div class="comment">${c}</div>`;
-});
+
+comments.innerHTML = `
+<div class="comment">🔥 This looks insane</div>
+<div class="comment">Trying this tonight</div>
+<div class="comment">W meal prep</div>
+`;
+
 }
-function closeComments(){commentModal.classList.remove('active');}
+
+function closeComments(){
+commentModal.classList.remove('active');
+}
+
 function addComment(e){
-if(e.key==='Enter'){
-comments.innerHTML+=`<div class="comment">${e.target.value}</div>`;
-e.target.value='';
-}
+
+if(e.key==="Enter"){
+
+comments.innerHTML += `
+<div class="comment">
+${e.target.value}
+</div>
+`;
+
+e.target.value = '';
+
 }
 
-// CAMERA (FIXED)
+}
+
+/* =========================
+CAMERA
+========================= */
+
 async function startCamera(){
+
 nav('camera');
+
 try{
-const stream=await navigator.mediaDevices.getUserMedia({
-video:{facingMode:"environment"}
+
+const stream =
+await navigator.mediaDevices.getUserMedia({
+video:{
+facingMode:"environment"
+}
 });
-video.srcObject=stream;
 
-if(!model)model=await mobilenet.load();
+video.srcObject = stream;
 
-}catch(e){
-scanResult.innerHTML="Camera access denied ❌";
+if(!model){
+
+scanResult.innerHTML = `
+<div class="card">
+Loading AI Model...
+</div>
+`;
+
+model = await mobilenet.load();
+
 }
+
+scanResult.innerHTML = '';
+
+}catch(err){
+
+scanResult.innerHTML = `
+<div class="card">
+❌ Camera access denied
+</div>
+`;
+
 }
+
+}
+
+/* =========================
+CAPTURE
+========================= */
 
 async function capture(){
-scanResult.innerHTML="Scanning...";
-let predictions=await model.classify(video);
-let food=predictions[0].className.split(',')[0];
 
-scanResult.innerHTML=`Detected: ${food}`;
-suggestRecipe(food);
+if(!model){
+return;
 }
 
-// SUGGEST
+scanResult.innerHTML = `
+<div class="card">
+Scanning food...
+</div>
+`;
+
+const predictions =
+await model.classify(video);
+
+const food =
+predictions[0].className.split(',')[0];
+
+const confidence =
+(predictions[0].probability * 100)
+.toFixed(1);
+
+scanResult.innerHTML = `
+
+<div class="card">
+
+<h2>${food}</h2>
+
+<p>
+Confidence: ${confidence}%
+</p>
+
+<div class="badge">
+AI Food Detection
+</div>
+
+</div>
+
+`;
+
+suggestRecipe(food);
+
+}
+
+/* =========================
+SUGGEST RECIPES
+========================= */
+
 async function suggestRecipe(food){
-let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${food}`);
-let data=await res.json();
+
+const res = await fetch(
+`https://www.themealdb.com/api/json/v1/1/search.php?s=${food}`
+);
+
+const data = await res.json();
 
 if(data.meals){
-scanResult.innerHTML+=`
+
+const meal = data.meals[0];
+
+scanResult.innerHTML += `
+
 <div class="card">
-Try: ${data.meals[0].strMeal}
-</div>`;
-}
+
+<h3>Suggested Recipe</h3>
+
+<img
+src="${meal.strMealThumb}"
+style="
+width:100%;
+border-radius:18px;
+margin-top:10px;
+"
+>
+
+<h2>${meal.strMeal}</h2>
+
+<p>
+${meal.strCategory}
+</p>
+
+<div class="btn"
+onclick="openRecipe('${meal.strMeal}')">
+Open Recipe
+</div>
+
+</div>
+
+`;
+
 }
 
-// PREMIUM
+}
+
+/* =========================
+PREMIUM
+========================= */
+
 function togglePremium(){
-isPremium=!isPremium;
-document.body.classList.toggle('premium');
-health.style.display=isPremium?'block':'none';
+
+isPremium = !isPremium;
+
+document.body.classList.toggle(
+'premium'
+);
+
+health.style.display =
+isPremium
+?
+'block'
+:
+'none';
+
 }
 
-// HEALTH
+/* =========================
+HEALTH ANALYSIS
+========================= */
+
 function analyze(){
-let h=height.value;
-let w=weight.value;
 
-let bmi=(w/((h/100)*(h/100))).toFixed(1);
-let goal=bmi<18.5?"Bulk 💪":bmi<25?"Maintain ⚖️":"Cut 🔥";
+const h = height.value;
+const w = weight.value;
 
-healthResult.innerHTML=`
-<div class="card">
-BMI: ${bmi}<br>
-Goal: ${goal}<br>
-Calories: ${Math.floor(2000+w*10)}<br>
-Protein: ${Math.floor(w*1.2)}g
-</div>`;
+const bmi =
+(w / ((h/100)*(h/100)))
+.toFixed(1);
+
+const goal =
+bmi < 18.5
+?
+"Bulk 💪"
+:
+bmi < 25
+?
+"Maintain ⚖️"
+:
+"Cut 🔥";
+
+healthResult.innerHTML = `
+
+<div class="stat">
+BMI: ${bmi}
+</div>
+
+<div class="stat">
+Goal: ${goal}
+</div>
+
+<div class="stat">
+Calories: ${Math.floor(2200 + w*8)}
+</div>
+
+<div class="stat">
+Protein Goal:
+${Math.floor(w*1.2)}g
+</div>
+
+`;
 
 generateMeals(goal);
+
 }
 
-// MEALS
+/* =========================
+MEAL RECOMMENDATIONS
+========================= */
+
 async function generateMeals(goal){
-let query=goal.includes("Bulk")?"chicken":"salad";
 
-let res=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
-let data=await res.json();
+const query =
+goal.includes("Bulk")
+?
+"chicken"
+:
+goal.includes("Cut")
+?
+"salad"
+:
+"rice";
 
-mealPlan.innerHTML="<h3>Recommended Meals</h3>";
+const res = await fetch(
+`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
+);
+
+const data = await res.json();
+
+mealPlan.innerHTML = '';
 
 data.meals.slice(0,3).forEach(m=>{
-mealPlan.innerHTML+=`<div class="card">${m.strMeal}</div>`;
+
+mealPlan.innerHTML += `
+
+<div class="card">
+
+<img
+src="${m.strMealThumb}"
+style="
+width:100%;
+border-radius:16px;
+"
+>
+
+<h3>${m.strMeal}</h3>
+
+<p>${m.strCategory}</p>
+
+</div>
+
+`;
+
 });
+
 }
+
 </script>
 
 </body>
