@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -110,6 +111,7 @@ height:60vh;
 background:
 linear-gradient(to top,rgba(0,0,0,.95),rgba(0,0,0,.2)),
 url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1600&auto=format&fit=crop');
+
 background-size:cover;
 background-position:center;
 display:flex;
@@ -153,7 +155,6 @@ background:black;
 width:100%;
 height:100%;
 object-fit:cover;
-cursor:pointer;
 }
 
 .feedShade{
@@ -283,6 +284,7 @@ background:#111;
 
 .cameraWrap{
 padding:16px;
+padding-bottom:120px;
 }
 
 .cameraBox{
@@ -440,6 +442,68 @@ cursor:pointer;
 backdrop-filter:blur(10px);
 }
 
+.bodyContainer{
+position:relative;
+height:340px;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
+
+.bodyGlow{
+position:absolute;
+width:220px;
+height:220px;
+background:var(--accent);
+filter:blur(90px);
+opacity:.2;
+}
+
+.bodyImage{
+width:210px;
+z-index:2;
+filter:drop-shadow(0 0 25px rgba(0,255,157,.4));
+border-radius:28px;
+object-fit:cover;
+}
+
+.scanBeam{
+position:absolute;
+width:220px;
+height:4px;
+background:var(--accent);
+box-shadow:0 0 20px var(--accent);
+animation:bodyScan 2.5s linear infinite;
+z-index:3;
+}
+
+@keyframes bodyScan{
+0%{top:20px}
+100%{top:300px}
+}
+
+.progress{
+width:100%;
+height:12px;
+background:#222;
+border-radius:999px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.aiChat{
+margin-top:16px;
+}
+
+.aiBubble{
+background:#111;
+padding:14px;
+border-radius:18px;
+margin-top:12px;
+line-height:1.6;
+}
+
 </style>
 </head>
 
@@ -544,6 +608,19 @@ Toggle Premium 👑
 
 <h2>AI Body Analysis</h2>
 
+<div class="bodyContainer">
+
+<div class="bodyGlow"></div>
+
+<img
+class="bodyImage"
+src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=900&auto=format&fit=crop"
+>
+
+<div class="scanBeam"></div>
+
+</div>
+
 <input id="height" placeholder="Height (cm)">
 <input id="weight" placeholder="Weight (kg)">
 
@@ -552,6 +629,31 @@ Analyze Body
 </div>
 
 <div id="healthResult"></div>
+
+</div>
+
+<div class="card">
+
+<h3>Daily Progress</h3>
+
+Protein
+<div class="progress">
+<div style="width:78%;height:100%;background:var(--accent)"></div>
+</div>
+
+<br>
+
+Calories
+<div class="progress">
+<div style="width:64%;height:100%;background:var(--accent)"></div>
+</div>
+
+<br>
+
+Hydration
+<div class="progress">
+<div style="width:90%;height:100%;background:var(--accent)"></div>
+</div>
 
 </div>
 
@@ -567,7 +669,7 @@ Analyze Body
 
 </div>
 
-<!-- RECIPE MODAL -->
+<!-- RECIPE -->
 
 <div id="recipeModal" class="modal"></div>
 
@@ -615,6 +717,22 @@ Close
 <script>
 
 /* ======================
+SUPABASE
+====================== */
+
+const SUPABASE_URL =
+"https://iabzmoxzbqzcqgypxctr.supabase.co";
+
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+/* ======================
 GLOBAL
 ====================== */
 
@@ -636,7 +754,8 @@ eggs:["omelette","fried rice","breakfast sandwich"],
 cheese:["burger","pizza","quesadilla"],
 bread:["sandwich","toast","grilled cheese"],
 chicken:["chicken alfredo","bbq chicken","chicken bowl"],
-beef:["burger","steak bowl","tacos"]
+beef:["burger","steak bowl","tacos"],
+banana:["smoothie","banana pancakes","oatmeal"]
 
 };
 
@@ -644,11 +763,12 @@ const substitutes = {
 milk:"almond milk",
 butter:"olive oil",
 eggs:"banana",
-cream:"greek yogurt"
+cream:"greek yogurt",
+cheese:"vegan cheese"
 };
 
 /* ======================
-NAVIGATION
+NAV
 ====================== */
 
 function nav(id){
@@ -667,10 +787,18 @@ LOGIN
 
 async function enterApp(){
 
-user = document.getElementById("username").value || "Chef";
+user =
+document.getElementById("username").value || "Chef";
 
 document.getElementById("userInfo").innerHTML =
 `👤 ${user}`;
+
+localStorage.setItem(
+"cookedUser",
+user
+);
+
+await saveUser();
 
 nav('home');
 
@@ -684,6 +812,31 @@ Preparing your food feed 🍔
 `;
 
 await loadFeed();
+
+}
+
+/* ======================
+SUPABASE SAVE
+====================== */
+
+async function saveUser(){
+
+try{
+
+await supabaseClient
+.from('users')
+.upsert([
+{
+username:user,
+premium:isPremium
+}
+]);
+
+}catch(err){
+
+console.log(err);
+
+}
 
 }
 
@@ -703,7 +856,8 @@ const searches = [
 "salad",
 "chicken",
 "taco",
-"ramen"
+"ramen",
+"fried rice"
 ];
 
 let meals = [];
@@ -749,7 +903,8 @@ onclick='openRecipe(${JSON.stringify(meal.strMeal)})'>
 <h2>${meal.strMeal}</h2>
 
 <p>
-${meal.strCategory} • ${meal.strArea}
+${meal.strCategory}
+• ${meal.strArea}
 </p>
 
 </div>
@@ -965,7 +1120,12 @@ currentStream.getTracks()
 
 const stream =
 await navigator.mediaDevices.getUserMedia({
-video:true
+video:{
+facingMode:{
+ideal:"environment"
+}
+},
+audio:false
 });
 
 currentStream = stream;
@@ -1033,6 +1193,8 @@ if(lower.includes("milk")) fridgeItems.push("milk");
 if(lower.includes("egg")) fridgeItems.push("eggs");
 if(lower.includes("bread")) fridgeItems.push("bread");
 if(lower.includes("cheese")) fridgeItems.push("cheese");
+if(lower.includes("chicken")) fridgeItems.push("chicken");
+if(lower.includes("meat")) fridgeItems.push("beef");
 
 });
 
@@ -1041,12 +1203,68 @@ if(fridgeItems.length === 0){
 fridgeItems.push(
 "milk",
 "eggs",
-"bread"
+"bread",
+"cheese"
 );
 
 }
 
+await saveScan(fridgeItems);
+
 showFridgeAnalysis(fridgeItems);
+
+}
+
+/* ======================
+SAVE SCAN
+====================== */
+
+async function saveScan(items){
+
+try{
+
+await supabaseClient
+.from('food_scans')
+.insert([
+{
+username:user,
+ingredients:items
+}
+]);
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
+
+/* ======================
+AI CHAT
+====================== */
+
+function getAITips(items){
+
+if(items.includes("milk")){
+
+return "You can make creamy pasta, pancakes, or protein smoothies.";
+
+}
+
+if(items.includes("eggs")){
+
+return "Eggs are perfect for breakfast bowls and high-protein meals.";
+
+}
+
+if(items.includes("bread")){
+
+return "Try sandwiches, toast melts, or homemade garlic bread.";
+
+}
+
+return "You have enough ingredients for a balanced meal.";
 
 }
 
@@ -1076,6 +1294,10 @@ scanResult.innerHTML = `
 
 <h2>🧠 AI Refrigerator Analysis</h2>
 
+<p>
+We detected these ingredients in your kitchen.
+</p>
+
 <div class="ingredientsGrid">
 
 ${items.map(item=>`
@@ -1100,6 +1322,46 @@ ${recipe}
 
 </div>
 
+<div class="card">
+
+<h2>💡 Smart Ingredient Substitutions</h2>
+
+<div class="substituteCard">
+No milk? Use ${substitutes.milk}
+</div>
+
+<div class="substituteCard">
+No eggs? Use ${substitutes.eggs}
+</div>
+
+<div class="substituteCard">
+No butter? Use ${substitutes.butter}
+</div>
+
+<div class="substituteCard">
+No cream? Use ${substitutes.cream}
+</div>
+
+</div>
+
+<div class="card aiChat">
+
+<h2>🤖 Cook’ed AI Assistant</h2>
+
+<div class="aiBubble">
+${getAITips(items)}
+</div>
+
+<div class="aiBubble">
+Based on your scan, I recommend focusing on protein + carbs for a balanced meal.
+</div>
+
+<div class="aiBubble">
+Want something fast? Try a grilled cheese with eggs or a chicken bowl.
+</div>
+
+</div>
+
 `;
 
 }
@@ -1117,6 +1379,8 @@ document.body.classList.toggle('premium');
 health.style.display =
 isPremium ? 'block' : 'none';
 
+saveUser();
+
 }
 
 /* ======================
@@ -1133,6 +1397,17 @@ if(!h || !w)return;
 const bmi =
 (w / ((h/100)*(h/100))).toFixed(1);
 
+const goal =
+bmi < 18.5
+?
+"Bulk 💪"
+:
+bmi < 25
+?
+"Maintain ⚖️"
+:
+"Cut 🔥";
+
 healthResult.innerHTML = `
 
 <div class="healthStats">
@@ -1142,13 +1417,79 @@ BMI<br><br>${bmi}
 </div>
 
 <div class="stat">
+Goal<br><br>${goal}
+</div>
+
+<div class="stat">
 Calories<br><br>
 ${Math.floor(2200+w*8)}
+</div>
+
+<div class="stat">
+Protein<br><br>
+${Math.floor(w*1.3)}g
 </div>
 
 </div>
 
 `;
+
+generateMeals(goal);
+
+}
+
+/* ======================
+MEALS
+====================== */
+
+async function generateMeals(goal){
+
+const query =
+goal.includes("Bulk")
+?
+"steak"
+:
+goal.includes("Cut")
+?
+"salad"
+:
+"chicken";
+
+const res = await fetch(
+`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
+);
+
+const data = await res.json();
+
+mealPlan.innerHTML = '';
+
+data.meals.slice(0,3).forEach(m=>{
+
+mealPlan.innerHTML += `
+
+<div class="mealCard"
+onclick='openRecipe(${JSON.stringify(m.strMeal)})'>
+
+<img
+src="${m.strMealThumb}"
+>
+
+<div class="mealInfo">
+
+<h3>${m.strMeal}</h3>
+
+<p style="color:#bbb">
+${m.strCategory}
+• ${m.strArea}
+</p>
+
+</div>
+
+</div>
+
+`;
+
+});
 
 }
 
