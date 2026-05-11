@@ -504,6 +504,10 @@ margin-top:12px;
 line-height:1.6;
 }
 
+.loadingFeed{
+padding-top:120px;
+}
+
 </style>
 </head>
 
@@ -533,7 +537,7 @@ Enter App
 </div>
 
 <div class="badge">
-AI Food + Fitness Platform
+ By 2026 Prodigy 1st place winners
 </div>
 
 </div>
@@ -543,7 +547,39 @@ AI Food + Fitness Platform
 <!-- HOME -->
 
 <div id="home" class="screen">
-<div class="feed" id="feed"></div>
+
+<div class="feed" id="feed">
+
+<!-- INSTANT PLACEHOLDERS -->
+
+<div class="feedItem">
+
+<img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1600&auto=format&fit=crop">
+
+<div class="feedShade"></div>
+
+<div class="overlay">
+<h2>Loading Recipes...</h2>
+<p>Preparing your personalized feed 🍔</p>
+</div>
+
+</div>
+
+<div class="feedItem">
+
+<img src="https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1600&auto=format&fit=crop">
+
+<div class="feedShade"></div>
+
+<div class="overlay">
+<h2>Fresh Meals</h2>
+<p>AI powered cooking inspiration</p>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 <!-- CAMERA -->
@@ -768,6 +804,16 @@ cheese:"vegan cheese"
 };
 
 /* ======================
+PRELOAD FEED
+====================== */
+
+window.addEventListener("load",()=>{
+
+loadFeed();
+
+});
+
+/* ======================
 NAV
 ====================== */
 
@@ -798,20 +844,9 @@ localStorage.setItem(
 user
 );
 
-await saveUser();
+saveUser();
 
 nav('home');
-
-feed.innerHTML = `
-<div class="card" style="margin-top:120px;text-align:center">
-<h2>Loading recipes...</h2>
-<p style="margin-top:10px;color:#aaa">
-Preparing your food feed 🍔
-</p>
-</div>
-`;
-
-await loadFeed();
 
 }
 
@@ -846,8 +881,6 @@ LOAD FEED
 
 async function loadFeed(){
 
-feed.innerHTML = '';
-
 const searches = [
 "burger",
 "pizza",
@@ -864,6 +897,8 @@ let meals = [];
 
 for(let s of searches){
 
+try{
+
 const res = await fetch(
 `https://www.themealdb.com/api/json/v1/1/search.php?s=${s}`
 );
@@ -876,9 +911,17 @@ meals.push(...data.meals.slice(0,2));
 
 }
 
+}catch(err){
+
+console.log(err);
+
+}
+
 }
 
 meals = meals.sort(()=>Math.random()-0.5);
+
+feed.innerHTML = '';
 
 meals.forEach(meal=>{
 
@@ -1209,7 +1252,7 @@ fridgeItems.push(
 
 }
 
-await saveScan(fridgeItems);
+saveScan(fridgeItems);
 
 showFridgeAnalysis(fridgeItems);
 
