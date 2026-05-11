@@ -158,6 +158,7 @@ background:black;
 width:100%;
 height:100%;
 object-fit:cover;
+cursor:pointer;
 }
 
 .feedShade{
@@ -280,8 +281,6 @@ margin-top:24px;
 margin-bottom:10px;
 }
 
-/* VIDEO PLAYER */
-
 .videoPlayer{
 width:100%;
 height:230px;
@@ -290,8 +289,6 @@ border-radius:22px;
 margin-top:12px;
 background:#111;
 }
-
-/* CAMERA */
 
 .cameraWrap{
 padding:16px;
@@ -368,8 +365,6 @@ border-radius:18px;
 margin-top:12px;
 }
 
-/* HEALTH */
-
 .bodyContainer{
 position:relative;
 height:340px;
@@ -425,16 +420,12 @@ border-radius:18px;
 font-weight:700;
 }
 
-/* COMMENTS */
-
 .comment{
 background:#111;
 padding:14px;
 border-radius:18px;
 margin-top:12px;
 }
-
-/* BADGE */
 
 .badge{
 display:inline-block;
@@ -445,6 +436,7 @@ color:var(--accent);
 font-size:12px;
 font-weight:800;
 margin-top:10px;
+margin-right:8px;
 }
 
 .mealCard{
@@ -463,8 +455,6 @@ object-fit:cover;
 .mealInfo{
 padding:14px;
 }
-
-/* FRIDGE AI */
 
 .ingredientsGrid{
 display:flex;
@@ -487,6 +477,7 @@ background:#111;
 padding:14px;
 border-radius:18px;
 margin-top:12px;
+line-height:1.6;
 }
 
 .aiGlow{
@@ -497,6 +488,15 @@ animation:pulse 2s infinite;
 0%{opacity:.7}
 50%{opacity:1}
 100%{opacity:.7}
+}
+
+.progress{
+width:100%;
+height:14px;
+background:#111;
+border-radius:999px;
+overflow:hidden;
+margin-top:8px;
 }
 
 </style>
@@ -726,7 +726,7 @@ const SUPABASE_URL =
 "https://iabzmoxzbqzcqgypxctr.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+"YOUR_SUPABASE_KEY";
 
 const supabaseClient =
 supabase.createClient(
@@ -746,7 +746,7 @@ let likedPosts = {};
 let currentStream;
 
 /* ======================
-INGREDIENT DATABASE
+DATABASES
 ====================== */
 
 const ingredientDatabase = {
@@ -766,9 +766,11 @@ apple:["fruit bowl","smoothie","salad"],
 banana:["smoothie","banana pancakes","oatmeal"],
 yogurt:["smoothie","fruit bowl","parfait"],
 spinach:["salad","omelette","pasta"]
+
 };
 
 const substitutes = {
+
 milk:"almond milk",
 butter:"olive oil",
 eggs:"banana",
@@ -777,6 +779,7 @@ cheese:"vegan cheese",
 sugar:"honey",
 flour:"oat flour",
 cream:"greek yogurt"
+
 };
 
 /* ======================
@@ -819,6 +822,7 @@ async function loadFeed(){
 feed.innerHTML = '';
 
 const searches = [
+
 "burger",
 "pizza",
 "pasta",
@@ -837,6 +841,7 @@ const searches = [
 "pancake",
 "omelette",
 "mac and cheese"
+
 ];
 
 let meals = [];
@@ -874,7 +879,7 @@ feed.innerHTML += `
 
 <img
 src="${meal.strMealThumb}"
-onclick="openRecipe('${meal.strMeal}')"
+onclick="openRecipe('${meal.strMeal.replace(/'/g,"\\'")}')"
 >
 
 <div class="feedShade"></div>
@@ -965,18 +970,140 @@ document.getElementById(
 }
 
 /* ======================
-RECIPE
+OPEN RECIPE
 ====================== */
 
 async function openRecipe(name){
 
+try{
+
 const res = await fetch(
-`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`
+`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(name)}`
 );
 
 const data = await res.json();
 
+if(!data.meals){
+
+recipeModal.innerHTML = `
+<div class="recipeContent">
+<h2>Recipe not found</h2>
+
+<div class="btn" onclick="closeRecipe()">
+Close
+</div>
+</div>
+`;
+
+recipeModal.classList.add('active');
+
+return;
+
+}
+
 const meal = data.meals[0];
+
+/* BUILD INGREDIENTS */
+
+let ingredientsHTML = '';
+
+for(let i=1;i<=20;i++){
+
+const ingredient =
+meal[`strIngredient${i}`];
+
+const measure =
+meal[`strMeasure${i}`];
+
+if(
+ingredient &&
+ingredient.trim() !== ""
+){
+
+ingredientsHTML += `
+
+<div class="substituteCard">
+🥘 ${measure || ''} ${ingredient}
+</div>
+
+`;
+
+}
+
+}
+
+/* BUILD STEPS */
+
+const steps =
+meal.strInstructions
+.split(/\r?\n|\./)
+.filter(step => step.trim() !== '');
+
+let stepsHTML = '';
+
+steps.forEach((step,index)=>{
+
+stepsHTML += `
+
+<div class="substituteCard">
+<b>Step ${index+1}</b>
+<br><br>
+${step.trim()}
+</div>
+
+`;
+
+});
+
+/* VIDEO */
+
+let videoHTML = '';
+
+if(isPremium){
+
+videoHTML = `
+
+<video
+class="videoPlayer"
+controls
+poster="${meal.strMealThumb}"
+>
+
+<source
+src="https://www.w3schools.com/html/mov_bbb.mp4"
+type="video/mp4"
+>
+
+</video>
+
+<div class="badge">
+Premium Cooking Tutorial 👑
+</div>
+
+`;
+
+}else{
+
+const yt =
+meal.strYoutube
+?
+meal.strYoutube.split('v=')[1]
+:
+'';
+
+videoHTML = `
+
+<iframe
+class="videoPlayer"
+src="https://www.youtube.com/embed/${yt}"
+allowfullscreen>
+</iframe>
+
+`;
+
+}
+
+/* OPEN MODAL */
 
 recipeModal.classList.add('active');
 
@@ -989,68 +1116,107 @@ src="${meal.strMealThumb}"
 
 <div class="recipeContent">
 
-<h2>${meal.strMeal}</h2>
+<h2>
+${meal.strMeal}
+</h2>
 
 <div class="badge">
 ${meal.strCategory}
 </div>
 
-<p>
-${meal.strInstructions}
-</p>
-
-<h3>Ingredients</h3>
-
-<p>
-🥩 ${meal.strIngredient1}<br>
-🥬 ${meal.strIngredient2}<br>
-🧂 ${meal.strIngredient3}<br>
-🍚 ${meal.strIngredient4}<br>
-🍅 ${meal.strIngredient5}
-</p>
-
-<h3>Recipe Video</h3>
-
-${
-isPremium
-?
-`
-<video
-class="videoPlayer"
-controls
-poster="${meal.strMealThumb}"
->
-<source
-src="YOUR-UPLOADED-MP4-LINK.mp4"
-type="video/mp4"
->
-</video>
+<div class="badge">
+${meal.strArea} Cuisine
+</div>
 
 <div class="badge">
-Premium Exclusive Video
+👨‍🍳 AI Recipe Guide
 </div>
-`
-:
-`
-<iframe
-class="videoPlayer"
-src="https://www.youtube.com/embed/${meal.strYoutube ? meal.strYoutube.split('v=')[1] : ''}"
-allowfullscreen
-></iframe>
-`
-}
 
-<div class="btn" onclick="openComments()">
+<p>
+${meal.strInstructions.slice(0,180)}...
+</p>
+
+<h3>
+🥘 Ingredients
+</h3>
+
+${ingredientsHTML}
+
+<h3>
+👨‍🍳 Step-by-Step Instructions
+</h3>
+
+${stepsHTML}
+
+<h3>
+🎥 Recipe Video
+</h3>
+
+${videoHTML}
+
+<div class="card">
+
+<h2>
+💡 Cook’ed AI Tips
+</h2>
+
+<div class="substituteCard">
+Missing butter?
+Use olive oil instead.
+</div>
+
+<div class="substituteCard">
+Missing milk?
+Use almond milk or oat milk.
+</div>
+
+<div class="substituteCard">
+Want extra protein?
+Add chicken or eggs.
+</div>
+
+</div>
+
+<div class="btn"
+onclick="openComments()">
 Comments 💬
 </div>
 
-<div class="btn" onclick="closeRecipe()">
+<div class="btn"
+onclick="closeRecipe()">
 Close
 </div>
 
 </div>
 
 `;
+
+}catch(err){
+
+recipeModal.innerHTML = `
+
+<div class="recipeContent">
+
+<h2>
+Something went wrong
+</h2>
+
+<p>
+Recipe failed to load.
+</p>
+
+<div class="btn"
+onclick="closeRecipe()">
+Close
+</div>
+
+</div>
+
+`;
+
+recipeModal.classList.add('active');
+
+}
 
 }
 
@@ -1097,9 +1263,11 @@ function addComment(e){
 if(e.key==="Enter"){
 
 comments.innerHTML += `
+
 <div class="comment">
 ${e.target.value}
 </div>
+
 `;
 
 e.target.value = '';
@@ -1127,6 +1295,7 @@ currentStream.getTracks()
 
 const stream =
 await navigator.mediaDevices.getUserMedia({
+
 video:{
 facingMode:{
 ideal:"environment"
@@ -1134,7 +1303,9 @@ ideal:"environment"
 width:{ideal:1920},
 height:{ideal:1080}
 },
+
 audio:false
+
 });
 
 currentStream = stream;
@@ -1146,9 +1317,11 @@ await video.play();
 if(!model){
 
 scanResult.innerHTML = `
+
 <div class="card aiGlow">
 Loading AI refrigerator scanner...
 </div>
+
 `;
 
 model = await mobilenet.load();
@@ -1160,9 +1333,11 @@ scanResult.innerHTML = '';
 }catch(err){
 
 scanResult.innerHTML = `
+
 <div class="card">
 ❌ Camera failed to load
 </div>
+
 `;
 
 }
@@ -1178,9 +1353,11 @@ async function capture(){
 if(!model)return;
 
 scanResult.innerHTML = `
+
 <div class="card aiGlow">
 Analyzing refrigerator ingredients...
 </div>
+
 `;
 
 const predictions =
@@ -1196,37 +1373,29 @@ detected.forEach(item=>{
 
 const lower = item.toLowerCase();
 
-if(
-lower.includes("banana")
-) fridgeItems.push("banana");
+if(lower.includes("banana"))
+fridgeItems.push("banana");
 
-if(
-lower.includes("apple")
-) fridgeItems.push("apple");
+if(lower.includes("apple"))
+fridgeItems.push("apple");
 
-if(
-lower.includes("milk")
-) fridgeItems.push("milk");
+if(lower.includes("milk"))
+fridgeItems.push("milk");
 
-if(
-lower.includes("egg")
-) fridgeItems.push("eggs");
+if(lower.includes("egg"))
+fridgeItems.push("eggs");
 
-if(
-lower.includes("bread")
-) fridgeItems.push("bread");
+if(lower.includes("bread"))
+fridgeItems.push("bread");
 
-if(
-lower.includes("cheese")
-) fridgeItems.push("cheese");
+if(lower.includes("cheese"))
+fridgeItems.push("cheese");
 
-if(
-lower.includes("meat")
-) fridgeItems.push("beef");
+if(lower.includes("meat"))
+fridgeItems.push("beef");
 
-if(
-lower.includes("chicken")
-) fridgeItems.push("chicken");
+if(lower.includes("chicken"))
+fridgeItems.push("chicken");
 
 });
 
@@ -1269,7 +1438,9 @@ scanResult.innerHTML = `
 
 <div class="card">
 
-<h2>🧠 AI Refrigerator Analysis</h2>
+<h2>
+🧠 AI Refrigerator Analysis
+</h2>
 
 <p>
 We detected ingredients currently
@@ -1279,9 +1450,11 @@ inside your refrigerator/pantry.
 <div class="ingredientsGrid">
 
 ${items.map(item=>`
+
 <div class="ingredientTag">
 ${item}
 </div>
+
 `).join('')}
 
 </div>
@@ -1290,19 +1463,25 @@ ${item}
 
 <div class="card">
 
-<h2>🍳 Meals You Can Make</h2>
+<h2>
+🍳 Meals You Can Make
+</h2>
 
 ${recipes.slice(0,6).map(recipe=>`
+
 <div class="substituteCard">
 ${recipe}
 </div>
+
 `).join('')}
 
 </div>
 
 <div class="card">
 
-<h2>💡 Smart Ingredient Substitutions</h2>
+<h2>
+💡 Smart Ingredient Substitutions
+</h2>
 
 <div class="substituteCard">
 No milk? Use ${substitutes.milk}
@@ -1324,7 +1503,9 @@ No cream? Use ${substitutes.cream}
 
 <div class="card">
 
-<h2>🛒 Money Saving Insights</h2>
+<h2>
+🛒 Money Saving Insights
+</h2>
 
 <p>
 Cook’ed AI found meals you can make
@@ -1449,11 +1630,14 @@ mealPlan.innerHTML += `
 
 <img
 src="${m.strMealThumb}"
+onclick="openRecipe('${m.strMeal.replace(/'/g,"\\'")}')"
 >
 
 <div class="mealInfo">
 
-<h3>${m.strMeal}</h3>
+<h3>
+${m.strMeal}
+</h3>
 
 <p style="color:#bbb">
 ${m.strCategory}
