@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -25,9 +25,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 :root{
 --accent:#00ff9d;
 --bg:#050505;
---card:rgba(255,255,255,.07);
+--card:rgba(255,255,255,.08);
 --text:#fff;
---muted:#b3b3b3;
+--muted:#a1a1aa;
 }
 
 .premium{
@@ -85,7 +85,7 @@ margin-top:12px;
 .btn{
 background:var(--accent);
 color:black;
-padding:14px;
+padding:15px;
 border-radius:18px;
 font-weight:900;
 text-align:center;
@@ -107,13 +107,13 @@ border-radius:24px;
 margin:14px;
 }
 
-/* LOGIN */
+/* HERO */
 
 .hero{
-height:58vh;
+height:60vh;
 background:
-linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.2)),
-url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1400&auto=format&fit=crop');
+linear-gradient(to top,rgba(0,0,0,.95),rgba(0,0,0,.2)),
+url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1600&auto=format&fit=crop');
 background-size:cover;
 background-position:center;
 display:flex;
@@ -122,14 +122,15 @@ padding:24px;
 }
 
 .heroText h1{
-font-size:48px;
+font-size:54px;
 font-weight:900;
+letter-spacing:-2px;
 }
 
 .heroText p{
-margin-top:6px;
-color:#ddd;
+margin-top:8px;
 font-size:16px;
+color:#ddd;
 }
 
 /* FEED */
@@ -149,14 +150,26 @@ height:100vh;
 width:100%;
 position:relative;
 scroll-snap-align:start;
-background:black;
 overflow:hidden;
+background:black;
 }
 
 .feedItem img{
 width:100%;
 height:100%;
 object-fit:cover;
+}
+
+.feedShade{
+position:absolute;
+inset:0;
+background:
+linear-gradient(
+to top,
+rgba(0,0,0,.95),
+rgba(0,0,0,.2),
+transparent
+);
 }
 
 .overlay{
@@ -168,15 +181,15 @@ z-index:10;
 }
 
 .overlay h2{
-font-size:32px;
+font-size:34px;
 font-weight:900;
-margin-bottom:4px;
+margin-bottom:6px;
 }
 
 .overlay p{
 font-size:14px;
 color:#ddd;
-line-height:1.4;
+line-height:1.5;
 }
 
 .actions{
@@ -185,9 +198,9 @@ right:16px;
 bottom:120px;
 display:flex;
 flex-direction:column;
-align-items:center;
-gap:18px;
+gap:20px;
 z-index:10;
+align-items:center;
 }
 
 .actionBtn{
@@ -199,7 +212,7 @@ cursor:pointer;
 
 .actionBtn i{
 font-size:30px;
-margin-bottom:5px;
+margin-bottom:6px;
 }
 
 .liked{
@@ -213,11 +226,12 @@ position:fixed;
 bottom:0;
 width:100%;
 padding:14px 0 20px;
-background:rgba(0,0,0,.9);
 display:flex;
 justify-content:space-around;
-backdrop-filter:blur(18px);
+background:rgba(0,0,0,.88);
+backdrop-filter:blur(20px);
 z-index:999;
+border-top:1px solid rgba(255,255,255,.08);
 }
 
 .nav i{
@@ -233,7 +247,7 @@ background:#000;
 z-index:9999;
 display:none;
 overflow:auto;
-padding-bottom:100px;
+padding-bottom:120px;
 }
 
 .modal.active{
@@ -251,13 +265,13 @@ padding:20px;
 }
 
 .recipeContent h2{
-font-size:34px;
-margin-bottom:8px;
+font-size:36px;
+margin-bottom:10px;
 }
 
 .recipeContent p{
-color:#ddd;
 line-height:1.7;
+color:#ddd;
 margin-top:10px;
 }
 
@@ -266,79 +280,146 @@ margin-top:24px;
 margin-bottom:10px;
 }
 
+/* VIDEO PLAYER */
+
+.videoPlayer{
+width:100%;
+height:230px;
+border:none;
+border-radius:22px;
+margin-top:12px;
+background:#111;
+}
+
 /* CAMERA */
 
 .cameraWrap{
 padding:16px;
 }
 
+.cameraBox{
+position:relative;
+overflow:hidden;
+border-radius:28px;
+}
+
 video{
 width:100%;
-height:68vh;
+height:70vh;
 object-fit:cover;
-border-radius:28px;
 background:black;
+border-radius:28px;
+}
+
+.scannerLine{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:3px;
+background:var(--accent);
+box-shadow:0 0 20px var(--accent);
+animation:scannerMove 2s linear infinite;
+}
+
+@keyframes scannerMove{
+0%{top:0}
+100%{top:100%}
+}
+
+.scanCorner{
+position:absolute;
+width:40px;
+height:40px;
+border:4px solid var(--accent);
+}
+
+.corner1{
+top:12px;
+left:12px;
+border-right:none;
+border-bottom:none;
+}
+
+.corner2{
+top:12px;
+right:12px;
+border-left:none;
+border-bottom:none;
+}
+
+.corner3{
+bottom:12px;
+left:12px;
+border-right:none;
+border-top:none;
+}
+
+.corner4{
+bottom:12px;
+right:12px;
+border-left:none;
+border-top:none;
 }
 
 .scanResult img{
 width:100%;
-border-radius:20px;
+border-radius:18px;
 margin-top:12px;
 }
 
 /* HEALTH */
 
-.bodyScan{
-height:260px;
+.bodyContainer{
+position:relative;
+height:340px;
 display:flex;
 justify-content:center;
 align-items:center;
-position:relative;
 overflow:hidden;
 }
 
-.body{
-width:120px;
-height:220px;
-border-radius:60px;
-background:
-linear-gradient(to bottom,#222,#111);
-position:relative;
-}
-
-.dot{
-width:8px;
-height:8px;
-background:var(--accent);
-border-radius:50%;
+.bodyGlow{
 position:absolute;
-animation:scan 2s infinite;
-}
-
-@keyframes scan{
-0%{transform:translateY(-20px);opacity:0}
-50%{opacity:1}
-100%{transform:translateY(240px);opacity:0}
-}
-
-.progress{
-height:10px;
-background:#222;
-border-radius:999px;
-margin-top:10px;
-overflow:hidden;
-}
-
-.progress div{
-height:100%;
+width:220px;
+height:220px;
 background:var(--accent);
+filter:blur(90px);
+opacity:.2;
+}
+
+.bodyImage{
+width:210px;
+z-index:2;
+filter:drop-shadow(0 0 25px rgba(0,255,157,.4));
+}
+
+.scanBeam{
+position:absolute;
+width:220px;
+height:4px;
+background:var(--accent);
+box-shadow:0 0 20px var(--accent);
+animation:bodyScan 2.5s linear infinite;
+z-index:3;
+}
+
+@keyframes bodyScan{
+0%{top:20px}
+100%{top:300px}
+}
+
+.healthStats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:16px;
 }
 
 .stat{
 background:#111;
 padding:14px;
 border-radius:18px;
-margin-top:10px;
 font-weight:700;
 }
 
@@ -346,9 +427,9 @@ font-weight:700;
 
 .comment{
 background:#111;
-padding:12px;
-border-radius:16px;
-margin-top:10px;
+padding:14px;
+border-radius:18px;
+margin-top:12px;
 }
 
 /* BADGE */
@@ -357,11 +438,28 @@ margin-top:10px;
 display:inline-block;
 padding:7px 14px;
 border-radius:999px;
-background:rgba(0,255,157,.15);
+background:rgba(0,255,157,.12);
 color:var(--accent);
 font-size:12px;
 font-weight:800;
 margin-top:10px;
+}
+
+.mealCard{
+margin-top:14px;
+background:#111;
+border-radius:20px;
+overflow:hidden;
+}
+
+.mealCard img{
+width:100%;
+height:180px;
+object-fit:cover;
+}
+
+.mealInfo{
+padding:14px;
 }
 
 </style>
@@ -374,10 +472,12 @@ margin-top:10px;
 <div id="login" class="screen active">
 
 <div class="hero">
+
 <div class="heroText">
 <h1>Cook’ed</h1>
 <p>Cook Better. Live Healthier.</p>
 </div>
+
 </div>
 
 <div class="card">
@@ -414,12 +514,23 @@ AI Food + Fitness Platform
 AI Food Scanner
 </h2>
 
+<div class="cameraBox">
+
 <video
 id="video"
 autoplay
 playsinline
 muted
 ></video>
+
+<div class="scannerLine"></div>
+
+<div class="scanCorner corner1"></div>
+<div class="scanCorner corner2"></div>
+<div class="scanCorner corner3"></div>
+<div class="scanCorner corner4"></div>
+
+</div>
 
 <div class="btn" onclick="capture()">
 Scan Food
@@ -437,9 +548,7 @@ Scan Food
 
 <div class="card">
 
-<h2 id="userInfo">
-Chef
-</h2>
+<h2 id="userInfo">Chef</h2>
 
 <div class="badge">
 Cook’ed Premium
@@ -457,15 +566,16 @@ Toggle Premium 👑
 
 <h2>AI Body Analysis</h2>
 
-<div class="bodyScan">
+<div class="bodyContainer">
 
-<div class="body">
+<div class="bodyGlow"></div>
 
-<div class="dot" style="left:20px"></div>
-<div class="dot" style="left:55px;animation-delay:.4s"></div>
-<div class="dot" style="left:90px;animation-delay:.8s"></div>
+<img
+class="bodyImage"
+src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=900&auto=format&fit=crop"
+>
 
-</div>
+<div class="scanBeam"></div>
 
 </div>
 
@@ -486,22 +596,28 @@ Analyze Body
 
 Protein
 <div class="progress">
-<div style="width:74%"></div>
+<div style="width:78%;height:100%;background:var(--accent)"></div>
 </div>
+
+<br>
 
 Calories
 <div class="progress">
-<div style="width:60%"></div>
+<div style="width:64%;height:100%;background:var(--accent)"></div>
 </div>
+
+<br>
 
 Hydration
 <div class="progress">
-<div style="width:88%"></div>
+<div style="width:90%;height:100%;background:var(--accent)"></div>
 </div>
+
+<br>
 
 Workout
 <div class="progress">
-<div style="width:42%"></div>
+<div style="width:48%;height:100%;background:var(--accent)"></div>
 </div>
 
 </div>
@@ -570,7 +686,7 @@ SUPABASE
 ====================== */
 
 const SUPABASE_URL =
-"https://iabzmoxzbqzcqgypxctr.supabase.co";
+"https://YOURPROJECT.supabase.co";
 
 const SUPABASE_KEY =
 "YOUR_SUPABASE_ANON_KEY";
@@ -590,6 +706,7 @@ let isPremium = false;
 let model;
 let likes = {};
 let likedPosts = {};
+let currentStream;
 
 /* ======================
 NAV
@@ -634,13 +751,18 @@ const searches = [
 "burger",
 "pizza",
 "pasta",
+"steak",
+"american",
 "chicken",
 "beef",
 "salad",
 "rice",
-"steak",
+"seafood",
 "sandwich",
-"seafood"
+"fries",
+"bbq",
+"taco",
+"ramen"
 ];
 
 let meals = [];
@@ -681,6 +803,8 @@ src="${meal.strMealThumb}"
 onclick="openRecipe('${meal.strMeal}')"
 >
 
+<div class="feedShade"></div>
+
 <div class="overlay">
 
 <h2>${meal.strMeal}</h2>
@@ -713,7 +837,7 @@ onclick="openComments()">
 <i class="fa-solid fa-comment"></i>
 
 <div>
-${Math.floor(Math.random()*200)}
+${Math.floor(Math.random()*300)}
 </div>
 
 </div>
@@ -745,7 +869,6 @@ function like(id,el){
 if(!likedPosts[id]){
 
 likes[id]++;
-
 likedPosts[id] = true;
 
 el.querySelector("i")
@@ -754,7 +877,6 @@ el.querySelector("i")
 }else{
 
 likes[id]--;
-
 likedPosts[id] = false;
 
 el.querySelector("i")
@@ -815,13 +937,34 @@ ${meal.strInstructions}
 
 <h3>Recipe Video</h3>
 
+${
+isPremium
+?
+`
+<video
+class="videoPlayer"
+controls
+poster="${meal.strMealThumb}"
+>
+<source
+src="YOUR-UPLOADED-MP4-LINK.mp4"
+type="video/mp4"
+>
+</video>
+
+<div class="badge">
+Premium Exclusive Video
+</div>
+`
+:
+`
 <iframe
-width="100%"
-height="240"
-src="https://www.youtube.com/embed?listType=search&list=${meal.strMeal} recipe"
-style="border:none;border-radius:18px"
-allowfullscreen>
-</iframe>
+class="videoPlayer"
+src="https://www.youtube.com/embed/${meal.strYoutube ? meal.strYoutube.split('v=')[1] : ''}"
+allowfullscreen
+></iframe>
+`
+}
 
 <div class="btn" onclick="openComments()">
 Comments 💬
@@ -854,7 +997,7 @@ commentModal.classList.add('active');
 comments.innerHTML = `
 
 <div class="comment">
-🔥 This looks crazy
+🔥 This looks insane
 </div>
 
 <div class="comment">
@@ -901,17 +1044,30 @@ nav('camera');
 
 try{
 
+if(currentStream){
+
+currentStream.getTracks()
+.forEach(track=>track.stop());
+
+}
+
 const stream =
 await navigator.mediaDevices.getUserMedia({
 video:{
-facingMode:"environment"
+facingMode:{
+ideal:"environment"
+},
+width:{ideal:1920},
+height:{ideal:1080}
 },
 audio:false
 });
 
+currentStream = stream;
+
 video.srcObject = stream;
 
-video.play();
+await video.play();
 
 if(!model){
 
@@ -1004,19 +1160,15 @@ const meal = data.meals[0];
 
 scanResult.innerHTML += `
 
-<div class="card">
+<div class="mealCard">
 
 <img
 src="${meal.strMealThumb}"
-style="
-width:100%;
-border-radius:20px;
-"
 >
 
-<h2 style="margin-top:12px">
-${meal.strMeal}
-</h2>
+<div class="mealInfo">
+
+<h2>${meal.strMeal}</h2>
 
 <p>
 ${meal.strCategory}
@@ -1030,6 +1182,8 @@ Open Recipe
 
 </div>
 
+</div>
+
 `;
 
 }else{
@@ -1037,10 +1191,7 @@ Open Recipe
 scanResult.innerHTML += `
 
 <div class="card">
-
-No exact recipe found.
-Try scanning another food.
-
+No recipe found. Try another food.
 </div>
 
 `;
@@ -1098,22 +1249,26 @@ bmi < 25
 
 healthResult.innerHTML = `
 
+<div class="healthStats">
+
 <div class="stat">
-BMI: ${bmi}
+BMI<br><br>${bmi}
 </div>
 
 <div class="stat">
-Goal: ${goal}
+Goal<br><br>${goal}
 </div>
 
 <div class="stat">
-Calories:
+Calories<br><br>
 ${Math.floor(2200+w*8)}
 </div>
 
 <div class="stat">
-Protein Goal:
+Protein<br><br>
 ${Math.floor(w*1.3)}g
+</div>
+
 </div>
 
 `;
@@ -1151,24 +1306,22 @@ data.meals.slice(0,3).forEach(m=>{
 
 mealPlan.innerHTML += `
 
-<div class="card">
+<div class="mealCard">
 
 <img
 src="${m.strMealThumb}"
-style="
-width:100%;
-border-radius:18px;
-"
 >
 
-<h3 style="margin-top:12px">
-${m.strMeal}
-</h3>
+<div class="mealInfo">
+
+<h3>${m.strMeal}</h3>
 
 <p style="color:#bbb">
 ${m.strCategory}
 • ${m.strArea}
 </p>
+
+</div>
 
 </div>
 
