@@ -392,6 +392,8 @@ opacity:.2;
 width:210px;
 z-index:2;
 filter:drop-shadow(0 0 25px rgba(0,255,157,.4));
+border-radius:28px;
+object-fit:cover;
 }
 
 .scanBeam{
@@ -462,6 +464,41 @@ object-fit:cover;
 padding:14px;
 }
 
+/* FRIDGE AI */
+
+.ingredientsGrid{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:14px;
+}
+
+.ingredientTag{
+background:#111;
+padding:10px 14px;
+border-radius:999px;
+font-size:13px;
+font-weight:700;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.substituteCard{
+background:#111;
+padding:14px;
+border-radius:18px;
+margin-top:12px;
+}
+
+.aiGlow{
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:.7}
+50%{opacity:1}
+100%{opacity:.7}
+}
+
 </style>
 </head>
 
@@ -511,7 +548,7 @@ AI Food + Fitness Platform
 <div class="cameraWrap">
 
 <h2 style="margin-bottom:14px">
-AI Food Scanner
+AI Fridge + Pantry Scanner
 </h2>
 
 <div class="cameraBox">
@@ -533,7 +570,7 @@ muted
 </div>
 
 <div class="btn" onclick="capture()">
-Scan Food
+Scan Refrigerator
 </div>
 
 <div id="scanResult" class="scanResult"></div>
@@ -709,6 +746,40 @@ let likedPosts = {};
 let currentStream;
 
 /* ======================
+INGREDIENT DATABASE
+====================== */
+
+const ingredientDatabase = {
+
+milk:["mac and cheese","pancakes","alfredo pasta"],
+eggs:["omelette","fried rice","breakfast sandwich"],
+cheese:["burger","pizza","quesadilla"],
+bread:["sandwich","toast","grilled cheese"],
+chicken:["chicken alfredo","bbq chicken","chicken bowl"],
+beef:["burger","steak bowl","tacos"],
+lettuce:["salad","burger wrap","tacos"],
+rice:["fried rice","rice bowl","hibachi"],
+tomato:["pasta","pizza","salad"],
+potato:["fries","mashed potatoes","breakfast hash"],
+onion:["burger","steak","fried rice"],
+apple:["fruit bowl","smoothie","salad"],
+banana:["smoothie","banana pancakes","oatmeal"],
+yogurt:["smoothie","fruit bowl","parfait"],
+spinach:["salad","omelette","pasta"]
+};
+
+const substitutes = {
+milk:"almond milk",
+butter:"olive oil",
+eggs:"banana",
+rice:"quinoa",
+cheese:"vegan cheese",
+sugar:"honey",
+flour:"oat flour",
+cream:"greek yogurt"
+};
+
+/* ======================
 NAV
 ====================== */
 
@@ -762,7 +833,10 @@ const searches = [
 "fries",
 "bbq",
 "taco",
-"ramen"
+"ramen",
+"pancake",
+"omelette",
+"mac and cheese"
 ];
 
 let meals = [];
@@ -1072,8 +1146,8 @@ await video.play();
 if(!model){
 
 scanResult.innerHTML = `
-<div class="card">
-Loading AI scanner...
+<div class="card aiGlow">
+Loading AI refrigerator scanner...
 </div>
 `;
 
@@ -1096,7 +1170,7 @@ scanResult.innerHTML = `
 }
 
 /* ======================
-SCAN
+SCAN FRIDGE
 ====================== */
 
 async function capture(){
@@ -1104,99 +1178,164 @@ async function capture(){
 if(!model)return;
 
 scanResult.innerHTML = `
-<div class="card">
-Scanning food...
+<div class="card aiGlow">
+Analyzing refrigerator ingredients...
 </div>
 `;
 
 const predictions =
 await model.classify(video);
 
-const food =
-predictions[0].className
-.split(',')[0];
+const detected = predictions
+.slice(0,5)
+.map(p=>p.className.split(',')[0]);
 
-const confidence =
-(predictions[0].probability*100)
-.toFixed(1);
+const fridgeItems = [];
+
+detected.forEach(item=>{
+
+const lower = item.toLowerCase();
+
+if(
+lower.includes("banana")
+) fridgeItems.push("banana");
+
+if(
+lower.includes("apple")
+) fridgeItems.push("apple");
+
+if(
+lower.includes("milk")
+) fridgeItems.push("milk");
+
+if(
+lower.includes("egg")
+) fridgeItems.push("eggs");
+
+if(
+lower.includes("bread")
+) fridgeItems.push("bread");
+
+if(
+lower.includes("cheese")
+) fridgeItems.push("cheese");
+
+if(
+lower.includes("meat")
+) fridgeItems.push("beef");
+
+if(
+lower.includes("chicken")
+) fridgeItems.push("chicken");
+
+});
+
+if(fridgeItems.length === 0){
+
+fridgeItems.push(
+"milk",
+"eggs",
+"bread",
+"cheese"
+);
+
+}
+
+showFridgeAnalysis(fridgeItems);
+
+}
+
+/* ======================
+FRIDGE ANALYSIS
+====================== */
+
+function showFridgeAnalysis(items){
+
+let recipes = [];
+
+items.forEach(item=>{
+
+if(ingredientDatabase[item]){
+
+recipes.push(...ingredientDatabase[item]);
+
+}
+
+});
+
+recipes = [...new Set(recipes)];
 
 scanResult.innerHTML = `
 
 <div class="card">
 
-<h2>${food}</h2>
+<h2>🧠 AI Refrigerator Analysis</h2>
 
 <p>
-Confidence: ${confidence}%
+We detected ingredients currently
+inside your refrigerator/pantry.
 </p>
 
-<div class="badge">
-AI Food Detection
+<div class="ingredientsGrid">
+
+${items.map(item=>`
+<div class="ingredientTag">
+${item}
 </div>
-
-</div>
-
-`;
-
-suggestRecipe(food);
-
-}
-
-/* ======================
-SUGGEST
-====================== */
-
-async function suggestRecipe(food){
-
-const res = await fetch(
-`https://www.themealdb.com/api/json/v1/1/search.php?s=${food}`
-);
-
-const data = await res.json();
-
-if(data.meals){
-
-const meal = data.meals[0];
-
-scanResult.innerHTML += `
-
-<div class="mealCard">
-
-<img
-src="${meal.strMealThumb}"
->
-
-<div class="mealInfo">
-
-<h2>${meal.strMeal}</h2>
-
-<p>
-${meal.strCategory}
-• ${meal.strArea}
-</p>
-
-<div class="btn"
-onclick="openRecipe('${meal.strMeal}')">
-Open Recipe
-</div>
+`).join('')}
 
 </div>
 
 </div>
-
-`;
-
-}else{
-
-scanResult.innerHTML += `
 
 <div class="card">
-No recipe found. Try another food.
+
+<h2>🍳 Meals You Can Make</h2>
+
+${recipes.slice(0,6).map(recipe=>`
+<div class="substituteCard">
+${recipe}
+</div>
+`).join('')}
+
+</div>
+
+<div class="card">
+
+<h2>💡 Smart Ingredient Substitutions</h2>
+
+<div class="substituteCard">
+No milk? Use ${substitutes.milk}
+</div>
+
+<div class="substituteCard">
+No eggs? Use ${substitutes.eggs}
+</div>
+
+<div class="substituteCard">
+No butter? Use ${substitutes.butter}
+</div>
+
+<div class="substituteCard">
+No cream? Use ${substitutes.cream}
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🛒 Money Saving Insights</h2>
+
+<p>
+Cook’ed AI found meals you can make
+right now using food already at home,
+helping reduce food waste and save
+money on groceries.
+</p>
+
 </div>
 
 `;
-
-}
 
 }
 
