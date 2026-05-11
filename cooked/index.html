@@ -760,7 +760,7 @@ const SUPABASE_URL =
 "https://iabzmoxzbqzcqgypxctr.supabase.co";
 
 const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+"YOUR_SUPABASE_KEY";
 
 const supabaseClient =
 supabase.createClient(
@@ -846,7 +846,7 @@ nav('home');
 }
 
 /* ======================
-LOAD FEED
+LOAD FEED FIXED
 ====================== */
 
 async function loadFeed(){
@@ -905,11 +905,11 @@ Math.floor(Math.random()*900)+100;
 
 feed.innerHTML += `
 
-<div class="feedItem">
+<div class="feedItem"
+onclick='openRecipe(${JSON.stringify(meal.strMeal)})'>
 
 <img
 src="${meal.strMealThumb}"
-onclick="openRecipe('${meal.strMeal.replace(/'/g,"\\'")}')"
 >
 
 <div class="feedShade"></div>
@@ -928,7 +928,7 @@ ${meal.strCategory}
 <div class="actions">
 
 <div class="actionBtn"
-onclick="like('${meal.idMeal}',this)">
+onclick="event.stopPropagation(); like('${meal.idMeal}',this)">
 
 <i class="fa-solid fa-heart
 ${likedPosts[meal.idMeal]?'liked':''}">
@@ -941,7 +941,7 @@ ${likes[meal.idMeal]}
 </div>
 
 <div class="actionBtn"
-onclick="openComments()">
+onclick="event.stopPropagation(); openComments()">
 
 <i class="fa-solid fa-comment"></i>
 
@@ -951,7 +951,8 @@ ${Math.floor(Math.random()*300)}
 
 </div>
 
-<div class="actionBtn">
+<div class="actionBtn"
+onclick="event.stopPropagation()">
 
 <i class="fa-solid fa-bookmark"></i>
 
@@ -1000,7 +1001,7 @@ document.getElementById(
 }
 
 /* ======================
-RECIPE FIXED
+OPEN RECIPE
 ====================== */
 
 async function openRecipe(name){
@@ -1024,7 +1025,7 @@ const meal = data.meals[0];
 
 recipeModal.classList.add('active');
 
-/* BUILD INGREDIENTS */
+/* INGREDIENTS */
 
 let ingredientsHTML = '';
 
@@ -1053,7 +1054,7 @@ ingredientsHTML += `
 
 }
 
-/* BUILD STEPS */
+/* STEPS */
 
 const instructions =
 meal.strInstructions
@@ -1585,11 +1586,11 @@ data.meals.slice(0,3).forEach(m=>{
 
 mealPlan.innerHTML += `
 
-<div class="mealCard">
+<div class="mealCard"
+onclick='openRecipe(${JSON.stringify(m.strMeal)})'>
 
 <img
 src="${m.strMealThumb}"
-onclick="openRecipe('${m.strMeal.replace(/'/g,"\\'")}')"
 >
 
 <div class="mealInfo">
@@ -1612,6 +1613,3 @@ ${m.strCategory}
 }
 
 </script>
-
-</body>
-</html>
