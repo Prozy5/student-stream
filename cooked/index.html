@@ -50,8 +50,6 @@ font-family:-apple-system,BlinkMacSystemFont,sans-serif;
 color:white;
 }
 
-/* GLOBAL */
-
 .screen{
 display:none;
 height:100vh;
@@ -107,8 +105,6 @@ border-radius:24px;
 margin:14px;
 }
 
-/* HERO */
-
 .hero{
 height:60vh;
 background:
@@ -133,12 +129,11 @@ font-size:16px;
 color:#ddd;
 }
 
-/* FEED */
-
 .feed{
 height:100vh;
 overflow-y:scroll;
 scroll-snap-type:y mandatory;
+padding-bottom:100px;
 }
 
 .feed::-webkit-scrollbar{
@@ -220,8 +215,6 @@ margin-bottom:6px;
 color:#ff4d6d;
 }
 
-/* NAV */
-
 .nav{
 position:fixed;
 bottom:0;
@@ -238,8 +231,6 @@ border-top:1px solid rgba(255,255,255,.08);
 .nav i{
 font-size:25px;
 }
-
-/* MODAL */
 
 .modal{
 position:fixed;
@@ -289,8 +280,6 @@ border-radius:22px;
 margin-top:12px;
 background:#111;
 }
-
-/* CAMERA */
 
 .cameraWrap{
 padding:16px;
@@ -361,55 +350,6 @@ border-left:none;
 border-top:none;
 }
 
-.scanResult img{
-width:100%;
-border-radius:18px;
-margin-top:12px;
-}
-
-/* HEALTH */
-
-.bodyContainer{
-position:relative;
-height:340px;
-display:flex;
-justify-content:center;
-align-items:center;
-overflow:hidden;
-}
-
-.bodyGlow{
-position:absolute;
-width:220px;
-height:220px;
-background:var(--accent);
-filter:blur(90px);
-opacity:.2;
-}
-
-.bodyImage{
-width:210px;
-z-index:2;
-filter:drop-shadow(0 0 25px rgba(0,255,157,.4));
-border-radius:28px;
-object-fit:cover;
-}
-
-.scanBeam{
-position:absolute;
-width:220px;
-height:4px;
-background:var(--accent);
-box-shadow:0 0 20px var(--accent);
-animation:bodyScan 2.5s linear infinite;
-z-index:3;
-}
-
-@keyframes bodyScan{
-0%{top:20px}
-100%{top:300px}
-}
-
 .healthStats{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -424,16 +364,12 @@ border-radius:18px;
 font-weight:700;
 }
 
-/* COMMENTS */
-
 .comment{
 background:#111;
 padding:14px;
 border-radius:18px;
 margin-top:12px;
 }
-
-/* BADGE */
 
 .badge{
 display:inline-block;
@@ -464,8 +400,6 @@ object-fit:cover;
 padding:14px;
 }
 
-/* FRIDGE AI */
-
 .ingredientsGrid{
 display:flex;
 flex-wrap:wrap;
@@ -487,33 +421,6 @@ background:#111;
 padding:14px;
 border-radius:18px;
 margin-top:12px;
-}
-
-.aiGlow{
-animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-0%{opacity:.7}
-50%{opacity:1}
-100%{opacity:.7}
-}
-
-.progress{
-width:100%;
-height:12px;
-background:#222;
-border-radius:999px;
-overflow:hidden;
-margin-top:8px;
-}
-
-.stepCard{
-background:#111;
-padding:16px;
-border-radius:18px;
-margin-top:14px;
-line-height:1.6;
 }
 
 .closeX{
@@ -607,7 +514,7 @@ muted
 Scan Refrigerator
 </div>
 
-<div id="scanResult" class="scanResult"></div>
+<div id="scanResult"></div>
 
 </div>
 
@@ -637,19 +544,6 @@ Toggle Premium 👑
 
 <h2>AI Body Analysis</h2>
 
-<div class="bodyContainer">
-
-<div class="bodyGlow"></div>
-
-<img
-class="bodyImage"
-src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=900&auto=format&fit=crop"
->
-
-<div class="scanBeam"></div>
-
-</div>
-
 <input id="height" placeholder="Height (cm)">
 <input id="weight" placeholder="Weight (kg)">
 
@@ -658,38 +552,6 @@ Analyze Body
 </div>
 
 <div id="healthResult"></div>
-
-</div>
-
-<div class="card">
-
-<h3>Daily Progress</h3>
-
-Protein
-<div class="progress">
-<div style="width:78%;height:100%;background:var(--accent)"></div>
-</div>
-
-<br>
-
-Calories
-<div class="progress">
-<div style="width:64%;height:100%;background:var(--accent)"></div>
-</div>
-
-<br>
-
-Hydration
-<div class="progress">
-<div style="width:90%;height:100%;background:var(--accent)"></div>
-</div>
-
-<br>
-
-Workout
-<div class="progress">
-<div style="width:48%;height:100%;background:var(--accent)"></div>
-</div>
 
 </div>
 
@@ -752,24 +614,6 @@ Close
 
 <script>
 
-<script>
-
-/* ======================
-SUPABASE
-====================== */
-
-const SUPABASE_URL =
-"https://iabzmoxzbqzcqgypxctr.supabase.co";
-
-const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-
-const supabaseClient =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
 /* ======================
 GLOBAL
 ====================== */
@@ -782,7 +626,7 @@ let likedPosts = {};
 let currentStream;
 
 /* ======================
-INGREDIENT DATABASE
+DATABASE
 ====================== */
 
 const ingredientDatabase = {
@@ -792,16 +636,7 @@ eggs:["omelette","fried rice","breakfast sandwich"],
 cheese:["burger","pizza","quesadilla"],
 bread:["sandwich","toast","grilled cheese"],
 chicken:["chicken alfredo","bbq chicken","chicken bowl"],
-beef:["burger","steak bowl","tacos"],
-lettuce:["salad","burger wrap","tacos"],
-rice:["fried rice","rice bowl","hibachi"],
-tomato:["pasta","pizza","salad"],
-potato:["fries","mashed potatoes","breakfast hash"],
-onion:["burger","steak","fried rice"],
-apple:["fruit bowl","smoothie","salad"],
-banana:["smoothie","banana pancakes","oatmeal"],
-yogurt:["smoothie","fruit bowl","parfait"],
-spinach:["salad","omelette","pasta"]
+beef:["burger","steak bowl","tacos"]
 
 };
 
@@ -809,15 +644,11 @@ const substitutes = {
 milk:"almond milk",
 butter:"olive oil",
 eggs:"banana",
-rice:"quinoa",
-cheese:"vegan cheese",
-sugar:"honey",
-flour:"oat flour",
 cream:"greek yogurt"
 };
 
 /* ======================
-NAV
+NAVIGATION
 ====================== */
 
 function nav(id){
@@ -836,19 +667,28 @@ LOGIN
 
 async function enterApp(){
 
-user = username.value || "Chef";
+user = document.getElementById("username").value || "Chef";
 
-userInfo.innerHTML =
+document.getElementById("userInfo").innerHTML =
 `👤 ${user}`;
 
-await loadFeed();
-
 nav('home');
+
+feed.innerHTML = `
+<div class="card" style="margin-top:120px;text-align:center">
+<h2>Loading recipes...</h2>
+<p style="margin-top:10px;color:#aaa">
+Preparing your food feed 🍔
+</p>
+</div>
+`;
+
+await loadFeed();
 
 }
 
 /* ======================
-LOAD FEED FIXED
+LOAD FEED
 ====================== */
 
 async function loadFeed(){
@@ -860,20 +700,10 @@ const searches = [
 "pizza",
 "pasta",
 "steak",
-"american",
-"chicken",
-"beef",
 "salad",
-"rice",
-"seafood",
-"sandwich",
-"fries",
-"bbq",
+"chicken",
 "taco",
-"ramen",
-"pancake",
-"omelette",
-"mac and cheese"
+"ramen"
 ];
 
 let meals = [];
@@ -910,9 +740,7 @@ feed.innerHTML += `
 <div class="feedItem"
 onclick='openRecipe(${JSON.stringify(meal.strMeal)})'>
 
-<img
-src="${meal.strMealThumb}"
->
+<img src="${meal.strMealThumb}">
 
 <div class="feedShade"></div>
 
@@ -921,8 +749,7 @@ src="${meal.strMealThumb}"
 <h2>${meal.strMeal}</h2>
 
 <p>
-${meal.strCategory}
-• ${meal.strArea}
+${meal.strCategory} • ${meal.strArea}
 </p>
 
 </div>
@@ -932,9 +759,7 @@ ${meal.strCategory}
 <div class="actionBtn"
 onclick="event.stopPropagation(); like('${meal.idMeal}',this)">
 
-<i class="fa-solid fa-heart
-${likedPosts[meal.idMeal]?'liked':''}">
-</i>
+<i class="fa-solid fa-heart ${likedPosts[meal.idMeal]?'liked':''}"></i>
 
 <div id="likes-${meal.idMeal}">
 ${likes[meal.idMeal]}
@@ -947,18 +772,7 @@ onclick="event.stopPropagation(); openComments()">
 
 <i class="fa-solid fa-comment"></i>
 
-<div>
-${Math.floor(Math.random()*300)}
-</div>
-
-</div>
-
-<div class="actionBtn"
-onclick="event.stopPropagation()">
-
-<i class="fa-solid fa-bookmark"></i>
-
-<div>Save</div>
+<div>120</div>
 
 </div>
 
@@ -996,19 +810,15 @@ el.querySelector("i")
 
 }
 
-document.getElementById(
-`likes-${id}`
-).innerText = likes[id];
+document.getElementById(`likes-${id}`).innerText = likes[id];
 
 }
 
 /* ======================
-OPEN RECIPE
+RECIPE
 ====================== */
 
 async function openRecipe(name){
-
-try{
 
 const res = await fetch(
 `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(name)}`
@@ -1016,124 +826,28 @@ const res = await fetch(
 
 const data = await res.json();
 
-if(!data.meals){
-
-alert("Recipe not found");
-return;
-
-}
-
 const meal = data.meals[0];
 
 recipeModal.classList.add('active');
-
-/* INGREDIENTS */
 
 let ingredientsHTML = '';
 
 for(let i=1;i<=20;i++){
 
-const ingredient =
-meal[`strIngredient${i}`];
+const ingredient = meal[`strIngredient${i}`];
+const measure = meal[`strMeasure${i}`];
 
-const measure =
-meal[`strMeasure${i}`];
-
-if(
-ingredient &&
-ingredient.trim() !== ""
-){
+if(ingredient && ingredient.trim() !== ""){
 
 ingredientsHTML += `
-
 <div class="substituteCard">
-🥘 ${measure || ''} ${ingredient}
+🥘 ${measure} ${ingredient}
 </div>
-
 `;
 
 }
 
 }
-
-/* STEPS */
-
-const instructions =
-meal.strInstructions
-.split('.')
-.filter(step=>step.trim() !== '');
-
-let stepsHTML = '';
-
-instructions.forEach((step,index)=>{
-
-stepsHTML += `
-
-<div class="stepCard">
-
-<b>
-Step ${index+1}
-</b>
-
-<br><br>
-
-${step.trim()}.
-
-</div>
-
-`;
-
-});
-
-/* VIDEO */
-
-let videoHTML = '';
-
-if(isPremium){
-
-videoHTML = `
-
-<video
-class="videoPlayer"
-controls
-poster="${meal.strMealThumb}"
->
-
-<source
-src="YOUR-UPLOADED-MP4-LINK.mp4"
-type="video/mp4"
->
-
-</video>
-
-<div class="badge">
-Premium Exclusive Cooking Video
-</div>
-
-`;
-
-}else{
-
-const yt =
-meal.strYoutube
-?
-meal.strYoutube.split('v=')[1]
-:
-'';
-
-videoHTML = `
-
-<iframe
-class="videoPlayer"
-src="https://www.youtube.com/embed/${yt}"
-allowfullscreen>
-</iframe>
-
-`;
-
-}
-
-/* FINAL MODAL */
 
 recipeModal.innerHTML = `
 
@@ -1149,68 +863,26 @@ src="${meal.strMealThumb}"
 
 <div class="recipeContent">
 
-<h2>
-${meal.strMeal}
-</h2>
+<h2>${meal.strMeal}</h2>
 
-<div class="badge">
-${meal.strCategory}
-</div>
-
-<div class="badge">
-${meal.strArea} Cuisine
-</div>
-
-<div class="badge">
-AI Guided Recipe
-</div>
+<div class="badge">${meal.strCategory}</div>
+<div class="badge">${meal.strArea}</div>
 
 <p>
-${meal.strInstructions.slice(0,180)}...
+${meal.strInstructions.slice(0,250)}...
 </p>
 
-<h3>
-🥘 Ingredients
-</h3>
+<h3>🥘 Ingredients</h3>
 
 ${ingredientsHTML}
 
-<h3>
-👨‍🍳 Step-by-Step Instructions
-</h3>
+<h3>🎥 Video</h3>
 
-${stepsHTML}
-
-<h3>
-🎥 Recipe Video
-</h3>
-
-${videoHTML}
-
-<div class="card">
-
-<h2>
-💡 Cook’ed AI Tips
-</h2>
-
-<div class="substituteCard">
-Missing butter? Use olive oil.
-</div>
-
-<div class="substituteCard">
-Missing milk? Use almond milk.
-</div>
-
-<div class="substituteCard">
-Need more protein? Add chicken or eggs.
-</div>
-
-</div>
-
-<div class="btn"
-onclick="openComments()">
-Comments 💬
-</div>
+<iframe
+class="videoPlayer"
+src="https://www.youtube.com/embed/${meal.strYoutube.split('v=')[1]}"
+allowfullscreen>
+</iframe>
 
 <div class="btn"
 onclick="closeRecipe()">
@@ -1221,20 +893,11 @@ Close Recipe
 
 `;
 
-}catch(err){
-
-console.log(err);
-
-alert("Recipe failed to load");
-
-}
-
 }
 
 function closeRecipe(){
 
 recipeModal.classList.remove('active');
-
 recipeModal.innerHTML = '';
 
 }
@@ -1257,10 +920,6 @@ comments.innerHTML = `
 Trying this tonight
 </div>
 
-<div class="comment">
-W recipe fr
-</div>
-
 `;
 
 }
@@ -1273,7 +932,7 @@ commentModal.classList.remove('active');
 
 function addComment(e){
 
-if(e.key==="Enter"){
+if(e.key === "Enter"){
 
 comments.innerHTML += `
 <div class="comment">
@@ -1306,14 +965,7 @@ currentStream.getTracks()
 
 const stream =
 await navigator.mediaDevices.getUserMedia({
-video:{
-facingMode:{
-ideal:"environment"
-},
-width:{ideal:1920},
-height:{ideal:1080}
-},
-audio:false
+video:true
 });
 
 currentStream = stream;
@@ -1325,8 +977,8 @@ await video.play();
 if(!model){
 
 scanResult.innerHTML = `
-<div class="card aiGlow">
-Loading AI refrigerator scanner...
+<div class="card">
+Loading AI scanner...
 </div>
 `;
 
@@ -1340,7 +992,7 @@ scanResult.innerHTML = '';
 
 scanResult.innerHTML = `
 <div class="card">
-❌ Camera failed to load
+❌ Camera failed
 </div>
 `;
 
@@ -1349,7 +1001,7 @@ scanResult.innerHTML = `
 }
 
 /* ======================
-SCAN FRIDGE
+SCAN
 ====================== */
 
 async function capture(){
@@ -1357,8 +1009,8 @@ async function capture(){
 if(!model)return;
 
 scanResult.innerHTML = `
-<div class="card aiGlow">
-Analyzing refrigerator ingredients...
+<div class="card">
+Analyzing ingredients...
 </div>
 `;
 
@@ -1381,8 +1033,6 @@ if(lower.includes("milk")) fridgeItems.push("milk");
 if(lower.includes("egg")) fridgeItems.push("eggs");
 if(lower.includes("bread")) fridgeItems.push("bread");
 if(lower.includes("cheese")) fridgeItems.push("cheese");
-if(lower.includes("meat")) fridgeItems.push("beef");
-if(lower.includes("chicken")) fridgeItems.push("chicken");
 
 });
 
@@ -1391,8 +1041,7 @@ if(fridgeItems.length === 0){
 fridgeItems.push(
 "milk",
 "eggs",
-"bread",
-"cheese"
+"bread"
 );
 
 }
@@ -1402,7 +1051,7 @@ showFridgeAnalysis(fridgeItems);
 }
 
 /* ======================
-FRIDGE ANALYSIS
+FRIDGE RESULTS
 ====================== */
 
 function showFridgeAnalysis(items){
@@ -1427,11 +1076,6 @@ scanResult.innerHTML = `
 
 <h2>🧠 AI Refrigerator Analysis</h2>
 
-<p>
-We detected ingredients currently
-inside your refrigerator/pantry.
-</p>
-
 <div class="ingredientsGrid">
 
 ${items.map(item=>`
@@ -1448,33 +1092,11 @@ ${item}
 
 <h2>🍳 Meals You Can Make</h2>
 
-${recipes.slice(0,6).map(recipe=>`
+${recipes.map(recipe=>`
 <div class="substituteCard">
 ${recipe}
 </div>
 `).join('')}
-
-</div>
-
-<div class="card">
-
-<h2>💡 Smart Ingredient Substitutions</h2>
-
-<div class="substituteCard">
-No milk? Use ${substitutes.milk}
-</div>
-
-<div class="substituteCard">
-No eggs? Use ${substitutes.eggs}
-</div>
-
-<div class="substituteCard">
-No butter? Use ${substitutes.butter}
-</div>
-
-<div class="substituteCard">
-No cream? Use ${substitutes.cream}
-</div>
 
 </div>
 
@@ -1490,21 +1112,15 @@ function togglePremium(){
 
 isPremium = !isPremium;
 
-document.body.classList.toggle(
-'premium'
-);
+document.body.classList.toggle('premium');
 
 health.style.display =
-isPremium
-?
-'block'
-:
-'none';
+isPremium ? 'block' : 'none';
 
 }
 
 /* ======================
-HEALTH AI
+HEALTH
 ====================== */
 
 function analyze(){
@@ -1515,19 +1131,7 @@ const w = parseFloat(weight.value);
 if(!h || !w)return;
 
 const bmi =
-(w / ((h/100)*(h/100)))
-.toFixed(1);
-
-const goal =
-bmi < 18.5
-?
-"Bulk 💪"
-:
-bmi < 25
-?
-"Maintain ⚖️"
-:
-"Cut 🔥";
+(w / ((h/100)*(h/100))).toFixed(1);
 
 healthResult.innerHTML = `
 
@@ -1538,80 +1142,17 @@ BMI<br><br>${bmi}
 </div>
 
 <div class="stat">
-Goal<br><br>${goal}
-</div>
-
-<div class="stat">
 Calories<br><br>
 ${Math.floor(2200+w*8)}
 </div>
 
-<div class="stat">
-Protein<br><br>
-${Math.floor(w*1.3)}g
-</div>
-
 </div>
 
 `;
-
-generateMeals(goal);
-
-}
-
-/* ======================
-MEALS
-====================== */
-
-async function generateMeals(goal){
-
-const query =
-goal.includes("Bulk")
-?
-"steak"
-:
-goal.includes("Cut")
-?
-"salad"
-:
-"chicken";
-
-const res = await fetch(
-`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
-);
-
-const data = await res.json();
-
-mealPlan.innerHTML = '';
-
-data.meals.slice(0,3).forEach(m=>{
-
-mealPlan.innerHTML += `
-
-<div class="mealCard"
-onclick='openRecipe(${JSON.stringify(m.strMeal)})'>
-
-<img
-src="${m.strMealThumb}"
->
-
-<div class="mealInfo">
-
-<h3>${m.strMeal}</h3>
-
-<p style="color:#bbb">
-${m.strCategory}
-• ${m.strArea}
-</p>
-
-</div>
-
-</div>
-
-`;
-
-});
 
 }
 
 </script>
+
+</body>
+</html>
