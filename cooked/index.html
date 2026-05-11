@@ -538,29 +538,34 @@ backdrop-filter:blur(10px);
 
 <body>
 
-<!-- LOGIN -->
+/* ======================
+LOGIN
+====================== */
 
-<div id="login" class="screen active">
+async function enterApp(){
 
-<div class="hero">
+user = username.value || "Chef";
 
-<div class="heroText">
-<h1>Cook’ed</h1>
-<p>Cook Better. Live Healthier.</p>
+userInfo.innerHTML =
+`👤 ${user}`;
+
+/* ENTER APP INSTANTLY */
+nav('home');
+
+/* SHOW LOADING WHILE FEED LOADS */
+feed.innerHTML = `
+<div class="card" style="margin-top:120px;text-align:center">
+<h2>Loading recipes...</h2>
+<p style="margin-top:10px;color:#aaa">
+Preparing your food feed 🍔
+</p>
 </div>
+`;
 
-</div>
+/* LOAD FEED IN BACKGROUND */
+loadFeed();
 
-<div class="card">
-
-<h2>Welcome Back</h2>
-
-<input id="username" placeholder="Enter username">
-
-<div class="btn" onclick="enterApp()">
-Enter App
-</div>
-
+}
 <div class="badge">
 Food + Fitness Platform
 </div>
