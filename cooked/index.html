@@ -290,6 +290,8 @@ margin-top:12px;
 background:#111;
 }
 
+/* CAMERA */
+
 .cameraWrap{
 padding:16px;
 }
@@ -365,6 +367,8 @@ border-radius:18px;
 margin-top:12px;
 }
 
+/* HEALTH */
+
 .bodyContainer{
 position:relative;
 height:340px;
@@ -420,12 +424,16 @@ border-radius:18px;
 font-weight:700;
 }
 
+/* COMMENTS */
+
 .comment{
 background:#111;
 padding:14px;
 border-radius:18px;
 margin-top:12px;
 }
+
+/* BADGE */
 
 .badge{
 display:inline-block;
@@ -456,6 +464,8 @@ object-fit:cover;
 padding:14px;
 }
 
+/* FRIDGE AI */
+
 .ingredientsGrid{
 display:flex;
 flex-wrap:wrap;
@@ -477,7 +487,6 @@ background:#111;
 padding:14px;
 border-radius:18px;
 margin-top:12px;
-line-height:1.6;
 }
 
 .aiGlow{
@@ -492,11 +501,36 @@ animation:pulse 2s infinite;
 
 .progress{
 width:100%;
-height:14px;
-background:#111;
+height:12px;
+background:#222;
 border-radius:999px;
 overflow:hidden;
 margin-top:8px;
+}
+
+.stepCard{
+background:#111;
+padding:16px;
+border-radius:18px;
+margin-top:14px;
+line-height:1.6;
+}
+
+.closeX{
+position:fixed;
+top:20px;
+right:20px;
+width:45px;
+height:45px;
+border-radius:50%;
+background:rgba(0,0,0,.7);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+z-index:10000;
+cursor:pointer;
+backdrop-filter:blur(10px);
 }
 
 </style>
@@ -746,7 +780,7 @@ let likedPosts = {};
 let currentStream;
 
 /* ======================
-DATABASES
+INGREDIENT DATABASE
 ====================== */
 
 const ingredientDatabase = {
@@ -770,7 +804,6 @@ spinach:["salad","omelette","pasta"]
 };
 
 const substitutes = {
-
 milk:"almond milk",
 butter:"olive oil",
 eggs:"banana",
@@ -779,7 +812,6 @@ cheese:"vegan cheese",
 sugar:"honey",
 flour:"oat flour",
 cream:"greek yogurt"
-
 };
 
 /* ======================
@@ -822,7 +854,6 @@ async function loadFeed(){
 feed.innerHTML = '';
 
 const searches = [
-
 "burger",
 "pizza",
 "pasta",
@@ -841,7 +872,6 @@ const searches = [
 "pancake",
 "omelette",
 "mac and cheese"
-
 ];
 
 let meals = [];
@@ -970,7 +1000,7 @@ document.getElementById(
 }
 
 /* ======================
-OPEN RECIPE
+RECIPE FIXED
 ====================== */
 
 async function openRecipe(name){
@@ -985,23 +1015,14 @@ const data = await res.json();
 
 if(!data.meals){
 
-recipeModal.innerHTML = `
-<div class="recipeContent">
-<h2>Recipe not found</h2>
-
-<div class="btn" onclick="closeRecipe()">
-Close
-</div>
-</div>
-`;
-
-recipeModal.classList.add('active');
-
+alert("Recipe not found");
 return;
 
 }
 
 const meal = data.meals[0];
+
+recipeModal.classList.add('active');
 
 /* BUILD INGREDIENTS */
 
@@ -1034,21 +1055,27 @@ ingredientsHTML += `
 
 /* BUILD STEPS */
 
-const steps =
+const instructions =
 meal.strInstructions
-.split(/\r?\n|\./)
-.filter(step => step.trim() !== '');
+.split('.')
+.filter(step=>step.trim() !== '');
 
 let stepsHTML = '';
 
-steps.forEach((step,index)=>{
+instructions.forEach((step,index)=>{
 
 stepsHTML += `
 
-<div class="substituteCard">
-<b>Step ${index+1}</b>
+<div class="stepCard">
+
+<b>
+Step ${index+1}
+</b>
+
 <br><br>
-${step.trim()}
+
+${step.trim()}.
+
 </div>
 
 `;
@@ -1070,14 +1097,14 @@ poster="${meal.strMealThumb}"
 >
 
 <source
-src="https://www.w3schools.com/html/mov_bbb.mp4"
+src="YOUR-UPLOADED-MP4-LINK.mp4"
 type="video/mp4"
 >
 
 </video>
 
 <div class="badge">
-Premium Cooking Tutorial 👑
+Premium Exclusive Cooking Video
 </div>
 
 `;
@@ -1103,11 +1130,14 @@ allowfullscreen>
 
 }
 
-/* OPEN MODAL */
-
-recipeModal.classList.add('active');
+/* FINAL MODAL */
 
 recipeModal.innerHTML = `
+
+<div class="closeX"
+onclick="closeRecipe()">
+✕
+</div>
 
 <img
 class="recipeHero"
@@ -1129,7 +1159,7 @@ ${meal.strArea} Cuisine
 </div>
 
 <div class="badge">
-👨‍🍳 AI Recipe Guide
+AI Guided Recipe
 </div>
 
 <p>
@@ -1161,18 +1191,15 @@ ${videoHTML}
 </h2>
 
 <div class="substituteCard">
-Missing butter?
-Use olive oil instead.
+Missing butter? Use olive oil.
 </div>
 
 <div class="substituteCard">
-Missing milk?
-Use almond milk or oat milk.
+Missing milk? Use almond milk.
 </div>
 
 <div class="substituteCard">
-Want extra protein?
-Add chicken or eggs.
+Need more protein? Add chicken or eggs.
 </div>
 
 </div>
@@ -1184,7 +1211,7 @@ Comments 💬
 
 <div class="btn"
 onclick="closeRecipe()">
-Close
+Close Recipe
 </div>
 
 </div>
@@ -1193,28 +1220,9 @@ Close
 
 }catch(err){
 
-recipeModal.innerHTML = `
+console.log(err);
 
-<div class="recipeContent">
-
-<h2>
-Something went wrong
-</h2>
-
-<p>
-Recipe failed to load.
-</p>
-
-<div class="btn"
-onclick="closeRecipe()">
-Close
-</div>
-
-</div>
-
-`;
-
-recipeModal.classList.add('active');
+alert("Recipe failed to load");
 
 }
 
@@ -1223,6 +1231,8 @@ recipeModal.classList.add('active');
 function closeRecipe(){
 
 recipeModal.classList.remove('active');
+
+recipeModal.innerHTML = '';
 
 }
 
@@ -1263,11 +1273,9 @@ function addComment(e){
 if(e.key==="Enter"){
 
 comments.innerHTML += `
-
 <div class="comment">
 ${e.target.value}
 </div>
-
 `;
 
 e.target.value = '';
@@ -1295,7 +1303,6 @@ currentStream.getTracks()
 
 const stream =
 await navigator.mediaDevices.getUserMedia({
-
 video:{
 facingMode:{
 ideal:"environment"
@@ -1303,9 +1310,7 @@ ideal:"environment"
 width:{ideal:1920},
 height:{ideal:1080}
 },
-
 audio:false
-
 });
 
 currentStream = stream;
@@ -1317,11 +1322,9 @@ await video.play();
 if(!model){
 
 scanResult.innerHTML = `
-
 <div class="card aiGlow">
 Loading AI refrigerator scanner...
 </div>
-
 `;
 
 model = await mobilenet.load();
@@ -1333,11 +1336,9 @@ scanResult.innerHTML = '';
 }catch(err){
 
 scanResult.innerHTML = `
-
 <div class="card">
 ❌ Camera failed to load
 </div>
-
 `;
 
 }
@@ -1353,11 +1354,9 @@ async function capture(){
 if(!model)return;
 
 scanResult.innerHTML = `
-
 <div class="card aiGlow">
 Analyzing refrigerator ingredients...
 </div>
-
 `;
 
 const predictions =
@@ -1373,29 +1372,14 @@ detected.forEach(item=>{
 
 const lower = item.toLowerCase();
 
-if(lower.includes("banana"))
-fridgeItems.push("banana");
-
-if(lower.includes("apple"))
-fridgeItems.push("apple");
-
-if(lower.includes("milk"))
-fridgeItems.push("milk");
-
-if(lower.includes("egg"))
-fridgeItems.push("eggs");
-
-if(lower.includes("bread"))
-fridgeItems.push("bread");
-
-if(lower.includes("cheese"))
-fridgeItems.push("cheese");
-
-if(lower.includes("meat"))
-fridgeItems.push("beef");
-
-if(lower.includes("chicken"))
-fridgeItems.push("chicken");
+if(lower.includes("banana")) fridgeItems.push("banana");
+if(lower.includes("apple")) fridgeItems.push("apple");
+if(lower.includes("milk")) fridgeItems.push("milk");
+if(lower.includes("egg")) fridgeItems.push("eggs");
+if(lower.includes("bread")) fridgeItems.push("bread");
+if(lower.includes("cheese")) fridgeItems.push("cheese");
+if(lower.includes("meat")) fridgeItems.push("beef");
+if(lower.includes("chicken")) fridgeItems.push("chicken");
 
 });
 
@@ -1438,9 +1422,7 @@ scanResult.innerHTML = `
 
 <div class="card">
 
-<h2>
-🧠 AI Refrigerator Analysis
-</h2>
+<h2>🧠 AI Refrigerator Analysis</h2>
 
 <p>
 We detected ingredients currently
@@ -1450,11 +1432,9 @@ inside your refrigerator/pantry.
 <div class="ingredientsGrid">
 
 ${items.map(item=>`
-
 <div class="ingredientTag">
 ${item}
 </div>
-
 `).join('')}
 
 </div>
@@ -1463,25 +1443,19 @@ ${item}
 
 <div class="card">
 
-<h2>
-🍳 Meals You Can Make
-</h2>
+<h2>🍳 Meals You Can Make</h2>
 
 ${recipes.slice(0,6).map(recipe=>`
-
 <div class="substituteCard">
 ${recipe}
 </div>
-
 `).join('')}
 
 </div>
 
 <div class="card">
 
-<h2>
-💡 Smart Ingredient Substitutions
-</h2>
+<h2>💡 Smart Ingredient Substitutions</h2>
 
 <div class="substituteCard">
 No milk? Use ${substitutes.milk}
@@ -1498,21 +1472,6 @@ No butter? Use ${substitutes.butter}
 <div class="substituteCard">
 No cream? Use ${substitutes.cream}
 </div>
-
-</div>
-
-<div class="card">
-
-<h2>
-🛒 Money Saving Insights
-</h2>
-
-<p>
-Cook’ed AI found meals you can make
-right now using food already at home,
-helping reduce food waste and save
-money on groceries.
-</p>
 
 </div>
 
@@ -1635,9 +1594,7 @@ onclick="openRecipe('${m.strMeal.replace(/'/g,"\\'")}')"
 
 <div class="mealInfo">
 
-<h3>
-${m.strMeal}
-</h3>
+<h3>${m.strMeal}</h3>
 
 <p style="color:#bbb">
 ${m.strCategory}
