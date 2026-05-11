@@ -671,33 +671,206 @@ Workout
 
 </div>
 
-<!-- RECIPE MODAL -->
+/* ======================
+RECIPE
+====================== */
 
-<div id="recipeModal" class="modal"></div>
+async function openRecipe(name){
 
-<!-- COMMENTS -->
+const res = await fetch(
+`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`
+);
 
-<div id="commentModal" class="modal">
+const data = await res.json();
 
-<div style="padding:20px">
+const meal = data.meals[0];
 
-<h2>Comments</h2>
+if(!meal)return;
 
-<div id="comments"></div>
+recipeModal.classList.add('active');
 
-<input
-placeholder="Add comment..."
-onkeydown="addComment(event)"
+/* BUILD INGREDIENTS */
+
+let ingredients = '';
+
+for(let i=1;i<=20;i++){
+
+const ingredient =
+meal[`strIngredient${i}`];
+
+const measure =
+meal[`strMeasure${i}`];
+
+if(
+ingredient &&
+ingredient.trim() !== ""
+){
+
+ingredients += `
+<div class="substituteCard">
+🥘 ${measure || ''} ${ingredient}
+</div>
+`;
+
+}
+
+}
+
+/* BUILD STEPS */
+
+const instructions =
+meal.strInstructions
+.split('.')
+.filter(step=>step.trim() !== '');
+
+let stepsHTML = '';
+
+instructions.forEach((step,index)=>{
+
+stepsHTML += `
+<div class="substituteCard">
+<b>Step ${index+1}</b><br><br>
+${step.trim()}.
+</div>
+`;
+
+});
+
+/* VIDEO */
+
+let videoContent = '';
+
+if(isPremium){
+
+videoContent = `
+
+<video
+class="videoPlayer"
+controls
+poster="${meal.strMealThumb}"
 >
 
-<div class="btn" onclick="closeComments()">
+<source
+src="YOUR-UPLOADED-MP4-LINK.mp4"
+type="video/mp4"
+>
+
+</video>
+
+<div class="badge">
+Premium Cooking Tutorial
+</div>
+
+`;
+
+}else{
+
+const yt =
+meal.strYoutube
+?
+meal.strYoutube.split('v=')[1]
+:
+'';
+
+videoContent = `
+
+<iframe
+class="videoPlayer"
+src="https://www.youtube.com/embed/${yt}"
+allowfullscreen>
+</iframe>
+
+`;
+
+}
+
+/* FINAL MODAL */
+
+recipeModal.innerHTML = `
+
+<img
+class="recipeHero"
+src="${meal.strMealThumb}"
+>
+
+<div class="recipeContent">
+
+<h2>
+${meal.strMeal}
+</h2>
+
+<div class="badge">
+${meal.strCategory}
+</div>
+
+<div class="badge">
+${meal.strArea} Cuisine
+</div>
+
+<div class="badge">
+👨‍🍳 AI Recipe Guide
+</div>
+
+<p>
+${meal.strInstructions.slice(0,180)}...
+</p>
+
+<h3>
+🥘 Ingredients
+</h3>
+
+${ingredients}
+
+<h3>
+👨‍🍳 Step-by-Step Instructions
+</h3>
+
+${stepsHTML}
+
+<h3>
+🎥 Recipe Video
+</h3>
+
+${videoContent}
+
+<div class="card">
+
+<h2>
+💡 Cook’ed AI Tips
+</h2>
+
+<div class="substituteCard">
+Missing butter?
+Use olive oil instead.
+</div>
+
+<div class="substituteCard">
+Missing milk?
+Use almond milk or oat milk.
+</div>
+
+<div class="substituteCard">
+Want extra protein?
+Add chicken or eggs.
+</div>
+
+</div>
+
+<div class="btn"
+onclick="openComments()">
+Comments 💬
+</div>
+
+<div class="btn"
+onclick="closeRecipe()">
 Close
 </div>
 
 </div>
 
-</div>
+`;
 
+}
 <!-- NAV -->
 
 <div class="nav">
