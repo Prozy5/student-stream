@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SS Creators — Build Your Influence</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+
+:root{
+--bg:#050505;
+--card:rgba(255,255,255,.07);
+--accent:#ff4fd8;
+--accent2:#7c5cff;
+--text:#ffffff;
+--muted:#a1a1aa;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+overflow-x:hidden;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+background:#000;
+color:white;
+}
+
+body{
+background:
+radial-gradient(circle at top left,
+rgba(255,79,216,.18),
+transparent 35%),
+radial-gradient(circle at top right,
+rgba(124,92,255,.15),
+transparent 35%),
+#030308;
+}
+
+nav{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 24px;
+background:rgba(0,0,0,.45);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.08);
+z-index:999;
+}
+
+.logo{
+font-size:28px;
+font-weight:900;
+letter-spacing:-1px;
+}
+
+.logo span{
+color:var(--accent);
+}
+
+.navRight{
+display:flex;
+gap:12px;
+}
+
+.iconBtn{
+width:46px;
+height:46px;
+border-radius:16px;
+background:rgba(255,255,255,.08);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+}
+
+.hero{
+min-height:100vh;
+position:relative;
+display:flex;
+align-items:center;
+padding:120px 24px 70px;
+overflow:hidden;
+}
+
+.heroBg{
+position:absolute;
+inset:0;
+background:url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1800&auto=format&fit=crop') center/cover;
+filter:brightness(.35);
+transform:scale(1.1);
+}
+
+.heroFade{
+position:absolute;
+inset:0;
+background:
+linear-gradient(to top,
+rgba(0,0,0,.95),
+rgba(0,0,0,.45));
+}
+
+.heroContent{
+position:relative;
+z-index:5;
+max-width:720px;
+}
+
+.badge{
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:12px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(16px);
+font-size:12px;
+font-weight:800;
+margin-bottom:20px;
+}
+
+.hero h1{
+font-size:88px;
+line-height:.9;
+letter-spacing:-4px;
+font-weight:900;
+}
+
+.hero p{
+margin-top:24px;
+font-size:18px;
+line-height:1.8;
+color:#d4d4d8;
+max-width:620px;
+}
+
+.heroButtons{
+display:flex;
+gap:16px;
+margin-top:34px;
+flex-wrap:wrap;
+}
+
+.btn{
+padding:16px 24px;
+border:none;
+border-radius:18px;
+font-weight:900;
+font-size:15px;
+cursor:pointer;
+}
+
+.primary{
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:white;
+}
+
+.secondary{
+background:rgba(255,255,255,.08);
+color:white;
+backdrop-filter:blur(20px);
+}
+
+.section{
+padding:50px 24px;
+}
+
+.sectionTitle{
+font-size:44px;
+font-weight:900;
+letter-spacing:-2px;
+margin-bottom:24px;
+}
+
+.creatorGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:20px;
+}
+
+.creatorCard{
+background:var(--card);
+border-radius:30px;
+overflow:hidden;
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(20px);
+transition:.3s;
+}
+
+.creatorCard:hover{
+transform:translateY(-6px);
+}
+
+.creatorImage{
+height:340px;
+background-size:cover;
+background-position:center;
+position:relative;
+}
+
+.creatorImage::after{
+content:'';
+position:absolute;
+inset:0;
+background:
+linear-gradient(to top,
+rgba(0,0,0,.92),
+transparent);
+}
+
+.creatorInfo{
+position:absolute;
+bottom:20px;
+left:20px;
+z-index:5;
+}
+
+.creatorName{
+font-size:28px;
+font-weight:900;
+}
+
+.creatorType{
+margin-top:8px;
+font-size:14px;
+color:#ddd;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+}
+
+.stat{
+background:rgba(255,255,255,.05);
+padding:24px;
+border-radius:24px;
+text-align:center;
+border:1px solid rgba(255,255,255,.06);
+}
+
+.stat h2{
+font-size:38px;
+font-weight:900;
+}
+
+.stat p{
+margin-top:8px;
+color:var(--muted);
+font-size:13px;
+}
+
+.toolsGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:18px;
+}
+
+.toolCard{
+background:rgba(255,255,255,.05);
+padding:28px;
+border-radius:26px;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.toolCard i{
+font-size:38px;
+margin-bottom:18px;
+color:var(--accent);
+}
+
+.toolCard h3{
+font-size:24px;
+margin-bottom:12px;
+}
+
+.toolCard p{
+line-height:1.7;
+color:#d1d5db;
+}
+
+.featureBanner{
+margin:40px 24px 80px;
+padding:55px 30px;
+border-radius:36px;
+background:
+linear-gradient(135deg,
+rgba(255,79,216,.18),
+rgba(124,92,255,.18));
+text-align:center;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.featureBanner h2{
+font-size:58px;
+font-weight:900;
+letter-spacing:-2px;
+}
+
+.featureBanner p{
+margin-top:18px;
+max-width:760px;
+margin-inline:auto;
+line-height:1.8;
+color:#ddd;
+}
+
+footer{
+padding:30px 24px 60px;
+text-align:center;
+color:#6b7280;
+font-size:13px;
+}
+
+@media(max-width:700px){
+
+.hero h1{
+font-size:60px;
+}
+
+.sectionTitle{
+font-size:34px;
+}
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+.featureBanner h2{
+font-size:40px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+SS <span>Creators</span>
+</div>
+
+<div class="navRight">
+
+<div class="iconBtn">
+<i class="fa-solid fa-video"></i>
+</div>
+
+<div class="iconBtn">
+<i class="fa-solid fa-microphone"></i>
+</div>
+
+</div>
+
+</nav>
+
+<div class="hero">
+
+<div class="heroBg"></div>
+<div class="heroFade"></div>
+
+<div class="heroContent">
+
+<div class="badge">
+<i class="fa-solid fa-sparkles"></i>
+StudentStream Creator Ecosystem
+</div>
+
+<h1>
+Build
+Your
+Influence
+</h1>
+
+<p>
+SS Creators empowers the next generation of streamers, filmmakers, influencers, musicians, gamers, and digital entrepreneurs with tools built for growth, monetization, and global reach.
+</p>
+
+<div class="heroButtons">
+
+<button class="btn primary">
+Join The Platform
+</button>
+
+<button class="btn secondary">
+Explore Creators
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="sectionTitle">
+Featured Creators
+</h2>
+
+<div class="creatorGrid">
+
+<div class="creatorCard">
+
+<div class="creatorImage"
+style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1400&auto=format&fit=crop')">
+
+<div class="creatorInfo">
+<div class="creatorName">NovaVision</div>
+<div class="creatorType">Filmmaker • Visual Storytelling</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="creatorCard">
+
+<div class="creatorImage"
+style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1400&auto=format&fit=crop')">
+
+<div class="creatorInfo">
+<div class="creatorName">LunaLive</div>
+<div class="creatorType">Streamer • Lifestyle Creator</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="creatorCard">
+
+<div class="creatorImage"
+style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1400&auto=format&fit=crop')">
+
+<div class="creatorInfo">
+<div class="creatorName">Kai Motion</div>
+<div class="creatorType">Gaming • Content Production</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="sectionTitle">
+Creator Analytics
+</h2>
+
+<div class="stats">
+
+<div class="stat">
+<h2>24M</h2>
+<p>Monthly Reach</p>
+</div>
+
+<div class="stat">
+<h2>AI</h2>
+<p>Creator Tools</p>
+</div>
+
+<div class="stat">
+<h2>4K</h2>
+<p>Production Quality</p>
+</div>
+
+<div class="stat">
+<h2>Global</h2>
+<p>Audience Network</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="sectionTitle">
+Creator Tools
+</h2>
+
+<div class="toolsGrid">
+
+<div class="toolCard">
+<i class="fa-solid fa-chart-line"></i>
+<h3>Growth Analytics</h3>
+<p>
+Track engagement, views, retention, and audience growth using advanced creator insights.
+</p>
+</div>
+
+<div class="toolCard">
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+<h3>AI Production</h3>
+<p>
+Generate thumbnails, clips, captions, and content ideas powered by next-generation AI tools.
+</p>
+</div>
+
+<div class="toolCard">
+<i class="fa-solid fa-money-bill-wave"></i>
+<h3>Monetization</h3>
+<p>
+Subscriptions, donations, sponsorships, memberships, and creator partnerships built directly into the ecosystem.
+</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="featureBanner">
+
+<h2>
+The Future Of Creators Starts Here
+</h2>
+
+<p>
+SS Creators combines content creation, monetization, streaming, social engagement, AI production tools, and creator communities into one premium ecosystem.
+</p>
+
+<div class="heroButtons" style="justify-content:center; margin-top:30px;">
+
+<button class="btn primary">
+Become A Creator
+</button>
+
+<button class="btn secondary">
+Start Streaming
+</button>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 SS Creators • A StudentStream Division
+</footer>
+
+</body>
+</html>
