@@ -2,258 +2,1233 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
 
 <title>SS Studios Library</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
+
 <style>
+
 :root{
   --bg:#02040a;
-  --card:rgba(255,255,255,.05);
+  --card:rgba(255,255,255,.06);
   --accent:#6c5cff;
+  --accent2:#00d4ff;
   --text:#eef2ff;
   --muted:#8b9ab5;
+  --border:rgba(255,255,255,.08);
 }
 
-body{
+*{
   margin:0;
-  font-family:system-ui;
-  background:var(--bg);
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow-x:hidden;
+  background:
+  radial-gradient(circle at top,#11193d 0%,#02040a 50%);
   color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
 /* NAV */
+
 nav{
+  position:sticky;
+  top:0;
+  z-index:100;
   display:flex;
   justify-content:space-between;
-  padding:18px 25px;
-  border-bottom:1px solid rgba(255,255,255,.08);
+  align-items:center;
+  padding:18px 22px;
+  backdrop-filter:blur(20px);
+  background:rgba(2,4,10,.75);
+  border-bottom:1px solid var(--border);
 }
 
 .logo{
+  font-size:24px;
   font-weight:900;
-  font-size:22px;
+  letter-spacing:-1px;
 }
 
-.logo span{color:var(--accent)}
+.logo span{
+  color:var(--accent);
+}
+
+.navActions{
+  display:flex;
+  gap:12px;
+}
+
+.navBtn{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:var(--card);
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
+
+/* HERO */
+
+.hero{
+  padding:25px 20px 10px;
+}
+
+.heroCard{
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+  min-height:260px;
+  padding:24px;
+  background:
+  linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.15)),
+  url('https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1600&auto=format&fit=crop');
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+
+.heroBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:999px;
+  width:max-content;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(12px);
+  font-size:12px;
+  font-weight:800;
+}
+
+.hero h1{
+  margin-top:14px;
+  font-size:42px;
+  line-height:1;
+  letter-spacing:-2px;
+}
+
+.hero p{
+  margin-top:12px;
+  color:#d4d9e7;
+  line-height:1.6;
+  max-width:520px;
+}
 
 /* SEARCH */
-.search{
-  padding:15px 20px;
+
+.searchWrap{
+  padding:16px 20px;
 }
 
-.search input{
+.searchBox{
+  position:relative;
+}
+
+.searchBox i{
+  position:absolute;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+}
+
+.searchBox input{
   width:100%;
-  padding:14px;
-  border-radius:12px;
+  padding:16px 18px 16px 48px;
   border:none;
+  outline:none;
+  border-radius:20px;
   background:var(--card);
+  border:1px solid var(--border);
   color:white;
+  font-size:15px;
+  backdrop-filter:blur(20px);
 }
 
-/* ROWS */
+/* STATS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  padding:0 20px 8px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:18px;
+  backdrop-filter:blur(20px);
+}
+
+.stat h2{
+  font-size:24px;
+}
+
+.stat p{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* SECTIONS */
+
 .section{
-  padding:10px 20px;
+  padding:18px 20px 10px;
+}
+
+.sectionHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
 }
 
 .sectionTitle{
-  font-weight:800;
-  margin-bottom:10px;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-1px;
 }
 
-.row{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-}
-
-/* BOOK CARD */
-.book{
-  min-width:140px;
-  cursor:pointer;
-}
-
-.cover{
-  height:200px;
-  border-radius:12px;
-  background:#111;
-  margin-bottom:6px;
-}
-
-.title{
+.sectionLink{
+  color:var(--accent2);
   font-size:13px;
   font-weight:700;
 }
 
+.row{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding-bottom:6px;
+}
+
+.row::-webkit-scrollbar{
+  display:none;
+}
+
+/* BOOK CARD */
+
+.book{
+  min-width:165px;
+  max-width:165px;
+  cursor:pointer;
+}
+
+.cover{
+  position:relative;
+  height:240px;
+  border-radius:22px;
+  overflow:hidden;
+  background:#111;
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.cover::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+  linear-gradient(to top,
+  rgba(0,0,0,.75),
+  transparent 55%);
+}
+
+.bookInfo{
+  padding-top:10px;
+}
+
+.title{
+  font-size:14px;
+  font-weight:800;
+  line-height:1.3;
+}
+
 .author{
-  font-size:11px;
+  margin-top:5px;
+  font-size:12px;
   color:var(--muted);
 }
 
+.bookStats{
+  display:flex;
+  gap:12px;
+  margin-top:8px;
+  font-size:11px;
+  color:#cfd7ee;
+}
+
+.bookStats span{
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+/* FEATURED GRID */
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.featured{
+  position:relative;
+  overflow:hidden;
+  min-height:240px;
+  border-radius:24px;
+  background:#111;
+  border:1px solid var(--border);
+  padding:18px;
+  display:flex;
+  align-items:flex-end;
+  background-size:cover;
+  background-position:center;
+}
+
+.featured::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+  linear-gradient(to top,
+  rgba(0,0,0,.92),
+  rgba(0,0,0,.15));
+}
+
+.featuredContent{
+  position:relative;
+  z-index:2;
+}
+
+.featuredTitle{
+  font-size:20px;
+  font-weight:900;
+  line-height:1.1;
+}
+
+.featuredDesc{
+  margin-top:8px;
+  color:#d6dbeb;
+  font-size:13px;
+  line-height:1.5;
+}
+
 /* MODAL */
+
 .modal{
   position:fixed;
   inset:0;
-  display:none;
-  background:black;
+  z-index:999;
+  background:#000;
   overflow:auto;
+  display:none;
+  animation:fade .25s;
 }
 
-.reader{
-  max-width:600px;
-  margin:auto;
-  padding:20px;
+@keyframes fade{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+.readerHero{
+  position:relative;
+  height:55vh;
+  overflow:hidden;
+}
+
+.readerHero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.readerShade{
+  position:absolute;
+  inset:0;
+  background:
+  linear-gradient(to top,
+  rgba(0,0,0,.97),
+  rgba(0,0,0,.2));
+}
+
+.readerContent{
+  position:relative;
+  margin-top:-90px;
+  z-index:5;
+  padding:22px;
+}
+
+.readerTitle{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-2px;
+}
+
+.readerAuthor{
+  margin-top:10px;
+  color:#c6d0e8;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:18px;
+}
+
+.tag{
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:12px;
+  font-weight:700;
+}
+
+.readerDesc{
+  margin-top:22px;
+  color:#d0d8ea;
+  line-height:1.8;
+}
+
+.readerButtons{
+  display:flex;
+  gap:12px;
+  margin-top:28px;
 }
 
 .readBtn{
-  width:100%;
-  padding:12px;
-  margin-top:15px;
+  flex:1;
+  padding:16px;
   border:none;
-  border-radius:999px;
+  border-radius:18px;
   background:var(--accent);
   color:white;
-  font-weight:800;
+  font-weight:900;
+  font-size:15px;
 }
+
+.secondaryBtn{
+  width:60px;
+  border:none;
+  border-radius:18px;
+  background:#151922;
+  color:white;
+  font-size:18px;
+}
+
+.aiCard{
+  margin-top:26px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:20px;
+  backdrop-filter:blur(20px);
+}
+
+.aiCard h3{
+  margin-bottom:10px;
+}
+
+.aiBubble{
+  background:#10131d;
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+  line-height:1.6;
+  color:#d9e1f5;
+}
+
+.closeBtn{
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(20px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  font-size:22px;
+}
+
+/* LOADER */
+
+.loader{
+  padding:40px 20px;
+  text-align:center;
+  color:#c8d1e6;
+}
+
+.loaderSpin{
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  border:4px solid rgba(255,255,255,.1);
+  border-top-color:var(--accent);
+  margin:auto;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
+
+  .readerTitle{
+    font-size:32px;
+  }
+
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
+
 <nav>
-  <div class="logo">SS <span>Library</span></div>
+
+<div class="logo">
+SS <span>Library</span>
+</div>
+
+<div class="navActions">
+
+<div class="navBtn">
+<i class="fa-solid fa-bell"></i>
+</div>
+
+<div class="navBtn">
+<i class="fa-solid fa-user"></i>
+</div>
+
+</div>
+
 </nav>
 
-<div class="search">
-  <input id="search" placeholder="Search books...">
+<!-- HERO -->
+
+<div class="hero">
+
+<div class="heroCard">
+
+<div class="heroBadge">
+<i class="fa-solid fa-sparkles"></i>
+AI Powered Reading Platform
+</div>
+
+<h1>
+Discover Stories.<br>
+Build Worlds.
+</h1>
+
+<p>
+Read creator projects, visual novels, digital books,
+screenplays, manga concepts, and interactive stories from the SS Studios community.
+</p>
+
+</div>
+
+</div>
+
+<!-- SEARCH -->
+
+<div class="searchWrap">
+
+<div class="searchBox">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+<input
+id="search"
+placeholder="Search books, stories, creators..."
+>
+
+</div>
+
+</div>
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat">
+<h2 id="bookCount">0</h2>
+<p>Projects</p>
+</div>
+
+<div class="stat">
+<h2 id="creatorCount">0</h2>
+<p>Creators</p>
+</div>
+
+<div class="stat">
+<h2 id="viewCount">0</h2>
+<p>Total Views</p>
+</div>
+
 </div>
 
 <!-- CONTINUE -->
+
 <div class="section">
-  <div class="sectionTitle">Continue Reading</div>
-  <div class="row" id="continueRow"></div>
+
+<div class="sectionHead">
+
+<div class="sectionTitle">
+Continue Reading
+</div>
+
+<div class="sectionLink">
+Resume
+</div>
+
+</div>
+
+<div class="row" id="continueRow"></div>
+
 </div>
 
 <!-- TRENDING -->
+
 <div class="section">
-  <div class="sectionTitle">🔥 Trending</div>
-  <div class="row" id="trendingRow"></div>
+
+<div class="sectionHead">
+
+<div class="sectionTitle">
+🔥 Trending Now
+</div>
+
+<div class="sectionLink">
+Popular
+</div>
+
+</div>
+
+<div class="row" id="trendingRow"></div>
+
+</div>
+
+<!-- FEATURED -->
+
+<div class="section">
+
+<div class="sectionHead">
+
+<div class="sectionTitle">
+⭐ Featured Stories
+</div>
+
+</div>
+
+<div class="grid" id="featuredGrid"></div>
+
 </div>
 
 <!-- NEW -->
+
 <div class="section">
-  <div class="sectionTitle">🆕 New Releases</div>
-  <div class="row" id="newRow"></div>
+
+<div class="sectionHead">
+
+<div class="sectionTitle">
+🆕 New Releases
+</div>
+
+<div class="sectionLink">
+Latest
+</div>
+
+</div>
+
+<div class="row" id="newRow"></div>
+
 </div>
 
 <!-- ALL -->
-<div class="section">
-  <div class="sectionTitle">📚 Library</div>
-  <div class="row" id="allRow"></div>
+
+<div class="section" style="padding-bottom:120px">
+
+<div class="sectionHead">
+
+<div class="sectionTitle">
+📚 Explore Library
 </div>
 
-<!-- MODAL READER -->
-<div class="modal" id="modal">
-  <div class="reader" id="reader"></div>
 </div>
+
+<div class="row" id="allRow"></div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal"></div>
 
 <script>
-const supabase = window.supabase.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+
+/* =========================
+SUPABASE
+========================= */
+
+const supabaseClient =
+window.supabase.createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-let all=[];
+/* =========================
+GLOBAL
+========================= */
 
-/* FETCH */
+let all = [];
+
+/* =========================
+INSTANT UI
+========================= */
+
+allRow.innerHTML = `
+<div class="loader">
+  <div class="loaderSpin"></div>
+  <p style="margin-top:16px">
+    Loading SS Library...
+  </p>
+</div>
+`;
+
+trendingRow.innerHTML = allRow.innerHTML;
+newRow.innerHTML = allRow.innerHTML;
+
+/* =========================
+LOAD
+========================= */
+
 async function load(){
-  const { data } = await supabase
+
+  try{
+
+    const { data,error } =
+    await supabaseClient
     .from("projects")
-    .select(`*, profiles(username), project_stats(likes, views)`)
+    .select(`
+      *,
+      profiles(username),
+      project_stats(likes,views)
+    `)
     .order("created_at",{ascending:false});
 
-  all=data||[];
+    if(error){
+      console.log(error);
+      return;
+    }
 
-  renderRow(allRow, all);
-  renderRow(newRow, all.slice(0,10));
-  renderTrending(all);
-  renderContinue();
+    all = data || [];
+
+    updateStats();
+
+    renderRow(allRow, all);
+
+    renderRow(
+      newRow,
+      all.slice(0,10)
+    );
+
+    renderTrending(all);
+
+    renderContinue();
+
+    renderFeatured(
+      [...all]
+      .sort(()=>Math.random()-0.5)
+      .slice(0,4)
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
 }
 
-/* RENDER ROW */
-function renderRow(container, items){
-  container.innerHTML="";
-  items.forEach(item=>{
-    const el=document.createElement("div");
-    el.className="book";
+/* =========================
+STATS
+========================= */
 
-    el.innerHTML=`
-      <div class="cover" style="background:url('${item.cover_url||""}') center/cover"></div>
-      <div class="title">${item.title}</div>
-      <div class="author">@${item.profiles?.username||"user"}</div>
-    `;
+function updateStats(){
 
-    el.onclick=()=>openReader(item);
+  bookCount.innerText =
+  all.length;
 
-    container.appendChild(el);
-  });
-}
-
-/* TRENDING */
-function renderTrending(items){
-  const sorted=[...items].sort((a,b)=>
-    (b.project_stats?.views||0)-(a.project_stats?.views||0)
+  const creators =
+  new Set(
+    all.map(i=>
+      i.profiles?.username || "user"
+    )
   );
 
-  renderRow(trendingRow, sorted.slice(0,10));
+  creatorCount.innerText =
+  creators.size;
+
+  const views =
+  all.reduce((acc,item)=>
+    acc + (item.project_stats?.views || 0),
+  0);
+
+  viewCount.innerText =
+  views.toLocaleString();
+
 }
 
-/* CONTINUE */
+/* =========================
+RENDER ROW
+========================= */
+
+function renderRow(container,items){
+
+  container.innerHTML = "";
+
+  if(items.length === 0){
+
+    container.innerHTML = `
+    <div style="
+      color:gray;
+      padding:10px;
+    ">
+      No projects found.
+    </div>
+    `;
+
+    return;
+
+  }
+
+  items.forEach(item=>{
+
+    const el =
+    document.createElement("div");
+
+    el.className = "book";
+
+    el.innerHTML = `
+
+    <div
+      class="cover"
+      style="
+      background:
+      linear-gradient(to top,
+      rgba(0,0,0,.75),
+      transparent),
+      url('${item.cover_url || "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1200&auto=format&fit=crop"}')
+      center/cover;
+      "
+    ></div>
+
+    <div class="bookInfo">
+
+      <div class="title">
+        ${item.title || "Untitled"}
+      </div>
+
+      <div class="author">
+        @${item.profiles?.username || "creator"}
+      </div>
+
+      <div class="bookStats">
+
+        <span>
+          <i class="fa-solid fa-eye"></i>
+          ${item.project_stats?.views || 0}
+        </span>
+
+        <span>
+          <i class="fa-solid fa-heart"></i>
+          ${item.project_stats?.likes || 0}
+        </span>
+
+      </div>
+
+    </div>
+
+    `;
+
+    el.onclick = ()=>openReader(item);
+
+    container.appendChild(el);
+
+  });
+
+}
+
+/* =========================
+TRENDING
+========================= */
+
+function renderTrending(items){
+
+  const sorted =
+  [...items].sort((a,b)=>
+
+    (b.project_stats?.views || 0)
+    -
+    (a.project_stats?.views || 0)
+
+  );
+
+  renderRow(
+    trendingRow,
+    sorted.slice(0,10)
+  );
+
+}
+
+/* =========================
+FEATURED
+========================= */
+
+function renderFeatured(items){
+
+  featuredGrid.innerHTML = "";
+
+  items.forEach(item=>{
+
+    const el =
+    document.createElement("div");
+
+    el.className = "featured";
+
+    el.style.backgroundImage =
+    `
+    linear-gradient(to top,
+    rgba(0,0,0,.92),
+    rgba(0,0,0,.2)),
+    url('${item.cover_url || "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1200&auto=format&fit=crop"}')
+    `;
+
+    el.innerHTML = `
+
+    <div class="featuredContent">
+
+      <div class="featuredTitle">
+        ${item.title}
+      </div>
+
+      <div class="featuredDesc">
+        ${item.description?.slice(0,90) || "A new creator story waiting to be explored."}
+      </div>
+
+    </div>
+
+    `;
+
+    el.onclick = ()=>openReader(item);
+
+    featuredGrid.appendChild(el);
+
+  });
+
+}
+
+/* =========================
+CONTINUE
+========================= */
+
 function renderContinue(){
-  const saved=JSON.parse(localStorage.getItem("continue")||"[]");
-  const items=all.filter(i=>saved.includes(i.id));
-  renderRow(continueRow, items);
+
+  const saved =
+  JSON.parse(
+    localStorage.getItem("continue") || "[]"
+  );
+
+  const items =
+  all.filter(i=>
+    saved.includes(i.id)
+  );
+
+  renderRow(continueRow,items);
+
 }
 
-/* SEARCH */
+/* =========================
+SEARCH
+========================= */
+
 search.addEventListener("input",e=>{
-  const v=e.target.value.toLowerCase();
-  renderRow(allRow, all.filter(i=>i.title.toLowerCase().includes(v)));
+
+  const value =
+  e.target.value.toLowerCase();
+
+  const filtered =
+  all.filter(item=>
+
+    (item.title || "")
+    .toLowerCase()
+    .includes(value)
+
+    ||
+
+    (item.description || "")
+    .toLowerCase()
+    .includes(value)
+
+    ||
+
+    (item.profiles?.username || "")
+    .toLowerCase()
+    .includes(value)
+
+  );
+
+  renderRow(allRow,filtered);
+
 });
 
-/* OPEN READER */
-function openReader(item){
-  modal.style.display="block";
+/* =========================
+OPEN READER
+========================= */
+
+async function openReader(item){
+
+  modal.style.display = "block";
 
   saveContinue(item.id);
 
-  reader.innerHTML=`
-    <h1>${item.title}</h1>
-    <p>@${item.profiles?.username}</p>
-    <p style="margin-top:15px;color:gray;">
-      ${item.description||"Start reading..."}
-    </p>
+  await increaseViews(item.id);
 
-    <button class="readBtn">Start Reading</button>
+  modal.innerHTML = `
+
+  <div
+    class="closeBtn"
+    onclick="closeModal(event)"
+  >
+    ✕
+  </div>
+
+  <div class="readerHero">
+
+    <img
+      src="${item.cover_url || "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1600&auto=format&fit=crop"}"
+    >
+
+    <div class="readerShade"></div>
+
+  </div>
+
+  <div class="readerContent">
+
+    <div class="readerTitle">
+      ${item.title}
+    </div>
+
+    <div class="readerAuthor">
+      by @${item.profiles?.username || "creator"}
+    </div>
+
+    <div class="tags">
+
+      <div class="tag">
+        <i class="fa-solid fa-book-open"></i>
+        Story
+      </div>
+
+      <div class="tag">
+        <i class="fa-solid fa-fire"></i>
+        Trending
+      </div>
+
+      <div class="tag">
+        <i class="fa-solid fa-eye"></i>
+        ${item.project_stats?.views || 0} Views
+      </div>
+
+    </div>
+
+    <div class="readerDesc">
+      ${item.description || "No description available yet."}
+    </div>
+
+    <div class="readerButtons">
+
+      <button class="readBtn">
+        Start Reading
+      </button>
+
+      <button
+        class="secondaryBtn"
+        onclick="likeProject('${item.id}')"
+      >
+        <i class="fa-solid fa-heart"></i>
+      </button>
+
+    </div>
+
+    <div class="aiCard">
+
+      <h3>
+        🤖 SS AI Story Assistant
+      </h3>
+
+      <div class="aiBubble">
+        This project has strong world-building potential and cinematic pacing.
+      </div>
+
+      <div class="aiBubble">
+        Readers interested in futuristic fantasy and emotional storytelling may enjoy this.
+      </div>
+
+      <div class="aiBubble">
+        Suggested expansion:
+        Add character lore pages, soundtrack integration, and chapter progression.
+      </div>
+
+    </div>
+
+  </div>
+
   `;
+
 }
 
-/* SAVE CONTINUE */
+/* =========================
+SAVE CONTINUE
+========================= */
+
 function saveContinue(id){
-  let list=JSON.parse(localStorage.getItem("continue")||"[]");
+
+  let list =
+  JSON.parse(
+    localStorage.getItem("continue") || "[]"
+  );
+
   if(!list.includes(id)){
+
     list.unshift(id);
-    localStorage.setItem("continue",JSON.stringify(list.slice(0,10)));
+
+    localStorage.setItem(
+      "continue",
+      JSON.stringify(list.slice(0,10))
+    );
+
   }
+
 }
 
-/* CLOSE */
-modal.onclick=()=>modal.style.display="none";
+/* =========================
+VIEWS
+========================= */
 
-/* INIT */
+async function increaseViews(id){
+
+  try{
+
+    await supabaseClient.rpc(
+      'increment_project_views',
+      {
+        project_id:id
+      }
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+/* =========================
+LIKE
+========================= */
+
+async function likeProject(id){
+
+  try{
+
+    await supabaseClient.rpc(
+      'increment_project_likes',
+      {
+        project_id:id
+      }
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+/* =========================
+CLOSE
+========================= */
+
+function closeModal(e){
+
+  e.stopPropagation();
+
+  modal.style.display = "none";
+
+}
+
+modal.addEventListener("click",e=>{
+
+  if(e.target.id === "modal"){
+
+    modal.style.display = "none";
+
+  }
+
+});
+
+/* =========================
+INIT
+========================= */
+
 load();
+
 </script>
 
 </body>
