@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SS Games — Build Worlds Beyond Reality</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+
+:root{
+--bg:#050816;
+--card:rgba(255,255,255,.06);
+--accent:#00f0ff;
+--accent2:#7d4dff;
+--text:#ffffff;
+--muted:#9ca3af;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+overflow-x:hidden;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+background:#000;
+color:white;
+}
+
+body{
+background:
+radial-gradient(circle at top left,
+rgba(0,240,255,.15),
+transparent 35%),
+radial-gradient(circle at top right,
+rgba(125,77,255,.15),
+transparent 35%),
+#02030b;
+}
+
+nav{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 24px;
+z-index:999;
+background:rgba(0,0,0,.45);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+font-size:28px;
+font-weight:900;
+letter-spacing:-1px;
+}
+
+.logo span{
+color:var(--accent);
+}
+
+.navIcons{
+display:flex;
+gap:12px;
+}
+
+.iconBtn{
+width:46px;
+height:46px;
+border-radius:16px;
+background:rgba(255,255,255,.08);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+}
+
+.hero{
+min-height:100vh;
+position:relative;
+display:flex;
+align-items:center;
+padding:120px 24px 60px;
+overflow:hidden;
+}
+
+.heroBg{
+position:absolute;
+inset:0;
+background:url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1800&auto=format&fit=crop') center/cover;
+filter:brightness(.35);
+transform:scale(1.1);
+}
+
+.heroFade{
+position:absolute;
+inset:0;
+background:
+linear-gradient(to top,
+rgba(0,0,0,.95),
+rgba(0,0,0,.5));
+}
+
+.heroContent{
+position:relative;
+z-index:5;
+max-width:700px;
+}
+
+.badge{
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:12px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(16px);
+font-size:12px;
+font-weight:800;
+margin-bottom:20px;
+}
+
+.hero h1{
+font-size:86px;
+line-height:.9;
+letter-spacing:-4px;
+font-weight:900;
+}
+
+.hero p{
+margin-top:22px;
+font-size:18px;
+line-height:1.8;
+color:#d1d5db;
+max-width:600px;
+}
+
+.heroButtons{
+display:flex;
+gap:16px;
+margin-top:32px;
+flex-wrap:wrap;
+}
+
+.btn{
+padding:16px 24px;
+border:none;
+border-radius:18px;
+font-weight:900;
+font-size:15px;
+cursor:pointer;
+}
+
+.primary{
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:black;
+}
+
+.secondary{
+background:rgba(255,255,255,.08);
+color:white;
+backdrop-filter:blur(20px);
+}
+
+.section{
+padding:40px 24px;
+}
+
+.sectionTitle{
+font-size:42px;
+font-weight:900;
+letter-spacing:-2px;
+margin-bottom:24px;
+}
+
+.gameGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:20px;
+}
+
+.gameCard{
+background:var(--card);
+border-radius:30px;
+overflow:hidden;
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(20px);
+transition:.3s;
+}
+
+.gameCard:hover{
+transform:translateY(-6px);
+}
+
+.gameImage{
+height:360px;
+background-size:cover;
+background-position:center;
+position:relative;
+}
+
+.gameImage::after{
+content:'';
+position:absolute;
+inset:0;
+background:
+linear-gradient(to top,
+rgba(0,0,0,.9),
+transparent);
+}
+
+.gameInfo{
+position:absolute;
+bottom:20px;
+left:20px;
+z-index:5;
+}
+
+.gameTitle{
+font-size:30px;
+font-weight:900;
+}
+
+.gameDesc{
+margin-top:10px;
+max-width:240px;
+font-size:14px;
+line-height:1.6;
+color:#ddd;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+}
+
+.stat{
+background:rgba(255,255,255,.05);
+padding:24px;
+border-radius:24px;
+text-align:center;
+border:1px solid rgba(255,255,255,.06);
+}
+
+.stat h2{
+font-size:38px;
+font-weight:900;
+}
+
+.stat p{
+margin-top:8px;
+color:var(--muted);
+font-size:13px;
+}
+
+.engineGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:18px;
+}
+
+.engineCard{
+background:rgba(255,255,255,.05);
+padding:28px;
+border-radius:26px;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.engineCard i{
+font-size:38px;
+margin-bottom:18px;
+color:var(--accent);
+}
+
+.engineCard h3{
+font-size:24px;
+margin-bottom:12px;
+}
+
+.engineCard p{
+line-height:1.7;
+color:#d1d5db;
+}
+
+.showcase{
+margin:40px 24px 80px;
+padding:50px 30px;
+border-radius:36px;
+background:
+linear-gradient(135deg,
+rgba(0,240,255,.2),
+rgba(125,77,255,.2));
+text-align:center;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.showcase h2{
+font-size:54px;
+font-weight:900;
+letter-spacing:-2px;
+}
+
+.showcase p{
+margin-top:16px;
+max-width:700px;
+margin-inline:auto;
+line-height:1.8;
+color:#ddd;
+}
+
+footer{
+padding:30px 24px 60px;
+text-align:center;
+color:#6b7280;
+font-size:13px;
+}
+
+@media(max-width:700px){
+
+.hero h1{
+font-size:58px;
+}
+
+.sectionTitle{
+font-size:34px;
+}
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+.showcase h2{
+font-size:38px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+SS <span>Games</span>
+</div>
+
+<div class="navIcons">
+
+<div class="iconBtn">
+<i class="fa-solid fa-gamepad"></i>
+</div>
+
+<div class="iconBtn">
+<i class="fa-solid fa-headset"></i>
+</div>
+
+</div>
+
+</nav>
+
+<div class="hero">
+
+<div class="heroBg"></div>
+<div class="heroFade"></div>
+
+<div class="heroContent">
+
+<div class="badge">
+<i class="fa-solid fa-bolt"></i>
+StudentStream Interactive Division
+</div>
+
+<h1>
+Build
+Worlds
+Beyond Reality
+</h1>
+
+<p>
+SS Games creates futuristic gaming experiences, immersive multiplayer worlds, creator-driven adventures, cinematic storytelling, and next-generation interactive entertainment.
+</p>
+
+<div class="heroButtons">
+
+<button class="btn primary">
+Explore Universe
+</button>
+
+<button class="btn secondary">
+Watch Gameplay
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="sectionTitle">
+Featured Games
+</h2>
+
+<div class="gameGrid">
+
+<div class="gameCard">
+
+<div class="gameImage"
+style="background-image:url('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1400&auto=format&fit=crop')">
+
+<div class="gameInfo">
+<div class="gameTitle">NEXUS//ZERO</div>
+<div class="gameDesc">
+A cyberpunk open-world RPG powered by AI storytelling.
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="gameCard">
+
+<div class="gameImage"
+style="background-image:url('https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1400&auto=format&fit=crop')">
+
+<div class="gameInfo">
+<div class="gameTitle">VOID RUNNER</div>
+<div class="gameDesc">
+A high-speed space combat game built for competitive players.
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="gameCard">
+
+<div class="gameImage"
+style="background-image:url('https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?q=80&w=1400&auto=format&fit=crop')">
+
+<div class="gameInfo">
+<div class="gameTitle">ECHO CITY</div>
+<div class="gameDesc">
+A multiplayer survival experience set in a collapsing future.
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="sectionTitle">
+Studio Performance
+</h2>
+
+<div class="stats">
+
+<div class="stat">
+<h2>3D</h2>
+<p>Immersive Worlds</p>
+</div>
+
+<div class="stat">
+<h2>120FPS</h2>
+<p>Optimized Gameplay</p>
+</div>
+
+<div class="stat">
+<h2>AI</h2>
+<p>Adaptive Systems</p>
+</div>
+
+<div class="stat">
+<h2>24/7</h2>
+<p>Global Community</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="sectionTitle">
+Development Pipeline
+</h2>
+
+<div class="engineGrid">
+
+<div class="engineCard">
+<i class="fa-solid fa-cube"></i>
+<h3>World Building</h3>
+<p>
+Creating massive interactive universes with cinematic detail, environmental storytelling, and futuristic design.
+</p>
+</div>
+
+<div class="engineCard">
+<i class="fa-solid fa-robot"></i>
+<h3>AI Systems</h3>
+<p>
+Advanced AI-driven NPCs, adaptive combat mechanics, and real-time player experiences.
+</p>
+</div>
+
+<div class="engineCard">
+<i class="fa-solid fa-vr-cardboard"></i>
+<h3>Immersion</h3>
+<p>
+Next-generation gameplay focused on realism, multiplayer interaction, and creator experiences.
+</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="showcase">
+
+<h2>
+The Future Of Interactive Entertainment
+</h2>
+
+<p>
+SS Games merges storytelling, cinematic visuals, creator culture, AI systems, and immersive gameplay into one next-generation gaming ecosystem.
+</p>
+
+<div class="heroButtons" style="justify-content:center; margin-top:28px;">
+
+<button class="btn primary">
+Join Development
+</button>
+
+<button class="btn secondary">
+Become A Creator
+</button>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 SS Games • A StudentStreamHQ Division
+</footer>
+
+</body>
+</html>
