@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>SS Studios • Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:system-ui,-apple-system;
+}
+
+:root{
+--accent:#3c8cff;
+--accent2:#00ffae;
+--bg:#02030a;
+--card:rgba(255,255,255,.05);
+--muted:rgba(255,255,255,.65);
+}
+
+body{
+background:
+radial-gradient(circle at top,#08142c,#02030a 55%);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+color:white;
+overflow:hidden;
+}
+
+.bgGlow{
+position:absolute;
+width:500px;
+height:500px;
+background:#00ffae;
+filter:blur(180px);
+opacity:.06;
+top:-180px;
+left:50%;
+transform:translateX(-50%);
+pointer-events:none;
+}
+
+.loginCard{
+position:relative;
+width:100%;
+max-width:460px;
+padding:40px;
+border-radius:34px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(25px);
+z-index:2;
+}
+
+.badge{
+display:inline-flex;
+padding:10px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+font-size:13px;
+font-weight:700;
+margin-bottom:25px;
+}
+
+h1{
+font-size:54px;
+font-weight:900;
+line-height:1;
+letter-spacing:-2px;
+}
+
+h1 span{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.desc{
+margin-top:18px;
+font-size:16px;
+line-height:1.7;
+opacity:.75;
+}
+
+.input{
+width:100%;
+padding:18px;
+border:none;
+outline:none;
+border-radius:18px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+color:white;
+font-size:15px;
+margin-top:16px;
+}
+
+.loginBtn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:20px;
+margin-top:20px;
+background:
+linear-gradient(90deg,var(--accent),var(--accent2));
+font-size:16px;
+font-weight:900;
+cursor:pointer;
+color:black;
+transition:.2s;
+}
+
+.loginBtn:hover{
+transform:translateY(-2px);
+}
+
+.bottom{
+margin-top:24px;
+text-align:center;
+font-size:14px;
+opacity:.75;
+}
+
+.bottom span{
+color:white;
+font-weight:800;
+cursor:pointer;
+}
+
+.statusBox{
+margin-top:20px;
+padding:18px;
+border-radius:18px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+display:none;
+line-height:1.7;
+font-size:14px;
+}
+
+.footer{
+margin-top:28px;
+text-align:center;
+font-size:12px;
+opacity:.45;
+}
+
+@media(max-width:700px){
+
+.loginCard{
+padding:28px;
+}
+
+h1{
+font-size:42px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="bgGlow"></div>
+
+<div class="loginCard">
+
+<div class="badge">
+🎫 SS Pass Access
+</div>
+
+<h1>
+SS <span>Studios</span>
+</h1>
+
+<p class="desc">
+Login to access the SS Studios creator ecosystem.
+Only approved creators with an active SS Pass can enter.
+</p>
+
+<input
+class="input"
+id="email"
+placeholder="Email"
+>
+
+<input
+class="input"
+id="password"
+type="password"
+placeholder="Password"
+>
+
+<button
+class="loginBtn"
+onclick="login()">
+Login To SS Studios
+</button>
+
+<div
+class="statusBox"
+id="statusBox">
+</div>
+
+<div class="bottom">
+
+Need access?
+
+<span onclick="goApply()">
+Apply Here
+</span>
+
+</div>
+
+<div class="footer">
+SS Studios • StudentStreamHQ
+</div>
+
+</div>
+
+<script>
+
+/* SUPABASE */
+
+const supabase = window.supabase.createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+/* APPLY */
+
+function goApply(){
+
+window.location.href =
+"apply.html";
+
+}
+
+/* LOGIN */
+
+async function login(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value.trim();
+
+const statusBox =
+document.getElementById("statusBox");
+
+if(!email || !password){
+
+alert("Please complete all fields.");
+
+return;
+
+}
+
+try{
+
+const { data,error } =
+await supabase.auth.signInWithPassword({
+email,
+password
+});
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+const user =
+data.user;
+
+if(!user){
+
+alert("Login failed.");
+
+return;
+
+}
+
+/* GET PROFILE */
+
+const { data:profile,error:profileError } =
+await supabase
+.from("ss_studio_users")
+.select("*")
+.eq("user_id",user.id)
+.single();
+
+if(profileError){
+
+alert("Profile not found.");
+return;
+
+}
+
+/* CHECK PASS */
+
+if(profile.ss_pass === true){
+
+localStorage.setItem(
+"ss_user",
+JSON.stringify(profile)
+);
+
+window.location.href =
+"dashboard.html";
+
+}else{
+
+statusBox.style.display =
+"block";
+
+statusBox.innerHTML = `
+<h3 style="margin-bottom:10px;">
+⏳ Application Pending
+</h3>
+
+Your SS Studios application is still under review.
+
+Once approved, your account will receive the official SS Pass and unlock:
+
+<br><br>
+
+• Brand Division  
+• SS Films  
+• Game Dev  
+• Creator Division  
+• Library Access  
+• Future Studio Features
+`;
+
+}
+
+}catch(err){
+
+console.error(err);
+
+alert("Something went wrong.");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
