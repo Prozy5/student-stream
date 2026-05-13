@@ -505,6 +505,28 @@ font-size:14px;
 line-height:1.8;
 }
 
+.statusBox{
+margin-top:16px;
+padding:14px;
+border-radius:16px;
+font-size:14px;
+display:none;
+}
+
+.statusSuccess{
+background:rgba(0,255,179,.12);
+border:1px solid rgba(0,255,179,.3);
+color:#8fffd9;
+}
+
+.statusError{
+background:rgba(255,80,80,.12);
+border:1px solid rgba(255,80,80,.3);
+color:#ffb3b3;
+}
+
+/* MOBILE */
+
 @media(max-width:768px){
 
 .hero h1{
@@ -711,6 +733,8 @@ onclick="submitAuth()">
 Submit Application
 </button>
 
+<div class="statusBox" id="statusBox"></div>
+
 <div class="switchAuth">
 
 Already accepted?
@@ -732,6 +756,29 @@ Login
 
 <script>
 
+window.addEventListener("DOMContentLoaded",()=>{
+
+/* ERROR LOGGER */
+
+window.onerror = function(msg,url,line,col,error){
+
+console.error("GLOBAL ERROR:",{
+msg,
+url,
+line,
+col,
+error
+});
+
+showStatus(
+"Console error detected. Open DevTools console.",
+true
+);
+
+};
+
+/* SUPABASE */
+
 const supabase = window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
@@ -742,16 +789,15 @@ const supabase = window.supabase.createClient(
 async function checkSession(){
 
 const {
-data:{session}
+data:{ session }
 } = await supabase.auth.getSession();
 
 if(session){
 
 const user = session.user;
 
-const {
-data:profile
-} = await supabase
+const { data:profile } =
+await supabase
 .from("ss_studio_users")
 .select("*")
 .eq("user_id",user.id)
@@ -768,6 +814,26 @@ window.location.href = "dashboard.html";
 }
 
 checkSession();
+
+/* STATUS */
+
+const statusBox =
+document.getElementById("statusBox");
+
+function showStatus(message,isError=false){
+
+statusBox.style.display = "block";
+
+statusBox.className =
+isError
+?
+"statusBox statusError"
+:
+"statusBox statusSuccess";
+
+statusBox.innerText = message;
+
+}
 
 /* NAV */
 
@@ -848,6 +914,8 @@ cards:[
 
 };
 
+/* ELEMENTS */
+
 const cards =
 document.getElementById("cards");
 
@@ -864,14 +932,18 @@ cards.innerHTML = "";
 
 current.cards.forEach(item=>{
 
-cards.innerHTML += `
-<div class="card">
+const card = document.createElement("div");
+
+card.className = "card";
+
+card.innerHTML = `
 <h3>${item}</h3>
 <p>
 Build inside the SS Studios ecosystem.
 </p>
-</div>
 `;
+
+cards.appendChild(card);
 
 });
 
@@ -891,7 +963,7 @@ type
 
 }
 
-/* CREATOR BUTTONS */
+/* BUTTONS */
 
 document
 .querySelectorAll(".creatorBtn")
@@ -911,11 +983,13 @@ loadCreator(btn.dataset.type);
 
 });
 
+/* INIT */
+
 loadCreator("brand");
 
 /* SCROLL */
 
-function scrollToCreators(){
+window.scrollToCreators = function(){
 
 document
 .getElementById("creatorSection")
@@ -923,7 +997,7 @@ document
 behavior:"smooth"
 });
 
-}
+};
 
 /* AUTH */
 
@@ -932,29 +1006,43 @@ let loginMode = false;
 const authModal =
 document.getElementById("authModal");
 
-function openAuth(isLogin=false){
+window.openAuth = function(isLogin=false){
 
 loginMode = isLogin;
 
 updateAuthUI();
 
+statusBox.style.display = "none";
+
 authModal.style.display = "flex";
 
-}
+};
 
-function closeAuth(){
+window.closeAuth = function(){
 
 authModal.style.display = "none";
 
+};
+
+authModal.addEventListener("click",(e)=>{
+
+if(e.target === authModal){
+
+closeAuth();
+
 }
 
-function toggleAuth(){
+});
+
+window.toggleAuth = function(){
 
 loginMode = !loginMode;
 
 updateAuthUI();
 
-}
+statusBox.style.display = "none";
+
+};
 
 function updateAuthUI(){
 
@@ -990,7 +1078,7 @@ loginMode
 
 /* SUBMIT */
 
-async function submitAuth(){
+window.submitAuth = async function(){
 
 const username =
 document.getElementById("username").value.trim();
@@ -1007,14 +1095,22 @@ localStorage.getItem("ss_creator_type")
 
 if(!email || !password){
 
-alert("Complete all fields.");
+showStatus(
+"Complete all fields.",
+true
+);
+
 return;
 
 }
 
 if(!loginMode && !username){
 
-alert("Enter username.");
+showStatus(
+"Enter username.",
+true
+);
+
 return;
 
 }
@@ -1025,40 +1121,59 @@ try{
 
 if(loginMode){
 
-const {
-data,
-error
-} = await supabase.auth.signInWithPassword({
+showStatus("Logging in...");
+
+const { data,error } =
+await supabase.auth.signInWithPassword({
 email,
 password
 });
 
 if(error){
 
-alert(error.message);
+showStatus(error.message,true);
 return;
 
 }
 
 const user = data.user;
 
-const {
-data:profile
-} = await supabase
+const { data:profile,error:profileError } =
+await supabase
 .from("ss_studio_users")
 .select("*")
 .eq("user_id",user.id)
 .single();
 
+if(profileError){
+
+showStatus(
+profileError.message,
+true
+);
+
+return;
+
+}
+
 if(profile?.ss_pass){
+
+showStatus(
+"SS Pass verified. Redirecting..."
+);
+
+setTimeout(()=>{
 
 window.location.href =
 "dashboard.html";
 
+},1200);
+
 }else{
 
-alert(
-"Your application is still pending approval."
+showStatus(
+"Application still pending approval.",
+true
 );
 
 }
@@ -1067,21 +1182,35 @@ alert(
 
 }else{
 
-const {
-data,
-error
-} = await supabase.auth.signUp({
+showStatus(
+"Creating application..."
+);
+
+const { data,error } =
+await supabase.auth.signUp({
 email,
 password
 });
 
 if(error){
 
-alert(error.message);
+showStatus(error.message,true);
 return;
 
 }
 
+if(!data.user){
+
+showStatus(
+"Signup failed.",
+true
+);
+
+return;
+
+}
+
+const { error:insertError } =
 await supabase
 .from("ss_studio_users")
 .insert([{
@@ -1093,11 +1222,26 @@ waitlist:true,
 ss_pass:false
 }]);
 
-alert(
+if(insertError){
+
+showStatus(
+insertError.message,
+true
+);
+
+return;
+
+}
+
+showStatus(
 "Application submitted successfully."
 );
 
+setTimeout(()=>{
+
 closeAuth();
+
+},1800);
 
 }
 
@@ -1105,11 +1249,16 @@ closeAuth();
 
 console.error(err);
 
-alert("Something went wrong.");
+showStatus(
+"Something went wrong.",
+true
+);
 
 }
 
-}
+};
+
+});
 
 </script>
 
