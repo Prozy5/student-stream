@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>SS Studio • Create. Build. Launch.</title>
+<title>SS Studios • Create. Build. Launch.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,7 +14,7 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:system-ui,-apple-system;
+font-family:system-ui,-apple-system,sans-serif;
 }
 
 :root{
@@ -22,8 +22,8 @@ font-family:system-ui,-apple-system;
 --accent2:#00ffae;
 --bg:#02030a;
 --card:rgba(255,255,255,.05);
---text:white;
---muted:rgba(255,255,255,.65);
+--border:rgba(255,255,255,.08);
+--muted:rgba(255,255,255,.7);
 }
 
 html{
@@ -32,10 +32,26 @@ scroll-behavior:smooth;
 
 body{
 background:
-radial-gradient(circle at top,#08142c,#02030a 50%);
+radial-gradient(circle at top,#10224a 0%,#02030a 55%);
 color:white;
 overflow-x:hidden;
 min-height:100vh;
+}
+
+/* BACKGROUND GLOW */
+
+.bgGlow{
+position:fixed;
+width:700px;
+height:700px;
+background:#00ffae;
+filter:blur(220px);
+opacity:.08;
+top:-300px;
+left:50%;
+transform:translateX(-50%);
+pointer-events:none;
+z-index:0;
 }
 
 /* NAV */
@@ -43,16 +59,17 @@ min-height:100vh;
 .nav{
 position:fixed;
 top:0;
+left:0;
 width:100%;
-padding:15px 30px;
+padding:16px 28px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:rgba(0,0,0,.2);
-backdrop-filter:blur(12px);
-z-index:1000;
-transition:.3s;
+background:rgba(0,0,0,.25);
+backdrop-filter:blur(14px);
 border-bottom:1px solid rgba(255,255,255,.06);
+z-index:999;
+transition:.25s;
 }
 
 .nav.scrolled{
@@ -60,8 +77,8 @@ background:rgba(0,0,0,.75);
 }
 
 .logo{
-font-weight:900;
 font-size:22px;
+font-weight:900;
 letter-spacing:-1px;
 }
 
@@ -71,8 +88,8 @@ background:linear-gradient(90deg,var(--accent),var(--accent2));
 -webkit-text-fill-color:transparent;
 }
 
-.nav button{
-padding:12px 20px;
+.navBtn{
+padding:12px 22px;
 border:none;
 border-radius:14px;
 background:linear-gradient(90deg,var(--accent),var(--accent2));
@@ -82,82 +99,40 @@ color:black;
 transition:.2s;
 }
 
-.nav button:hover{
+.navBtn:hover{
 transform:translateY(-2px);
-}
-
-/* CONTINUE BAR */
-
-.continueBar{
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:rgba(0,0,0,.75);
-padding:12px 20px;
-border-radius:999px;
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(15px);
-display:none;
-z-index:999;
-align-items:center;
-gap:12px;
-}
-
-.continueBar button{
-padding:10px 18px;
-border:none;
-border-radius:999px;
-background:linear-gradient(90deg,var(--accent),var(--accent2));
-font-weight:800;
-cursor:pointer;
 }
 
 /* HERO */
 
 .hero{
+padding:170px 20px 110px;
 text-align:center;
-padding:170px 20px 120px;
-animation:fadeUp 1s ease;
-position:relative;
-overflow:hidden;
-}
-
-.hero::before{
-content:'';
-position:absolute;
-width:500px;
-height:500px;
-background:var(--accent2);
-filter:blur(180px);
-opacity:.08;
-top:-200px;
-left:50%;
-transform:translateX(-50%);
-pointer-events:none;
-}
-
-@keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(30px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-.hero h1{
-font-size:72px;
-font-weight:900;
-line-height:1;
-letter-spacing:-3px;
 position:relative;
 z-index:2;
 }
 
-.hero span{
+.heroBadge{
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:10px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+font-size:14px;
+font-weight:700;
+margin-bottom:28px;
+}
+
+.hero h1{
+font-size:84px;
+line-height:.95;
+font-weight:900;
+letter-spacing:-4px;
+}
+
+.hero h1 span{
 background:linear-gradient(90deg,var(--accent),var(--accent2));
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
@@ -165,51 +140,31 @@ background:linear-gradient(90deg,var(--accent),var(--accent2));
 
 .hero p{
 margin-top:24px;
-font-size:18px;
-opacity:.78;
-max-width:700px;
+max-width:760px;
 margin-inline:auto;
+font-size:18px;
 line-height:1.7;
-transition:.3s;
-position:relative;
-z-index:2;
-}
-
-.heroBadge{
-display:inline-flex;
-gap:10px;
-align-items:center;
-padding:10px 18px;
-border-radius:999px;
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.08);
-margin-bottom:30px;
-font-size:14px;
-font-weight:700;
-position:relative;
-z-index:2;
+color:var(--muted);
 }
 
 /* CTA */
 
 .cta{
-margin-top:40px;
+margin-top:42px;
 display:flex;
-gap:15px;
 justify-content:center;
+gap:16px;
 flex-wrap:wrap;
-position:relative;
-z-index:2;
 }
 
 .cta button{
-padding:17px 34px;
-border-radius:18px;
+padding:18px 34px;
 border:none;
+border-radius:18px;
+font-size:15px;
 font-weight:900;
 cursor:pointer;
 transition:.2s;
-font-size:15px;
 }
 
 .cta button:hover{
@@ -222,9 +177,9 @@ color:black;
 }
 
 .secondary{
-background:rgba(255,255,255,.05);
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.1);
 color:white;
-border:1px solid rgba(255,255,255,.12);
 }
 
 /* SECTION */
@@ -232,57 +187,56 @@ border:1px solid rgba(255,255,255,.12);
 .section{
 max-width:1200px;
 margin:auto;
-padding:100px 20px;
-opacity:0;
-transform:translateY(40px);
-transition:.6s;
+padding:90px 20px;
 position:relative;
 z-index:2;
 }
 
-.section.show{
-opacity:1;
-transform:translateY(0);
+.sectionTitle{
+text-align:center;
+margin-bottom:18px;
+font-size:48px;
+font-weight:900;
+letter-spacing:-2px;
 }
 
-.section h2{
-font-size:44px;
-margin-bottom:15px;
-letter-spacing:-1px;
-}
-
-.section p{
-opacity:.72;
-margin-bottom:40px;
+.sectionText{
+text-align:center;
+max-width:750px;
+margin:auto;
 line-height:1.7;
+color:var(--muted);
 }
 
-/* CREATOR TYPES */
+/* CREATOR TABS */
 
-.creatorTypes{
+.creatorTabs{
 display:flex;
-flex-wrap:wrap;
-gap:15px;
 justify-content:center;
-margin-bottom:40px;
+gap:14px;
+flex-wrap:wrap;
+margin-top:42px;
 }
 
 .creatorBtn{
-padding:15px 24px;
+padding:14px 24px;
 border-radius:999px;
 background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.1);
 cursor:pointer;
+font-weight:800;
 transition:.25s;
-font-weight:700;
 user-select:none;
 }
 
-.creatorBtn.active,
 .creatorBtn:hover{
+transform:translateY(-2px);
+border-color:var(--accent);
+}
+
+.creatorBtn.active{
 background:linear-gradient(90deg,var(--accent),var(--accent2));
 color:black;
-transform:translateY(-2px);
 }
 
 /* GRID */
@@ -294,75 +248,38 @@ gap:22px;
 margin-top:40px;
 }
 
-/* CARD */
-
 .card{
 padding:30px;
-border-radius:24px;
+border-radius:28px;
 background:rgba(255,255,255,.04);
 border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(16px);
 transition:.25s;
-backdrop-filter:blur(20px);
 }
 
 .card:hover{
-transform:translateY(-8px) scale(1.02);
+transform:translateY(-6px);
 border-color:var(--accent);
-box-shadow:0 0 40px rgba(60,140,255,.15);
+box-shadow:0 0 40px rgba(60,140,255,.12);
 }
 
 .card h3{
+font-size:24px;
 margin-bottom:10px;
+}
+
+.card p{
+color:var(--muted);
+line-height:1.6;
 }
 
 /* PREVIEW */
 
 .preview{
-margin-top:45px;
-padding:35px;
-border-radius:24px;
-background:rgba(255,255,255,.03);
-border:1px solid rgba(255,255,255,.08);
-text-align:center;
-backdrop-filter:blur(20px);
-}
-
-.preview h3{
-font-size:28px;
-margin-bottom:12px;
-}
-
-/* STRIP */
-
-.strip{
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-justify-content:center;
-margin-top:40px;
-}
-
-.pill{
-padding:15px 22px;
-border-radius:999px;
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.08);
-transition:.2s;
-}
-
-.pill:hover{
-transform:translateY(-3px);
-border-color:var(--accent);
-}
-
-/* ACCESS PANEL */
-
-.accessPanel{
-margin-top:50px;
-padding:35px;
-border-radius:28px;
-background:
-linear-gradient(
+margin-top:34px;
+padding:36px;
+border-radius:30px;
+background:linear-gradient(
 135deg,
 rgba(60,140,255,.08),
 rgba(0,255,174,.05)
@@ -371,31 +288,162 @@ border:1px solid rgba(255,255,255,.08);
 text-align:center;
 }
 
-.accessPanel h3{
-font-size:34px;
-margin-bottom:15px;
+.preview h2{
+font-size:42px;
+margin-bottom:12px;
 }
 
-.passCard{
-margin-top:25px;
-padding:25px;
-border-radius:24px;
-background:rgba(0,0,0,.4);
+.preview p{
+max-width:650px;
+margin:auto;
+line-height:1.7;
+color:var(--muted);
+}
+
+.preview button{
+margin-top:24px;
+padding:16px 30px;
+border:none;
+border-radius:16px;
+font-weight:900;
+cursor:pointer;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+color:black;
+}
+
+/* PASS SECTION */
+
+.passPanel{
+margin-top:50px;
+padding:40px;
+border-radius:30px;
+background:rgba(255,255,255,.03);
 border:1px solid rgba(255,255,255,.08);
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:14px;
+text-align:center;
 }
 
-.passFeature{
-padding:12px 18px;
+.passPanel h2{
+font-size:42px;
+margin-bottom:14px;
+}
+
+.passPanel p{
+max-width:760px;
+margin:auto;
+line-height:1.7;
+color:var(--muted);
+}
+
+.passFeatures{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:14px;
+margin-top:28px;
+}
+
+.passItem{
+padding:14px 20px;
 border-radius:999px;
 background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.08);
+font-weight:700;
 }
 
-/* LOGIN MODAL */
+/* STRIPS */
+
+.strip{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:14px;
+margin-top:34px;
+}
+
+.pill{
+padding:14px 22px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+font-weight:700;
+transition:.2s;
+}
+
+.pill:hover{
+transform:translateY(-2px);
+border-color:var(--accent);
+}
+
+/* CTA BIG */
+
+.ctaBig{
+text-align:center;
+padding:110px 20px;
+position:relative;
+z-index:2;
+}
+
+.ctaBig h2{
+font-size:58px;
+line-height:1.05;
+letter-spacing:-2px;
+}
+
+.ctaBig p{
+margin-top:18px;
+color:var(--muted);
+font-size:18px;
+}
+
+.ctaBig button{
+margin-top:28px;
+padding:20px 42px;
+border:none;
+border-radius:20px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+font-weight:900;
+font-size:16px;
+cursor:pointer;
+}
+
+/* FOOTER */
+
+.footer{
+padding:35px;
+text-align:center;
+font-size:13px;
+opacity:.5;
+border-top:1px solid rgba(255,255,255,.06);
+}
+
+/* CONTINUE BAR */
+
+.continueBar{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+padding:12px 18px;
+border-radius:999px;
+background:rgba(0,0,0,.75);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(16px);
+display:none;
+align-items:center;
+gap:14px;
+z-index:9999;
+}
+
+.continueBar button{
+padding:10px 18px;
+border:none;
+border-radius:999px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+font-weight:900;
+cursor:pointer;
+}
+
+/* AUTH MODAL */
 
 .authModal{
 position:fixed;
@@ -405,32 +453,53 @@ backdrop-filter:blur(18px);
 display:none;
 align-items:center;
 justify-content:center;
-z-index:99999;
 padding:20px;
+z-index:10000;
 }
 
 .authCard{
 width:100%;
 max-width:430px;
-background:#070b14;
+background:#07101d;
 border:1px solid rgba(255,255,255,.08);
 border-radius:30px;
-padding:35px;
-animation:fadeUp .4s ease;
+padding:34px;
 position:relative;
+animation:fade .25s ease;
 }
 
-.authTop{
-text-align:center;
-margin-bottom:25px;
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(15px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
-.authTop h2{
+.closeBtn{
+position:absolute;
+top:18px;
+right:20px;
+font-size:22px;
+cursor:pointer;
+opacity:.7;
+}
+
+.closeBtn:hover{
+opacity:1;
+}
+
+.authCard h2{
 font-size:38px;
 margin-bottom:10px;
+text-align:center;
 }
 
-.authTop p{
+.authCard p{
+text-align:center;
 color:var(--muted);
 line-height:1.6;
 }
@@ -438,44 +507,43 @@ line-height:1.6;
 .input{
 width:100%;
 padding:16px;
+margin-top:15px;
 border:none;
 outline:none;
+border-radius:18px;
 background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.08);
-border-radius:18px;
 color:white;
-margin-top:14px;
 font-size:15px;
 }
 
-.authBtn{
+.authButton{
 width:100%;
 padding:16px;
 margin-top:18px;
 border:none;
 border-radius:18px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
 font-weight:900;
-cursor:pointer;
-background:
-linear-gradient(90deg,var(--accent),var(--accent2));
-color:black;
 font-size:15px;
+cursor:pointer;
+color:black;
 }
 
 .switchAuth{
 margin-top:18px;
 text-align:center;
-color:var(--muted);
 font-size:14px;
+color:var(--muted);
 }
 
 .switchAuth span{
 color:white;
-font-weight:800;
+font-weight:900;
 cursor:pointer;
 }
 
-.waitlistBox{
+.waitlist{
 margin-top:20px;
 padding:18px;
 border-radius:18px;
@@ -485,79 +553,37 @@ font-size:14px;
 line-height:1.7;
 }
 
-/* CLOSE */
-
-.closeModal{
-position:absolute;
-top:16px;
-right:18px;
-font-size:22px;
-cursor:pointer;
-opacity:.7;
-transition:.2s;
-}
-
-.closeModal:hover{
-opacity:1;
-transform:scale(1.1);
-}
-
-/* CTA BIG */
-
-.ctaBig{
-text-align:center;
-padding:120px 20px;
-}
-
-.ctaBig h2{
-font-size:52px;
-line-height:1.1;
-}
-
-.ctaBig button{
-margin-top:28px;
-padding:20px 44px;
-border:none;
-border-radius:20px;
-font-weight:900;
-background:linear-gradient(90deg,var(--accent),var(--accent2));
-cursor:pointer;
-font-size:16px;
-}
-
-/* FOOTER */
-
-.footer{
-text-align:center;
-padding:35px;
-font-size:13px;
-opacity:.5;
-border-top:1px solid rgba(255,255,255,.06);
-margin-top:60px;
-}
-
 /* MOBILE */
 
-@media(max-width:700px){
+@media(max-width:768px){
 
 .hero h1{
-font-size:54px;
+font-size:58px;
 }
 
-.section h2{
+.sectionTitle{
+font-size:38px;
+}
+
+.preview h2{
 font-size:34px;
 }
 
 .ctaBig h2{
-font-size:38px;
+font-size:42px;
 }
 
 .nav{
-padding:15px 18px;
+padding:14px 18px;
 }
 
-.authCard{
-padding:28px;
+.creatorTabs{
+gap:10px;
+}
+
+.creatorBtn{
+padding:12px 18px;
+font-size:14px;
 }
 
 }
@@ -568,27 +594,35 @@ padding:28px;
 
 <body>
 
+<div class="bgGlow"></div>
+
+<!-- NAV -->
+
 <div class="nav" id="nav">
 
 <div class="logo">
-SS <span>Studio</span>
+SS <span>Studios</span>
 </div>
 
-<button onclick="openAuth()">
+<button class="navBtn" onclick="openAuth()">
 Get Started
 </button>
 
 </div>
+
+<!-- CONTINUE BAR -->
 
 <div class="continueBar" id="continueBar">
 Continue as <b id="savedType"></b>
 <button onclick="openAuth()">Resume</button>
 </div>
 
-<div class="hero">
+<!-- HERO -->
+
+<section class="hero">
 
 <div class="heroBadge">
-✨ Private Creator Ecosystem
+✨ Private Multi-Creator Ecosystem
 </div>
 
 <h1>
@@ -596,33 +630,36 @@ Create. Build. <span>Launch.</span>
 </h1>
 
 <p id="heroText">
-Everything you need to turn ideas into brands, content, games, films, and digital products — all inside SS Studios.
+Everything you need to build brands, films, games, content, and digital products — all inside SS Studios.
 </p>
 
 <div class="cta">
 
 <button class="primary" onclick="openAuth()">
-Join SS Studios
+Start Creating
 </button>
 
-<button class="secondary" onclick="scrollToSection()">
-Explore Platform
+<button class="secondary" onclick="scrollToCreators()">
+Explore
 </button>
 
 </div>
 
-</div>
+</section>
 
-<div class="section" id="creatorSection">
+<!-- CREATOR SECTION -->
 
-<h2>Choose Your Path</h2>
+<section class="section" id="creatorSection">
 
-<p>
-Select your creator identity before entering the SS Studios waitlist.
-Accepted creators receive the official SS Pass.
+<h2 class="sectionTitle">
+Choose Your Path
+</h2>
+
+<p class="sectionText">
+Every creator starts with a path. Apply to SS Studios, join the waitlist, and unlock the SS Pass if accepted.
 </p>
 
-<div class="creatorTypes">
+<div class="creatorTabs">
 
 <div class="creatorBtn active" data-type="brand">
 Brand
@@ -653,37 +690,53 @@ Creator
 <div class="grid" id="cards"></div>
 
 <div class="preview" id="previewBox">
-<h3>BRAND</h3>
-<p>Build your brand and start selling.</p>
-</div>
 
-<div class="accessPanel">
-
-<h3>🎫 The SS Pass</h3>
+<h2>
+BRAND
+</h2>
 
 <p>
-The SS Pass unlocks the full SS Studios ecosystem.
-Without an approved SS Pass, creator divisions stay locked.
+Build your brand and start selling products through the SS Studios ecosystem.
 </p>
 
-<div class="passCard">
+<button onclick="openAuth()">
+Apply As Brand
+</button>
 
-<div class="passFeature">🎬 Films</div>
-<div class="passFeature">🎮 Games</div>
-<div class="passFeature">📚 Library</div>
-<div class="passFeature">🏷️ Brands</div>
-<div class="passFeature">🎥 Creators</div>
-<div class="passFeature">🚀 Future Divisions</div>
+</div>
+
+<div class="passPanel">
+
+<h2>
+🎫 The SS Pass
+</h2>
+
+<p>
+The SS Pass unlocks every division inside SS Studios. Without approval, creator divisions stay locked.
+</p>
+
+<div class="passFeatures">
+
+<div class="passItem">🎬 Films</div>
+<div class="passItem">🎮 Games</div>
+<div class="passItem">📚 Library</div>
+<div class="passItem">🏷️ Brands</div>
+<div class="passItem">🎥 Creators</div>
+<div class="passItem">🚀 Future Divisions</div>
 
 </div>
 
 </div>
 
-</div>
+</section>
 
-<div class="section">
+<!-- PLATFORM -->
 
-<h2>Platform Power</h2>
+<section class="section">
+
+<h2 class="sectionTitle">
+Platform Power
+</h2>
 
 <div class="strip">
 
@@ -696,11 +749,15 @@ Without an approved SS Pass, creator divisions stay locked.
 
 </div>
 
-</div>
+</section>
 
-<div class="section">
+<!-- HOW -->
 
-<h2>How It Works</h2>
+<section class="section">
+
+<h2 class="sectionTitle">
+How It Works
+</h2>
 
 <div class="strip">
 
@@ -713,33 +770,41 @@ Without an approved SS Pass, creator divisions stay locked.
 
 </div>
 
-</div>
+</section>
 
-<div class="ctaBig">
+<!-- CTA -->
+
+<section class="ctaBig">
 
 <h2>
 Your Creative Journey Starts Here
 </h2>
 
+<p>
+Join the next generation of creators building inside SS Studios.
+</p>
+
 <button onclick="openAuth()">
 Apply For SS Studios
 </button>
 
-</div>
+</section>
+
+<!-- FOOTER -->
 
 <div class="footer">
-SS Studio • Multi-Creator Division of StudentStreamHQ
+SS Studios • Multi-Creator Division of StudentStreamHQ
 </div>
+
+<!-- AUTH MODAL -->
 
 <div class="authModal" id="authModal">
 
 <div class="authCard">
 
-<div class="closeModal" onclick="closeAuth()">
+<div class="closeBtn" onclick="closeAuth()">
 ✕
 </div>
-
-<div class="authTop">
 
 <h2 id="authTitle">
 SS Studios Access
@@ -748,8 +813,6 @@ SS Studios Access
 <p id="authDesc">
 Apply for access to the private creator ecosystem.
 </p>
-
-</div>
 
 <input
 class="input"
@@ -771,9 +834,9 @@ placeholder="Password"
 >
 
 <button
-class="authBtn"
-onclick="submitAuth()"
-id="authBtn">
+class="authButton"
+id="authButton"
+onclick="submitAuth()">
 Join Waitlist
 </button>
 
@@ -786,13 +849,13 @@ Login
 
 </div>
 
-<div class="waitlistBox">
+<div class="waitlist">
 
 🎫 Every creator application enters the SS Studios waitlist.
 
 <br><br>
 
-If approved, your account receives the official SS Pass which unlocks every SS Studios division.
+Approved users receive the SS Pass which unlocks every SS Studios division.
 
 </div>
 
@@ -811,143 +874,112 @@ const supabase = window.supabase.createClient(
 
 /* NAV */
 
-const navEl = document.getElementById("nav");
+const nav = document.getElementById("nav");
 
 window.addEventListener("scroll",()=>{
 
-navEl.classList.toggle(
+nav.classList.toggle(
 "scrolled",
-window.scrollY > 20
+window.scrollY > 10
 );
 
 });
-
-/* SCROLL ANIMATION */
-
-const sections =
-document.querySelectorAll(".section");
-
-function revealSections(){
-
-sections.forEach(sec=>{
-
-const top =
-sec.getBoundingClientRect().top;
-
-if(top < window.innerHeight - 100){
-
-sec.classList.add("show");
-
-}
-
-});
-
-}
-
-window.addEventListener(
-"scroll",
-revealSections
-);
-
-revealSections();
 
 /* DATA */
 
-const data = {
+const creatorData = {
 
-brand:[
+brand:{
+hero:"Build your brand and start selling products through the SS Studios ecosystem.",
+cards:[
 "🏷️ Launch brand",
 "📦 Sell products",
 "📈 Scale business"
-],
+]
+},
 
-artist:[
+artist:{
+hero:"Release music, build your audience, and grow your fanbase.",
+cards:[
 "🎵 Drop music",
 "🔥 Build fanbase",
 "💿 SS Records"
-],
+]
+},
 
-author:[
+author:{
+hero:"Publish books, comics, and digital stories worldwide.",
+cards:[
 "📚 Publish books",
 "📝 Comics",
 "🌍 Readers"
-],
+]
+},
 
-film:[
+film:{
+hero:"Create films, grow your portfolio, and distribute projects.",
+cards:[
 "🎬 Create films",
 "📺 Distribute",
 "🎥 Portfolio"
-],
+]
+},
 
-game:[
+game:{
+hero:"Build original games and launch your ideas to players.",
+cards:[
 "🎮 Build games",
 "🧠 Concepts",
 "🚀 Launch"
-],
+]
+},
 
-creator:[
+creator:{
+hero:"Grow your creator business and monetize your audience.",
+cards:[
 "💻 Digital sales",
 "📊 Grow",
 "🤝 Collab"
 ]
-
-};
-
-const heroTextMap = {
-
-brand:"Build your brand and start selling.",
-
-artist:"Release music and grow your fanbase.",
-
-author:"Publish your stories to the world.",
-
-film:"Create and distribute your films.",
-
-game:"Design and launch your own games.",
-
-creator:"Build your digital creator business."
+}
 
 };
 
 /* ELEMENTS */
 
-const cards =
-document.getElementById("cards");
+const cards = document.getElementById("cards");
+const heroText = document.getElementById("heroText");
+const previewBox = document.getElementById("previewBox");
 
-const heroText =
-document.getElementById("heroText");
+/* LOAD */
 
-const previewBox =
-document.getElementById("previewBox");
+function loadCreator(type){
 
-/* LOAD CARDS */
-
-function loadCards(type){
+const current = creatorData[type];
 
 cards.innerHTML = "";
 
-data[type].forEach(item=>{
+current.cards.forEach(item=>{
 
 cards.innerHTML += `
 <div class="card">
 <h3>${item}</h3>
+<p>
+Build and scale inside SS Studios.
+</p>
 </div>
 `;
 
 });
 
-}
-
-/* UPDATE UI */
-
-function updateUI(type){
-
-heroText.innerText =
-heroTextMap[type];
+heroText.innerText = current.hero;
 
 previewBox.innerHTML = `
-<h3>${type.toUpperCase()}</h3>
-<p>${heroTextMap[type]}</p>
+<h2>${type.toUpperCase()}</h2>
+<p>${current.hero}</p>
+<button onclick="openAuth()">
+Apply As ${type.charAt(0).toUpperCase() + type.slice(1)}
+</button>
 `;
 
 localStorage.setItem(
@@ -957,7 +989,7 @@ type
 
 }
 
-/* CREATOR BUTTONS */
+/* BUTTONS */
 
 document
 .querySelectorAll(".creatorBtn")
@@ -971,16 +1003,46 @@ document
 
 btn.classList.add("active");
 
-const type =
-btn.dataset.type;
-
-loadCards(type);
-
-updateUI(type);
+loadCreator(btn.dataset.type);
 
 });
 
 });
+
+/* INIT */
+
+loadCreator("brand");
+
+/* CONTINUE */
+
+const saved =
+localStorage.getItem("ss_creator_type");
+
+const continueBar =
+document.getElementById("continueBar");
+
+const savedType =
+document.getElementById("savedType");
+
+if(saved){
+
+savedType.innerText = saved;
+
+continueBar.style.display = "flex";
+
+}
+
+/* SCROLL */
+
+function scrollToCreators(){
+
+document
+.getElementById("creatorSection")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
 
 /* AUTH */
 
@@ -1025,11 +1087,11 @@ loginMode
 document.getElementById("authDesc").innerText =
 loginMode
 ?
-"Login with your SS Studios account."
+"Login to your SS Studios account."
 :
 "Apply for access to the private creator ecosystem.";
 
-document.getElementById("authBtn").innerText =
+document.getElementById("authButton").innerText =
 loginMode
 ?
 "Login"
@@ -1064,8 +1126,7 @@ localStorage.getItem("ss_creator_type")
 
 if(!email || !password){
 
-alert("Please complete all fields.");
-
+alert("Complete all fields.");
 return;
 
 }
@@ -1073,7 +1134,6 @@ return;
 if(!loginMode && !username){
 
 alert("Enter a username.");
-
 return;
 
 }
@@ -1095,29 +1155,16 @@ return;
 
 }
 
-const user =
-data.user;
+const user = data.user;
 
-const { data:profile,error:profileError } =
+const { data:profile } =
 await supabase
 .from("ss_studio_users")
 .select("*")
 .eq("user_id",user.id)
 .single();
 
-if(profileError){
-
-alert("Profile not found.");
-return;
-
-}
-
 if(profile?.ss_pass){
-
-localStorage.setItem(
-"ss_logged_in",
-"true"
-);
 
 window.location.href =
 "dashboard.html";
@@ -1125,7 +1172,7 @@ window.location.href =
 }else{
 
 alert(
-"Your SS Studios application is still pending approval."
+"Your SS Studios application is still pending."
 );
 
 }
@@ -1145,14 +1192,6 @@ return;
 
 }
 
-if(!data.user){
-
-alert("Signup failed.");
-return;
-
-}
-
-const insertResult =
 await supabase
 .from("ss_studio_users")
 .insert([{
@@ -1164,15 +1203,8 @@ waitlist:true,
 ss_pass:false
 }]);
 
-if(insertResult.error){
-
-alert(insertResult.error.message);
-return;
-
-}
-
 alert(
-"Application submitted successfully. Welcome to the SS Studios waitlist."
+"Application submitted. Welcome to the SS Studios waitlist."
 );
 
 closeAuth();
@@ -1186,51 +1218,6 @@ console.error(err);
 alert("Something went wrong.");
 
 }
-
-}
-
-/* CONTINUE BAR */
-
-const saved =
-localStorage.getItem(
-"ss_creator_type"
-);
-
-const continueBar =
-document.getElementById("continueBar");
-
-const savedType =
-document.getElementById("savedType");
-
-if(saved){
-
-updateUI(saved);
-
-loadCards(saved);
-
-savedType.innerText =
-saved;
-
-continueBar.style.display =
-"flex";
-
-}else{
-
-loadCards("brand");
-
-updateUI("brand");
-
-}
-
-/* EXPLORE */
-
-function scrollToSection(){
-
-document
-.getElementById("creatorSection")
-.scrollIntoView({
-behavior:"smooth"
-});
 
 }
 
