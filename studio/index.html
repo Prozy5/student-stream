@@ -212,7 +212,7 @@ margin-bottom:6px;
 
 .stat p{
 font-size:14px;
-margin:0;
+color:var(--muted);
 }
 
 /* SECTION */
@@ -433,18 +433,6 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:32px;
 padding:36px;
 position:relative;
-animation:fade .25s ease;
-}
-
-@keyframes fade{
-from{
-opacity:0;
-transform:translateY(10px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
 }
 
 .closeBtn{
@@ -454,10 +442,6 @@ right:20px;
 font-size:22px;
 cursor:pointer;
 opacity:.7;
-}
-
-.closeBtn:hover{
-opacity:1;
 }
 
 .authCard h2{
@@ -542,24 +526,6 @@ font-size:38px;
 font-size:44px;
 }
 
-.nav{
-padding:14px 18px;
-}
-
-.hero{
-padding-top:150px;
-}
-
-.heroButtons{
-flex-direction:column;
-align-items:center;
-}
-
-.heroButtons button{
-width:100%;
-max-width:320px;
-}
-
 }
 
 </style>
@@ -569,8 +535,6 @@ max-width:320px;
 <body>
 
 <div class="bgGlow"></div>
-
-<!-- NAV -->
 
 <div class="nav" id="nav">
 
@@ -592,8 +556,6 @@ Apply Now
 
 </div>
 
-<!-- HERO -->
-
 <section class="hero">
 
 <div class="badge">
@@ -604,8 +566,8 @@ Apply Now
 Create The Future <span>Inside SS Studios</span>
 </h1>
 
-<p id="heroText">
-Everything you need to launch brands, games, films, books, content, and digital products — all connected inside one creator ecosystem.
+<p>
+Everything you need to launch brands, films, books, games, and digital products.
 </p>
 
 <div class="heroButtons">
@@ -641,8 +603,6 @@ Explore Creator Paths
 
 </section>
 
-<!-- CREATOR PATHS -->
-
 <section class="section" id="creatorSection">
 
 <h2 class="sectionTitle">
@@ -650,34 +610,17 @@ Choose Your Creator Path
 </h2>
 
 <p class="sectionText">
-Every creator enters SS Studios through a dedicated path. Apply, join the waitlist, and receive the SS Pass if approved.
+Apply to SS Studios through a creator division.
 </p>
 
 <div class="creatorTabs">
 
-<div class="creatorBtn active" data-type="brand">
-Brand
-</div>
-
-<div class="creatorBtn" data-type="artist">
-Artist
-</div>
-
-<div class="creatorBtn" data-type="author">
-Author
-</div>
-
-<div class="creatorBtn" data-type="film">
-Filmmaker
-</div>
-
-<div class="creatorBtn" data-type="game">
-Game Dev
-</div>
-
-<div class="creatorBtn" data-type="creator">
-Creator
-</div>
+<div class="creatorBtn active" data-type="brand">Brand</div>
+<div class="creatorBtn" data-type="artist">Artist</div>
+<div class="creatorBtn" data-type="author">Author</div>
+<div class="creatorBtn" data-type="film">Filmmaker</div>
+<div class="creatorBtn" data-type="game">Game Dev</div>
+<div class="creatorBtn" data-type="creator">Creator</div>
 
 </div>
 
@@ -686,8 +629,6 @@ Creator
 <div class="preview" id="previewBox"></div>
 
 </section>
-
-<!-- PLATFORM -->
 
 <section class="section">
 
@@ -708,29 +649,6 @@ Platform Power
 
 </section>
 
-<!-- HOW -->
-
-<section class="section">
-
-<h2 class="sectionTitle">
-How It Works
-</h2>
-
-<div class="featureStrip">
-
-<div class="feature">Choose Path</div>
-<div class="feature">Apply</div>
-<div class="feature">Join Waitlist</div>
-<div class="feature">Admin Review</div>
-<div class="feature">Get Accepted</div>
-<div class="feature">Unlock SS Pass</div>
-
-</div>
-
-</section>
-
-<!-- CTA -->
-
 <section class="bigCTA">
 
 <h2>
@@ -738,7 +656,7 @@ Your Creative Journey Starts Here
 </h2>
 
 <p>
-Build your future inside the SS Studios ecosystem.
+Build your future inside SS Studios.
 </p>
 
 <button onclick="openAuth(false)">
@@ -747,13 +665,11 @@ Start Application
 
 </section>
 
-<!-- FOOTER -->
-
 <div class="footer">
 SS Studios • Creator Division of StudentStreamHQ
 </div>
 
-<!-- AUTH MODAL -->
+<!-- AUTH -->
 
 <div class="authModal" id="authModal">
 
@@ -768,7 +684,7 @@ Apply To SS Studios
 </h2>
 
 <p id="authDesc">
-Submit your creator application to join the SS Studios ecosystem.
+Submit your creator application.
 </p>
 
 <input
@@ -810,10 +726,6 @@ Login
 
 🎫 Applications are reviewed by the SS Studios admin team.
 
-<br><br>
-
-Approved creators receive the SS Pass which unlocks every creator division and future platform tools.
-
 </div>
 
 </div>
@@ -822,20 +734,30 @@ Approved creators receive the SS Pass which unlocks every creator division and f
 
 <script>
 
+window.addEventListener("DOMContentLoaded",()=>{
+
+/* ERROR LOGGER */
+
+window.onerror = function(msg,url,line){
+
+console.log(msg,url,line);
+
+};
+
 /* SUPABASE */
 
 const supabase = window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm94enBxemNxZ3lweGN0ciIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzY3MTA4MzcwLCJleHAiOjIwODI2ODQzNzB9.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
 /* NAV */
 
-const nav = document.getElementById("nav");
+const navBar = document.getElementById("nav");
 
 window.addEventListener("scroll",()=>{
 
-nav.classList.toggle(
+navBar.classList.toggle(
 "scrolled",
 window.scrollY > 10
 );
@@ -848,7 +770,7 @@ const creatorData = {
 
 brand:{
 title:"BRAND",
-hero:"Build and scale your brand inside the SS Studios ecosystem.",
+hero:"Build and scale your brand inside SS Studios.",
 cards:[
 "🏷️ Launch products",
 "📦 Sell merchandise",
@@ -858,17 +780,17 @@ cards:[
 
 artist:{
 title:"ARTIST",
-hero:"Release music and grow your audience through SS Records.",
+hero:"Release music and grow your audience.",
 cards:[
 "🎵 Release music",
-"🔥 Build a fanbase",
-"💿 SS Records access"
+"🔥 Build fanbase",
+"💿 SS Records"
 ]
 },
 
 author:{
 title:"AUTHOR",
-hero:"Publish books, stories, and digital comics worldwide.",
+hero:"Publish stories and books worldwide.",
 cards:[
 "📚 Publish books",
 "📝 Write comics",
@@ -878,31 +800,31 @@ cards:[
 
 film:{
 title:"FILMMAKER",
-hero:"Create films and distribute projects through SS Films.",
+hero:"Create and distribute films.",
 cards:[
 "🎬 Film projects",
 "📺 Distribution",
-"🎥 Creator portfolio"
+"🎥 Portfolio"
 ]
 },
 
 game:{
 title:"GAME DEV",
-hero:"Build games and launch original interactive experiences.",
+hero:"Build original games.",
 cards:[
 "🎮 Build games",
-"🧠 Game concepts",
+"🧠 Concepts",
 "🚀 Launch projects"
 ]
 },
 
 creator:{
 title:"CREATOR",
-hero:"Grow your creator business and monetize your audience.",
+hero:"Grow your creator business.",
 cards:[
 "💻 Digital products",
-"📊 Creator analytics",
-"🤝 Creator collabs"
+"📊 Analytics",
+"🤝 Collaborations"
 ]
 }
 
@@ -910,8 +832,11 @@ cards:[
 
 /* ELEMENTS */
 
-const cards = document.getElementById("cards");
-const previewBox = document.getElementById("previewBox");
+const cards =
+document.getElementById("cards");
+
+const previewBox =
+document.getElementById("previewBox");
 
 /* LOAD CREATOR */
 
@@ -923,20 +848,25 @@ cards.innerHTML = "";
 
 current.cards.forEach(item=>{
 
-cards.innerHTML += `
-<div class="card">
+const card = document.createElement("div");
+
+card.className = "card";
+
+card.innerHTML = `
 <h3>${item}</h3>
 <p>
-Scale your creator journey with SS Studios tools and ecosystem access.
+Build inside the SS Studios ecosystem.
 </p>
-</div>
 `;
+
+cards.appendChild(card);
 
 });
 
 previewBox.innerHTML = `
 <h2>${current.title}</h2>
 <p>${current.hero}</p>
+
 <button onclick="openAuth(false)">
 Apply As ${current.title}
 </button>
@@ -975,7 +905,7 @@ loadCreator("brand");
 
 /* SCROLL */
 
-function scrollToCreators(){
+window.scrollToCreators = function(){
 
 document
 .getElementById("creatorSection")
@@ -983,7 +913,7 @@ document
 behavior:"smooth"
 });
 
-}
+};
 
 /* AUTH */
 
@@ -992,7 +922,7 @@ let loginMode = false;
 const authModal =
 document.getElementById("authModal");
 
-function openAuth(isLogin = false){
+window.openAuth = function(isLogin=false){
 
 loginMode = isLogin;
 
@@ -1000,13 +930,13 @@ updateAuthUI();
 
 authModal.style.display = "flex";
 
-}
+};
 
-function closeAuth(){
+window.closeAuth = function(){
 
 authModal.style.display = "none";
 
-}
+};
 
 authModal.addEventListener("click",(e)=>{
 
@@ -1018,13 +948,13 @@ closeAuth();
 
 });
 
-function toggleAuth(){
+window.toggleAuth = function(){
 
 loginMode = !loginMode;
 
 updateAuthUI();
 
-}
+};
 
 function updateAuthUI(){
 
@@ -1038,9 +968,9 @@ loginMode
 document.getElementById("authDesc").innerText =
 loginMode
 ?
-"Login to your SS Studios creator account."
+"Login to your creator account."
 :
-"Submit your creator application to join the ecosystem.";
+"Submit your creator application.";
 
 document.getElementById("authButton").innerText =
 loginMode
@@ -1060,7 +990,7 @@ loginMode
 
 /* SUBMIT */
 
-async function submitAuth(){
+window.submitAuth = async function(){
 
 const username =
 document.getElementById("username").value.trim();
@@ -1084,14 +1014,12 @@ return;
 
 if(!loginMode && !username){
 
-alert("Enter a username.");
+alert("Enter username.");
 return;
 
 }
 
 try{
-
-/* LOGIN */
 
 if(loginMode){
 
@@ -1110,19 +1038,12 @@ return;
 
 const user = data.user;
 
-const { data:profile,error:profileError } =
+const { data:profile } =
 await supabase
 .from("ss_studio_users")
 .select("*")
 .eq("user_id",user.id)
 .single();
-
-if(profileError){
-
-alert("Profile not found.");
-return;
-
-}
 
 if(profile?.ss_pass){
 
@@ -1132,12 +1053,10 @@ window.location.href =
 }else{
 
 alert(
-"Your SS Studios application is still pending approval."
+"Application still pending approval."
 );
 
 }
-
-/* SIGNUP */
 
 }else{
 
@@ -1154,14 +1073,6 @@ return;
 
 }
 
-if(!data.user){
-
-alert("Signup failed.");
-return;
-
-}
-
-const { error:insertError } =
 await supabase
 .from("ss_studio_users")
 .insert([{
@@ -1173,15 +1084,8 @@ waitlist:true,
 ss_pass:false
 }]);
 
-if(insertError){
-
-alert(insertError.message);
-return;
-
-}
-
 alert(
-"Application submitted successfully. Welcome to the SS Studios waitlist."
+"Application submitted successfully."
 );
 
 closeAuth();
@@ -1196,7 +1100,9 @@ alert("Something went wrong.");
 
 }
 
-}
+};
+
+});
 
 </script>
 
