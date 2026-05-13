@@ -6,6 +6,8 @@
 
 <title>StudentStreamHQ • Newsroom</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 
 *{
@@ -155,6 +157,7 @@ border-radius:28px;
 padding:34px;
 position:relative;
 overflow:hidden;
+cursor:pointer;
 }
 
 .liveBadge{
@@ -283,6 +286,7 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:26px;
 padding:28px;
 transition:.25s;
+cursor:pointer;
 }
 
 .newsCard:hover{
@@ -349,7 +353,6 @@ gap:8px;
 font-size:14px;
 font-weight:800;
 color:#93c5fd;
-cursor:pointer;
 }
 
 /* STATUS STRIP */
@@ -377,6 +380,75 @@ color:var(--muted);
 font-size:14px;
 }
 
+/* ARTICLE MODAL */
+
+.articleModal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+backdrop-filter:blur(12px);
+display:none;
+justify-content:center;
+align-items:flex-start;
+overflow-y:auto;
+padding:40px 20px;
+z-index:99999;
+}
+
+.articleBox{
+width:100%;
+max-width:950px;
+background:#0b1120;
+border:1px solid rgba(255,255,255,.08);
+border-radius:30px;
+padding:40px;
+position:relative;
+}
+
+.closeModal{
+position:absolute;
+top:20px;
+right:24px;
+font-size:24px;
+cursor:pointer;
+opacity:.7;
+}
+
+.articleTitle{
+font-size:54px;
+line-height:1;
+font-weight:900;
+margin-bottom:18px;
+}
+
+.articleMeta{
+display:flex;
+gap:18px;
+flex-wrap:wrap;
+margin-bottom:30px;
+color:var(--muted);
+font-size:14px;
+}
+
+.articleContent{
+line-height:1.9;
+font-size:17px;
+color:#dbe5f3;
+}
+
+.articleContent p{
+margin-bottom:22px;
+}
+
+/* LOADER */
+
+.loader{
+text-align:center;
+padding:80px 20px;
+color:var(--muted);
+font-size:18px;
+}
+
 /* FOOTER */
 
 .footer{
@@ -390,10 +462,6 @@ gap:20px;
 flex-wrap:wrap;
 color:var(--muted);
 font-size:13px;
-}
-
-.footer strong{
-color:white;
 }
 
 /* MOBILE */
@@ -414,6 +482,10 @@ font-size:34px;
 
 .sectionTitle{
 font-size:34px;
+}
+
+.articleTitle{
+font-size:38px;
 }
 
 }
@@ -467,89 +539,10 @@ security notices, and internal development updates.
 
 <!-- FEATURED -->
 
-<section class="featured">
+<section class="featured" id="featuredSection">
 
-<div class="featuredMain">
-
-<div class="liveBadge">
-🔴 LIVE PLATFORM REPORT
-</div>
-
-<h2>
-StudentStreamHQ Infrastructure Expansion Begins
-</h2>
-
-<p>
-StudentStreamHQ has officially started expanding its backend infrastructure
-ahead of upcoming creator platform releases. Engineering divisions are now
-deploying upgraded systems for SS Studios, SSI, SS Records, and creator
-applications across the ecosystem.
-</p>
-
-<div class="meta">
-<div>Published: May 2026</div>
-<div>Division: Internal Systems</div>
-<div>Status: Active Deployment</div>
-</div>
-
-</div>
-
-<div class="sideUpdates">
-
-<div class="updateCard">
-
-<div class="updateTag tagLaunch">
-LAUNCH UPDATE
-</div>
-
-<h3>
-SS Records Development Started
-</h3>
-
-<p>
-Development has officially begun for SS Records — the music label division
-inside StudentStreamHQ featuring artist dashboards, streaming tools,
-music distribution, analytics, and label management systems.
-</p>
-
-</div>
-
-<div class="updateCard">
-
-<div class="updateTag tagSystem">
-SYSTEM UPDATE
-</div>
-
-<h3>
-SSI Research Division Online
-</h3>
-
-<p>
-SSI (StudentStreamHQ Investigations) is now entering active development.
-The division focuses on internet mysteries, theories, unexplained events,
-AI-assisted investigations, and collaborative human research systems.
-</p>
-
-</div>
-
-<div class="updateCard">
-
-<div class="updateTag tagSecurity">
-SECURITY REPORT
-</div>
-
-<h3>
-Backend Security Hardening
-</h3>
-
-<p>
-Internal systems are currently undergoing major security improvements,
-including authentication restructuring, database optimization, and
-real-time infrastructure monitoring upgrades.
-</p>
-
-</div>
-
+<div class="loader">
+Loading newsroom...
 </div>
 
 </section>
@@ -559,13 +552,13 @@ real-time infrastructure monitoring upgrades.
 <section class="statusStrip">
 
 <div class="statusItem">
-<h2>99.9%</h2>
-<p>Core Systems Online</p>
+<h2 id="totalArticles">0</h2>
+<p>Published Reports</p>
 </div>
 
 <div class="statusItem">
-<h2>4</h2>
-<p>Divisions In Development</p>
+<h2>LIVE</h2>
+<p>Newsroom Reporting</p>
 </div>
 
 <div class="statusItem">
@@ -574,8 +567,8 @@ real-time infrastructure monitoring upgrades.
 </div>
 
 <div class="statusItem">
-<h2>LIVE</h2>
-<p>Newsroom Reporting</p>
+<h2>ONLINE</h2>
+<p>Systems Operational</p>
 </div>
 
 </section>
@@ -593,101 +586,37 @@ Official reports, launch progress, development announcements, and internal
 StudentStreamHQ communications.
 </p>
 
-<div class="newsGrid">
+<div class="newsGrid" id="newsGrid">
 
-<div class="newsCard">
-
-<div class="newsTop">
-
-<div class="newsDate">
-May 12, 2026
-</div>
-
-<div class="newsStatus statusLive">
-LIVE
-</div>
-
-</div>
-
-<h3>
-SS Studios Creator Applications Reworked
-</h3>
-
-<p>
-The SS Studios application system has officially been rebuilt with a new
-authentication structure using Supabase integration, improved approval
-tracking, and upgraded creator onboarding systems.
-</p>
-
-<div class="readMore">
-Read Internal Report →
-</div>
-
-</div>
-
-<div class="newsCard">
-
-<div class="newsTop">
-
-<div class="newsDate">
-May 10, 2026
-</div>
-
-<div class="newsStatus statusUpdate">
-UPDATE
-</div>
-
-</div>
-
-<h3>
-StudentStreamHQ Blog Network Expanding
-</h3>
-
-<p>
-StudentStreamHQ is preparing to launch a connected publishing network
-allowing divisions like SSI, SS Records, SS Films, and creators to
-publish official updates and articles directly to the ecosystem.
-</p>
-
-<div class="readMore">
-View Development Notes →
-</div>
-
-</div>
-
-<div class="newsCard">
-
-<div class="newsTop">
-
-<div class="newsDate">
-May 8, 2026
-</div>
-
-<div class="newsStatus statusCritical">
-SYSTEM
-</div>
-
-</div>
-
-<h3>
-Database Infrastructure Migration
-</h3>
-
-<p>
-Internal engineering teams have started migrating multiple backend systems
-to new database structures designed for scalability, live updates,
-authentication handling, and creator platform expansion.
-</p>
-
-<div class="readMore">
-Open Technical Report →
-</div>
-
+<div class="loader">
+Loading articles...
 </div>
 
 </div>
 
 </section>
+
+<!-- ARTICLE MODAL -->
+
+<div class="articleModal" id="articleModal">
+
+<div class="articleBox">
+
+<div class="closeModal" onclick="closeArticle()">
+✕
+</div>
+
+<div class="articleTitle" id="articleTitle">
+Loading...
+</div>
+
+<div class="articleMeta" id="articleMeta"></div>
+
+<div class="articleContent" id="articleContent"></div>
+
+</div>
+
+</div>
 
 <!-- FOOTER -->
 
@@ -707,6 +636,273 @@ Newsroom • System Reports • Internal Development
 </div>
 
 </div>
+
+<script>
+
+/* SUPABASE */
+
+const supabase = window.supabase.createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+/* ELEMENTS */
+
+const newsGrid =
+document.getElementById("newsGrid");
+
+const featuredSection =
+document.getElementById("featuredSection");
+
+const articleModal =
+document.getElementById("articleModal");
+
+/* LOAD ARTICLES */
+
+async function loadArticles(){
+
+const {
+data,
+error
+} = await supabase
+.from("studentstream_blog_posts")
+.select("*")
+.eq("published",true)
+.order("created_at",{ascending:false});
+
+if(error){
+
+console.error(error);
+
+newsGrid.innerHTML = `
+<div class="loader">
+Failed to load articles.
+</div>
+`;
+
+return;
+
+}
+
+document.getElementById(
+"totalArticles"
+).innerText = data.length;
+
+renderFeatured(data);
+
+renderNews(data);
+
+}
+
+/* FEATURED */
+
+function renderFeatured(posts){
+
+if(!posts.length){
+
+featuredSection.innerHTML = `
+<div class="loader">
+No featured articles yet.
+</div>
+`;
+
+return;
+
+}
+
+const featured = posts[0];
+
+const sidePosts = posts.slice(1,4);
+
+featuredSection.innerHTML = `
+
+<div class="featuredMain"
+onclick="openArticle('${featured.id}')">
+
+<div class="liveBadge">
+🔴 ${featured.category || "LIVE REPORT"}
+</div>
+
+<h2>
+${featured.title}
+</h2>
+
+<p>
+${featured.excerpt || ""}
+</p>
+
+<div class="meta">
+<div>Published: ${formatDate(featured.created_at)}</div>
+<div>Division: ${featured.division || "Internal Systems"}</div>
+<div>Status: ${featured.status || "Live"}</div>
+</div>
+
+</div>
+
+<div class="sideUpdates">
+
+${sidePosts.map(post => `
+
+<div class="updateCard"
+onclick="openArticle('${post.id}')">
+
+<div class="updateTag tagSystem">
+${post.category || "UPDATE"}
+</div>
+
+<h3>
+${post.title}
+</h3>
+
+<p>
+${post.excerpt || ""}
+</p>
+
+</div>
+
+`).join("")}
+
+</div>
+
+`;
+
+}
+
+/* NEWS */
+
+function renderNews(posts){
+
+newsGrid.innerHTML = "";
+
+posts.forEach(post=>{
+
+newsGrid.innerHTML += `
+
+<div class="newsCard"
+onclick="openArticle('${post.id}')">
+
+<div class="newsTop">
+
+<div class="newsDate">
+${formatDate(post.created_at)}
+</div>
+
+<div class="newsStatus statusUpdate">
+${post.status || "UPDATE"}
+</div>
+
+</div>
+
+<h3>
+${post.title}
+</h3>
+
+<p>
+${post.excerpt || ""}
+</p>
+
+<div class="readMore">
+Read Full Article →
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+/* OPEN ARTICLE */
+
+window.openArticle = async function(id){
+
+articleModal.style.display = "flex";
+
+const {
+data,
+error
+} = await supabase
+.from("studentstream_blog_posts")
+.select("*")
+.eq("id",id)
+.single();
+
+if(error){
+
+console.error(error);
+return;
+
+}
+
+document.getElementById(
+"articleTitle"
+).innerText = data.title;
+
+document.getElementById(
+"articleMeta"
+).innerHTML = `
+<div>${formatDate(data.created_at)}</div>
+<div>${data.division || "StudentStreamHQ"}</div>
+<div>${data.status || "LIVE"}</div>
+`;
+
+document.getElementById(
+"articleContent"
+).innerHTML =
+formatContent(data.content);
+
+};
+
+/* CLOSE */
+
+window.closeArticle = function(){
+
+articleModal.style.display = "none";
+
+};
+
+articleModal.addEventListener("click",(e)=>{
+
+if(e.target === articleModal){
+
+closeArticle();
+
+}
+
+});
+
+/* FORMAT */
+
+function formatDate(date){
+
+return new Date(date).toLocaleDateString(
+"en-US",
+{
+month:"long",
+day:"numeric",
+year:"numeric"
+}
+);
+
+}
+
+function formatContent(content){
+
+if(!content) return "";
+
+return content
+.split("\n")
+.map(p=>`<p>${p}</p>`)
+.join("");
+
+}
+
+/* LOAD */
+
+loadArticles();
+
+</script>
 
 </body>
 </html>
