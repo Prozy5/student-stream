@@ -716,6 +716,7 @@ placeholder="Username"
 <input
 class="input"
 id="email"
+type="email"
 placeholder="Email"
 >
 
@@ -758,62 +759,12 @@ Login
 
 window.addEventListener("DOMContentLoaded",()=>{
 
-/* ERROR LOGGER */
-
-window.onerror = function(msg,url,line,col,error){
-
-console.error("GLOBAL ERROR:",{
-msg,
-url,
-line,
-col,
-error
-});
-
-showStatus(
-"Console error detected. Open DevTools console.",
-true
-);
-
-};
-
 /* SUPABASE */
 
 const supabase = window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
-
-/* SESSION CHECK */
-
-async function checkSession(){
-
-const {
-data:{ session }
-} = await supabase.auth.getSession();
-
-if(session){
-
-const user = session.user;
-
-const { data:profile } =
-await supabase
-.from("ss_studio_users")
-.select("*")
-.eq("user_id",user.id)
-.single();
-
-if(profile?.ss_pass){
-
-window.location.href = "dashboard.html";
-
-}
-
-}
-
-}
-
-checkSession();
 
 /* STATUS */
 
@@ -914,15 +865,11 @@ cards:[
 
 };
 
-/* ELEMENTS */
-
 const cards =
 document.getElementById("cards");
 
 const previewBox =
 document.getElementById("previewBox");
-
-/* LOAD CREATOR */
 
 function loadCreator(type){
 
@@ -963,8 +910,6 @@ type
 
 }
 
-/* BUTTONS */
-
 document
 .querySelectorAll(".creatorBtn")
 .forEach(btn=>{
@@ -983,11 +928,7 @@ loadCreator(btn.dataset.type);
 
 });
 
-/* INIT */
-
 loadCreator("brand");
-
-/* SCROLL */
 
 window.scrollToCreators = function(){
 
@@ -1136,30 +1077,8 @@ return;
 
 }
 
-const user = data.user;
-
-const { data:profile,error:profileError } =
-await supabase
-.from("ss_studio_users")
-.select("*")
-.eq("user_id",user.id)
-.single();
-
-if(profileError){
-
 showStatus(
-profileError.message,
-true
-);
-
-return;
-
-}
-
-if(profile?.ss_pass){
-
-showStatus(
-"SS Pass verified. Redirecting..."
+"Login successful."
 );
 
 setTimeout(()=>{
@@ -1167,16 +1086,7 @@ setTimeout(()=>{
 window.location.href =
 "dashboard.html";
 
-},1200);
-
-}else{
-
-showStatus(
-"Application still pending approval.",
-true
-);
-
-}
+},1000);
 
 /* SIGNUP */
 
@@ -1189,7 +1099,13 @@ showStatus(
 const { data,error } =
 await supabase.auth.signUp({
 email,
-password
+password,
+options:{
+data:{
+username:username,
+creator_type:creatorType
+}
+}
 });
 
 if(error){
@@ -1199,42 +1115,8 @@ return;
 
 }
 
-if(!data.user){
-
 showStatus(
-"Signup failed.",
-true
-);
-
-return;
-
-}
-
-const { error:insertError } =
-await supabase
-.from("ss_studio_users")
-.insert([{
-user_id:data.user.id,
-username,
-email,
-creator_type:creatorType,
-waitlist:true,
-ss_pass:false
-}]);
-
-if(insertError){
-
-showStatus(
-insertError.message,
-true
-);
-
-return;
-
-}
-
-showStatus(
-"Application submitted successfully."
+"Application submitted successfully. Check your email."
 );
 
 setTimeout(()=>{
@@ -1250,7 +1132,7 @@ closeAuth();
 console.error(err);
 
 showStatus(
-"Something went wrong.",
+err.message || "Something went wrong.",
 true
 );
 
