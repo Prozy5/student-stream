@@ -1,19 +1,530 @@
-<h2>Agent Dashboard</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-<input id="title" placeholder="Case title">
-<textarea id="desc"></textarea>
-<button onclick="addCase()">Create Case</button>
-
-<hr>
-
-<input type="file" id="videoFile">
-<input id="videoTitle" placeholder="Video title">
-<button onclick="uploadVideo()">Upload Video</button>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSI Dashboard • Student Stream Investigations</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui,sans-serif;
+}
+
+:root{
+--bg:#050816;
+--panel:#0d1224;
+--card:rgba(255,255,255,.05);
+--border:rgba(255,255,255,.08);
+--text:#ffffff;
+--muted:rgba(255,255,255,.65);
+--accent:#4f8cff;
+--accent2:#00ffb3;
+--danger:#ff5a7a;
+}
+
+body{
+background:
+radial-gradient(circle at top,#13295d 0%,#050816 55%);
+color:white;
+overflow-x:hidden;
+min-height:100vh;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:270px;
+height:100vh;
+background:rgba(5,8,22,.95);
+border-right:1px solid var(--border);
+padding:28px;
+z-index:100;
+}
+
+.logo{
+font-size:28px;
+font-weight:900;
+margin-bottom:40px;
+}
+
+.logo span{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.sideMenu{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.menuItem{
+padding:16px 18px;
+border-radius:18px;
+background:rgba(255,255,255,.03);
+border:1px solid transparent;
+cursor:pointer;
+transition:.2s;
+font-weight:700;
+}
+
+.menuItem:hover{
+background:rgba(255,255,255,.05);
+border-color:var(--accent);
+transform:translateX(4px);
+}
+
+.menuItem.active{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+color:black;
+}
+
+.main{
+margin-left:270px;
+padding:30px;
+}
+
+.topBar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+margin-bottom:30px;
+}
+
+.topBar h1{
+font-size:42px;
+letter-spacing:-2px;
+}
+
+.search{
+width:320px;
+padding:15px 18px;
+border:none;
+outline:none;
+border-radius:18px;
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+color:white;
+}
+
+.statsGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:30px;
+}
+
+.statCard{
+background:var(--card);
+border:1px solid var(--border);
+padding:24px;
+border-radius:26px;
+backdrop-filter:blur(16px);
+}
+
+.statCard h2{
+font-size:38px;
+margin-bottom:8px;
+}
+
+.statCard p{
+color:var(--muted);
+}
+
+.grid{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:24px;
+}
+
+.panel{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:28px;
+padding:26px;
+backdrop-filter:blur(14px);
+}
+
+.panelTitle{
+font-size:24px;
+font-weight:900;
+margin-bottom:22px;
+}
+
+.caseList{
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.caseItem{
+padding:20px;
+border-radius:20px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.05);
+transition:.2s;
+}
+
+.caseItem:hover{
+transform:translateY(-3px);
+border-color:var(--accent);
+}
+
+.caseTop{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+.caseTitle{
+font-size:20px;
+font-weight:800;
+}
+
+.caseTag{
+padding:8px 14px;
+border-radius:999px;
+font-size:12px;
+font-weight:800;
+background:rgba(79,140,255,.15);
+color:#8eb8ff;
+}
+
+.caseText{
+line-height:1.7;
+color:var(--muted);
+font-size:14px;
+}
+
+.feed{
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.feedItem{
+padding:18px;
+border-radius:18px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.05);
+}
+
+.feedItem h4{
+margin-bottom:8px;
+font-size:15px;
+}
+
+.feedItem p{
+font-size:13px;
+line-height:1.6;
+color:var(--muted);
+}
+
+.aiGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:18px;
+margin-top:24px;
+}
+
+.aiCard{
+padding:22px;
+border-radius:22px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.05);
+}
+
+.aiCard h3{
+margin-bottom:8px;
+}
+
+.aiStatus{
+display:inline-block;
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:800;
+margin-top:10px;
+background:rgba(0,255,179,.12);
+color:#7dffd5;
+}
+
+.bottomSection{
+margin-top:24px;
+}
+
+.createBtn{
+padding:16px 24px;
+border:none;
+border-radius:18px;
+font-weight:900;
+cursor:pointer;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+color:black;
+margin-top:20px;
+}
+
+@media(max-width:1000px){
+
+.sidebar{
+display:none;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.topBar{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.search{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+SSI <span>Investigations</span>
+</div>
+
+<div class="sideMenu">
+<div class="menuItem active">🛰 Dashboard</div>
+<div class="menuItem">📂 Investigations</div>
+<div class="menuItem">🤖 AI Workers</div>
+<div class="menuItem">📰 Reports</div>
+<div class="menuItem">🧩 Theories</div>
+<div class="menuItem">🛸 UFO Cases</div>
+<div class="menuItem">🔒 Classified</div>
+<div class="menuItem">⚙ Settings</div>
+</div>
+
+</div>
+
+<div class="main">
+
+<div class="topBar">
+
+<div>
+<h1>SSI Command Center</h1>
+<p style="margin-top:8px;color:var(--muted)">
+Monitoring global mysteries, anomalies, and unexplained events.
+</p>
+</div>
+
+<input class="search" placeholder="Search investigations...">
+
+</div>
+
+<div class="statsGrid">
+
+<div class="statCard">
+<h2>1,284</h2>
+<p>Total Investigations</p>
+</div>
+
+<div class="statCard">
+<h2>312</h2>
+<p>AI Workers Active</p>
+</div>
+
+<div class="statCard">
+<h2>91%</h2>
+<p>Source Verification Rate</p>
+</div>
+
+<div class="statCard">
+<h2>47</h2>
+<p>Classified Cases</p>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div>
+
+<div class="panel">
+
+<div class="panelTitle">
+Trending Investigations
+</div>
+
+<div class="caseList">
+
+<div class="caseItem">
+<div class="caseTop">
+<div class="caseTitle">Nevada Desert Signal Interference</div>
+<div class="caseTag">UFO</div>
+</div>
+<div class="caseText">
+Multiple AI workers detected repeating radio interference patterns matching archived military recordings from 1997.
+</div>
+</div>
+
+<div class="caseItem">
+<div class="caseTop">
+<div class="caseTitle">Lost Internet Broadcast 2008</div>
+<div class="caseTag">Lost Media</div>
+</div>
+<div class="caseText">
+SSI researchers uncovered fragmented footage tied to a deleted livestream connected to unexplained disappearances.
+</div>
+</div>
+
+<div class="caseItem">
+<div class="caseTop">
+<div class="caseTitle">Arctic Structure Discovery</div>
+<div class="caseTag">Theory</div>
+</div>
+<div class="caseText">
+Satellite scans revealed geometric formations beneath melting ice layers previously hidden from public mapping systems.
+</div>
+</div>
+
+</div>
+
+<button class="createBtn">
++ Start Investigation
+</button>
+
+</div>
+
+<div class="panel bottomSection">
+
+<div class="panelTitle">
+AI Worker Network
+</div>
+
+<div class="aiGrid">
+
+<div class="aiCard">
+<h3>ORION</h3>
+<p>Pattern Recognition Specialist</p>
+<div class="aiStatus">ONLINE</div>
+</div>
+
+<div class="aiCard">
+<h3>ECHO</h3>
+<p>Audio & Signal Analyst</p>
+<div class="aiStatus">ANALYZING</div>
+</div>
+
+<div class="aiCard">
+<h3>SPECTER</h3>
+<p>Dark Web Monitoring</p>
+<div class="aiStatus">TRACKING</div>
+</div>
+
+<div class="aiCard">
+<h3>NOVA</h3>
+<p>Historical Archive Research</p>
+<div class="aiStatus">ONLINE</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="panel">
+
+<div class="panelTitle">
+Live Activity Feed
+</div>
+
+<div class="feed">
+
+<div class="feedItem">
+<h4>🤖 ORION updated Case #8841</h4>
+<p>
+Confidence score increased to 87% after metadata analysis.
+</p>
+</div>
+
+<div class="feedItem">
+<h4>🛸 New UFO report submitted</h4>
+<p>
+Witness footage uploaded from Arizona desert region.
+</p>
+</div>
+
+<div class="feedItem">
+<h4>📡 Signal anomaly detected</h4>
+<p>
+Repeating encrypted transmission discovered by ECHO.
+</p>
+</div>
+
+<div class="feedItem">
+<h4>📰 New SSI report published</h4>
+<p>
+“Inside The Forgotten Broadcast Archives” is now live.
+</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="panel bottomSection">
+
+<div class="panelTitle">
+Threat Level
+</div>
+
+<div style="margin-top:10px">
+<div style="display:flex;justify-content:space-between;margin-bottom:12px">
+<span>Global Anomaly Activity</span>
+<span style="color:#ff9f9f;font-weight:900">HIGH</span>
+</div>
+
+<div style="height:16px;background:rgba(255,255,255,.05);border-radius:999px;overflow:hidden">
+<div style="width:82%;height:100%;background:linear-gradient(90deg,#ff5a7a,#ff9f43)"></div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 <script>
-const SUPABASE_URL="https://iabzmoxzbqzcqgypxctr.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
-const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+console.log("SSI Dashboard Loaded");
+
 </script>
-<script src="js/dashboard.js"></script>
+
+</body>
+</html>
