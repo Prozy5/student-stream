@@ -3,90 +3,419 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudentStreamHQ • Incident Update</title>
+
+<title>StudentStreamHQ • Newsroom</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
 
-body{
-  background:#020617;
-  color:#e6edf3;
-  padding:20px;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui,sans-serif;
 }
 
-/* HEADER */
-.header{
-  max-width:900px;
-  margin:auto;
-  margin-bottom:30px;
+:root{
+--bg:#020617;
+--card:#0b1120;
+--border:#1e293b;
+--text:#f8fafc;
+--muted:#94a3b8;
+--accent:#3b82f6;
+--accent2:#00d4ff;
+--danger:#ef4444;
+--success:#10b981;
+}
+
+body{
+background:
+radial-gradient(circle at top,#0f172a 0%,#020617 60%);
+color:var(--text);
+min-height:100vh;
+padding:30px 20px;
+}
+
+/* NAV */
+
+.nav{
+max-width:1200px;
+margin:auto;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:40px;
+padding-bottom:20px;
+border-bottom:1px solid rgba(255,255,255,.06);
 }
 
 .logo{
-  font-size:22px;
-  font-weight:700;
-  color:#3b82f6;
+font-size:28px;
+font-weight:900;
+letter-spacing:-1px;
 }
 
-.sub{
-  font-size:13px;
-  color:#9ca3af;
+.logo span{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
-/* ARTICLE */
-.article{
-  max-width:900px;
-  margin:auto;
-  background:#010409;
-  border:1px solid #1f2933;
-  border-radius:12px;
-  padding:25px;
+.navRight{
+display:flex;
+gap:12px;
+align-items:center;
 }
 
-/* TITLE */
-.title{
-  font-size:26px;
-  margin-bottom:10px;
+.navBtn{
+padding:12px 18px;
+border:none;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+transition:.2s;
 }
 
-/* META */
-.meta{
-  font-size:12px;
-  color:#9ca3af;
-  margin-bottom:20px;
+.primaryBtn{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+color:black;
+}
+
+.secondaryBtn{
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+color:white;
+}
+
+.navBtn:hover{
+transform:translateY(-2px);
+}
+
+/* HERO */
+
+.hero{
+max-width:1200px;
+margin:auto;
+margin-bottom:50px;
 }
 
 .badge{
-  background:#2c0a0a;
-  color:#ef4444;
-  padding:3px 8px;
-  border-radius:6px;
-  margin-left:10px;
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:10px 16px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+font-size:13px;
+font-weight:700;
+margin-bottom:24px;
 }
 
-/* CONTENT */
-.content{
-  line-height:1.7;
-  color:#cbd5e1;
-  font-size:15px;
+.hero h1{
+font-size:68px;
+line-height:.95;
+font-weight:900;
+letter-spacing:-3px;
+max-width:850px;
 }
 
-.content p{
-  margin-bottom:16px;
+.hero h1 span{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
-/* DIVIDER */
-.divider{
-  height:1px;
-  background:#1f2933;
-  margin:20px 0;
+.hero p{
+margin-top:24px;
+max-width:760px;
+line-height:1.8;
+color:var(--muted);
+font-size:18px;
+}
+
+/* FEATURED */
+
+.featured{
+max-width:1200px;
+margin:auto;
+display:grid;
+grid-template-columns:1.4fr .9fr;
+gap:24px;
+margin-bottom:50px;
+}
+
+.featuredMain{
+background:linear-gradient(
+135deg,
+rgba(59,130,246,.12),
+rgba(0,212,255,.06)
+);
+border:1px solid rgba(255,255,255,.08);
+border-radius:28px;
+padding:34px;
+position:relative;
+overflow:hidden;
+}
+
+.liveBadge{
+display:inline-flex;
+align-items:center;
+gap:8px;
+padding:8px 14px;
+border-radius:999px;
+background:rgba(239,68,68,.12);
+border:1px solid rgba(239,68,68,.35);
+color:#ffb4b4;
+font-size:12px;
+font-weight:800;
+margin-bottom:20px;
+}
+
+.featuredMain h2{
+font-size:44px;
+line-height:1;
+margin-bottom:18px;
+}
+
+.featuredMain p{
+color:var(--muted);
+line-height:1.8;
+font-size:16px;
+}
+
+.meta{
+margin-top:24px;
+display:flex;
+gap:16px;
+flex-wrap:wrap;
+font-size:13px;
+color:#cbd5e1;
+}
+
+.sideUpdates{
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.updateCard{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:24px;
+padding:24px;
+transition:.2s;
+cursor:pointer;
+}
+
+.updateCard:hover{
+transform:translateY(-4px);
+border-color:var(--accent);
+}
+
+.updateTag{
+display:inline-flex;
+padding:6px 12px;
+border-radius:999px;
+font-size:11px;
+font-weight:800;
+margin-bottom:14px;
+}
+
+.tagSystem{
+background:rgba(59,130,246,.12);
+color:#93c5fd;
+border:1px solid rgba(59,130,246,.3);
+}
+
+.tagSecurity{
+background:rgba(239,68,68,.12);
+color:#fca5a5;
+border:1px solid rgba(239,68,68,.3);
+}
+
+.tagLaunch{
+background:rgba(16,185,129,.12);
+color:#6ee7b7;
+border:1px solid rgba(16,185,129,.3);
+}
+
+.updateCard h3{
+font-size:22px;
+margin-bottom:12px;
+}
+
+.updateCard p{
+line-height:1.7;
+font-size:14px;
+color:var(--muted);
+}
+
+/* NEWS GRID */
+
+.section{
+max-width:1200px;
+margin:auto;
+margin-bottom:60px;
+}
+
+.sectionTitle{
+font-size:42px;
+font-weight:900;
+margin-bottom:14px;
+letter-spacing:-2px;
+}
+
+.sectionSub{
+color:var(--muted);
+margin-bottom:30px;
+line-height:1.7;
+}
+
+.newsGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:24px;
+}
+
+.newsCard{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:26px;
+padding:28px;
+transition:.25s;
+}
+
+.newsCard:hover{
+transform:translateY(-5px);
+border-color:var(--accent);
+box-shadow:0 0 40px rgba(59,130,246,.12);
+}
+
+.newsTop{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+gap:12px;
+}
+
+.newsDate{
+font-size:12px;
+color:var(--muted);
+}
+
+.newsStatus{
+font-size:11px;
+font-weight:800;
+padding:6px 10px;
+border-radius:999px;
+}
+
+.statusLive{
+background:rgba(16,185,129,.12);
+border:1px solid rgba(16,185,129,.3);
+color:#6ee7b7;
+}
+
+.statusCritical{
+background:rgba(239,68,68,.12);
+border:1px solid rgba(239,68,68,.3);
+color:#fca5a5;
+}
+
+.statusUpdate{
+background:rgba(59,130,246,.12);
+border:1px solid rgba(59,130,246,.3);
+color:#93c5fd;
+}
+
+.newsCard h3{
+font-size:26px;
+margin-bottom:14px;
+line-height:1.2;
+}
+
+.newsCard p{
+line-height:1.8;
+color:var(--muted);
+font-size:15px;
+}
+
+.readMore{
+margin-top:20px;
+display:inline-flex;
+align-items:center;
+gap:8px;
+font-size:14px;
+font-weight:800;
+color:#93c5fd;
+cursor:pointer;
+}
+
+/* STATUS STRIP */
+
+.statusStrip{
+max-width:1200px;
+margin:auto;
+margin-bottom:50px;
+padding:24px;
+border-radius:24px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.statusItem h2{
+font-size:32px;
+margin-bottom:6px;
+}
+
+.statusItem p{
+color:var(--muted);
+font-size:14px;
 }
 
 /* FOOTER */
+
 .footer{
-  text-align:center;
-  margin-top:40px;
-  font-size:12px;
-  color:#6b7280;
+max-width:1200px;
+margin:auto;
+padding-top:30px;
+border-top:1px solid rgba(255,255,255,.06);
+display:flex;
+justify-content:space-between;
+gap:20px;
+flex-wrap:wrap;
+color:var(--muted);
+font-size:13px;
+}
+
+.footer strong{
+color:white;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+.featured{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:48px;
+}
+
+.featuredMain h2{
+font-size:34px;
+}
+
+.sectionTitle{
+font-size:34px;
+}
+
 }
 
 </style>
@@ -94,74 +423,289 @@ body{
 
 <body>
 
-<div class="header">
-  <div class="logo">StudentStreamHQ • System Updates</div>
-  <div class="sub">Official Incident Communication</div>
+<!-- NAV -->
+
+<div class="nav">
+
+<div class="logo">
+StudentStream<span>HQ</span>
 </div>
 
-<div class="article">
+<div class="navRight">
 
-  <div class="title">
-    StudentStreamHQ Launch Delayed Following Data Outage
-  </div>
+<button class="navBtn secondaryBtn">
+System Status
+</button>
 
-  <div class="meta">
-    Report Filed: April 5, 2026 • Internal Systems
-    <span class="badge">Critical Incident</span>
-  </div>
-
-  <div class="content">
-
-    <p>
-      StudentStreamHQ has officially delayed its platform launch following a critical data outage that occurred earlier last month. 
-      The incident impacted core infrastructure systems and resulted in the loss of essential platform data required for deployment.
-    </p>
-
-    <p>
-      Initial investigations traced the disruption to backend systems associated with our primary server infrastructure located in North Virginia. 
-      However, despite extensive diagnostics and internal review processes, no definitive root cause has been identified at this time.
-    </p>
-
-    <p>
-      Engineering teams conducted a full analysis across system logs, network activity, and database structures. The outage appears to have occurred 
-      without a clear trigger, leaving no direct traceable failure point within the system. This has significantly delayed recovery efforts.
-    </p>
-
-    <div class="divider"></div>
-
-    <p>
-      Due to the inability to isolate the origin of the failure, StudentStreamHQ has made the decision to fully rebuild its platform infrastructure 
-      from the ground up. This includes database reconstruction, system architecture redesign, and enhanced security implementation.
-    </p>
-
-    <p>
-      Teams are currently working to determine:
-      <br>• The exact time of the outage
-      <br>• The location and system layer affected
-      <br>• Any potential vulnerabilities within the North Virginia server environment
-    </p>
-
-    <p>
-      At this stage, the root cause of the outage remains unknown.
-    </p>
-
-    <div class="divider"></div>
-
-    <p>
-      While this has resulted in a delay of the official launch, the rebuild process is expected to produce a more stable and secure version 
-      of StudentStreamHQ moving forward.
-    </p>
-
-    <p>
-      Further updates will be provided as new findings emerge.
-    </p>
-
-  </div>
+<button class="navBtn primaryBtn">
+Developer Updates
+</button>
 
 </div>
+
+</div>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="badge">
+📰 Official StudentStreamHQ Newsroom
+</div>
+
+<h1>
+Platform News, <span>System Updates</span> & Internal Reports
+</h1>
+
+<p>
+The official communication hub for StudentStreamHQ. Follow live platform updates,
+system changes, rollout progress, creator announcements, infrastructure reports,
+security notices, and internal development updates.
+</p>
+
+</section>
+
+<!-- FEATURED -->
+
+<section class="featured">
+
+<div class="featuredMain">
+
+<div class="liveBadge">
+🔴 LIVE PLATFORM REPORT
+</div>
+
+<h2>
+StudentStreamHQ Infrastructure Expansion Begins
+</h2>
+
+<p>
+StudentStreamHQ has officially started expanding its backend infrastructure
+ahead of upcoming creator platform releases. Engineering divisions are now
+deploying upgraded systems for SS Studios, SSI, SS Records, and creator
+applications across the ecosystem.
+</p>
+
+<div class="meta">
+<div>Published: May 2026</div>
+<div>Division: Internal Systems</div>
+<div>Status: Active Deployment</div>
+</div>
+
+</div>
+
+<div class="sideUpdates">
+
+<div class="updateCard">
+
+<div class="updateTag tagLaunch">
+LAUNCH UPDATE
+</div>
+
+<h3>
+SS Records Development Started
+</h3>
+
+<p>
+Development has officially begun for SS Records — the music label division
+inside StudentStreamHQ featuring artist dashboards, streaming tools,
+music distribution, analytics, and label management systems.
+</p>
+
+</div>
+
+<div class="updateCard">
+
+<div class="updateTag tagSystem">
+SYSTEM UPDATE
+</div>
+
+<h3>
+SSI Research Division Online
+</h3>
+
+<p>
+SSI (StudentStreamHQ Investigations) is now entering active development.
+The division focuses on internet mysteries, theories, unexplained events,
+AI-assisted investigations, and collaborative human research systems.
+</p>
+
+</div>
+
+<div class="updateCard">
+
+<div class="updateTag tagSecurity">
+SECURITY REPORT
+</div>
+
+<h3>
+Backend Security Hardening
+</h3>
+
+<p>
+Internal systems are currently undergoing major security improvements,
+including authentication restructuring, database optimization, and
+real-time infrastructure monitoring upgrades.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- STATUS -->
+
+<section class="statusStrip">
+
+<div class="statusItem">
+<h2>99.9%</h2>
+<p>Core Systems Online</p>
+</div>
+
+<div class="statusItem">
+<h2>4</h2>
+<p>Divisions In Development</p>
+</div>
+
+<div class="statusItem">
+<h2>24/7</h2>
+<p>Infrastructure Monitoring</p>
+</div>
+
+<div class="statusItem">
+<h2>LIVE</h2>
+<p>Newsroom Reporting</p>
+</div>
+
+</section>
+
+<!-- NEWS -->
+
+<section class="section">
+
+<h2 class="sectionTitle">
+Latest Reports
+</h2>
+
+<p class="sectionSub">
+Official reports, launch progress, development announcements, and internal
+StudentStreamHQ communications.
+</p>
+
+<div class="newsGrid">
+
+<div class="newsCard">
+
+<div class="newsTop">
+
+<div class="newsDate">
+May 12, 2026
+</div>
+
+<div class="newsStatus statusLive">
+LIVE
+</div>
+
+</div>
+
+<h3>
+SS Studios Creator Applications Reworked
+</h3>
+
+<p>
+The SS Studios application system has officially been rebuilt with a new
+authentication structure using Supabase integration, improved approval
+tracking, and upgraded creator onboarding systems.
+</p>
+
+<div class="readMore">
+Read Internal Report →
+</div>
+
+</div>
+
+<div class="newsCard">
+
+<div class="newsTop">
+
+<div class="newsDate">
+May 10, 2026
+</div>
+
+<div class="newsStatus statusUpdate">
+UPDATE
+</div>
+
+</div>
+
+<h3>
+StudentStreamHQ Blog Network Expanding
+</h3>
+
+<p>
+StudentStreamHQ is preparing to launch a connected publishing network
+allowing divisions like SSI, SS Records, SS Films, and creators to
+publish official updates and articles directly to the ecosystem.
+</p>
+
+<div class="readMore">
+View Development Notes →
+</div>
+
+</div>
+
+<div class="newsCard">
+
+<div class="newsTop">
+
+<div class="newsDate">
+May 8, 2026
+</div>
+
+<div class="newsStatus statusCritical">
+SYSTEM
+</div>
+
+</div>
+
+<h3>
+Database Infrastructure Migration
+</h3>
+
+<p>
+Internal engineering teams have started migrating multiple backend systems
+to new database structures designed for scalability, live updates,
+authentication handling, and creator platform expansion.
+</p>
+
+<div class="readMore">
+Open Technical Report →
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
 
 <div class="footer">
-  © 2026 StudentStreamHQ • Internal Systems Communication
+
+<div>
+<strong>StudentStreamHQ</strong><br>
+Official Platform Communications
+</div>
+
+<div>
+Newsroom • System Reports • Internal Development
+</div>
+
+<div>
+© 2026 StudentStreamHQ
+</div>
+
 </div>
 
 </body>
