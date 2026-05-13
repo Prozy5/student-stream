@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SS Records • StudentStreamHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+:root{
+--bg:#050816;
+--card:rgba(255,255,255,.05);
+--border:rgba(255,255,255,.08);
+--text:rgba(255,255,255,.75);
+--blue:#4f8cff;
+--green:#00ffb3;
+--purple:#8a5cff;
+}
+
+body{
+background:
+radial-gradient(circle at top,#14234f 0%,#050816 45%);
+color:white;
+overflow-x:hidden;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+.bgGlow{
+position:fixed;
+width:900px;
+height:900px;
+background:#00ffb3;
+filter:blur(240px);
+opacity:.08;
+top:-350px;
+left:50%;
+transform:translateX(-50%);
+pointer-events:none;
+z-index:0;
+}
+
+.nav{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:18px 28px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+backdrop-filter:blur(18px);
+background:rgba(0,0,0,.28);
+border-bottom:1px solid rgba(255,255,255,.06);
+z-index:9999;
+}
+
+.logo{
+font-size:24px;
+font-weight:900;
+letter-spacing:-1px;
+}
+
+.logo span{
+background:linear-gradient(90deg,var(--blue),var(--green));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.navButtons{
+display:flex;
+gap:12px;
+}
+
+.btn{
+padding:14px 22px;
+border:none;
+border-radius:16px;
+font-weight:800;
+cursor:pointer;
+transition:.2s;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+}
+
+.primary{
+background:linear-gradient(90deg,var(--blue),var(--green));
+color:black;
+}
+
+.secondary{
+background:rgba(255,255,255,.06);
+color:white;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.hero{
+padding:180px 20px 120px;
+text-align:center;
+position:relative;
+z-index:2;
+}
+
+.badge{
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:10px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.08);
+font-size:14px;
+font-weight:700;
+margin-bottom:28px;
+}
+
+.hero h1{
+font-size:100px;
+line-height:.9;
+font-weight:900;
+letter-spacing:-5px;
+max-width:1000px;
+margin:auto;
+}
+
+.hero h1 span{
+background:linear-gradient(90deg,var(--blue),var(--green));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+margin-top:28px;
+max-width:780px;
+margin-inline:auto;
+line-height:1.8;
+font-size:18px;
+color:var(--text);
+}
+
+.heroButtons{
+margin-top:40px;
+display:flex;
+justify-content:center;
+gap:16px;
+flex-wrap:wrap;
+}
+
+.stats{
+margin-top:80px;
+display:flex;
+justify-content:center;
+gap:18px;
+flex-wrap:wrap;
+}
+
+.stat{
+padding:26px;
+min-width:210px;
+border-radius:26px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(14px);
+}
+
+.stat h2{
+font-size:38px;
+margin-bottom:8px;
+}
+
+.stat p{
+color:var(--text);
+}
+
+.section{
+max-width:1300px;
+margin:auto;
+padding:100px 20px;
+position:relative;
+z-index:2;
+}
+
+.sectionTitle{
+font-size:58px;
+font-weight:900;
+letter-spacing:-2px;
+text-align:center;
+}
+
+.sectionText{
+max-width:760px;
+margin:18px auto 0;
+text-align:center;
+line-height:1.8;
+color:var(--text);
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:24px;
+margin-top:50px;
+}
+
+.card{
+padding:34px;
+border-radius:30px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(14px);
+transition:.25s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+border-color:var(--blue);
+box-shadow:0 0 40px rgba(79,140,255,.15);
+}
+
+.icon{
+font-size:34px;
+margin-bottom:18px;
+}
+
+.card h3{
+font-size:26px;
+margin-bottom:12px;
+}
+
+.card p{
+line-height:1.8;
+color:var(--text);
+}
+
+.streamingBox{
+margin-top:60px;
+padding:40px;
+border-radius:34px;
+background:linear-gradient(135deg,rgba(79,140,255,.12),rgba(0,255,179,.08));
+border:1px solid rgba(255,255,255,.08);
+}
+
+.player{
+margin-top:30px;
+padding:24px;
+border-radius:24px;
+background:rgba(0,0,0,.35);
+border:1px solid rgba(255,255,255,.08);
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.track{
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.album{
+width:70px;
+height:70px;
+border-radius:18px;
+background:linear-gradient(135deg,var(--purple),var(--blue));
+}
+
+.track h4{
+font-size:18px;
+margin-bottom:4px;
+}
+
+.track p{
+color:var(--text);
+font-size:14px;
+}
+
+.controls{
+display:flex;
+gap:12px;
+align-items:center;
+}
+
+.controlBtn{
+width:54px;
+height:54px;
+border-radius:50%;
+border:none;
+background:rgba(255,255,255,.08);
+color:white;
+font-size:18px;
+cursor:pointer;
+}
+
+.playBtn{
+background:linear-gradient(90deg,var(--blue),var(--green));
+color:black;
+font-weight:900;
+}
+
+.artistGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:24px;
+margin-top:50px;
+}
+
+.artistCard{
+padding:26px;
+border-radius:28px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+text-align:center;
+transition:.25s;
+}
+
+.artistCard:hover{
+transform:translateY(-5px);
+}
+
+.artistImage{
+width:110px;
+height:110px;
+border-radius:50%;
+margin:auto;
+background:linear-gradient(135deg,var(--blue),var(--purple));
+margin-bottom:18px;
+}
+
+.artistCard h3{
+font-size:24px;
+margin-bottom:6px;
+}
+
+.artistCard p{
+color:var(--text);
+}
+
+.dashboard{
+margin-top:70px;
+display:grid;
+grid-template-columns:1.2fr .8fr;
+gap:24px;
+}
+
+.dashboardMain,
+.dashboardSide{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:32px;
+padding:30px;
+}
+
+.analytics{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+margin-top:24px;
+}
+
+.analyticsCard{
+padding:22px;
+border-radius:22px;
+background:rgba(255,255,255,.04);
+}
+
+.analyticsCard h2{
+font-size:34px;
+margin-bottom:8px;
+}
+
+.analyticsCard p{
+color:var(--text);
+}
+
+.uploadList{
+margin-top:24px;
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.uploadItem{
+padding:18px;
+border-radius:18px;
+background:rgba(255,255,255,.04);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.cta{
+padding:120px 20px;
+text-align:center;
+}
+
+.cta h2{
+font-size:72px;
+line-height:1;
+letter-spacing:-3px;
+}
+
+.cta p{
+margin-top:20px;
+font-size:18px;
+color:var(--text);
+}
+
+.cta button{
+margin-top:32px;
+}
+
+.footer{
+padding:40px 20px;
+text-align:center;
+font-size:14px;
+opacity:.5;
+border-top:1px solid rgba(255,255,255,.06);
+}
+
+@media(max-width:900px){
+
+.hero h1{
+font-size:62px;
+letter-spacing:-3px;
+}
+
+.sectionTitle{
+font-size:42px;
+}
+
+.dashboard{
+grid-template-columns:1fr;
+}
+
+.cta h2{
+font-size:48px;
+}
+
+.player{
+justify-content:center;
+text-align:center;
+}
+
+.track{
+flex-direction:column;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="bgGlow"></div>
+
+<nav class="nav">
+<div class="logo">
+SS <span>Records</span>
+</div>
+
+<div class="navButtons">
+<button class="btn secondary">Artist Login</button>
+<button class="btn primary">Apply As Artist</button>
+</div>
+</nav>
+
+<section class="hero">
+
+<div class="badge">
+🎵 Official Music Label of StudentStreamHQ
+</div>
+
+<h1>
+The Future Of <span>Independent Music</span>
+</h1>
+
+<p>
+SS Records is a next-generation music label and streaming ecosystem built for artists, creators, and the future of independent music.
+</p>
+
+<div class="heroButtons">
+<button class="btn primary">Start Your Artist Journey</button>
+<button class="btn secondary">Explore Music</button>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h2>50M+</h2>
+<p>Projected Streams</p>
+</div>
+
+<div class="stat">
+<h2>24/7</h2>
+<p>Artist Dashboard Access</p>
+</div>
+
+<div class="stat">
+<h2>All-In-One</h2>
+<p>Streaming + Label Platform</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<h2 class="sectionTitle">
+Built For Modern Artists
+</h2>
+
+<p class="sectionText">
+Everything artists need to upload music, grow a fanbase, track analytics, and monetize content inside one ecosystem.
+</p>
+
+<div class="grid">
+
+<div class="card">
+<div class="icon">🎧</div>
+<h3>Streaming Platform</h3>
+<p>
+Upload music directly to the SS Records streaming ecosystem and grow your audience worldwide.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">📊</div>
+<h3>Artist Analytics</h3>
+<p>
+Track streams, followers, engagement, audience growth, and performance in real time.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">💸</div>
+<h3>Monetization</h3>
+<p>
+Generate revenue from streams, fan support, subscriptions, and premium releases.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">🚀</div>
+<h3>Music Distribution</h3>
+<p>
+Launch projects professionally with release management and creator tools.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">🎬</div>
+<h3>SS Films Integration</h3>
+<p>
+Connect music with visual storytelling through the SS Films division.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">🌍</div>
+<h3>Global Discovery</h3>
+<p>
+Reach listeners around the world through curated discovery systems.
+</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<h2 class="sectionTitle">
+SS Records Streaming
+</h2>
+
+<p class="sectionText">
+A cinematic music experience powered directly by StudentStreamHQ.
+</p>
+
+<div class="streamingBox">
+
+<h2 style="font-size:42px; margin-bottom:14px;">
+Now Playing
+</h2>
+
+<p style="color:var(--text); line-height:1.8;">
+Immersive streaming, artist discovery, and next-generation creator tools.
+</p>
+
+<div class="player">
+
+<div class="track">
+<div class="album"></div>
+
+<div>
+<h4>Midnight Visions</h4>
+<p>SS Records Exclusive • FutureWave</p>
+</div>
+</div>
+
+<div class="controls">
+<button class="controlBtn">⏮</button>
+<button class="controlBtn playBtn">▶</button>
+<button class="controlBtn">⏭</button>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<h2 class="sectionTitle">
+Featured Artists
+</h2>
+
+<p class="sectionText">
+Verified creators inside the SS Records ecosystem.
+</p>
+
+<div class="artistGrid">
+
+<div class="artistCard">
+<div class="artistImage"></div>
+<h3>Nova</h3>
+<p>Alternative / Electronic</p>
+</div>
+
+<div class="artistCard">
+<div class="artistImage"></div>
+<h3>Lyric</h3>
+<p>Hip-Hop / Rap</p>
+</div>
+
+<div class="artistCard">
+<div class="artistImage"></div>
+<h3>Zenith</h3>
+<p>R&B / Soul</p>
+</div>
+
+<div class="artistCard">
+<div class="artistImage"></div>
+<h3>Echo</h3>
+<p>Pop / Experimental</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<h2 class="sectionTitle">
+Artist Dashboard
+</h2>
+
+<p class="sectionText">
+Professional tools for creators and music businesses.
+</p>
+
+<div class="dashboard">
+
+<div class="dashboardMain">
+<h2 style="font-size:38px;">
+Analytics Overview
+</h2>
+
+<div class="analytics">
+
+<div class="analyticsCard">
+<h2>1.2M</h2>
+<p>Total Streams</p>
+</div>
+
+<div class="analyticsCard">
+<h2>82K</h2>
+<p>Monthly Listeners</p>
+</div>
+
+<div class="analyticsCard">
+<h2>$12.4K</h2>
+<p>Revenue Generated</p>
+</div>
+
+<div class="analyticsCard">
+<h2>14K</h2>
+<p>Followers</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="dashboardSide">
+<h2 style="font-size:32px;">
+Recent Uploads
+</h2>
+
+<div class="uploadList">
+
+<div class="uploadItem">
+<span>Neon Dreams</span>
+<span>324K Streams</span>
+</div>
+
+<div class="uploadItem">
+<span>After Midnight</span>
+<span>219K Streams</span>
+</div>
+
+<div class="uploadItem">
+<span>Echo City</span>
+<span>118K Streams</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="cta">
+
+<h2>
+Your Music Deserves A Bigger Platform
+</h2>
+
+<p>
+Apply to SS Records and build your future inside StudentStreamHQ.
+</p>
+
+<button class="btn primary">
+Apply As Artist
+</button>
+
+</section>
+
+<footer class="footer">
+SS Records • Official Music Label Division of StudentStreamHQ
+</footer>
+
+</body>
+</html>
