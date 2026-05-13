@@ -505,8 +505,6 @@ font-size:14px;
 line-height:1.8;
 }
 
-/* MOBILE */
-
 @media(max-width:768px){
 
 .hero h1{
@@ -734,22 +732,42 @@ Login
 
 <script>
 
-window.addEventListener("DOMContentLoaded",()=>{
-
-/* ERROR LOGGER */
-
-window.onerror = function(msg,url,line){
-
-console.log(msg,url,line);
-
-};
-
-/* SUPABASE */
-
 const supabase = window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm94enBxemNxZ3lweGN0ciIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzY3MTA4MzcwLCJleHAiOjIwODI2ODQzNzB9.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
+
+/* SESSION CHECK */
+
+async function checkSession(){
+
+const {
+data:{session}
+} = await supabase.auth.getSession();
+
+if(session){
+
+const user = session.user;
+
+const {
+data:profile
+} = await supabase
+.from("ss_studio_users")
+.select("*")
+.eq("user_id",user.id)
+.single();
+
+if(profile?.ss_pass){
+
+window.location.href = "dashboard.html";
+
+}
+
+}
+
+}
+
+checkSession();
 
 /* NAV */
 
@@ -830,8 +848,6 @@ cards:[
 
 };
 
-/* ELEMENTS */
-
 const cards =
 document.getElementById("cards");
 
@@ -848,18 +864,14 @@ cards.innerHTML = "";
 
 current.cards.forEach(item=>{
 
-const card = document.createElement("div");
-
-card.className = "card";
-
-card.innerHTML = `
+cards.innerHTML += `
+<div class="card">
 <h3>${item}</h3>
 <p>
 Build inside the SS Studios ecosystem.
 </p>
+</div>
 `;
-
-cards.appendChild(card);
 
 });
 
@@ -879,7 +891,7 @@ type
 
 }
 
-/* BUTTONS */
+/* CREATOR BUTTONS */
 
 document
 .querySelectorAll(".creatorBtn")
@@ -899,13 +911,11 @@ loadCreator(btn.dataset.type);
 
 });
 
-/* INIT */
-
 loadCreator("brand");
 
 /* SCROLL */
 
-window.scrollToCreators = function(){
+function scrollToCreators(){
 
 document
 .getElementById("creatorSection")
@@ -913,7 +923,7 @@ document
 behavior:"smooth"
 });
 
-};
+}
 
 /* AUTH */
 
@@ -922,7 +932,7 @@ let loginMode = false;
 const authModal =
 document.getElementById("authModal");
 
-window.openAuth = function(isLogin=false){
+function openAuth(isLogin=false){
 
 loginMode = isLogin;
 
@@ -930,31 +940,21 @@ updateAuthUI();
 
 authModal.style.display = "flex";
 
-};
+}
 
-window.closeAuth = function(){
+function closeAuth(){
 
 authModal.style.display = "none";
 
-};
-
-authModal.addEventListener("click",(e)=>{
-
-if(e.target === authModal){
-
-closeAuth();
-
 }
 
-});
-
-window.toggleAuth = function(){
+function toggleAuth(){
 
 loginMode = !loginMode;
 
 updateAuthUI();
 
-};
+}
 
 function updateAuthUI(){
 
@@ -990,7 +990,7 @@ loginMode
 
 /* SUBMIT */
 
-window.submitAuth = async function(){
+async function submitAuth(){
 
 const username =
 document.getElementById("username").value.trim();
@@ -1021,10 +1021,14 @@ return;
 
 try{
 
+/* LOGIN */
+
 if(loginMode){
 
-const { data,error } =
-await supabase.auth.signInWithPassword({
+const {
+data,
+error
+} = await supabase.auth.signInWithPassword({
 email,
 password
 });
@@ -1038,8 +1042,9 @@ return;
 
 const user = data.user;
 
-const { data:profile } =
-await supabase
+const {
+data:profile
+} = await supabase
 .from("ss_studio_users")
 .select("*")
 .eq("user_id",user.id)
@@ -1053,15 +1058,19 @@ window.location.href =
 }else{
 
 alert(
-"Application still pending approval."
+"Your application is still pending approval."
 );
 
 }
 
+/* SIGNUP */
+
 }else{
 
-const { data,error } =
-await supabase.auth.signUp({
+const {
+data,
+error
+} = await supabase.auth.signUp({
 email,
 password
 });
@@ -1100,9 +1109,7 @@ alert("Something went wrong.");
 
 }
 
-};
-
-});
+}
 
 </script>
 
