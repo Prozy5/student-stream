@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SS Studios Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui,sans-serif;
+}
+
+:root{
+--accent:#4f8cff;
+--accent2:#00ffb3;
+--bg:#050816;
+--card:rgba(255,255,255,.05);
+--border:rgba(255,255,255,.08);
+--muted:rgba(255,255,255,.7);
+}
+
+body{
+background:radial-gradient(circle at top,#13295d 0%,#050816 55%);
+color:white;
+min-height:100vh;
+overflow-x:hidden;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:260px;
+height:100vh;
+background:rgba(0,0,0,.35);
+border-right:1px solid rgba(255,255,255,.06);
+backdrop-filter:blur(18px);
+padding:28px 20px;
+z-index:100;
+}
+
+.logo{
+font-size:28px;
+font-weight:900;
+margin-bottom:40px;
+}
+
+.logo span{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.navItem{
+padding:16px 18px;
+border-radius:16px;
+margin-bottom:12px;
+cursor:pointer;
+transition:.2s;
+font-weight:700;
+background:rgba(255,255,255,.03);
+border:1px solid transparent;
+}
+
+.navItem:hover,
+.navItem.active{
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+color:black;
+}
+
+.main{
+margin-left:260px;
+padding:35px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.welcome h1{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.welcome p{
+color:var(--muted);
+}
+
+.logoutBtn{
+padding:14px 24px;
+border:none;
+border-radius:16px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+font-weight:900;
+cursor:pointer;
+color:black;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-top:25px;
+}
+
+.statCard{
+padding:28px;
+border-radius:28px;
+background:var(--card);
+border:1px solid var(--border);
+backdrop-filter:blur(16px);
+}
+
+.statCard h2{
+font-size:38px;
+margin-bottom:8px;
+}
+
+.statCard p{
+color:var(--muted);
+}
+
+.section{
+margin-top:35px;
+}
+
+.sectionTitle{
+font-size:32px;
+margin-bottom:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+}
+
+.card{
+padding:28px;
+border-radius:28px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+transition:.2s;
+}
+
+.card:hover{
+transform:translateY(-4px);
+border-color:var(--accent);
+}
+
+.card h3{
+font-size:24px;
+margin-bottom:10px;
+}
+
+.card p{
+line-height:1.7;
+color:var(--muted);
+}
+
+.launchBtn{
+margin-top:18px;
+padding:14px 20px;
+border:none;
+border-radius:14px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+font-weight:800;
+cursor:pointer;
+color:black;
+}
+
+.profileCard{
+padding:35px;
+border-radius:30px;
+background:linear-gradient(135deg,rgba(79,140,255,.15),rgba(0,255,179,.08));
+border:1px solid rgba(255,255,255,.08);
+margin-top:30px;
+}
+
+.profileCard h2{
+font-size:38px;
+margin-bottom:12px;
+}
+
+.profileInfo{
+display:flex;
+flex-wrap:wrap;
+gap:14px;
+margin-top:22px;
+}
+
+.infoPill{
+padding:14px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.08);
+font-weight:700;
+}
+
+.locked{
+opacity:.45;
+}
+
+@media(max-width:900px){
+
+.sidebar{
+width:100%;
+height:auto;
+position:relative;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.logo{
+width:100%;
+margin-bottom:10px;
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+.topbar{
+flex-direction:column;
+align-items:flex-start;
+gap:18px;
+}
+
+.welcome h1{
+font-size:34px;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+SS <span>Studios</span>
+</div>
+
+<div class="navItem active">
+🏠 Dashboard
+</div>
+
+<div class="navItem">
+🎬 SS Films
+</div>
+
+<div class="navItem">
+🎵 SS Records
+</div>
+
+<div class="navItem">
+🎮 Game Studio
+</div>
+
+<div class="navItem">
+📚 Creator Library
+</div>
+
+<div class="navItem">
+💸 Marketplace
+</div>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<div class="welcome">
+<h1 id="welcomeText">
+Welcome Back
+</h1>
+<p>
+Manage your creator ecosystem inside SS Studios.
+</p>
+</div>
+
+<button class="logoutBtn" onclick="logout()">
+Logout
+</button>
+
+</div>
+
+<div class="profileCard">
+
+<h2>
+🎫 SS Pass Active
+</h2>
+
+<p>
+Your creator account has been approved inside the SS Studios ecosystem.
+</p>
+
+<div class="profileInfo">
+
+<div class="infoPill" id="creatorTypePill">
+Creator Type
+</div>
+
+<div class="infoPill" id="emailPill">
+Email
+</div>
+
+<div class="infoPill">
+🚀 Creator Access Enabled
+</div>
+
+</div>
+
+</div>
+
+<div class="stats">
+
+<div class="statCard">
+<h2>6</h2>
+<p>Unlocked Divisions</p>
+</div>
+
+<div class="statCard">
+<h2>24/7</h2>
+<p>Creator Access</p>
+</div>
+
+<div class="statCard">
+<h2>∞</h2>
+<p>Future Possibilities</p>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="sectionTitle">
+Creator Tools
+</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🎬 SS Films</h3>
+<p>
+Create film projects, organize production, and launch visual content.
+</p>
+<button class="launchBtn">
+Open Division
+</button>
+</div>
+
+<div class="card">
+<h3>🎵 SS Records</h3>
+<p>
+Upload music, manage releases, and build your audience.
+</p>
+<button class="launchBtn">
+Open Division
+</button>
+</div>
+
+<div class="card">
+<h3>🎮 Game Studio</h3>
+<p>
+Develop games, concepts, and launch interactive experiences.
+</p>
+<button class="launchBtn">
+Open Division
+</button>
+</div>
+
+<div class="card">
+<h3>📚 Creator Library</h3>
+<p>
+Store books, scripts, comics, PDFs, and creator assets.
+</p>
+<button class="launchBtn">
+Open Division
+</button>
+</div>
+
+<div class="card">
+<h3>💸 Marketplace</h3>
+<p>
+Sell products, merch, digital downloads, and creator services.
+</p>
+<button class="launchBtn">
+Open Division
+</button>
+</div>
+
+<div class="card locked">
+<h3>🚀 Future Division</h3>
+<p>
+More creator systems and divisions are currently in development.
+</p>
+<button class="launchBtn">
+Coming Soon
+</button>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const supabase = window.supabase.createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+async function loadUser(){
+
+const {
+ data:{session}
+} = await supabase.auth.getSession();
+
+if(!session){
+window.location.href = "index.html";
+return;
+}
+
+const user = session.user;
+
+const {
+ data:profile,
+ error
+} = await supabase
+.from("ss_studio_users")
+.select("*")
+.eq("user_id",user.id)
+.single();
+
+if(error || !profile){
+alert("Profile not found.");
+window.location.href = "index.html";
+return;
+}
+
+if(!profile.ss_pass){
+alert("Your SS Pass is still pending approval.");
+window.location.href = "index.html";
+return;
+}
+
+const username = profile.username || "Creator";
+const creatorType = profile.creator_type || "creator";
+
+document.getElementById("welcomeText").innerText =
+`Welcome Back, ${username}`;
+
+document.getElementById("creatorTypePill").innerText =
+`🎨 ${creatorType.toUpperCase()}`;
+
+document.getElementById("emailPill").innerText =
+`📧 ${profile.email}`;
+
+}
+
+async function logout(){
+
+await supabase.auth.signOut();
+
+window.location.href = "index.html";
+
+}
+
+loadUser();
+
+</script>
+
+</body>
+</html>
