@@ -26,12 +26,16 @@ font-family:system-ui,-apple-system;
 --muted:rgba(255,255,255,.65);
 }
 
+html{
+scroll-behavior:smooth;
+}
+
 body{
 background:
 radial-gradient(circle at top,#08142c,#02030a 50%);
 color:white;
 overflow-x:hidden;
-scroll-behavior:smooth;
+min-height:100vh;
 }
 
 /* NAV */
@@ -46,7 +50,7 @@ justify-content:space-between;
 align-items:center;
 background:rgba(0,0,0,.2);
 backdrop-filter:blur(12px);
-z-index:100;
+z-index:1000;
 transition:.3s;
 border-bottom:1px solid rgba(255,255,255,.06);
 }
@@ -75,6 +79,11 @@ background:linear-gradient(90deg,var(--accent),var(--accent2));
 font-weight:900;
 cursor:pointer;
 color:black;
+transition:.2s;
+}
+
+.nav button:hover{
+transform:translateY(-2px);
 }
 
 /* CONTINUE BAR */
@@ -90,8 +99,7 @@ border-radius:999px;
 border:1px solid rgba(255,255,255,.08);
 backdrop-filter:blur(15px);
 display:none;
-z-index:200;
-display:flex;
+z-index:999;
 align-items:center;
 gap:12px;
 }
@@ -126,6 +134,7 @@ opacity:.08;
 top:-200px;
 left:50%;
 transform:translateX(-50%);
+pointer-events:none;
 }
 
 @keyframes fadeUp{
@@ -227,6 +236,8 @@ padding:100px 20px;
 opacity:0;
 transform:translateY(40px);
 transition:.6s;
+position:relative;
+z-index:2;
 }
 
 .section.show{
@@ -264,6 +275,7 @@ border:1px solid rgba(255,255,255,.08);
 cursor:pointer;
 transition:.25s;
 font-weight:700;
+user-select:none;
 }
 
 .creatorBtn.active,
@@ -393,7 +405,7 @@ backdrop-filter:blur(18px);
 display:none;
 align-items:center;
 justify-content:center;
-z-index:9999;
+z-index:99999;
 padding:20px;
 }
 
@@ -405,6 +417,7 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:30px;
 padding:35px;
 animation:fadeUp .4s ease;
+position:relative;
 }
 
 .authTop{
@@ -472,6 +485,23 @@ font-size:14px;
 line-height:1.7;
 }
 
+/* CLOSE */
+
+.closeModal{
+position:absolute;
+top:16px;
+right:18px;
+font-size:22px;
+cursor:pointer;
+opacity:.7;
+transition:.2s;
+}
+
+.closeModal:hover{
+opacity:1;
+transform:scale(1.1);
+}
+
 /* CTA BIG */
 
 .ctaBig{
@@ -526,6 +556,10 @@ font-size:38px;
 padding:15px 18px;
 }
 
+.authCard{
+padding:28px;
+}
+
 }
 
 </style>
@@ -534,24 +568,22 @@ padding:15px 18px;
 
 <body>
 
-<!-- NAV -->
-
 <div class="nav" id="nav">
-<div class="logo">SS <span>Studio</span></div>
+
+<div class="logo">
+SS <span>Studio</span>
+</div>
 
 <button onclick="openAuth()">
 Get Started
 </button>
-</div>
 
-<!-- CONTINUE BAR -->
+</div>
 
 <div class="continueBar" id="continueBar">
 Continue as <b id="savedType"></b>
 <button onclick="openAuth()">Resume</button>
 </div>
-
-<!-- HERO -->
 
 <div class="hero">
 
@@ -568,20 +600,20 @@ Everything you need to turn ideas into brands, content, games, films, and digita
 </p>
 
 <div class="cta">
+
 <button class="primary" onclick="openAuth()">
 Join SS Studios
 </button>
 
-<button class="secondary">
+<button class="secondary" onclick="scrollToSection()">
 Explore Platform
 </button>
-</div>
 
 </div>
 
-<!-- CREATOR SELECT -->
+</div>
 
-<div class="section">
+<div class="section" id="creatorSection">
 
 <h2>Choose Your Path</h2>
 
@@ -621,8 +653,8 @@ Creator
 <div class="grid" id="cards"></div>
 
 <div class="preview" id="previewBox">
-<h3>Brand Builder</h3>
-<p>Launch products, create identity, and build a scalable business.</p>
+<h3>BRAND</h3>
+<p>Build your brand and start selling.</p>
 </div>
 
 <div class="accessPanel">
@@ -649,8 +681,6 @@ Without an approved SS Pass, creator divisions stay locked.
 
 </div>
 
-<!-- PLATFORM -->
-
 <div class="section">
 
 <h2>Platform Power</h2>
@@ -667,8 +697,6 @@ Without an approved SS Pass, creator divisions stay locked.
 </div>
 
 </div>
-
-<!-- FLOW -->
 
 <div class="section">
 
@@ -687,8 +715,6 @@ Without an approved SS Pass, creator divisions stay locked.
 
 </div>
 
-<!-- CTA -->
-
 <div class="ctaBig">
 
 <h2>
@@ -701,17 +727,17 @@ Apply For SS Studios
 
 </div>
 
-<!-- FOOTER -->
-
 <div class="footer">
 SS Studio • Multi-Creator Division of StudentStreamHQ
 </div>
 
-<!-- AUTH MODAL -->
-
 <div class="authModal" id="authModal">
 
 <div class="authCard">
+
+<div class="closeModal" onclick="closeAuth()">
+✕
+</div>
 
 <div class="authTop">
 
@@ -764,15 +790,9 @@ Login
 
 🎫 Every creator application enters the SS Studios waitlist.
 
-If approved, your account receives the official SS Pass which unlocks:
 <br><br>
 
-• Films Division  
-• Game Dev Division  
-• Creator Division  
-• Brand Division  
-• Digital Library  
-• Future Studio Features
+If approved, your account receives the official SS Pass which unlocks every SS Studios division.
 
 </div>
 
@@ -791,36 +811,49 @@ const supabase = window.supabase.createClient(
 
 /* NAV */
 
+const navEl = document.getElementById("nav");
+
 window.addEventListener("scroll",()=>{
-nav.classList.toggle(
+
+navEl.classList.toggle(
 "scrolled",
-window.scrollY>20
-)
-})
+window.scrollY > 20
+);
 
-/* SCROLL */
+});
 
-const sections=document.querySelectorAll(".section");
+/* SCROLL ANIMATION */
 
-window.addEventListener("scroll",()=>{
+const sections =
+document.querySelectorAll(".section");
+
+function revealSections(){
 
 sections.forEach(sec=>{
 
-const top=sec.getBoundingClientRect().top;
+const top =
+sec.getBoundingClientRect().top;
 
-if(top<window.innerHeight-100){
+if(top < window.innerHeight - 100){
 
 sec.classList.add("show");
 
 }
 
-})
+});
 
-})
+}
+
+window.addEventListener(
+"scroll",
+revealSections
+);
+
+revealSections();
 
 /* DATA */
 
-const data={
+const data = {
 
 brand:[
 "🏷️ Launch brand",
@@ -860,7 +893,7 @@ creator:[
 
 };
 
-const heroTextMap={
+const heroTextMap = {
 
 brand:"Build your brand and start selling.",
 
@@ -876,32 +909,43 @@ creator:"Build your digital creator business."
 
 };
 
+/* ELEMENTS */
+
+const cards =
+document.getElementById("cards");
+
+const heroText =
+document.getElementById("heroText");
+
+const previewBox =
+document.getElementById("previewBox");
+
 /* LOAD CARDS */
 
 function loadCards(type){
 
-cards.innerHTML="";
+cards.innerHTML = "";
 
-data[type].forEach(i=>{
+data[type].forEach(item=>{
 
-cards.innerHTML+=`
+cards.innerHTML += `
 <div class="card">
-<h3>${i}</h3>
+<h3>${item}</h3>
 </div>
 `;
 
-})
+});
 
 }
 
-/* UPDATE */
+/* UPDATE UI */
 
 function updateUI(type){
 
-heroText.innerText=
+heroText.innerText =
 heroTextMap[type];
 
-previewBox.innerHTML=`
+previewBox.innerHTML = `
 <h3>${type.toUpperCase()}</h3>
 <p>${heroTextMap[type]}</p>
 `;
@@ -913,74 +957,91 @@ type
 
 }
 
-/* CLICK */
+/* CREATOR BUTTONS */
 
-document.querySelectorAll(".creatorBtn")
+document
+.querySelectorAll(".creatorBtn")
 .forEach(btn=>{
 
-btn.onclick=()=>{
+btn.addEventListener("click",()=>{
 
-document.querySelectorAll(".creatorBtn")
+document
+.querySelectorAll(".creatorBtn")
 .forEach(b=>b.classList.remove("active"));
 
 btn.classList.add("active");
 
-const type=btn.dataset.type;
+const type =
+btn.dataset.type;
 
 loadCards(type);
 
 updateUI(type);
 
-openAuth();
+});
 
-}
-
-})
+});
 
 /* AUTH */
 
-let loginMode=false;
+let loginMode = false;
+
+const authModal =
+document.getElementById("authModal");
 
 function openAuth(){
 
-authModal.style.display="flex";
+authModal.style.display = "flex";
 
 }
 
-authModal.onclick=(e)=>{
+function closeAuth(){
 
-if(e.target===authModal){
-
-authModal.style.display="none";
+authModal.style.display = "none";
 
 }
 
+authModal.addEventListener("click",(e)=>{
+
+if(e.target === authModal){
+
+closeAuth();
+
 }
+
+});
 
 function toggleAuth(){
 
-loginMode=!loginMode;
+loginMode = !loginMode;
 
-authTitle.innerText=
+document.getElementById("authTitle").innerText =
 loginMode
 ?
 "Welcome Back"
 :
 "SS Studios Access";
 
-authDesc.innerText=
+document.getElementById("authDesc").innerText =
 loginMode
 ?
 "Login with your SS Studios account."
 :
 "Apply for access to the private creator ecosystem.";
 
-authBtn.innerText=
+document.getElementById("authBtn").innerText =
 loginMode
 ?
 "Login"
 :
 "Join Waitlist";
+
+document.getElementById("username").style.display =
+loginMode
+?
+"none"
+:
+"block";
 
 }
 
@@ -988,25 +1049,36 @@ loginMode
 
 async function submitAuth(){
 
-const username=
-document.getElementById("username").value;
+const username =
+document.getElementById("username").value.trim();
 
-const email=
-document.getElementById("email").value;
+const email =
+document.getElementById("email").value.trim();
 
-const password=
-document.getElementById("password").value;
+const password =
+document.getElementById("password").value.trim();
 
-const creatorType=
-localStorage.getItem("ss_creator_type") || "brand";
+const creatorType =
+localStorage.getItem("ss_creator_type")
+|| "brand";
 
 if(!email || !password){
 
-alert("Complete all fields");
+alert("Please complete all fields.");
 
 return;
 
 }
+
+if(!loginMode && !username){
+
+alert("Enter a username.");
+
+return;
+
+}
+
+try{
 
 if(loginMode){
 
@@ -1023,23 +1095,37 @@ return;
 
 }
 
-const user=data.user;
+const user =
+data.user;
 
-const { data:profile } =
+const { data:profile,error:profileError } =
 await supabase
 .from("ss_studio_users")
 .select("*")
 .eq("user_id",user.id)
 .single();
 
+if(profileError){
+
+alert("Profile not found.");
+return;
+
+}
+
 if(profile?.ss_pass){
 
-window.location.href="dashboard.html";
+localStorage.setItem(
+"ss_logged_in",
+"true"
+);
+
+window.location.href =
+"dashboard.html";
 
 }else{
 
 alert(
-"You are still on the SS Studios waitlist."
+"Your SS Studios application is still pending approval."
 );
 
 }
@@ -1059,6 +1145,14 @@ return;
 
 }
 
+if(!data.user){
+
+alert("Signup failed.");
+return;
+
+}
+
+const insertResult =
 await supabase
 .from("ss_studio_users")
 .insert([{
@@ -1070,18 +1164,43 @@ waitlist:true,
 ss_pass:false
 }]);
 
+if(insertResult.error){
+
+alert(insertResult.error.message);
+return;
+
+}
+
 alert(
-"Application submitted. You are now on the SS Studios waitlist."
+"Application submitted successfully. Welcome to the SS Studios waitlist."
 );
 
+closeAuth();
+
+}
+
+}catch(err){
+
+console.error(err);
+
+alert("Something went wrong.");
+
 }
 
 }
 
-/* CONTINUE */
+/* CONTINUE BAR */
 
-const saved=
-localStorage.getItem("ss_creator_type");
+const saved =
+localStorage.getItem(
+"ss_creator_type"
+);
+
+const continueBar =
+document.getElementById("continueBar");
+
+const savedType =
+document.getElementById("savedType");
 
 if(saved){
 
@@ -1089,29 +1208,31 @@ updateUI(saved);
 
 loadCards(saved);
 
-savedType.innerText=saved;
+savedType.innerText =
+saved;
 
-continueBar.style.display="flex";
+continueBar.style.display =
+"flex";
 
 }else{
 
 loadCards("brand");
 
-}
-
-/* INIT */
-
-sections.forEach(sec=>{
-
-const top=sec.getBoundingClientRect().top;
-
-if(top<window.innerHeight){
-
-sec.classList.add("show");
+updateUI("brand");
 
 }
 
-})
+/* EXPLORE */
+
+function scrollToSection(){
+
+document
+.getElementById("creatorSection")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
 
 </script>
 
