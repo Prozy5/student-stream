@@ -26,6 +26,7 @@
   <button class="primary" onclick="addCube()">Add Cube</button>
   <button class="secondary" onclick="saveWorld()">Save World</button>
   <button class="secondary" onclick="loadWorld()">Load World</button>
+  <div id="status" style="margin-top:10px; font-size:14px; color:#93c5fd;"></div>
 </div>
 
 <script>
@@ -72,6 +73,7 @@ function addCube() {
   cube.position.set(Math.random()*5-2.5, 0.5, Math.random()*5-2.5);
   scene.add(cube);
   cubes.push(cube);
+  updateStatus(`Added cube. Total: ${cubes.length}`);
 }
 
 async function saveWorld() {
@@ -85,8 +87,8 @@ async function saveWorld() {
     .from("studentstream_game_worlds")
     .upsert([{ id: 1, world_json: worldData }]);
 
-  if(error) console.error("Save error:", error);
-  else alert("World saved!");
+  if(error) updateStatus(`Save error: ${error.message}`);
+  else updateStatus("World saved!");
 }
 
 async function loadWorld() {
@@ -96,7 +98,7 @@ async function loadWorld() {
     .eq("id", 1)
     .single();
 
-  if(error) { console.error("Load error:", error); return; }
+  if(error) { updateStatus(`Load error: ${error.message}`); return; }
 
   // Remove old cubes
   cubes.forEach(c => scene.remove(c));
@@ -112,7 +114,11 @@ async function loadWorld() {
     cubes.push(cube);
   });
 
-  alert("World loaded!");
+  updateStatus("World loaded!");
+}
+
+function updateStatus(msg) {
+  document.getElementById('status').innerText = msg;
 }
 
 // --- Render Loop ---
