@@ -18,6 +18,7 @@
   button { padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; }
   .primary { background: linear-gradient(90deg, #3b82f6, #00d4ff); color: black; }
   .secondary { background: rgba(255,255,255,0.1); color: white; }
+  #status { margin-top: 10px; font-size: 14px; color: #93c5fd; }
 </style>
 </head>
 <body>
@@ -26,115 +27,113 @@
   <button class="primary" onclick="addCube()">Add Cube</button>
   <button class="secondary" onclick="saveWorld()">Save World</button>
   <button class="secondary" onclick="loadWorld()">Load World</button>
-  <div id="status" style="margin-top:10px; font-size:14px; color:#93c5fd;"></div>
+  <div id="status"></div>
 </div>
 
 <script>
-// --- Supabase Setup ---
-const supabase = window.supabase.createClient(
-  "https://iabzmoxzbqzcqgypxctr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
-);
+  // --- Supabase Setup ---
+  const supabase = window.supabase.createClient(
+    "https://iabzmoxzbqzcqgypxctr.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+  );
 
-// --- Three.js Setup ---
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020617);
+  // --- Three.js Setup ---
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020617);
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.set(5, 5, 10);
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(5, 5, 10);
 
-const renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+  const renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
 
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
 
-// Light
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(10, 20, 10);
-scene.add(light);
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(10, 20, 10);
+  scene.add(light);
 
-// Floor
-const floorGeo = new THREE.PlaneGeometry(50,50);
-const floorMat = new THREE.MeshStandardMaterial({color: 0x111827, side: THREE.DoubleSide});
-const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.rotation.x = -Math.PI/2;
-scene.add(floor);
+  const floorGeo = new THREE.PlaneGeometry(50,50);
+  const floorMat = new THREE.MeshStandardMaterial({color: 0x111827, side: THREE.DoubleSide});
+  const floor = new THREE.Mesh(floorGeo, floorMat);
+  floor.rotation.x = -Math.PI/2;
+  scene.add(floor);
 
-// Cubes container
-let cubes = [];
+  // Cubes container
+  let cubes = [];
 
-// --- Functions ---
-function addCube() {
-  const geo = new THREE.BoxGeometry(1,1,1);
-  const mat = new THREE.MeshStandardMaterial({color: Math.random() * 0xffffff});
-  const cube = new THREE.Mesh(geo, mat);
-  cube.position.set(Math.random()*5-2.5, 0.5, Math.random()*5-2.5);
-  scene.add(cube);
-  cubes.push(cube);
-  updateStatus(`Added cube. Total: ${cubes.length}`);
-}
-
-async function saveWorld() {
-  const worldData = cubes.map(c => ({
-    position: c.position.toArray(),
-    rotation: c.rotation.toArray(),
-    color: c.material.color.getHex()
-  }));
-
-  const { data, error } = await supabase
-    .from("studentstream_game_worlds")
-    .upsert([{ id: 1, world_json: worldData }]);
-
-  if(error) updateStatus(`Save error: ${error.message}`);
-  else updateStatus("World saved!");
-}
-
-async function loadWorld() {
-  const { data, error } = await supabase
-    .from("studentstream_game_worlds")
-    .select("*")
-    .eq("id", 1)
-    .single();
-
-  if(error) { updateStatus(`Load error: ${error.message}`); return; }
-
-  // Remove old cubes
-  cubes.forEach(c => scene.remove(c));
-  cubes = [];
-
-  data.world_json.forEach(obj => {
+  // --- Functions ---
+  function addCube() {
     const geo = new THREE.BoxGeometry(1,1,1);
-    const mat = new THREE.MeshStandardMaterial({color: obj.color});
+    const mat = new THREE.MeshStandardMaterial({color: Math.random() * 0xffffff});
     const cube = new THREE.Mesh(geo, mat);
-    cube.position.fromArray(obj.position);
-    cube.rotation.fromArray(obj.rotation);
+    cube.position.set(Math.random()*5-2.5, 0.5, Math.random()*5-2.5);
     scene.add(cube);
     cubes.push(cube);
+    updateStatus(`Added cube. Total: ${cubes.length}`);
+  }
+
+  async function saveWorld() {
+    const worldData = cubes.map(c => ({
+      position: c.position.toArray(),
+      rotation: c.rotation.toArray(),
+      color: c.material.color.getHex()
+    }));
+
+    const { data, error } = await supabase
+      .from("studentstream_game_worlds")
+      .upsert([{ id: 1, world_json: worldData }]);
+
+    if(error) updateStatus(`Save error: ${error.message}`);
+    else updateStatus("World saved!");
+  }
+
+  async function loadWorld() {
+    const { data, error } = await supabase
+      .from("studentstream_game_worlds")
+      .select("*")
+      .eq("id", 1)
+      .single();
+
+    if(error) { updateStatus(`Load error: ${error.message}`); return; }
+
+    // Remove old cubes
+    cubes.forEach(c => scene.remove(c));
+    cubes = [];
+
+    data.world_json.forEach(obj => {
+      const geo = new THREE.BoxGeometry(1,1,1);
+      const mat = new THREE.MeshStandardMaterial({color: obj.color});
+      const cube = new THREE.Mesh(geo, mat);
+      cube.position.fromArray(obj.position);
+      cube.rotation.fromArray(obj.rotation);
+      scene.add(cube);
+      cubes.push(cube);
+    });
+
+    updateStatus("World loaded!");
+  }
+
+  function updateStatus(msg) {
+    document.getElementById('status').innerText = msg;
+  }
+
+  // --- Render Loop ---
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // --- Handle resize ---
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
   });
-
-  updateStatus("World loaded!");
-}
-
-function updateStatus(msg) {
-  document.getElementById('status').innerText = msg;
-}
-
-// --- Render Loop ---
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-}
-animate();
-
-// --- Handle resize ---
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
 </script>
 
 </body>
