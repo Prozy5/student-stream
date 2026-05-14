@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>StudentStreamHQ • Newsroom</title>
+<title>StudentStreamHQ • Newsroom Debug</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -125,6 +125,47 @@ color:var(--muted);
 font-size:18px;
 }
 
+/* DEBUG PANEL */
+
+.debugPanel{
+max-width:1200px;
+margin:0 auto 40px auto;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:24px;
+padding:24px;
+}
+
+.debugPanel h2{
+font-size:28px;
+margin-bottom:18px;
+}
+
+.debugLog{
+background:#020617;
+border:1px solid rgba(255,255,255,.08);
+padding:18px;
+border-radius:18px;
+font-size:14px;
+line-height:1.8;
+white-space:pre-wrap;
+overflow:auto;
+max-height:500px;
+color:#cbd5e1;
+}
+
+.success{
+color:#6ee7b7;
+}
+
+.error{
+color:#fca5a5;
+}
+
+.warning{
+color:#fcd34d;
+}
+
 /* FEATURED */
 
 .featured{
@@ -150,9 +191,15 @@ cursor:pointer;
 transition:.25s;
 }
 
-.featuredMain:hover{
-transform:translateY(-4px);
-border-color:var(--accent);
+.featuredMain h2{
+font-size:44px;
+line-height:1;
+margin-bottom:18px;
+}
+
+.featuredMain p{
+color:var(--muted);
+line-height:1.8;
 }
 
 .liveBadge{
@@ -165,18 +212,6 @@ color:#ffb4b4;
 font-size:12px;
 font-weight:800;
 margin-bottom:20px;
-}
-
-.featuredMain h2{
-font-size:44px;
-line-height:1;
-margin-bottom:18px;
-}
-
-.featuredMain p{
-color:var(--muted);
-line-height:1.8;
-font-size:16px;
 }
 
 .meta{
@@ -200,12 +235,6 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:24px;
 padding:24px;
 cursor:pointer;
-transition:.25s;
-}
-
-.updateCard:hover{
-transform:translateY(-4px);
-border-color:var(--accent);
 }
 
 .updateTag{
@@ -218,40 +247,6 @@ margin-bottom:14px;
 background:rgba(59,130,246,.12);
 color:#93c5fd;
 border:1px solid rgba(59,130,246,.3);
-}
-
-.updateCard h3{
-font-size:22px;
-margin-bottom:12px;
-}
-
-.updateCard p{
-line-height:1.7;
-color:var(--muted);
-}
-
-/* STATUS */
-
-.statusStrip{
-max-width:1200px;
-margin:auto;
-margin-bottom:60px;
-padding:24px;
-border-radius:24px;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-}
-
-.statusItem h2{
-font-size:34px;
-margin-bottom:6px;
-}
-
-.statusItem p{
-color:var(--muted);
 }
 
 /* NEWS */
@@ -286,13 +281,6 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:26px;
 padding:28px;
 cursor:pointer;
-transition:.25s;
-}
-
-.newsCard:hover{
-transform:translateY(-4px);
-border-color:var(--accent);
-box-shadow:0 0 40px rgba(59,130,246,.12);
 }
 
 .newsTop{
@@ -330,6 +318,30 @@ color:var(--muted);
 margin-top:20px;
 font-weight:800;
 color:#93c5fd;
+}
+
+/* STATUS */
+
+.statusStrip{
+max-width:1200px;
+margin:auto;
+margin-bottom:60px;
+padding:24px;
+border-radius:24px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.statusItem h2{
+font-size:34px;
+margin-bottom:6px;
+}
+
+.statusItem p{
+color:var(--muted);
 }
 
 /* MODAL */
@@ -405,16 +417,12 @@ font-size:13px;
 color:var(--muted);
 }
 
-/* LOADER */
-
 .loader{
 padding:80px 20px;
 text-align:center;
 color:var(--muted);
 font-size:18px;
 }
-
-/* MOBILE */
 
 @media(max-width:900px){
 
@@ -441,8 +449,6 @@ font-size:38px;
 
 <body>
 
-<!-- NAV -->
-
 <div class="nav">
 
 <div class="logo">
@@ -463,8 +469,6 @@ Developer Updates
 
 </div>
 
-<!-- HERO -->
-
 <section class="hero">
 
 <div class="badge">
@@ -476,10 +480,22 @@ Platform News, <span>System Updates</span> & Internal Reports
 </h1>
 
 <p>
-The official communication hub for StudentStreamHQ. Follow live platform updates,
-system changes, rollout progress, creator announcements, infrastructure reports,
-security notices, and internal development updates.
+The official communication hub for StudentStreamHQ.
 </p>
+
+</section>
+
+<!-- DEBUG -->
+
+<section class="debugPanel">
+
+<h2>
+Live Debug Console
+</h2>
+
+<div class="debugLog" id="debugLog">
+Starting debugger...
+</div>
 
 </section>
 
@@ -528,8 +544,7 @@ Latest Reports
 </h2>
 
 <p class="sectionSub">
-Official reports, launch progress, development announcements,
-and internal StudentStreamHQ communications.
+Official reports and platform updates.
 </p>
 
 <div class="newsGrid" id="newsGrid">
@@ -585,13 +600,43 @@ Newsroom • System Reports • Internal Development
 
 <script>
 
+/* DEBUG LOGGER */
+
+const debugLog =
+document.getElementById("debugLog");
+
+function log(message,type="normal"){
+
+const div =
+document.createElement("div");
+
+div.className = type;
+
+div.innerHTML = message;
+
+debugLog.appendChild(div);
+
+console.log(message);
+
+}
+
 /* SUPABASE */
+
+log("1. Loading Supabase client...");
+
+const SUPABASE_URL =
+"https://iabzmoxzbqzcqgypxctr.supabase.co";
+
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
 const supabaseClient =
 window.supabase.createClient(
-"https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+SUPABASE_URL,
+SUPABASE_KEY
 );
+
+log("✅ Supabase initialized","success");
 
 /* ELEMENTS */
 
@@ -608,36 +653,47 @@ document.getElementById("articleModal");
 
 async function loadArticles(){
 
+log("2. Starting article fetch...");
+
 try{
+
+log("3. Connecting to database...");
 
 const { data, error } =
 await supabaseClient
 .from("studentstream_blog_posts")
 .select("*")
-.eq("published", true)
 .order("created_at", {
 ascending:false
 });
 
+log("4. Raw response received");
+
 if(error){
 
-console.error(error);
+log("❌ DATABASE ERROR:","error");
+
+log(JSON.stringify(error,null,2),"error");
 
 featuredSection.innerHTML = `
 <div class="loader">
-Failed to load newsroom.
+Database Error
 </div>
 `;
 
 newsGrid.innerHTML = `
 <div class="loader">
-Failed to load articles.
+Check debug console above.
 </div>
 `;
 
 return;
 
 }
+
+log(`✅ SUCCESS: ${data.length} articles loaded`,"success");
+
+log(JSON.stringify(data,null,2),"success");
 
 document.getElementById(
 "totalArticles"
@@ -649,17 +705,21 @@ renderNews(data);
 
 }catch(err){
 
+log("❌ CONNECTION FAILURE","error");
+
+log(err.message,"error");
+
 console.error(err);
 
 featuredSection.innerHTML = `
 <div class="loader">
-Connection error.
+Connection failed.
 </div>
 `;
 
 newsGrid.innerHTML = `
 <div class="loader">
-Could not connect to newsroom.
+Open debugger above.
 </div>
 `;
 
@@ -675,7 +735,7 @@ if(!posts || posts.length === 0){
 
 featuredSection.innerHTML = `
 <div class="loader">
-No published articles yet.
+No published articles found.
 </div>
 `;
 
@@ -742,7 +802,7 @@ ${post.excerpt || ""}
 
 }
 
-/* NEWS GRID */
+/* NEWS */
 
 function renderNews(posts){
 
@@ -804,7 +864,7 @@ await supabaseClient
 
 if(error){
 
-console.error(error);
+log(JSON.stringify(error,null,2),"error");
 return;
 
 }
@@ -852,7 +912,7 @@ closeArticle();
 }
 );
 
-/* FORMATTERS */
+/* FORMAT */
 
 function formatDate(date){
 
