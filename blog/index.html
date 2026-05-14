@@ -30,6 +30,10 @@ font-family:Inter,system-ui,sans-serif;
 --danger:#ef4444;
 }
 
+html{
+scroll-behavior:smooth;
+}
+
 body{
 background:
 radial-gradient(circle at top,#0f172a 0%,#020617 60%);
@@ -163,6 +167,16 @@ position:relative;
 overflow:hidden;
 }
 
+.featuredMain::before{
+content:"";
+position:absolute;
+top:-80px;
+right:-80px;
+width:240px;
+height:240px;
+background:radial-gradient(circle,rgba(59,130,246,.25),transparent 70%);
+}
+
 .featuredMain:hover{
 transform:translateY(-4px);
 border-color:var(--accent);
@@ -187,12 +201,16 @@ margin-bottom:20px;
 font-size:48px;
 line-height:1;
 margin-bottom:20px;
+position:relative;
+z-index:2;
 }
 
 .featuredMain p{
 font-size:16px;
 line-height:1.8;
 color:var(--muted);
+position:relative;
+z-index:2;
 }
 
 .meta{
@@ -202,6 +220,8 @@ gap:16px;
 flex-wrap:wrap;
 font-size:13px;
 color:#cbd5e1;
+position:relative;
+z-index:2;
 }
 
 .sideUpdates{
@@ -222,6 +242,7 @@ transition:.25s;
 .updateCard:hover{
 transform:translateY(-4px);
 border-color:var(--accent);
+box-shadow:0 0 30px rgba(59,130,246,.1);
 }
 
 .updateTag{
@@ -261,6 +282,10 @@ border:1px solid rgba(255,255,255,.08);
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:24px;
+}
+
+.statusItem{
+padding:10px;
 }
 
 .statusItem h2{
@@ -309,12 +334,29 @@ border-radius:26px;
 padding:28px;
 cursor:pointer;
 transition:.25s;
+position:relative;
+overflow:hidden;
 }
 
 .newsCard:hover{
 transform:translateY(-4px);
 border-color:var(--accent);
 box-shadow:0 0 40px rgba(59,130,246,.12);
+}
+
+.newsCard::after{
+content:"";
+position:absolute;
+bottom:0;
+left:0;
+height:2px;
+width:0%;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+transition:.3s;
+}
+
+.newsCard:hover::after{
+width:100%;
 }
 
 .newsTop{
@@ -427,6 +469,13 @@ font-size:14px;
 color:var(--muted);
 }
 
+.articleImage{
+width:100%;
+border-radius:24px;
+margin-bottom:30px;
+border:1px solid rgba(255,255,255,.08);
+}
+
 .articleContent{
 font-size:17px;
 line-height:1.9;
@@ -435,18 +484,6 @@ color:#dbe5f3;
 
 .articleContent p{
 margin-bottom:24px;
-}
-
-/* ARTICLE IMAGE */
-
-.articleContent img{
-width:100%;
-max-width:700px;
-display:block;
-margin:30px auto;
-border-radius:24px;
-border:1px solid rgba(255,255,255,.08);
-box-shadow:0 0 40px rgba(0,0,0,.4);
 }
 
 /* FOOTER */
@@ -491,6 +528,10 @@ font-size:36px;
 
 .articleTitle{
 font-size:40px;
+}
+
+.articleBox{
+padding:30px 24px;
 }
 
 }
@@ -605,6 +646,12 @@ Loading...
 
 <div class="articleMeta" id="articleMeta"></div>
 
+<img
+id="articleImage"
+class="articleImage"
+style="display:none;"
+/>
+
 <div class="articleContent" id="articleContent"></div>
 
 </div>
@@ -630,11 +677,15 @@ Newsroom • System Reports • Internal Development
 
 <script>
 
+/* SUPABASE */
+
 const supabaseClient =
 window.supabase.createClient(
 "https://iabzmoxzbqzcqgypxctr.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
+
+/* ELEMENTS */
 
 const newsGrid =
 document.getElementById("newsGrid");
@@ -644,6 +695,8 @@ document.getElementById("featuredSection");
 
 const articleModal =
 document.getElementById("articleModal");
+
+/* LOAD ARTICLES */
 
 async function loadArticles(){
 
@@ -704,6 +757,8 @@ Could not connect to newsroom.
 }
 
 }
+
+/* FEATURED */
 
 function renderFeatured(posts){
 
@@ -777,6 +832,8 @@ ${post.excerpt || ""}
 
 }
 
+/* NEWS */
+
 function renderNews(posts){
 
 newsGrid.innerHTML = "";
@@ -820,6 +877,8 @@ Read Full Article →
 
 }
 
+/* OPEN ARTICLE */
+
 window.openArticle =
 async function(id){
 
@@ -853,12 +912,36 @@ document.getElementById(
 <div>${data.status || "LIVE"}</div>
 `;
 
+/* IMAGE SUPPORT */
+
+const articleImage =
+document.getElementById("articleImage");
+
+if(data.image_url){
+
+articleImage.src =
+data.image_url;
+
+articleImage.style.display =
+"block";
+
+}else{
+
+articleImage.style.display =
+"none";
+
+}
+
+/* CONTENT */
+
 document.getElementById(
 "articleContent"
 ).innerHTML =
 formatContent(data.content);
 
 };
+
+/* CLOSE */
 
 window.closeArticle =
 function(){
@@ -881,6 +964,8 @@ closeArticle();
 }
 );
 
+/* FORMAT */
+
 function formatDate(date){
 
 return new Date(date)
@@ -895,16 +980,19 @@ year:"numeric"
 
 }
 
-/* FIXED HTML RENDERING */
-
 function formatContent(content){
 
 if(!content) return "";
 
 return content
-.replace(/\n/g,"<br><br>");
+.split("\n")
+.filter(p => p.trim() !== "")
+.map(p => `<p>${p}</p>`)
+.join("");
 
 }
+
+/* START */
 
 loadArticles();
 
