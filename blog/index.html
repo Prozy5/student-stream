@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>StudentStreamHQ • Newsroom Debug</title>
+<title>StudentStreamHQ • Newsroom</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -25,6 +26,8 @@ font-family:Inter,system-ui,sans-serif;
 --muted:#94a3b8;
 --accent:#3b82f6;
 --accent2:#00d4ff;
+--success:#10b981;
+--danger:#ef4444;
 }
 
 body{
@@ -33,6 +36,7 @@ radial-gradient(circle at top,#0f172a 0%,#020617 60%);
 color:var(--text);
 min-height:100vh;
 padding:30px 20px;
+overflow-x:hidden;
 }
 
 /* NAV */
@@ -43,9 +47,9 @@ margin:auto;
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:40px;
 padding-bottom:20px;
 border-bottom:1px solid rgba(255,255,255,.06);
+margin-bottom:50px;
 }
 
 .logo{
@@ -68,9 +72,14 @@ gap:12px;
 .navBtn{
 padding:12px 18px;
 border:none;
-border-radius:12px;
-font-weight:700;
+border-radius:14px;
+font-weight:800;
 cursor:pointer;
+transition:.25s;
+}
+
+.navBtn:hover{
+transform:translateY(-2px);
 }
 
 .primaryBtn{
@@ -94,6 +103,8 @@ margin-bottom:60px;
 
 .badge{
 display:inline-flex;
+align-items:center;
+gap:10px;
 padding:10px 16px;
 border-radius:999px;
 background:rgba(255,255,255,.05);
@@ -104,11 +115,11 @@ margin-bottom:24px;
 }
 
 .hero h1{
-font-size:68px;
-line-height:.95;
+font-size:72px;
+line-height:.92;
 font-weight:900;
-letter-spacing:-3px;
-max-width:850px;
+letter-spacing:-4px;
+max-width:900px;
 }
 
 .hero h1 span{
@@ -118,52 +129,11 @@ background:linear-gradient(90deg,var(--accent),var(--accent2));
 }
 
 .hero p{
-margin-top:24px;
+margin-top:28px;
 max-width:760px;
+font-size:18px;
 line-height:1.8;
 color:var(--muted);
-font-size:18px;
-}
-
-/* DEBUG PANEL */
-
-.debugPanel{
-max-width:1200px;
-margin:0 auto 40px auto;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-border-radius:24px;
-padding:24px;
-}
-
-.debugPanel h2{
-font-size:28px;
-margin-bottom:18px;
-}
-
-.debugLog{
-background:#020617;
-border:1px solid rgba(255,255,255,.08);
-padding:18px;
-border-radius:18px;
-font-size:14px;
-line-height:1.8;
-white-space:pre-wrap;
-overflow:auto;
-max-height:500px;
-color:#cbd5e1;
-}
-
-.success{
-color:#6ee7b7;
-}
-
-.error{
-color:#fca5a5;
-}
-
-.warning{
-color:#fcd34d;
 }
 
 /* FEATURED */
@@ -181,29 +151,28 @@ margin-bottom:50px;
 background:
 linear-gradient(
 135deg,
-rgba(59,130,246,.14),
-rgba(0,212,255,.06)
+rgba(59,130,246,.16),
+rgba(0,212,255,.08)
 );
 border:1px solid rgba(255,255,255,.08);
-border-radius:28px;
-padding:34px;
+border-radius:30px;
+padding:36px;
 cursor:pointer;
 transition:.25s;
+position:relative;
+overflow:hidden;
 }
 
-.featuredMain h2{
-font-size:44px;
-line-height:1;
-margin-bottom:18px;
-}
-
-.featuredMain p{
-color:var(--muted);
-line-height:1.8;
+.featuredMain:hover{
+transform:translateY(-4px);
+border-color:var(--accent);
+box-shadow:0 0 50px rgba(59,130,246,.18);
 }
 
 .liveBadge{
 display:inline-flex;
+align-items:center;
+gap:8px;
 padding:8px 14px;
 border-radius:999px;
 background:rgba(239,68,68,.12);
@@ -212,6 +181,18 @@ color:#ffb4b4;
 font-size:12px;
 font-weight:800;
 margin-bottom:20px;
+}
+
+.featuredMain h2{
+font-size:48px;
+line-height:1;
+margin-bottom:20px;
+}
+
+.featuredMain p{
+font-size:16px;
+line-height:1.8;
+color:var(--muted);
 }
 
 .meta{
@@ -226,7 +207,7 @@ color:#cbd5e1;
 .sideUpdates{
 display:flex;
 flex-direction:column;
-gap:18px;
+gap:20px;
 }
 
 .updateCard{
@@ -235,6 +216,12 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:24px;
 padding:24px;
 cursor:pointer;
+transition:.25s;
+}
+
+.updateCard:hover{
+transform:translateY(-4px);
+border-color:var(--accent);
 }
 
 .updateTag{
@@ -249,7 +236,44 @@ color:#93c5fd;
 border:1px solid rgba(59,130,246,.3);
 }
 
-/* NEWS */
+.updateCard h3{
+font-size:24px;
+margin-bottom:12px;
+line-height:1.2;
+}
+
+.updateCard p{
+line-height:1.7;
+color:var(--muted);
+font-size:14px;
+}
+
+/* STATUS */
+
+.statusStrip{
+max-width:1200px;
+margin:auto;
+margin-bottom:60px;
+padding:28px;
+border-radius:28px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:24px;
+}
+
+.statusItem h2{
+font-size:36px;
+margin-bottom:6px;
+}
+
+.statusItem p{
+color:var(--muted);
+font-size:14px;
+}
+
+/* SECTION */
 
 .section{
 max-width:1200px;
@@ -258,16 +282,19 @@ margin-bottom:60px;
 }
 
 .sectionTitle{
-font-size:44px;
+font-size:46px;
 font-weight:900;
 margin-bottom:14px;
+letter-spacing:-2px;
 }
 
 .sectionSub{
 color:var(--muted);
-margin-bottom:30px;
+margin-bottom:32px;
 line-height:1.7;
 }
+
+/* NEWS GRID */
 
 .newsGrid{
 display:grid;
@@ -281,12 +308,20 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:26px;
 padding:28px;
 cursor:pointer;
+transition:.25s;
+}
+
+.newsCard:hover{
+transform:translateY(-4px);
+border-color:var(--accent);
+box-shadow:0 0 40px rgba(59,130,246,.12);
 }
 
 .newsTop{
 display:flex;
 justify-content:space-between;
 margin-bottom:18px;
+gap:12px;
 }
 
 .newsDate{
@@ -305,43 +340,25 @@ color:#93c5fd;
 }
 
 .newsCard h3{
-font-size:26px;
+font-size:28px;
 margin-bottom:14px;
+line-height:1.2;
 }
 
 .newsCard p{
 line-height:1.8;
 color:var(--muted);
+font-size:15px;
 }
 
 .readMore{
 margin-top:20px;
+display:inline-flex;
+align-items:center;
+gap:8px;
+font-size:14px;
 font-weight:800;
 color:#93c5fd;
-}
-
-/* STATUS */
-
-.statusStrip{
-max-width:1200px;
-margin:auto;
-margin-bottom:60px;
-padding:24px;
-border-radius:24px;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-}
-
-.statusItem h2{
-font-size:34px;
-margin-bottom:6px;
-}
-
-.statusItem p{
-color:var(--muted);
 }
 
 /* MODAL */
@@ -349,7 +366,7 @@ color:var(--muted);
 .articleModal{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.9);
+background:rgba(0,0,0,.88);
 backdrop-filter:blur(12px);
 display:none;
 justify-content:center;
@@ -367,6 +384,18 @@ border:1px solid rgba(255,255,255,.08);
 border-radius:30px;
 padding:40px;
 position:relative;
+animation:fadeIn .25s ease;
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 .closeModal{
@@ -375,10 +404,15 @@ top:20px;
 right:24px;
 font-size:26px;
 cursor:pointer;
+opacity:.7;
+}
+
+.closeModal:hover{
+opacity:1;
 }
 
 .articleTitle{
-font-size:54px;
+font-size:56px;
 font-weight:900;
 line-height:1;
 margin-bottom:18px;
@@ -389,12 +423,13 @@ display:flex;
 gap:16px;
 flex-wrap:wrap;
 margin-bottom:30px;
+font-size:14px;
 color:var(--muted);
 }
 
 .articleContent{
-line-height:1.9;
 font-size:17px;
+line-height:1.9;
 color:#dbe5f3;
 }
 
@@ -417,12 +452,16 @@ font-size:13px;
 color:var(--muted);
 }
 
+/* LOADER */
+
 .loader{
-padding:80px 20px;
+padding:100px 20px;
 text-align:center;
 color:var(--muted);
 font-size:18px;
 }
+
+/* MOBILE */
 
 @media(max-width:900px){
 
@@ -431,15 +470,15 @@ grid-template-columns:1fr;
 }
 
 .hero h1{
-font-size:48px;
+font-size:52px;
 }
 
 .featuredMain h2{
-font-size:34px;
+font-size:36px;
 }
 
 .articleTitle{
-font-size:38px;
+font-size:40px;
 }
 
 }
@@ -448,6 +487,8 @@ font-size:38px;
 </head>
 
 <body>
+
+<!-- NAV -->
 
 <div class="nav">
 
@@ -469,6 +510,8 @@ Developer Updates
 
 </div>
 
+<!-- HERO -->
+
 <section class="hero">
 
 <div class="badge">
@@ -480,22 +523,10 @@ Platform News, <span>System Updates</span> & Internal Reports
 </h1>
 
 <p>
-The official communication hub for StudentStreamHQ.
+The official communication hub for StudentStreamHQ. Follow live platform updates,
+system changes, rollout progress, creator announcements, infrastructure reports,
+security notices, and internal development updates.
 </p>
-
-</section>
-
-<!-- DEBUG -->
-
-<section class="debugPanel">
-
-<h2>
-Live Debug Console
-</h2>
-
-<div class="debugLog" id="debugLog">
-Starting debugger...
-</div>
 
 </section>
 
@@ -544,7 +575,8 @@ Latest Reports
 </h2>
 
 <p class="sectionSub">
-Official reports and platform updates.
+Official reports, launch progress, development announcements,
+and internal StudentStreamHQ communications.
 </p>
 
 <div class="newsGrid" id="newsGrid">
@@ -600,43 +632,13 @@ Newsroom • System Reports • Internal Development
 
 <script>
 
-/* DEBUG LOGGER */
-
-const debugLog =
-document.getElementById("debugLog");
-
-function log(message,type="normal"){
-
-const div =
-document.createElement("div");
-
-div.className = type;
-
-div.innerHTML = message;
-
-debugLog.appendChild(div);
-
-console.log(message);
-
-}
-
 /* SUPABASE */
-
-log("1. Loading Supabase client...");
-
-const SUPABASE_URL =
-"https://iabzmoxzbqzcqgypxctr.supabase.co";
-
-const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
 
 const supabaseClient =
 window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
-
-log("✅ Supabase initialized","success");
 
 /* ELEMENTS */
 
@@ -653,11 +655,7 @@ document.getElementById("articleModal");
 
 async function loadArticles(){
 
-log("2. Starting article fetch...");
-
 try{
-
-log("3. Connecting to database...");
 
 const { data, error } =
 await supabaseClient
@@ -667,33 +665,25 @@ await supabaseClient
 ascending:false
 });
 
-log("4. Raw response received");
-
 if(error){
 
-log("❌ DATABASE ERROR:","error");
-
-log(JSON.stringify(error,null,2),"error");
+console.error(error);
 
 featuredSection.innerHTML = `
 <div class="loader">
-Database Error
+Failed to load newsroom.
 </div>
 `;
 
 newsGrid.innerHTML = `
 <div class="loader">
-Check debug console above.
+Failed to load articles.
 </div>
 `;
 
 return;
 
 }
-
-log(`✅ SUCCESS: ${data.length} articles loaded`,"success");
-
-log(JSON.stringify(data,null,2),"success");
 
 document.getElementById(
 "totalArticles"
@@ -705,21 +695,17 @@ renderNews(data);
 
 }catch(err){
 
-log("❌ CONNECTION FAILURE","error");
-
-log(err.message,"error");
-
 console.error(err);
 
 featuredSection.innerHTML = `
 <div class="loader">
-Connection failed.
+Connection error.
 </div>
 `;
 
 newsGrid.innerHTML = `
 <div class="loader">
-Open debugger above.
+Could not connect to newsroom.
 </div>
 `;
 
@@ -735,7 +721,7 @@ if(!posts || posts.length === 0){
 
 featuredSection.innerHTML = `
 <div class="loader">
-No published articles found.
+No published articles yet.
 </div>
 `;
 
@@ -745,8 +731,7 @@ return;
 
 const featured = posts[0];
 
-const sidePosts =
-posts.slice(1,4);
+const sidePosts = posts.slice(1,4);
 
 featuredSection.innerHTML = `
 
@@ -864,7 +849,7 @@ await supabaseClient
 
 if(error){
 
-log(JSON.stringify(error,null,2),"error");
+console.error(error);
 return;
 
 }
