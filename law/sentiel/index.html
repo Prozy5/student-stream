@@ -84,10 +84,6 @@ cursor:pointer;
 transition:.25s;
 }
 
-.btn:hover{
-transform:translateY(-2px);
-}
-
 .primary{
 background:linear-gradient(90deg,var(--accent2),var(--accent));
 color:black;
@@ -349,6 +345,43 @@ font-size:13px;
 color:var(--muted);
 }
 
+/* DEBUGGER */
+
+.debugPanel{
+margin-top:24px;
+background:#000;
+border:1px solid rgba(255,255,255,.1);
+border-radius:20px;
+padding:20px;
+}
+
+.debugTitle{
+font-size:22px;
+font-weight:900;
+margin-bottom:16px;
+color:#00d4ff;
+}
+
+.debugBox{
+background:#050b16;
+padding:16px;
+border-radius:16px;
+font-size:13px;
+line-height:1.7;
+white-space:pre-wrap;
+max-height:400px;
+overflow:auto;
+border:1px solid rgba(255,255,255,.06);
+}
+
+.success{
+color:#10b981;
+}
+
+.error{
+color:#ef4444;
+}
+
 @media(max-width:1200px){
 
 .hero,
@@ -465,7 +498,7 @@ Realtime System Status
 
 <div class="statCard">
 <div class="statLabel">Protected Creators</div>
-<div class="statValue" id="creators">3</div>
+<div class="statValue" id="creators">0</div>
 <div class="statSub">Registered platform accounts</div>
 </div>
 
@@ -528,6 +561,20 @@ Send
 
 </section>
 
+<!-- DEBUGGER -->
+
+<div class="debugPanel">
+
+<div class="debugTitle">
+LIVE DEBUGGER
+</div>
+
+<div class="debugBox" id="debugBox">
+Waiting for Supabase...
+</div>
+
+</div>
+
 <div class="footer">
 
 <div>
@@ -564,20 +611,29 @@ SUPABASE_KEY
 const logsBox =
 document.getElementById("logs");
 
-const chatArea =
-document.getElementById("chatArea");
+const debugBox =
+document.getElementById("debugBox");
 
-const sendBtn =
-document.getElementById("sendBtn");
+function debug(message,type="success"){
 
-const messageInput =
-document.getElementById("messageInput");
+console.log(message);
+
+debugBox.innerHTML += `
+<div class="${type}">
+${new Date().toLocaleTimeString()} → ${message}
+</div>
+`;
+
+debugBox.scrollTop =
+debugBox.scrollHeight;
+
+}
 
 async function loadDashboard(){
 
 try{
 
-/* THREATS */
+debug("Loading threats table...");
 
 const threatsResponse =
 await client
@@ -586,13 +642,19 @@ await client
 .order("created_at",{ascending:false})
 .limit(20);
 
+debug("Threat response received");
+
+debug(JSON.stringify(threatsResponse,null,2));
+
 const threats =
 threatsResponse.data || [];
 
 const threatCount =
 threatsResponse.count || 0;
 
-/* LOGS */
+debug("Threat count: " + threatCount);
+
+debug("Loading logs table...");
 
 const logsResponse =
 await client
@@ -601,23 +663,27 @@ await client
 .order("created_at",{ascending:false})
 .limit(20);
 
+debug(JSON.stringify(logsResponse,null,2));
+
 const logs =
 logsResponse.data || [];
 
 const logsTotal =
 logsResponse.count || 0;
 
-/* AGREEMENTS */
+debug("Logs count: " + logsTotal);
+
+debug("Loading agreements table...");
 
 const agreementsResponse =
 await client
 .from("ss_legal_agreements")
-.select("*",{count:"exact",head:true});
+.select("*",{count:"exact"});
+
+debug(JSON.stringify(agreementsResponse,null,2));
 
 const agreementCount =
 agreementsResponse.count || 0;
-
-/* UPDATE STATS */
 
 document.getElementById("threats").innerText =
 threatCount;
@@ -628,18 +694,16 @@ agreementCount;
 document.getElementById("logsCount").innerText =
 logsTotal;
 
-/* TEMP STATIC CREATOR COUNT */
-
 document.getElementById("creators").innerText =
 "3";
-
-/* CLEAR FEED */
 
 logsBox.innerHTML = "";
 
 /* THREATS */
 
 threats.forEach(threat=>{
+
+debug("Rendering threat: " + JSON.stringify(threat));
 
 logsBox.innerHTML += `
 <div class="log">
@@ -658,6 +722,8 @@ ${threat.status || "OPEN"}
 
 logs.forEach(log=>{
 
+debug("Rendering log: " + JSON.stringify(log));
+
 logsBox.innerHTML += `
 <div class="log">
 <strong>[${log.log_type || "SYSTEM"}]</strong><br><br>
@@ -667,9 +733,13 @@ ${log.message || "Realtime system event"}
 
 });
 
+debug("Dashboard fully loaded");
+
 }catch(err){
 
 console.error(err);
+
+debug("ERROR: " + err.message,"error");
 
 document.getElementById("platformStatus").innerText =
 "ERROR";
@@ -677,6 +747,8 @@ document.getElementById("platformStatus").innerText =
 }
 
 }
+
+/* REALTIME */
 
 client
 .channel("sentinel-live")
@@ -689,13 +761,30 @@ table:"ss_sentinel_threats"
 },
 payload=>{
 
-console.log(payload);
+debug("Realtime event fired");
+
+debug(JSON.stringify(payload,null,2));
 
 loadDashboard();
 
 }
 )
-.subscribe();
+.subscribe(status=>{
+
+debug("Realtime status: " + status);
+
+});
+
+/* CHAT */
+
+const sendBtn =
+document.getElementById("sendBtn");
+
+const messageInput =
+document.getElementById("messageInput");
+
+const chatArea =
+document.getElementById("chatArea");
 
 function sendMessage(){
 
@@ -715,39 +804,6 @@ text;
 
 chatArea.appendChild(userBubble);
 
-let response =
-"Monitoring StudentStreamHQ systems in realtime.";
-
-const lower =
-text.toLowerCase();
-
-if(lower.includes("threat")){
-
-response =
-"Threat monitoring systems are fully operational.";
-
-}
-else if(lower.includes("law")){
-
-response =
-"SS Law synchronization confirmed.";
-
-}
-else if(lower.includes("server")){
-
-response =
-"Infrastructure systems are stable.";
-
-}
-else if(lower.includes("creator")){
-
-response =
-"Creator protection systems remain active.";
-
-}
-
-setTimeout(()=>{
-
 const aiBubble =
 document.createElement("div");
 
@@ -755,16 +811,15 @@ aiBubble.className =
 "chatBubble ai";
 
 aiBubble.innerText =
-response;
+"SS Sentinel received command.";
+
+setTimeout(()=>{
 
 chatArea.appendChild(aiBubble);
 
-chatArea.scrollTop =
-chatArea.scrollHeight;
+},400);
 
-},500);
-
-messageInput.value = "";
+messageInput.value="";
 
 }
 
@@ -777,7 +832,7 @@ messageInput.addEventListener(
 "keydown",
 e=>{
 
-if(e.key === "Enter"){
+if(e.key==="Enter"){
 
 sendMessage();
 
@@ -786,12 +841,17 @@ sendMessage();
 }
 );
 
+debug("Starting dashboard...");
+
 loadDashboard();
 
-setInterval(
-loadDashboard,
-5000
-);
+setInterval(()=>{
+
+debug("Auto refresh running...");
+
+loadDashboard();
+
+},5000);
 
 </script>
 
