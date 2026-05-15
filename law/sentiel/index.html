@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>SS Sentinel • Platform Intelligence</title>
+<title>SS Sentinel • LIVE Platform Intelligence</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -22,7 +22,6 @@ font-family:'Inter',sans-serif;
 :root{
 --bg:#020617;
 --card:#0f172a;
---card2:#111c31;
 --border:rgba(255,255,255,.08);
 --text:#f8fafc;
 --muted:#94a3b8;
@@ -37,9 +36,9 @@ body{
 background:
 radial-gradient(circle at top,#0f172a 0%,#020617 60%);
 color:var(--text);
-overflow-x:hidden;
 min-height:100vh;
 padding:24px;
+overflow-x:hidden;
 }
 
 .dashboard{
@@ -61,7 +60,7 @@ gap:20px;
 }
 
 .logo{
-font-size:36px;
+font-size:38px;
 font-weight:900;
 letter-spacing:-2px;
 }
@@ -80,8 +79,8 @@ flex-wrap:wrap;
 
 .btn{
 padding:12px 18px;
-border-radius:14px;
 border:none;
+border-radius:14px;
 font-weight:800;
 cursor:pointer;
 transition:.25s;
@@ -249,12 +248,6 @@ background:rgba(255,255,255,.04);
 border:1px solid var(--border);
 border-radius:28px;
 padding:28px;
-transition:.25s;
-}
-
-.statCard:hover{
-transform:translateY(-4px);
-border-color:rgba(0,212,255,.4);
 }
 
 .statLabel{
@@ -275,7 +268,7 @@ font-size:13px;
 color:#cbd5e1;
 }
 
-/* MAIN */
+/* PANELS */
 
 .bottomGrid{
 display:grid;
@@ -296,15 +289,12 @@ font-weight:900;
 margin-bottom:22px;
 }
 
-/* LOGS */
-
 .logBox{
 display:flex;
 flex-direction:column;
 gap:14px;
 max-height:520px;
 overflow:auto;
-padding-right:6px;
 }
 
 .log{
@@ -328,7 +318,6 @@ flex-direction:column;
 gap:16px;
 max-height:420px;
 overflow:auto;
-padding-right:6px;
 }
 
 .chatBubble{
@@ -365,28 +354,6 @@ color:white;
 outline:none;
 }
 
-/* TABLE */
-
-.activityTable{
-width:100%;
-border-collapse:collapse;
-margin-top:10px;
-}
-
-.activityTable tr{
-border-bottom:1px solid rgba(255,255,255,.06);
-}
-
-.activityTable td{
-padding:14px 0;
-font-size:14px;
-}
-
-.activityTable td:last-child{
-text-align:right;
-font-weight:700;
-}
-
 /* FOOTER */
 
 .footer{
@@ -400,8 +367,6 @@ gap:20px;
 font-size:13px;
 color:var(--muted);
 }
-
-/* MOBILE */
 
 @media(max-width:1200px){
 
@@ -423,8 +388,6 @@ font-size:54px;
 
 <div class="dashboard">
 
-<!-- NAV -->
-
 <div class="nav">
 
 <div class="logo">
@@ -432,13 +395,15 @@ SS <span>Sentinel</span>
 </div>
 
 <div class="navRight">
+
 <button class="btn secondary">
 SS Law Connected
 </button>
 
-<button class="btn primary">
-Platform Integrity: ONLINE
+<button class="btn primary" id="platformStatus">
+LIVE MONITORING
 </button>
+
 </div>
 
 </div>
@@ -452,7 +417,7 @@ Platform Integrity: ONLINE
 <div class="pulse"></div>
 
 <div class="badge">
-🤖 StudentStreamHQ AI Monitoring Network
+🤖 LIVE StudentStreamHQ Intelligence Network
 </div>
 
 <h1 class="heroTitle">
@@ -460,7 +425,7 @@ Protecting The <span>Entire Platform</span>
 </h1>
 
 <p class="heroText">
-SS Sentinel is the intelligence and protection infrastructure powering StudentStreamHQ. Integrated directly with SS Law, Sentinel monitors creator safety, livestream activity, moderation systems, policy violations, infrastructure health, suspicious behavior, platform threats, and realtime ecosystem analytics.
+SS Sentinel is the realtime AI intelligence infrastructure powering StudentStreamHQ. Connected directly to SS Law, Sentinel monitors platform threats, moderation systems, creator protection, livestream activity, legal agreements, infrastructure health, and suspicious behavior across the ecosystem.
 </p>
 
 </div>
@@ -476,22 +441,22 @@ Realtime System Status
 <div class="statusItem">
 <div class="statusLeft">
 <strong>Platform Infrastructure</strong>
-<span>Core systems operational</span>
+<span>Realtime server monitoring</span>
 </div>
-<div class="live">ONLINE</div>
-</div>
-
-<div class="statusItem">
-<div class="statusLeft">
-<strong>Creator Protection</strong>
-<span>Monitoring impersonation & abuse</span>
-</div>
-<div class="live">ACTIVE</div>
+<div class="live" id="infraStatus">ONLINE</div>
 </div>
 
 <div class="statusItem">
 <div class="statusLeft">
-<strong>SS Law Network</strong>
+<strong>Threat Detection</strong>
+<span>Connected to Supabase events</span>
+</div>
+<div class="warning">LIVE</div>
+</div>
+
+<div class="statusItem">
+<div class="statusLeft">
+<strong>SS Law</strong>
 <span>Legal systems synchronized</span>
 </div>
 <div class="live">CONNECTED</div>
@@ -499,26 +464,10 @@ Realtime System Status
 
 <div class="statusItem">
 <div class="statusLeft">
-<strong>Moderation AI</strong>
-<span>Spam & threat analysis</span>
-</div>
-<div class="warning">SCANNING</div>
-</div>
-
-<div class="statusItem">
-<div class="statusLeft">
-<strong>Realtime Analytics</strong>
-<span>Platform growth monitoring</span>
-</div>
-<div class="live">TRACKING</div>
-</div>
-
-<div class="statusItem">
-<div class="statusLeft">
 <strong>E-Sign Compliance</strong>
 <span>User agreements verified</span>
 </div>
-<div class="live">VERIFIED</div>
+<div class="live" id="agreementStatus">SYNCED</div>
 </div>
 
 </div>
@@ -532,59 +481,27 @@ Realtime System Status
 <section class="grid">
 
 <div class="statCard">
-<div class="statLabel">
-Active Monitoring Events
-</div>
-
-<div class="statValue" id="events">
-0
-</div>
-
-<div class="statSub">
-Realtime activity analysis
-</div>
+<div class="statLabel">Threat Detections</div>
+<div class="statValue" id="threats">0</div>
+<div class="statSub">Live threat reports</div>
 </div>
 
 <div class="statCard">
-<div class="statLabel">
-Protected Creators
-</div>
-
-<div class="statValue" id="creators">
-0
-</div>
-
-<div class="statSub">
-Under SS Sentinel protection
-</div>
+<div class="statLabel">Protected Creators</div>
+<div class="statValue" id="creators">0</div>
+<div class="statSub">Registered platform accounts</div>
 </div>
 
 <div class="statCard">
-<div class="statLabel">
-Threat Detections
-</div>
-
-<div class="statValue" id="threats">
-0
-</div>
-
-<div class="statSub">
-Automatically blocked today
-</div>
+<div class="statLabel">Legal Agreements</div>
+<div class="statValue" id="agreements">0</div>
+<div class="statSub">E-sign documents completed</div>
 </div>
 
 <div class="statCard">
-<div class="statLabel">
-Platform Stability
-</div>
-
-<div class="statValue">
-99.9%
-</div>
-
-<div class="statSub">
-Realtime infrastructure uptime
-</div>
+<div class="statLabel">Sentinel Logs</div>
+<div class="statValue" id="logsCount">0</div>
+<div class="statSub">Realtime platform events</div>
 </div>
 
 </section>
@@ -593,19 +510,15 @@ Realtime infrastructure uptime
 
 <section class="bottomGrid">
 
-<!-- LOGS -->
-
 <div class="panel">
 
 <div class="panelTitle">
-Sentinel Activity Logs
+Live Threat Feed
 </div>
 
 <div class="logBox" id="logs"></div>
 
 </div>
-
-<!-- CHAT -->
 
 <div class="panel">
 
@@ -616,106 +529,39 @@ Sentinel AI Console
 <div class="aiChat" id="chatArea">
 
 <div class="chatBubble ai">
-SS Sentinel online. Monitoring StudentStreamHQ ecosystem. All systems operational.
+SS Sentinel online. Monitoring StudentStreamHQ systems in realtime.
 </div>
 
 </div>
 
 <div class="chatInput">
+
 <input
 id="messageInput"
 placeholder="Communicate with SS Sentinel..."
-/>
+>
 
 <button
 class="btn primary"
 onclick="sendMessage()">
 Send
 </button>
-</div>
-
-</div>
-
-</section>
-
-<!-- EXTRA -->
-
-<section
-style="
-margin-top:24px;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:24px;
-"
->
-
-<div class="panel">
-
-<div class="panelTitle">
-SS Law Activity
-</div>
-
-<table class="activityTable">
-
-<tr>
-<td>Creator Agreement Signed</td>
-<td class="live">VERIFIED</td>
-</tr>
-
-<tr>
-<td>Moderation Escalations</td>
-<td>12 Open</td>
-</tr>
-
-<tr>
-<td>Identity Verification Reviews</td>
-<td>4 Pending</td>
-</tr>
-
-<tr>
-<td>Livestream Copyright Claims</td>
-<td>2 Active</td>
-</tr>
-
-<tr>
-<td>Platform Legal Protection</td>
-<td class="live">SECURED</td>
-</tr>
-
-</table>
-
-</div>
-
-<div class="panel">
-
-<div class="panelTitle">
-Sentinel Intelligence Feed
-</div>
-
-<div class="logBox" id="intelFeed">
-
-<div class="log">
-<strong>[AI]</strong>
-Realtime platform analytics initialized successfully.
-</div>
 
 </div>
 
 </div>
 
 </section>
-
-<!-- FOOTER -->
 
 <div class="footer">
 
 <div>
 <strong>SS Sentinel</strong><br>
-StudentStreamHQ Platform Intelligence Division
+StudentStreamHQ Intelligence Division
 </div>
 
 <div>
-SS Law • AI Monitoring • Infrastructure • Creator Protection
+SS Law • AI Monitoring • Creator Protection • Infrastructure
 </div>
 
 <div>
@@ -736,58 +582,88 @@ window.supabase.createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
 );
 
-/* ELEMENTS */
+/* LOAD LIVE DATA */
+
+async function loadDashboard(){
+
+/* THREATS */
+
+const {
+data:threats,
+count:threatCount
+} =
+await supabase
+.from("ss_sentinel_threats")
+.select("*",{count:"exact"})
+.order("created_at",{ascending:false})
+.limit(20);
+
+/* LOGS */
+
+const {
+data:logs,
+count:logsTotal
+} =
+await supabase
+.from("ss_sentinel_logs")
+.select("*",{count:"exact"})
+.order("created_at",{ascending:false})
+.limit(20);
+
+/* AGREEMENTS */
+
+const {
+count:agreementCount
+} =
+await supabase
+.from("ss_legal_agreements")
+.select("*",{count:"exact",head:true});
+
+/* USERS */
+
+const {
+count:userCount
+} =
+await supabase
+.from("profiles")
+.select("*",{count:"exact",head:true});
+
+/* UPDATE STATS */
+
+document.getElementById("threats").innerText =
+threatCount || 0;
+
+document.getElementById("creators").innerText =
+userCount || 0;
+
+document.getElementById("agreements").innerText =
+agreementCount || 0;
+
+document.getElementById("logsCount").innerText =
+logsTotal || 0;
+
+/* THREAT FEED */
 
 const logsBox =
 document.getElementById("logs");
 
-const intelFeed =
-document.getElementById("intelFeed");
-
-/* RANDOM LOGS */
-
-const logs = [
-
-"Monitoring livestream infrastructure stability.",
-"Scanning creator reports and moderation queues.",
-"No critical platform threats detected.",
-"SS Law systems synchronized successfully.",
-"Realtime infrastructure metrics updated.",
-"AI moderation systems analyzing activity.",
-"Monitoring game servers and creator uploads.",
-"Platform integrity verified across core systems.",
-"Automated impersonation detection completed.",
-"Realtime analytics synced successfully."
-
-];
-
-/* LOAD DASHBOARD */
-
-async function loadDashboard(){
-
-try{
-
-/* SENTINEL LOGS */
-
-const { data:sentinelLogs } =
-await supabase
-.from("ss_sentinel_logs")
-.select("*")
-.order("created_at",{
-ascending:false
-})
-.limit(15);
-
 logsBox.innerHTML = "";
 
-if(sentinelLogs && sentinelLogs.length){
+/* SHOW THREATS */
 
-sentinelLogs.forEach(log=>{
+if(threats && threats.length){
+
+threats.forEach(threat=>{
 
 logsBox.innerHTML += `
 <div class="log">
-<strong>[${log.log_type || "SS Sentinel"}]</strong>
-${log.message}
+<strong>[${threat.severity || "Threat"}]</strong><br>
+${threat.description || "No description"}<br><br>
+
+Status:
+<span style="color:#00d4ff">
+${threat.status || "OPEN"}
+</span>
 </div>
 `;
 
@@ -795,86 +671,47 @@ ${log.message}
 
 }
 
-/* THREATS */
+/* SHOW LOGS */
 
-const { count:threatCount } =
-await supabase
-.from("ss_sentinel_threats")
-.select("*",{
-count:"exact",
-head:true
-});
+if(logs && logs.length){
 
-/* USERS */
+logs.forEach(log=>{
 
-const { count:userCount } =
-await supabase
-.from("profiles")
-.select("*",{
-count:"exact",
-head:true
-});
-
-/* E-SIGNS */
-
-const { count:agreementCount } =
-await supabase
-.from("ss_legal_agreements")
-.select("*",{
-count:"exact",
-head:true
-});
-
-/* UPDATE UI */
-
-document.getElementById("events").innerText =
-((threatCount || 0) * 50 + 12000)
-.toLocaleString();
-
-document.getElementById("creators").innerText =
-(userCount || 0)
-.toLocaleString();
-
-document.getElementById("threats").innerText =
-(threatCount || 0);
-
-}catch(err){
-
-console.error(err);
-
-}
-
-}
-
-/* ADD RANDOM FEED */
-
-function addIntel(){
-
-const div =
-document.createElement("div");
-
-div.className = "log";
-
-div.innerHTML = `
-<strong>[SS Sentinel]</strong>
-${logs[Math.floor(Math.random()*logs.length)]}
+logsBox.innerHTML += `
+<div class="log">
+<strong>[${log.log_type || "SS Sentinel"}]</strong><br>
+${log.message || "Realtime system event"}
+</div>
 `;
 
-intelFeed.prepend(div);
-
-if(intelFeed.children.length > 10){
-
-intelFeed.removeChild(
-intelFeed.lastChild
-);
+});
 
 }
 
 }
+
+/* REALTIME */
+
+supabase
+.channel("sentinel-live")
+.on(
+"postgres_changes",
+{
+event:"*",
+schema:"public",
+table:"ss_sentinel_threats"
+},
+payload=>{
+
+loadDashboard();
+
+}
+)
+.subscribe();
 
 /* CHAT */
 
-async function sendMessage(){
+function sendMessage(){
 
 const input =
 document.getElementById("messageInput");
@@ -895,31 +732,31 @@ input.value;
 
 chat.appendChild(userBubble);
 
+let response =
+"Monitoring StudentStreamHQ systems in realtime.";
+
 const text =
 input.value.toLowerCase();
-
-let response =
-"Monitoring StudentStreamHQ systems continuously.";
 
 if(text.includes("threat")){
 
 response =
-"No severe platform threats detected. Monitoring remains active.";
+"Threat monitoring active. Realtime detection systems connected.";
 
 }else if(text.includes("law")){
 
 response =
-"SS Law systems are synchronized and creator protections are operational.";
+"SS Law systems synchronized successfully.";
 
 }else if(text.includes("creator")){
 
 response =
-"Creator protection systems remain active across the platform.";
+"Creator protection systems remain active.";
 
 }else if(text.includes("server")){
 
 response =
-"Infrastructure response times remain stable.";
+"Infrastructure systems are currently stable.";
 
 }
 
@@ -951,7 +788,7 @@ document
 .getElementById("messageInput")
 .addEventListener(
 "keydown",
-(e)=>{
+e=>{
 
 if(e.key === "Enter"){
 
@@ -962,39 +799,13 @@ sendMessage();
 }
 );
 
-/* SAVE RANDOM LOGS */
-
-async function saveRandomLog(){
-
-const random =
-logs[
-Math.floor(
-Math.random()*logs.length
-)
-];
-
-await supabase
-.from("ss_sentinel_logs")
-.insert([{
-
-log_type:"SS Sentinel",
-message:random
-
-}]);
-
-}
-
-/* LIVE LOOP */
-
-setInterval(addIntel,4000);
-
-setInterval(loadDashboard,7000);
-
-setInterval(saveRandomLog,12000);
-
-/* START */
+/* INITIAL LOAD */
 
 loadDashboard();
+
+/* AUTO REFRESH */
+
+setInterval(loadDashboard,5000);
 
 </script>
 
