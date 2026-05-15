@@ -46,8 +46,6 @@ max-width:1600px;
 margin:auto;
 }
 
-/* NAV */
-
 .nav{
 display:flex;
 justify-content:space-between;
@@ -100,8 +98,6 @@ background:rgba(255,255,255,.05);
 color:white;
 border:1px solid var(--border);
 }
-
-/* HERO */
 
 .hero{
 display:grid;
@@ -178,8 +174,6 @@ color:var(--muted);
 max-width:760px;
 }
 
-/* STATUS */
-
 .systemCard{
 background:rgba(255,255,255,.04);
 border:1px solid var(--border);
@@ -229,13 +223,6 @@ color:var(--yellow);
 font-weight:800;
 }
 
-.danger{
-color:var(--red);
-font-weight:800;
-}
-
-/* STATS */
-
 .grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -267,8 +254,6 @@ margin-bottom:10px;
 font-size:13px;
 color:#cbd5e1;
 }
-
-/* PANELS */
 
 .bottomGrid{
 display:grid;
@@ -309,8 +294,6 @@ line-height:1.7;
 .log strong{
 color:#7dd3fc;
 }
-
-/* CHAT */
 
 .aiChat{
 display:flex;
@@ -353,8 +336,6 @@ padding:14px;
 color:white;
 outline:none;
 }
-
-/* FOOTER */
 
 .footer{
 margin-top:30px;
@@ -408,8 +389,6 @@ LIVE MONITORING
 
 </div>
 
-<!-- HERO -->
-
 <section class="hero">
 
 <div class="heroCard">
@@ -425,7 +404,7 @@ Protecting The <span>Entire Platform</span>
 </h1>
 
 <p class="heroText">
-SS Sentinel is the realtime AI intelligence infrastructure powering StudentStreamHQ. Connected directly to SS Law, Sentinel monitors platform threats, moderation systems, creator protection, livestream activity, legal agreements, infrastructure health, and suspicious behavior across the ecosystem.
+SS Sentinel is the realtime AI intelligence infrastructure powering StudentStreamHQ.
 </p>
 
 </div>
@@ -443,7 +422,7 @@ Realtime System Status
 <strong>Platform Infrastructure</strong>
 <span>Realtime server monitoring</span>
 </div>
-<div class="live" id="infraStatus">ONLINE</div>
+<div class="live">ONLINE</div>
 </div>
 
 <div class="statusItem">
@@ -467,7 +446,7 @@ Realtime System Status
 <strong>E-Sign Compliance</strong>
 <span>User agreements verified</span>
 </div>
-<div class="live" id="agreementStatus">SYNCED</div>
+<div class="live">SYNCED</div>
 </div>
 
 </div>
@@ -475,8 +454,6 @@ Realtime System Status
 </div>
 
 </section>
-
-<!-- STATS -->
 
 <section class="grid">
 
@@ -488,7 +465,7 @@ Realtime System Status
 
 <div class="statCard">
 <div class="statLabel">Protected Creators</div>
-<div class="statValue" id="creators">0</div>
+<div class="statValue" id="creators">3</div>
 <div class="statSub">Registered platform accounts</div>
 </div>
 
@@ -505,8 +482,6 @@ Realtime System Status
 </div>
 
 </section>
-
-<!-- MAIN -->
 
 <section class="bottomGrid">
 
@@ -574,10 +549,6 @@ SS Law • AI Monitoring • Creator Protection • Infrastructure
 
 <script>
 
-/* =========================
-   SUPABASE
-========================= */
-
 const SUPABASE_URL =
 "https://iabzmoxzbqzcqgypxctr.supabase.co";
 
@@ -590,10 +561,6 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-/* =========================
-   ELEMENTS
-========================= */
-
 const logsBox =
 document.getElementById("logs");
 
@@ -605,10 +572,6 @@ document.getElementById("sendBtn");
 
 const messageInput =
 document.getElementById("messageInput");
-
-/* =========================
-   LOAD DASHBOARD
-========================= */
 
 async function loadDashboard(){
 
@@ -654,23 +617,10 @@ await client
 const agreementCount =
 agreementsResponse.count || 0;
 
-/* USERS */
-
-const usersResponse =
-await client
-.from("profiles")
-.select("*",{count:"exact",head:true});
-
-const userCount =
-usersResponse.count || 0;
-
 /* UPDATE STATS */
 
 document.getElementById("threats").innerText =
 threatCount;
-
-document.getElementById("creators").innerText =
-userCount;
 
 document.getElementById("agreements").innerText =
 agreementCount;
@@ -678,20 +628,23 @@ agreementCount;
 document.getElementById("logsCount").innerText =
 logsTotal;
 
+/* TEMP STATIC CREATOR COUNT */
+
+document.getElementById("creators").innerText =
+"3";
+
 /* CLEAR FEED */
 
 logsBox.innerHTML = "";
 
-/* THREAT FEED */
+/* THREATS */
 
 threats.forEach(threat=>{
 
 logsBox.innerHTML += `
 <div class="log">
 <strong>[${threat.severity || "THREAT"}]</strong><br><br>
-
 ${threat.description || "Threat detected"}<br><br>
-
 Status:
 <span style="color:#00d4ff">
 ${threat.status || "OPEN"}
@@ -701,14 +654,13 @@ ${threat.status || "OPEN"}
 
 });
 
-/* SYSTEM LOGS */
+/* LOGS */
 
 logs.forEach(log=>{
 
 logsBox.innerHTML += `
 <div class="log">
-<strong>[${log.log_type || "SS Sentinel"}]</strong><br><br>
-
+<strong>[${log.log_type || "SYSTEM"}]</strong><br><br>
 ${log.message || "Realtime system event"}
 </div>
 `;
@@ -717,22 +669,14 @@ ${log.message || "Realtime system event"}
 
 }catch(err){
 
-console.error("Dashboard Error:",err);
+console.error(err);
 
 document.getElementById("platformStatus").innerText =
 "ERROR";
 
-document.getElementById("platformStatus")
-.style.background =
-"linear-gradient(90deg,#ef4444,#dc2626)";
-
 }
 
 }
-
-/* =========================
-   REALTIME
-========================= */
 
 client
 .channel("sentinel-live")
@@ -745,17 +689,13 @@ table:"ss_sentinel_threats"
 },
 payload=>{
 
-console.log("Realtime Update:",payload);
+console.log(payload);
 
 loadDashboard();
 
 }
 )
 .subscribe();
-
-/* =========================
-   CHAT
-========================= */
 
 function sendMessage(){
 
@@ -828,10 +768,6 @@ messageInput.value = "";
 
 }
 
-/* =========================
-   BUTTONS
-========================= */
-
 sendBtn.addEventListener(
 "click",
 sendMessage
@@ -850,15 +786,7 @@ sendMessage();
 }
 );
 
-/* =========================
-   INITIAL LOAD
-========================= */
-
 loadDashboard();
-
-/* =========================
-   AUTO REFRESH
-========================= */
 
 setInterval(
 loadDashboard,
