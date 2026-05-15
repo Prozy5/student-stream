@@ -543,7 +543,7 @@ placeholder="Communicate with SS Sentinel..."
 
 <button
 class="btn primary"
-onclick="sendMessage()">
+id="sendBtn">
 Send
 </button>
 
@@ -574,91 +574,123 @@ SS Law • AI Monitoring • Creator Protection • Infrastructure
 
 <script>
 
-/* SUPABASE */
+/* =========================
+   SUPABASE
+========================= */
 
-const supabase =
+const SUPABASE_URL =
+"https://iabzmoxzbqzcqgypxctr.supabase.co";
+
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ";
+
+const client =
 window.supabase.createClient(
-"https://iabzmoxzbqzcqgypxctr.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
-/* LOAD LIVE DATA */
+/* =========================
+   ELEMENTS
+========================= */
+
+const logsBox =
+document.getElementById("logs");
+
+const chatArea =
+document.getElementById("chatArea");
+
+const sendBtn =
+document.getElementById("sendBtn");
+
+const messageInput =
+document.getElementById("messageInput");
+
+/* =========================
+   LOAD DASHBOARD
+========================= */
 
 async function loadDashboard(){
 
+try{
+
 /* THREATS */
 
-const {
-data:threats,
-count:threatCount
-} =
-await supabase
+const threatsResponse =
+await client
 .from("ss_sentinel_threats")
 .select("*",{count:"exact"})
 .order("created_at",{ascending:false})
 .limit(20);
 
+const threats =
+threatsResponse.data || [];
+
+const threatCount =
+threatsResponse.count || 0;
+
 /* LOGS */
 
-const {
-data:logs,
-count:logsTotal
-} =
-await supabase
+const logsResponse =
+await client
 .from("ss_sentinel_logs")
 .select("*",{count:"exact"})
 .order("created_at",{ascending:false})
 .limit(20);
 
+const logs =
+logsResponse.data || [];
+
+const logsTotal =
+logsResponse.count || 0;
+
 /* AGREEMENTS */
 
-const {
-count:agreementCount
-} =
-await supabase
+const agreementsResponse =
+await client
 .from("ss_legal_agreements")
 .select("*",{count:"exact",head:true});
 
+const agreementCount =
+agreementsResponse.count || 0;
+
 /* USERS */
 
-const {
-count:userCount
-} =
-await supabase
+const usersResponse =
+await client
 .from("profiles")
 .select("*",{count:"exact",head:true});
+
+const userCount =
+usersResponse.count || 0;
 
 /* UPDATE STATS */
 
 document.getElementById("threats").innerText =
-threatCount || 0;
+threatCount;
 
 document.getElementById("creators").innerText =
-userCount || 0;
+userCount;
 
 document.getElementById("agreements").innerText =
-agreementCount || 0;
+agreementCount;
 
 document.getElementById("logsCount").innerText =
-logsTotal || 0;
+logsTotal;
 
-/* THREAT FEED */
-
-const logsBox =
-document.getElementById("logs");
+/* CLEAR FEED */
 
 logsBox.innerHTML = "";
 
-/* SHOW THREATS */
-
-if(threats && threats.length){
+/* THREAT FEED */
 
 threats.forEach(threat=>{
 
 logsBox.innerHTML += `
 <div class="log">
-<strong>[${threat.severity || "Threat"}]</strong><br>
-${threat.description || "No description"}<br><br>
+<strong>[${threat.severity || "THREAT"}]</strong><br><br>
+
+${threat.description || "Threat detected"}<br><br>
 
 Status:
 <span style="color:#00d4ff">
@@ -669,30 +701,40 @@ ${threat.status || "OPEN"}
 
 });
 
-}
-
-/* SHOW LOGS */
-
-if(logs && logs.length){
+/* SYSTEM LOGS */
 
 logs.forEach(log=>{
 
 logsBox.innerHTML += `
 <div class="log">
-<strong>[${log.log_type || "SS Sentinel"}]</strong><br>
+<strong>[${log.log_type || "SS Sentinel"}]</strong><br><br>
+
 ${log.message || "Realtime system event"}
 </div>
 `;
 
 });
 
-}
+}catch(err){
+
+console.error("Dashboard Error:",err);
+
+document.getElementById("platformStatus").innerText =
+"ERROR";
+
+document.getElementById("platformStatus")
+.style.background =
+"linear-gradient(90deg,#ef4444,#dc2626)";
 
 }
 
-/* REALTIME */
+}
 
-supabase
+/* =========================
+   REALTIME
+========================= */
+
+client
 .channel("sentinel-live")
 .on(
 "postgres_changes",
@@ -703,23 +745,24 @@ table:"ss_sentinel_threats"
 },
 payload=>{
 
+console.log("Realtime Update:",payload);
+
 loadDashboard();
 
 }
 )
 .subscribe();
 
-/* CHAT */
+/* =========================
+   CHAT
+========================= */
 
 function sendMessage(){
 
-const input =
-document.getElementById("messageInput");
+const text =
+messageInput.value.trim();
 
-const chat =
-document.getElementById("chatArea");
-
-if(!input.value.trim()) return;
+if(!text) return;
 
 const userBubble =
 document.createElement("div");
@@ -728,35 +771,38 @@ userBubble.className =
 "chatBubble user";
 
 userBubble.innerText =
-input.value;
+text;
 
-chat.appendChild(userBubble);
+chatArea.appendChild(userBubble);
 
 let response =
 "Monitoring StudentStreamHQ systems in realtime.";
 
-const text =
-input.value.toLowerCase();
+const lower =
+text.toLowerCase();
 
-if(text.includes("threat")){
-
-response =
-"Threat monitoring active. Realtime detection systems connected.";
-
-}else if(text.includes("law")){
+if(lower.includes("threat")){
 
 response =
-"SS Law systems synchronized successfully.";
+"Threat monitoring systems are fully operational.";
 
-}else if(text.includes("creator")){
+}
+else if(lower.includes("law")){
+
+response =
+"SS Law synchronization confirmed.";
+
+}
+else if(lower.includes("server")){
+
+response =
+"Infrastructure systems are stable.";
+
+}
+else if(lower.includes("creator")){
 
 response =
 "Creator protection systems remain active.";
-
-}else if(text.includes("server")){
-
-response =
-"Infrastructure systems are currently stable.";
 
 }
 
@@ -771,22 +817,27 @@ aiBubble.className =
 aiBubble.innerText =
 response;
 
-chat.appendChild(aiBubble);
+chatArea.appendChild(aiBubble);
 
-chat.scrollTop =
-chat.scrollHeight;
+chatArea.scrollTop =
+chatArea.scrollHeight;
 
 },500);
 
-input.value = "";
+messageInput.value = "";
 
 }
 
-/* ENTER KEY */
+/* =========================
+   BUTTONS
+========================= */
 
-document
-.getElementById("messageInput")
-.addEventListener(
+sendBtn.addEventListener(
+"click",
+sendMessage
+);
+
+messageInput.addEventListener(
 "keydown",
 e=>{
 
@@ -799,13 +850,20 @@ sendMessage();
 }
 );
 
-/* INITIAL LOAD */
+/* =========================
+   INITIAL LOAD
+========================= */
 
 loadDashboard();
 
-/* AUTO REFRESH */
+/* =========================
+   AUTO REFRESH
+========================= */
 
-setInterval(loadDashboard,5000);
+setInterval(
+loadDashboard,
+5000
+);
 
 </script>
 
