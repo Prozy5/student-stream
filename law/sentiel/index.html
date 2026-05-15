@@ -46,6 +46,8 @@ max-width:1600px;
 margin:auto;
 }
 
+/* NAV */
+
 .nav{
 display:flex;
 justify-content:space-between;
@@ -84,6 +86,10 @@ cursor:pointer;
 transition:.25s;
 }
 
+.btn:hover{
+transform:translateY(-2px);
+}
+
 .primary{
 background:linear-gradient(90deg,var(--accent2),var(--accent));
 color:black;
@@ -94,6 +100,8 @@ background:rgba(255,255,255,.05);
 color:white;
 border:1px solid var(--border);
 }
+
+/* HERO */
 
 .hero{
 display:grid;
@@ -170,6 +178,8 @@ color:var(--muted);
 max-width:760px;
 }
 
+/* STATUS */
+
 .systemCard{
 background:rgba(255,255,255,.04);
 border:1px solid var(--border);
@@ -219,6 +229,13 @@ color:var(--yellow);
 font-weight:800;
 }
 
+.danger{
+color:var(--red);
+font-weight:800;
+}
+
+/* STATS */
+
 .grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -250,6 +267,8 @@ margin-bottom:10px;
 font-size:13px;
 color:#cbd5e1;
 }
+
+/* PANELS */
 
 .bottomGrid{
 display:grid;
@@ -290,6 +309,8 @@ line-height:1.7;
 .log strong{
 color:#7dd3fc;
 }
+
+/* CHAT */
 
 .aiChat{
 display:flex;
@@ -333,6 +354,74 @@ color:white;
 outline:none;
 }
 
+/* DEBUGGER */
+
+.debugPanel{
+margin-top:28px;
+background:#050b16;
+border:1px solid rgba(255,255,255,.08);
+border-radius:28px;
+padding:24px;
+}
+
+.debugHeader{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+flex-wrap:wrap;
+gap:12px;
+}
+
+.debugTitle{
+font-size:28px;
+font-weight:900;
+}
+
+.debugLive{
+padding:8px 14px;
+border-radius:999px;
+background:rgba(16,185,129,.12);
+color:#10b981;
+font-size:12px;
+font-weight:900;
+border:1px solid rgba(16,185,129,.2);
+}
+
+.debugBox{
+background:black;
+border-radius:18px;
+padding:18px;
+height:360px;
+overflow:auto;
+font-size:13px;
+line-height:1.8;
+font-family:monospace;
+border:1px solid rgba(255,255,255,.06);
+}
+
+.debugLine{
+margin-bottom:10px;
+}
+
+.success{
+color:#10b981;
+}
+
+.error{
+color:#ef4444;
+}
+
+.info{
+color:#38bdf8;
+}
+
+.warningText{
+color:#f59e0b;
+}
+
+/* FOOTER */
+
 .footer{
 margin-top:30px;
 padding-top:24px;
@@ -343,43 +432,6 @@ flex-wrap:wrap;
 gap:20px;
 font-size:13px;
 color:var(--muted);
-}
-
-/* DEBUGGER */
-
-.debugPanel{
-margin-top:24px;
-background:#000;
-border:1px solid rgba(255,255,255,.1);
-border-radius:20px;
-padding:20px;
-}
-
-.debugTitle{
-font-size:22px;
-font-weight:900;
-margin-bottom:16px;
-color:#00d4ff;
-}
-
-.debugBox{
-background:#050b16;
-padding:16px;
-border-radius:16px;
-font-size:13px;
-line-height:1.7;
-white-space:pre-wrap;
-max-height:400px;
-overflow:auto;
-border:1px solid rgba(255,255,255,.06);
-}
-
-.success{
-color:#10b981;
-}
-
-.error{
-color:#ef4444;
 }
 
 @media(max-width:1200px){
@@ -422,6 +474,8 @@ LIVE MONITORING
 
 </div>
 
+<!-- HERO -->
+
 <section class="hero">
 
 <div class="heroCard">
@@ -437,7 +491,7 @@ Protecting The <span>Entire Platform</span>
 </h1>
 
 <p class="heroText">
-SS Sentinel is the realtime AI intelligence infrastructure powering StudentStreamHQ.
+SS Sentinel is the realtime AI intelligence infrastructure powering StudentStreamHQ. Connected directly to Supabase realtime infrastructure.
 </p>
 
 </div>
@@ -455,7 +509,7 @@ Realtime System Status
 <strong>Platform Infrastructure</strong>
 <span>Realtime server monitoring</span>
 </div>
-<div class="live">ONLINE</div>
+<div class="live" id="infraStatus">ONLINE</div>
 </div>
 
 <div class="statusItem">
@@ -463,7 +517,7 @@ Realtime System Status
 <strong>Threat Detection</strong>
 <span>Connected to Supabase events</span>
 </div>
-<div class="warning">LIVE</div>
+<div class="warning" id="threatStatus">CONNECTING</div>
 </div>
 
 <div class="statusItem">
@@ -479,7 +533,7 @@ Realtime System Status
 <strong>E-Sign Compliance</strong>
 <span>User agreements verified</span>
 </div>
-<div class="live">SYNCED</div>
+<div class="live" id="agreementStatus">SYNCED</div>
 </div>
 
 </div>
@@ -487,6 +541,8 @@ Realtime System Status
 </div>
 
 </section>
+
+<!-- STATS -->
 
 <section class="grid">
 
@@ -515,6 +571,8 @@ Realtime System Status
 </div>
 
 </section>
+
+<!-- MAIN -->
 
 <section class="bottomGrid">
 
@@ -563,17 +621,27 @@ Send
 
 <!-- DEBUGGER -->
 
-<div class="debugPanel">
+<section class="debugPanel">
+
+<div class="debugHeader">
 
 <div class="debugTitle">
 LIVE DEBUGGER
 </div>
 
-<div class="debugBox" id="debugBox">
-Waiting for Supabase...
+<div class="debugLive">
+REALTIME ACTIVE
 </div>
 
 </div>
+
+<div class="debugBox" id="debugBox">
+Starting debugger...
+</div>
+
+</section>
+
+<!-- FOOTER -->
 
 <div class="footer">
 
@@ -596,6 +664,10 @@ SS Law • AI Monitoring • Creator Protection • Infrastructure
 
 <script>
 
+/* =========================
+SUPABASE
+========================= */
+
 const SUPABASE_URL =
 "https://iabzmoxzbqzcqgypxctr.supabase.co";
 
@@ -608,32 +680,58 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
+/* =========================
+ELEMENTS
+========================= */
+
 const logsBox =
 document.getElementById("logs");
 
 const debugBox =
 document.getElementById("debugBox");
 
-function debug(message,type="success"){
+const chatArea =
+document.getElementById("chatArea");
+
+const sendBtn =
+document.getElementById("sendBtn");
+
+const messageInput =
+document.getElementById("messageInput");
+
+/* =========================
+DEBUGGER
+========================= */
+
+function debug(message,type="info"){
 
 console.log(message);
 
-debugBox.innerHTML += `
-<div class="${type}">
-${new Date().toLocaleTimeString()} → ${message}
-</div>
-`;
+const line =
+document.createElement("div");
+
+line.className =
+`debugLine ${type}`;
+
+line.innerHTML =
+`[${new Date().toLocaleTimeString()}] ${message}`;
+
+debugBox.appendChild(line);
 
 debugBox.scrollTop =
 debugBox.scrollHeight;
 
 }
 
+/* =========================
+LOAD DASHBOARD
+========================= */
+
 async function loadDashboard(){
 
 try{
 
-debug("Loading threats table...");
+debug("Loading ss_sentinel_threats table...","info");
 
 const threatsResponse =
 await client
@@ -642,9 +740,21 @@ await client
 .order("created_at",{ascending:false})
 .limit(20);
 
-debug("Threat response received");
+debug(
+"Threat query complete → " +
+JSON.stringify(threatsResponse),
+"success"
+);
 
-debug(JSON.stringify(threatsResponse,null,2));
+if(threatsResponse.error){
+
+debug(
+"Threat query error: " +
+threatsResponse.error.message,
+"error"
+);
+
+}
 
 const threats =
 threatsResponse.data || [];
@@ -652,9 +762,17 @@ threatsResponse.data || [];
 const threatCount =
 threatsResponse.count || 0;
 
-debug("Threat count: " + threatCount);
+document.getElementById("threats").innerText =
+threatCount;
 
-debug("Loading logs table...");
+debug(
+"Threat rows loaded: " + threatCount,
+"success"
+);
+
+/* LOGS */
+
+debug("Loading ss_sentinel_logs table...","info");
 
 const logsResponse =
 await client
@@ -663,7 +781,21 @@ await client
 .order("created_at",{ascending:false})
 .limit(20);
 
-debug(JSON.stringify(logsResponse,null,2));
+debug(
+"Logs query complete → " +
+JSON.stringify(logsResponse),
+"success"
+);
+
+if(logsResponse.error){
+
+debug(
+"Logs query error: " +
+logsResponse.error.message,
+"error"
+);
+
+}
 
 const logs =
 logsResponse.data || [];
@@ -671,44 +803,95 @@ logsResponse.data || [];
 const logsTotal =
 logsResponse.count || 0;
 
-debug("Logs count: " + logsTotal);
+document.getElementById("logsCount").innerText =
+logsTotal;
 
-debug("Loading agreements table...");
+debug(
+"Log rows loaded: " + logsTotal,
+"success"
+);
+
+/* AGREEMENTS */
+
+debug("Loading ss_legal_agreements table...","info");
 
 const agreementsResponse =
 await client
 .from("ss_legal_agreements")
 .select("*",{count:"exact"});
 
-debug(JSON.stringify(agreementsResponse,null,2));
+if(agreementsResponse.error){
+
+debug(
+"Agreement query error: " +
+agreementsResponse.error.message,
+"error"
+);
+
+}
 
 const agreementCount =
 agreementsResponse.count || 0;
 
-document.getElementById("threats").innerText =
-threatCount;
-
 document.getElementById("agreements").innerText =
 agreementCount;
 
-document.getElementById("logsCount").innerText =
-logsTotal;
+debug(
+"Agreement rows loaded: " +
+agreementCount,
+"success"
+);
+
+/* PROFILES */
+
+debug("Loading profiles table...","info");
+
+const profilesResponse =
+await client
+.from("profiles")
+.select("*",{count:"exact"});
+
+if(profilesResponse.error){
+
+debug(
+"Profiles query error: " +
+profilesResponse.error.message,
+"error"
+);
+
+}
+
+const profileCount =
+profilesResponse.count || 0;
 
 document.getElementById("creators").innerText =
-"3";
+profileCount;
+
+debug(
+"Profiles loaded: " +
+profileCount,
+"success"
+);
+
+/* CLEAR FEED */
 
 logsBox.innerHTML = "";
 
-/* THREATS */
+/* RENDER THREATS */
 
 threats.forEach(threat=>{
 
-debug("Rendering threat: " + JSON.stringify(threat));
+debug(
+"Rendering threat ID: " + threat.id,
+"info"
+);
 
 logsBox.innerHTML += `
 <div class="log">
 <strong>[${threat.severity || "THREAT"}]</strong><br><br>
+
 ${threat.description || "Threat detected"}<br><br>
+
 Status:
 <span style="color:#00d4ff">
 ${threat.status || "OPEN"}
@@ -718,40 +901,80 @@ ${threat.status || "OPEN"}
 
 });
 
-/* LOGS */
+/* RENDER LOGS */
 
 logs.forEach(log=>{
 
-debug("Rendering log: " + JSON.stringify(log));
+debug(
+"Rendering log ID: " + log.id,
+"info"
+);
 
 logsBox.innerHTML += `
 <div class="log">
 <strong>[${log.log_type || "SYSTEM"}]</strong><br><br>
+
 ${log.message || "Realtime system event"}
 </div>
 `;
 
 });
 
-debug("Dashboard fully loaded");
+debug(
+"Dashboard refresh complete.",
+"success"
+);
 
 }catch(err){
 
 console.error(err);
 
-debug("ERROR: " + err.message,"error");
+debug(
+"FATAL ERROR: " + err.message,
+"error"
+);
 
 document.getElementById("platformStatus").innerText =
 "ERROR";
 
-}
+document.getElementById("platformStatus")
+.style.background =
+"linear-gradient(90deg,#ef4444,#dc2626)";
 
 }
 
-/* REALTIME */
+}
+
+/* =========================
+REALTIME
+========================= */
+
+debug(
+"Connecting to realtime...",
+"warningText"
+);
 
 client
 .channel("sentinel-live")
+.on(
+"postgres_changes",
+{
+event:"*",
+schema:"public",
+table:"ss_sentinel_logs"
+},
+payload=>{
+
+debug(
+"Realtime log event received → " +
+JSON.stringify(payload),
+"success"
+);
+
+loadDashboard();
+
+}
+)
 .on(
 "postgres_changes",
 {
@@ -761,9 +984,11 @@ table:"ss_sentinel_threats"
 },
 payload=>{
 
-debug("Realtime event fired");
-
-debug(JSON.stringify(payload,null,2));
+debug(
+"Realtime threat event received → " +
+JSON.stringify(payload),
+"success"
+);
 
 loadDashboard();
 
@@ -771,20 +996,19 @@ loadDashboard();
 )
 .subscribe(status=>{
 
-debug("Realtime status: " + status);
+debug(
+"Realtime status: " + status,
+"info"
+);
+
+document.getElementById("threatStatus").innerText =
+status;
 
 });
 
-/* CHAT */
-
-const sendBtn =
-document.getElementById("sendBtn");
-
-const messageInput =
-document.getElementById("messageInput");
-
-const chatArea =
-document.getElementById("chatArea");
+/* =========================
+CHAT
+========================= */
 
 function sendMessage(){
 
@@ -804,6 +1028,13 @@ text;
 
 chatArea.appendChild(userBubble);
 
+debug(
+"User command: " + text,
+"warningText"
+);
+
+setTimeout(()=>{
+
 const aiBubble =
 document.createElement("div");
 
@@ -811,15 +1042,16 @@ aiBubble.className =
 "chatBubble ai";
 
 aiBubble.innerText =
-"SS Sentinel received command.";
-
-setTimeout(()=>{
+"SS Sentinel processed command successfully.";
 
 chatArea.appendChild(aiBubble);
 
-},400);
+chatArea.scrollTop =
+chatArea.scrollHeight;
 
-messageInput.value="";
+},500);
+
+messageInput.value = "";
 
 }
 
@@ -832,7 +1064,7 @@ messageInput.addEventListener(
 "keydown",
 e=>{
 
-if(e.key==="Enter"){
+if(e.key === "Enter"){
 
 sendMessage();
 
@@ -841,13 +1073,23 @@ sendMessage();
 }
 );
 
-debug("Starting dashboard...");
+/* =========================
+START
+========================= */
+
+debug(
+"Starting SS Sentinel...",
+"success"
+);
 
 loadDashboard();
 
 setInterval(()=>{
 
-debug("Auto refresh running...");
+debug(
+"Automatic refresh triggered.",
+"info"
+);
 
 loadDashboard();
 
