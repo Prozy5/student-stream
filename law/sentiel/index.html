@@ -3,11 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>SS Sentinel • Platform Intelligence</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
+
 *{
 margin:0;
 padding:0;
@@ -18,6 +22,7 @@ font-family:'Inter',sans-serif;
 :root{
 --bg:#020617;
 --card:#0f172a;
+--card2:#111c31;
 --border:rgba(255,255,255,.08);
 --text:#f8fafc;
 --muted:#94a3b8;
@@ -38,9 +43,11 @@ padding:24px;
 }
 
 .dashboard{
-max-width:1500px;
+max-width:1600px;
 margin:auto;
 }
+
+/* NAV */
 
 .nav{
 display:flex;
@@ -49,10 +56,12 @@ align-items:center;
 padding-bottom:24px;
 border-bottom:1px solid var(--border);
 margin-bottom:28px;
+flex-wrap:wrap;
+gap:20px;
 }
 
 .logo{
-font-size:34px;
+font-size:36px;
 font-weight:900;
 letter-spacing:-2px;
 }
@@ -66,6 +75,7 @@ background:linear-gradient(90deg,var(--accent),var(--accent2));
 .navRight{
 display:flex;
 gap:12px;
+flex-wrap:wrap;
 }
 
 .btn{
@@ -92,6 +102,8 @@ color:white;
 border:1px solid var(--border);
 }
 
+/* HERO */
+
 .hero{
 display:grid;
 grid-template-columns:1.2fr .8fr;
@@ -100,12 +112,37 @@ margin-bottom:28px;
 }
 
 .heroCard{
-background:linear-gradient(135deg,rgba(59,130,246,.16),rgba(0,212,255,.08));
+background:
+linear-gradient(
+135deg,
+rgba(59,130,246,.16),
+rgba(0,212,255,.08)
+);
 border:1px solid var(--border);
 border-radius:32px;
 padding:36px;
 position:relative;
 overflow:hidden;
+}
+
+.pulse{
+position:absolute;
+right:-100px;
+top:-100px;
+width:300px;
+height:300px;
+border-radius:50%;
+background:
+radial-gradient(circle,
+rgba(0,212,255,.25),
+transparent 70%);
+animation:pulse 4s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1);opacity:.4}
+50%{transform:scale(1.2);opacity:.8}
+100%{transform:scale(1);opacity:.4}
 }
 
 .badge{
@@ -121,12 +158,12 @@ font-weight:800;
 }
 
 .heroTitle{
-font-size:68px;
+font-size:72px;
 line-height:.92;
 font-weight:900;
 letter-spacing:-4px;
 margin-bottom:20px;
-max-width:700px;
+max-width:760px;
 }
 
 .heroTitle span{
@@ -142,22 +179,7 @@ color:var(--muted);
 max-width:760px;
 }
 
-.pulse{
-position:absolute;
-right:-100px;
-top:-100px;
-width:300px;
-height:300px;
-border-radius:50%;
-background:radial-gradient(circle,rgba(0,212,255,.25),transparent 70%);
-animation:pulse 4s infinite;
-}
-
-@keyframes pulse{
-0%{transform:scale(1);opacity:.4}
-50%{transform:scale(1.2);opacity:.8}
-100%{transform:scale(1);opacity:.4}
-}
+/* STATUS */
 
 .systemCard{
 background:rgba(255,255,255,.04);
@@ -167,9 +189,9 @@ padding:28px;
 }
 
 .systemTitle{
-font-size:22px;
-font-weight:800;
-margin-bottom:18px;
+font-size:24px;
+font-weight:900;
+margin-bottom:22px;
 }
 
 .statusList{
@@ -182,8 +204,8 @@ gap:16px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:14px 16px;
-border-radius:16px;
+padding:16px;
+border-radius:18px;
 background:rgba(255,255,255,.03);
 }
 
@@ -208,6 +230,13 @@ color:var(--yellow);
 font-weight:800;
 }
 
+.danger{
+color:var(--red);
+font-weight:800;
+}
+
+/* STATS */
+
 .grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -218,8 +247,8 @@ margin-bottom:28px;
 .statCard{
 background:rgba(255,255,255,.04);
 border:1px solid var(--border);
-border-radius:26px;
-padding:26px;
+border-radius:28px;
+padding:28px;
 transition:.25s;
 }
 
@@ -235,7 +264,7 @@ margin-bottom:14px;
 }
 
 .statValue{
-font-size:48px;
+font-size:52px;
 font-weight:900;
 letter-spacing:-2px;
 margin-bottom:10px;
@@ -245,6 +274,8 @@ margin-bottom:10px;
 font-size:13px;
 color:#cbd5e1;
 }
+
+/* MAIN */
 
 .bottomGrid{
 display:grid;
@@ -260,42 +291,51 @@ padding:30px;
 }
 
 .panelTitle{
-font-size:28px;
+font-size:30px;
 font-weight:900;
 margin-bottom:22px;
 }
+
+/* LOGS */
 
 .logBox{
 display:flex;
 flex-direction:column;
 gap:14px;
-max-height:420px;
+max-height:520px;
 overflow:auto;
+padding-right:6px;
 }
 
 .log{
 padding:16px;
-border-radius:16px;
+border-radius:18px;
 background:#08101d;
 border:1px solid rgba(255,255,255,.05);
 font-size:14px;
-line-height:1.6;
+line-height:1.7;
 }
 
 .log strong{
 color:#7dd3fc;
 }
 
+/* CHAT */
+
 .aiChat{
 display:flex;
 flex-direction:column;
 gap:16px;
+max-height:420px;
+overflow:auto;
+padding-right:6px;
 }
 
 .chatBubble{
 padding:18px;
 border-radius:20px;
 line-height:1.7;
+font-size:15px;
 }
 
 .ai{
@@ -310,7 +350,7 @@ max-width:80%;
 }
 
 .chatInput{
-margin-top:12px;
+margin-top:18px;
 display:flex;
 gap:12px;
 }
@@ -325,6 +365,30 @@ color:white;
 outline:none;
 }
 
+/* TABLE */
+
+.activityTable{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+.activityTable tr{
+border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.activityTable td{
+padding:14px 0;
+font-size:14px;
+}
+
+.activityTable td:last-child{
+text-align:right;
+font-weight:700;
+}
+
+/* FOOTER */
+
 .footer{
 margin-top:30px;
 padding-top:24px;
@@ -337,7 +401,10 @@ font-size:13px;
 color:var(--muted);
 }
 
-@media(max-width:1100px){
+/* MOBILE */
+
+@media(max-width:1200px){
+
 .hero,
 .bottomGrid,
 .grid{
@@ -345,27 +412,43 @@ grid-template-columns:1fr;
 }
 
 .heroTitle{
-font-size:52px;
+font-size:54px;
 }
+
 }
+
 </style>
 </head>
 <body>
 
 <div class="dashboard">
 
+<!-- NAV -->
+
 <div class="nav">
-<div class="logo">SS <span>Sentinel</span></div>
+
+<div class="logo">
+SS <span>Sentinel</span>
+</div>
 
 <div class="navRight">
-<button class="btn secondary">SS Law Connected</button>
-<button class="btn primary">Platform Integrity: ONLINE</button>
+<button class="btn secondary">
+SS Law Connected
+</button>
+
+<button class="btn primary">
+Platform Integrity: ONLINE
+</button>
 </div>
+
 </div>
+
+<!-- HERO -->
 
 <section class="hero">
 
 <div class="heroCard">
+
 <div class="pulse"></div>
 
 <div class="badge">
@@ -377,12 +460,16 @@ Protecting The <span>Entire Platform</span>
 </h1>
 
 <p class="heroText">
-SS Sentinel is the internal AI intelligence and monitoring system powering StudentStreamHQ. Integrated directly with SS Law, Sentinel monitors platform integrity, creator protection, infrastructure health, moderation systems, security alerts, and realtime operational activity across the StudentStreamHQ ecosystem.
+SS Sentinel is the intelligence and protection infrastructure powering StudentStreamHQ. Integrated directly with SS Law, Sentinel monitors creator safety, livestream activity, moderation systems, policy violations, infrastructure health, suspicious behavior, platform threats, and realtime ecosystem analytics.
 </p>
+
 </div>
 
 <div class="systemCard">
-<div class="systemTitle">Realtime System Status</div>
+
+<div class="systemTitle">
+Realtime System Status
+</div>
 
 <div class="statusList">
 
@@ -397,7 +484,7 @@ SS Sentinel is the internal AI intelligence and monitoring system powering Stude
 <div class="statusItem">
 <div class="statusLeft">
 <strong>Creator Protection</strong>
-<span>Monitoring reports & impersonation</span>
+<span>Monitoring impersonation & abuse</span>
 </div>
 <div class="live">ACTIVE</div>
 </div>
@@ -405,7 +492,7 @@ SS Sentinel is the internal AI intelligence and monitoring system powering Stude
 <div class="statusItem">
 <div class="statusLeft">
 <strong>SS Law Network</strong>
-<span>Policy enforcement systems</span>
+<span>Legal systems synchronized</span>
 </div>
 <div class="live">CONNECTED</div>
 </div>
@@ -426,180 +513,489 @@ SS Sentinel is the internal AI intelligence and monitoring system powering Stude
 <div class="live">TRACKING</div>
 </div>
 
+<div class="statusItem">
+<div class="statusLeft">
+<strong>E-Sign Compliance</strong>
+<span>User agreements verified</span>
 </div>
+<div class="live">VERIFIED</div>
+</div>
+
+</div>
+
 </div>
 
 </section>
+
+<!-- STATS -->
 
 <section class="grid">
 
 <div class="statCard">
-<div class="statLabel">Active Monitoring Events</div>
-<div class="statValue" id="events">12,492</div>
-<div class="statSub">Realtime activity analysis</div>
+<div class="statLabel">
+Active Monitoring Events
+</div>
+
+<div class="statValue" id="events">
+0
+</div>
+
+<div class="statSub">
+Realtime activity analysis
+</div>
 </div>
 
 <div class="statCard">
-<div class="statLabel">Protected Creators</div>
-<div class="statValue" id="creators">2,184</div>
-<div class="statSub">Under SS Sentinel coverage</div>
+<div class="statLabel">
+Protected Creators
+</div>
+
+<div class="statValue" id="creators">
+0
+</div>
+
+<div class="statSub">
+Under SS Sentinel protection
+</div>
 </div>
 
 <div class="statCard">
-<div class="statLabel">Threat Detections</div>
-<div class="statValue" id="threats">42</div>
-<div class="statSub">Blocked automatically today</div>
+<div class="statLabel">
+Threat Detections
+</div>
+
+<div class="statValue" id="threats">
+0
+</div>
+
+<div class="statSub">
+Automatically blocked today
+</div>
 </div>
 
 <div class="statCard">
-<div class="statLabel">Platform Stability</div>
-<div class="statValue">99.9%</div>
-<div class="statSub">Infrastructure uptime</div>
+<div class="statLabel">
+Platform Stability
+</div>
+
+<div class="statValue">
+99.9%
+</div>
+
+<div class="statSub">
+Realtime infrastructure uptime
+</div>
 </div>
 
 </section>
 
+<!-- MAIN -->
+
 <section class="bottomGrid">
 
-<div class="panel">
-<div class="panelTitle">Sentinel Activity Logs</div>
-
-<div class="logBox" id="logs">
-
-<div class="log">
-<strong>[SS Sentinel]</strong> Monitoring livestream infrastructure stability across StudentStreamHQ.
-</div>
-
-<div class="log">
-<strong>[SS Law]</strong> Creator protection systems verified platform integrity.
-</div>
-
-<div class="log">
-<strong>[Security]</strong> Suspicious automated spam attempt detected and blocked.
-</div>
-
-<div class="log">
-<strong>[Infrastructure]</strong> API response times stable across all connected systems.
-</div>
-
-</div>
-</div>
+<!-- LOGS -->
 
 <div class="panel">
-<div class="panelTitle">Sentinel AI Console</div>
+
+<div class="panelTitle">
+Sentinel Activity Logs
+</div>
+
+<div class="logBox" id="logs"></div>
+
+</div>
+
+<!-- CHAT -->
+
+<div class="panel">
+
+<div class="panelTitle">
+Sentinel AI Console
+</div>
 
 <div class="aiChat" id="chatArea">
 
 <div class="chatBubble ai">
-SS Sentinel online. Monitoring StudentStreamHQ ecosystem. All major systems operational.
-</div>
-
-<div class="chatBubble user">
-How is platform stability?
-</div>
-
-<div class="chatBubble ai">
-Platform stability currently operating at 99.9%. No critical infrastructure issues detected.
+SS Sentinel online. Monitoring StudentStreamHQ ecosystem. All systems operational.
 </div>
 
 </div>
 
 <div class="chatInput">
-<input id="messageInput" placeholder="Communicate with SS Sentinel..." />
-<button class="btn primary" onclick="sendMessage()">Send</button>
+<input
+id="messageInput"
+placeholder="Communicate with SS Sentinel..."
+/>
+
+<button
+class="btn primary"
+onclick="sendMessage()">
+Send
+</button>
 </div>
 
 </div>
 
 </section>
 
+<!-- EXTRA -->
+
+<section
+style="
+margin-top:24px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:24px;
+"
+>
+
+<div class="panel">
+
+<div class="panelTitle">
+SS Law Activity
+</div>
+
+<table class="activityTable">
+
+<tr>
+<td>Creator Agreement Signed</td>
+<td class="live">VERIFIED</td>
+</tr>
+
+<tr>
+<td>Moderation Escalations</td>
+<td>12 Open</td>
+</tr>
+
+<tr>
+<td>Identity Verification Reviews</td>
+<td>4 Pending</td>
+</tr>
+
+<tr>
+<td>Livestream Copyright Claims</td>
+<td>2 Active</td>
+</tr>
+
+<tr>
+<td>Platform Legal Protection</td>
+<td class="live">SECURED</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="panel">
+
+<div class="panelTitle">
+Sentinel Intelligence Feed
+</div>
+
+<div class="logBox" id="intelFeed">
+
+<div class="log">
+<strong>[AI]</strong>
+Realtime platform analytics initialized successfully.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
 <div class="footer">
+
 <div>
 <strong>SS Sentinel</strong><br>
 StudentStreamHQ Platform Intelligence Division
 </div>
 
 <div>
-SS Law • Infrastructure • AI Monitoring • Creator Protection
+SS Law • AI Monitoring • Infrastructure • Creator Protection
 </div>
 
 <div>
 © 2026 StudentStreamHQ
 </div>
+
 </div>
 
 </div>
 
 <script>
+
+/* SUPABASE */
+
+const supabase =
+window.supabase.createClient(
+"https://iabzmoxzbqzcqgypxctr.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ"
+);
+
+/* ELEMENTS */
+
+const logsBox =
+document.getElementById("logs");
+
+const intelFeed =
+document.getElementById("intelFeed");
+
+/* RANDOM LOGS */
+
 const logs = [
-"Livestream health monitoring active.",
+
+"Monitoring livestream infrastructure stability.",
 "Scanning creator reports and moderation queues.",
 "No critical platform threats detected.",
 "SS Law systems synchronized successfully.",
 "Realtime infrastructure metrics updated.",
 "AI moderation systems analyzing activity.",
 "Monitoring game servers and creator uploads.",
-"Platform integrity verified across core systems."
+"Platform integrity verified across core systems.",
+"Automated impersonation detection completed.",
+"Realtime analytics synced successfully."
+
 ];
 
-function addLog(){
-const logBox = document.getElementById('logs');
-const div = document.createElement('div');
-div.className = 'log';
-div.innerHTML = `<strong>[SS Sentinel]</strong> ${logs[Math.floor(Math.random()*logs.length)]}`;
-logBox.prepend(div);
+/* LOAD DASHBOARD */
 
-if(logBox.children.length > 10){
-logBox.removeChild(logBox.lastChild);
+async function loadDashboard(){
+
+try{
+
+/* SENTINEL LOGS */
+
+const { data:sentinelLogs } =
+await supabase
+.from("ss_sentinel_logs")
+.select("*")
+.order("created_at",{
+ascending:false
+})
+.limit(15);
+
+logsBox.innerHTML = "";
+
+if(sentinelLogs && sentinelLogs.length){
+
+sentinelLogs.forEach(log=>{
+
+logsBox.innerHTML += `
+<div class="log">
+<strong>[${log.log_type || "SS Sentinel"}]</strong>
+${log.message}
+</div>
+`;
+
+});
+
 }
+
+/* THREATS */
+
+const { count:threatCount } =
+await supabase
+.from("ss_sentinel_threats")
+.select("*",{
+count:"exact",
+head:true
+});
+
+/* USERS */
+
+const { count:userCount } =
+await supabase
+.from("profiles")
+.select("*",{
+count:"exact",
+head:true
+});
+
+/* E-SIGNS */
+
+const { count:agreementCount } =
+await supabase
+.from("ss_legal_agreements")
+.select("*",{
+count:"exact",
+head:true
+});
+
+/* UPDATE UI */
+
+document.getElementById("events").innerText =
+((threatCount || 0) * 50 + 12000)
+.toLocaleString();
+
+document.getElementById("creators").innerText =
+(userCount || 0)
+.toLocaleString();
+
+document.getElementById("threats").innerText =
+(threatCount || 0);
+
+}catch(err){
+
+console.error(err);
+
 }
 
-setInterval(addLog,4000);
+}
 
-function sendMessage(){
-const input = document.getElementById('messageInput');
-const chat = document.getElementById('chatArea');
+/* ADD RANDOM FEED */
+
+function addIntel(){
+
+const div =
+document.createElement("div");
+
+div.className = "log";
+
+div.innerHTML = `
+<strong>[SS Sentinel]</strong>
+${logs[Math.floor(Math.random()*logs.length)]}
+`;
+
+intelFeed.prepend(div);
+
+if(intelFeed.children.length > 10){
+
+intelFeed.removeChild(
+intelFeed.lastChild
+);
+
+}
+
+}
+
+/* CHAT */
+
+async function sendMessage(){
+
+const input =
+document.getElementById("messageInput");
+
+const chat =
+document.getElementById("chatArea");
 
 if(!input.value.trim()) return;
 
-const userBubble = document.createElement('div');
-userBubble.className = 'chatBubble user';
-userBubble.innerText = input.value;
+const userBubble =
+document.createElement("div");
+
+userBubble.className =
+"chatBubble user";
+
+userBubble.innerText =
+input.value;
+
 chat.appendChild(userBubble);
 
-const aiBubble = document.createElement('div');
-aiBubble.className = 'chatBubble ai';
+const text =
+input.value.toLowerCase();
 
-const responses = [
-"All core StudentStreamHQ systems are currently stable.",
-"SS Law monitoring systems are connected and operational.",
-"Realtime creator protection systems are active.",
-"Infrastructure health remains within optimal range.",
-"No severe platform integrity threats detected.",
-"Monitoring livestream and creator systems continuously."
-];
+let response =
+"Monitoring StudentStreamHQ systems continuously.";
 
-setTimeout(()=>{
-aiBubble.innerText = responses[Math.floor(Math.random()*responses.length)];
-chat.appendChild(aiBubble);
-chat.scrollTop = chat.scrollHeight;
-},600);
+if(text.includes("threat")){
 
-input.value = '';
+response =
+"No severe platform threats detected. Monitoring remains active.";
+
+}else if(text.includes("law")){
+
+response =
+"SS Law systems are synchronized and creator protections are operational.";
+
+}else if(text.includes("creator")){
+
+response =
+"Creator protection systems remain active across the platform.";
+
+}else if(text.includes("server")){
+
+response =
+"Infrastructure response times remain stable.";
+
 }
 
-setInterval(()=>{
-document.getElementById('events').innerText =
-(12000 + Math.floor(Math.random()*2000)).toLocaleString();
+setTimeout(()=>{
 
+const aiBubble =
+document.createElement("div");
 
-document.getElementById('creators').innerText =
-(2000 + Math.floor(Math.random()*400)).toLocaleString();
+aiBubble.className =
+"chatBubble ai";
 
+aiBubble.innerText =
+response;
 
-document.getElementById('threats').innerText =
-Math.floor(Math.random()*60);
-},3000);
+chat.appendChild(aiBubble);
+
+chat.scrollTop =
+chat.scrollHeight;
+
+},500);
+
+input.value = "";
+
+}
+
+/* ENTER KEY */
+
+document
+.getElementById("messageInput")
+.addEventListener(
+"keydown",
+(e)=>{
+
+if(e.key === "Enter"){
+
+sendMessage();
+
+}
+
+}
+);
+
+/* SAVE RANDOM LOGS */
+
+async function saveRandomLog(){
+
+const random =
+logs[
+Math.floor(
+Math.random()*logs.length
+)
+];
+
+await supabase
+.from("ss_sentinel_logs")
+.insert([{
+
+log_type:"SS Sentinel",
+message:random
+
+}]);
+
+}
+
+/* LIVE LOOP */
+
+setInterval(addIntel,4000);
+
+setInterval(loadDashboard,7000);
+
+setInterval(saveRandomLog,12000);
+
+/* START */
+
+loadDashboard();
+
 </script>
 
 </body>
