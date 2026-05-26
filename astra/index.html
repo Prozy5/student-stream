@@ -4,72 +4,159 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Astra AI — Under Maintenance | StudentStreamHQ</title>
+
 <style>
-body{
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
     font-family:Inter,Arial,sans-serif;
-    background:linear-gradient(180deg,#05070f,#0d1323);
+}
+
+body{
+    background:
+        radial-gradient(circle at top,#122044 0%,#070b16 35%,#03050c 100%);
     color:#fff;
+    min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    min-height:100vh;
-    text-align:center;
     overflow:hidden;
+    position:relative;
 }
-.stars{
+
+/* stars */
+.stars,
+.stars::before,
+.stars::after{
     position:absolute;
     inset:0;
+    content:"";
     background-image:
         radial-gradient(white 1px, transparent 1px);
-    background-size:40px 40px;
-    opacity:.15;
+    background-size:45px 45px;
+    opacity:.12;
+    animation:drift 30s linear infinite;
 }
+
+.stars::before{
+    background-size:65px 65px;
+    opacity:.08;
+    animation-duration:45s;
+}
+
+.stars::after{
+    background-size:90px 90px;
+    opacity:.06;
+    animation-duration:60s;
+}
+
+@keyframes drift{
+    from{transform:translateY(0);}
+    to{transform:translateY(50px);}
+}
+
+/* orbit glow rings */
+.orbit{
+    position:absolute;
+    width:700px;
+    height:700px;
+    border:1px solid rgba(140,180,255,.08);
+    border-radius:50%;
+    animation:spin 50s linear infinite;
+}
+
+.orbit.two{
+    width:520px;
+    height:520px;
+    animation-direction:reverse;
+    animation-duration:35s;
+}
+
+@keyframes spin{
+    from{transform:rotate(0);}
+    to{transform:rotate(360deg);}
+}
+
+/* card */
 .box{
     position:relative;
-    z-index:2;
-    max-width:650px;
-    padding:40px 25px;
+    z-index:3;
+    width:min(92%,720px);
+    padding:50px 35px;
+    border-radius:28px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(18px);
+    box-shadow:
+        0 0 50px rgba(56,100,255,.15),
+        inset 0 0 40px rgba(255,255,255,.02);
+    text-align:center;
 }
+
+/* logo */
 .logo{
-    font-size:42px;
+    font-size:44px;
     font-weight:700;
     letter-spacing:1px;
     margin-bottom:8px;
+    background:linear-gradient(90deg,#ffffff,#9cbcff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
+
 .sub{
-    color:#8fa6d8;
-    margin-bottom:28px;
-    font-size:15px;
+    font-size:14px;
+    letter-spacing:.5px;
+    color:#8ea9df;
+    margin-bottom:30px;
+    text-transform:uppercase;
 }
+
 h1{
-    font-size:32px;
+    font-size:34px;
+    margin-bottom:16px;
+    line-height:1.2;
+}
+
+p{
+    color:#d6e1ff;
+    line-height:1.7;
+    font-size:16px;
     margin-bottom:14px;
 }
-p{
-    color:#d6def5;
-    line-height:1.6;
-    font-size:16px;
-}
+
 .status{
     display:inline-block;
     margin-top:28px;
-    padding:12px 18px;
+    padding:12px 22px;
     border-radius:999px;
-    background:rgba(255,255,255,.08);
-    color:#c7d5ff;
+    background:rgba(130,170,255,.12);
+    border:1px solid rgba(160,190,255,.18);
+    color:#d9e6ff;
     font-size:14px;
+    box-shadow:0 0 25px rgba(120,170,255,.08);
 }
+
 .footer{
-    margin-top:30px;
+    margin-top:35px;
     font-size:13px;
-    color:#93a0c8;
+    color:#91a6d3;
+}
+
+/* mobile */
+@media(max-width:600px){
+    .logo{font-size:34px;}
+    h1{font-size:28px;}
+    p{font-size:15px;}
 }
 </style>
 </head>
 <body>
 
 <div class="stars"></div>
+<div class="orbit"></div>
+<div class="orbit two"></div>
 
 <div class="box">
     <div class="logo">ASTRA AI ✦</div>
@@ -79,12 +166,14 @@ p{
 
     <p>
         Astra AI is currently undergoing scheduled maintenance while we expand
-        our astronomy research systems and improve upcoming features.
+        our astronomy research systems and prepare the next generation of
+        discovery tools.
     </p>
 
     <p>
-        We’ll return soon with new research tools, enhanced space discovery
-        resources, and continued exploration powered by StudentStreamHQ.
+        We’ll return soon with advanced space research experiences,
+        deeper astronomy intelligence, and new ways to explore the universe
+        through StudentStreamHQ.
     </p>
 
     <div class="status">🚧 Under Maintenance</div>
