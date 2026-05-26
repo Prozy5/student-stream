@@ -1,390 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>ASTRA</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Astra AI — Under Maintenance | StudentStreamHQ</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
 body{
-font-family:Inter;
-background:#000814;
-color:white;
-overflow-x:hidden;
-min-height:100vh;
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:linear-gradient(180deg,#05070f,#0d1323);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    text-align:center;
+    overflow:hidden;
 }
-
-/* ===== SPACE BACKGROUND ===== */
-
-.space{
-position:fixed;
-inset:0;
-z-index:-5;
-background:radial-gradient(ellipse at bottom,#020617 0%,#000 100%);
-overflow:hidden;
-}
-
-/* Starfield */
 .stars{
-position:absolute;
-width:200%;
-height:200%;
-background:url("https://www.transparenttextures.com/patterns/stardust.png");
-animation:starMove 120s linear infinite;
-opacity:.4;
+    position:absolute;
+    inset:0;
+    background-image:
+        radial-gradient(white 1px, transparent 1px);
+    background-size:40px 40px;
+    opacity:.15;
 }
-@keyframes starMove{
-from{transform:translateY(0)}
-to{transform:translateY(-1000px)}
+.box{
+    position:relative;
+    z-index:2;
+    max-width:650px;
+    padding:40px 25px;
 }
-
-/* Nebula Glow */
-.nebula{
-position:absolute;
-width:800px;
-height:800px;
-background:radial-gradient(circle,rgba(0,150,255,.25),transparent 60%);
-filter:blur(120px);
-top:-200px;
-left:-200px;
-animation:floatNebula 30s ease-in-out infinite alternate;
-}
-@keyframes floatNebula{
-to{transform:translate(200px,150px)}
-}
-
-/* Planets */
-.planet{
-position:absolute;
-border-radius:50%;
-box-shadow:0 0 80px rgba(0,255,255,.4);
-animation:floatPlanet 40s infinite alternate ease-in-out;
-}
-.planet1{
-width:200px;height:200px;
-background:radial-gradient(circle at 30% 30%,#0ea5e9,#020617);
-top:10%;right:8%;
-}
-.planet2{
-width:120px;height:120px;
-background:radial-gradient(circle at 30% 30%,#22d3ee,#001f2f);
-bottom:12%;left:10%;
-}
-@keyframes floatPlanet{
-to{transform:translateY(40px)}
-}
-
-/* Falling Data Streaks */
-.streak{
-position:absolute;
-width:2px;
-height:120px;
-background:linear-gradient(transparent,#38bdf8);
-opacity:.4;
-animation:fall linear infinite;
-}
-@keyframes fall{
-from{transform:translateY(-200px)}
-to{transform:translateY(120vh)}
-}
-
-/* ===== UI ===== */
-
-header{
-padding:25px 50px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(5,10,25,.7);
-backdrop-filter:blur(30px);
-border-bottom:1px solid rgba(255,255,255,.05);
-}
-
 .logo{
-font-family:Orbitron;
-font-size:24px;
-letter-spacing:5px;
-background:linear-gradient(90deg,#38bdf8,#22d3ee);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+    font-size:42px;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:8px;
 }
-
-.meta{font-size:12px;opacity:.7}
-
-.wrapper{
-max-width:1400px;
-margin:50px auto;
-padding:0 50px;
-display:grid;
-grid-template-columns:2fr 1fr;
-gap:40px;
+.sub{
+    color:#8fa6d8;
+    margin-bottom:28px;
+    font-size:15px;
 }
-
-.panel{
-background:rgba(10,15,35,.6);
-border:1px solid rgba(255,255,255,.05);
-border-radius:20px;
-padding:30px;
-backdrop-filter:blur(35px);
-box-shadow:0 0 60px rgba(0,150,255,.1);
-transition:.3s;
+h1{
+    font-size:32px;
+    margin-bottom:14px;
 }
-.panel:hover{
-box-shadow:0 0 80px rgba(0,150,255,.2);
+p{
+    color:#d6def5;
+    line-height:1.6;
+    font-size:16px;
 }
-
-.sectionTitle{
-font-family:Orbitron;
-font-size:11px;
-letter-spacing:4px;
-opacity:.6;
-margin-bottom:20px;
+.status{
+    display:inline-block;
+    margin-top:28px;
+    padding:12px 18px;
+    border-radius:999px;
+    background:rgba(255,255,255,.08);
+    color:#c7d5ff;
+    font-size:14px;
 }
-
-.report{
-padding:22px;
-border-radius:16px;
-margin-bottom:18px;
-background:rgba(20,30,60,.6);
-border:1px solid rgba(255,255,255,.05);
-cursor:pointer;
-transition:.3s;
-}
-.report:hover{
-transform:translateY(-4px);
-box-shadow:0 0 30px rgba(0,200,255,.2);
-}
-
-.threatLow{border-left:4px solid #00ffc8}
-.threatMedium{border-left:4px solid #ffd000}
-.threatHigh{
-border-left:4px solid #ff4d6d;
-box-shadow:0 0 20px rgba(255,77,109,.4);
-}
-
-.scientist{
-padding:18px;
-border-radius:14px;
-margin-bottom:15px;
-background:rgba(20,30,55,.5);
-border:1px solid rgba(255,255,255,.05);
-transition:.2s;
-}
-.scientist:hover{
-box-shadow:0 0 25px rgba(34,211,238,.3);
-}
-
-button{
-background:linear-gradient(90deg,#0ea5e9,#22d3ee);
-border:none;
-color:white;
-padding:8px 14px;
-border-radius:8px;
-cursor:pointer;
-transition:.2s;
-}
-button:hover{
-transform:scale(1.05);
-box-shadow:0 0 20px rgba(34,211,238,.6);
-}
-
-.pagination{
-display:flex;
-justify-content:space-between;
-margin-top:15px;
-}
-
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.8);
-display:none;
-align-items:center;
-justify-content:center;
-}
-.modalContent{
-background:#020617;
-padding:30px;
-border-radius:15px;
-max-width:700px;
-width:90%;
-max-height:80vh;
-overflow:auto;
-box-shadow:0 0 60px rgba(0,150,255,.3);
-}
-.modal.show{display:flex}
-
-.debugPanel{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#000;
-color:#00ff88;
-font-family:monospace;
-font-size:12px;
-padding:12px;
-max-height:180px;
-overflow:auto;
-z-index:9999;
+.footer{
+    margin-top:30px;
+    font-size:13px;
+    color:#93a0c8;
 }
 </style>
 </head>
-
 <body>
 
-<!-- SPACE LAYERS -->
-<div class="space">
 <div class="stars"></div>
-<div class="nebula"></div>
-<div class="planet planet1"></div>
-<div class="planet planet2"></div>
+
+<div class="box">
+    <div class="logo">ASTRA AI ✦</div>
+    <div class="sub">Astronomy Research Division • StudentStreamHQ</div>
+
+    <h1>We’re Upgrading the Stars.</h1>
+
+    <p>
+        Astra AI is currently undergoing scheduled maintenance while we expand
+        our astronomy research systems and improve upcoming features.
+    </p>
+
+    <p>
+        We’ll return soon with new research tools, enhanced space discovery
+        resources, and continued exploration powered by StudentStreamHQ.
+    </p>
+
+    <div class="status">🚧 Under Maintenance</div>
+
+    <div class="footer">
+        © 2026 StudentStreamHQ • Astra AI Research Division
+    </div>
 </div>
-
-<header>
-<div class="logo">ASTRA</div>
-<div>
-<span class="meta" id="systemStatus">CONNECTING...</span>
-<button id="ingestBtn">INGEST NOW</button>
-</div>
-</header>
-
-<div class="wrapper">
-<div class="panel">
-<div class="sectionTitle">INTELLIGENCE STREAM</div>
-<div id="reportContainer"></div>
-<div class="pagination">
-<button id="prevBtn">Prev</button>
-<button id="nextBtn">Next</button>
-</div>
-</div>
-
-<div class="panel">
-<div class="sectionTitle">AI SCIENTISTS</div>
-<div id="scientistContainer"></div>
-</div>
-</div>
-
-<div id="modal" class="modal">
-<div class="modalContent" id="modalContent"></div>
-</div>
-
-<div class="debugPanel" id="debugContent"></div>
-
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const supabase = createClient("https://iabzmoxzbqzcqgypxctr.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhYnptb3h6YnF6Y3FneXB4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDgzNzAsImV4cCI6MjA4MjY4NDM3MH0.mHke56jh8WSlzzQxa7o2PIxqLRk1eyPRZerJ3avuGkQ");
-
-const reportContainer=document.getElementById("reportContainer");
-const scientistContainer=document.getElementById("scientistContainer");
-const systemStatus=document.getElementById("systemStatus");
-const debugContent=document.getElementById("debugContent");
-const modal=document.getElementById("modal");
-const modalContent=document.getElementById("modalContent");
-
-let page=0;
-const pageSize=10;
-
-function debug(msg){debugContent.innerHTML+="<div>> "+msg+"</div>";}
-
-function threatClass(score){
-if(score>=70) return "threatHigh";
-if(score>=40) return "threatMedium";
-return "threatLow";
-}
-
-async function loadReports(){
-const {data}=await supabase
-.from("astra_publications")
-.select("*, astra_scientists(name)")
-.eq("published",true)
-.order("created_at",{ascending:false})
-.range(page*pageSize,(page+1)*pageSize-1);
-
-reportContainer.innerHTML="";
-data?.forEach(r=>{
-const div=document.createElement("div");
-div.className="report "+threatClass(r.threat_score||0);
-div.innerHTML=`
-<strong>${r.title}</strong><br>
-<small>Scientist: ${r.astra_scientists?.name||"Unknown"}</small><br>
-<small>${new Date(r.created_at).toLocaleString()}</small>
-`;
-div.onclick=()=>openModal(r);
-reportContainer.appendChild(div);
-});
-}
-
-function openModal(r){
-modalContent.innerHTML=`
-<h2>${r.title}</h2>
-<p><strong>Scientist:</strong> ${r.astra_scientists?.name||"Unknown"}</p>
-<p><strong>Threat Score:</strong> ${r.threat_score||0}</p>
-<hr>
-<p>${r.body||""}</p>
-<br><button onclick="document.getElementById('modal').classList.remove('show')">Close</button>
-`;
-modal.classList.add("show");
-}
-
-async function loadScientists(){
-const {data}=await supabase
-.from("astra_scientists")
-.select("*")
-.eq("active",true)
-.order("reputation",{ascending:false});
-
-scientistContainer.innerHTML="";
-data?.forEach(s=>{
-scientistContainer.innerHTML+=`
-<div class="scientist">
-<strong>${s.name}</strong><br>
-<small>${s.specialization}</small><br>
-<small>Reputation: ${s.reputation}</small>
-</div>`;
-});
-}
-
-supabase.channel("astra-live")
-.on("postgres_changes",
-{event:"INSERT",schema:"public",table:"astra_publications"},
-()=>loadReports()
-).subscribe();
-
-document.getElementById("ingestBtn").onclick=async()=>{
-await fetch("YOUR_EDGE_FUNCTION",{method:"POST"});
-};
-
-document.getElementById("nextBtn").onclick=()=>{page++;loadReports();}
-document.getElementById("prevBtn").onclick=()=>{if(page>0)page--;loadReports();}
-modal.onclick=e=>{if(e.target===modal)modal.classList.remove("show");}
-
-setInterval(loadReports,60000);
-
-async function init(){
-systemStatus.innerText="LOADING...";
-await loadReports();
-await loadScientists();
-systemStatus.innerText="LIVE";
-}
-
-init();
-</script>
-
-<script>
-/* Generate Falling Streaks */
-for(let i=0;i<25;i++){
-let s=document.createElement("div");
-s.className="streak";
-s.style.left=Math.random()*100+"vw";
-s.style.animationDuration=(3+Math.random()*5)+"s";
-document.querySelector(".space").appendChild(s);
-}
-</script>
 
 </body>
 </html>
